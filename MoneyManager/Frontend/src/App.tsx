@@ -1,14 +1,17 @@
 import React from 'react';
 import './App.css';
-import Main from './main';
+import Header from './components/Header/Header';
+import Transactions from './pages/Transactions';
+import Footer from './components/Footer/Footer';
 
 const App: React.FC = () => {
   return (
-    <div className="App">
-          <header className="App-header">
-              <p>Test</p>
-              <Main></Main>
-      </header>
+    <div className="app">
+      <Header/>
+      <main className="app-main">
+        <Transactions></Transactions>
+      </main>
+      <Footer/>
     </div>
   );
 }

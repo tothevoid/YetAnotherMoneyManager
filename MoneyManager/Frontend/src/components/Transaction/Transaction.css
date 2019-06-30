@@ -14,6 +14,10 @@
     position: relative;
 }
 
+.icon{
+    height: 1.5rem;
+}
+
 .date{
     margin-left: 1rem;
 }
@@ -30,4 +34,38 @@
 
 .money-quantity{
     margin-left: .5rem;
+}
+
+.red{
+    background-color: #A71111;
+    color:white;
+}
+.green{
+    background-color: #6FC23A;
+}
+
+.parameter{
+    display: inline-block;
+    margin-right: 1rem;
+}
+
+.parameter .title{
+    display: block;
+}
+
+.parameter .value{
+    display: block;
+}
+
+.buttons{
+    margin-top: 1rem;
+}
+
+.cancel-btn, .add-btn{
+    border: none;
+    background-color: white;
+    width: 7.5rem;
+    height: 2rem;
+    margin-right: 1rem;
+    border-radius: 1rem;
 }

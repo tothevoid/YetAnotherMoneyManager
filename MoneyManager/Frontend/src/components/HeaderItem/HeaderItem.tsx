@@ -6,7 +6,7 @@ type HeaderProps = {
 }
 
 const HeaderItem: React.FC<HeaderProps> = ({title}) => {
-    return <a className="header-item">{title}</a>
+    return <a href="/" className="header-item">{title}</a>
 }
 
 export default HeaderItem;

@@ -4,7 +4,7 @@ import HeaderItem from '../HeaderItem/HeaderItem';
 
 const Header: React.FC = () => {
     return <nav className="header">
-        <HeaderItem title="abc"></HeaderItem>
+        <HeaderItem title="Расходы"></HeaderItem>
     </nav>
 }
 

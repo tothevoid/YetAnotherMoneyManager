@@ -1,5 +1,6 @@
 import React from 'react';
 import './Transaction.css';
+import logo from '../../logo.svg'
 
 type TransactionProps = {
     icon: string,
@@ -10,8 +11,8 @@ type TransactionProps = {
 
 const Transaction: React.FC<TransactionProps> = ({icon, date, name, moneyQuantity}) => {
     return (
-        <div className="transaction">
-            <img className="icon"></img>
+        <div className={moneyQuantity > 0 ? "green" + " transaction" : "red" + " transaction"}>
+            <img src={logo} alt={name} className="icon"></img>
             <p className="date">{date}</p>
             <p className="name">{name}</p>
             <p className="money-quantity">{moneyQuantity}</p>

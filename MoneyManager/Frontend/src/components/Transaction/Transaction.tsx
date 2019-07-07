@@ -3,22 +3,41 @@ import './Transaction.css';
 import logo from '../../logo.svg'
 
 type TransactionProps = {
-    icon: string,
-    date: string,
     name: string,
+    date: string,
     moneyQuantity: number;
+    description: string,
+    type: number
 }
 
-const Transaction: React.FC<TransactionProps> = ({icon, date, name, moneyQuantity}) => {
-    return (
-        <div className={moneyQuantity > 0 ? "green" + " transaction" : "red" + " transaction"}>
-            <img src={logo} alt={name} className="icon"></img>
-            <p className="date">{date}</p>
-            <p className="name">{name}</p>
-            <p className="money-quantity">{moneyQuantity}</p>
-            {/* <p className="expand">V</p> */}
-        </div>
-    );
+class Transaction extends React.Component<any, any> {
+    constructor(props: any){
+        super(props);
+        this.state = {...this.props};
+    }
+
+    deleteTransaction = () => {
+        if (this.state.deleteCallback){
+            this.state.deleteCallback();
+        }
+    };
+
+    updateTransaction = () => {
+        //update this.state
+    };
+
+    render = () => {
+        return <div className={this.props.moneyQuantity > 0 ? "green" + " transaction" : "red" + " transaction"}>
+            <img src={logo} alt={this.props.name} className="icon"></img>
+            <p className="date">{this.props.date}</p>
+            <p className="name">{this.props.name}</p>
+            <p className="money-quantity">{this.state.moneyQuantity}</p>
+            <div className="buttons">
+                <span className="edit"></span>
+                <span className="delete"></span>
+            </div>
+         </div>
+    }
 }
 
 export default Transaction;

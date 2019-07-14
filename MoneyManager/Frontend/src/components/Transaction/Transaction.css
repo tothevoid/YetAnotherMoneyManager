@@ -43,3 +43,14 @@
 .green{
     background-color: #6FC23A;
 }
+
+.delete-btn{
+    position: absolute;
+    right: 0;
+    color:white;
+    height: 10px;
+    width: 10px;
+    right: 20px;
+    background: transparent;
+    border: none;
+}

@@ -7,36 +7,31 @@ export type TransactionProps = {
     date: string,
     moneyQuantity: number;
     description: string,
-    type: number
+    type: number,
+    id: string,
+    onDelete: (id: string) => void
 }
 
-class Transaction extends React.Component<any, any> {
-   
-    state = {...this.props};
+const Transaction = (props: TransactionProps) => {
+    const {moneyQuantity, name, date} = props;
 
-    deleteTransaction = () => {
-        if (this.state.deleteCallback){
-            this.state.deleteCallback();
+    const onDeleteClick = () => {
+        if (props.onDelete){
+            props.onDelete(props.id);
         }
     };
 
-    updateTransaction = () => {
-        //update this.state
-    };
-
-    render = () => {
-        const {moneyQuantity, name, date} = this.state;
-        return <div className={moneyQuantity > 0 ? "green" + " transaction" : "red" + " transaction"}>
-            <img src={logo} alt={name} className="icon"></img>
-            <p className="date">{date}</p>
-            <p className="name">{name}</p>
-            <p className="money-quantity">{moneyQuantity}</p>
-            <div className="buttons">
-                <span className="edit"></span>
-                <span className="delete"></span>
-            </div>
-         </div>
-    }
+    return <div className={moneyQuantity > 0 ? "green" + " transaction" : "red" + " transaction"}>
+        <img src={logo} alt={name} className="icon"></img>
+        <p className="date">{date}</p>
+        <p className="name">{name}</p>
+        <p className="money-quantity">{moneyQuantity}</p>
+        <div className="buttons">
+            <span className="edit"></span>
+            <span className="delete"></span>
+        </div>
+        <button onClick={onDeleteClick} className="delete-btn">X</button>
+    </div>
 }
 
 export default Transaction;

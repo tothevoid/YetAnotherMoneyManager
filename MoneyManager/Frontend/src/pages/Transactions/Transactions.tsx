@@ -12,12 +12,14 @@ const getInitialState = () =>{
 
 const mockTransaction = (id: number) =>{
     const money = (Math.random() > 0.5) ? 100 : -100;
+    const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,(c,r)=>('x'==c?(r=Math.random()*16|0):(r&0x3|0x8)).toString(16));
     return {
         name: "test",
         date: new Date().toISOString().substr(0, 10),
         moneyQuantity: money,
         description: "",
-        type: 0
+        type: 0,
+        id: uuid
     }
 }
 
@@ -40,6 +42,13 @@ class Transactions extends React.Component<any, any> {
         })
     };
 
+    onTransactionDelete = (id: string) => {
+        this.setState((state: any) => {
+            const transactions = state.transactions.filter((x: any)=>x.id !== id)
+            return {transactions}
+        });
+    }
+
     render(){
         const {transactions} = this.state;
         return (
@@ -48,7 +57,7 @@ class Transactions extends React.Component<any, any> {
                 <div className="transactions">
                     {
                     transactions.map((transaction: any, i: number) => {        
-                        return <Transaction {...transaction} key={i}>
+                        return <Transaction {...transaction} onDelete={this.onTransactionDelete} key={i}>
                         </Transaction>
                     })
                     }

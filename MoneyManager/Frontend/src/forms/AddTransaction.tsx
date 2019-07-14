@@ -5,56 +5,51 @@ const mockTypes = (id: number) =>{
     return <option key={id}>{id}</option>;
 }
 
+const getInitialState = (): TransactionState => {
+    return {
+        name: "",
+        date: new Date().toISOString().substr(0, 10),
+        moneyQuantity: 500,
+        description: "",
+        type: 0
+    }
+}
+
+export type Props = {
+    callback: (arg: TransactionState) => void
+}
+
+export type TransactionState = {
+    name: string,
+    date: string,
+    moneyQuantity: number,
+    description: string,
+    type: number,
+}
+
 class AddTransaction extends React.Component<any, any> {
 
-    constructor(props: any){
-        super(props);
-        const {callback} = this.props;
-        this.state = this.getDefaultState();
-        this.state = {...this.state, callback}
-    }
-
-    getDefaultState(){
-        return {
-            name: "",
-            date: new Date().toISOString().substr(0, 10),
-            moneyQuantity: "",
-            description: "",
-            type: 0,
-        }
-    }
+    state = getInitialState();
 
     add = () =>{
-        const {callback, ...output} = this.state;
+        const {callback} = this.props;
         if (callback){
-            callback(output);
-            this.setState(this.getDefaultState());
+            callback(this.state);
+            this.setState(getInitialState());
         }
     };
     
     reset = () =>{
-        this.setState(this.getDefaultState());
+        this.setState(getInitialState());
     };
     
     submit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
     };
 
-    onNameChanged = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
+    handleChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({
-          name: value,
-        })
-    }
-
-    onMoneyQuantityChanged = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({
-          moneyQuantity: value,
-        })
-    }
-
-    onDateChanged = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({
-          date: value,
+          [name]: value,
         })
     }
 
@@ -71,19 +66,19 @@ class AddTransaction extends React.Component<any, any> {
                 <div className="parameters">
                     <div className="parameter">
                         <label className="title">Название</label>
-                        <input className="value" onChange={this.onNameChanged} value={name} type="text"></input>
+                        <input name="name"  className="value" onChange={this.handleChange} value={name} type="text"></input>
                     </div>
                     <div className="parameter">
-                    <label className="title">Кол-во денег</label>
-                        <input className="value" onChange={this.onMoneyQuantityChanged} value={moneyQuantity} type="number"></input>
+                        <label className="title">Кол-во денег</label>
+                        <input name="moneyQuantity" className="value" onChange={this.handleChange} value={moneyQuantity} type="number"></input>
                     </div>
                     <div className="parameter">
                         <label className="title">Дата</label>
-                        <input className="value" onChange={this.onDateChanged} value={date} type="date"></input>
+                        <input name="date" className="value" onChange={this.handleChange} value={date} type="date"></input>
                     </div>          
                     <div className="parameter">
                         <label className="title">Тип</label>
-                        <select className="value type" onChange={this.onTypeChanged} value={type}>
+                        <select name="type" className="value type" onChange={this.onTypeChanged} value={type}>
                             {
                                 Array(10).fill(1).map((_, i) => {        
                                     return (mockTypes(i)) 

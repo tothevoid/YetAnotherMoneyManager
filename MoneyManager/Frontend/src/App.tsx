@@ -4,7 +4,7 @@ import Header from './components/Header/Header';
 import Transactions from './pages/Transactions/Transactions'
 import Footer from './components/Footer/Footer';
 
-const App: React.FC = () => {
+const App = () => {
   return (
     <div className="app">
       <Header/>

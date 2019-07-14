@@ -2,7 +2,7 @@ import React from 'react';
 import './Transaction.css';
 import logo from '../../logo.svg'
 
-type TransactionProps = {
+export type TransactionProps = {
     name: string,
     date: string,
     moneyQuantity: number;
@@ -11,10 +11,8 @@ type TransactionProps = {
 }
 
 class Transaction extends React.Component<any, any> {
-    constructor(props: any){
-        super(props);
-        this.state = {...this.props};
-    }
+   
+    state = {...this.props};
 
     deleteTransaction = () => {
         if (this.state.deleteCallback){
@@ -27,11 +25,12 @@ class Transaction extends React.Component<any, any> {
     };
 
     render = () => {
-        return <div className={this.props.moneyQuantity > 0 ? "green" + " transaction" : "red" + " transaction"}>
-            <img src={logo} alt={this.props.name} className="icon"></img>
-            <p className="date">{this.props.date}</p>
-            <p className="name">{this.props.name}</p>
-            <p className="money-quantity">{this.state.moneyQuantity}</p>
+        const {moneyQuantity, name, date} = this.state;
+        return <div className={moneyQuantity > 0 ? "green" + " transaction" : "red" + " transaction"}>
+            <img src={logo} alt={name} className="icon"></img>
+            <p className="date">{date}</p>
+            <p className="name">{name}</p>
+            <p className="money-quantity">{moneyQuantity}</p>
             <div className="buttons">
                 <span className="edit"></span>
                 <span className="delete"></span>

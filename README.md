@@ -3,6 +3,4 @@
 Stack:
 
 * React
-* Redux
-* GraphQL
 * .NET Core

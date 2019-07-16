@@ -2,51 +2,45 @@ import React  from 'react';
 import Transaction from '../../components/Transaction/Transaction';
 import AddTransaction from '../../forms/AddTransaction';
 
-const getInitialState = () =>{
-    return {
-        transactions: Array(10).fill(1).map((elm: any, id: number) => {
-            return mockTransaction(id);
-        })
-    }
-}
-
-const mockTransaction = (id: number) =>{
-    const money = (Math.random() > 0.5) ? 100 : -100;
-    const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,(c,r)=>('x'==c?(r=Math.random()*16|0):(r&0x3|0x8)).toString(16));
-    return {
-        name: "test",
-        date: new Date().toISOString().substr(0, 10),
-        moneyQuantity: money,
-        description: "",
-        type: 0,
-        id: uuid
-    }
-}
-
 class Transactions extends React.Component<any, any> {
 
-    state = getInitialState();
+    state = {transactions: []}
+
+    componentDidMount() {
+        const API_URL = "https://localhost:44319/Transaction";
+        fetch(API_URL, {method: 'GET'})
+            .then(res => res.json())
+            .then(res => this.setState({transactions: res}));
+      }
 
     loadTransactions = () => {
         console.log("loaded");
     }
 
-    onAddTransaction = () => {
-
+    onTransactionCreated = (transaction: object) => {
+        const API_URL = "https://localhost:44319/Transaction";
+        fetch(API_URL, { method: 'PUT', body: JSON.stringify(transaction),  headers: {'Content-Type': 'application/json'}})
+            .then(res => {
+                if (res.status === 200) {
+                    this.setState((state: any) => state.transactions.push(transaction))
+                }
+            }
+        );
     };
 
-    showResult = (addedTransaction: object) =>{
-        this.setState((state:any) => {
-            const transactions = state.transactions.push(addedTransaction);
-            return transactions;
-        })
-    };
-
-    onTransactionDelete = (id: string) => {
-        this.setState((state: any) => {
-            const transactions = state.transactions.filter((x: any)=>x.id !== id)
-            return {transactions}
-        });
+    onTransactionDeleted = (id: string) => {
+        const API_URL = `https://localhost:44319/Transaction?id=${id}`;
+        fetch(API_URL, { method: 'DELETE'})
+            .then(res => {
+                console.log(res);
+                if (res.status === 200) {
+                    this.setState((state: any) => {
+                        const transactions = state.transactions.filter((x: any) => x.id !== id)
+                        return { transactions }
+                    });
+                }
+            }
+        );
     }
 
     render(){
@@ -57,12 +51,12 @@ class Transactions extends React.Component<any, any> {
                 <div className="transactions">
                     {
                     transactions.map((transaction: any, i: number) => {        
-                        return <Transaction {...transaction} onDelete={this.onTransactionDelete} key={i}>
+                        return <Transaction {...transaction} onDelete={this.onTransactionDeleted} key={i}>
                         </Transaction>
                     })
                     }
                 </div>
-                <AddTransaction callback={this.showResult}/>
+                <AddTransaction callback={this.onTransactionCreated}/>
             </div>
         );
     }

@@ -11,7 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Frontend\src\store\" />
     <Folder Include="Frontend\src\components\" />
   </ItemGroup>
 

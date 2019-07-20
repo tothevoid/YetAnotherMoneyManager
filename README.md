@@ -1,6 +1,21 @@
-# Pet project to try new technologies in money manager app
+# Pet project to try new technologies
 
 Stack:
 
 * React
 * .NET Core
+* MongoDB
+
+TODO:
+
+* Users support
+* Auth
+* Money sources support (cash/cards)
+* Transaction types (gifts, products etc)
+* Totals graphics (spent, earned)
+* Localization (ru/en)
+* Themes (dark/light/custom)
+* Different currency support
+* Month selection
+* Add docker support
+* Use redux for states

@@ -1,49 +1,47 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
-using MoneyManager.Model;
 using System.Collections.Generic;
 using System;
+using MoneyManager.DAL.Interfaces;
+using MoneyManager.BLL.Services.Entities;
+using MoneyManager.WEB.Model;
+using AutoMapper;
+using MoneyManager.BLL.DTO;
 
-namespace MoneyManager.Api
+namespace MoneyManager.WEB.Api
 {
     [Produces("application/json")]
     [Route("[controller]")]
     [ApiController]
     public class TransactionController : ControllerBase
     {
-        private readonly Random _random;
-        public TransactionController()
-        {   
-            _random = new Random();
-        }
-
-        [HttpGet]
-        public IEnumerable<Transaction> GetAll()
+        private readonly ITransactionsService _transactionService;
+        private readonly IMapper _mapper;
+        public TransactionController(ITransactionsService transactionService, IMapper mapper)
         {
-            return Enumerable.Range(0, 10).Select((x,i)=>GenerateTransaction(i));
+            _mapper = mapper;
+            _transactionService = transactionService;
+        }
+       
+        [HttpGet]
+        public async Task<IEnumerable<TransactionModel>> GetAll()
+        {
+            var transactions = await _transactionService.GetAll();
+            return _mapper.Map<IEnumerable<TransactionModel>>(transactions);
         }
 
         [HttpPut]
-        public void Add(Transaction transaction)
+        public async Task Add(TransactionModel transaction)
         {
-            
+            var transactionDTO = _mapper.Map<TransactionDTO>(transaction);
+            await _transactionService.Add(transactionDTO);
         }
 
         [HttpDelete]
-        public void Delete(Guid id)
+        public async Task Delete(Guid id)
         {
-
+            await _transactionService.Delete(id);
         }
-
-        public Transaction GenerateTransaction(int index) =>
-            new Transaction{
-                Name = "test",
-                MoneyQuantity = _random.Next(-1000,1000),
-                Date = DateTime.Now.AddDays(-1*index),  
-                Description = "empty",
-                Type = 0,
-                Id = Guid.NewGuid()
-            };
     }
 }

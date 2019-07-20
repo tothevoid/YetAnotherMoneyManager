@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MoneyManager.BLL.Mappings;
+using MoneyManager.BLL.Services.Entities;
+using MoneyManager.DAL.Database;
+using MoneyManager.DAL.Interfaces;
+using AutoMapper;
+using MoneyManager.WEB.Mappings;
 
 namespace MoneyManager
 {
@@ -28,6 +29,12 @@ namespace MoneyManager
             {
                 configuration.RootPath = "Frontend/dist";
             });
+
+            services.AddScoped<IMongoContext, MongoContext>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            services.AddTransient<ITransactionsService, TransactionsService>();
+            services.AddAutoMapper(typeof(DTOToEntityProfile), typeof(ViewToDTOProfile));
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

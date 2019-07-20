@@ -1,11 +1,11 @@
+using MoneyManager.Common;
+using MoneyManager.DAL;
 using System;
 
-namespace MoneyManager.Model
+namespace MoneyManager.WEB.Model
 {
-    public class Transaction
+    public class TransactionModel: BaseEntity
     {
-        public Guid Id {get;set;}
-
         public string Name {get;set;}
 
         public DateTime Date {get;set;}

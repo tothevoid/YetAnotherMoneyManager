@@ -9,9 +9,7 @@ namespace MoneyManager.BLL.DTO
 
         public DateTime Date { get; set; }
 
-        public int MoneyQuantity { get; set; }
-
-        public string Description { get; set; }
+        public double MoneyQuantity { get; set; }
 
         public int Type { get; set; }
     }

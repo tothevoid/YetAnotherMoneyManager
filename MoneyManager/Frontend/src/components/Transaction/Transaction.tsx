@@ -6,7 +6,6 @@ export type TransactionProps = {
     name: string,
     date: string,
     moneyQuantity: number;
-    description: string,
     type: number,
     id: string,
     onDelete: (id: string) => void

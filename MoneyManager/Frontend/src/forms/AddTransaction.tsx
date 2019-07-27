@@ -10,7 +10,6 @@ const getInitialState = (): TransactionState => {
         name: "",
         date: new Date().toISOString().substr(0, 10),
         moneyQuantity: 500,
-        description: "",
         type: 0
     }
 }
@@ -23,7 +22,6 @@ export type TransactionState = {
     name: string,
     date: string,
     moneyQuantity: number,
-    description: string,
     type: number,
 }
 
@@ -88,8 +86,8 @@ class AddTransaction extends React.Component<any, any> {
                     </div>         
                 </div>
                 <div className="buttons">
-                    <button onClick={this.reset} className="cancel-btn">Сбросить</button>
                     <button onClick={this.add} className="add-btn">Добавить</button>
+                    <button onClick={this.reset} className="cancel-btn">Сбросить</button>
                 </div>
             </form>
         </div>

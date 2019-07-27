@@ -1,0 +1,21 @@
+.fund-container{
+    display: inline-block;
+    width: 250px;
+    margin-right: 20px;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.137);
+    border-radius: 1rem;
+   
+    padding: .5rem;
+}
+
+.container-new{
+    border: white 2px dashed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container-stored{
+    box-shadow: 2px 2px 2px 2px #333;
+}

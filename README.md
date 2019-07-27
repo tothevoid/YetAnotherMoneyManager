@@ -19,3 +19,4 @@ TODO:
 * Month selection
 * Add docker support
 * Use redux for states
+* Confirm operation modal

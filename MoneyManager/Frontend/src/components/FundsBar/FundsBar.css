@@ -1,0 +1,6 @@
+.funds-bar{
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}

@@ -63,19 +63,19 @@ class AddTransaction extends React.Component<any, any> {
             <form onSubmit={this.submit}>
                 <div className="parameters">
                     <div className="parameter">
-                        <label className="title">Название</label>
+                        <label className="title">Name</label>
                         <input name="name"  className="value" onChange={this.handleChange} value={name} type="text"></input>
                     </div>
                     <div className="parameter">
-                        <label className="title">Кол-во денег</label>
+                        <label className="title">Money spent</label>
                         <input name="moneyQuantity" className="value" onChange={this.handleChange} value={moneyQuantity} type="number"></input>
                     </div>
                     <div className="parameter">
-                        <label className="title">Дата</label>
+                        <label className="title">Date</label>
                         <input name="date" className="value" onChange={this.handleChange} value={date} type="date"></input>
                     </div>          
                     <div className="parameter">
-                        <label className="title">Тип</label>
+                        <label className="title">Type</label>
                         <select name="type" className="value type" onChange={this.onTypeChanged} value={type}>
                             {
                                 Array(10).fill(1).map((_, i) => {        
@@ -86,8 +86,8 @@ class AddTransaction extends React.Component<any, any> {
                     </div>         
                 </div>
                 <div className="buttons">
-                    <button onClick={this.add} className="add-btn">Добавить</button>
-                    <button onClick={this.reset} className="cancel-btn">Сбросить</button>
+                    <button onClick={this.add} className="add-btn">Add</button>
+                    <button onClick={this.reset} className="cancel-btn">Reset</button>
                 </div>
             </form>
         </div>

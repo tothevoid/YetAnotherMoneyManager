@@ -27,11 +27,13 @@ namespace MoneyManager.BLL.Services.Entities
             return _mapper.Map<IEnumerable<TransactionDTO>>(transactions);
         }
 
-        public async Task Add(TransactionDTO transactionDTO)
+        public async Task<Guid> Add(TransactionDTO transactionDTO)
         {
             var transaction = _mapper.Map<Transaction>(transactionDTO);
+            transaction.Id = Guid.NewGuid();
             await _transactionsRepo.Add(transaction);
             _db.Commit();
+            return transaction.Id;
         }
 
         public async Task Delete(Guid id)

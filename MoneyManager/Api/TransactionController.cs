@@ -32,10 +32,10 @@ namespace MoneyManager.WEB.Api
         }
 
         [HttpPut]
-        public async Task Add(TransactionModel transaction)
+        public async Task<Guid> Add(TransactionModel transaction)
         {
             var transactionDTO = _mapper.Map<TransactionDTO>(transaction);
-            await _transactionService.Add(transactionDTO);
+            return await _transactionService.Add(transactionDTO);
         }
 
         [HttpDelete]

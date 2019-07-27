@@ -2,58 +2,78 @@ import React  from 'react';
 import Transaction from '../../components/Transaction/Transaction';
 import AddTransaction from '../../forms/AddTransaction';
 import FundsBar from '../../components/FundsBar/FundsBar';
+import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
 
 class Transactions extends React.Component<any, any> {
 
-    state = {transactions: []}
+    state = {transactions: [], deleteModalVisible: false, onModalCallback: null}
 
     componentDidMount() {
         const API_URL = "https://localhost:44319/Transaction";
         fetch(API_URL, {method: 'GET'})
             .then(res => res.json())
+            .then(res => {if (res){
+                return res.map((element: any)=>{
+                    const date = new Date(element.date).toLocaleDateString(undefined, {day: "numeric", month: "numeric", year: "2-digit"});
+                    return {...element, date};
+                });
+            }})
             .then(res => this.setState({transactions: res}));
     }
 
-    loadTransactions = () => {
-        console.log("loaded");
-    }
-
-    onTransactionCreated = (transaction: object) => {
+    onTransactionCreated = (transaction: any) => {
         const API_URL = "https://localhost:44319/Transaction";
-        console.log(transaction);
         fetch(API_URL, { method: 'PUT', body: JSON.stringify(transaction),  headers: {'Content-Type': 'application/json'}})
-            .then(res => {
-                console.log(res);
-                if (res.status === 200) {
+            .then((res) => {
+                return res.json();
+            })
+            .then(id => {
+                if (id){
+                    const date = new Date(transaction.date).toLocaleDateString(undefined, {day: "numeric", month: "numeric", year: "2-digit"});
+                    transaction = {...transaction, id, date};
                     this.setState((state: any) => state.transactions.push(transaction))
                 }
+               
             }
         );
     };
 
-    onTransactionDeleted = (id: string) => {
-        const API_URL = `https://localhost:44319/Transaction?id=${id}`;
-        fetch(API_URL, { method: 'DELETE'})
-            .then(res => {
-                console.log(res);
-                if (res.status === 200) {
-                    this.setState((state: any) => {
-                        const transactions = state.transactions.filter((x: any) => x.id !== id)
-                        return { transactions }
-                    });
-                }
+    onTransactionDeleted = (id: string) => { 
+        const onModalCallback = (isConfirmed: boolean) => {
+            if (isConfirmed){
+                const API_URL = `https://localhost:44319/Transaction?id=${id}`;
+                fetch(API_URL, { method: 'DELETE'})
+                    .then(res => {
+                        if (res.status === 200) {
+                            this.setState((state: any) => {
+                                const transactions = state.transactions.filter((x: any) => x.id !== id)
+                                return { transactions }
+                            });
+                        }
+                        this.setState({deleteModalVisible: false, onModalCallback: null});
+                    }
+                );
+            } else {
+                this.setState({deleteModalVisible: false, onModalCallback: null});
             }
-        );
+        }
+        this.setState({deleteModalVisible: true, onModalCallback});
     }
 
     render(){
-        const {transactions} = this.state;
+        debugger;
+        const {transactions, deleteModalVisible, onModalCallback} = this.state;
+        let deleteModal;
+        if (deleteModalVisible){
+            deleteModal = <ConfirmModal onModalCallback={onModalCallback} text={"Удалить выбранную запись?"}></ConfirmModal>;
+        }
         return (
             <div>
-                <h1 className="page-title">Затраты</h1>
-                <h2 className="sub-title">Мои деньги</h2>
+                {deleteModal}
+                <h1 className="page-title">Money management</h1>
+                <h2 className="sub-title">My funds</h2>
                 <FundsBar></FundsBar>
-                <h2 className="sub-title">Расходы</h2>
+                <h2 className="sub-title">Spents</h2>
                 <AddTransaction callback={this.onTransactionCreated}/>
                 <div className="transactions">
                     {

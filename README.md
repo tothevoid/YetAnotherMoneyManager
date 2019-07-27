@@ -20,3 +20,4 @@ TODO:
 * Add docker support
 * Use redux for states
 * Confirm operation modal
+* Common date mapper

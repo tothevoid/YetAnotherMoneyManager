@@ -8,7 +8,7 @@ namespace MoneyManager.BLL.Services.Entities
     public interface ITransactionsService
     {
         Task<IEnumerable<TransactionDTO>> GetAll();
-        Task Add(TransactionDTO transaction);
+        Task<Guid> Add(TransactionDTO transaction);
         Task Delete(Guid id);
     }
 }

@@ -1,11 +1,18 @@
 import React, { FormEvent } from 'react'
 import './AddTransaction.css'
+import { TransactionEntity } from '../../models/TransactionEntity';
+
+type Props = {
+    callback: (arg: State) => void
+}
+
+type State = Omit<TransactionEntity, "id">;
 
 const mockTypes = (id: number) =>{
     return <option key={id}>{id}</option>;
 }
 
-const getInitialState = (): TransactionState => {
+const getInitialState = (): State => {
     return {
         name: "",
         date: new Date().toISOString().substr(0, 10),
@@ -14,18 +21,7 @@ const getInitialState = (): TransactionState => {
     }
 }
 
-export type Props = {
-    callback: (arg: TransactionState) => void
-}
-
-export type TransactionState = {
-    name: string,
-    date: string,
-    moneyQuantity: number,
-    type: number,
-}
-
-class AddTransaction extends React.Component<any, any> {
+class AddTransaction extends React.Component<Props, State> {
 
     state = getInitialState();
 
@@ -46,15 +42,11 @@ class AddTransaction extends React.Component<any, any> {
     };
 
     handleChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({
-          [name]: value,
-        })
+        this.setState({ [name]: value} as any)
     }
 
     onTypeChanged = ({ target: { value } }: React.ChangeEvent<HTMLSelectElement>) => {
-        this.setState({
-          type: value,
-        })
+        this.setState({type: value} as any)
     }
 
     render = () => {

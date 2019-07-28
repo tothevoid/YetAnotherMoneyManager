@@ -3,17 +3,24 @@ import Transaction from '../../components/Transaction/Transaction';
 import AddTransaction from '../../forms/AddTransaction/AddTransaction';
 import FundsBar from '../../components/FundsBar/FundsBar';
 import ConfirmModal from '../../modals/ConfirmModal/ConfirmModal';
+import { TransactionEntity } from '../../models/TransactionEntity';
 
-class Transactions extends React.Component<any, any> {
+type State = {
+    transactions: TransactionEntity[],
+    deleteModalVisible: boolean,
+    onModalCallback: (isConfirmed: boolean) => void;
+}
 
-    state = {transactions: [], deleteModalVisible: false, onModalCallback: null}
+class Transactions extends React.Component<any, State> {
+
+    state = {transactions: [], deleteModalVisible: false, onModalCallback: () => null}
 
     componentDidMount() {
         const API_URL = "https://localhost:44319/Transaction";
         fetch(API_URL, {method: 'GET'})
             .then(res => res.json())
             .then(res => {if (res){
-                return res.map((element: any)=>{
+                return res.map((element: TransactionEntity)=>{
                     const date = new Date(element.date).toLocaleDateString(undefined, {day: "numeric", month: "numeric", year: "2-digit"});
                     return {...element, date};
                 });
@@ -45,16 +52,16 @@ class Transactions extends React.Component<any, any> {
                 fetch(API_URL, { method: 'DELETE'})
                     .then(res => {
                         if (res.status === 200) {
-                            this.setState((state: any) => {
-                                const transactions = state.transactions.filter((x: any) => x.id !== id)
+                            this.setState((state: State) => {
+                                const transactions = state.transactions.filter((x: TransactionEntity) => x.id !== id)
                                 return { transactions }
                             });
                         }
-                        this.setState({deleteModalVisible: false, onModalCallback: null});
+                        this.setState({deleteModalVisible: false});
                     }
                 );
             } else {
-                this.setState({deleteModalVisible: false, onModalCallback: null});
+                this.setState({deleteModalVisible: false});
             }
         }
         this.setState({deleteModalVisible: true, onModalCallback});

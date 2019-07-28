@@ -1,23 +1,21 @@
 import React, { FormEvent } from 'react'
 import './AddFund.css'
+import { FundEntity } from '../../models/FundEntity';
 
-const getInitialState = (): TransactionState => {
+type Props = {
+    callback: (arg: State) => void
+}
+
+type State = Omit<FundEntity, "id">;
+
+const getInitialState = (): State => {
     return {
         name: "",
         balance: 0,
     }
 }
 
-export type Props = {
-    callback: (arg: TransactionState) => void
-}
-
-export type TransactionState = {
-    name: string,
-    balance: number,
-}
-
-class AddFund extends React.Component<any, any> {
+class AddFund extends React.Component<Props, State> {
 
     state = getInitialState();
 
@@ -34,9 +32,7 @@ class AddFund extends React.Component<any, any> {
     };
 
     handleChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({
-          [name]: value,
-        })
+        this.setState({[name]: value} as any)
     }
 
     render = () => {

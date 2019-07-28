@@ -34,6 +34,7 @@ namespace MoneyManager
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddTransient<ITransactionsService, TransactionsService>();
+            services.AddTransient<IFundService, FundService>();
             services.AddAutoMapper(typeof(DTOToEntityProfile), typeof(ViewToDTOProfile));
         }
 

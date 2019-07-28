@@ -1,9 +1,7 @@
 import React from 'react'
 import './AddFundButton.css'
 
-const AddFundButton = (props: any) =>{
-    const {onClickCallback} = props;
-    return <button className="add-fund-button" onClick={onClickCallback}>+</button>
-}
+const AddFundButton = (props: any) =>
+    <p className="add-fund-button">Add additional fund source</p>
 
 export default AddFundButton;

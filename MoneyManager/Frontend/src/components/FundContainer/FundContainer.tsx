@@ -7,11 +7,14 @@ const getClassName = (isNew: boolean) =>{
     return `fund-container ${additionalClass}`;
 }
 
-const FundContainer = (isNew: boolean = false) => (Child: any) =>
-    ({...props}) =>
-        <div className={getClassName(isNew)}>
+const FundContainer = (isNew: boolean = false, onClick: any = null) => (Child: any) =>
+    ({...props}) =>{
+        const onDivClicked = () => {if (onClick) onClick()};
+        return <div onClick={onDivClicked} className={getClassName(isNew)}>
             <Child {...props}></Child>
         </div>
+    }
+       
        
        
 

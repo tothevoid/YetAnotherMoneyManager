@@ -13,6 +13,7 @@ namespace MoneyManager.WEB.Mappings
         public ViewToDTOProfile()
         {
             CreateMap<TransactionModel, TransactionDTO>().ReverseMap();
+            CreateMap<FundModel, FundDTO>().ReverseMap();
         }
     }
 }

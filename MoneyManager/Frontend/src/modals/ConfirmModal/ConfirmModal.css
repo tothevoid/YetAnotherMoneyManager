@@ -8,6 +8,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    color: #333;
 }
 
 .modal{
@@ -36,8 +37,4 @@
 .modal-button:hover{
     background: #333;
     color:white;
-}
-
-.modal-text{
-    color: #333;
 }

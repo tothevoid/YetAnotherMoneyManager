@@ -1,8 +1,8 @@
 import React  from 'react';
 import Transaction from '../../components/Transaction/Transaction';
-import AddTransaction from '../../forms/AddTransaction';
+import AddTransaction from '../../forms/AddTransaction/AddTransaction';
 import FundsBar from '../../components/FundsBar/FundsBar';
-import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
+import ConfirmModal from '../../modals/ConfirmModal/ConfirmModal';
 
 class Transactions extends React.Component<any, any> {
 
@@ -61,11 +61,11 @@ class Transactions extends React.Component<any, any> {
     }
 
     render(){
-        debugger;
         const {transactions, deleteModalVisible, onModalCallback} = this.state;
         let deleteModal;
+        const content = () => <p>{"Are you sure want to delete this record?"}</p>;
         if (deleteModalVisible){
-            deleteModal = <ConfirmModal onModalCallback={onModalCallback} text={"Удалить выбранную запись?"}></ConfirmModal>;
+            deleteModal = ConfirmModal(content)({onModalCallback});
         }
         return (
             <div>

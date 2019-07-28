@@ -16,7 +16,7 @@ TODO:
 * Localization (ru/en)
 * Themes (dark/light/custom)
 * Different currency support
-* Month selection
+* Month stats selection (current, previous)
 * Add docker support
 * Use redux for states
 * Confirm operation modal

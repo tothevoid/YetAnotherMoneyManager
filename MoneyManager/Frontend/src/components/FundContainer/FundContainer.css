@@ -1,12 +1,17 @@
 .fund-container{
     display: inline-block;
     width: 250px;
+    margin: 1rem 0;
     margin-right: 20px;
     height: 100px;
     background: rgba(255, 255, 255, 0.137);
     border-radius: 1rem;
-   
     padding: .5rem;
+    cursor: pointer;
+}
+
+.fund-container:hover{
+    background: rgb(87, 86, 86);
 }
 
 .container-new{

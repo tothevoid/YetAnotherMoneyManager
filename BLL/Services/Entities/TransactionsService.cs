@@ -36,6 +36,13 @@ namespace MoneyManager.BLL.Services.Entities
             return transaction.Id;
         }
 
+        public async Task Update(TransactionDTO transactionDTO)
+        {
+            var transaction = _mapper.Map<Transaction>(transactionDTO);
+            await _transactionsRepo.Update(transaction);
+            _db.Commit();
+        }
+
         public async Task Delete(Guid id)
         {
             await _transactionsRepo.Delete(id);

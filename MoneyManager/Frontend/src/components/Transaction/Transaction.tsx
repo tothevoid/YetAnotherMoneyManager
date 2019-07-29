@@ -4,27 +4,75 @@ import logo from '../../logo.svg'
 import { TransactionEntity } from '../../models/TransactionEntity';
 
 type Props = { onDelete: (id: string) => void } & TransactionEntity
+type State = {isEditMode: boolean, lastTransaction: TransactionEntity, currentTransaction: TransactionEntity}
+class Transaction extends React.Component<Props, State>{
 
-const Transaction = (props: Props) => {
-    const {moneyQuantity, name, date} = props;
+    state = {
+        isEditMode: false,
+        lastTransaction: {...this.props},
+        currentTransaction: {...this.props}
+    }
 
-    const onDeleteClick = () => {
-        if (props.onDelete){
-            props.onDelete(props.id);
+    onDeleteClick = () => {
+        const {id} = this.props;
+        if (this.props.onDelete){
+            this.props.onDelete(id);
         }
-    };
+    }
 
-    return <div className={moneyQuantity > 0 ? "green transaction" : "red transaction"}>
-        <img src={logo} alt={name} className="icon"></img>
-        <p className="date">{date}</p>
-        <p className="name">{name}</p>
-        <p className="money-quantity">{moneyQuantity}</p>
-        <div className="buttons">
-            <span className="edit"></span>
-            <span className="delete"></span>
+    handleChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({currentTransaction: { ...this.state.currentTransaction, [name]: value}} as any)
+    }
+
+    onTypeChanged = ({ target: { value } }: React.ChangeEvent<HTMLSelectElement>) => {
+        this.setState({type: value} as any)
+    }
+
+    onEditClick = () => 
+        this.setState({isEditMode: true});
+
+    onConfirmClick = () =>{
+        console.log(this.state);
+        const {currentTransaction} = this.state;
+        const API_URL = "https://localhost:44319/Transaction";
+        fetch(API_URL, { method: 'PATCH', body: JSON.stringify(currentTransaction),  headers: {'Content-Type': 'application/json'}})
+            .then(res => {
+                debugger;
+                if (res.ok){
+                    this.setState({isEditMode: false, lastTransaction: {...this.state.currentTransaction}});
+                }
+            })
+    }
+
+    onDiscardClick = () =>
+        this.setState({isEditMode: false, currentTransaction: {...this.state.lastTransaction}})
+
+    getButtons(){
+        const {isEditMode} = this.state;
+        if (isEditMode){
+            return <div className="manipulation-buttons">
+                <button onClick={this.onConfirmClick} className="manipulation-btn">Confirm</button>
+                <button onClick={this.onDiscardClick} className="manipulation-btn">Discard</button>
+            </div>
+        } else {
+            return <div className="manipulation-buttons">
+                <button onClick={this.onEditClick} className="manipulation-btn">Edit</button>
+                <button onClick={this.onDeleteClick} className="manipulation-btn">X</button>
+            </div>
+        }     
+    }
+
+    render(){
+        const {moneyQuantity, name, date} = this.state.currentTransaction;
+        const {isEditMode} = this.state;
+        return <div className={moneyQuantity > 0 ? "green transaction" : "red transaction"}>
+            <img src={logo} alt={name} className="icon"></img>
+            <input type="date" name="date" className="date field" onChange={this.handleChange} disabled={!isEditMode} value={date}></input>
+            <input type="text" name="name" className="name field" onChange={this.handleChange} disabled={!isEditMode} value={name}></input>
+            <input type="number" name="moneyQuantity" className="money-quantity field" onChange={this.handleChange} disabled={!isEditMode} value={moneyQuantity}></input>
+            {this.getButtons()}
         </div>
-        <button onClick={onDeleteClick} className="delete-btn">X</button>
-    </div>
+    }
 }
 
 export default Transaction;

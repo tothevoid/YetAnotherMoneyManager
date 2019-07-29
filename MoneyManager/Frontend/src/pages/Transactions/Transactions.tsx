@@ -21,7 +21,9 @@ class Transactions extends React.Component<any, State> {
             .then(res => res.json())
             .then(res => {if (res){
                 return res.map((element: TransactionEntity)=>{
-                    const date = new Date(element.date).toLocaleDateString(undefined, {day: "numeric", month: "numeric", year: "2-digit"});
+                    const dateObj = new Date(element.date);
+                    const date = dateObj.getFullYear().toString() + '-' + (dateObj.getMonth() + 1).toString().padStart(2, "0") +
+                        '-' + dateObj.getDate().toString().padStart(2, "0");
                     return {...element, date};
                 });
             }})
@@ -36,8 +38,7 @@ class Transactions extends React.Component<any, State> {
             })
             .then(id => {
                 if (id){
-                    const date = new Date(transaction.date).toLocaleDateString(undefined, {day: "numeric", month: "numeric", year: "2-digit"});
-                    transaction = {...transaction, id, date};
+                    transaction = {...transaction, id};
                     this.setState((state: any) => state.transactions.push(transaction))
                 }
                

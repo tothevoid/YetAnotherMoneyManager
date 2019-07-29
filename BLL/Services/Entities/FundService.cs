@@ -27,6 +27,7 @@ namespace MoneyManager.BLL.Services.Entities
             return _mapper.Map<IEnumerable<FundDTO>>(transactions);
         }
 
+ 
         public async Task<Guid> Add(FundDTO transactionDTO)
         {
             var fund = _mapper.Map<Fund>(transactionDTO);

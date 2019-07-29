@@ -12,6 +12,7 @@
     padding-left: .5rem;
     padding-right: .5rem;
     position: relative;
+    min-height: 50px;
 }
 
 .icon{
@@ -24,6 +25,16 @@
 
 .name{
     margin-left: .5rem;
+}
+
+.field:disabled{
+    background-color: #A71111;
+    border: none;
+    color: white;
+}
+
+.field{
+    border-radius: 0.5rem;
 }
 
 .expand{
@@ -44,13 +55,14 @@
     background-color: #6FC23A;
 }
 
-.delete-btn{
+.manipulation-buttons{
     position: absolute;
-    right: 0;
-    color:white;
-    height: 10px;
-    width: 10px;
     right: 20px;
+}
+
+.manipulation-btn{
+    height: 10px;
+    color:white;
     background: transparent;
     border: none;
 }

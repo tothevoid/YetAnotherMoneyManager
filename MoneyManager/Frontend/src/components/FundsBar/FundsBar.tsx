@@ -54,7 +54,7 @@ class FundsBar extends React.Component<Props,State>{
                     .then(id => {
                         if (id){
                             this.setState((state: any) => state.funds.push(fund));
-                            this.setState({fundModalVisible: false});
+                            this.setState({fundModalVisible: false, total: this.calculateTotal(this.state.funds)});
                         }
                     }
                 );
@@ -73,8 +73,28 @@ class FundsBar extends React.Component<Props,State>{
                                 const funds = state.funds.map((item: any) =>
                                     (item.id === fund.id) ? {...fund}: item
                                 );
-                                return {funds};
+                                return {funds, total: this.calculateTotal(funds)};
                             })
+                            this.setState({fundModalVisible: false});
+                        }
+                    }
+                );
+            } else {
+                this.setState({fundModalVisible: false});
+            }
+        };
+
+        const onDeleteCallback = (fund: FundEntity) => {
+            const {id} = fund;
+            if (fund){
+                const API_URL = `https://localhost:44319/Fund?id=${id}`;
+                fetch(API_URL, { method: 'DELETE'})
+                    .then(response => {
+                        if (response.ok){
+                            this.setState((state: any) => {
+                                const funds = state.funds.filter((x: FundEntity) => x.id !== id)
+                                return { funds, total: this.calculateTotal(funds) }
+                            });
                             this.setState({fundModalVisible: false});
                         }
                     }
@@ -89,7 +109,9 @@ class FundsBar extends React.Component<Props,State>{
             const {isFundModalNewMode, currentFund} = this.state;
             const defaultFund = (isFundModalNewMode) ? {name: "", balance: 0}: currentFund;
             const onModalCallback = (isFundModalNewMode) ? onNewModalCallback: onEditModalCallback;
-            addNewModal = ConfirmModal(AddFund)({onModalCallback, isFundModalNewMode, defaultFund, confirmName:"Save", cancelName:"Close"});
+            const additionalParams = (isFundModalNewMode) ? {} : {additionalCallback: onDeleteCallback, additionalName: "Delete"} 
+            addNewModal = ConfirmModal(AddFund)({onModalCallback, defaultFund,
+                confirmName:"Save", cancelName:"Close", ...additionalParams});
         }
         return (
             <Fragment>

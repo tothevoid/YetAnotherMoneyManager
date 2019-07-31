@@ -29,12 +29,12 @@ class AddFund extends React.Component<Props, FundEntity> {
         event.preventDefault();
     };
 
-    handleChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({[name]: value} as any)
+    handleChange = ({ target: { name, value, type } }: React.ChangeEvent<HTMLInputElement>) => {
+        debugger;
+        this.setState({[name]: type === 'number' ? parseInt(value) : value} as any)
     }
 
     render = () => {
-        const { isNewMode = true } = this.props;
         const { name, balance } = this.state;
         return <div className="manipulations">
             <form onSubmit={this.submit}>

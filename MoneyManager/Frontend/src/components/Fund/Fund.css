@@ -8,8 +8,10 @@
     color: white;
     margin: 0;
 }
-
 .currency{
     font-size: 0.8rem;
     font-style: normal;
+}
+.fund-sub-container{
+    position: relative;
 }

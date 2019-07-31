@@ -81,7 +81,7 @@ class Transactions extends React.Component<any, State> {
                 <h1 className="page-title">Money management</h1>
                 <h2 className="sub-title">My funds</h2>
                 <FundsBar></FundsBar>
-                <h2 className="sub-title">Spents</h2>
+                <h2 className="sub-title">Transactions</h2>
                 <AddTransaction callback={this.onTransactionCreated}/>
                 <div className="transactions">
                     {

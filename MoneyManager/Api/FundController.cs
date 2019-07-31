@@ -36,6 +36,13 @@ namespace MoneyManager.WEB.Api
             return await _fundService.Add(fundDTO);
         }
 
+        [HttpPatch]
+        public async Task Update(FundModel fund)
+        {
+            var fundDTO = _mapper.Map<FundDTO>(fund);
+            await _fundService.Update(fundDTO);
+        }
+
         [HttpDelete]
         public async Task Delete(Guid id)
         {

@@ -3,13 +3,12 @@ import './ConfirmModal.css'
 import ReactDOM from 'react-dom';
 
 const getPortalTemplate = (props: any, Content: any) => {
-    const {onModalCallback} = props;
+    const {onModalCallback, confirmName = "Yes", cancelName = "No"} = props;
     const isComponnetStatefull = !!(
         typeof Content === 'function'
         && Content.prototype
         && Content.prototype.isReactComponent
     );
-    debugger;
     let contentRef = React.createRef() as any;
     
     const onButtonClicked = (isConfirmed: boolean) => (e:any) =>{
@@ -22,10 +21,10 @@ const getPortalTemplate = (props: any, Content: any) => {
 
     return <div className="modal-background">
         <div className="modal">
-            {isComponnetStatefull ? <Content ref={contentRef}></Content>: <Content></Content>}
+            {isComponnetStatefull ? <Content {...props} ref={contentRef}></Content>: <Content></Content>}
             <div className="modal-buttons-container">
-                <button onClick={onButtonClicked(true)} className="modal-button">Yes</button>
-                <button onClick={onButtonClicked(false)} className="modal-button">No</button>
+                <button onClick={onButtonClicked(true)} className="modal-button">{confirmName}</button>
+                <button onClick={onButtonClicked(false)} className="modal-button">{cancelName}</button>
             </div>
         </div>
     </div>

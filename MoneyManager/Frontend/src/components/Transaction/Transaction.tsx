@@ -37,7 +37,6 @@ class Transaction extends React.Component<Props, State>{
         const API_URL = "https://localhost:44319/Transaction";
         fetch(API_URL, { method: 'PATCH', body: JSON.stringify(currentTransaction),  headers: {'Content-Type': 'application/json'}})
             .then(res => {
-                debugger;
                 if (res.ok){
                     this.setState({isEditMode: false, lastTransaction: {...this.state.currentTransaction}});
                 }

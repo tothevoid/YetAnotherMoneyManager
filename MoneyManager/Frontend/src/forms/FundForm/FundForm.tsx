@@ -1,29 +1,27 @@
 import React, { FormEvent } from 'react'
-import './AddFund.css'
+import './FundForm.css'
 import { FundEntity } from '../../models/FundEntity';
 
 type Props = {
-    callback: (arg: State) => void
+    isNewMode: boolean,
+    defaultFund: FundEntity,
+    callback: (arg: FundEntity) => void
 }
 
-type State = Omit<FundEntity, "id">;
+// type State = Omit<FundEntity, "id">;
 
-const getInitialState = (): State => {
-    return {
-        name: "",
-        balance: 0,
-    }
+const getInitialState = (props: Props): FundEntity => {
+    return {...props.defaultFund}
 }
 
-class AddFund extends React.Component<Props, State> {
+class AddFund extends React.Component<Props, FundEntity> {
 
-    state = getInitialState();
+    state = getInitialState(this.props);
 
     add = () =>{
         const {callback} = this.props;
         if (callback){
             callback(this.state);
-            this.setState(getInitialState());
         }
     };
     
@@ -36,6 +34,7 @@ class AddFund extends React.Component<Props, State> {
     }
 
     render = () => {
+        const { isNewMode = true } = this.props;
         const { name, balance } = this.state;
         return <div className="manipulations">
             <form onSubmit={this.submit}>

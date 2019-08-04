@@ -10,7 +10,7 @@ TODO:
 
 * Users support
 * Auth
-* Money sources support (cash/cards)
+* ~~Money sources support~~ (cash/cards)
 * Transaction types (gifts, products etc)
 * Totals graphics (spent, earned)
 * Localization (ru/en)
@@ -21,3 +21,8 @@ TODO:
 * Use redux for states
 * Confirm operation modal
 * Common date mapper
+* Spending trends
+
+FIX:
+
+*input date timezone bug

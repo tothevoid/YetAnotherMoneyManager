@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import Header from './components/Header/Header';
-import Transactions from './pages/Transactions/Transactions'
+import Manager from './pages/Manager/Manager'
 import Footer from './components/Footer/Footer';
 
 const App = () => {
@@ -9,7 +9,7 @@ const App = () => {
     <div className="app">
       <Header/>
       <main className="app-main">
-        <Transactions></Transactions>
+        <Manager></Manager>
       </main>
       <Footer/>
     </div>

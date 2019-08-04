@@ -7,35 +7,41 @@ import ConfirmModal from '../../modals/ConfirmModal/ConfirmModal';
 import AddFund from '../../forms/FundForm/FundForm';
 import { FundEntity } from '../../models/FundEntity';
 
+const calculateTotal = (items: FundEntity[]) => {
+    if (items && items.length > 0) return items.reduce((total: number, item: any)=> 
+        total+=item.balance,0) 
+    else return 0
+}
+
 type State = {
-    funds: FundEntity[],
     total: number,
     currentFund: FundEntity | null,
     fundModalVisible: boolean,
     isFundModalNewMode: boolean
 }
 
-type Props ={}
+type Props = {
+    funds: FundEntity[],
+    onAddFundCallback: (fund: FundEntity, onSuccess: (newFunds: FundEntity[])=> any) => null,
+    onDeleteFundCallback: (fund: FundEntity, onSuccess: (newFunds: FundEntity[])=> any) => null,
+    onUpdateFundCallback: (fund: FundEntity, onSuccess: (newFunds: FundEntity[])=> any) => null
+}
 
 class FundsBar extends React.Component<Props,State>{
     state = {
-        funds: [],
-        total: 0,
+        total: calculateTotal(this.props.funds),
         currentFund: null,
         fundModalVisible: false,
-        isFundModalNewMode: false
+        isFundModalNewMode: false,
     }
-    
-    componentDidMount() {
-        const API_URL = "https://localhost:44319/Fund";
-        fetch(API_URL, {method: 'GET'})
-            .then(res => res.json())
-            .then(res => this.setState({funds: res, total: this.calculateTotal(res)}));
-    }
-
-    calculateTotal = (items: FundEntity[]) =>
-        items.reduce((total: number, item: any)=> 
-            total+=item.balance,0)
+   
+    //set total when the server returns funds 
+    componentDidUpdate(oldProps: Props) {
+        const {funds} = this.props;
+        if(this.props.funds.length !== oldProps.funds.length && this.state.total === 0) {
+            this.setState({total:calculateTotal(funds)});
+        }
+      }
 
     getCreateNewButton(){
         const onClickCallback = () => {this.setState({fundModalVisible: true, isFundModalNewMode: true})}
@@ -44,20 +50,11 @@ class FundsBar extends React.Component<Props,State>{
     }
 
     render(){
-        const {funds, fundModalVisible, total} = this.state;
+        const {fundModalVisible, total} = this.state;
+        const {funds} = this.props;
         const onNewModalCallback = (isConfirmed: boolean, fund: FundEntity) => {
             if (isConfirmed && fund){
-                const { id, ...fundToAdd } = fund;
-                const API_URL = "https://localhost:44319/Fund";
-                fetch(API_URL, { method: 'PUT', body: JSON.stringify(fundToAdd),  headers: {'Content-Type': 'application/json'}})
-                    .then((res) => res.json())
-                    .then(id => {
-                        if (id){
-                            this.setState((state: any) => state.funds.push(fund));
-                            this.setState({fundModalVisible: false, total: this.calculateTotal(this.state.funds)});
-                        }
-                    }
-                );
+                this.props.onAddFundCallback(fund, onSuccessFundChangeCallback)
             } else {
                 this.setState({fundModalVisible: false});
             }
@@ -65,44 +62,23 @@ class FundsBar extends React.Component<Props,State>{
 
         const onEditModalCallback = (isConfirmed: boolean, fund: FundEntity) => {
             if (isConfirmed && fund){
-                const API_URL = "https://localhost:44319/Fund";
-                fetch(API_URL, { method: 'PATCH', body: JSON.stringify(fund),  headers: {'Content-Type': 'application/json'}})
-                    .then(response => {
-                        if (response.ok){
-                            this.setState((state: State) => {
-                                const funds = state.funds.map((item: any) =>
-                                    (item.id === fund.id) ? {...fund}: item
-                                );
-                                return {funds, total: this.calculateTotal(funds)};
-                            })
-                            this.setState({fundModalVisible: false});
-                        }
-                    }
-                );
+                this.props.onUpdateFundCallback(fund, onSuccessFundChangeCallback);
             } else {
                 this.setState({fundModalVisible: false});
             }
         };
 
         const onDeleteCallback = (fund: FundEntity) => {
-            const {id} = fund;
             if (fund){
-                const API_URL = `https://localhost:44319/Fund?id=${id}`;
-                fetch(API_URL, { method: 'DELETE'})
-                    .then(response => {
-                        if (response.ok){
-                            this.setState((state: any) => {
-                                const funds = state.funds.filter((x: FundEntity) => x.id !== id)
-                                return { funds, total: this.calculateTotal(funds) }
-                            });
-                            this.setState({fundModalVisible: false});
-                        }
-                    }
-                );
+                this.props.onDeleteFundCallback(fund, onSuccessFundChangeCallback);
             } else {
                 this.setState({fundModalVisible: false});
             }
         };
+
+        const onSuccessFundChangeCallback = (newFunds: FundEntity[]) => {
+            this.setState({fundModalVisible: false, total: calculateTotal(newFunds)});
+        }
 
         let addNewModal;
         if (fundModalVisible){

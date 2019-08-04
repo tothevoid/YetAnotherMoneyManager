@@ -1,14 +1,14 @@
 import React from 'react';
-import Transactions from './pages/Transactions/Transactions';
+import Manager from './pages/Manager/Manager';
 import App from './App';
 
 export default [
     {
-        path: '/transactions',
+        path: '/manager',
         ...App,
         routes: [
             {
-                ...Transactions
+                ...Manager
             }
         ]
     },

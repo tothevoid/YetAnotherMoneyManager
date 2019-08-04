@@ -22,6 +22,7 @@ const getPortalTemplate = (props: any, Content: any) => {
     const getAdditionalButton = () => {
         const {additionalName = "", additionalCallback = null} = props;
         const onAdditionalClick = () => {
+            debugger;
             let ref = {};
             if (isComponnetStatefull){
                 ref = contentRef.current.state;

@@ -30,8 +30,7 @@ class AddFund extends React.Component<Props, FundEntity> {
     };
 
     handleChange = ({ target: { name, value, type } }: React.ChangeEvent<HTMLInputElement>) => {
-        debugger;
-        this.setState({[name]: type === 'number' ? parseInt(value) : value} as any)
+        this.setState({[name]: type === 'number' ? parseFloat(value) : value} as any)
     }
 
     render = () => {

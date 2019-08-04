@@ -59,7 +59,7 @@ class AddTransaction extends React.Component<Props, State> {
                         <input name="name"  className="value" onChange={this.handleChange} value={name} type="text"></input>
                     </div>
                     <div className="parameter">
-                        <label className="title">Money spent</label>
+                        <label className="title">Money change</label>
                         <input name="moneyQuantity" className="value" onChange={this.handleChange} value={moneyQuantity} type="number"></input>
                     </div>
                     <div className="parameter">

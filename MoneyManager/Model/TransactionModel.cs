@@ -12,6 +12,6 @@ namespace MoneyManager.WEB.Model
 
         public double MoneyQuantity {get;set;}
 
-        public int Type {get;set;}
+        public FundModel FundSource {get;set;}
     }
 }

@@ -11,6 +11,6 @@ namespace MoneyManager.BLL.DTO
 
         public double MoneyQuantity { get; set; }
 
-        public int Type { get; set; }
+        public FundDTO FundSource { get; set; }
     }
 }

@@ -1,23 +1,21 @@
 import React, { FormEvent } from 'react'
 import './AddTransaction.css'
 import { TransactionEntity } from '../../models/TransactionEntity';
+import { FundEntity } from '../../models/FundEntity';
 
 type Props = {
+    fundSources: FundEntity[]
     callback: (arg: State) => void
 }
 
 type State = Omit<TransactionEntity, "id">;
 
-const mockTypes = (id: number) =>{
-    return <option key={id}>{id}</option>;
-}
-
-const getInitialState = (): State => {
+const getInitialState = (): any => {
     return {
         name: "",
         date: new Date().toISOString().substr(0, 10),
         moneyQuantity: 500,
-        type: 0
+        fundSourceId: null,
     }
 }
 
@@ -45,12 +43,13 @@ class AddTransaction extends React.Component<Props, State> {
         this.setState({ [name]: value} as any)
     }
 
-    onTypeChanged = ({ target: { value } }: React.ChangeEvent<HTMLSelectElement>) => {
-        this.setState({type: value} as any)
+    onTypeChanged = ({ target: { name, value } }: React.ChangeEvent<HTMLSelectElement>) => {
+        this.setState({[name]: value} as any)
     }
 
     render = () => {
-        const { name, moneyQuantity, date, type } = this.state;
+        const { fundSources = [] } = this.props; 
+        const { name, moneyQuantity, date, fundSource } = this.state;
         return <div className="manipulations">
             <form onSubmit={this.submit}>
                 <div className="parameters">
@@ -67,12 +66,10 @@ class AddTransaction extends React.Component<Props, State> {
                         <input name="date" className="value" onChange={this.handleChange} value={date} type="date"></input>
                     </div>          
                     <div className="parameter">
-                        <label className="title">Type</label>
-                        <select name="type" className="value type" onChange={this.onTypeChanged} value={type}>
+                        <label className="title">Fund souce</label>
+                        <select name="fundSource" className="value type" onChange={this.onTypeChanged} value={fundSource}>
                             {
-                                Array(10).fill(1).map((_, i) => {        
-                                    return (mockTypes(i)) 
-                                })
+                               fundSources.map((fund: FundEntity) => <option key={fund.id} value={fund.id}>{fund.name}</option>)
                             }
                         </select>
                     </div>         

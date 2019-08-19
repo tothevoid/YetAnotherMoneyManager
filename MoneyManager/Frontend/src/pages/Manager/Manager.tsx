@@ -81,10 +81,11 @@ class Manager extends React.Component<any, State> {
         const API_URL = `https://localhost:44319/Fund?id=${id}`;
                 fetch(API_URL, { method: 'DELETE'})
                     .then(response => {
+                        debugger;
                         if (response.ok){
                             this.setState((state: any) => {
                                 const funds = state.funds.filter((x: FundEntity) => x.id !== id)
-                                return { funds}
+                                return { funds }
                             });
                         }
                         onSuccess(this.state.funds);
@@ -144,11 +145,12 @@ class Manager extends React.Component<any, State> {
                     onDeleteFundCallback = {this.onFundDeleted} 
                     onUpdateFundCallback = {this.onFundUpdated} funds={funds}></FundsBar>
                 <h2 className="sub-title">Transactions</h2>
-                <AddTransaction callback={this.onTransactionCreated}/>
+                <AddTransaction fundSources={funds} callback={this.onTransactionCreated}/>
                 <div className="transactions">
                     {
-                    transactions.map((transaction: any, i: number) => {       
-                        return <Transaction {...transaction} onDelete={this.onTransactionDeleted} key={i}>
+                    transactions.map((transaction: TransactionEntity) => {       
+                        return <Transaction key={transaction.id} {...transaction} 
+                            onDelete={this.onTransactionDeleted}>
                         </Transaction>
                     })
                     }

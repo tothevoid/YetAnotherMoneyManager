@@ -11,6 +11,6 @@ namespace MoneyManager.DAL.Entities
 
         public double MoneyQuantity { get; set; }
 
-        public int Type { get; set; }
+        public Fund FundSouce { get; set; }
     }
 }

@@ -4,7 +4,6 @@ using MoneyManager.DAL.Entities;
 using MoneyManager.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
-using MoneyManager.Common;
 using System.Threading.Tasks;
 
 namespace MoneyManager.BLL.Services.Entities

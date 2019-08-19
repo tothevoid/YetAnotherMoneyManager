@@ -5,6 +5,7 @@ import FundsBar from '../../components/FundsBar/FundsBar';
 import ConfirmModal from '../../modals/ConfirmModal/ConfirmModal';
 import { TransactionEntity } from '../../models/TransactionEntity';
 import { FundEntity } from '../../models/FundEntity';
+import { insertByPredicate } from '../../utils/ArrayExtensions'
 
 type State = {
     transactions: TransactionEntity[],
@@ -81,7 +82,6 @@ class Manager extends React.Component<any, State> {
         const API_URL = `https://localhost:44319/Fund?id=${id}`;
                 fetch(API_URL, { method: 'DELETE'})
                     .then(response => {
-                        debugger;
                         if (response.ok){
                             this.setState((state: any) => {
                                 const funds = state.funds.filter((x: FundEntity) => x.id !== id)
@@ -95,14 +95,17 @@ class Manager extends React.Component<any, State> {
 
     onTransactionCreated = (transaction: any) => {
         const API_URL = "https://localhost:44319/Transaction";
-        fetch(API_URL, { method: 'PUT', body: JSON.stringify(transaction),  headers: {'Content-Type': 'application/json'}})
+        fetch(API_URL, { method: 'PUT', body: JSON.stringify(transaction),
+            headers: {'Content-Type': 'application/json'}})
             .then((res) => res.json())
             .then(id => {
                 if (id){
-                    const newTransaction = {...transaction, id};
-                    this.setState((state: any) => state.transactions.push(newTransaction))
+                    const newTransaction: TransactionEntity = {...transaction, id};
+                    const {transactions} = this.state;
+                    const newTransactions = insertByPredicate(transactions, newTransaction, 
+                        (currentElm: TransactionEntity) => (currentElm.date <= newTransaction.date));
+                    this.setState({transactions: newTransactions});
                 }
-               
             }
         );
     };

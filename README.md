@@ -22,6 +22,7 @@ TODO:
 * Confirm operation modal
 * Common date mapper
 * Spending trends
+* Change transaction position after update
 
 FIX:
 

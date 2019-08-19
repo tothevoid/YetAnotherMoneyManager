@@ -4,7 +4,7 @@ using MoneyManager.DAL.Entities;
 using MoneyManager.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
-using MoneyManager.Common;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MoneyManager.BLL.Services.Entities
@@ -24,7 +24,7 @@ namespace MoneyManager.BLL.Services.Entities
         public async Task<IEnumerable<TransactionDTO>> GetAll()
         {
             var transactions = await _transactionsRepo.GetAll();
-            return _mapper.Map<IEnumerable<TransactionDTO>>(transactions);
+            return _mapper.Map<IEnumerable<TransactionDTO>>(transactions.OrderByDescending(x => x.Date));
         }
 
         public async Task<Guid> Add(TransactionDTO transactionDTO)

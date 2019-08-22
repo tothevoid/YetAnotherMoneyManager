@@ -29,7 +29,7 @@ type Props = {
 
 class FundsBar extends React.Component<Props,State>{
     state = {
-        total: calculateTotal(this.props.funds),
+        total: 0,
         currentFund: null,
         fundModalVisible: false,
         isFundModalNewMode: false,
@@ -38,8 +38,10 @@ class FundsBar extends React.Component<Props,State>{
     //set total when the server returns funds 
     componentDidUpdate(oldProps: Props) {
         const {funds} = this.props;
-        if(this.props.funds.length !== oldProps.funds.length && this.state.total === 0) {
-            this.setState({total:calculateTotal(funds)});
+        const {total} = this.state;
+        const newTotal = calculateTotal(funds);
+        if (funds.length !== 0 && this.state.total === 0 && newTotal !== total) {
+            this.setState({total: newTotal});
         }
       }
 

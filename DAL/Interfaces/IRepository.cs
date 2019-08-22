@@ -20,5 +20,7 @@ namespace MoneyManager.DAL.Interfaces
         Task Update(TEntity entity);
 
         Task Delete(Guid id);
+
+        Task Increment(Guid id, Expression<Func<TEntity, double>> field, double delta);
     }
 }

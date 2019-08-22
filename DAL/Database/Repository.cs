@@ -56,6 +56,13 @@ namespace MoneyManager.DAL.Database
             await _context.AddCommand(async () => await DbSet.DeleteOneAsync(Builders<TEntity>.Filter.Eq("_id", id)));
         }
 
+        public async Task Increment(Guid id, Expression<Func<TEntity, double>> field, double delta)
+        {
+            var update = new UpdateDefinitionBuilder<TEntity>().Inc(field, delta);
+            var idFilter = Builders<TEntity>.Filter.Eq("_id", id);
+            await _context.AddCommand(async () => await DbSet.FindOneAndUpdateAsync<TEntity>(idFilter, update));
+        }
+
         public void Dispose()
         {
             GC.SuppressFinalize(this);

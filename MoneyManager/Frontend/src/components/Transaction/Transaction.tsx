@@ -3,20 +3,20 @@ import './Transaction.css';
 import logo from '../../logo.svg'
 import { TransactionEntity } from '../../models/TransactionEntity';
 
-type Props = { onDelete: (id: string) => void } & TransactionEntity
+type Props = { onDelete: (id: TransactionEntity) => void, transaction: TransactionEntity} 
 type State = {isEditMode: boolean, lastTransaction: TransactionEntity, currentTransaction: TransactionEntity}
 class Transaction extends React.Component<Props, State>{
 
     state = {
         isEditMode: false,
-        lastTransaction: {...this.props},
-        currentTransaction: {...this.props}
+        lastTransaction: {...this.props.transaction},
+        currentTransaction: {...this.props.transaction}
     }
 
     onDeleteClick = () => {
-        const {id} = this.props;
+        const {lastTransaction} = this.state;
         if (this.props.onDelete){
-            this.props.onDelete(id);
+            this.props.onDelete(lastTransaction);
         }
     }
 
@@ -32,10 +32,10 @@ class Transaction extends React.Component<Props, State>{
         this.setState({isEditMode: true});
 
     onConfirmClick = () =>{
-        console.log(this.state);
         const {currentTransaction} = this.state;
         const API_URL = "https://localhost:44319/Transaction";
-        fetch(API_URL, { method: 'PATCH', body: JSON.stringify(currentTransaction),  headers: {'Content-Type': 'application/json'}})
+        fetch(API_URL, { method: 'PATCH', body: JSON.stringify(currentTransaction),  
+            headers: {'Content-Type': 'application/json'}})
             .then(res => {
                 if (res.ok){
                     this.setState({isEditMode: false, lastTransaction: {...this.state.currentTransaction}});
@@ -69,7 +69,7 @@ class Transaction extends React.Component<Props, State>{
             <input type="date" name="date" className="date field" onChange={this.handleChange} disabled={!isEditMode} value={date}></input>
             <input type="text" name="name" className="name field" onChange={this.handleChange} disabled={!isEditMode} value={name}></input>
             <input type="number" name="moneyQuantity" className="money-quantity field" onChange={this.handleChange} disabled={!isEditMode} value={moneyQuantity}></input>
-            <input type="text" name="moneyQuantity" className="money-quantity field" disabled={!isEditMode} value={fundSource && fundSource.name}></input>
+            <input type="text" name="moneyQuantity" className="money-quantity field" disabled={!isEditMode} value={fundSource && fundSource.name || ""}></input>
             {this.getButtons()}
         </div>
     }

@@ -44,9 +44,7 @@ namespace MoneyManager.WEB.Api
         }
 
         [HttpDelete]
-        public async Task Delete(Guid id)
-        {
+        public async Task Delete(Guid id) =>
             await _fundService.Delete(id);
-        }
     }
 }

@@ -104,23 +104,39 @@ class Manager extends React.Component<any, State> {
                     const {transactions} = this.state;
                     const newTransactions = insertByPredicate(transactions, newTransaction, 
                         (currentElm: TransactionEntity) => (currentElm.date <= newTransaction.date));
+                    this.recalculateFund(transaction, 1);
                     this.setState({transactions: newTransactions});
                 }
             }
         );
     };
 
-    onTransactionDeleted = (id: string) => { 
+    recalculateFund = (changedTrasnaction: TransactionEntity, sign: number) => {
+        const {funds} = this.state;
+        if (changedTrasnaction.fundSource && changedTrasnaction.fundSource.id && funds && funds.length !== 0){
+            const newFunds = funds.map((fund: FundEntity) => {
+                if (fund.id === changedTrasnaction.fundSource.id){
+                    fund.balance += changedTrasnaction.moneyQuantity * sign;
+                } 
+                return fund;
+            }) as FundEntity[]
+            this.setState({funds: newFunds});
+        }
+    }
+
+    onTransactionDeleted = (transaction: any) => { 
         const onModalCallback = (isConfirmed: boolean) => {
             if (isConfirmed){
-                const API_URL = `https://localhost:44319/Transaction?id=${id}`;
-                fetch(API_URL, { method: 'DELETE'})
+                const API_URL = `https://localhost:44319/Transaction`;
+                fetch(API_URL, { method: 'DELETE', body: JSON.stringify(transaction), 
+                    headers: {'Content-Type': 'application/json'}})
                     .then(res => {
                         if (res.status === 200) {
                             this.setState((state: State) => {
-                                const transactions = state.transactions.filter((x: TransactionEntity) => x.id !== id)
+                                const transactions = state.transactions.filter((x: TransactionEntity) => x.id !== transaction.id)
                                 return { transactions }
                             });
+                            this.recalculateFund(transaction, -1);
                         }
                         this.setState({deleteModalVisible: false});
                     }
@@ -152,7 +168,7 @@ class Manager extends React.Component<any, State> {
                 <div className="transactions">
                     {
                     transactions.map((transaction: TransactionEntity) => {       
-                        return <Transaction key={transaction.id} {...transaction} 
+                        return <Transaction key={transaction.id} transaction = {transaction} 
                             onDelete={this.onTransactionDeleted}>
                         </Transaction>
                     })

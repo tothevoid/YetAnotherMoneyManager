@@ -10,29 +10,30 @@ type Props = {
 
 type State = Omit<TransactionEntity, "id">;
 
-const getInitialState = (): any => {
+const getInitialState = (props: Props): State => {
     return {
         name: "",
         date: new Date().toISOString().substr(0, 10),
         moneyQuantity: 500,
-        fundSourceId: null,
-    }
+        //TODO: index out of range fix
+        fundSource: props.fundSources[0] || null
+    };
 }
 
 class AddTransaction extends React.Component<Props, State> {
 
-    state = getInitialState();
+    state = getInitialState(this.props);
 
     add = () =>{
         const {callback} = this.props;
         if (callback){
             callback(this.state);
-            this.setState(getInitialState());
+            this.setState(getInitialState(this.props));
         }
     };
     
     reset = () =>{
-        this.setState(getInitialState());
+        this.setState(getInitialState(this.props));
     };
     
     submit = (event: FormEvent<HTMLFormElement>) => {
@@ -43,8 +44,13 @@ class AddTransaction extends React.Component<Props, State> {
         this.setState({ [name]: value} as any)
     }
 
-    onTypeChanged = ({ target: { name, value } }: React.ChangeEvent<HTMLSelectElement>) => {
-        this.setState({[name]: value} as any)
+    onSourceChanged = ({ target: { name, value } }: React.ChangeEvent<HTMLSelectElement>) => {
+        const source = this.props.fundSources
+            .find((entity: FundEntity) => entity.id === value);
+        console.log(source);
+        if (source){
+            this.setState({[name]: source} as any)   
+        }
     }
 
     render = () => {
@@ -66,10 +72,11 @@ class AddTransaction extends React.Component<Props, State> {
                         <input name="date" className="value" onChange={this.handleChange} value={date} type="date"></input>
                     </div>          
                     <div className="parameter">
-                        <label className="title">Fund souce</label>
-                        <select name="fundSource" className="value type" onChange={this.onTypeChanged} value={fundSource}>
+                        <label className="title">Fund source</label>
+                        <select name="fundSource" className="value type" onChange={this.onSourceChanged} value={fundSource && fundSource.id || undefined}>
                             {
-                               fundSources.map((fund: FundEntity) => <option key={fund.id} value={fund.id}>{fund.name}</option>)
+                                fundSources.map((fund: FundEntity) => 
+                                    <option key={fund.id} value={fund.id}>{fund.name}</option>)
                             }
                         </select>
                     </div>         

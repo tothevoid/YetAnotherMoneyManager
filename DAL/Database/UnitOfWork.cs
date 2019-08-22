@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using MoneyManager.Common;
 using MoneyManager.DAL.Interfaces;
+using MoneyManager.DAL.SpecificRepositories;
 
 namespace MoneyManager.DAL.Database
 {
@@ -30,6 +31,13 @@ namespace MoneyManager.DAL.Database
                 repositories.Add(type, repositoryInstance);
             }
             return (Repository<T>)repositories[type];
+        }
+
+        public ITransactionRepository CreateTransactionRepository()
+        {
+            if (repositories == null)
+                repositories = new Dictionary<string, object>();
+            return new TransactionRepository(_context);
         }
 
         public void Commit()

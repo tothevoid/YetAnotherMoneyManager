@@ -9,6 +9,9 @@ namespace MoneyManager.DAL.Interfaces
     {
         IRepository<T> CreateRepository<T>() 
             where T:BaseEntity;
+
+        ITransactionRepository CreateTransactionRepository();
+
         void Commit();
     }
 }

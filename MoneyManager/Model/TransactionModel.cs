@@ -13,5 +13,7 @@ namespace MoneyManager.WEB.Model
         public double MoneyQuantity {get;set;}
 
         public FundModel FundSource {get;set;}
+
+        public Guid FundSourceId { get; set; }
     }
 }

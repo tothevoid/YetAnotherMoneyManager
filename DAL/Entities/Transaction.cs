@@ -11,6 +11,14 @@ namespace MoneyManager.DAL.Entities
 
         public double MoneyQuantity { get; set; }
 
-        public Fund FundSouce { get; set; }
+        public Fund FundSource { get; set; }
+
+        public Guid FundSourceId { get; set; }
+
+        public Transaction AssignFund(Fund fund)
+        {
+            FundSource = fund;
+            return this;
+        }
     }
 }

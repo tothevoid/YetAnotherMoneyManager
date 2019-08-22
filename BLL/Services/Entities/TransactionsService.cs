@@ -12,18 +12,18 @@ namespace MoneyManager.BLL.Services.Entities
     public class TransactionsService: ITransactionsService
     {
         private readonly IUnitOfWork _db;
-        private readonly IRepository<Transaction> _transactionsRepo;
+        private readonly ITransactionRepository _transactionsRepo;
         private readonly IMapper _mapper;
         public TransactionsService(IUnitOfWork uow, IMapper mapper)
         {
             _db = uow;
             _mapper = mapper;
-            _transactionsRepo = uow.CreateRepository<Transaction>();
+            _transactionsRepo = uow.CreateTransactionRepository();
         }
 
         public async Task<IEnumerable<TransactionDTO>> GetAll()
         {
-            var transactions = await _transactionsRepo.GetAll();
+            var transactions = await _transactionsRepo.GetAllFull();
             return _mapper.Map<IEnumerable<TransactionDTO>>(transactions.OrderByDescending(x => x.Date));
         }
 
@@ -31,6 +31,7 @@ namespace MoneyManager.BLL.Services.Entities
         {
             var transaction = _mapper.Map<Transaction>(transactionDTO);
             transaction.Id = Guid.NewGuid();
+            transaction.FundSourceId = transactionDTO?.FundSource?.Id ?? default;
             await _transactionsRepo.Add(transaction);
             _db.Commit();
             return transaction.Id;

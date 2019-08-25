@@ -83,8 +83,8 @@ class Transaction extends React.Component<Props, State>{
             <input type="number" name="moneyQuantity" className="money-quantity field" onChange={this.handleChange} disabled={!isEditMode} value={moneyQuantity}></input>
             {
                 !isEditMode ? 
-                <input type="text" className="money-quantity field" disabled={true} value={fundSource && fundSource.name || ""}></input>:
-                <select name="fundSource" className="field" onChange={this.onSourceChanged} disabled={!isEditMode} value={fundSource && fundSource.id || ""}>
+                <input type="text" className="money-quantity field" disabled={true} value={fundSource.name}></input>:
+                <select name="fundSource" className="field" onChange={this.onSourceChanged} disabled={!isEditMode} value={fundSource.id}>
                 {
                     fundSources.map((fund: FundEntity) => 
                         <option key={fund.id} value={fund.id}>{fund.name}</option>)

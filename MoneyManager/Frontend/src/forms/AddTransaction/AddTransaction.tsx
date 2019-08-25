@@ -28,8 +28,8 @@ class AddTransaction extends React.Component<Props, State> {
     componentDidUpdate() {
         const {fundSources} = this.props;
         const {fundSource} = this.state;
-        if(fundSources && fundSources.length !== 0 && (!fundSource || !fundSource.id)) {
-            this.state.fundSource = fundSources[0];
+        if (fundSources && fundSources.length !== 0 && (!fundSource || !fundSource.id)) {
+            this.setState({fundSource:  fundSources[0]});
         }
       }
 

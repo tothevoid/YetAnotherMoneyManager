@@ -40,7 +40,7 @@ class FundsBar extends React.Component<Props,State>{
         const {funds} = this.props;
         const {total} = this.state;
         const newTotal = calculateTotal(funds);
-        if (funds.length !== 0 && this.state.total === 0 && newTotal !== total) {
+        if (newTotal !== total) {
             this.setState({total: newTotal});
         }
       }

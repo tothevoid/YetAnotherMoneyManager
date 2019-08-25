@@ -10,6 +10,6 @@ namespace MoneyManager.BLL.Services.Entities
         Task<IEnumerable<TransactionDTO>> GetAll();
         Task<Guid> Add(TransactionDTO transaction);
         Task Delete(TransactionDTO transactionDTO);
-        Task Update(TransactionDTO transactionDTO);
+        Task<List<UpdateFundDTO>> Update(TransactionDTO lastTransaction, TransactionDTO updateFundModel);
     }
 }

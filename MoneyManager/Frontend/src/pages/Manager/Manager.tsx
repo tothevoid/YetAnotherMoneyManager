@@ -5,7 +5,12 @@ import FundsBar from '../../components/FundsBar/FundsBar';
 import ConfirmModal from '../../modals/ConfirmModal/ConfirmModal';
 import { TransactionEntity } from '../../models/TransactionEntity';
 import { FundEntity } from '../../models/FundEntity';
-import { insertByPredicate } from '../../utils/ArrayExtensions'
+import { insertByPredicate, reorderByPredicate } from '../../utils/ArrayExtensions'
+
+type FundToUpdate = {
+    fundId: string,
+    delta: number       
+}
 
 type State = {
     transactions: TransactionEntity[],
@@ -37,7 +42,8 @@ class Manager extends React.Component<any, State> {
             .then(res => {if (res){
                 return res.map((element: TransactionEntity)=>{
                     const dateObj = new Date(element.date);
-                    const date = dateObj.getFullYear().toString() + '-' + (dateObj.getMonth() + 1).toString().padStart(2, "0") +
+                    const date = dateObj.getFullYear().toString() + '-' +
+                        (dateObj.getMonth() + 1).toString().padStart(2, "0") +
                         '-' + dateObj.getDate().toString().padStart(2, "0");
                     return {...element, date};
                 });
@@ -124,6 +130,19 @@ class Manager extends React.Component<any, State> {
         }
     }
 
+    recalculateFunds = (fundsToUpdate: FundToUpdate[]) => {
+        const {funds} = this.state;
+        const newFunds = funds.map((fund: FundEntity) => {
+            const findResult = fundsToUpdate.find((fundToUpdate) => fundToUpdate.fundId === fund.id)
+            if (findResult){
+                fund.balance += findResult.delta;
+            } 
+            return fund;
+        }) as FundEntity[]
+        return newFunds;
+    }
+
+   
     onTransactionDeleted = (transaction: any) => { 
         const onModalCallback = (isConfirmed: boolean) => {
             if (isConfirmed){
@@ -148,6 +167,25 @@ class Manager extends React.Component<any, State> {
         this.setState({deleteModalVisible: true, onModalCallback});
     }
 
+    onTransactionUpdated = (updatedTransaction: TransactionEntity, 
+        lastTransaction: TransactionEntity, onSuccess: () => void) => {
+        const API_URL = "https://localhost:44319/Transaction";
+        fetch(API_URL, { method: 'PATCH', body: JSON.stringify({updatedTransaction, lastTransaction}),  
+            headers: {'Content-Type': 'application/json'}})
+            .then(res => res.json())
+            .then((res: FundToUpdate[]) => {
+                if (res){
+                    onSuccess();
+                    const {transactions} = this.state;
+                    const newFunds = this.recalculateFunds(res);
+                    const updatedTransactions = reorderByPredicate(transactions, updatedTransaction, 
+                        (currentElement: TransactionEntity) => (currentElement.date <= updatedTransaction.date),
+                        (currentElement: TransactionEntity) => (currentElement.id !== updatedTransaction.id));
+                    this.setState({transactions: updatedTransactions, funds: newFunds});
+                }
+            })
+    }
+
     render(){
         const {transactions, funds, deleteModalVisible, onModalCallback} = this.state;
         let deleteModal;
@@ -169,7 +207,8 @@ class Manager extends React.Component<any, State> {
                     {
                     transactions.map((transaction: TransactionEntity) => {       
                         return <Transaction key={transaction.id} transaction = {transaction} 
-                            onDelete={this.onTransactionDeleted}>
+                            onDelete={this.onTransactionDeleted} onUpdate={this.onTransactionUpdated}
+                            fundSources={funds}>
                         </Transaction>
                     })
                     }

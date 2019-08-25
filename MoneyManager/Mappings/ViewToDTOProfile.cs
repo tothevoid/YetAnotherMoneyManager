@@ -14,6 +14,7 @@ namespace MoneyManager.WEB.Mappings
         {
             CreateMap<TransactionModel, TransactionDTO>().ReverseMap();
             CreateMap<FundModel, FundDTO>().ReverseMap();
+            CreateMap<UpdateFundModel, UpdateFundDTO>().ReverseMap();
         }
     }
 }

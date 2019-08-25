@@ -46,11 +46,58 @@ namespace MoneyManager.BLL.Services.Entities
             return transaction.Id;
         }
 
-        public async Task Update(TransactionDTO transactionDTO)
+        public async Task<List<UpdateFundDTO>> Update(TransactionDTO lastTransaction, TransactionDTO updateFundModel)
         {
-            var transaction = _mapper.Map<Transaction>(transactionDTO);
-            await _transactionsRepo.Update(transaction);
+            var transaction = _mapper.Map<Transaction>(updateFundModel);
+            var sourceId = updateFundModel?.FundSource?.Id ?? default;
+            if (sourceId != default)
+            {
+                transaction.FundSourceId = updateFundModel.FundSource.Id;
+            }
+            var task = _transactionsRepo.Update(transaction);
+            var fundsToUpdate = await RecalculateFund(task, lastTransaction, updateFundModel);
             _db.Commit();
+            return fundsToUpdate;
+        }
+
+        private async Task<List<UpdateFundDTO>> RecalculateFund(Task transactionTask, 
+            TransactionDTO lastTransaction, TransactionDTO updateFundModel)
+        {
+            var fundToUpdate = new List<UpdateFundDTO>();
+            var tasks = new List<Task>() { transactionTask };
+            var lastTransactionId = lastTransaction?.FundSource?.Id ?? default;
+            var updateFundModelId = updateFundModel?.FundSource?.Id ?? default;
+            //fund deleted from transaction
+            if (lastTransactionId != default && updateFundModelId == default)
+            {
+                var difference = lastTransaction.MoneyQuantity * -1;
+                fundToUpdate.Add(new UpdateFundDTO() { FundId = lastTransactionId, Delta = difference });
+            }
+            //fund added to transaction
+            else if (lastTransactionId == default && updateFundModelId != default)
+            {
+                fundToUpdate.Add(new UpdateFundDTO() { FundId = updateFundModelId, Delta = updateFundModel.MoneyQuantity });
+            }
+            //changed fund from transaction
+            else if (lastTransactionId != default && updateFundModelId != default &&
+                lastTransaction.FundSource.Id != updateFundModel.FundSource.Id)
+            {
+                fundToUpdate.Add(new UpdateFundDTO() { FundId = lastTransactionId, Delta = lastTransaction.MoneyQuantity * -1 });
+                fundToUpdate.Add(new UpdateFundDTO() { FundId = updateFundModelId, Delta = updateFundModel.MoneyQuantity });
+            }
+            //changed money quantity of the same fund
+            else if (lastTransactionId != default && updateFundModelId != default &&
+                lastTransaction.MoneyQuantity != updateFundModel.MoneyQuantity)
+            {
+                var difference = updateFundModel.MoneyQuantity - lastTransaction.MoneyQuantity;
+                fundToUpdate.Add(new UpdateFundDTO() { FundId = updateFundModelId, Delta = difference });
+            }
+            foreach (var fund in fundToUpdate)
+            {
+                tasks.Add(_fundRepo.Increment(fund.FundId, x => x.Balance, fund.Delta));
+            }
+            await Task.WhenAll(tasks);
+            return fundToUpdate;
         }
 
         public async Task Delete(TransactionDTO transactionDTO)

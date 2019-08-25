@@ -2,8 +2,17 @@ import React from 'react';
 import './Transaction.css';
 import logo from '../../logo.svg'
 import { TransactionEntity } from '../../models/TransactionEntity';
+import { FundEntity } from '../../models/FundEntity';
 
-type Props = { onDelete: (id: TransactionEntity) => void, transaction: TransactionEntity} 
+type Props = { 
+    onDelete: (id: TransactionEntity) => void, 
+    onUpdate: (updatedTransaction: TransactionEntity, 
+        lastTransaction: TransactionEntity,
+        onSuccess: () => void) => void,  
+    transaction: TransactionEntity,
+    fundSources: FundEntity[]
+} 
+
 type State = {isEditMode: boolean, lastTransaction: TransactionEntity, currentTransaction: TransactionEntity}
 class Transaction extends React.Component<Props, State>{
 
@@ -24,23 +33,25 @@ class Transaction extends React.Component<Props, State>{
         this.setState({currentTransaction: { ...this.state.currentTransaction, [name]: value}} as any)
     }
 
-    onTypeChanged = ({ target: { value } }: React.ChangeEvent<HTMLSelectElement>) => {
-        this.setState({type: value} as any)
+    onSourceChanged = ({ target: { name, value } }: React.ChangeEvent<HTMLSelectElement>) => {
+        const source = this.props.fundSources
+            .find((entity: FundEntity) => entity.id === value);
+        if (source){
+            this.setState({[name]: source} as any)   
+            this.setState({currentTransaction: { ...this.state.currentTransaction, [name]: source}} as any)
+        }
     }
 
     onEditClick = () => 
         this.setState({isEditMode: true});
 
     onConfirmClick = () =>{
-        const {currentTransaction} = this.state;
-        const API_URL = "https://localhost:44319/Transaction";
-        fetch(API_URL, { method: 'PATCH', body: JSON.stringify(currentTransaction),  
-            headers: {'Content-Type': 'application/json'}})
-            .then(res => {
-                if (res.ok){
-                    this.setState({isEditMode: false, lastTransaction: {...this.state.currentTransaction}});
-                }
-            })
+        const {currentTransaction, lastTransaction} = this.state;
+        const {onUpdate} = this.props;
+        const onSuccess = () => {
+            this.setState({isEditMode: false, lastTransaction: {...this.state.currentTransaction}});
+        }
+        onUpdate(currentTransaction, lastTransaction, onSuccess);
     }
 
     onDiscardClick = () =>
@@ -62,14 +73,24 @@ class Transaction extends React.Component<Props, State>{
     }
 
     render(){
-        const {moneyQuantity, name, date, fundSource} = this.state.currentTransaction;
+        const {fundSources} = this.props;
+        const {moneyQuantity, name, date, fundSource = {id: "", name: ""}} = this.state.currentTransaction;
         const {isEditMode} = this.state;
         return <div className={moneyQuantity > 0 ? "green transaction" : "red transaction"}>
             <img src={logo} alt={name} className="icon"></img>
             <input type="date" name="date" className="date field" onChange={this.handleChange} disabled={!isEditMode} value={date}></input>
             <input type="text" name="name" className="name field" onChange={this.handleChange} disabled={!isEditMode} value={name}></input>
             <input type="number" name="moneyQuantity" className="money-quantity field" onChange={this.handleChange} disabled={!isEditMode} value={moneyQuantity}></input>
-            <input type="text" name="moneyQuantity" className="money-quantity field" disabled={!isEditMode} value={fundSource && fundSource.name || ""}></input>
+            {
+                !isEditMode ? 
+                <input type="text" className="money-quantity field" disabled={true} value={fundSource && fundSource.name || ""}></input>:
+                <select name="fundSource" className="field" onChange={this.onSourceChanged} disabled={!isEditMode} value={fundSource && fundSource.id || ""}>
+                {
+                    fundSources.map((fund: FundEntity) => 
+                        <option key={fund.id} value={fund.id}>{fund.name}</option>)
+                }
+                </select>
+            }
             {this.getButtons()}
         </div>
     }

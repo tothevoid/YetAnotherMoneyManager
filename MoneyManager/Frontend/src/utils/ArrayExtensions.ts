@@ -7,3 +7,9 @@ export const insertByPredicate = <T>(array: T[], newElement: T, predicate: (elm:
     }
     return array;
 }
+
+export const reorderByPredicate = <T>(array: T[], newElement: T, redorderPredicate: (elm: T) => Boolean,
+    searchPredicate: (elm: T) => Boolean): T[] => {
+    const filteredArray = array.filter(searchPredicate);
+    return insertByPredicate(filteredArray, newElement, redorderPredicate)
+}

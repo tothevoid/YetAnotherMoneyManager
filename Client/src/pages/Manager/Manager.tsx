@@ -6,6 +6,7 @@ import ConfirmModal from '../../modals/ConfirmModal/ConfirmModal';
 import { TransactionEntity } from '../../models/TransactionEntity';
 import { FundEntity } from '../../models/FundEntity';
 import { insertByPredicate, reorderByPredicate } from '../../utils/ArrayExtensions'
+import { API_URL }  from '../../utils/ApiHelper' 
 
 type FundToUpdate = {
     fundId: string,
@@ -29,15 +30,15 @@ class Manager extends React.Component<any, State> {
     }
 
     getFunds(){
-        const API_URL = "https://localhost:44319/Fund";
-        fetch(API_URL, {method: 'GET'})
+        const url = `${API_URL}/Fund`;
+        fetch(url, {method: 'GET'})
             .then(res => res.json())
             .then(funds=> this.setState({funds}))
     }
 
     getTransactions(){
-        const API_URL = "https://localhost:44319/Transaction";
-        fetch(API_URL, {method: 'GET'})
+        const url = `${API_URL}/Transaction`;
+        fetch(url, {method: 'GET'})
             .then(res => res.json())
             .then(res => {if (res){
                 return res.map((element: TransactionEntity)=>{
@@ -53,8 +54,9 @@ class Manager extends React.Component<any, State> {
 
     onFundAdded = (fund: FundEntity, onSuccess: (funds:FundEntity[]) => null): any => {
         const { id, ...fundToAdd } = fund;
-            const API_URL = "https://localhost:44319/Fund";
-            fetch(API_URL, { method: 'PUT', body: JSON.stringify(fundToAdd),  headers: {'Content-Type': 'application/json'}})
+            const url = `${API_URL}/Fund`;
+            fetch(url, { method: 'PUT', body: JSON.stringify(fundToAdd), 
+                headers: {'Content-Type': 'application/json'}})
                 .then((res) => res.json())
                 .then(createdId => {
                     if (createdId){
@@ -67,8 +69,9 @@ class Manager extends React.Component<any, State> {
     }
 
     onFundUpdated = (fund: FundEntity, onSuccess: any): any =>{
-        const API_URL = "https://localhost:44319/Fund";
-        fetch(API_URL, { method: 'PATCH', body: JSON.stringify(fund),  headers: {'Content-Type': 'application/json'}})
+        const url = `${API_URL}/Fund`;
+        fetch(url, { method: 'PATCH', body: JSON.stringify(fund),  
+            headers: {'Content-Type': 'application/json'}})
             .then(response => {
                 if (response.ok){
                     this.setState((state: State) => {
@@ -85,8 +88,8 @@ class Manager extends React.Component<any, State> {
 
     onFundDeleted = (fund: FundEntity, onSuccess: any): any => {
         const {id} = fund;
-        const API_URL = `https://localhost:44319/Fund?id=${id}`;
-                fetch(API_URL, { method: 'DELETE'})
+        const url = `${API_URL}/Fund?id=${id}`;
+                fetch(url, { method: 'DELETE'})
                     .then(response => {
                         if (response.ok){
                             this.setState((state: any) => {
@@ -100,8 +103,8 @@ class Manager extends React.Component<any, State> {
     }
 
     onTransactionCreated = (transaction: any) => {
-        const API_URL = "https://localhost:44319/Transaction";
-        fetch(API_URL, { method: 'PUT', body: JSON.stringify(transaction),
+        const url = `${API_URL}/Transaction`;
+        fetch(url, { method: 'PUT', body: JSON.stringify(transaction),
             headers: {'Content-Type': 'application/json'}})
             .then((res) => res.json())
             .then(id => {
@@ -146,8 +149,8 @@ class Manager extends React.Component<any, State> {
     onTransactionDeleted = (transaction: any) => { 
         const onModalCallback = (isConfirmed: boolean) => {
             if (isConfirmed){
-                const API_URL = `https://localhost:44319/Transaction`;
-                fetch(API_URL, { method: 'DELETE', body: JSON.stringify(transaction), 
+                const url = `${API_URL}/Transaction`;
+                fetch(url, { method: 'DELETE', body: JSON.stringify(transaction), 
                     headers: {'Content-Type': 'application/json'}})
                     .then(res => {
                         if (res.status === 200) {
@@ -169,8 +172,8 @@ class Manager extends React.Component<any, State> {
 
     onTransactionUpdated = (updatedTransaction: TransactionEntity, 
         lastTransaction: TransactionEntity, onSuccess: () => void) => {
-        const API_URL = "https://localhost:44319/Transaction";
-        fetch(API_URL, { method: 'PATCH', body: JSON.stringify({updatedTransaction, lastTransaction}),  
+        const url = `${API_URL}/Transaction`;
+        fetch(url, { method: 'PATCH', body: JSON.stringify({updatedTransaction, lastTransaction}),  
             headers: {'Content-Type': 'application/json'}})
             .then(res => res.json())
             .then((res: FundToUpdate[]) => {

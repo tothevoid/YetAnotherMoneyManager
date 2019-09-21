@@ -5,3 +5,4 @@ Stack:
 * React
 * .NET Core
 * MongoDB
+* Docker

@@ -1,0 +1,33 @@
+version: '3.1'
+
+services:
+
+  mongo:
+      image: mongo
+      restart: always
+      ports:
+        - 27017:27017
+  
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    depends_on:
+      - mongo
+
+  server:
+      build: ./server
+      restart: always
+      ports:
+        - 44319:80
+      environment:
+        MongoDB__Host: mongo
+      depends_on:
+        - mongo
+ 
+  client:
+      build: ./client
+      command: npm start
+      ports:
+        - "3000:3000" 

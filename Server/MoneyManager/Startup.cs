@@ -24,11 +24,13 @@ namespace MoneyManager
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "Frontend/dist";
-            });
+
+            //services.AddSpaStaticFiles(configuration =>
+            //{
+            //    configuration.RootPath = @"..\Client\dist";
+            //});
 
             services.AddScoped<IMongoContext, MongoContext>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -40,6 +42,9 @@ namespace MoneyManager
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            var clientUrl = _configuration.GetSection("Client").GetSection("Url").Value;
+            app.UseCors(builder => builder.WithOrigins(clientUrl).AllowAnyMethod().AllowAnyHeader());
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -50,9 +55,9 @@ namespace MoneyManager
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+          
 
             app.UseMvc(routes =>
             {
@@ -61,15 +66,15 @@ namespace MoneyManager
                     template: "{controller}/{action=Index}/{id?}");
             });
 
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "Frontend";
+            //app.UseSpa(spa =>
+            //{
+            //    spa.Options.SourcePath = @"..\Client";
 
-                if (env.IsDevelopment())
-                {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
-                }
-            });
+            //    if (env.IsDevelopment())
+            //    {
+            //        spa.UseReactDevelopmentServer(npmScript: "start");
+            //    }
+            //});
         }
     }
 }

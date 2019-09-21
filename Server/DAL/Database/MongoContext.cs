@@ -18,7 +18,7 @@ namespace MoneyManager.DAL.Database
             BsonDefaults.GuidRepresentation = GuidRepresentation.CSharpLegacy;
             _commands = new List<Func<Task>>();
             RegisterConventions();
-            var mongoClient = new MongoClient(configuration.GetSection("MongoDB").GetSection("Connection").Value);
+            var mongoClient = new MongoClient(configuration.GetSection("MongoDB").GetSection("ConnectionString").Value);
             Database = mongoClient.GetDatabase(configuration.GetSection("MongoDB").GetSection("DatabaseName").Value);
         }
 

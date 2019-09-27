@@ -5,6 +5,8 @@ services:
   mongo:
       image: mongo
       restart: always
+      volumes:
+        - data-volume:/data/db
       ports:
         - 27017:27017
   
@@ -31,3 +33,6 @@ services:
       command: npm start
       ports:
         - "3000:3000" 
+
+volumes:
+  data-volume:

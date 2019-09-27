@@ -16,6 +16,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "start:server": "http-server -p 3000 ./dist",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

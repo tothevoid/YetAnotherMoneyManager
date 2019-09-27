@@ -6,7 +6,7 @@ import ConfirmModal from '../../modals/ConfirmModal/ConfirmModal';
 import { TransactionEntity } from '../../models/TransactionEntity';
 import { FundEntity } from '../../models/FundEntity';
 import { insertByPredicate, reorderByPredicate } from '../../utils/ArrayExtensions'
-import { API_URL }  from '../../utils/ApiHelper' 
+import config from '../../config' 
 
 type FundToUpdate = {
     fundId: string,
@@ -30,14 +30,14 @@ class Manager extends React.Component<any, State> {
     }
 
     getFunds(){
-        const url = `${API_URL}/Fund`;
+        const url = `${config.api.URL}/Fund`;
         fetch(url, {method: 'GET'})
             .then(res => res.json())
             .then(funds=> this.setState({funds}))
     }
 
     getTransactions(){
-        const url = `${API_URL}/Transaction`;
+        const url = `${config.api.URL}/Transaction`;
         fetch(url, {method: 'GET'})
             .then(res => res.json())
             .then(res => {if (res){
@@ -54,7 +54,7 @@ class Manager extends React.Component<any, State> {
 
     onFundAdded = (fund: FundEntity, onSuccess: (funds:FundEntity[]) => null): any => {
         const { id, ...fundToAdd } = fund;
-            const url = `${API_URL}/Fund`;
+            const url = `${config.api.URL}/Fund`;
             fetch(url, { method: 'PUT', body: JSON.stringify(fundToAdd), 
                 headers: {'Content-Type': 'application/json'}})
                 .then((res) => res.json())
@@ -69,7 +69,7 @@ class Manager extends React.Component<any, State> {
     }
 
     onFundUpdated = (fund: FundEntity, onSuccess: any): any =>{
-        const url = `${API_URL}/Fund`;
+        const url = `${config.api.URL}/Fund`;
         fetch(url, { method: 'PATCH', body: JSON.stringify(fund),  
             headers: {'Content-Type': 'application/json'}})
             .then(response => {
@@ -88,7 +88,7 @@ class Manager extends React.Component<any, State> {
 
     onFundDeleted = (fund: FundEntity, onSuccess: any): any => {
         const {id} = fund;
-        const url = `${API_URL}/Fund?id=${id}`;
+        const url = `${config.api.URL}/Fund?id=${id}`;
                 fetch(url, { method: 'DELETE'})
                     .then(response => {
                         if (response.ok){
@@ -103,7 +103,7 @@ class Manager extends React.Component<any, State> {
     }
 
     onTransactionCreated = (transaction: any) => {
-        const url = `${API_URL}/Transaction`;
+        const url = `${config.api.URL}/Transaction`;
         fetch(url, { method: 'PUT', body: JSON.stringify(transaction),
             headers: {'Content-Type': 'application/json'}})
             .then((res) => res.json())
@@ -149,7 +149,7 @@ class Manager extends React.Component<any, State> {
     onTransactionDeleted = (transaction: any) => { 
         const onModalCallback = (isConfirmed: boolean) => {
             if (isConfirmed){
-                const url = `${API_URL}/Transaction`;
+                const url = `${config.api.URL}/Transaction`;
                 fetch(url, { method: 'DELETE', body: JSON.stringify(transaction), 
                     headers: {'Content-Type': 'application/json'}})
                     .then(res => {
@@ -172,7 +172,7 @@ class Manager extends React.Component<any, State> {
 
     onTransactionUpdated = (updatedTransaction: TransactionEntity, 
         lastTransaction: TransactionEntity, onSuccess: () => void) => {
-        const url = `${API_URL}/Transaction`;
+        const url = `${config.api.URL}/Transaction`;
         fetch(url, { method: 'PATCH', body: JSON.stringify({updatedTransaction, lastTransaction}),  
             headers: {'Content-Type': 'application/json'}})
             .then(res => res.json())
@@ -190,6 +190,7 @@ class Manager extends React.Component<any, State> {
     }
 
     render(){
+        console.log(process.env.NODE_ENV);
         const {transactions, funds, deleteModalVisible, onModalCallback} = this.state;
         let deleteModal;
         const content = () => <p>{"Are you sure want to delete this record?"}</p>;

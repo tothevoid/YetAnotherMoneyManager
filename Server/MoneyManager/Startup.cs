@@ -10,16 +10,19 @@ using MoneyManager.DAL.Database;
 using MoneyManager.DAL.Interfaces;
 using AutoMapper;
 using MoneyManager.WEB.Mappings;
+using System;
 
 namespace MoneyManager
 {
     public class Startup
     {
         private readonly IConfiguration _configuration;
+        private readonly IHostingEnvironment _environment;
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
             _configuration = configuration;
+            _environment = environment;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -27,10 +30,14 @@ namespace MoneyManager
             services.AddCors();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            //services.AddSpaStaticFiles(configuration =>
-            //{
-            //    configuration.RootPath = @"..\Client\dist";
-            //});
+            if (_environment.IsDevelopment())
+            {
+                services.AddSpaStaticFiles(configuration =>
+                {
+                    configuration.RootPath = @"..\..\Client\dist";
+                });
+            }
+           
 
             services.AddScoped<IMongoContext, MongoContext>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -40,12 +47,12 @@ namespace MoneyManager
             services.AddAutoMapper(typeof(DTOToEntityProfile), typeof(ViewToDTOProfile));
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
             var clientUrl = _configuration.GetSection("Client").GetSection("Url").Value;
             app.UseCors(builder => builder.WithOrigins(clientUrl).AllowAnyMethod().AllowAnyHeader());
 
-            if (env.IsDevelopment())
+            if (_environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -66,15 +73,15 @@ namespace MoneyManager
                     template: "{controller}/{action=Index}/{id?}");
             });
 
-            //app.UseSpa(spa =>
-            //{
-            //    spa.Options.SourcePath = @"..\Client";
+            if (_environment.IsDevelopment())
+            {
+                app.UseSpa(spa =>
+                {
+                    spa.Options.SourcePath = @"..\..\Client";
+                    spa.UseReactDevelopmentServer(npmScript: "start");
 
-            //    if (env.IsDevelopment())
-            //    {
-            //        spa.UseReactDevelopmentServer(npmScript: "start");
-            //    }
-            //});
+                });
+            }
         }
     }
 }

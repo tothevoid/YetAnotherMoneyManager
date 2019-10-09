@@ -7,6 +7,8 @@ import { TransactionEntity } from '../../models/TransactionEntity';
 import { FundEntity } from '../../models/FundEntity';
 import { insertByPredicate, reorderByPredicate } from '../../utils/ArrayExtensions'
 import config from '../../config' 
+import Pagination from '../../components/Pagination/Pagination';
+import "./Manager.css"
 
 type FundToUpdate = {
     fundId: string,
@@ -17,16 +19,24 @@ type State = {
     transactions: TransactionEntity[],
     funds: FundEntity[],
     deleteModalVisible: boolean,
+    month: number,
+    year: number,
     onModalCallback: (isConfirmed: boolean) => void;
 }
 
 class Manager extends React.Component<any, State> {
 
-    state = {transactions: [], funds: [], deleteModalVisible: false, onModalCallback: () => null}
+    state = {
+        month: new Date().getMonth() + 1,
+        year: new Date().getFullYear(),
+        transactions: [],
+        funds: [], 
+        deleteModalVisible: false, 
+        onModalCallback: () => null,
+    }
     
     componentDidMount() {
         this.getFunds();
-        this.getTransactions();
     }
 
     getFunds(){
@@ -36,8 +46,9 @@ class Manager extends React.Component<any, State> {
             .then(funds=> this.setState({funds}))
     }
 
-    getTransactions(){
-        const url = `${config.api.URL}/Transaction`;
+    getTransactions = (month: number, year: number) => {
+        this.setState({month, year});
+        const url = `${config.api.URL}/Transaction?month=${month}&year=${year}`;
         fetch(url, {method: 'GET'})
             .then(res => res.json())
             .then(res => {if (res){
@@ -61,6 +72,7 @@ class Manager extends React.Component<any, State> {
                 .then(createdId => {
                     if (createdId){
                         const newFund = {id:createdId, ...fundToAdd};
+                        //add transaction by pagination
                         this.setState((state: any) => state.funds.push(newFund));
                         onSuccess(this.state.funds);
                     }
@@ -89,17 +101,17 @@ class Manager extends React.Component<any, State> {
     onFundDeleted = (fund: FundEntity, onSuccess: any): any => {
         const {id} = fund;
         const url = `${config.api.URL}/Fund?id=${id}`;
-                fetch(url, { method: 'DELETE'})
-                    .then(response => {
-                        if (response.ok){
-                            this.setState((state: any) => {
-                                const funds = state.funds.filter((x: FundEntity) => x.id !== id)
-                                return { funds }
-                            });
-                        }
-                        onSuccess(this.state.funds);
-                    }
-                );
+        fetch(url, { method: 'DELETE'})
+            .then(response => {
+                if (response.ok){
+                    this.setState((state: any) => {
+                        const funds = state.funds.filter((x: FundEntity) => x.id !== id)
+                        return { funds }
+                    });
+                }
+                onSuccess(this.state.funds);
+            }
+        );
     }
 
     onTransactionCreated = (transaction: any) => {
@@ -109,12 +121,15 @@ class Manager extends React.Component<any, State> {
             .then((res) => res.json())
             .then(id => {
                 if (id){
+                    const {month, year, transactions} = this.state;
                     const newTransaction: TransactionEntity = {...transaction, id};
-                    const {transactions} = this.state;
-                    const newTransactions = insertByPredicate(transactions, newTransaction, 
-                        (currentElm: TransactionEntity) => (currentElm.date <= newTransaction.date));
-                    this.recalculateFund(transaction, 1);
-                    this.setState({transactions: newTransactions});
+                    const date = new Date(newTransaction.date);
+                    if (date.getMonth() === month - 1 && date.getFullYear() === year){
+                        const newTransactions = insertByPredicate(transactions, newTransaction, 
+                            (currentElm: TransactionEntity) => (currentElm.date <= newTransaction.date));
+                        this.recalculateFund(transaction, 1);
+                        this.setState({transactions: newTransactions});
+                    }
                 }
             }
         );
@@ -144,7 +159,6 @@ class Manager extends React.Component<any, State> {
         }) as FundEntity[]
         return newFunds;
     }
-
    
     onTransactionDeleted = (transaction: any) => { 
         const onModalCallback = (isConfirmed: boolean) => {
@@ -190,8 +204,7 @@ class Manager extends React.Component<any, State> {
     }
 
     render(){
-        console.log(process.env.NODE_ENV);
-        const {transactions, funds, deleteModalVisible, onModalCallback} = this.state;
+        const {transactions, funds, deleteModalVisible, onModalCallback, year, month} = this.state;
         let deleteModal;
         const content = () => <p>{"Are you sure want to delete this record?"}</p>;
         if (deleteModalVisible){
@@ -209,14 +222,17 @@ class Manager extends React.Component<any, State> {
                 <AddTransaction fundSources={funds} callback={this.onTransactionCreated}/>
                 <div className="transactions">
                     {
+                    (transactions.length !== 0) ?
                     transactions.map((transaction: TransactionEntity) => {       
                         return <Transaction key={transaction.id} transaction = {transaction} 
                             onDelete={this.onTransactionDeleted} onUpdate={this.onTransactionUpdated}
                             fundSources={funds}>
                         </Transaction>
-                    })
+                    }):
+                    <div className="empty-transactions">There is no transactions yet</div>
                     }
                 </div>
+                <Pagination year={year} month={month} onPageSwitched={this.getTransactions}></Pagination>
             </div>
         );
     }

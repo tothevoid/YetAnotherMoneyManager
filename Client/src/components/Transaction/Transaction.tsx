@@ -77,7 +77,7 @@ class Transaction extends React.Component<Props, State>{
         const {moneyQuantity, name, date, fundSource = {id: "", name: ""}} = this.state.currentTransaction;
         const {isEditMode} = this.state;
         return <div className={moneyQuantity > 0 ? "green transaction" : "red transaction"}>
-            <img src={logo} alt={name} className="icon"></img>
+            {/* <img src={logo} alt={name} className="icon"></img> */}
             <input type="date" name="date" className="date field" onChange={this.handleChange} disabled={!isEditMode} value={date}></input>
             <input type="text" name="name" className="name field" onChange={this.handleChange} disabled={!isEditMode} value={name}></input>
             <input type="number" name="moneyQuantity" className="money-quantity field" onChange={this.handleChange} disabled={!isEditMode} value={moneyQuantity}></input>

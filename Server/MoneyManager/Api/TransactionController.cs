@@ -1,9 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using System.Collections.Generic;
 using System;
-using MoneyManager.DAL.Interfaces;
 using MoneyManager.BLL.Services.Entities;
 using MoneyManager.WEB.Model;
 using AutoMapper;
@@ -25,9 +23,9 @@ namespace MoneyManager.WEB.Api
         }
        
         [HttpGet]
-        public async Task<IEnumerable<TransactionModel>> GetAll()
+        public async Task<IEnumerable<TransactionModel>> GetAll(int month, int year)
         {
-            var transactions = await _transactionService.GetAll();
+            var transactions = await _transactionService.GetAll(month, year);
             return _mapper.Map<IEnumerable<TransactionModel>>(transactions);
         }
 

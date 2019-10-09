@@ -9,6 +9,6 @@ namespace MoneyManager.DAL.Interfaces
 {
     public interface ITransactionRepository: IRepository<Transaction>
     {
-        Task<IEnumerable<Transaction>> GetAllFull();
+        Task<IEnumerable<Transaction>> GetAllFull(int momth, int year);
     }
 }

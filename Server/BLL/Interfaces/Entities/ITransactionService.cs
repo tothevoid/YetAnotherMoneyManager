@@ -7,7 +7,7 @@ namespace MoneyManager.BLL.Services.Entities
 {
     public interface ITransactionsService
     {
-        Task<IEnumerable<TransactionDTO>> GetAll();
+        Task<IEnumerable<TransactionDTO>> GetAll(int month, int year);
         Task<Guid> Add(TransactionDTO transaction);
         Task Delete(TransactionDTO transactionDTO);
         Task<List<UpdateFundDTO>> Update(TransactionDTO lastTransaction, TransactionDTO updateFundModel);

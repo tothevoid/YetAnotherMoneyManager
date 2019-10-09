@@ -7,6 +7,7 @@ using MoneyManager.DAL.Database;
 using MoneyManager.DAL.Entities;
 using MongoDB.Driver.Linq;
 using System.Linq;
+using System;
 
 namespace MoneyManager.DAL.SpecificRepositories
 {
@@ -14,17 +15,26 @@ namespace MoneyManager.DAL.SpecificRepositories
     {
         public TransactionRepository(IMongoContext context): base(context){}
 
-        public async Task<IEnumerable<Transaction>> GetAllFull()
+        public async Task<IEnumerable<Transaction>> GetAllFull(int month, int year)
         {
             var fundCollection = _context.GetCollection<Fund>(typeof(Fund).Name);
-            
+            var (stardDate, endDate) = GetDateRange(month, year);
+
             //TODO: fix AsEnumerable then mongo driver will support inner join
-            var query = (from transaction in DbSet.AsQueryable().AsEnumerable()
+            var query = (from transaction in DbSet.AsQueryable()
+                        .Where(x => x.Date >= stardDate && x.Date <= endDate).AsEnumerable()
                         join fund in fundCollection.AsQueryable() on transaction.FundSourceId equals fund.Id into joined
                         from joinedFund in joined.DefaultIfEmpty()
                         select new { transaction, joinedFund }).ToList();
 
             return query.Select(x => x.transaction.AssignFund(x.joinedFund));
+        }
+    
+        private (DateTime, DateTime) GetDateRange(int month, int year)
+        {
+            var startDate = new DateTime(year, month, 1);
+            var endDate = new DateTime(year, month, 1).AddMonths(1).AddDays(-1);
+            return (startDate, endDate);
         }
     }
 }

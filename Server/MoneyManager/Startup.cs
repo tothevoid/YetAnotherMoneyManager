@@ -10,7 +10,6 @@ using MoneyManager.DAL.Database;
 using MoneyManager.DAL.Interfaces;
 using AutoMapper;
 using MoneyManager.WEB.Mappings;
-using System;
 
 namespace MoneyManager
 {

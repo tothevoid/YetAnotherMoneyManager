@@ -23,9 +23,9 @@ namespace MoneyManager.BLL.Services.Entities
             _fundRepo = uow.CreateRepository<Fund>();
         }
 
-        public async Task<IEnumerable<TransactionDTO>> GetAll()
+        public async Task<IEnumerable<TransactionDTO>> GetAll(int month, int year)
         {
-            var transactions = await _transactionsRepo.GetAllFull();
+            var transactions = await _transactionsRepo.GetAllFull(month, year);
             return _mapper.Map<IEnumerable<TransactionDTO>>(transactions.OrderByDescending(x => x.Date));
         }
 

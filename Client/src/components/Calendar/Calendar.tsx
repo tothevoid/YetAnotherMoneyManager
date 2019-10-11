@@ -3,7 +3,6 @@ import "./Calendar.css"
 import { getMonthsNames } from "../../utils/DateUtils";
 
 type Props = {
-    isVisible: boolean;
     year: number,
     month: number,
     onPageSwitched: (month: number, year: number) => void
@@ -82,24 +81,21 @@ export class Calendar extends Component<Props,State>{
     }
 
     render = () => {
-        const {isVisible} = this.props;
         const {title, isYearsMode} = this.state;
 
-        if (isVisible){
-            return <div className="calendar">
-                <div className="calendar-header">
-                    <button onClick={() => this.onArrowClick(-1)} disabled={!isYearsMode} className="prev-button">&#8592;</button>
-                    <span onClick={() => this.onLabelClick()} className="calendar-title">{title}</span>
-                    <button onClick={() => this.onArrowClick(1)} disabled={!isYearsMode} className="prev-button">&#8594;</button>
-                </div>
-               
-                <div className="container">
-                    {this.createArray().map((element, ix)=>{
-                        return <div key={ix} onClick={()=>this.onElementClick(element)}
-                            className={this.getClasses(element)}>{element}</div>
-                    })}
-                </div>
+        return <div className="calendar">
+            <div className="calendar-header">
+                <button onClick={() => this.onArrowClick(-1)} disabled={!isYearsMode} className="prev-button">&#8592;</button>
+                <span onClick={() => this.onLabelClick()} className="calendar-title">{title}</span>
+                <button onClick={() => this.onArrowClick(1)} disabled={!isYearsMode} className="prev-button">&#8594;</button>
             </div>
-        }   
-    }
+            
+            <div className="container">
+                {this.createArray().map((element, ix)=>{
+                    return <div key={ix} onClick={()=>this.onElementClick(element)}
+                        className={this.getClasses(element)}>{element}</div>
+                })}
+            </div>
+        </div>
+    }  
 }

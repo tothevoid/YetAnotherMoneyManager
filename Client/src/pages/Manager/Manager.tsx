@@ -1,4 +1,4 @@
-import React  from 'react';
+import React from 'react';
 import Transaction from '../../components/Transaction/Transaction';
 import AddTransaction from '../../forms/AddTransaction/AddTransaction';
 import FundsBar from '../../components/FundsBar/FundsBar';

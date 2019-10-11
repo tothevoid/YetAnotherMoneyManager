@@ -11,6 +11,7 @@
     margin: auto 0;
 }
 .paging-button{
+    cursor: pointer;
     width: 100px;
     border: 0px solid black;
 }
@@ -25,4 +26,9 @@
 .current-month{
     display: flex;
     align-items: center;
+    cursor: default;
+}
+.calendar-icon{
+    padding-left: 10px;
+    cursor: pointer;
 }

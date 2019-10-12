@@ -6,8 +6,8 @@
 .paging-element{
     height: 35px;
     padding: 0 10px;
-    color: black;
-    background: white;
+    color: #414242;
+    background:  white;
     margin: auto 0;
 }
 .paging-button{
@@ -16,11 +16,11 @@
     border: 0px solid black;
 }
 .page-previous{
-    border-radius: 0 0 0 25%;
+    border-radius: 10px 0 0 10px;
     border-right: none
 }
 .page-next{
-    border-radius: 0 0 25% 0;
+    border-radius: 0 10px 10px 0;
     border-left: none;
 }
 .current-month{

@@ -47,7 +47,7 @@ class Pagination extends Component<Props, State>{
     render(){
         const {isCalendarVisible} = this.state;
         const {month, year, onPageSwitched} = this.props;
-        const date = `${getMonthByIndex(month)} ${year.toString().substring(2)}`
+        const date = `${getMonthByIndex(month)}'${year.toString().substring(2)}`
         return <div className="pagination">
             <div className="pagination-container">
                 <button onClick={this.pageSwitchClick(-1)} className="paging-element paging-button page-previous">Previous</button>

@@ -31,38 +31,40 @@ export class Calendar extends Component<Props,State>{
     createArray = (): string[] => {
         const {isYearsMode, minimalYear} = this.state;
         return (isYearsMode) ?
-            Array.from({length: 12}, (x:number, i:number) => 
-                (minimalYear + i).toString()) :
-            getMonthsNames().map((element)=> element.substring(0, 3));
+            Array.from({length: 12}, (element: number, index:number) => 
+                (minimalYear + index).toString()) :
+            getMonthsNames().map((element) => element.substring(0, 3));
     }
 
     onElementClick = (value: string) => {
         const {onPageSwitched} = this.props;
         const {isYearsMode} = this.state;
         if (isYearsMode){
-            const val = parseInt(value);
-            onPageSwitched(this.props.month, val);
-            this.setState({isYearsMode: false, title: this.getTtile(false, val)});
+            const year = parseInt(value);
+            onPageSwitched(this.props.month, year);
+            this.setState({isYearsMode: false, title: this.getTtile(false, year)});
         } else {
-            const months = getMonthsNames();
-            const val = months
-                .filter(x => x.toLowerCase().startsWith(value.toLowerCase()));
-            onPageSwitched(months.indexOf(val[0]) + 1, this.props.year);
+            const monthIndex = this.getMonthIndex(value);
+            onPageSwitched(monthIndex, this.props.year);
         }
     }
 
-    getClasses = (value: string): string =>{
-        const defaultClass = "number";
+    getMonthIndex = (value: string): number =>{
         const months = getMonthsNames();
-        const val = months
+        const month = months
             .filter(x => x.toLowerCase().startsWith(value.toLowerCase()));
+        return months.indexOf(month[0]) + 1
+    }
+
+    getClasses = (value: string): string =>{
+        const defaultClass = "calendar-element";
         const {year, month} = this.props;
         const {isYearsMode} = this.state;
-        if ((isYearsMode && year === parseInt(value)) || 
-            (!isYearsMode && month === months.indexOf(val[0]) + 1)){
-            return `${defaultClass} current`;
-        }
-        return defaultClass;
+        const monthIndex = this.getMonthIndex(value);
+        return ((isYearsMode && year === parseInt(value)) || 
+            (!isYearsMode && month === monthIndex)) ?
+            `${defaultClass} current` :
+            defaultClass;
     }
 
     onLabelClick = () => {
@@ -87,12 +89,12 @@ export class Calendar extends Component<Props,State>{
             <div className="calendar-header">
                 <button onClick={() => this.onArrowClick(-1)} disabled={!isYearsMode} className="prev-button">&#8592;</button>
                 <span onClick={() => this.onLabelClick()} className="calendar-title">{title}</span>
-                <button onClick={() => this.onArrowClick(1)} disabled={!isYearsMode} className="prev-button">&#8594;</button>
+                <button onClick={() => this.onArrowClick(1)} disabled={!isYearsMode} className="next-button">&#8594;</button>
             </div>
             
             <div className="container">
-                {this.createArray().map((element, ix)=>{
-                    return <div key={ix} onClick={()=>this.onElementClick(element)}
+                {this.createArray().map((element, index)=>{
+                    return <div key={index} onClick={()=>this.onElementClick(element)}
                         className={this.getClasses(element)}>{element}</div>
                 })}
             </div>

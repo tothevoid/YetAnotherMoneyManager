@@ -43,7 +43,7 @@
     flex-wrap: wrap;
 }
 
-.number{
+.calendar-element{
     background: #414242;
     height: 50px;
     width: 25%;

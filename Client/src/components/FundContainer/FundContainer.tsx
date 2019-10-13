@@ -14,8 +14,5 @@ const FundContainer = (isNew: boolean = false, onClick: any = null) => (Child: a
             <Child {...props}></Child>
         </div>
     }
-       
-       
-       
 
 export default FundContainer;

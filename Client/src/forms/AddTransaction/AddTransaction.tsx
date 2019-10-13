@@ -2,6 +2,7 @@ import React, { FormEvent } from 'react'
 import './AddTransaction.css'
 import { TransactionEntity } from '../../models/TransactionEntity';
 import { FundEntity } from '../../models/FundEntity';
+import { getCurrentDate } from '../../utils/DateUtils';
 
 type Props = {
     fundSources: FundEntity[]
@@ -15,7 +16,7 @@ const getInitialState = (props: Props): State => {
         {id: ""} as FundEntity
     return {
         name: "",
-        date: new Date().toISOString().substr(0, 10),
+        date: getCurrentDate(),
         moneyQuantity: 500,
         fundSource: source
     };

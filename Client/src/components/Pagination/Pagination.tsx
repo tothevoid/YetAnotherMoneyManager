@@ -53,7 +53,7 @@ class Pagination extends Component<Props, State>{
                 <button onClick={this.pageSwitchClick(-1)} className="paging-element paging-button page-previous">Previous</button>
                 <div className="current-month paging-element">
                     {date}
-                    <img className="calendar-icon" onClick={()=>this.onSwitchCalendarVisibility()} src={CalendarIcon}></img>
+                    <img alt="calendar" className="calendar-icon" onClick={()=>this.onSwitchCalendarVisibility()} src={CalendarIcon}></img>
                 </div>
                 <button onClick={this.pageSwitchClick(1)} className="paging-element paging-button page-next">Next</button>
             </div>

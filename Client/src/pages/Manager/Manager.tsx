@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import Transaction from '../../components/Transaction/Transaction';
 import AddTransaction from '../../forms/AddTransaction/AddTransaction';
 import FundsBar from '../../components/FundsBar/FundsBar';
@@ -9,8 +9,6 @@ import { insertByPredicate, reorderByPredicate } from '../../utils/ArrayExtensio
 import config from '../../config' 
 import Pagination from '../../components/Pagination/Pagination';
 import "./Manager.css"
-import FrequencyDistribution from '../../components/FrequencyDistribution/FrequencyDistribution';
-import { FrequencyDistributionModel } from '../../components/FrequencyDistribution/FrequencyDistributionModel';
 import TransactionMoneyGraphs from '../../components/TransactionMoneyGraphs/TransactionMoneyGraphs';
 
 type FundToUpdate = {

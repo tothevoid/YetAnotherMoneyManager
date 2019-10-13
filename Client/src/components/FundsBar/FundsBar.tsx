@@ -8,8 +8,8 @@ import AddFund from '../../forms/FundForm/FundForm';
 import { FundEntity } from '../../models/FundEntity';
 
 const calculateTotal = (items: FundEntity[]) => {
-    if (items && items.length > 0) return items.reduce((total: number, item: any)=> 
-        total+=item.balance,0) 
+    if (items && items.length > 0) return items.reduce((total: number, item: FundEntity)=> 
+        total += item.balance, 0) 
     else return 0
 }
 

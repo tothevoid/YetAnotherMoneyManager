@@ -1,6 +1,5 @@
-export const getMonthByIndex = (index: number) => {
-    return getMonthsNames()[index - 1];
-}
+export const getMonthByIndex = (index: number) => 
+    getMonthsNames()[index - 1];
 
 export const getMonthsNames = () => 
     [
@@ -17,3 +16,8 @@ export const getMonthsNames = () =>
         'November',
         'December'
     ];
+
+export const getCurrentDate = (): string => {
+    const date = new Date();
+    return new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().substr(0, 10);
+}

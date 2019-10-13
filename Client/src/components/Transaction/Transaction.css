@@ -9,8 +9,6 @@
     margin-bottom: .5rem;
     display: flex;
     align-items: center;
-    padding-left: .5rem;
-    padding-right: .5rem;
     position: relative;
     min-height: 50px;
 }

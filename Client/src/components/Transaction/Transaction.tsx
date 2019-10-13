@@ -1,14 +1,13 @@
 import React from 'react';
 import './Transaction.css';
-import logo from '../../logo.svg'
 import { TransactionEntity } from '../../models/TransactionEntity';
 import { FundEntity } from '../../models/FundEntity';
 
 type Props = { 
-    onDelete: (id: TransactionEntity) => void, 
-    onUpdate: (updatedTransaction: TransactionEntity, 
+    onDelete: (id: TransactionEntity) => void,
+    onUpdate: (updatedTransaction: TransactionEntity,
         lastTransaction: TransactionEntity,
-        onSuccess: () => void) => void,  
+        onSuccess: () => void) => void,
     transaction: TransactionEntity,
     fundSources: FundEntity[]
 } 
@@ -30,6 +29,9 @@ class Transaction extends React.Component<Props, State>{
     }
 
     handleChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
+        if (name === "moneyQuantity"){
+            value = parseInt(value) as any;
+        }
         this.setState({currentTransaction: { ...this.state.currentTransaction, [name]: value}} as any)
     }
 

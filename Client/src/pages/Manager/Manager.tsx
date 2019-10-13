@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import Transaction from '../../components/Transaction/Transaction';
 import AddTransaction from '../../forms/AddTransaction/AddTransaction';
 import FundsBar from '../../components/FundsBar/FundsBar';
@@ -9,6 +9,9 @@ import { insertByPredicate, reorderByPredicate } from '../../utils/ArrayExtensio
 import config from '../../config' 
 import Pagination from '../../components/Pagination/Pagination';
 import "./Manager.css"
+import FrequencyDistribution from '../../components/FrequencyDistribution/FrequencyDistribution';
+import { FrequencyDistributionModel } from '../../components/FrequencyDistribution/FrequencyDistributionModel';
+import TransactionMoneyGraphs from '../../components/TransactionMoneyGraphs/TransactionMoneyGraphs';
 
 type FundToUpdate = {
     fundId: string,
@@ -207,6 +210,7 @@ class Manager extends React.Component<any, State> {
         const {transactions, funds, deleteModalVisible, onModalCallback, year, month} = this.state;
         let deleteModal;
         const content = () => <p>{"Are you sure want to delete this record?"}</p>;
+        
         if (deleteModalVisible){
             deleteModal = ConfirmModal(content)({onModalCallback});
         }
@@ -218,8 +222,11 @@ class Manager extends React.Component<any, State> {
                 <FundsBar onAddFundCallback = {this.onFundAdded}
                     onDeleteFundCallback = {this.onFundDeleted} 
                     onUpdateFundCallback = {this.onFundUpdated} funds={funds}></FundsBar>
-                <h2 className="sub-title">Transactions</h2>
+                <h2>New transaction</h2>
                 <AddTransaction fundSources={funds} callback={this.onTransactionCreated}/>
+                <TransactionMoneyGraphs funds={funds} transactions={transactions} ></TransactionMoneyGraphs>
+                <h2 className="sub-title">Transactions</h2>
+                <Pagination year={year} month={month} onPageSwitched={this.getTransactions}></Pagination>
                 <div className="transactions">
                     {
                     (transactions.length !== 0) ?
@@ -232,7 +239,6 @@ class Manager extends React.Component<any, State> {
                     <div className="empty-transactions">There is no transactions yet</div>
                     }
                 </div>
-                <Pagination year={year} month={month} onPageSwitched={this.getTransactions}></Pagination>
             </div>
         );
     }

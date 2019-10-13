@@ -17,7 +17,7 @@ type Props = {
 class Pagination extends Component<Props, State>{
 
     state = {
-        isCalendarVisible: true
+        isCalendarVisible: false
     };
 
     componentDidMount = () => {

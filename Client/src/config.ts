@@ -10,8 +10,8 @@ const prod = {
     },
 };
 
-const config = process.env.NODE_ENV === 'development'
-    ? dev
-    : prod;
+const config = (process && process.env && process.env.REACT_APP_STAGE === "production")
+    ? prod
+    : dev;
 
 export default config;

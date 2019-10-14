@@ -36,7 +36,6 @@ namespace MoneyManager
                     configuration.RootPath = @"..\..\Client\dist";
                 });
             }
-           
 
             services.AddScoped<IMongoContext, MongoContext>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();

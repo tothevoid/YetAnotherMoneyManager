@@ -50,8 +50,9 @@ class AddTransaction extends React.Component<Props, State> {
         event.preventDefault();
     };
 
-    handleChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({ [name]: value} as any)
+    handleChange = ({ target: { name, value, type } }: React.ChangeEvent<HTMLInputElement>) => {
+        const normalizedValue = (type === "number" || type === "price") ? parseInt(value) : value;
+        this.setState({ [name]: normalizedValue} as any)
     }
 
     onSourceChanged = ({ target: { name, value } }: React.ChangeEvent<HTMLSelectElement>) => {

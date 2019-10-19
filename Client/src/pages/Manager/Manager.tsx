@@ -10,6 +10,8 @@ import config from '../../config'
 import Pagination from '../../components/Pagination/Pagination';
 import "./Manager.css"
 import TransactionMoneyGraphs from '../../components/TransactionMoneyGraphs/TransactionMoneyGraphs';
+import { logPromiseError, checkPromiseStatus } from '../../utils/PromiseUtils';
+import { convertToInputDate } from '../../utils/DateUtils';
 
 type FundToUpdate = {
     fundId: string,
@@ -34,106 +36,107 @@ class Manager extends React.Component<any, State> {
         funds: [], 
         deleteModalVisible: false, 
         onModalCallback: () => null,
-    }
+    };
     
     componentDidMount() {
         this.getFunds();
-    }
+    };
 
-    getFunds(){
+    getFunds = () => {
         const url = `${config.api.URL}/Fund`;
-        fetch(url, {method: 'GET'})
-            .then(res => res.json())
-            .then(funds=> this.setState({funds}))
-    }
+        fetch(url, {method: "GET"})
+            .then(checkPromiseStatus)
+            .then((response: Response) => response.json())
+            .then((funds: FundEntity[]) => this.setState({funds}))
+            .catch(logPromiseError);
+    };
 
     getTransactions = (month: number, year: number) => {
         this.setState({month, year});
         const url = `${config.api.URL}/Transaction?month=${month}&year=${year}`;
-        fetch(url, {method: 'GET'})
-            .then(res => res.json())
-            .then(res => {if (res){
-                return res.map((element: TransactionEntity)=>{
-                    const dateObj = new Date(element.date);
-                    const date = dateObj.getFullYear().toString() + '-' +
-                        (dateObj.getMonth() + 1).toString().padStart(2, "0") +
-                        '-' + dateObj.getDate().toString().padStart(2, "0");
-                    return {...element, date};
-                });
-            }})
-            .then(transactions => this.setState({transactions}));
-    }
+        fetch(url, {method: "GET"})
+            .then(checkPromiseStatus)
+            .then((response: Response) => response.json())
+            .then((transactions: TransactionEntity[]) => 
+                transactions.map((transaction: TransactionEntity) => {
+                    const date = new Date(transaction.date);
+                    return {...transaction, date: convertToInputDate(date)};
+                })
+            )
+            .then(transactions => this.setState({transactions}))
+            .catch(logPromiseError);
+    };
 
-    onFundAdded = (fund: FundEntity, onSuccess: (funds:FundEntity[]) => null): any => {
+    onFundAdded = (fund: FundEntity, onSuccess: (funds:FundEntity[]) => void) => {
         const { id, ...fundToAdd } = fund;
-            const url = `${config.api.URL}/Fund`;
-            fetch(url, { method: 'PUT', body: JSON.stringify(fundToAdd), 
-                headers: {'Content-Type': 'application/json'}})
-                .then((res) => res.json())
-                .then(createdId => {
-                    if (createdId){
-                        const newFund = {id:createdId, ...fundToAdd};
-                        //add transaction by pagination
-                        this.setState((state: any) => state.funds.push(newFund));
-                        onSuccess(this.state.funds);
-                    }
-                }
-        );
-    }
-
-    onFundUpdated = (fund: FundEntity, onSuccess: any): any =>{
         const url = `${config.api.URL}/Fund`;
-        fetch(url, { method: 'PATCH', body: JSON.stringify(fund),  
-            headers: {'Content-Type': 'application/json'}})
-            .then(response => {
-                if (response.ok){
+        fetch(url, { method: "PUT", body: JSON.stringify(fundToAdd), 
+            headers: {"Content-Type": "application/json"}})
+            .then(checkPromiseStatus)
+            .then((response: Response) => response.json())
+            .then(createdId => {
+                if (createdId){
+                    const newFund = {id:createdId, ...fundToAdd} as FundEntity;
                     this.setState((state: State) => {
-                        const funds = state.funds.map((item: any) =>
-                            (item.id === fund.id) ? {...fund}: item
-                        );
+                        const funds = state.funds.concat(newFund);
                         return {funds};
-                    })
+                    });
                     onSuccess(this.state.funds);
                 }
-            }
-        );
-    }
+            })
+            .catch(logPromiseError)
+    };
 
-    onFundDeleted = (fund: FundEntity, onSuccess: any): any => {
-        const {id} = fund;
-        const url = `${config.api.URL}/Fund?id=${id}`;
-        fetch(url, { method: 'DELETE'})
-            .then(response => {
-                if (response.ok){
-                    this.setState((state: any) => {
-                        const funds = state.funds.filter((x: FundEntity) => x.id !== id)
-                        return { funds }
-                    });
-                }
+    onFundUpdated = (updatedFund: FundEntity, onSuccess: (funds: FundEntity[]) => void) => {
+        const url = `${config.api.URL}/Fund`;
+        fetch(url, { method: "PATCH", body: JSON.stringify(updatedFund),  
+            headers: {"Content-Type": "application/json"}})
+            .then(checkPromiseStatus)
+            .then(() => {
+                this.setState((state: State) => {
+                    const funds = state.funds.map((fund: FundEntity) =>
+                        (fund.id === updatedFund.id) ? {...updatedFund}: fund
+                    );
+                    return {funds};
+                })
                 onSuccess(this.state.funds);
-            }
-        );
-    }
+            })
+            .catch(logPromiseError)
+    };
 
-    onTransactionCreated = (transaction: any) => {
+    onFundDeleted = (deletedFund: FundEntity, onSuccess: (funds: FundEntity[]) => void) => {
+        const {id} = deletedFund;
+        const url = `${config.api.URL}/Fund?id=${id}`;
+        fetch(url, { method: "DELETE"})
+            .then(checkPromiseStatus)
+            .then(() => {
+                this.setState((state: State) => {
+                    const funds = state.funds.filter((fund: FundEntity) => fund.id !== id)
+                    return { funds }
+                });
+                onSuccess(this.state.funds);
+            })
+            .catch(logPromiseError)
+    };
+
+    onTransactionCreated = (transaction: Omit<TransactionEntity, "id">) => {
         const url = `${config.api.URL}/Transaction`;
-        fetch(url, { method: 'PUT', body: JSON.stringify(transaction),
-            headers: {'Content-Type': 'application/json'}})
-            .then((res) => res.json())
+        fetch(url, { method: "PUT", body: JSON.stringify(transaction),
+            headers: {"Content-Type": "application/json"}})
+            .then(checkPromiseStatus)
+            .then((response: Response) => response.json())
             .then(id => {
-                if (id){
-                    const {month, year, transactions} = this.state;
-                    const newTransaction: TransactionEntity = {...transaction, id};
-                    const date = new Date(newTransaction.date);
-                    if (date.getMonth() === month - 1 && date.getFullYear() === year){
-                        const newTransactions = insertByPredicate(transactions, newTransaction, 
-                            (currentElm: TransactionEntity) => (currentElm.date <= newTransaction.date));
-                        this.recalculateFund(transaction, 1);
-                        this.setState({transactions: newTransactions});
-                    }
+                const {month, year, transactions} = this.state;
+                const newTransaction: TransactionEntity = {...transaction, id};
+                const date = new Date(newTransaction.date);
+                if (date.getMonth() === month - 1 && date.getFullYear() === year){
+                    const newTransactions = insertByPredicate(transactions, newTransaction, 
+                        (transactionElm: TransactionEntity) => (transactionElm.date <= newTransaction.date));
+                    this.setState({transactions: newTransactions});
                 }
-            }
-        );
+                this.recalculateFund(newTransaction, 1);
+            })
+            .catch(logPromiseError);
     };
 
     recalculateFund = (changedTrasnaction: TransactionEntity, sign: number) => {
@@ -144,72 +147,71 @@ class Manager extends React.Component<any, State> {
                     fund.balance += changedTrasnaction.moneyQuantity * sign;
                 } 
                 return fund;
-            }) as FundEntity[]
+            });
             this.setState({funds: newFunds});
         }
-    }
+    };
 
     recalculateFunds = (fundsToUpdate: FundToUpdate[]) => {
         const {funds} = this.state;
         const newFunds = funds.map((fund: FundEntity) => {
-            const findResult = fundsToUpdate.find((fundToUpdate) => fundToUpdate.fundId === fund.id)
+            const findResult = fundsToUpdate.find((fundToUpdate) => fundToUpdate.fundId === fund.id);
             if (findResult){
                 fund.balance += findResult.delta;
             } 
             return fund;
-        }) as FundEntity[]
+        });
         return newFunds;
-    }
+    };
    
-    onTransactionDeleted = (transaction: any) => { 
+    onTransactionDeleted = (deletedTransaction: TransactionEntity) => { 
         const onModalCallback = (isConfirmed: boolean) => {
+            this.setState({deleteModalVisible: false});
             if (isConfirmed){
                 const url = `${config.api.URL}/Transaction`;
-                fetch(url, { method: 'DELETE', body: JSON.stringify(transaction), 
-                    headers: {'Content-Type': 'application/json'}})
-                    .then(res => {
-                        if (res.status === 200) {
-                            this.setState((state: State) => {
-                                const transactions = state.transactions.filter((x: TransactionEntity) => x.id !== transaction.id)
-                                return { transactions }
-                            });
-                            this.recalculateFund(transaction, -1);
-                        }
-                        this.setState({deleteModalVisible: false});
-                    }
-                );
-            } else {
-                this.setState({deleteModalVisible: false});
+                fetch(url, { method: "DELETE", body: JSON.stringify(deletedTransaction), 
+                    headers: {"Content-Type": "application/json"}})
+                    .then(checkPromiseStatus)
+                    .then(() => {
+                        this.setState((state: State) => {
+                            const transactions = state.transactions
+                                .filter((transaction: TransactionEntity) => transaction.id !== deletedTransaction.id)
+                            return { transactions }
+                        });
+                        this.recalculateFund(deletedTransaction, -1);
+                    })
+                    .catch(logPromiseError);
             }
         }
         this.setState({deleteModalVisible: true, onModalCallback});
-    }
+    };
 
     onTransactionUpdated = (updatedTransaction: TransactionEntity, 
         lastTransaction: TransactionEntity, onSuccess: () => void) => {
         const url = `${config.api.URL}/Transaction`;
-        fetch(url, { method: 'PATCH', body: JSON.stringify({updatedTransaction, lastTransaction}),  
-            headers: {'Content-Type': 'application/json'}})
-            .then(res => res.json())
-            .then((res: FundToUpdate[]) => {
-                if (res){
+        fetch(url, { method: "PATCH", body: JSON.stringify({updatedTransaction, lastTransaction}),  
+            headers: {"Content-Type": "application/json"}})
+            .then(checkPromiseStatus)
+            .then(response => response.json())
+            .then((funds: FundToUpdate[]) => {
+                if (funds && funds.length !== 0){
                     onSuccess();
                     const {transactions} = this.state;
-                    const newFunds = this.recalculateFunds(res);
+                    const newFunds = this.recalculateFunds(funds);
                     const updatedTransactions = reorderByPredicate(transactions, updatedTransaction, 
                         (currentElement: TransactionEntity) => (currentElement.date <= updatedTransaction.date),
                         (currentElement: TransactionEntity) => (currentElement.id !== updatedTransaction.id));
                     this.setState({transactions: updatedTransactions, funds: newFunds});
                 }
             })
-    }
+            .catch(logPromiseError)
+    };
 
     render(){
         const {transactions, funds, deleteModalVisible, onModalCallback, year, month} = this.state;
         let deleteModal;
-        const content = () => <p>{"Are you sure want to delete this record?"}</p>;
-        
         if (deleteModalVisible){
+            const content = () => <p>{"Are you sure want to delete this record?"}</p>;
             deleteModal = ConfirmModal(content)({onModalCallback});
         }
         return (
@@ -219,7 +221,9 @@ class Manager extends React.Component<any, State> {
                 <h2 className="sub-title">My funds</h2>
                 <FundsBar onAddFundCallback = {this.onFundAdded}
                     onDeleteFundCallback = {this.onFundDeleted} 
-                    onUpdateFundCallback = {this.onFundUpdated} funds={funds}></FundsBar>
+                    onUpdateFundCallback = {this.onFundUpdated} 
+                    funds={funds}>
+                </FundsBar>
                 <h2>New transaction</h2>
                 <AddTransaction fundSources={funds} callback={this.onTransactionCreated}/>
                 <TransactionMoneyGraphs funds={funds} transactions={transactions} ></TransactionMoneyGraphs>
@@ -229,7 +233,7 @@ class Manager extends React.Component<any, State> {
                     {
                     (transactions.length !== 0) ?
                     transactions.map((transaction: TransactionEntity) => {       
-                        return <Transaction key={transaction.id} transaction = {transaction} 
+                        return <Transaction key={transaction.id} transaction={transaction} 
                             onDelete={this.onTransactionDeleted} onUpdate={this.onTransactionUpdated}
                             fundSources={funds}>
                         </Transaction>

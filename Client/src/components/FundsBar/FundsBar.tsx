@@ -22,9 +22,9 @@ type State = {
 
 type Props = {
     funds: FundEntity[],
-    onAddFundCallback: (fund: FundEntity, onSuccess: (newFunds: FundEntity[])=> any) => null,
-    onDeleteFundCallback: (fund: FundEntity, onSuccess: (newFunds: FundEntity[])=> any) => null,
-    onUpdateFundCallback: (fund: FundEntity, onSuccess: (newFunds: FundEntity[])=> any) => null
+    onAddFundCallback: (fund: FundEntity, onSuccess: (newFunds: FundEntity[])=> void) => void,
+    onDeleteFundCallback: (fund: FundEntity, onSuccess: (newFunds: FundEntity[])=> void) => void,
+    onUpdateFundCallback: (fund: FundEntity, onSuccess: (newFunds: FundEntity[])=> void) => void
 }
 
 class FundsBar extends React.Component<Props,State>{

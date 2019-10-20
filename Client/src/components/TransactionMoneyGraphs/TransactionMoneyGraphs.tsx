@@ -10,6 +10,7 @@ type Props = {
 }
 
 const calculateDistribution = (total: FrequencyDistributionModel[], transaction: TransactionEntity, funds: FundEntity[]) => {
+    if (!transaction || !transaction.fundSource || !transaction.fundSource.id) return total;
     var freqIndex = total
         .findIndex((element: FrequencyDistributionModel) => element.id === transaction.fundSource.id);
     if (freqIndex !== -1){

@@ -1,5 +1,5 @@
 import React from "react"
-import "./FrequencyDistribution.css"
+import "./FrequencyDistribution.scss"
 import { FrequencyDistributionModel } from "./FrequencyDistributionModel";
 
 type Props = {
@@ -19,7 +19,7 @@ const getColor = (index: number) => {
         colors[index];
 }
 
-function compare(current: FrequencyDistributionModel, next: FrequencyDistributionModel) {
+const compare = (current: FrequencyDistributionModel, next: FrequencyDistributionModel) => {
     if (current.value < next.value) {
       return 1;
     } else if (current.value > next.value) {

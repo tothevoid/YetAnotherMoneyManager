@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React, { Component, Fragment } from "react"
 import "./Pagination.css"
 import {getMonthByIndex} from "../../utils/DateUtils"
 import { Calendar } from "../Calendar/Calendar"
@@ -48,8 +48,8 @@ class Pagination extends Component<Props, State>{
         const {isCalendarVisible} = this.state;
         const {month, year, onPageSwitched} = this.props;
         const date = `${getMonthByIndex(month)}'${year.toString().substring(2)}`
-        return <div className="pagination">
-            <div className="pagination-container">
+        return <Fragment>
+        <div className="pagination-container">
                 <button onClick={this.pageSwitchClick(-1)} className="paging-element paging-button page-previous">Previous</button>
                 <div className="current-month paging-element">
                     {date}
@@ -62,7 +62,7 @@ class Pagination extends Component<Props, State>{
                     <Calendar month={month} year={year} onPageSwitched={onPageSwitched}></Calendar> :
                     null 
             }
-        </div>
+        </Fragment> 
     }
 }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import './HeaderItem.css';
+import './HeaderItem.scss';
 
 type Props = {
     title: string

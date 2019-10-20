@@ -1,0 +1,18 @@
+.fund{
+    position: relative;
+    .fund-name{
+        font-size: 1.5rem;
+        color: white;
+        margin: 0;
+    }
+    .fund-balance{
+        font-size: 1.25rem;
+        color: white;
+        margin: 0;
+        .currency{
+            font-size: 0.8rem;
+            font-style: normal;
+        }
+    }
+   
+}

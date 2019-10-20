@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import Fund from '../Fund/Fund'
-import './FundsBar.css'
+import './FundsBar.scss'
 import FundContainer from '../FundContainer/FundContainer';
 import AddFundButton from '../AddFundButton/AddFundButton';
 import ConfirmModal from '../../modals/ConfirmModal/ConfirmModal';
@@ -93,7 +93,7 @@ class FundsBar extends React.Component<Props,State>{
         }
         return (
             <Fragment>
-                <h3 className="total">Total: {total}&#8381;</h3>
+                <h3 className="funds-total">Total: {total}&#8381;</h3>
                 <div className="funds-bar">
                     {
                     funds.map((fund: FundEntity, i: number) => {

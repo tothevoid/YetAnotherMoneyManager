@@ -8,19 +8,18 @@
     border-radius: 1rem;
     padding: .5rem;
     cursor: pointer;
+    &:hover{
+        background: rgb(87, 86, 86);
+    }
 }
 
-.fund-container:hover{
-    background: rgb(87, 86, 86);
-}
-
-.container-new{
+.fund-container-new{
     border: white 2px dashed;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.container-stored{
+.fund-container-stored{
     box-shadow: 2px 2px 2px 2px #333;
 }

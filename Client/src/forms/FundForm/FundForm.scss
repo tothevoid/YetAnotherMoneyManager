@@ -1,0 +1,21 @@
+.fund-parameter{
+    display: inline-block;
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+    .title{
+        font-weight: 700;
+        padding-left: .25rem;
+        padding-bottom: 0.25rem;
+        display: block;
+    }
+    .value{
+        border: #333 solid 2px;
+        border-radius: 0.5rem;
+        height: 1.5rem;
+        padding-left: .5rem;
+    }
+    .type{
+        min-width: 5rem;
+    }
+    
+}

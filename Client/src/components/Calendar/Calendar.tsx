@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import "./Calendar.css"
+import "./Calendar.scss"
 import { getMonthsNames } from "../../utils/DateUtils";
 
 type Props = {
@@ -33,7 +33,7 @@ export class Calendar extends Component<Props,State>{
         return (isYearsMode) ?
             Array.from({length: 12}, (element: number, index:number) => 
                 (minimalYear + index).toString()) :
-            getMonthsNames().map((element) => element.substring(0, 3));
+            getMonthsNames().map((name: string) => name.substring(0, 3));
     }
 
     onElementClick = (value: string) => {
@@ -92,7 +92,7 @@ export class Calendar extends Component<Props,State>{
                 <button onClick={() => this.onArrowClick(1)} disabled={!isYearsMode} className="next-button">&#8594;</button>
             </div>
             
-            <div className="container">
+            <div className="calendar-content">
                 {this.createArray().map((element, index)=>{
                     return <div key={index} onClick={()=>this.onElementClick(element)}
                         className={this.getClasses(element)}>{element}</div>

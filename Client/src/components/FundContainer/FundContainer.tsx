@@ -1,9 +1,9 @@
 import React from 'react'
-import './FundContainer.css'
+import './FundContainer.scss'
 
 const getClassName = (isNew: boolean) =>{
     const additionalClass = (isNew) ? 
-        "container-new":"container-stored"
+        "fund-container-new":"fund-container-stored"
     return `fund-container ${additionalClass}`;
 }
 

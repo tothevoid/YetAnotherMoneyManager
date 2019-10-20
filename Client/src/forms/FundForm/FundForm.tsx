@@ -1,5 +1,5 @@
 import React, { FormEvent } from 'react'
-import './FundForm.css'
+import './FundForm.scss'
 import { FundEntity } from '../../models/FundEntity';
 
 type Props = {

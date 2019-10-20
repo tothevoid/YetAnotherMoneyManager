@@ -1,5 +1,5 @@
 import React from 'react'
-import './AddFundButton.css'
+import './AddFundButton.scss'
 
 const AddFundButton = () =>
     <p className="add-fund-button">Add additional fund source</p>

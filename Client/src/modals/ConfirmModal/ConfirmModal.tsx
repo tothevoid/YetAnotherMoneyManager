@@ -1,9 +1,9 @@
 import React, { Fragment } from 'react'
-import './ConfirmModal.css'
+import './ConfirmModal.scss'
 import ReactDOM from 'react-dom';
 
 const getPortalTemplate = (props: any, Content: any) => {
-    const {onModalCallback, confirmName = "Yes", cancelName = "No"} = props;
+    const {onModalCallback, title = "Confirm", confirmName = "Yes", cancelName = "No"} = props;
     const isComponnetStatefull = !!(
         typeof Content === 'function'
         && Content.prototype
@@ -33,14 +33,19 @@ const getPortalTemplate = (props: any, Content: any) => {
         }
     }
 
-
-    return <div className="modal-background">
+    return <div className="modal-wrapper">
         <div className="modal">
-            {isComponnetStatefull ? <Content {...props} ref={contentRef}></Content>: <Content></Content>}
-            <div className="modal-buttons-container">
-                <button onClick={onButtonClicked(true)} className="modal-button">{confirmName}</button>
+            <div className="modal-header">
+                <p className="modal-header-title"><b>{title}</b></p>
+                <button onClick={onButtonClicked(false)} className="modal-close">X</button>
+            </div>
+            <div className="modal-content">
+                {isComponnetStatefull ? <Content {...props} ref={contentRef}></Content>: <Content></Content>}
+            </div>
+            <div className="modal-buttons">
+                <button onClick={onButtonClicked(true)} className="modal-button modal-confirm">{confirmName}</button>
                 {getAdditionalButton()}
-                <button onClick={onButtonClicked(false)} className="modal-button">{cancelName}</button>
+                <button onClick={onButtonClicked(false)} className="modal-button modal-cancel">{cancelName}</button>
             </div>
         </div>
     </div>

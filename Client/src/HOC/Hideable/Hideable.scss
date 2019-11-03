@@ -1,0 +1,47 @@
+.checkbox-container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    user-select: none;
+    .checkbox-native {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+    .checkbox-custom {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 25px;
+        width: 25px;
+        background-color: #eee;
+        &:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+    }
+    &:hover .checkbox-native ~ .checkbox-custom{
+        background-color: #ccc;
+    }
+    .checkbox-native:checked ~ .checkbox-custom {
+        background-color: #D13438;
+        &:after {
+            display: block;
+        }
+    }
+    .checkbox-custom:after {
+        left: 9px;
+        top: 5px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        transform: rotate(45deg);
+    }
+}

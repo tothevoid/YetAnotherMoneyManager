@@ -12,6 +12,7 @@ import Pagination from '../../components/Pagination/Pagination';
 import TransactionMoneyGraphs from '../../components/TransactionMoneyGraphs/TransactionMoneyGraphs';
 import { logPromiseError, checkPromiseStatus } from '../../utils/PromiseUtils';
 import { convertToInputDate } from '../../utils/DateUtils';
+import Hideable, { hideableHOC } from '../../HOC/Hideable/Hideable';
 
 type FundToUpdate = {
     fundId: string,
@@ -212,8 +213,16 @@ class Manager extends React.Component<any, State> {
         let deleteModal;
         if (deleteModalVisible){
             const content = () => <p>{"Are you sure want to delete this record?"}</p>;
-            deleteModal = ConfirmModal(content)({onModalCallback});
+            deleteModal = ConfirmModal(content)({title: "Confirm transaction delete", onModalCallback});
         }
+      
+        const Graphs = hideableHOC(TransactionMoneyGraphs);
+        const hidableGraphsComponent = 
+            <Graphs funds={funds} transactions={transactions} title={"Month money distribution"}></Graphs>;
+
+        const NewTransaction = hideableHOC(AddTransaction);
+        const hidableAddTransactionComponent = 
+            <NewTransaction fundSources={funds} callback={this.onTransactionCreated} title={"New transaction"}></NewTransaction>;
         return (
             <div>
                 {deleteModal}
@@ -222,11 +231,10 @@ class Manager extends React.Component<any, State> {
                 <FundsBar onAddFundCallback = {this.onFundAdded}
                     onDeleteFundCallback = {this.onFundDeleted} 
                     onUpdateFundCallback = {this.onFundUpdated} 
-                    funds={funds}>
+                    funds = {funds}>
                 </FundsBar>
-                <h2>New transaction</h2>
-                <AddTransaction fundSources={funds} callback={this.onTransactionCreated}/>
-                <TransactionMoneyGraphs funds={funds} transactions={transactions} ></TransactionMoneyGraphs>
+                {hidableGraphsComponent}
+                {hidableAddTransactionComponent}
                 <h2 className="sub-title">Transactions</h2>
                 <Pagination year={year} month={month} onPageSwitched={this.getTransactions}></Pagination>
                 <div className="transactions">

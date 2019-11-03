@@ -51,7 +51,7 @@ class AddTransaction extends React.Component<Props, State> {
     };
 
     handleChange = ({ target: { name, value, type } }: React.ChangeEvent<HTMLInputElement>) => {
-        const normalizedValue = (type === "number" || type === "price") ? parseInt(value) : value;
+        const normalizedValue = (type === "number" || type === "price") ? parseFloat(value) : value;
         this.setState({ [name]: normalizedValue} as any)
     }
 

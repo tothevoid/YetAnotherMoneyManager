@@ -2,7 +2,6 @@ import React, { Fragment } from 'react';
 import Fund from '../Fund/Fund'
 import './FundsBar.scss'
 import FundContainer from '../FundContainer/FundContainer';
-import AddFundButton from '../AddFundButton/AddFundButton';
 import ConfirmModal from '../../modals/ConfirmModal/ConfirmModal';
 import AddFund from '../../forms/FundForm/FundForm';
 import { FundEntity } from '../../models/FundEntity';
@@ -47,7 +46,8 @@ class FundsBar extends React.Component<Props,State>{
 
     getCreateNewButton(){
         const onClickCallback = () => {this.setState({fundModalVisible: true, isFundModalNewMode: true})}
-        const SubContainer = FundContainer(true, onClickCallback)(AddFundButton);
+        const addFundText = () => <p className="add-fund-button">Add additional fund source</p>
+        const SubContainer = FundContainer(true, onClickCallback)(addFundText);
         return <SubContainer></SubContainer>
     }
 
@@ -89,7 +89,7 @@ class FundsBar extends React.Component<Props,State>{
             const onModalCallback = (isFundModalNewMode) ? onNewModalCallback: onEditModalCallback;
             const additionalParams = (isFundModalNewMode) ? {} : {additionalCallback: onDeleteCallback, additionalName: "Delete"} 
             addNewModal = ConfirmModal(AddFund)({onModalCallback, defaultFund,
-                confirmName:"Save", cancelName:"Close", ...additionalParams});
+                title: "Add fund", confirmName:"Save", cancelName:"Close", ...additionalParams});
         }
         return (
             <Fragment>

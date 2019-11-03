@@ -21,7 +21,7 @@ const getColor = (index: number) => {
 
 const compare = (current: FrequencyDistributionModel, next: FrequencyDistributionModel) => {
     if (current.value < next.value) {
-      return 1;
+        return 1;
     } else if (current.value > next.value) {
         return -1;
     } else {
@@ -38,7 +38,7 @@ const FrequencyDistribution = (props: Props) => {
     return <div className="distibution">
         <div className="distribution-header">
         {
-             collection.map((freq: FrequencyDistributionModel, index: number)=>{
+            collection.map((freq: FrequencyDistributionModel, index: number)=>{
                 const width = `${(100 / collection.length).toFixed(2)}%`;
                 const background = getColor(index);
                 return <div key={freq.id} className="distribution-name" style={{width}}>

@@ -13,6 +13,7 @@ import TransactionMoneyGraphs from '../../components/TransactionMoneyGraphs/Tran
 import { logPromiseError, checkPromiseStatus } from '../../utils/PromiseUtils';
 import { convertToInputDate } from '../../utils/DateUtils';
 import Hideable, { hideableHOC } from '../../HOC/Hideable/Hideable';
+import TransactionTypeForm from '../../forms/TransactionTypeForm/TransactionTypeForm';
 
 type FundToUpdate = {
     fundId: string,
@@ -23,6 +24,7 @@ type State = {
     transactions: TransactionEntity[],
     funds: FundEntity[],
     deleteModalVisible: boolean,
+    setTypeModalVisible: boolean,
     month: number,
     year: number,
     onModalCallback: (isConfirmed: boolean) => void;
@@ -35,7 +37,8 @@ class Manager extends React.Component<any, State> {
         year: new Date().getFullYear(),
         transactions: [],
         funds: [], 
-        deleteModalVisible: false, 
+        deleteModalVisible: false,
+        setTypeModalVisible: false,
         onModalCallback: () => null,
     };
     
@@ -208,12 +211,28 @@ class Manager extends React.Component<any, State> {
             .catch(logPromiseError)
     };
 
+    onStartedEditType = () => {
+        const onModalCallback = (isConfirmed: boolean) => {
+            this.setState({setTypeModalVisible: false});
+            if (isConfirmed){
+
+            }
+        }
+        this.setState({setTypeModalVisible: true, onModalCallback});
+    }
+
+    onTypeClick = () => 
+        this.onStartedEditType();
+    
+
     render(){
-        const {transactions, funds, deleteModalVisible, onModalCallback, year, month} = this.state;
-        let deleteModal;
+        const {transactions, funds, deleteModalVisible, onModalCallback, setTypeModalVisible, year, month} = this.state;
+        let modal;
         if (deleteModalVisible){
             const content = () => <p>{"Are you sure want to delete this record?"}</p>;
-            deleteModal = ConfirmModal(content)({title: "Confirm transaction delete", onModalCallback});
+            modal = ConfirmModal(content)({title: "Confirm transaction delete", onModalCallback});
+        } else if (setTypeModalVisible){
+            modal = ConfirmModal(TransactionTypeForm)({title: "Types manager", onModalCallback});
         }
       
         const Graphs = hideableHOC(TransactionMoneyGraphs);
@@ -225,7 +244,8 @@ class Manager extends React.Component<any, State> {
             <NewTransaction fundSources={funds} callback={this.onTransactionCreated} title={"New transaction"}></NewTransaction>;
         return (
             <div>
-                {deleteModal}
+                <button onClick={() => this.onTypeClick()}></button>
+                {modal}
                 <h1 className="page-title">Money management</h1>
                 <h2 className="sub-title">My funds</h2>
                 <FundsBar onAddFundCallback = {this.onFundAdded}

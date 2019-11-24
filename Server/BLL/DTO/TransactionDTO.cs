@@ -14,5 +14,7 @@ namespace MoneyManager.BLL.DTO
         public FundDTO FundSource { get; set; }
 
         public Guid FundSourceId { get; set; }
+
+        public Guid TransactionTypeId { get;set; }
     }
 }

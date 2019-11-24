@@ -1,0 +1,44 @@
+.file-label{
+    display: block;
+}
+.file-input{
+    display: block;
+}
+.type-file{
+    display: none;
+}
+.type-file-label {
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+.type-image{
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    display: block;
+}
+
+.type-add-button{
+    display: block;
+    width: 100px;
+}
+.type-button{
+    height: 200px;
+    border-radius: 50px;
+    width: 200px;
+    background: #333;
+    color:transparent;
+}
+.type-button:hover{
+    color: black;
+}
+.type-img{
+
+}
+.type-sign{
+
+}
+
+

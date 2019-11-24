@@ -1,5 +1,4 @@
 using MoneyManager.Common;
-using MoneyManager.DAL;
 using System;
 
 namespace MoneyManager.WEB.Model
@@ -15,5 +14,10 @@ namespace MoneyManager.WEB.Model
         public FundModel FundSource {get;set;}
 
         public Guid FundSourceId { get; set; }
+
+        public TransactionTypeModel TransactionType { get; set; }
+
+        public Guid TransactionTypeId { get; set; }
+
     }
 }

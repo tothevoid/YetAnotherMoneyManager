@@ -42,6 +42,7 @@ namespace MoneyManager
 
             services.AddTransient<ITransactionsService, TransactionsService>();
             services.AddTransient<IFundService, FundService>();
+            services.AddTransient<ITransactionTypeService, TransactionTypeService>();
             services.AddAutoMapper(typeof(DTOToEntityProfile), typeof(ViewToDTOProfile));
         }
 

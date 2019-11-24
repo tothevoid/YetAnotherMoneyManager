@@ -36,7 +36,8 @@ namespace MoneyManager.BLL.Services.Entities
             if (formFile.Length != 0)
             {
                 var fileId = Guid.NewGuid();
-                var path = Path.Combine(Directory.GetCurrentDirectory(), $"{fileId}.{extension}");
+                //var path = Path.Combine(Directory.GetCurrentDirectory(), $"{fileId}.{extension}");
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "images", $"{fileId}.{extension}");
                 using (var stream = new FileStream(path, FileMode.Create))
                 {
                     var copyTask = formFile.CopyToAsync(stream);

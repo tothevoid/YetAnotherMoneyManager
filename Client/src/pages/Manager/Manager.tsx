@@ -12,7 +12,7 @@ import Pagination from '../../components/Pagination/Pagination';
 import TransactionMoneyGraphs from '../../components/TransactionMoneyGraphs/TransactionMoneyGraphs';
 import { logPromiseError, checkPromiseStatus } from '../../utils/PromiseUtils';
 import { convertToInputDate } from '../../utils/DateUtils';
-import Hideable, { hideableHOC } from '../../HOC/Hideable/Hideable';
+import { hideableHOC } from '../../HOC/Hideable/Hideable';
 import TransactionTypeForm from '../../forms/TransactionTypeForm/TransactionTypeForm';
 
 type FundToUpdate = {

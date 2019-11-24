@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MoneyManager.BLL.Services.Entities;
-using MoneyManager.Model.Client;
 using MoneyManager.WEB.Model;
 using System;
 using System.Collections.Generic;
@@ -38,9 +37,9 @@ namespace MoneyManager.WEB.Api
         }
 
         [HttpPatch]
-        public async Task Update(NewTransactionTypeData type)
+        public async Task Update([FromForm] Guid id, [FromForm] string name, [FromForm] string extension, [FromForm]IFormFile file)
         {
-            await _transactionTypeService.Update(type.Id, type.Name, type.Extension, type.File);
+            await _transactionTypeService.Update(id, name, extension, file);
         }
 
         [HttpDelete]

@@ -1,5 +1,5 @@
 import "./TransactionTypeForm.scss"
-import React, { Component, ChangeEvent, FormEvent } from "react";
+import React, { Component, ChangeEvent } from "react";
 import { TransactionType } from "../../models/TransactionType";
 import config from "../../config";
 import axios from "axios"
@@ -34,9 +34,12 @@ class TransactionTypeForm extends Component<Props, State>{
         }
     }
     
-    processData = (data: TransactionType) => {
-        this.setState({output: `${data.id}.${data.extension}`});
+    processAddedImage = (data: TransactionType) => {
+        this.setState({output: this.getImageLinkByModel(data)});
     }
+
+    getImageLinkByModel = (transactionType: TransactionType) => 
+        `${config.api.URL}/images/${transactionType.id}.${transactionType.extension}`
 
     onSubmit = () => {
         if (this.state.file != null){
@@ -56,7 +59,7 @@ class TransactionTypeForm extends Component<Props, State>{
                             'content-type': 'multipart/form-data',
                         },
                     })
-                    .then(result => this.processData(result.data));
+                    .then(result => this.processAddedImage(result.data));
                 } else {
                     const extensions = this.getSupportedExtensions().join(", ");
                     this.setState({output: `Incorrect file type. Available extensions: (${extensions})`});
@@ -77,17 +80,15 @@ class TransactionTypeForm extends Component<Props, State>{
 
     render = () => {
         const elms = this.props.types || [];
-        {
-            elms.forEach((transaction: TransactionType) => {
-                const imageLink = `./types/${transaction.id}`;
-                return <div className="type">
-                    <img className="type-img" src={imageLink}></img>
-                    <p className="type-sign">{transaction.name}</p>
-                </div>
-            })
-        }
-        // return <form onSubmit = {this.onSubmit}>
         return <div>
+            {
+                elms.forEach((transaction: TransactionType) => {
+                    return <div className="type">
+                        <img alt="added" className="type-img" src={this.getImageLinkByModel(transaction)}></img>
+                        <p className="type-sign">{transaction.name}</p>
+                    </div>
+                })
+            }
             {
                 (this.state.output) ?
                     <img alt="icon" className="type-image" src={this.state.output}/> : 
@@ -106,7 +107,6 @@ class TransactionTypeForm extends Component<Props, State>{
                 Custom Upload
             </label>
             <button onClick={()=>this.onSubmit()} type="submit" className="type-add-button">+</button>
-        {/* </form> */}
         </div>
     }
 }

@@ -10,6 +10,9 @@ using MoneyManager.DAL.Database;
 using MoneyManager.DAL.Interfaces;
 using AutoMapper;
 using MoneyManager.WEB.Mappings;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace MoneyManager
 {
@@ -61,9 +64,22 @@ namespace MoneyManager
                 app.UseHsts();
             }
 
-            // app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
-          
+            //temporary solution
+            //FIX: Use Docker volume
+            //FIX: Services availability
+            //FIX: Mirgrate constant to config
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "images");
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            app.UseFileServer(new FileServerOptions()
+            {
+                FileProvider = new PhysicalFileProvider(path),
+                RequestPath = new PathString("/images"),
+            });
 
             app.UseMvc(routes =>
             {

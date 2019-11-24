@@ -14,6 +14,7 @@ import { logPromiseError, checkPromiseStatus } from '../../utils/PromiseUtils';
 import { convertToInputDate } from '../../utils/DateUtils';
 import { hideableHOC } from '../../HOC/Hideable/Hideable';
 import TransactionTypeForm from '../../forms/TransactionTypeForm/TransactionTypeForm';
+import { TransactionType } from '../../models/TransactionType';
 
 type FundToUpdate = {
     fundId: string,
@@ -23,11 +24,13 @@ type FundToUpdate = {
 type State = {
     transactions: TransactionEntity[],
     funds: FundEntity[],
+    transactionTypes: TransactionType[],
     deleteModalVisible: boolean,
     setTypeModalVisible: boolean,
     month: number,
     year: number,
     onModalCallback: (isConfirmed: boolean) => void;
+    onTypeSelected: (type: TransactionType) => void;
 }
 
 class Manager extends React.Component<any, State> {
@@ -36,14 +39,17 @@ class Manager extends React.Component<any, State> {
         month: new Date().getMonth() + 1,
         year: new Date().getFullYear(),
         transactions: [],
-        funds: [], 
+        funds: [],
+        transactionTypes: [],
         deleteModalVisible: false,
         setTypeModalVisible: false,
         onModalCallback: () => null,
+        onTypeSelected: (type: TransactionType) => null
     };
     
     componentDidMount() {
         this.getFunds();
+        this.getTypes();
     };
 
     getFunds = () => {
@@ -211,14 +217,27 @@ class Manager extends React.Component<any, State> {
             .catch(logPromiseError)
     };
 
-    onStartedEditType = () => {
-        const onModalCallback = (isConfirmed: boolean) => {
-            this.setState({setTypeModalVisible: false});
-            if (isConfirmed){
+    getTypes = () => {
+        const url = `${config.api.URL}/TransactionType`;
+        fetch(url, {method: "GET"})
+            .then(checkPromiseStatus)
+            .then((response: Response) => response.json())
+            .then((transactionTypes: TransactionType[]) => this.setState({transactionTypes}))
+            .catch(logPromiseError);
+    };
 
-            }
+    onTypeAdded = (newType: TransactionType) => {
+        this.setState((state: State) => {
+            const transactionTypes = state.transactionTypes.concat(newType);
+            return {transactionTypes};
+        });
+    }
+
+    onStartedEditType = () => {
+        const onTypeSelected = (type: TransactionType) => {
+            this.setState({setTypeModalVisible: false});
         }
-        this.setState({setTypeModalVisible: true, onModalCallback});
+        this.setState({setTypeModalVisible: true, onTypeSelected});
     }
 
     onTypeClick = () => 
@@ -226,13 +245,15 @@ class Manager extends React.Component<any, State> {
     
 
     render(){
-        const {transactions, funds, deleteModalVisible, onModalCallback, setTypeModalVisible, year, month} = this.state;
+        const {transactions, funds, transactionTypes, deleteModalVisible, onModalCallback, 
+            setTypeModalVisible, year, month, onTypeSelected} = this.state;
         let modal;
         if (deleteModalVisible){
             const content = () => <p>{"Are you sure want to delete this record?"}</p>;
             modal = ConfirmModal(content)({title: "Confirm transaction delete", onModalCallback});
         } else if (setTypeModalVisible){
-            modal = ConfirmModal(TransactionTypeForm)({title: "Types manager", onModalCallback});
+            modal = ConfirmModal(TransactionTypeForm)({title: "Types manager", callback: onTypeSelected, 
+                transactionTypes, onTypeAdded: this.onTypeAdded});
         }
       
         const Graphs = hideableHOC(TransactionMoneyGraphs);

@@ -13,7 +13,6 @@ namespace MoneyManager.BLL.Services.Entities
 {
     public class TransactionTypeService: ITransactionTypeService
     {
-        private readonly string _fileStoragePath = "./";
         private readonly IUnitOfWork _db;
         private readonly IRepository<TransactionType> _transactionTypeRepo;
         private readonly IMapper _mapper;
@@ -48,8 +47,8 @@ namespace MoneyManager.BLL.Services.Entities
                         Extension = extension
                     };
                     var addTransactionTask = _transactionTypeRepo.Add(_mapper.Map<TransactionType>(type));
-                    await copyTask;
-                    await addTransactionTask;
+                    await Task.WhenAll(copyTask, addTransactionTask);
+                    _db.Commit();
                     return type;
                 }
             }

@@ -14,12 +14,12 @@
     cursor: pointer;
 }
 .type-image{
-    height: 100px;
-    width: 100px;
+    margin: 5px 0;
+    height: 90px;
+    width: 90px;
     border-radius: 50%;
     display: block;
 }
-
 .type-add-button{
     display: block;
     width: 100px;
@@ -34,11 +34,15 @@
 .type-button:hover{
     color: black;
 }
-.type-img{
-
+.types-container{
+    max-height: 600px;
+    overflow: auto;
 }
-.type-sign{
-
+.transaction-type{
+    display: flex;
+    height: 100px;
+    &:hover{
+        background: rgba(15, 0, 0, 0.246);
+        color: black;
+    }
 }
-
-

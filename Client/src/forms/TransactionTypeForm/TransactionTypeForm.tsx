@@ -5,8 +5,9 @@ import config from "../../config";
 import axios from "axios"
 
 type Props = {
-    types: TransactionType[],
-    callback: () => void
+    transactionTypes: TransactionType[],
+    callback: (type: TransactionType) => void,
+    onTypeAdded: (type: TransactionType) => void
 }
 
 type State = {
@@ -34,8 +35,9 @@ class TransactionTypeForm extends Component<Props, State>{
         }
     }
     
-    processAddedImage = (data: TransactionType) => {
-        this.setState({output: this.getImageLinkByModel(data)});
+    processAddedImage = (newType: TransactionType) => {
+        debugger;
+        this.props.onTypeAdded(newType);
     }
 
     getImageLinkByModel = (transactionType: TransactionType) => 
@@ -78,17 +80,23 @@ class TransactionTypeForm extends Component<Props, State>{
         return supportedExtensions.includes(extName);
     }
 
+    onTypeSelected = (type: TransactionType) => {
+        this.props.callback(type);
+    }
+
     render = () => {
-        const elms = this.props.types || [];
+        const types = this.props.transactionTypes || [];
         return <div>
-            {
-                elms.forEach((transaction: TransactionType) => {
-                    return <div className="type">
-                        <img alt="added" className="type-img" src={this.getImageLinkByModel(transaction)}></img>
-                        <p className="type-sign">{transaction.name}</p>
-                    </div>
-                })
-            }
+            <div className="types-container">
+                {
+                    types.map((type: TransactionType) => {
+                        return <div onClick={() => this.onTypeSelected(type)} key={type.id} className="transaction-type">
+                            <img alt={type.name} className="transaction-type-image type-image" src={this.getImageLinkByModel(type)}></img>
+                            <p className="transaction-type-name">{type.name}</p>
+                        </div>
+                    })
+                }
+            </div>
             {
                 (this.state.output) ?
                     <img alt="icon" className="type-image" src={this.state.output}/> : 

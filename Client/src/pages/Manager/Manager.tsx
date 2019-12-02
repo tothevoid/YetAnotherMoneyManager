@@ -26,11 +26,9 @@ type State = {
     funds: FundEntity[],
     transactionTypes: TransactionType[],
     deleteModalVisible: boolean,
-    setTypeModalVisible: boolean,
     month: number,
     year: number,
     onModalCallback: (isConfirmed: boolean) => void;
-    onTypeSelected: (type: TransactionType) => void;
 }
 
 class Manager extends React.Component<any, State> {
@@ -42,9 +40,7 @@ class Manager extends React.Component<any, State> {
         funds: [],
         transactionTypes: [],
         deleteModalVisible: false,
-        setTypeModalVisible: false,
         onModalCallback: () => null,
-        onTypeSelected: (type: TransactionType) => null
     };
     
     componentDidMount() {
@@ -232,40 +228,26 @@ class Manager extends React.Component<any, State> {
             return {transactionTypes};
         });
     }
-
-    onStartedEditType = () => {
-        const onTypeSelected = (type: TransactionType) => {
-            this.setState({setTypeModalVisible: false});
-        }
-        this.setState({setTypeModalVisible: true, onTypeSelected});
-    }
-
-    onTypeClick = () => 
-        this.onStartedEditType();
     
-
     render(){
         const {transactions, funds, transactionTypes, deleteModalVisible, onModalCallback, 
-            setTypeModalVisible, year, month, onTypeSelected} = this.state;
+            year, month} = this.state;
         let modal;
         if (deleteModalVisible){
             const content = () => <p>{"Are you sure want to delete this record?"}</p>;
             modal = ConfirmModal(content)({title: "Confirm transaction delete", onModalCallback});
-        } else if (setTypeModalVisible){
-            modal = ConfirmModal(TransactionTypeForm)({title: "Types manager", callback: onTypeSelected, 
-                transactionTypes, onTypeAdded: this.onTypeAdded});
         }
       
-        const Graphs = hideableHOC(TransactionMoneyGraphs);
+        const Graphs = hideableHOC("Month money distribution")(TransactionMoneyGraphs);
         const hidableGraphsComponent = 
-            <Graphs funds={funds} transactions={transactions} title={"Month money distribution"}></Graphs>;
+            <Graphs funds={funds} transactions={transactions}/>;
 
-        const NewTransaction = hideableHOC(AddTransaction);
+        const NewTransaction = hideableHOC("New transaction")(AddTransaction);
         const hidableAddTransactionComponent = 
-            <NewTransaction fundSources={funds} callback={this.onTransactionCreated} title={"New transaction"}></NewTransaction>;
+            <NewTransaction onTypeAdded={this.onTypeAdded} transactionTypes={transactionTypes} fundSources={funds}
+                callback={this.onTransactionCreated}/>;
         return (
             <div>
-                <button onClick={() => this.onTypeClick()}></button>
                 {modal}
                 <h1 className="page-title">Money management</h1>
                 <h2 className="sub-title">My funds</h2>

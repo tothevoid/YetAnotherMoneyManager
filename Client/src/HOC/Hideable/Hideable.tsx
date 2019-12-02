@@ -5,7 +5,7 @@ type State = {
     isVisible: boolean
 }
 
-export const hideableHOC = (Child: any) => {
+export const hideableHOC = (title: string) => (Child: any) => {
     return class Hideable extends React.Component<any, State> {
         state = {
             isVisible: true
@@ -16,7 +16,6 @@ export const hideableHOC = (Child: any) => {
         }
 
         render() {
-            const {title} = this.props;
             const {isVisible} = this.state;
             return <div>
                 <label className="checkbox-container">

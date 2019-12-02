@@ -3,10 +3,15 @@ import './AddTransaction.scss'
 import { TransactionEntity } from '../../models/TransactionEntity';
 import { FundEntity } from '../../models/FundEntity';
 import { getCurrentDate } from '../../utils/DateUtils';
+import { TransactionType } from '../../models/TransactionType';
+import TransactionTypeSelect from '../../components/TransactionTypeSelect/TransactionTypeSelect';
+import Button from '../../components/Basic/Button/Button';
 
 type Props = {
-    fundSources: FundEntity[]
-    callback: (arg: State) => void
+    fundSources: FundEntity[],
+    transactionTypes: TransactionType[],
+    callback: (arg: State) => void,
+    onTypeAdded: (type: TransactionType) => null
 }
 
 type State = Omit<TransactionEntity, "id">;
@@ -14,11 +19,15 @@ type State = Omit<TransactionEntity, "id">;
 const getInitialState = (props: Props): State => {
     const source = (props.fundSources && props.fundSources.length !== 0) ? props.fundSources[0] :
         {id: ""} as FundEntity
+
+    const type = {id: ""} as TransactionType
+        
     return {
         name: "",
         date: getCurrentDate(),
         moneyQuantity: 500,
-        fundSource: source
+        fundSource: source,
+        transactionType: type
     };
 }
 
@@ -30,11 +39,11 @@ class AddTransaction extends React.Component<Props, State> {
         const {fundSources} = this.props;
         const {fundSource} = this.state;
         if (fundSources && fundSources.length !== 0 && (!fundSource || !fundSource.id)) {
-            this.setState({fundSource:  fundSources[0]});
+            this.setState({fundSource: fundSources[0]});
         }
-      }
+    }
 
-    add = () =>{
+    add = () => {
         const {callback} = this.props;
         if (callback){
             callback(this.state);
@@ -42,7 +51,7 @@ class AddTransaction extends React.Component<Props, State> {
         }
     };
     
-    reset = () =>{
+    reset = () => {
         this.setState(getInitialState(this.props));
     };
     
@@ -63,6 +72,13 @@ class AddTransaction extends React.Component<Props, State> {
         }
     }
 
+    onTypeSelected = (type: TransactionType) => {
+        debugger;
+        let transaction = {...this.state}
+        transaction.transactionType = type;
+        this.setState({...transaction});
+    }
+
     render = () => {
         const { fundSources = [] } = this.props; 
         const { name, moneyQuantity, date, fundSource = {id: ""} } = this.state;
@@ -70,7 +86,7 @@ class AddTransaction extends React.Component<Props, State> {
             <div className="parameters">
                 <div className="parameter">
                     <label className="title">Name</label>
-                    <input name="name"  className="value" onChange={this.handleChange} value={name} type="text"></input>
+                    <input name="name" className="value" onChange={this.handleChange} value={name} type="text"></input>
                 </div>
                 <div className="parameter">
                     <label className="title">Money change</label>
@@ -88,11 +104,16 @@ class AddTransaction extends React.Component<Props, State> {
                                 <option key={fund.id} value={fund.id}>{fund.name}</option>)
                         }
                     </select>
-                </div>         
+                </div>
+                <div className="parameter">
+                    <label className="title">Type</label>
+                    <TransactionTypeSelect transactionTypes = {this.props.transactionTypes}
+                        onTypeAdded = {this.props.onTypeAdded} onTypeSelected = {this.onTypeSelected}></TransactionTypeSelect>
+                </div> 
             </div>
             <div className="buttons">
-                <button onClick={this.add} className="add-btn">Add</button>
-                <button onClick={this.reset} className="cancel-btn">Reset</button>
+                <Button text="Add" onClick={this.add} classes="add-btn"/>
+                <Button text="Reset" onClick={this.reset} classes="cancel-btn"/>
             </div>
         </form>
     }   

@@ -11,8 +11,11 @@
     align-items: center;
     position: relative;
     min-height: 50px;
-    .icon{
+    .transaction-icon, .transaction-icon-placeholder{
         height: 1.5rem;
+        border-radius: 50%;
+        width: 1.5rem;
+        margin-left: 1rem;
     }
     .date{
         margin-left: 1rem;
@@ -56,5 +59,3 @@
         background-color: #6FC23A;
     }
 }
-
-

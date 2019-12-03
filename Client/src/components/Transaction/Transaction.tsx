@@ -2,6 +2,8 @@ import React from 'react';
 import './Transaction.scss';
 import { TransactionEntity } from '../../models/TransactionEntity';
 import { FundEntity } from '../../models/FundEntity';
+import config from '../../config';
+import { TransactionType } from '../../models/TransactionType';
 
 type Props = { 
     onDelete: (id: TransactionEntity) => void,
@@ -74,12 +76,21 @@ class Transaction extends React.Component<Props, State>{
         }     
     }
 
+    //migrate to config
+    getURL = (transactionType: TransactionType) => 
+        `${config.api.URL}/images/${transactionType.id}.${transactionType.extension}`
+    
+
     render(){
         const {fundSources} = this.props;
-        const {moneyQuantity, name, date, fundSource = {id: "", name: ""}} = this.state.currentTransaction;
+        const {moneyQuantity, transactionType, name, date, fundSource = {id: "", name: ""}} = this.state.currentTransaction;
         const {isEditMode} = this.state;
         return <div className={moneyQuantity > 0 ? "green transaction" : "red transaction"}>
-            {/* <img src={logo} alt={name} className="icon"></img> */}
+            {
+                transactionType ? 
+                    <img src={this.getURL(transactionType)} alt={name} className="transaction-icon"></img>:
+                    <div className="transaction-icon-placeholder"></div>
+            }
             <input type="date" name="date" className="date field" onChange={this.handleChange} disabled={!isEditMode} value={date}></input>
             <input type="text" name="name" className="name field" onChange={this.handleChange} disabled={!isEditMode} value={name}></input>
             <input type="number" name="moneyQuantity" className="money-quantity field" onChange={this.handleChange} disabled={!isEditMode} value={moneyQuantity}></input>

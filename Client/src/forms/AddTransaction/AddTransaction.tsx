@@ -73,7 +73,6 @@ class AddTransaction extends React.Component<Props, State> {
     }
 
     onTypeSelected = (type: TransactionType) => {
-        debugger;
         let transaction = {...this.state}
         transaction.transactionType = type;
         this.setState({...transaction});

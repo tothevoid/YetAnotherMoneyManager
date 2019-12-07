@@ -11,7 +11,7 @@ const getPortalTemplate = (props: any, Content: any) => {
     );
     let contentRef = React.createRef() as any;
     
-    const onButtonClicked = (isConfirmed: boolean) => (e:any) =>{
+    const onButtonClicked = (isConfirmed: boolean) =>{
         let ref = {};
         if (isComponnetStatefull){
             ref = contentRef.current.state;
@@ -33,19 +33,29 @@ const getPortalTemplate = (props: any, Content: any) => {
         }
     }
 
-    return <div className="modal-wrapper">
-        <div className="modal">
+    const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+        //enter
+        if (event.keyCode === 13) {
+            onButtonClicked(true);
+        //esc
+        } else if (event.keyCode === 27){
+            onButtonClicked(false);
+        }
+    }
+
+    return <div onKeyDown={onKeyDown} onClick={(e) => {onButtonClicked(false)}} className="modal-wrapper">
+        <div onClick={(e) => e.stopPropagation()} className="modal">
             <div className="modal-header">
                 <p className="modal-header-title"><b>{title}</b></p>
-                <button onClick={onButtonClicked(false)} className="modal-close">X</button>
+                <button onClick={() => onButtonClicked(false)} className="modal-close">X</button>
             </div>
             <div className="modal-content">
                 {isComponnetStatefull ? <Content {...props} ref={contentRef}></Content>: <Content></Content>}
             </div>
             <div className="modal-buttons">
-                <button onClick={onButtonClicked(true)} className="modal-button modal-confirm">{confirmName}</button>
+                <button onClick={() => onButtonClicked(true)} className="modal-button modal-confirm">{confirmName}</button>
                 {getAdditionalButton()}
-                <button onClick={onButtonClicked(false)} className="modal-button modal-cancel">{cancelName}</button>
+                <button onClick={() => onButtonClicked(false)} className="modal-button modal-cancel">{cancelName}</button>
             </div>
         </div>
     </div>

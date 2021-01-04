@@ -44,7 +44,7 @@ class AddFund extends React.Component<Props, FundEntity> {
                     </div>
                     <div className="fund-parameter">
                         <label className="title">Balance</label>
-                        <input name="balance" className="value" onChange={this.handleChange} value={balance} type="number"></input>
+                        <input step="10" name="balance" className="value number" onChange={this.handleChange} value={balance} type="number"></input>
                     </div>
                 </div>
             </form>

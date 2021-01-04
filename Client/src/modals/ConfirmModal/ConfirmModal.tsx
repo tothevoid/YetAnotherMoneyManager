@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react'
 import './ConfirmModal.scss'
 import ReactDOM from 'react-dom';
+import Button from '../../components/Basic/Button/Button';
 
 const getPortalTemplate = (props: any, Content: any) => {
     const {onModalCallback, title = "Confirm", confirmName = "Yes", cancelName = "No"} = props;
@@ -53,9 +54,9 @@ const getPortalTemplate = (props: any, Content: any) => {
                 {isComponnetStatefull ? <Content {...props} ref={contentRef}></Content>: <Content></Content>}
             </div>
             <div className="modal-buttons">
-                <button onClick={() => onButtonClicked(true)} className="modal-button modal-confirm">{confirmName}</button>
+                <Button onClick={() => onButtonClicked(true)} text={confirmName} classes="modal-button modal-confirm"/>
                 {getAdditionalButton()}
-                <button onClick={() => onButtonClicked(false)} className="modal-button modal-cancel">{cancelName}</button>
+                <Button onClick={() => onButtonClicked(false)} text={cancelName} classes="modal-button modal-cancel"/>
             </div>
         </div>
     </div>

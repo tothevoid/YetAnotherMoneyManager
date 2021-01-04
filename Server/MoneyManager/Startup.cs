@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MoneyManager.BLL.Mappings;
@@ -13,15 +12,17 @@ using MoneyManager.WEB.Mappings;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 
 namespace MoneyManager
 {
     public class Startup
     {
         private readonly IConfiguration _configuration;
-        private readonly IHostingEnvironment _environment;
+        private readonly IWebHostEnvironment _environment;
 
-        public Startup(IConfiguration configuration, IHostingEnvironment environment)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             _configuration = configuration;
             _environment = environment;
@@ -30,7 +31,8 @@ namespace MoneyManager
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddControllers();
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             if (_environment.IsDevelopment())
             {
@@ -66,6 +68,7 @@ namespace MoneyManager
 
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseRouting();
             //temporary solution
             //FIX: Use Docker volume
             //FIX: Services availability
@@ -80,21 +83,28 @@ namespace MoneyManager
                 FileProvider = new PhysicalFileProvider(path),
                 RequestPath = new PathString("/images"),
             });
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute(
+            //        name: "default",
+            //        template: "{controller}/{action=Index}/{id?}");
+            //});
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
+
+            //endpoints.MapControllerRoute(
+            //  name: "default",
+            //  pattern: "{controller}/{action=Index}/{id?}");
+
+            app.UseEndpoints(endpoints => {
+                endpoints.MapControllers();
             });
 
             if (_environment.IsDevelopment())
-            {
+            { 
                 app.UseSpa(spa =>
                 {
                     spa.Options.SourcePath = @"..\..\Client";
                     spa.UseReactDevelopmentServer(npmScript: "start");
-
                 });
             }
         }

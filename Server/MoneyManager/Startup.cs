@@ -83,18 +83,7 @@ namespace MoneyManager
                 FileProvider = new PhysicalFileProvider(path),
                 RequestPath = new PathString("/images"),
             });
-            //app.UseMvc(routes =>
-            //{
-            //    routes.MapRoute(
-            //        name: "default",
-            //        template: "{controller}/{action=Index}/{id?}");
-            //});
-
-
-            //endpoints.MapControllerRoute(
-            //  name: "default",
-            //  pattern: "{controller}/{action=Index}/{id?}");
-
+          
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
             });

@@ -9,7 +9,7 @@ Stack:
 
 Install without Docker:
 
-* install .NET Core 2.2 or higher
+* install .NET Core 3.1 or higher
 * install [mongodb](https://www.mongodb.com/download-center/community)
 * install [Node.js](https://nodejs.org/en/)
 * Navigate to the directory `./Server/MoneyManager`

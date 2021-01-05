@@ -1,9 +1,14 @@
-FROM microsoft/dotnet:sdk AS build-env
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 WORKDIR /app
+
 COPY . ./
-RUN dotnet restore "./MoneyManager/MoneyManager.csproj"
-RUN dotnet publish "./MoneyManager/MoneyManager.csproj" -c Production -o out
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+RUN dotnet restore
+
+COPY MoneyManager/. ./MoneyManager/
+WORKDIR /app/MoneyManager
+RUN dotnet publish -c Release -o out
+
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 as runtime
 WORKDIR /app
-COPY --from=build-env /app/MoneyManager/out .
+COPY --from=build /app/MoneyManager/out ./
 ENTRYPOINT ["dotnet", "MoneyManager.dll"]

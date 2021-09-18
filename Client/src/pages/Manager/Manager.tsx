@@ -13,7 +13,6 @@ import TransactionMoneyGraphs from '../../components/TransactionMoneyGraphs/Tran
 import { logPromiseError, checkPromiseStatus } from '../../utils/PromiseUtils';
 import { convertToInputDate } from '../../utils/DateUtils';
 import { hideableHOC } from '../../HOC/Hideable/Hideable';
-import TransactionTypeForm from '../../forms/TransactionTypeForm/TransactionTypeForm';
 import { TransactionType } from '../../models/TransactionType';
 
 type FundToUpdate = {
@@ -200,15 +199,13 @@ class Manager extends React.Component<any, State> {
             .then(checkPromiseStatus)
             .then(response => response.json())
             .then((funds: FundToUpdate[]) => {
-                if (funds && funds.length !== 0){
-                    onSuccess();
-                    const {transactions} = this.state;
-                    const newFunds = this.recalculateFunds(funds);
-                    const updatedTransactions = reorderByPredicate(transactions, updatedTransaction, 
-                        (currentElement: TransactionEntity) => (currentElement.date <= updatedTransaction.date),
-                        (currentElement: TransactionEntity) => (currentElement.id !== updatedTransaction.id));
-                    this.setState({transactions: updatedTransactions, funds: newFunds});
-                }
+                onSuccess();
+                const {transactions} = this.state;
+                const newFunds = this.recalculateFunds(funds);
+                const updatedTransactions = reorderByPredicate(transactions, updatedTransaction, 
+                    (currentElement: TransactionEntity) => (currentElement.date <= updatedTransaction.date),
+                    (currentElement: TransactionEntity) => (currentElement.id !== updatedTransaction.id));
+                this.setState({transactions: updatedTransactions, funds: newFunds});
             })
             .catch(logPromiseError)
     };

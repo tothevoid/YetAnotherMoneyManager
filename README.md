@@ -15,7 +15,7 @@ Install without Docker:
 * Navigate to the directory `./Server/MoneyManager`
 * Execute `dotnet run`
 
-Windows 10 Pro install or linux (by Docker):
+Docker install:
 
 * Install [Docker for Windows](https://download.docker.com/win/stable/Docker%20for%20Windows%20Installer.exe) or [Docker for Linux](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
 * Navigate to the directory of `docker-compose.yml` file by terminal

@@ -30,7 +30,18 @@ namespace MoneyManager
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors();
+            //TODO: fix
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowReactApp",
+                    builder =>
+                    {
+                        builder.WithOrigins("http://localhost:5174")
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials();
+                    });
+            });
             services.AddControllers();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
@@ -54,7 +65,8 @@ namespace MoneyManager
         public void Configure(IApplicationBuilder app)
         {
             var clientUrl = _configuration.GetSection("Client").GetSection("Url").Value;
-            app.UseCors(builder => builder.WithOrigins(clientUrl).AllowAnyMethod().AllowAnyHeader());
+            //app.UseCors(builder => builder.WithOrigins(clientUrl).AllowAnyMethod().AllowAnyHeader());
+            app.UseCors("AllowReactApp");
 
             if (_environment.IsDevelopment())
             {
@@ -88,14 +100,14 @@ namespace MoneyManager
                 endpoints.MapControllers();
             });
 
-            if (_environment.IsDevelopment())
-            { 
-                app.UseSpa(spa =>
-                {
-                    spa.Options.SourcePath = @"..\..\Client";
-                    spa.UseReactDevelopmentServer(npmScript: "start");
-                });
-            }
+            //if (_environment.IsDevelopment())
+            //{ 
+            //    app.UseSpa(spa =>
+            //    {
+            //        spa.Options.SourcePath = @"..\..\Client";
+            //        spa.UseReactDevelopmentServer(npmScript: "dev");
+            //    });
+            //}
         }
     }
 }

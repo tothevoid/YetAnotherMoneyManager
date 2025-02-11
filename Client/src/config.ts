@@ -1,6 +1,6 @@
 const dev = {
     api: {
-        URL: "https://localhost:2500"
+        URL: "http://localhost:2500"
     },
 };
 

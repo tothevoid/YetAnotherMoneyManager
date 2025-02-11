@@ -13,7 +13,6 @@ using Microsoft.Extensions.FileProviders;
 using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 
 namespace MoneyManager
 {
@@ -44,14 +43,6 @@ namespace MoneyManager
             });
             services.AddControllers();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-
-            if (_environment.IsDevelopment())
-            {
-                services.AddSpaStaticFiles(configuration =>
-                {
-                    configuration.RootPath = @"..\..\Client\dist";
-                });
-            }
 
             services.AddScoped<IMongoContext, MongoContext>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -99,15 +90,6 @@ namespace MoneyManager
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
             });
-
-            //if (_environment.IsDevelopment())
-            //{ 
-            //    app.UseSpa(spa =>
-            //    {
-            //        spa.Options.SourcePath = @"..\..\Client";
-            //        spa.UseReactDevelopmentServer(npmScript: "dev");
-            //    });
-            //}
         }
     }
 }

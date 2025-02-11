@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import { Component } from "react"
 import "./Calendar.scss"
 import { getMonthsNames } from "../../utils/DateUtils";
 
@@ -31,7 +31,7 @@ export class Calendar extends Component<Props,State>{
     createArray = (): string[] => {
         const {isYearsMode, minimalYear} = this.state;
         return (isYearsMode) ?
-            Array.from({length: 12}, (element: number, index:number) => 
+            Array.from({length: 12}, (_, index:number) => 
                 (minimalYear + index).toString()) :
             getMonthsNames().map((name: string) => name.substring(0, 3));
     }

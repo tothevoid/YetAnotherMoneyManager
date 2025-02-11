@@ -1,4 +1,3 @@
-import React from 'react'
 import './FundContainer.scss'
 
 const getClassName = (isNew: boolean) =>{

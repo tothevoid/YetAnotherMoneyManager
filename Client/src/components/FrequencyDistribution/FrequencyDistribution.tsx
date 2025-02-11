@@ -1,4 +1,3 @@
-import React from "react"
 import "./FrequencyDistribution.scss"
 import { FrequencyDistributionModel } from "./FrequencyDistributionModel";
 

@@ -4,8 +4,8 @@ const dev = {
     },
 };
 
-const config = (process && process.env && process.env.REACT_APP_SERVER_URL) ?
-    {api: {URL: process.env.REACT_APP_SERVER_URL}}: 
-    dev;
+// const config = (process && process.env && process.env.REACT_APP_SERVER_URL) ?
+//     {api: {URL: process.env.REACT_APP_SERVER_URL}}: 
+//     dev;
 
-export default config;
+export default dev;

@@ -1,4 +1,3 @@
-import React from 'react'
 import './Fund.scss'
 import { FundEntity } from '../../models/FundEntity';
 

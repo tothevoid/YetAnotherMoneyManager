@@ -35,7 +35,7 @@ class FundsBar extends React.Component<Props,State>{
     }
    
     //set total when the server returns funds 
-    componentDidUpdate(oldProps: Props) {
+    componentDidUpdate() {
         const {funds} = this.props;
         const {total} = this.state;
         const newTotal = calculateTotal(funds);

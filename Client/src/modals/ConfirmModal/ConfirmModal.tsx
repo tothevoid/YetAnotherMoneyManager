@@ -44,7 +44,7 @@ const getPortalTemplate = (props: any, Content: any) => {
         }
     }
 
-    return <div onKeyDown={onKeyDown} onClick={(e) => {onButtonClicked(false)}} className="modal-wrapper">
+    return <div onKeyDown={onKeyDown} onClick={() => {onButtonClicked(false)}} className="modal-wrapper">
         <div onClick={(e) => e.stopPropagation()} className="modal">
             <div className="modal-header">
                 <p className="modal-header-title"><b>{title}</b></p>

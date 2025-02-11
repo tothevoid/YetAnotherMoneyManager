@@ -1,5 +1,5 @@
 import "./TransactionTypeForm.scss"
-import React, { Component } from "react";
+import { Component } from "react";
 import { TransactionType } from "../../models/TransactionType";
 import config from "../../config";
 import hideableHOC from "../../HOC/Hideable/Hideable";

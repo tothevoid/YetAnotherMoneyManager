@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react"
+import { Component, Fragment } from "react"
 import "./Pagination.css"
 import {getMonthByIndex} from "../../utils/DateUtils"
 import { Calendar } from "../Calendar/Calendar"
@@ -25,7 +25,7 @@ class Pagination extends Component<Props, State>{
         this.props.onPageSwitched(month, year);
     }
 
-    pageSwitchClick = (direction: number) => (e:any) => {
+    pageSwitchClick = (direction: number) => () => {
         let {month, year} = this.props;
         if (direction === -1 && month === 1){
             month = 12;

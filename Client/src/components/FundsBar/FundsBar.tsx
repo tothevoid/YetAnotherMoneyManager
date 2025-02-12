@@ -1,10 +1,13 @@
 import React, { Fragment } from 'react';
 import Fund from '../Fund/Fund'
 import './FundsBar.scss'
-import FundContainer from '../FundContainer/FundContainer';
 import ConfirmModal from '../../modals/ConfirmModal/ConfirmModal';
 import AddFund from '../../forms/FundForm/FundForm';
 import { FundEntity } from '../../models/FundEntity';
+import { Button } from '@chakra-ui/react/button';
+import { SimpleGrid } from '@chakra-ui/react/grid';
+import { AddIcon } from '@chakra-ui/icons'
+import { Flex, Text } from '@chakra-ui/react';
 
 const calculateTotal = (items: FundEntity[]) => {
     if (items && items.length > 0) return items.reduce((total: number, item: FundEntity)=> 
@@ -46,9 +49,9 @@ class FundsBar extends React.Component<Props,State>{
 
     getCreateNewButton(){
         const onClickCallback = () => {this.setState({fundModalVisible: true, isFundModalNewMode: true})}
-        const addFundText = () => <p className="add-fund-button">Add additional fund source</p>
-        const SubContainer = FundContainer(true, onClickCallback)(addFundText);
-        return <SubContainer></SubContainer>
+        return <Button onClick={() => onClickCallback()} leftIcon={<AddIcon />} colorScheme='purple' size='md'>
+            Add fund
+        </Button>
     }
 
     render(){
@@ -93,20 +96,22 @@ class FundsBar extends React.Component<Props,State>{
         }
         return (
             <Fragment>
-                <h3 className="funds-total">Total: {total}&#8381;</h3>
-                <div className="funds-bar">
+                {/* <h3 className="funds-total">Total: {total}&#8381;</h3> */}
+                <Flex justifyContent="space-between" alignItems="center" pt={5} pb={5}>
+                    <Text fontSize='3xl'>Funds</Text>
+                    {this.getCreateNewButton()}
+                </Flex>
+                <SimpleGrid pt={5} pb={5} spacing={8} templateColumns='repeat(auto-fill, minmax(300px, 3fr))'>
                     {
                     funds.map((fund: FundEntity, i: number) => {
                         const onClickCallback = () => {
                             this.setState({fundModalVisible: true, isFundModalNewMode: false, currentFund: fund})
                         }
-                        const SubContainer = FundContainer(false, onClickCallback)(Fund)
-                        return <SubContainer {...fund} key={i}></SubContainer>
+                        return <Fund {...fund} key={fund.id} click  ></Fund>
                     })
                     }
-                    {this.getCreateNewButton()}
                     {addNewModal}
-                </div>
+                </SimpleGrid>
             </Fragment>
         );
     }

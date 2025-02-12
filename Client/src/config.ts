@@ -1,11 +1,8 @@
 const dev = {
     api: {
-        URL: "http://localhost:2500"
-    },
+        URL: import.meta.env.VITE_SERVER_URL
+    }
 };
 
-// const config = (process && process.env && process.env.REACT_APP_SERVER_URL) ?
-//     {api: {URL: process.env.REACT_APP_SERVER_URL}}: 
-//     dev;
 
 export default dev;

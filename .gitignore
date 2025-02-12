@@ -237,3 +237,5 @@ _Pvt_Extensions
 **/.vs/MoneyManager
 
 Server/MoneyManager/images
+
+Client/.env

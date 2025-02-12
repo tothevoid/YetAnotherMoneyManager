@@ -246,8 +246,6 @@ class Manager extends React.Component<any, State> {
         return (
             <div>
                 {modal}
-                <h1 className="page-title">Money management</h1>
-                <h2 className="sub-title">My funds</h2>
                 <FundsBar onAddFundCallback = {this.onFundAdded}
                     onDeleteFundCallback = {this.onFundDeleted} 
                     onUpdateFundCallback = {this.onFundUpdated} 

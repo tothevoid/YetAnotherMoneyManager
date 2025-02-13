@@ -61,20 +61,14 @@ class FundsBar extends React.Component<Props,State>{
         //     }
         // };
 
-        // const onDeleteCallback = (fund: FundEntity) => {
-        //     if (fund){
-        //         this.props.onDeleteFundCallback(fund, onSuccessFundChangeCallback);
-        //     } else {
-        //         this.setState({fundModalVisible: false});
-        //     }
-        // };
-
         const onSuccessFundChangeCallback = (newFunds: FundEntity[]) => {
             this.setState({total: calculateTotal(newFunds)});
         }
 
         let addNewModal;
         const addFundCallback = (fund: FundEntity) => this.props.onAddFundCallback(fund, onSuccessFundChangeCallback)
+
+        const deleteFundCallback = (fund: FundEntity) => this.props.onDeleteFundCallback(fund, onSuccessFundChangeCallback);
 
         return (
             <Fragment>
@@ -86,7 +80,7 @@ class FundsBar extends React.Component<Props,State>{
                 <SimpleGrid pt={5} pb={5} spacing={4} templateColumns='repeat(auto-fill, minmax(300px, 3fr))'>
                     {
                     funds.map((fund: FundEntity) => {
-                        return <Fund {...fund} key={fund.id}></Fund>
+                        return <Fund fund={fund} onDeleteCallback={deleteFundCallback} key={fund.id}></Fund>
                     })
                     }
                     {addNewModal}

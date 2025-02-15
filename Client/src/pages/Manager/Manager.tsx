@@ -24,10 +24,8 @@ type State = {
     transactions: TransactionEntity[],
     funds: FundEntity[],
     transactionTypes: TransactionType[],
-    deleteModalVisible: boolean,
     month: number,
-    year: number,
-    onModalCallback: (isConfirmed: boolean) => void;
+    year: number
 }
 
 class Manager extends React.Component<any, State> {
@@ -37,9 +35,7 @@ class Manager extends React.Component<any, State> {
         year: new Date().getFullYear(),
         transactions: [],
         funds: [],
-        transactionTypes: [],
-        deleteModalVisible: false,
-        onModalCallback: () => null,
+        transactionTypes: []
     };
     
     componentDidMount() {
@@ -170,25 +166,19 @@ class Manager extends React.Component<any, State> {
     };
    
     onTransactionDeleted = (deletedTransaction: TransactionEntity) => { 
-        const onModalCallback = (isConfirmed: boolean) => {
-            this.setState({deleteModalVisible: false});
-            if (isConfirmed){
-                const url = `${config.api.URL}/Transaction`;
-                fetch(url, { method: "DELETE", body: JSON.stringify(deletedTransaction), 
-                    headers: {"Content-Type": "application/json"}})
-                    .then(checkPromiseStatus)
-                    .then(() => {
-                        this.setState((state: State) => {
-                            const transactions = state.transactions
-                                .filter((transaction: TransactionEntity) => transaction.id !== deletedTransaction.id)
-                            return { transactions }
-                        });
-                        this.recalculateFund(deletedTransaction, -1);
-                    })
-                    .catch(logPromiseError);
-            }
-        }
-        this.setState({deleteModalVisible: true, onModalCallback});
+        const url = `${config.api.URL}/Transaction`;
+        fetch(url, { method: "DELETE", body: JSON.stringify(deletedTransaction), 
+            headers: {"Content-Type": "application/json"}})
+            .then(checkPromiseStatus)
+            .then(() => {
+                this.setState((state: State) => {
+                    const transactions = state.transactions
+                        .filter((transaction: TransactionEntity) => transaction.id !== deletedTransaction.id)
+                    return { transactions }
+                });
+                this.recalculateFund(deletedTransaction, -1);
+            })
+            .catch(logPromiseError);
     };
 
     onTransactionUpdated = (updatedTransaction: TransactionEntity, 
@@ -232,18 +222,11 @@ class Manager extends React.Component<any, State> {
     }
     
     render(){
-        const {transactions, funds, transactionTypes, deleteModalVisible, onModalCallback, 
+        const {transactions, funds, transactionTypes, 
             year, month} = this.state;
-        let modal;
-        if (deleteModalVisible){
-            const content = () => <p>{"Are you sure want to delete this record?"}</p>;
-            modal = ConfirmModal(content)({title: "Confirm transaction delete", onModalCallback});
-        }
         
-
         return (
             <div>
-                {modal}
                 <FundsBar onAddFundCallback = {this.onFundAdded}
                     onDeleteFundCallback = {this.onFundDeleted} 
                     onUpdateFundCallback = {this.onFundUpdated} 

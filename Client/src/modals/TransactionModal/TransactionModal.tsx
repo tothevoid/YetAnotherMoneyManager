@@ -4,8 +4,8 @@ import { FundEntity } from '../../models/FundEntity';
 import { getCurrentDate } from '../../utils/DateUtils';
 import { TransactionType } from '../../models/TransactionType';
 // import TransactionTypeSelect from '../../TransactionTypeSelect/TransactionTypeSelect';
-import { FormControl, Button, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure, Select } from '@chakra-ui/react';
-
+import { FormControl, Button, FormLabel, Input, Modal, ModalBody, ModalCloseButton, 
+	ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure, Select } from '@chakra-ui/react';
 
 type Props = {
 	fundSources: FundEntity[],

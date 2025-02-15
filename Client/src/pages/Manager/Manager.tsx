@@ -12,7 +12,7 @@ import TransactionMoneyGraphs from '../../components/TransactionMoneyGraphs/Tran
 import { logPromiseError, checkPromiseStatus } from '../../utils/PromiseUtils';
 import { convertToInputDate } from '../../utils/DateUtils';
 import { TransactionType } from '../../models/TransactionType';
-import { Box, SimpleGrid } from '@chakra-ui/react';
+import { Box, Flex, SimpleGrid, Text } from '@chakra-ui/react';
 import AddTransactionButton from '../../components/AddTransactionButton/AddTransactionButton';
 
 type FundToUpdate = {
@@ -249,14 +249,17 @@ class Manager extends React.Component<any, State> {
                     onUpdateFundCallback = {this.onFundUpdated} 
                     funds = {funds}>
                 </FundsBar>
-                <SimpleGrid columns={2} spacing={4}>
-                    <Box p={6}>
+                <SimpleGrid columns={2} spacing={16}>
+                    <Box>
+                        <Flex justifyContent={"space-between"}>
+                            <Text fontSize="2xl" fontWeight={600}>Transactions</Text>
+                            <AddTransactionButton 
+                                fundSources={funds} 
+                                onTypeAdded={this.onTypeAdded} 
+                                transactionTypes={transactionTypes}
+                                onTransactionCreated={this.onTransactionCreated}/>
+                        </Flex>
                         <Pagination year={year} month={month} onPageSwitched={this.getTransactions}></Pagination>
-                        <AddTransactionButton 
-                            fundSources={funds} 
-                            onTypeAdded={this.onTypeAdded} 
-                            transactionTypes={transactionTypes}
-                            onTransactionCreated={this.onTransactionCreated}/>
                         <div className="transactions">
                             {
                             (transactions.length !== 0) ?
@@ -270,7 +273,7 @@ class Manager extends React.Component<any, State> {
                             }
                         </div>
                     </Box>
-                    <Box p={6}>
+                    <Box>
                         <TransactionMoneyGraphs funds={funds} transactions={transactions}/>
                     </Box>
                 </SimpleGrid>

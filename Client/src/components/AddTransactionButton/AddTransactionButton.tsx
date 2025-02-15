@@ -22,7 +22,7 @@ const AddTransactionButton: React.FC<Props> = (props: Props) => {
     }
 
     return <Fragment>
-        <Button onClick={() => onAddTransactionClick()}><AddIcon/></Button>
+        <Button leftIcon={<AddIcon/>} onClick={() => onAddTransactionClick()}>Add transaction</Button>
         <TransactionModal ref={addTransactionModalRef} onTypeAdded={props.onTypeAdded} 
             transactionTypes={props.transactionTypes} fundSources={props.fundSources}
             transaction={null} onSaved={props.onTransactionCreated}></TransactionModal>

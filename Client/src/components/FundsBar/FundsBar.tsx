@@ -45,21 +45,6 @@ class FundsBar extends React.Component<Props,State>{
     render(){
         const {total} = this.state;
         const {funds} = this.props;
-        // const onNewModalCallback = (isConfirmed: boolean, fund: FundEntity) => {
-        //     if (isConfirmed && fund){
-        //         this.props.onAddFundCallback(fund, onSuccessFundChangeCallback)
-        //     } else {
-        //         this.setState({fundModalVisible: false});
-        //     }
-        // };
-
-        // const onEditModalCallback = (isConfirmed: boolean, fund: FundEntity) => {
-        //     if (isConfirmed && fund){
-        //         this.props.onUpdateFundCallback(fund, onSuccessFundChangeCallback);
-        //     } else {
-        //         this.setState({fundModalVisible: false});
-        //     }
-        // };
 
         const onSuccessFundChangeCallback = (newFunds: FundEntity[]) => {
             this.setState({total: calculateTotal(newFunds)});
@@ -69,6 +54,8 @@ class FundsBar extends React.Component<Props,State>{
         const addFundCallback = (fund: FundEntity) => this.props.onAddFundCallback(fund, onSuccessFundChangeCallback)
 
         const deleteFundCallback = (fund: FundEntity) => this.props.onDeleteFundCallback(fund, onSuccessFundChangeCallback);
+
+        const onEditCallback = (fund: FundEntity) => this.props.onUpdateFundCallback(fund, onSuccessFundChangeCallback);
 
         return (
             <Fragment>
@@ -80,7 +67,7 @@ class FundsBar extends React.Component<Props,State>{
                 <SimpleGrid pt={5} pb={5} spacing={4} templateColumns='repeat(auto-fill, minmax(300px, 3fr))'>
                     {
                     funds.map((fund: FundEntity) => {
-                        return <Fund fund={fund} onDeleteCallback={deleteFundCallback} key={fund.id}></Fund>
+                        return <Fund fund={fund} onEditCallback={onEditCallback} onDeleteCallback={deleteFundCallback} key={fund.id}></Fund>
                     })
                     }
                     {addNewModal}

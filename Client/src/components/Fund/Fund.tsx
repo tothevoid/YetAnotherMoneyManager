@@ -3,11 +3,13 @@ import { FundEntity } from '../../models/FundEntity';
 import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button, Card, CardBody, Flex, Stack, Text, useDisclosure } from '@chakra-ui/react';
 import { currency } from '../../constants/currency';
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
-import React, { Fragment } from 'react';
+import React, { Fragment, useRef } from 'react';
+import FundModal from '../modals/FundModal/FundModal';
 
 type Props = {
     fund: FundEntity,
     onDeleteCallback: (fund: FundEntity) => void,
+    onEditCallback: (fund: FundEntity) => void
 }
 
 const Fund = (props: Props) => {
@@ -15,6 +17,13 @@ const Fund = (props: Props) => {
 
     const { isOpen, onOpen, onClose } = useDisclosure()
     const cancelRef = React.useRef(null)
+
+    const modalRef = useRef(null);
+
+    const onEdit = () => {
+        modalRef.current?.openModal()
+    };
+   
 
     const onDeleteClicked = () => {
         onClose(); 
@@ -30,7 +39,7 @@ const Fund = (props: Props) => {
                         <Text fontWeight={700}>{balance}{currency.rub}</Text>
                     </Stack>
                     <div>
-                        <Button background={'white'} size={'sm'}><EditIcon/></Button>
+                        <Button background={'white'} size={'sm'} onClick={() => onEdit()}><EditIcon/></Button>
                         <Button background={'white'} size={'sm'} onClick={onOpen}>
                             <DeleteIcon color={"red.600"}/>
                         </Button>
@@ -63,7 +72,7 @@ const Fund = (props: Props) => {
                 </AlertDialogContent>
             </AlertDialogOverlay>
         </AlertDialog>
-        
+        <FundModal fund={props.fund} ref={modalRef} onSaved={props.onEditCallback}></FundModal>
     </Fragment>
 };
 

@@ -1,18 +1,20 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { TransactionEntity } from '../../models/TransactionEntity';
 import { FundEntity } from '../../models/FundEntity';
 import { ArrowUpIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
-import { Flex, Stack, Card, CardBody, Text, Button, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, useDisclosure } from '@chakra-ui/react';
+import { Flex, Stack, Card, CardBody, Text, Button, AlertDialog, AlertDialogOverlay, 
+	AlertDialogContent, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, useDisclosure } from '@chakra-ui/react';
 import { currency } from '../../constants/currency';
+import TransactionModal from '../../modals/TransactionModal/TransactionModal';
+import { TransactionType } from '../../models/TransactionType';
 
 
 type Props = { 
-	onDelete: (id: TransactionEntity) => void,
-	onUpdate: (updatedTransaction: TransactionEntity,
-		lastTransaction: TransactionEntity,
-		onSuccess: () => void) => void,
+	onDelete: (transaction: TransactionEntity) => void,
+	onUpdate: (updatedTransaction: TransactionEntity) => void,
 	transaction: TransactionEntity,
-	fundSources: FundEntity[]
+	fundSources: FundEntity[],
+	transactionTypes: TransactionType[]
 } 
 
 const Transaction: React.FC<Props> = (props: Props) => {
@@ -22,6 +24,12 @@ const Transaction: React.FC<Props> = (props: Props) => {
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const cancelRef = React.useRef(null);
+
+ 	const editModalRef = useRef(null);
+
+	const onEditClicked = () => {
+		editModalRef.current?.openModal()
+	};
 
 	const onDeleteClicked = () => {
 		props.onDelete(props.transaction);
@@ -45,10 +53,10 @@ const Transaction: React.FC<Props> = (props: Props) => {
 				<Flex justifyContent="space-between" alignItems="center">
 					<Text>{transactionType?.name}</Text>
 					<Text>{moneyQuantity}{currency.rub}</Text>
-					<Button background={'white'} size={'sm'}>
+					<Button background={'white'} size={'sm'} onClick={onEditClicked}>
 						<EditIcon/>
 					</Button>
-					<Button background={'white'} size={'sm'} onClick={() => onOpen()}>
+					<Button background={'white'} size={'sm'} onClick={onOpen}>
 						<DeleteIcon color={"red.600"}/>
 					</Button>
 				</Flex>
@@ -79,6 +87,7 @@ const Transaction: React.FC<Props> = (props: Props) => {
 				</AlertDialogContent>
 			</AlertDialogOverlay>
 		</AlertDialog>
+		<TransactionModal transactionTypes={props.transactionTypes} fundSources={props.fundSources} transaction={props.transaction} ref={editModalRef} onSaved={props.onUpdate}/>
 	</Card>
 }
 

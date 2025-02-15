@@ -46,9 +46,8 @@ namespace MoneyManager.WEB.Api
         [HttpPatch]
         public async Task<IEnumerable<UpdateFundModel>> Update(UpdateTransactionModel updateFundModel)
         {
-            var lastTransaction = _mapper.Map<TransactionDTO>(updateFundModel.LastTransaction);
             var updatedTransaction = _mapper.Map<TransactionDTO>(updateFundModel.UpdatedTransaction);
-            var fundsToUpdate = await _transactionService.Update(lastTransaction, updatedTransaction);
+            var fundsToUpdate = await _transactionService.Update(updatedTransaction);
             return _mapper.Map<IEnumerable<UpdateFundModel>>(fundsToUpdate);
         }
     }

@@ -2,7 +2,6 @@ import React from 'react';
 import "./Manager.scss"
 import Transaction from '../../components/Transaction/Transaction';
 import FundsBar from '../../components/FundsBar/FundsBar';
-import ConfirmModal from '../../modals/ConfirmModal/ConfirmModal';
 import { TransactionEntity } from '../../models/TransactionEntity';
 import { FundEntity } from '../../models/FundEntity';
 import { insertByPredicate, reorderByPredicate } from '../../utils/ArrayExtensions'
@@ -181,15 +180,13 @@ class Manager extends React.Component<any, State> {
             .catch(logPromiseError);
     };
 
-    onTransactionUpdated = (updatedTransaction: TransactionEntity, 
-        lastTransaction: TransactionEntity, onSuccess: () => void) => {
+    onTransactionUpdated = (updatedTransaction: TransactionEntity) => {
         const url = `${config.api.URL}/Transaction`;
-        fetch(url, { method: "PATCH", body: JSON.stringify({updatedTransaction, lastTransaction}),  
+        fetch(url, { method: "PATCH", body: JSON.stringify({updatedTransaction}),  
             headers: {"Content-Type": "application/json"}})
             .then(checkPromiseStatus)
             .then(response => response.json())
             .then((funds: FundToUpdate[]) => {
-                onSuccess();
                 const {transactions} = this.state;
                 const newFunds = this.recalculateFunds(funds);
                 const updatedTransactions = reorderByPredicate(transactions, updatedTransaction, 
@@ -201,17 +198,12 @@ class Manager extends React.Component<any, State> {
     };
 
     getTypes = () => {
-        // const url = `${config.api.URL}/TransactionType`;
-        // fetch(url, {method: "GET"})
-        //     .then(checkPromiseStatus)
-        //     .then((response: Response) => response.json())
-        //     .then((transactionTypes: TransactionType[]) => this.setState({transactionTypes}))
-        //     .catch(logPromiseError);
-        //TODO: temporary static value
-        this.setState({transactionTypes: [
-            {id:crypto.randomUUID(), name: "Supermarket", "extension":""}, 
-            {id:crypto.randomUUID(), name: "Restaurants", "extension":""}
-        ]})
+        const url = `${config.api.URL}/TransactionType`;
+        fetch(url, {method: "GET"})
+            .then(checkPromiseStatus)
+            .then((response: Response) => response.json())
+            .then((transactionTypes: TransactionType[]) => this.setState({transactionTypes}))
+            .catch(logPromiseError);
     };
 
     onTypeAdded = (newType: TransactionType) => {
@@ -249,6 +241,7 @@ class Manager extends React.Component<any, State> {
                             transactions.map((transaction: TransactionEntity) => {       
                                 return <Transaction key={transaction.id} transaction={transaction} 
                                     onDelete={this.onTransactionDeleted} onUpdate={this.onTransactionUpdated}
+                                    transactionTypes={transactionTypes}
                                     fundSources={funds}>
                                 </Transaction>
                             }):

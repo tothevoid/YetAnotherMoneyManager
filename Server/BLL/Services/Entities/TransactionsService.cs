@@ -51,16 +51,19 @@ namespace MoneyManager.BLL.Services.Entities
             return transaction.Id;
         }
 
-        public async Task<List<UpdateFundDTO>> Update(TransactionDTO lastTransaction, TransactionDTO updateFundModel)
+        public async Task<List<UpdateFundDTO>> Update(TransactionDTO updateTransactionModel)
         {
-            var transaction = _mapper.Map<Transaction>(updateFundModel);
-            var sourceId = updateFundModel?.FundSource?.Id ?? default;
+            var transaction = _mapper.Map<Transaction>(updateTransactionModel);
+            var sourceId = updateTransactionModel?.FundSource?.Id ?? default;
             if (sourceId != default)
             {
-                transaction.FundSourceId = updateFundModel.FundSource.Id;
+                transaction.FundSourceId = updateTransactionModel.FundSource.Id;
             }
             var task = _transactionsRepo.Update(transaction);
-            var fundsToUpdate = await RecalculateFund(task, lastTransaction, updateFundModel);
+            var lastTransaction = await _transactionsRepo.GetById(updateTransactionModel.Id);
+            var lastTransactionDTO = _mapper.Map<TransactionDTO>(lastTransaction);
+
+            var fundsToUpdate = await RecalculateFund(task, lastTransactionDTO, updateTransactionModel);
             _db.Commit();
             return fundsToUpdate;
         }

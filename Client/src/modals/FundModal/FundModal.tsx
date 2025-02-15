@@ -2,8 +2,7 @@ import { Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButt
 	ModalFooter, ModalHeader, ModalOverlay, 
 	useDisclosure} from "@chakra-ui/react"
 import { forwardRef, useImperativeHandle, useState } from "react"
-
-import { FundEntity } from "../../../models/FundEntity";
+import { FundEntity } from "../../models/FundEntity";
 
 type FundProps = {
 	fund: FundEntity,

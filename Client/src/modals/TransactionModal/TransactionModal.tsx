@@ -18,7 +18,7 @@ type Props = {
 const TransactionModal: React.FC<Props> = forwardRef((props: Props, ref)=> {
 	const { isOpen, onOpen, onClose } = useDisclosure()
 
-	const source = (props.fundSources && props.fundSources.length !== 0) ? 
+	const source = (props.fundSources?.length > 0) ? 
 		props.fundSources[0] :
 		{id: ""} as FundEntity
 

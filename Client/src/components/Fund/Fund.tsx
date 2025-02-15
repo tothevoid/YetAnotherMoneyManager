@@ -18,10 +18,10 @@ const Fund = (props: Props) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const cancelRef = React.useRef(null)
 
-    const modalRef = useRef(null);
+    const editModalRef = useRef(null);
 
     const onEdit = () => {
-        modalRef.current?.openModal()
+        editModalRef.current?.openModal()
     };
    
 
@@ -72,7 +72,7 @@ const Fund = (props: Props) => {
                 </AlertDialogContent>
             </AlertDialogOverlay>
         </AlertDialog>
-        <FundModal fund={props.fund} ref={modalRef} onSaved={props.onEditCallback}></FundModal>
+        <FundModal fund={props.fund} ref={editModalRef} onSaved={props.onEditCallback}></FundModal>
     </Fragment>
 };
 

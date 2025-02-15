@@ -4,7 +4,7 @@ import { useRef } from "react"
 
 import { Fragment } from "react/jsx-runtime"
 import { FundEntity } from "../../models/FundEntity"
-import FundModal from "../modals/FundModal/FundModal"
+import FundModal from "../../modals/FundModal/FundModal"
 
 type FundProps = {
 	onAdded: (fund: FundEntity) => void;

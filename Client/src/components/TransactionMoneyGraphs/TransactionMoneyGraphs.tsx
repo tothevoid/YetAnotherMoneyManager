@@ -3,6 +3,7 @@ import { FundEntity } from '../../models/FundEntity'
 import { TransactionEntity } from '../../models/TransactionEntity'
 import { FrequencyDistributionModel } from '../FrequencyDistribution/FrequencyDistributionModel'
 import FrequencyDistribution from '../FrequencyDistribution/FrequencyDistribution'
+import { Box } from '@chakra-ui/react'
 
 type Props = {
     funds: FundEntity[]
@@ -37,37 +38,39 @@ const getElement = (collection: FrequencyDistributionModel[], title: string) =>
 
 
 const TransactionMoneyGraphs = (props: Props) => {
-    const {transactions, funds} = props;
+    // const {transactions, funds} = props;
 
-    if (!transactions || transactions.length === 0){
-        return null;
-    }
+    // if (!transactions || transactions.length === 0){
+    //     return null;
+    // }
 
-    const wrapByContext = (total: FrequencyDistributionModel[], transaction: TransactionEntity) =>
-        calculateDistribution(total, transaction, funds)
+    // const wrapByContext = (total: FrequencyDistributionModel[], transaction: TransactionEntity) =>
+    //     calculateDistribution(total, transaction, funds)
     
-    let gainDistrubution: FrequencyDistributionModel[] = [];
-    let spentsDistrubution: FrequencyDistributionModel[] = [];
-    let moneyFlow: FrequencyDistributionModel[] = [];
-    if (transactions){
-        spentsDistrubution = transactions.filter((element: TransactionEntity) => element.moneyQuantity < 0)
-            .reduce(wrapByContext, []);
-        gainDistrubution = transactions.filter((element: TransactionEntity) => element.moneyQuantity > 0)
-            .reduce(wrapByContext, []);
-        const spentValue = spentsDistrubution
-            .reduce((currentSum: number, spent: FrequencyDistributionModel) => currentSum + Math.abs(spent.value), 0);
-        const gainValue = gainDistrubution
-            .reduce((currentSum: number, spent: FrequencyDistributionModel) => currentSum + spent.value, 0);
-        moneyFlow = [
-            {id: "1", name: "Got", value: gainValue},
-            {id: "2", name: "Spent", value: spentValue}];
-    }
+    // let gainDistrubution: FrequencyDistributionModel[] = [];
+    // let spentsDistrubution: FrequencyDistributionModel[] = [];
+    // let moneyFlow: FrequencyDistributionModel[] = [];
+    // if (transactions){
+    //     spentsDistrubution = transactions.filter((element: TransactionEntity) => element.moneyQuantity < 0)
+    //         .reduce(wrapByContext, []);
+    //     gainDistrubution = transactions.filter((element: TransactionEntity) => element.moneyQuantity > 0)
+    //         .reduce(wrapByContext, []);
+    //     const spentValue = spentsDistrubution
+    //         .reduce((currentSum: number, spent: FrequencyDistributionModel) => currentSum + Math.abs(spent.value), 0);
+    //     const gainValue = gainDistrubution
+    //         .reduce((currentSum: number, spent: FrequencyDistributionModel) => currentSum + spent.value, 0);
+    //     moneyFlow = [
+    //         {id: "1", name: "Got", value: gainValue},
+    //         {id: "2", name: "Spent", value: spentValue}];
+    // }
 
-    return <Fragment>
-        {getElement(moneyFlow, "Month's money change")}
-        {getElement(gainDistrubution, "Gain distribution")}
-        {getElement(spentsDistrubution, "Spents distribution")}
-    </Fragment> 
+    // return <Fragment>
+    //     {getElement(moneyFlow, "Month's money change")}
+    //     {getElement(gainDistrubution, "Gain distribution")}
+    //     {getElement(spentsDistrubution, "Spents distribution")}
+    // </Fragment> 
+
+    return <Box height={200} rounded={10} background={'gray.700'}></Box>
 }
 
 export default TransactionMoneyGraphs;

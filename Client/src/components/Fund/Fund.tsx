@@ -4,7 +4,7 @@ import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, Al
 import { currency } from '../../constants/currency';
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import React, { Fragment, useRef } from 'react';
-import FundModal from '../modals/FundModal/FundModal';
+import FundModal from '../../modals/FundModal/FundModal';
 
 type Props = {
     fund: FundEntity,

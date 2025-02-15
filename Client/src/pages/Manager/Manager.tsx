@@ -1,7 +1,6 @@
 import React from 'react';
 import "./Manager.scss"
 import Transaction from '../../components/Transaction/Transaction';
-import AddTransaction from '../../forms/AddTransaction/AddTransaction';
 import FundsBar from '../../components/FundsBar/FundsBar';
 import ConfirmModal from '../../modals/ConfirmModal/ConfirmModal';
 import { TransactionEntity } from '../../models/TransactionEntity';
@@ -12,8 +11,9 @@ import Pagination from '../../components/Pagination/Pagination';
 import TransactionMoneyGraphs from '../../components/TransactionMoneyGraphs/TransactionMoneyGraphs';
 import { logPromiseError, checkPromiseStatus } from '../../utils/PromiseUtils';
 import { convertToInputDate } from '../../utils/DateUtils';
-import { hideableHOC } from '../../HOC/Hideable/Hideable';
 import { TransactionType } from '../../models/TransactionType';
+import { Box, SimpleGrid } from '@chakra-ui/react';
+import AddTransactionButton from '../../components/AddTransactionButton/AddTransactionButton';
 
 type FundToUpdate = {
     fundId: string,
@@ -124,7 +124,7 @@ class Manager extends React.Component<any, State> {
             .catch(logPromiseError)
     };
 
-    onTransactionCreated = (transaction: Omit<TransactionEntity, "id">) => {
+    onTransactionCreated = (transaction: TransactionEntity) => {
         const url = `${config.api.URL}/Transaction`;
         fetch(url, { method: "PUT", body: JSON.stringify(transaction),
             headers: {"Content-Type": "application/json"}})
@@ -144,12 +144,12 @@ class Manager extends React.Component<any, State> {
             .catch(logPromiseError);
     };
 
-    recalculateFund = (changedTrasnaction: TransactionEntity, sign: number) => {
+    recalculateFund = (changedTransaction: TransactionEntity, sign: number) => {
         const {funds} = this.state;
-        if (changedTrasnaction.fundSource && changedTrasnaction.fundSource.id && funds && funds.length !== 0){
+        if (changedTransaction.fundSource && changedTransaction.fundSource.id && funds && funds.length !== 0){
             const newFunds = funds.map((fund: FundEntity) => {
-                if (fund.id === changedTrasnaction.fundSource.id){
-                    fund.balance += changedTrasnaction.moneyQuantity * sign;
+                if (fund.id === changedTransaction.fundSource.id){
+                    fund.balance += changedTransaction.moneyQuantity * sign;
                 } 
                 return fund;
             });
@@ -211,12 +211,17 @@ class Manager extends React.Component<any, State> {
     };
 
     getTypes = () => {
-        const url = `${config.api.URL}/TransactionType`;
-        fetch(url, {method: "GET"})
-            .then(checkPromiseStatus)
-            .then((response: Response) => response.json())
-            .then((transactionTypes: TransactionType[]) => this.setState({transactionTypes}))
-            .catch(logPromiseError);
+        // const url = `${config.api.URL}/TransactionType`;
+        // fetch(url, {method: "GET"})
+        //     .then(checkPromiseStatus)
+        //     .then((response: Response) => response.json())
+        //     .then((transactionTypes: TransactionType[]) => this.setState({transactionTypes}))
+        //     .catch(logPromiseError);
+        //TODO: temporary static value
+        this.setState({transactionTypes: [
+            {id:crypto.randomUUID(), name: "Supermarket", "extension":""}, 
+            {id:crypto.randomUUID(), name: "Restaurants", "extension":""}
+        ]})
     };
 
     onTypeAdded = (newType: TransactionType) => {
@@ -234,15 +239,8 @@ class Manager extends React.Component<any, State> {
             const content = () => <p>{"Are you sure want to delete this record?"}</p>;
             modal = ConfirmModal(content)({title: "Confirm transaction delete", onModalCallback});
         }
-      
-        const Graphs = hideableHOC("Month money distribution")(TransactionMoneyGraphs);
-        const hidableGraphsComponent = 
-            <Graphs funds={funds} transactions={transactions}/>;
+        
 
-        const NewTransaction = hideableHOC("New transaction")(AddTransaction);
-        const hidableAddTransactionComponent = 
-            <NewTransaction onTypeAdded={this.onTypeAdded} transactionTypes={transactionTypes} fundSources={funds}
-                callback={this.onTransactionCreated}/>;
         return (
             <div>
                 {modal}
@@ -251,22 +249,31 @@ class Manager extends React.Component<any, State> {
                     onUpdateFundCallback = {this.onFundUpdated} 
                     funds = {funds}>
                 </FundsBar>
-                {hidableGraphsComponent}
-                {hidableAddTransactionComponent}
-                <h2 className="sub-title">Transactions</h2>
-                <Pagination year={year} month={month} onPageSwitched={this.getTransactions}></Pagination>
-                <div className="transactions">
-                    {
-                    (transactions.length !== 0) ?
-                    transactions.map((transaction: TransactionEntity) => {       
-                        return <Transaction key={transaction.id} transaction={transaction} 
-                            onDelete={this.onTransactionDeleted} onUpdate={this.onTransactionUpdated}
-                            fundSources={funds}>
-                        </Transaction>
-                    }):
-                    <div className="empty-transactions">There is no transactions yet</div>
-                    }
-                </div>
+                <SimpleGrid columns={2} spacing={4}>
+                    <Box p={6}>
+                        <Pagination year={year} month={month} onPageSwitched={this.getTransactions}></Pagination>
+                        <AddTransactionButton 
+                            fundSources={funds} 
+                            onTypeAdded={this.onTypeAdded} 
+                            transactionTypes={transactionTypes}
+                            onTransactionCreated={this.onTransactionCreated}/>
+                        <div className="transactions">
+                            {
+                            (transactions.length !== 0) ?
+                            transactions.map((transaction: TransactionEntity) => {       
+                                return <Transaction key={transaction.id} transaction={transaction} 
+                                    onDelete={this.onTransactionDeleted} onUpdate={this.onTransactionUpdated}
+                                    fundSources={funds}>
+                                </Transaction>
+                            }):
+                            <div className="empty-transactions">There is no transactions yet</div>
+                            }
+                        </div>
+                    </Box>
+                    <Box p={6}>
+                        <TransactionMoneyGraphs funds={funds} transactions={transactions}/>
+                    </Box>
+                </SimpleGrid>
             </div>
         );
     }

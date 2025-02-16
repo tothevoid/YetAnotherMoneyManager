@@ -1,8 +1,10 @@
 import React, { forwardRef, useImperativeHandle, useState } from 'react'
+import "./TransactionModal.scss"
 import { TransactionEntity } from '../../models/TransactionEntity';
 import { FundEntity } from '../../models/FundEntity';
 import { getCurrentDate } from '../../utils/DateUtils';
 import { TransactionType } from '../../models/TransactionType';
+import DatePicker from "react-datepicker";
 // import TransactionTypeSelect from '../../TransactionTypeSelect/TransactionTypeSelect';
 import { FormControl, Button, FormLabel, Input, Modal, ModalBody, ModalCloseButton, 
 	ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure, Select } from '@chakra-ui/react';
@@ -25,7 +27,7 @@ const TransactionModal: React.FC<Props> = forwardRef((props: Props, ref)=> {
 	const initialState: TransactionEntity = {
 		id: props.transaction?.id ?? crypto.randomUUID(),
 		name: props.transaction?.name ?? "",
-		date: props.transaction?.date ?? getCurrentDate(),
+		date: props.transaction?.date ?? new Date(),
 		moneyQuantity: props.transaction?.moneyQuantity ?? 0,
 		fundSource: props.transaction?.fundSource ?? source,
 		transactionType: props.transaction?.transactionType ?? {id: ""} as TransactionType,
@@ -57,6 +59,10 @@ const TransactionModal: React.FC<Props> = forwardRef((props: Props, ref)=> {
 		}
 	}
 
+	const onDateChanged = (date: Date | null) => {
+		setFormData((prev) => ({ ...prev, date: date }));
+	}
+
 	const onTransactionSaveClick = () => {
 		formData.moneyQuantity = parseFloat(formData.moneyQuantity);
 
@@ -86,8 +92,13 @@ const TransactionModal: React.FC<Props> = forwardRef((props: Props, ref)=> {
 				<Input type='price' name="moneyQuantity" value={formData.moneyQuantity} onChange={handleChange} placeholder='500' />
 			</FormControl>
 			<FormControl mt={4}>
-				<FormLabel>Diff</FormLabel>
-				<Input type="date" name="date" value={formData.date} onChange={handleChange} placeholder='500' />
+				<FormLabel>Date</FormLabel>
+				<DatePicker wrapperClassName="transaction-datepicker"
+					selected={formData.date}
+					onChange={onDateChanged}
+					dateFormat="dd.MM.yyyy"
+					customInput={<Input/>}
+				/>
 			</FormControl>
 			<FormControl mt={4}>
 				<FormLabel>Source</FormLabel>

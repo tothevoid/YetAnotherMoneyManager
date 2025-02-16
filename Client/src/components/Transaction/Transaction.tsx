@@ -7,6 +7,7 @@ import { Flex, Stack, Card, CardBody, Text, Button, AlertDialog, AlertDialogOver
 import TransactionModal from '../../modals/TransactionModal/TransactionModal';
 import { TransactionType } from '../../models/TransactionType';
 import { formatMoney } from '../../formatters/moneyFormatter';
+import { formatDate } from '../../formatters/dateFormatter';
 
 
 type Props = { 
@@ -47,7 +48,7 @@ const Transaction: React.FC<Props> = (props: Props) => {
 					<ArrowUpIcon rounded={16} fontSize="24"  background={'green.100'} color={'green.600'}/>
 					<Stack ml={5}>
 						<Text fontWeight={700}>{name}</Text>
-						<Text>{date} • {fundSource.name}</Text>
+						<Text>{formatDate(date, false)} • {fundSource.name}</Text>
 					</Stack>
 				</Stack>
 				<Flex gap={2} justifyContent="space-between" alignItems="center">

@@ -4,6 +4,8 @@ import './index.css'
 import App from './App.tsx'
 import { ChakraProvider } from '@chakra-ui/react'
 
+import "react-datepicker/dist/react-datepicker.css";
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ChakraProvider>

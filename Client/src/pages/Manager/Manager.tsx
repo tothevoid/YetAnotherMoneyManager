@@ -60,7 +60,8 @@ class Manager extends React.Component<any, State> {
             .then((transactions: TransactionEntity[]) => 
                 transactions.map((transaction: TransactionEntity) => {
                     const date = new Date(transaction.date);
-                    return {...transaction, date: convertToInputDate(date)};
+                    // convertToInputDate
+                    return {...transaction, date: date};
                 })
             )
             .then(transactions => this.setState({transactions}))

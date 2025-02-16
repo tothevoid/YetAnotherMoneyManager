@@ -5,7 +5,7 @@ import { FundEntity } from '../../models/FundEntity';
 import { SimpleGrid } from '@chakra-ui/react/grid';
 import { Flex, Text } from '@chakra-ui/react';
 import AddFundButton from '../AddFundButton/AddFundButton';
-import { currency } from '../../constants/currency';
+import { formatMoney } from '../../formatters/moneyFormatter';
 
 const calculateTotal = (items: FundEntity[]) => {
     if (items && items.length > 0) return items.reduce((total: number, item: FundEntity)=> 
@@ -58,11 +58,12 @@ class FundsBar extends React.Component<Props,State>{
 
         const onEditCallback = (fund: FundEntity) => this.props.onUpdateFundCallback(fund, onSuccessFundChangeCallback);
 
+
         return (
             <Fragment>
                 {/* <h3 className="funds-total">Total: {total}&#8381;</h3> */}
                 <Flex justifyContent="space-between" alignItems="center" pt={5} pb={5}>
-                    <Text fontSize='3xl'>Funds: {total}{currency.rub}</Text>
+                    <Text fontSize='3xl'>Funds: {formatMoney(total)}</Text>
                     <AddFundButton onAdded={addFundCallback}></AddFundButton>
                 </Flex>
                 <SimpleGrid pt={5} pb={5} spacing={4} templateColumns='repeat(auto-fill, minmax(300px, 3fr))'>

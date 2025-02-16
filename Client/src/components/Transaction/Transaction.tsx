@@ -4,9 +4,9 @@ import { FundEntity } from '../../models/FundEntity';
 import { ArrowUpIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { Flex, Stack, Card, CardBody, Text, Button, AlertDialog, AlertDialogOverlay, 
 	AlertDialogContent, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, useDisclosure } from '@chakra-ui/react';
-import { currency } from '../../constants/currency';
 import TransactionModal from '../../modals/TransactionModal/TransactionModal';
 import { TransactionType } from '../../models/TransactionType';
+import { formatMoney } from '../../formatters/moneyFormatter';
 
 
 type Props = { 
@@ -50,9 +50,9 @@ const Transaction: React.FC<Props> = (props: Props) => {
 						<Text>{date} • {fundSource.name}</Text>
 					</Stack>
 				</Stack>
-				<Flex justifyContent="space-between" alignItems="center">
-					<Text>{transactionType?.name}</Text>
-					<Text>{moneyQuantity}{currency.rub}</Text>
+				<Flex gap={2} justifyContent="space-between" alignItems="center">
+					<Text background={'green.100'} textAlign={'center'} w={150} rounded={10} padding={1} >{transactionType?.name}</Text>
+					<Text>{formatMoney(moneyQuantity)}</Text>
 					<Button background={'white'} size={'sm'} onClick={onEditClicked}>
 						<EditIcon/>
 					</Button>

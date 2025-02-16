@@ -1,10 +1,10 @@
 import './Fund.scss'
 import { FundEntity } from '../../models/FundEntity';
 import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button, Card, CardBody, Flex, Stack, Text, useDisclosure } from '@chakra-ui/react';
-import { currency } from '../../constants/currency';
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import React, { Fragment, useRef } from 'react';
 import FundModal from '../../modals/FundModal/FundModal';
+import { formatMoney } from '../../formatters/moneyFormatter';
 
 type Props = {
     fund: FundEntity,
@@ -36,7 +36,7 @@ const Fund = (props: Props) => {
                 <Flex justifyContent="space-between" alignItems="center">
                     <Stack>
                         <Text fontWeight={600}>{name}</Text>
-                        <Text fontWeight={700}>{balance}{currency.rub}</Text>
+                        <Text fontWeight={700}>{formatMoney(balance)}</Text>
                     </Stack>
                     <div>
                         <Button background={'white'} size={'sm'} onClick={() => onEdit()}><EditIcon/></Button>

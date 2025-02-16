@@ -2,7 +2,6 @@ import React, { forwardRef, useImperativeHandle, useState } from 'react'
 import "./TransactionModal.scss"
 import { TransactionEntity } from '../../models/TransactionEntity';
 import { FundEntity } from '../../models/FundEntity';
-import { getCurrentDate } from '../../utils/DateUtils';
 import { TransactionType } from '../../models/TransactionType';
 import DatePicker from "react-datepicker";
 // import TransactionTypeSelect from '../../TransactionTypeSelect/TransactionTypeSelect';

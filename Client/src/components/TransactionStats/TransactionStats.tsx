@@ -2,7 +2,7 @@ import { FundEntity } from '../../models/FundEntity'
 import { TransactionEntity } from '../../models/TransactionEntity'
 import { Button, Flex, Stack } from '@chakra-ui/react'
 import { Text } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { TransactionType } from '../../models/TransactionType';
 
@@ -17,9 +17,15 @@ type PieChartData = {
     value: number;
 }
 
-const dataGrouping = {
-    BySource: 0,
-    ByType: 1
+type GroupingConfig = {
+    group:DataGrouping;
+    caption: string;
+    dataFunc: (transactions: TransactionEntity[]) => PieChartData[];
+}
+
+enum DataGrouping {
+    BySource = 0,
+    ByType = 1
 }
 
 
@@ -47,7 +53,12 @@ const getGraphData = (transactions: TransactionEntity[],
 }
 
 const getPossibleColors = () => {
-    return ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"]
+    return [
+        "#FF6347", "#4B0082", "#2E8B57", "#D2691E", "#8A2BE2",
+        "#7FFF00", "#DCDCDC", "#A52A2A", "#5F9EA0", "#FF4500",
+        "#6A5ACD", "#C71585", "#4682B4", "#32CD32", "#8B4513",
+        "#B8860B", "#20B2AA", "#FF8C00", "#6B8E23", "#483D8B"
+    ]
 }
 
 const getNameMapping = <CollectionType,>(
@@ -65,33 +76,38 @@ const TransactionStats = (props: Props) => {
     const transactionTypeMapping = getNameMapping(props.transactionTypes, 
         (transactionType) => transactionType.id, (transactionType) => transactionType.name );
 
-    const groupingConfig = [
-        {
-            group: dataGrouping.BySource,
-            caption: "By source",
-            dataFunc: () => getGraphData(props.transactions, (transaction) => transaction.fundSource.id,
-                (key) => fundsMapping.get(key) ?? "Incorrect source")
-        },
-        {
-            group: dataGrouping.ByType,
-            caption: "By type",
-            dataFunc: () => getGraphData(props.transactions, (transaction) => transaction.transactionType.id,
-                (key) => transactionTypeMapping.get(key) ?? "Incorrect type")
-        }
-    ]
+    const [selectedGrouping, setSelectedGrouping] = useState(DataGrouping.BySource);
+    const [chartData, setChartData] = useState([] as PieChartData[]);
 
-    const [state, setState] = useState({selectedGrouping: dataGrouping.BySource, 
-        data: groupingConfig[0].dataFunc()});
+    const groupingConfig = new Map<DataGrouping, GroupingConfig>([
+        [ DataGrouping.BySource, {
+            group: DataGrouping.BySource,
+            caption: "By source",
+            dataFunc: (transactions: TransactionEntity[]) => getGraphData(transactions, (transaction) => transaction.fundSource.id,
+                (key) => fundsMapping.get(key) ?? "Incorrect source")
+        }],
+        [ DataGrouping.ByType, {
+            group: DataGrouping.ByType,
+            caption: "By type",
+            dataFunc: (transactions: TransactionEntity[]) => getGraphData(transactions, (transaction) => transaction.transactionType.id,
+                (key) => transactionTypeMapping.get(key) ?? "Incorrect type")
+        }]
+    ]);
+
+    useEffect(() => {
+        const data = groupingConfig.get(selectedGrouping)?.dataFunc(props.transactions) ?? [];
+        setChartData(data);
+    }, [props.transactions, selectedGrouping]);
+
 
     const colors = getPossibleColors();
     return <Stack>
         <Text fontSize="2xl" fontWeight={600}>Stats</Text>
         <Flex gap={4} alignItems={'center'}>
             {
-                groupingConfig.map(groupingConfig => {
-                    return <Button key={groupingConfig.group} colorScheme='purple'  disabled={groupingConfig.group == state.selectedGrouping} onClick={() => {
-                            setState({data: groupingConfig.dataFunc(), selectedGrouping: groupingConfig.group})
-                        }}>
+                [...groupingConfig.values()].map(groupingConfig => {
+                    return <Button key={groupingConfig.group} colorScheme='purple' disabled={groupingConfig.group == selectedGrouping} 
+                        onClick={() => {setSelectedGrouping(groupingConfig.group)}}>
                         {groupingConfig.caption}
                     </Button>
                 })
@@ -101,8 +117,8 @@ const TransactionStats = (props: Props) => {
         <div style={{ width: '100%', height: 300 }}>
             <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                    <Pie data={state.data} cx="50%" cy="50%" outerRadius={100} dataKey="value">
-                    {state.data.map((_, index) => (
+                    <Pie data={chartData} cx="50%" cy="50%" outerRadius={100} dataKey="value">
+                    {chartData.map((_, index) => (
                         <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
                         ))}
                     </Pie>

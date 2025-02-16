@@ -53,7 +53,7 @@ const Transaction: React.FC<Props> = (props: Props) => {
 				</Stack>
 				<Flex gap={2} justifyContent="space-between" alignItems="center">
 					<Text background={'green.100'} textAlign={'center'} w={150} rounded={10} padding={1} >{transactionType?.name}</Text>
-					<Text>{formatMoney(moneyQuantity)}</Text>
+					<Text width={100} align={"right"} >{formatMoney(moneyQuantity)}</Text>
 					<Button background={'white'} size={'sm'} onClick={onEditClicked}>
 						<EditIcon/>
 					</Button>

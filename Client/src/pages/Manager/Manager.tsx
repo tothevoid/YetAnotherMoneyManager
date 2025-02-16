@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import "./Manager.scss"
 import Transaction from '../../components/Transaction/Transaction';
 import FundsBar from '../../components/FundsBar/FundsBar';
@@ -9,7 +9,6 @@ import config from '../../config'
 import Pagination from '../../components/Pagination/Pagination';
 import TransactionStats from '../../components/TransactionStats/TransactionStats';
 import { logPromiseError, checkPromiseStatus } from '../../utils/PromiseUtils';
-import { convertToInputDate } from '../../utils/DateUtils';
 import { TransactionType } from '../../models/TransactionType';
 import { Box, Flex, SimpleGrid, Text } from '@chakra-ui/react';
 import AddTransactionButton from '../../components/AddTransactionButton/AddTransactionButton';
@@ -251,7 +250,11 @@ class Manager extends React.Component<any, State> {
                         </div>
                     </Box>
                     <Box>
-                        <TransactionStats transactionTypes={transactionTypes} funds={funds} transactions={transactions}/>
+                        {
+                            transactions.length > 0 ?
+                                <TransactionStats transactionTypes={transactionTypes} funds={funds} transactions={transactions}/>:
+                                <Fragment/>
+                        }
                     </Box>
                 </SimpleGrid>
             </div>

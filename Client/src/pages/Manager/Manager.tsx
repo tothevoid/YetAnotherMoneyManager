@@ -16,7 +16,7 @@ import AddTransactionButton from '../../components/AddTransactionButton/AddTrans
 
 type FundToUpdate = {
     fundId: string,
-    delta: number       
+    delta: number
 }
 
 type State = {
@@ -182,7 +182,7 @@ class Manager extends React.Component<any, State> {
 
     onTransactionUpdated = (updatedTransaction: TransactionEntity) => {
         const url = `${config.api.URL}/Transaction`;
-        fetch(url, { method: "PATCH", body: JSON.stringify({updatedTransaction}),  
+        fetch(url, { method: "PATCH", body: JSON.stringify(updatedTransaction),  
             headers: {"Content-Type": "application/json"}})
             .then(checkPromiseStatus)
             .then(response => response.json())

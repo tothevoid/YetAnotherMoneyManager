@@ -59,6 +59,14 @@ namespace MoneyManager.BLL.Services.Entities
             {
                 transaction.FundSourceId = updateTransactionModel.FundSource.Id;
             }
+
+            //TODO: Fix duplication and make it automatic
+            var transactionTypeId = transaction?.TransactionType?.Id ?? default;
+            if (transactionTypeId != default)
+            {
+                transaction.TransactionTypeId = transactionTypeId;
+            }
+
             var task = _transactionsRepo.Update(transaction);
             var lastTransaction = await _transactionsRepo.GetById(updateTransactionModel.Id);
             var lastTransactionDTO = _mapper.Map<TransactionDTO>(lastTransaction);

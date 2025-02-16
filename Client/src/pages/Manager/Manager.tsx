@@ -7,7 +7,7 @@ import { FundEntity } from '../../models/FundEntity';
 import { insertByPredicate, reorderByPredicate } from '../../utils/ArrayExtensions'
 import config from '../../config' 
 import Pagination from '../../components/Pagination/Pagination';
-import TransactionMoneyGraphs from '../../components/TransactionMoneyGraphs/TransactionMoneyGraphs';
+import TransactionStats from '../../components/TransactionStats/TransactionStats';
 import { logPromiseError, checkPromiseStatus } from '../../utils/PromiseUtils';
 import { convertToInputDate } from '../../utils/DateUtils';
 import { TransactionType } from '../../models/TransactionType';
@@ -250,7 +250,7 @@ class Manager extends React.Component<any, State> {
                         </div>
                     </Box>
                     <Box>
-                        <TransactionMoneyGraphs funds={funds} transactions={transactions}/>
+                        <TransactionStats transactionTypes={transactionTypes} funds={funds} transactions={transactions}/>
                     </Box>
                 </SimpleGrid>
             </div>

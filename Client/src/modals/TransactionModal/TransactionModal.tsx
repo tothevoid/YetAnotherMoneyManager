@@ -58,6 +58,8 @@ const TransactionModal: React.FC<Props> = forwardRef((props: Props, ref)=> {
 	}
 
 	const onTransactionSaveClick = () => {
+		formData.moneyQuantity = parseFloat(formData.moneyQuantity);
+
 		props.onSaved(formData);
 		setFormData(initialState)
 		onClose();
@@ -81,7 +83,7 @@ const TransactionModal: React.FC<Props> = forwardRef((props: Props, ref)=> {
 			</FormControl>
 			<FormControl mt={4}>
 				<FormLabel>Diff</FormLabel>
-				<Input type="number" name="moneyQuantity" value={formData.moneyQuantity} onChange={handleChange} placeholder='500' />
+				<Input type='price' name="moneyQuantity" value={formData.moneyQuantity} onChange={handleChange} placeholder='500' />
 			</FormControl>
 			<FormControl mt={4}>
 				<FormLabel>Diff</FormLabel>

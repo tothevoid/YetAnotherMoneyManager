@@ -16,6 +16,16 @@ type Props = {
 	onTypeAdded: (type: TransactionType) => void
 }
 
+enum TransactionDirection {
+	Income = 0,
+	Spent = 1
+}
+
+const transactionDirections = new Map<TransactionDirection, string>([
+	[TransactionDirection.Income, "Income"],
+	[TransactionDirection.Spent, "Spent"],
+])
+
 const TransactionModal: React.FC<Props> = forwardRef((props: Props, ref)=> {
 	const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -23,26 +33,41 @@ const TransactionModal: React.FC<Props> = forwardRef((props: Props, ref)=> {
 		props.fundSources[0] :
 		{id: ""} as FundEntity
 
+	const moneyQuantity = props.transaction?.moneyQuantity ? 
+		Math.abs(props.transaction.moneyQuantity) :
+		0;
+
+	const direction: number | null = props.transaction && props.transaction.moneyQuantity > 0 ?
+		TransactionDirection.Income:
+		TransactionDirection.Spent;
+
 	const initialState: TransactionEntity = {
 		id: props.transaction?.id ?? crypto.randomUUID(),
 		name: props.transaction?.name ?? "",
 		date: props.transaction?.date ?? new Date(),
-		moneyQuantity: props.transaction?.moneyQuantity ?? 0,
+		moneyQuantity: moneyQuantity,
 		fundSource: props.transaction?.fundSource ?? source,
-		transactionType: props.transaction?.transactionType ?? {id: ""} as TransactionType,
+		transactionType: props.transaction?.transactionType ?? {id: ""} as TransactionType
 	};
+
+	const [formData, setFormData] = useState(initialState);
+	const [modalState, setModalState] = useState({direction});
 
 	useImperativeHandle(ref, () => ({
 		openModal: onOpen,
 	}));
-
-	const [formData, setFormData] = useState(initialState);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value, type } = e.target;
 		const normalizedValue = (type === "number" || type === "price") ? parseFloat(value) : value;
 		setFormData((prev) => ({ ...prev, [name]: normalizedValue }));
 	};
+
+	const handleTransactionDirectionChange = ({ target: { value } }: React.ChangeEvent<HTMLSelectElement>) => {
+		const newValue = value ? parseInt(value): null;
+
+		setModalState((prev) => ({ ...prev, direction: newValue }));
+	}
 
 	const handleSourceChange = ({ target: { name, value } }: React.ChangeEvent<HTMLSelectElement>) => {
 		const source = props.fundSources.find((entity: FundEntity) => entity.id === value);
@@ -63,8 +88,11 @@ const TransactionModal: React.FC<Props> = forwardRef((props: Props, ref)=> {
 	}
 
 	const onTransactionSaveClick = () => {
-		formData.moneyQuantity = parseFloat(formData.moneyQuantity);
+		const multiplier = modalState.direction === TransactionDirection.Income ?
+			1:
+			-1;
 
+		formData.moneyQuantity = multiplier * formData.moneyQuantity;
 		props.onSaved(formData);
 		setFormData(initialState)
 		onClose();
@@ -87,8 +115,17 @@ const TransactionModal: React.FC<Props> = forwardRef((props: Props, ref)=> {
 				<Input name="name" value={formData.name} onChange={handleChange} placeholder='Grocery' />
 			</FormControl>
 			<FormControl mt={4}>
+				<FormLabel>Direction</FormLabel>
+				<Select name="direction" onChange={handleTransactionDirectionChange} placeholder='Select direction'
+					value={modalState.direction}>
+					{[...transactionDirections.entries()].map(([key, value]) => {
+						return <option key={key} value={key}>{value}</option>
+					})}
+				</Select>
+			</FormControl>
+			<FormControl mt={4}>
 				<FormLabel>Diff</FormLabel>
-				<Input type='price' name="moneyQuantity" value={formData.moneyQuantity} onChange={handleChange} placeholder='500' />
+				<Input type='number' name="moneyQuantity" value={formData.moneyQuantity} onChange={handleChange} placeholder='500' />
 			</FormControl>
 			<FormControl mt={4}>
 				<FormLabel>Date</FormLabel>

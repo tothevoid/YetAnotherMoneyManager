@@ -34,7 +34,9 @@ const getGraphData = (transactions: TransactionEntity[],
     keyMapping: ((key: string) => string) | null = null) => {
     const data: Array<PieChartData> = []
 
-    transactions.reduce(
+    transactions
+        .filter(transaction => transaction.moneyQuantity < 0)
+        .reduce(
         (accumulator: Map<string, number>, currentValue: TransactionEntity) => {
             const key = keySelector(currentValue);
             let currentQuantity = currentValue.moneyQuantity;
@@ -47,7 +49,7 @@ const getGraphData = (transactions: TransactionEntity[],
         }, new Map<string, number>(),
     ).forEach((value, key) => {
         const mappedName = keyMapping ? keyMapping(key): key;
-        data.push({name: mappedName, value});
+        data.push({name: mappedName, value: Math.abs(value)});
     })
     return data;
 }

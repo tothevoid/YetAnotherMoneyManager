@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle, useState } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import "./TransactionModal.scss"
 import { TransactionEntity } from '../../models/TransactionEntity';
 import { FundEntity } from '../../models/FundEntity';
@@ -29,10 +29,6 @@ const transactionDirections = new Map<TransactionDirection, string>([
 const TransactionModal: React.FC<Props> = forwardRef((props: Props, ref)=> {
 	const { isOpen, onOpen, onClose } = useDisclosure()
 
-	const source = (props.fundSources?.length > 0) ? 
-		props.fundSources[0] :
-		{id: ""} as FundEntity
-
 	const moneyQuantity = props.transaction?.moneyQuantity ? 
 		Math.abs(props.transaction.moneyQuantity) :
 		0;
@@ -41,17 +37,32 @@ const TransactionModal: React.FC<Props> = forwardRef((props: Props, ref)=> {
 		TransactionDirection.Income:
 		TransactionDirection.Spent;
 
-	const initialState: TransactionEntity = {
-		id: props.transaction?.id ?? crypto.randomUUID(),
-		name: props.transaction?.name ?? "",
-		date: props.transaction?.date ?? new Date(),
-		moneyQuantity: moneyQuantity,
-		fundSource: props.transaction?.fundSource ?? source,
-		transactionType: props.transaction?.transactionType ?? {id: ""} as TransactionType
-	};
+	const getInitialState = (): TransactionEntity => {
+		const source = (props.fundSources?.length > 0) ? 
+			props.fundSources[0] :
+			{id: ""} as FundEntity
+	
+		const transactionType = (props.transactionTypes?.length > 0) ? 
+			props.transactionTypes[0] :
+			{id: ""} as TransactionType
 
-	const [formData, setFormData] = useState(initialState);
+		return {
+			id: props.transaction?.id ?? crypto.randomUUID(),
+			name: props.transaction?.name ?? "",
+			date: props.transaction?.date ?? new Date(),
+			moneyQuantity: moneyQuantity,
+			fundSource: props.transaction?.fundSource ?? source,
+			transactionType: props.transaction?.transactionType ?? transactionType
+		};
+	}
+
+	const [formData, setFormData] = useState<TransactionEntity>(getInitialState);
 	const [modalState, setModalState] = useState({direction});
+
+	useEffect(() => {
+		setFormData(getInitialState());
+	}, [props.transaction, props.fundSources, props.transactionTypes]);
+
 
 	useImperativeHandle(ref, () => ({
 		openModal: onOpen,
@@ -94,7 +105,6 @@ const TransactionModal: React.FC<Props> = forwardRef((props: Props, ref)=> {
 
 		formData.moneyQuantity = multiplier * formData.moneyQuantity;
 		props.onSaved(formData);
-		setFormData(initialState)
 		onClose();
 	};
 

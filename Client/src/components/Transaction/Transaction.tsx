@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { TransactionEntity } from '../../models/TransactionEntity';
 import { FundEntity } from '../../models/FundEntity';
-import { ArrowUpIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
+import { ArrowDownIcon, ArrowUpIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { Flex, Stack, Card, CardBody, Text, Button, AlertDialog, AlertDialogOverlay, 
 	AlertDialogContent, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, useDisclosure } from '@chakra-ui/react';
 import TransactionModal from '../../modals/TransactionModal/TransactionModal';
@@ -36,6 +36,12 @@ const Transaction: React.FC<Props> = (props: Props) => {
 		props.onDelete(props.transaction);
 	}
 
+	const getTransactionDirectionIcon = () => {
+		return props.transaction.moneyQuantity > 0 ?
+			<ArrowUpIcon rounded={16} fontSize="32"  background={'green.100'} color={'green.600'}/>:
+			<ArrowDownIcon rounded={16} fontSize="32"  background={'red.100'} color={'red.600'}/>
+	}
+
 	return <Card mt={5} mb={5} boxShadow={"sm"} _hover={{ boxShadow: "md" }}>
 		<CardBody>
 			<Flex justifyContent="space-between" alignItems="center">
@@ -45,7 +51,7 @@ const Transaction: React.FC<Props> = (props: Props) => {
 						<div className="transaction-icon-placeholder"></div>
 				} */}
 				<Stack direction={'row'} alignItems="center">
-					<ArrowUpIcon rounded={16} fontSize="24"  background={'green.100'} color={'green.600'}/>
+					{getTransactionDirectionIcon()}
 					<Stack ml={5}>
 						<Text fontWeight={700}>{name}</Text>
 						<Text>{formatDate(date, false)} • {fundSource.name}</Text>

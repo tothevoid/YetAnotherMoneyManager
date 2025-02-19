@@ -41,7 +41,7 @@ const getGraphData = (transactions: TransactionEntity[],
             const key = keySelector(currentValue);
             let currentQuantity = currentValue.moneyQuantity;
             if (accumulator.has(key)) {
-                currentQuantity += accumulator.get(key);
+                currentQuantity += accumulator.get(key) ?? 0;
             }
 
             accumulator.set(key, currentQuantity);

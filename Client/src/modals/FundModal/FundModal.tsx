@@ -5,11 +5,15 @@ import { forwardRef, useImperativeHandle, useState } from "react"
 import { FundEntity } from "../../models/FundEntity";
 
 type FundProps = {
-	fund: FundEntity,
+	fund?: FundEntity | null,
 	onSaved: (fund: FundEntity) => void;
 };
 
-const FundModal: React.FC<FundProps> = forwardRef((props: FundProps, ref)=> {
+export interface FundModalRef {
+	openModal: () => void
+}
+
+const FundModal = forwardRef<FundModalRef, FundProps>((props: FundProps, ref)=> {
 	const { isOpen, onOpen, onClose } = useDisclosure()
 
 	const initialState = {

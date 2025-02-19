@@ -10,10 +10,18 @@ import { FormControl, Button, FormLabel, Input, Modal, ModalBody, ModalCloseButt
 
 type Props = {
 	fundSources: FundEntity[],
-	transaction: TransactionEntity | null,
+	transaction?: TransactionEntity | null,
 	transactionTypes: TransactionType[],
 	onSaved: (transaction: TransactionEntity) => void
-	onTypeAdded: (type: TransactionType) => void
+	// onTypeAdded: (type: TransactionType) => void
+}
+
+export interface TransactionModalRef {
+	openModal: () => void
+}
+
+type ModalState = {
+	direction: TransactionDirection | null
 }
 
 enum TransactionDirection {
@@ -26,7 +34,7 @@ const transactionDirections = new Map<TransactionDirection, string>([
 	[TransactionDirection.Spent, "Spent"],
 ])
 
-const TransactionModal: React.FC<Props> = forwardRef((props: Props, ref)=> {
+const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, ref)=> {
 	const { isOpen, onOpen, onClose } = useDisclosure()
 
 	const moneyQuantity = props.transaction?.moneyQuantity ? 
@@ -57,7 +65,7 @@ const TransactionModal: React.FC<Props> = forwardRef((props: Props, ref)=> {
 	}
 
 	const [formData, setFormData] = useState<TransactionEntity>(getInitialState);
-	const [modalState, setModalState] = useState({direction});
+	const [modalState, setModalState] = useState<ModalState>({direction});
 
 	useEffect(() => {
 		setFormData(getInitialState());
@@ -95,7 +103,11 @@ const TransactionModal: React.FC<Props> = forwardRef((props: Props, ref)=> {
 	}
 
 	const onDateChanged = (date: Date | null) => {
-		setFormData((prev) => ({ ...prev, date: date }));
+		if (!date) {
+			return;
+		}
+
+		setFormData((prev: TransactionEntity) => ({ ...prev, date: date }));
 	}
 
 	const onTransactionSaveClick = () => {
@@ -127,7 +139,7 @@ const TransactionModal: React.FC<Props> = forwardRef((props: Props, ref)=> {
 			<FormControl mt={4}>
 				<FormLabel>Direction</FormLabel>
 				<Select name="direction" onChange={handleTransactionDirectionChange} placeholder='Select direction'
-					value={modalState.direction}>
+					value={modalState.direction as number}>
 					{[...transactionDirections.entries()].map(([key, value]) => {
 						return <option key={key} value={key}>{value}</option>
 					})}

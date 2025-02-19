@@ -4,14 +4,14 @@ import { useRef } from "react"
 
 import { Fragment } from "react/jsx-runtime"
 import { FundEntity } from "../../models/FundEntity"
-import FundModal from "../../modals/FundModal/FundModal"
+import FundModal, { FundModalRef } from "../../modals/FundModal/FundModal"
 
 type FundProps = {
 	onAdded: (fund: FundEntity) => void;
 };
 
 const AddFundButton: React.FC<FundProps> = ({ onAdded }) => {
-	const modalRef = useRef<null>(null);
+	const modalRef = useRef<FundModalRef>(null);
 	
 	const onAdd = () => {
 		modalRef.current?.openModal()

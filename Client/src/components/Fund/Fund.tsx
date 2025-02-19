@@ -3,7 +3,7 @@ import { FundEntity } from '../../models/FundEntity';
 import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button, Card, CardBody, Flex, Stack, Text, useDisclosure } from '@chakra-ui/react';
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import React, { Fragment, useRef } from 'react';
-import FundModal from '../../modals/FundModal/FundModal';
+import FundModal, { FundModalRef } from '../../modals/FundModal/FundModal';
 import { formatMoney } from '../../formatters/moneyFormatter';
 
 type Props = {
@@ -16,9 +16,9 @@ const Fund = (props: Props) => {
     const {name, balance} = props.fund;
 
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const cancelRef = React.useRef(null)
+    const cancelRef = React.useRef<HTMLButtonElement>(null!)
 
-    const editModalRef = useRef(null);
+    const editModalRef = useRef<FundModalRef>(null);
 
     const onEdit = () => {
         editModalRef.current?.openModal()

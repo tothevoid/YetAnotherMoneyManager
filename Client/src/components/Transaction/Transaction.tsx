@@ -4,7 +4,7 @@ import { FundEntity } from '../../models/FundEntity';
 import { ArrowDownIcon, ArrowUpIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { Flex, Stack, Card, CardBody, Text, Button, AlertDialog, AlertDialogOverlay, 
 	AlertDialogContent, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, useDisclosure } from '@chakra-ui/react';
-import TransactionModal from '../../modals/TransactionModal/TransactionModal';
+import TransactionModal, { TransactionModalRef } from '../../modals/TransactionModal/TransactionModal';
 import { TransactionType } from '../../models/TransactionType';
 import { formatMoney } from '../../formatters/moneyFormatter';
 import { formatDate } from '../../formatters/dateFormatter';
@@ -18,15 +18,17 @@ type Props = {
 	transactionTypes: TransactionType[]
 } 
 
+
 const Transaction: React.FC<Props> = (props: Props) => {
 	// const getURL = (transactionType: TransactionType) => 
 	// 	`${config.api.URL}/images/${transactionType.id}.${transactionType.extension}`
 	const {moneyQuantity, transactionType, name, date, fundSource} = props.transaction;
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const cancelRef = React.useRef(null);
 
- 	const editModalRef = useRef(null);
+	const cancelRef = React.useRef<HTMLButtonElement>(null!);
+
+ 	const editModalRef = useRef<TransactionModalRef>(null);
 
 	const onEditClicked = () => {
 		editModalRef.current?.openModal()
@@ -94,7 +96,11 @@ const Transaction: React.FC<Props> = (props: Props) => {
 				</AlertDialogContent>
 			</AlertDialogOverlay>
 		</AlertDialog>
-		<TransactionModal transactionTypes={props.transactionTypes} fundSources={props.fundSources} transaction={props.transaction} ref={editModalRef} onSaved={props.onUpdate}/>
+		<TransactionModal transactionTypes={props.transactionTypes} 
+			fundSources={props.fundSources} 
+			transaction={props.transaction} 
+			ref={editModalRef} 
+			onSaved={props.onUpdate}/>
 	</Card>
 }
 

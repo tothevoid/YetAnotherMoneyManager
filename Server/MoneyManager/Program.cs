@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MoneyManager.BLL.Mappings;
@@ -11,7 +10,6 @@ using MoneyManager.WEB.Mappings;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,24 +48,16 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 app.UseCors("AllowReactApp");
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-}
-else
+if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
 
-//app.UseHttpsRedirection();
-app.UseStaticFiles();
+//app.UseHttpsRedirection()
 
 app.UseRouting();
-
-app.UseEndpoints(endpoints => {
-    endpoints.MapControllers();
-});
+app.MapControllers();
 
 app.Run();
 

@@ -1,1 +1,12 @@
-node_modules
+node_modules/
+npm-debug.log
+yarn-error.log
+pnpm-lock.yaml
+package-lock.json
+dist/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+.cache/

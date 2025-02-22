@@ -1,3 +1,11 @@
-.vs
+.vs/
+.vscode/
 bin/
 obj/
+**/*.user
+**/*.suo
+**/*.bak
+**/*.pdb
+**/*.log
+**/*.tmp
+**/*.swp

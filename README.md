@@ -2,20 +2,22 @@
 
 Stack:
 
-* React
-* .NET Core
+* React 19 + Vite + ChakraUI
+* .NET 9
 * MongoDB
 * Docker (optional)
 
-Install without Docker:
+Development:
 
-* install .NET Core 3.1 or higher
+* install at least .NET 9
 * install [mongodb](https://www.mongodb.com/download-center/community)
 * install [Node.js](https://nodejs.org/en/)
 * Navigate to the directory `./Server/MoneyManager`
 * Execute `dotnet run`
+* Navigate to the directory `./Client`
+* Execute `npm run dev`
 
-Docker install:
+Start with Docker:
 
 * Create `.env` by the `.env.example` reference
 * Execute `docker-compose up --build -d`

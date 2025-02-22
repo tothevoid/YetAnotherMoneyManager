@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Configuration;
 using MoneyManager.DAL.Interfaces;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
@@ -6,6 +5,9 @@ using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Bson.Serialization;
 
 namespace MoneyManager.DAL.Database
 {
@@ -15,7 +17,6 @@ namespace MoneyManager.DAL.Database
         private readonly List<Func<Task>> _commands;
         public MongoContext(IConfiguration configuration)
         {
-            BsonDefaults.GuidRepresentation = GuidRepresentation.CSharpLegacy;
             _commands = new List<Func<Task>>();
             RegisterConventions();
             var mongoClient = new MongoClient(configuration.GetSection("MongoDB").GetSection("ConnectionString").Value);

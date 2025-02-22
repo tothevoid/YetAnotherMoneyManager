@@ -39,7 +39,7 @@ services:
       - ASPNETCORE_URLS=http://+:5000
       - DOTNET_ENVIRONMENT=Release
       - MongoDB__ConnectionString=mongodb://${MONGO_LOGIN}:${MONGO_PASSWORD}@db_mongo:27017/?authSource=admin
-      - MongoDB__DatabaseName=${money_manager}
+      - MongoDB__DatabaseName=${MONGO_DB}
       - Client__Url=${CLIENT_HOST}:${CLIENT_PORT}
     depends_on:
       - db_mongo

@@ -239,3 +239,5 @@ _Pvt_Extensions
 Server/MoneyManager/images
 
 Client/.env
+
+.env

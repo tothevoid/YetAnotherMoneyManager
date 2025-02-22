@@ -29,13 +29,13 @@ namespace MoneyManager
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //TODO: fix
+            var clientUrl = _configuration.GetSection("Client").GetSection("Url").Value;
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowReactApp",
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:5173")
+                        builder.WithOrigins(clientUrl)
                             .AllowAnyMethod()
                             .AllowAnyHeader()
                             .AllowCredentials();
@@ -55,7 +55,6 @@ namespace MoneyManager
 
         public void Configure(IApplicationBuilder app)
         {
-            var clientUrl = _configuration.GetSection("Client").GetSection("Url").Value;
             app.UseCors("AllowReactApp");
 
             if (_environment.IsDevelopment())

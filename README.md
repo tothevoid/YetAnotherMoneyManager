@@ -5,7 +5,7 @@ Stack:
 * React
 * .NET Core
 * MongoDB
-* Docker
+* Docker (optional)
 
 Install without Docker:
 
@@ -17,5 +17,5 @@ Install without Docker:
 
 Docker install:
 
-* Update `.env` file (if you want to specify custom endpoints)
-* Execute `docker-compose up`
+* Create `.env` by the `.env.example` reference
+* Execute `docker-compose up --build -d`

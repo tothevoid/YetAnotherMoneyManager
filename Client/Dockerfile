@@ -1,12 +1,18 @@
-FROM node:22.13-alpine3.20 as build
+FROM node:22.14-alpine AS builder
+
 WORKDIR /app
-COPY package.json /app/package.json
-RUN npm install --only=prod
-COPY . /app
-ARG SERVER_URL
-ENV REACT_APP_SERVER_URL $SERVER_URL
+
+COPY package.json package-lock.json ./
+RUN npm install --frozen-lockfile
+
+#env
+ARG SERVER_API_URL
+ENV VITE_SERVER_API_URL=$SERVER_API_URL
+
+COPY . .
 RUN npm run build
-FROM nginx:1.16.0-alpine
-COPY --from=build /app/build /usr/share/nginx/html
+
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

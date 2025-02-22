@@ -1,27 +1,14 @@
 {
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:53193",
-      "sslPort": 44319
-    }
-  },
   "profiles": {
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "MoneyManager": {
+    "JustBackend": {
       "commandName": "Project",
       "launchBrowser": true,
+      "launchUrl": "http://localhost:8100",
+      "applicationUrl": "http://localhost:8200",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "applicationUrl": "http://localhost:2500"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Client__Url": "http://localhost:8100"
+      }
     }
   }
 }

@@ -2,7 +2,7 @@ import "./TransactionTypeForm.scss"
 import { Component } from "react";
 import { TransactionType } from "../../models/TransactionType";
 import config from "../../config";
-import hideableHOC from "../../HOC/Hideable/Hideable";
+import hideableHOC from "../HOC/Hideable/Hideable";
 import FileUpload from "../../components/FileUpload/FileUpload";
 
 type Props = {

@@ -4,7 +4,6 @@ import { TransactionEntity } from '../../models/TransactionEntity';
 import { FundEntity } from '../../models/FundEntity';
 import { TransactionType } from '../../models/TransactionType';
 import DatePicker from "react-datepicker";
-// import TransactionTypeSelect from '../../TransactionTypeSelect/TransactionTypeSelect';
 import { FormControl, Button, FormLabel, Input, Modal, ModalBody, ModalCloseButton, 
 	ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure, Select } from '@chakra-ui/react';
 

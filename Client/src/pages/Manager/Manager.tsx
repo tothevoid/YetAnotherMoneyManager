@@ -12,11 +12,8 @@ import { logPromiseError, checkPromiseStatus } from '../../utils/PromiseUtils';
 import { TransactionType } from '../../models/TransactionType';
 import { Box, Flex, SimpleGrid, Text } from '@chakra-ui/react';
 import AddTransactionButton from '../../components/AddTransactionButton/AddTransactionButton';
-
-type FundToUpdate = {
-    fundId: string,
-    delta: number
-}
+import { createTransaction, deleteTransaction, getTransactions, updateTransaction } from '../../api/transactionApi';
+import { FundToUpdate } from '../../api/models/fundToUpdate';
 
 type State = {
     transactions: TransactionEntity[],
@@ -47,23 +44,6 @@ class Manager extends React.Component<any, State> {
             .then(checkPromiseStatus)
             .then((response: Response) => response.json())
             .then((funds: FundEntity[]) => this.setState({funds}))
-            .catch(logPromiseError);
-    };
-
-    getTransactions = (month: number, year: number) => {
-        this.setState({month, year});
-        const url = `${config.api.URL}/Transaction?month=${month}&year=${year}`;
-        fetch(url, {method: "GET"})
-            .then(checkPromiseStatus)
-            .then((response: Response) => response.json())
-            .then((transactions: TransactionEntity[]) => 
-                transactions.map((transaction: TransactionEntity) => {
-                    const date = new Date(transaction.date);
-                    // convertToInputDate
-                    return {...transaction, date: date};
-                })
-            )
-            .then(transactions => this.setState({transactions}))
             .catch(logPromiseError);
     };
 
@@ -134,23 +114,62 @@ class Manager extends React.Component<any, State> {
             .catch(logPromiseError)
     };
 
-    onTransactionCreated = (transaction: TransactionEntity) => {
-        const url = `${config.api.URL}/Transaction`;
-        fetch(url, { method: "PUT", body: JSON.stringify(transaction),
-            headers: {"Content-Type": "application/json"}})
-            .then(checkPromiseStatus)
-            .then((response: Response) => response.json())
-            .then(id => {
-                const newTransaction: TransactionEntity = {...transaction, id};
-                if (this.isCurrentMonthTransaction(newTransaction)){
-                    const {transactions} = this.state;
-                    const newTransactions = insertByPredicate(transactions, newTransaction, 
-                        (transactionElm: TransactionEntity) => (transactionElm.date <= newTransaction.date));
-                    this.setState({transactions: newTransactions});
-                }
-                this.recalculateFund(newTransaction, 1);
-            })
-            .catch(logPromiseError);
+    getTransactions = async (month: number, year: number) => {
+        const transactions = await getTransactions(month, year);
+        this.setState({month, year, transactions})
+    };
+
+    createTransaction = async (transaction: TransactionEntity) => {
+        const createdTransaction = await createTransaction(transaction);
+        if (!createdTransaction) {
+            return;
+        }
+
+        if (this.isCurrentMonthTransaction(createdTransaction)) {
+            const {transactions} = this.state;
+            const newTransactions = insertByPredicate(transactions, createdTransaction, 
+                (transactionElm: TransactionEntity) => (transactionElm.date <= createdTransaction.date));
+            this.setState({transactions: newTransactions});
+        }
+        this.recalculateFund(createdTransaction, 1);
+    };
+
+    deleteTransaction = async (deletedTransaction: TransactionEntity) => { 
+        const isDeleted = await deleteTransaction(deletedTransaction);
+        if (isDeleted) {
+            this.removeTransaction(deletedTransaction);
+            this.recalculateFund(deletedTransaction, -1);
+        }
+    };
+
+    updateTransaction = async (updatedTransaction: TransactionEntity) => {
+        const affectedFunds = await updateTransaction(updatedTransaction);
+
+        if (!affectedFunds.length) {
+            return;
+        }
+
+        const newFunds = this.recalculateFunds(affectedFunds);
+        const isCurrentMonthTransaction = this.isCurrentMonthTransaction(updatedTransaction);
+        if (!isCurrentMonthTransaction) {
+            this.removeTransaction(updatedTransaction);
+            this.setState({funds: newFunds});
+            return;
+        }
+
+        const {transactions} = this.state;
+        const newTransactions = transactions.map((transaction: TransactionEntity) => {
+            return transaction.id === updatedTransaction.id ?
+                {...updatedTransaction}:
+                transaction;
+        });
+
+        // TODO: date is not changed => reorder is not required 
+        const updatedTransactions = reorderByPredicate(newTransactions, updatedTransaction, 
+            (currentElement: TransactionEntity) => (currentElement.date <= updatedTransaction.date),
+            (currentElement: TransactionEntity) => (currentElement.id !== updatedTransaction.id));
+
+        this.setState({transactions: updatedTransactions, funds: newFunds});
     };
 
     removeTransaction = (deletingTransaction: TransactionEntity) => {
@@ -192,50 +211,6 @@ class Manager extends React.Component<any, State> {
         });
         return newFunds;
     };
-   
-    onTransactionDeleted = (deletedTransaction: TransactionEntity) => { 
-        const url = `${config.api.URL}/Transaction`;
-        fetch(url, { method: "DELETE", body: JSON.stringify(deletedTransaction), 
-            headers: {"Content-Type": "application/json"}})
-            .then(checkPromiseStatus)
-            .then(() => {
-                this.removeTransaction(deletedTransaction);
-                this.recalculateFund(deletedTransaction, -1);
-            })
-            .catch(logPromiseError);
-    };
-
-    onTransactionUpdated = (updatedTransaction: TransactionEntity) => {
-        const url = `${config.api.URL}/Transaction`;
-        fetch(url, { method: "PATCH", body: JSON.stringify(updatedTransaction),  
-            headers: {"Content-Type": "application/json"}})
-            .then(checkPromiseStatus)
-            .then(response => response.json())
-            .then((funds: FundToUpdate[]) => {
-                const {transactions} = this.state;
-                const newFunds = this.recalculateFunds(funds);
-
-                const isCurrentMonthTransaction = this.isCurrentMonthTransaction(updatedTransaction);
-                if (!isCurrentMonthTransaction) {
-                    this.removeTransaction(updatedTransaction);
-                    return;
-                }
-
-                const newTransactions = transactions.map((transaction: TransactionEntity) => {
-                    return transaction.id === updatedTransaction.id ?
-                        {...updatedTransaction}:
-                        transaction;
-                });
-
-                // TODO: date is not changed => reorder is not required 
-                const updatedTransactions = reorderByPredicate(newTransactions, updatedTransaction, 
-                    (currentElement: TransactionEntity) => (currentElement.date <= updatedTransaction.date),
-                    (currentElement: TransactionEntity) => (currentElement.id !== updatedTransaction.id));
-
-                this.setState({transactions: updatedTransactions, funds: newFunds});
-            })
-            .catch(logPromiseError)
-    };
 
     getTypes = () => {
         const url = `${config.api.URL}/TransactionType`;
@@ -272,7 +247,7 @@ class Manager extends React.Component<any, State> {
                                 fundSources={funds} 
                                 onTypeAdded={this.onTypeAdded} 
                                 transactionTypes={transactionTypes}
-                                onTransactionCreated={this.onTransactionCreated}/>
+                                onTransactionCreated={this.createTransaction}/>
                         </Flex>
                         <Pagination year={year} month={month} onPageSwitched={this.getTransactions}></Pagination>
                         <div className="transactions">
@@ -280,7 +255,7 @@ class Manager extends React.Component<any, State> {
                             (transactions.length !== 0) ?
                             transactions.map((transaction: TransactionEntity) => {       
                                 return <Transaction key={transaction.id} transaction={transaction} 
-                                    onDelete={this.onTransactionDeleted} onUpdate={this.onTransactionUpdated}
+                                    onDelete={this.deleteTransaction} onUpdate={this.updateTransaction}
                                     transactionTypes={transactionTypes}
                                     fundSources={funds}>
                                 </Transaction>

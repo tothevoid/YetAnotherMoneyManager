@@ -14,6 +14,7 @@ import { Box, Flex, SimpleGrid, Text } from '@chakra-ui/react';
 import AddTransactionButton from '../../components/AddTransactionButton/AddTransactionButton';
 import { createTransaction, deleteTransaction, getTransactions, updateTransaction } from '../../api/transactionApi';
 import { FundToUpdate } from '../../api/models/fundToUpdate';
+import { createFund, deleteFund, getFunds, updateFund } from '../../api/fundApi';
 
 type State = {
     transactions: TransactionEntity[],
@@ -33,85 +34,71 @@ class Manager extends React.Component<any, State> {
         transactionTypes: [] as TransactionType[]
     };
     
-    componentDidMount() {
-        this.getFunds();
+    async componentDidMount() {
+        await this.getFunds();
         this.getTypes();
     };
 
-    getFunds = () => {
-        const url = `${config.api.URL}/Fund`;
-        fetch(url, {method: "GET"})
-            .then(checkPromiseStatus)
-            .then((response: Response) => response.json())
-            .then((funds: FundEntity[]) => this.setState({funds}))
-            .catch(logPromiseError);
+    getFunds = async () => {
+        const funds = await getFunds();
+        this.setState({funds})
     };
 
-    onFundAdded = (fund: FundEntity) => {
-        const { id, ...fundToAdd } = fund;
-        const url = `${config.api.URL}/Fund`;
-        fetch(url, { method: "PUT", body: JSON.stringify(fundToAdd), 
-            headers: {"Content-Type": "application/json"}})
-            .then(checkPromiseStatus)
-            .then((response: Response) => response.json())
-            .then(createdId => {
-                if (createdId){
-                    const newFund = {id:createdId, ...fundToAdd} as FundEntity;
-                    this.setState((state: State) => {
-                        const funds = state.funds.concat(newFund);
-                        return {funds};
-                    });
+    addFund = async (fund: FundEntity) => {
+        const createdFundId = await createFund(fund);
+        if (!createdFundId) {
+            return;
+        }
+        const newFund = {...fund, id: createdFundId} as FundEntity;
+        this.setState((state: State) => {
+            const funds = state.funds.concat(newFund);
+            return {funds};
+        });
+    };
+
+    updateFund = async (updatedFund: FundEntity) => {
+        const isFundUpdated = await updateFund(updatedFund);
+        if (!isFundUpdated) {
+            return;
+        }
+
+        let fundNameChanged = false;
+
+        this.setState((state: State) => {
+            const funds = state.funds.map((fund: FundEntity) => {
+                if (fund.id === updatedFund.id) {
+                    fundNameChanged = fund.name !== updatedFund.name;
+                    return {...updatedFund}
+                } 
+                return fund
+            });
+
+            if (!fundNameChanged) {
+                return {funds};
+            }
+            
+            const newTransactions = state.transactions.map(transaction => {
+                if (transaction.fundSource.id === updatedFund.id) {
+                    transaction.fundSource = {...updatedFund}
                 }
-            })
-            .catch(logPromiseError)
+
+                return transaction;
+            });
+            return {funds, transactions: newTransactions}
+        });
     };
 
-    onFundUpdated = (updatedFund: FundEntity) => {
-        const url = `${config.api.URL}/Fund`;
-        fetch(url, { method: "PATCH", body: JSON.stringify(updatedFund),  
-            headers: {"Content-Type": "application/json"}})
-            .then(checkPromiseStatus)
-            .then(() => {
-                let fundNameChanged = false;
+    deleteFund = async (deletedFund: FundEntity) => {
+        const isFundDeleted = await deleteFund(deletedFund);
 
-                this.setState((state: State) => {
-                    const funds = state.funds.map((fund: FundEntity) => {
-                        if (fund.id === updatedFund.id) {
-                            fundNameChanged = fund.name !== updatedFund.name;
-                            return {...updatedFund}
-                        } 
-                        return fund
-                    });
+        if (!isFundDeleted) {
+            return;
+        }
 
-                    if (!fundNameChanged) {
-                        return {funds};
-                    }
-                    
-                    const newTransactions = state.transactions.map(transaction => {
-                        if (transaction.fundSource.id === updatedFund.id) {
-                            transaction.fundSource = {...updatedFund}
-                        }
-
-                        return transaction;
-                    });
-                    return {funds, transactions: newTransactions}
-                })
-            })
-            .catch(logPromiseError)
-    };
-
-    onFundDeleted = (deletedFund: FundEntity) => {
-        const {id} = deletedFund;
-        const url = `${config.api.URL}/Fund?id=${id}`;
-        fetch(url, { method: "DELETE"})
-            .then(checkPromiseStatus)
-            .then(() => {
-                this.setState((state: State) => {
-                    const funds = state.funds.filter((fund: FundEntity) => fund.id !== id)
-                    return { funds }
-                });
-            })
-            .catch(logPromiseError)
+        this.setState((state: State) => {
+            const funds = state.funds.filter((fund: FundEntity) => fund.id !== deletedFund.id)
+            return { funds }
+        });
     };
 
     getTransactions = async (month: number, year: number) => {
@@ -234,9 +221,9 @@ class Manager extends React.Component<any, State> {
         
         return (
             <div>
-                <FundsBar onAddFundCallback = {this.onFundAdded}
-                    onDeleteFundCallback = {this.onFundDeleted} 
-                    onUpdateFundCallback = {this.onFundUpdated} 
+                <FundsBar onAddFundCallback = {this.addFund}
+                    onDeleteFundCallback = {this.deleteFund} 
+                    onUpdateFundCallback = {this.updateFund} 
                     funds = {funds}>
                 </FundsBar>
                 <SimpleGrid columns={2} spacing={16}>

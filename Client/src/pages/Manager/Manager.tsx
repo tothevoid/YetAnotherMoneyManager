@@ -31,9 +31,9 @@ class Manager extends React.Component<any, State> {
     state = {
         month: new Date().getMonth() + 1,
         year: new Date().getFullYear(),
-        transactions: [],
-        funds: [],
-        transactionTypes: []
+        transactions: [] as TransactionEntity[],
+        funds: [] as FundEntity[],
+        transactionTypes: [] as TransactionType[]
     };
     
     componentDidMount() {
@@ -126,10 +126,9 @@ class Manager extends React.Component<any, State> {
             .then(checkPromiseStatus)
             .then((response: Response) => response.json())
             .then(id => {
-                const {month, year, transactions} = this.state;
                 const newTransaction: TransactionEntity = {...transaction, id};
-                const date = new Date(newTransaction.date);
-                if (date.getMonth() === month - 1 && date.getFullYear() === year){
+                if (this.isCurrentMonthTransaction(newTransaction)){
+                    const {transactions} = this.state;
                     const newTransactions = insertByPredicate(transactions, newTransaction, 
                         (transactionElm: TransactionEntity) => (transactionElm.date <= newTransaction.date));
                     this.setState({transactions: newTransactions});
@@ -138,6 +137,21 @@ class Manager extends React.Component<any, State> {
             })
             .catch(logPromiseError);
     };
+
+    removeTransaction = (deletingTransaction: TransactionEntity) => {
+        this.setState((state: State) => {
+            const transactions = state.transactions
+                .filter((transaction: TransactionEntity) => transaction.id !== deletingTransaction.id)
+            return { transactions }
+        });
+    }
+
+    isCurrentMonthTransaction = (transaction: TransactionEntity): boolean => {
+        const {month, year} = this.state;
+
+        return transaction.date.getMonth() === month - 1 &&
+               transaction.date.getFullYear() === year
+    }
 
     recalculateFund = (changedTransaction: TransactionEntity, sign: number) => {
         const {funds} = this.state;
@@ -170,11 +184,7 @@ class Manager extends React.Component<any, State> {
             headers: {"Content-Type": "application/json"}})
             .then(checkPromiseStatus)
             .then(() => {
-                this.setState((state: State) => {
-                    const transactions = state.transactions
-                        .filter((transaction: TransactionEntity) => transaction.id !== deletedTransaction.id)
-                    return { transactions }
-                });
+                this.removeTransaction(deletedTransaction);
                 this.recalculateFund(deletedTransaction, -1);
             })
             .catch(logPromiseError);
@@ -189,9 +199,24 @@ class Manager extends React.Component<any, State> {
             .then((funds: FundToUpdate[]) => {
                 const {transactions} = this.state;
                 const newFunds = this.recalculateFunds(funds);
-                const updatedTransactions = reorderByPredicate(transactions, updatedTransaction, 
+
+                const isCurrentMonthTransaction = this.isCurrentMonthTransaction(updatedTransaction);
+                if (!isCurrentMonthTransaction) {
+                    this.removeTransaction(updatedTransaction);
+                    return;
+                }
+
+                const newTransactions = transactions.map((transaction: TransactionEntity) => {
+                    return transaction.id === updatedTransaction.id ?
+                        {...updatedTransaction}:
+                        transaction;
+                });
+
+                // TODO: date is not changed => reorder is not required 
+                const updatedTransactions = reorderByPredicate(newTransactions, updatedTransaction, 
                     (currentElement: TransactionEntity) => (currentElement.date <= updatedTransaction.date),
                     (currentElement: TransactionEntity) => (currentElement.id !== updatedTransaction.id));
+
                 this.setState({transactions: updatedTransactions, funds: newFunds});
             })
             .catch(logPromiseError)

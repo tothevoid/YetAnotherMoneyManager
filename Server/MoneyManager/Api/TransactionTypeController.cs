@@ -23,27 +23,33 @@ namespace MoneyManager.WEB.Api
         }
 
         [HttpGet]
-        public async Task<IEnumerable<TransactionTypeModel>> GetAll()
+        public async Task<IEnumerable<string>> GetAll()
         {
-            var transactions = await _transactionTypeService.GetAll();
-            return _mapper.Map<IEnumerable<TransactionTypeModel>>(transactions);
+            return await _transactionTypeService.GetAll();
         }
 
-        [HttpPut]
-        public async Task<TransactionTypeModel> Add([FromForm] string name, [FromForm] string extension, [FromForm]IFormFile file)
-        {
-            var res = await _transactionTypeService.Add(name, extension, file);
-            return _mapper.Map<TransactionTypeModel>(res);   
-        }
+        //[HttpGet]
+        //public async Task<IEnumerable<TransactionTypeModel>> GetAll()
+        //{
+        //    var transactions = await _transactionTypeService.GetAll();
+        //    return _mapper.Map<IEnumerable<TransactionTypeModel>>(transactions);
+        //}
 
-        [HttpPatch]
-        public async Task Update([FromForm] Guid id, [FromForm] string name, [FromForm] string extension, [FromForm]IFormFile file)
-        {
-            await _transactionTypeService.Update(id, name, extension, file);
-        }
+        //[HttpPut]
+        //public async Task<TransactionTypeModel> Add([FromForm] string name, [FromForm] string extension, [FromForm]IFormFile file)
+        //{
+        //    var res = await _transactionTypeService.Add(name, extension, file);
+        //    return _mapper.Map<TransactionTypeModel>(res);   
+        //}
 
-        [HttpDelete]
-        public async Task Delete(Guid id) =>
-            await _transactionTypeService.Delete(id);
+        //[HttpPatch]
+        //public async Task Update([FromForm] Guid id, [FromForm] string name, [FromForm] string extension, [FromForm]IFormFile file)
+        //{
+        //    await _transactionTypeService.Update(id, name, extension, file);
+        //}
+
+        //[HttpDelete]
+        //public async Task Delete(Guid id) =>
+        //    await _transactionTypeService.Delete(id);
     }
 }

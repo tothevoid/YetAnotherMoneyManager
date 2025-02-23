@@ -15,9 +15,11 @@ namespace MoneyManager.WEB.Model
 
         public Guid FundSourceId { get; set; }
 
-        public TransactionTypeModel TransactionType { get; set; }
+        public string TransactionType { get; set; }
 
-        public Guid TransactionTypeId { get; set; }
+        //public TransactionTypeModel TransactionType { get; set; }
+
+        //public Guid TransactionTypeId { get; set; }
 
     }
 }

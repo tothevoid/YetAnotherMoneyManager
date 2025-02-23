@@ -9,12 +9,14 @@ namespace MoneyManager.BLL.Services.Entities
 {
     public interface ITransactionTypeService
     {
-        Task<TransactionTypeDTO> Add(string name, string extension, IFormFile formFile);
+        //Task<TransactionTypeDTO> Add(string name, string extension, IFormFile formFile);
 
-        Task Update(Guid id, string name, string extension, IFormFile formFile);
+        //Task Update(Guid id, string name, string extension, IFormFile formFile);
 
-        Task Delete(Guid id);
+        //Task Delete(Guid id);
 
-        Task<IEnumerable<TransactionTypeDTO>> GetAll();
+        //Task<IEnumerable<TransactionTypeDTO>> GetAll();
+
+        Task<IEnumerable<string>> GetAll();
     }
 }

@@ -2,10 +2,11 @@ import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'rea
 import "./TransactionModal.scss"
 import { TransactionEntity } from '../../models/TransactionEntity';
 import { FundEntity } from '../../models/FundEntity';
-import { TransactionType } from '../../models/TransactionType';
+// import { TransactionType } from '../../models/TransactionType';
 import DatePicker from "react-datepicker";
 import { FormControl, Button, FormLabel, Input, Modal, ModalBody, ModalCloseButton, 
-	ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure, Select } from '@chakra-ui/react';
+	ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure, Select} from '@chakra-ui/react';
+
 
 type Props = {
 	fundSources: FundEntity[],
@@ -51,7 +52,7 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 	
 		const transactionType = (props.transactionTypes?.length > 0) ? 
 			props.transactionTypes[0] :
-			{id: ""} as TransactionType
+			"";
 
 		return {
 			id: props.transaction?.id ?? crypto.randomUUID(),
@@ -91,13 +92,6 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 		const source = props.fundSources.find((entity: FundEntity) => entity.id === value);
 		if (source){
 			setFormData((prev) => ({ ...prev, [name]: source }));
-		}
-	}
-
-	const handleTypeChange = ({ target: { name, value } }: React.ChangeEvent<HTMLSelectElement>) => {
-		const transactionType = props.transactionTypes.find((transactionType: TransactionType) => transactionType.id === value);
-		if (transactionType){
-			setFormData((prev) => ({ ...prev, [name]: transactionType }));
 		}
 	}
 
@@ -167,11 +161,7 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 			</FormControl>
 			<FormControl mt={4}>
 				<FormLabel>Type</FormLabel>
-				<Select name="transactionType" value={formData.transactionType.id} onChange={handleTypeChange} placeholder='Select type'>
-					{props.transactionTypes.map(({id, name}) => {
-						return <option key={id} value={id}>{name}</option>
-					})}
-				</Select>
+				<Input name="transactionType" value={formData.transactionType} onChange={handleChange} placeholder='Describe type' />
 			</FormControl>
 			</ModalBody>
 			<ModalFooter>

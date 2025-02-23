@@ -30,9 +30,17 @@ namespace MoneyManager.DAL.SpecificRepositories
 
                         select new { transaction, joinedFund, joinedType }).ToList();
 
-            return query.Select(x => x.transaction.AssignFund(x.joinedFund).AssignType(x.joinedType));
+            return query.Select(x => x.transaction.AssignFund(x.joinedFund));
+            //.AssignType(x.joinedType));
         }
-    
+
+        public async Task<IEnumerable<string>> GetTypes()
+        {
+            return await DbSet
+                .DistinctAsync<string>(nameof(Transaction.TransactionType), Builders<Transaction>.Filter.Empty)
+                .Result.ToListAsync();
+        }
+
         private (DateTime, DateTime) GetDateRange(int month, int year)
         {
             var startDate = new DateTime(year, month, 1);

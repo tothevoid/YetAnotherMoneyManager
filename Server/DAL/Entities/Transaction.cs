@@ -15,8 +15,10 @@ namespace MoneyManager.DAL.Entities
 
         public Guid FundSourceId { get; set; }
 
-        public TransactionType TransactionType { get; set; }
-        
+        //public TransactionType TransactionType { get; set; }
+
+        public string TransactionType { get; set; }
+
         public Guid TransactionTypeId { get; set; }
 
         public Transaction AssignFund(Fund fund)
@@ -25,10 +27,10 @@ namespace MoneyManager.DAL.Entities
             return this;
         }
 
-        public Transaction AssignType(TransactionType transactionType)
-        {
-            TransactionType = transactionType;
-            return this;
-        }
+        //public Transaction AssignType(TransactionType transactionType)
+        //{
+        //    TransactionType = transactionType;
+        //    return this;
+        //}
     }
 }

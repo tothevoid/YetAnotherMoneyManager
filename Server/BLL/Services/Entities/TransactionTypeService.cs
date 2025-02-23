@@ -14,61 +14,70 @@ namespace MoneyManager.BLL.Services.Entities
     public class TransactionTypeService: ITransactionTypeService
     {
         private readonly IUnitOfWork _db;
-        private readonly IRepository<TransactionType> _transactionTypeRepo;
+        private readonly ITransactionRepository _transactionsRepo;
+        //private readonly IRepository<TransactionType> _transactionTypeRepo;
         private readonly IMapper _mapper;
         public TransactionTypeService(IUnitOfWork uow, IMapper mapper)
         {
             _db = uow;
             _mapper = mapper;
-            _transactionTypeRepo = uow.CreateRepository<TransactionType>();
+            _transactionsRepo = uow.CreateTransactionRepository();
+            //_transactionTypeRepo = uow.CreateRepository<TransactionType>();
         }
 
-        public async Task<IEnumerable<TransactionTypeDTO>> GetAll()
+        public async Task<IEnumerable<string>> GetAll()
         {
-            var result = await _transactionTypeRepo.GetAll();
+            var result = await _transactionsRepo.GetTypes();
             
-            return _mapper.Map<IEnumerable<TransactionTypeDTO>>(result);
+            return _mapper.Map<IEnumerable<string>>(result);
         }
 
-        public async Task<TransactionTypeDTO> Add(string name, string extension, IFormFile formFile)
-        {
-            if (formFile.Length != 0)
-            {
-                var fileId = Guid.NewGuid();
-                //var path = Path.Combine(Directory.GetCurrentDirectory(), $"{fileId}.{extension}");
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "images", $"{fileId}.{extension}");
-                using (var stream = new FileStream(path, FileMode.Create))
-                {
-                    var copyTask = formFile.CopyToAsync(stream);
-                    var type = new TransactionTypeDTO()
-                    {
-                        Id = fileId,
-                        Name = name,
-                        Extension = extension
-                    };
-                    var addTransactionTask = _transactionTypeRepo.Add(_mapper.Map<TransactionType>(type));
-                    await Task.WhenAll(copyTask, addTransactionTask);
-                    _db.Commit();
-                    return type;
-                }
-            }
-            return null;
-        }
+        //public async Task<IEnumerable<TransactionTypeDTO>> GetAll()
+        //{
+        //    var result = await _transactionTypeRepo.GetAll();
 
-        public async Task Update(Guid id, string name, string extension, IFormFile formFile)
-        {
-            var typeDTO = new TransactionTypeDTO()
-            {
-                Id = id,
-                Extension = extension,
-                Name = name
-            };
-            var type = _mapper.Map<TransactionType>(typeDTO);
-            await _transactionTypeRepo.Update(type);
-            _db.Commit();
-        }
+        //    return _mapper.Map<IEnumerable<TransactionTypeDTO>>(result);
+        //}
 
-        public async Task Delete(Guid id) =>
-            await _transactionTypeRepo.Delete(id);
+        //public async Task<TransactionTypeDTO> Add(string name, string extension, IFormFile formFile)
+        //{
+        //    if (formFile.Length != 0)
+        //    {
+        //        var fileId = Guid.NewGuid();
+        //        //var path = Path.Combine(Directory.GetCurrentDirectory(), $"{fileId}.{extension}");
+        //        var path = Path.Combine(Directory.GetCurrentDirectory(), "images", $"{fileId}.{extension}");
+        //        using (var stream = new FileStream(path, FileMode.Create))
+        //        {
+        //            var copyTask = formFile.CopyToAsync(stream);
+        //            var type = new TransactionTypeDTO()
+        //            {
+        //                Id = fileId,
+        //                Name = name,
+        //                Extension = extension
+        //            };
+        //            var addTransactionTask = _transactionTypeRepo.Add(_mapper.Map<TransactionType>(type));
+        //            await Task.WhenAll(copyTask, addTransactionTask);
+        //            _db.Commit();
+        //            return type;
+        //        }
+        //    }
+        //    return null;
+        //}
+
+        //public async Task Update(Guid id, string name, string extension, IFormFile formFile)
+        //{
+        //    var typeDTO = new TransactionTypeDTO()
+        //    {
+        //        Id = id,
+        //        Extension = extension,
+        //        Name = name
+        //    };
+        //    var type = _mapper.Map<TransactionType>(typeDTO);
+        //    await _transactionTypeRepo.Update(type);
+        //    _db.Commit();
+        //}
+
+        //public async Task Delete(Guid id) =>
+        //    await _transactionTypeRepo.Delete(id);
     }
 }

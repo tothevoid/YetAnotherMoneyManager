@@ -34,17 +34,17 @@ namespace MoneyManager.BLL.Services.Entities
             var transaction = _mapper.Map<Transaction>(transactionDTO);
             transaction.Id = Guid.NewGuid();
             var sourceId = transactionDTO?.FundSource?.Id ?? default;
-            var transactionTypeId = transactionDTO?.TransactionType?.Id ?? default;
+            //var transactionTypeId = transactionDTO?.TransactionType?.Id ?? default;
             var tasks = new List<Task>();
             if (sourceId != default)
             {
                 transaction.FundSourceId = sourceId;
                 tasks.Add(_fundRepo.Increment(sourceId, x => x.Balance, transaction.MoneyQuantity));
             }
-            if (transactionTypeId != default)
-            {
-                transaction.TransactionTypeId = transactionTypeId;
-            }
+            //if (transactionTypeId != default)
+            //{
+            //    transaction.TransactionTypeId = transactionTypeId;
+            //}
             tasks.Add(_transactionsRepo.Add(transaction));
             await Task.WhenAll(tasks);
             _db.Commit();
@@ -61,11 +61,11 @@ namespace MoneyManager.BLL.Services.Entities
             }
 
             //TODO: Fix duplication and make it automatic
-            var transactionTypeId = transaction?.TransactionType?.Id ?? default;
-            if (transactionTypeId != default)
-            {
-                transaction.TransactionTypeId = transactionTypeId;
-            }
+            //var transactionTypeId = transaction?.TransactionType?.Id ?? default;
+            //if (transactionTypeId != default)
+            //{
+            //    transaction.TransactionTypeId = transactionTypeId;
+            //}
 
             var task = _transactionsRepo.Update(transaction);
             var lastTransaction = await _transactionsRepo.GetById(updateTransactionModel.Id);

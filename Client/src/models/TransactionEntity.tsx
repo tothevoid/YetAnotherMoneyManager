@@ -1,5 +1,5 @@
 import { FundEntity } from "./FundEntity";
-import { TransactionType } from "./TransactionType";
+// import { TransactionType } from "./TransactionType";
 
 export type TransactionEntity = {
     id: string,
@@ -7,5 +7,5 @@ export type TransactionEntity = {
     date: Date,
     moneyQuantity: number;
     fundSource: FundEntity,
-    transactionType: TransactionType
+    transactionType: string
 }

@@ -75,8 +75,8 @@ const getNameMapping = <CollectionType,>(
 
 const TransactionStats = (props: Props) => {
     const fundsMapping = getNameMapping(props.funds, (fund) => fund.id, (fund) => fund.name );
-    const transactionTypeMapping = getNameMapping(props.transactionTypes, 
-        (transactionType) => transactionType.id, (transactionType) => transactionType.name );
+    // const transactionTypeMapping = getNameMapping(props.transactionTypes, 
+    //     (transactionType) => transactionType.id, (transactionType) => transactionType.name );
 
     const [selectedGrouping, setSelectedGrouping] = useState(DataGrouping.BySource);
     const [chartData, setChartData] = useState([] as PieChartData[]);
@@ -91,8 +91,7 @@ const TransactionStats = (props: Props) => {
         [ DataGrouping.ByType, {
             group: DataGrouping.ByType,
             caption: "By type",
-            dataFunc: (transactions: TransactionEntity[]) => getGraphData(transactions, (transaction) => transaction.transactionType.id,
-                (key) => transactionTypeMapping.get(key) ?? "Incorrect type")
+            dataFunc: (transactions: TransactionEntity[]) => getGraphData(transactions, (transaction) => transaction.transactionType)
         }]
     ]);
 

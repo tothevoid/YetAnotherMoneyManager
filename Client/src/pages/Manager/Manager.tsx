@@ -67,7 +67,7 @@ class Manager extends React.Component<any, State> {
             .catch(logPromiseError);
     };
 
-    onFundAdded = (fund: FundEntity, onSuccess: (funds:FundEntity[]) => void) => {
+    onFundAdded = (fund: FundEntity) => {
         const { id, ...fundToAdd } = fund;
         const url = `${config.api.URL}/Fund`;
         fetch(url, { method: "PUT", body: JSON.stringify(fundToAdd), 
@@ -81,30 +81,46 @@ class Manager extends React.Component<any, State> {
                         const funds = state.funds.concat(newFund);
                         return {funds};
                     });
-                    onSuccess(this.state.funds);
                 }
             })
             .catch(logPromiseError)
     };
 
-    onFundUpdated = (updatedFund: FundEntity, onSuccess: (funds: FundEntity[]) => void) => {
+    onFundUpdated = (updatedFund: FundEntity) => {
         const url = `${config.api.URL}/Fund`;
         fetch(url, { method: "PATCH", body: JSON.stringify(updatedFund),  
             headers: {"Content-Type": "application/json"}})
             .then(checkPromiseStatus)
             .then(() => {
+                let fundNameChanged = false;
+
                 this.setState((state: State) => {
-                    const funds = state.funds.map((fund: FundEntity) =>
-                        (fund.id === updatedFund.id) ? {...updatedFund}: fund
-                    );
-                    return {funds};
+                    const funds = state.funds.map((fund: FundEntity) => {
+                        if (fund.id === updatedFund.id) {
+                            fundNameChanged = fund.name !== updatedFund.name;
+                            return {...updatedFund}
+                        } 
+                        return fund
+                    });
+
+                    if (!fundNameChanged) {
+                        return {funds};
+                    }
+                    
+                    const newTransactions = state.transactions.map(transaction => {
+                        if (transaction.fundSource.id === updatedFund.id) {
+                            transaction.fundSource = {...updatedFund}
+                        }
+
+                        return transaction;
+                    });
+                    return {funds, transactions: newTransactions}
                 })
-                onSuccess(this.state.funds);
             })
             .catch(logPromiseError)
     };
 
-    onFundDeleted = (deletedFund: FundEntity, onSuccess: (funds: FundEntity[]) => void) => {
+    onFundDeleted = (deletedFund: FundEntity) => {
         const {id} = deletedFund;
         const url = `${config.api.URL}/Fund?id=${id}`;
         fetch(url, { method: "DELETE"})
@@ -114,7 +130,6 @@ class Manager extends React.Component<any, State> {
                     const funds = state.funds.filter((fund: FundEntity) => fund.id !== id)
                     return { funds }
                 });
-                onSuccess(this.state.funds);
             })
             .catch(logPromiseError)
     };

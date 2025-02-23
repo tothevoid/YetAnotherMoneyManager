@@ -35,7 +35,6 @@ const FundModal = forwardRef<FundModalRef, FundProps>((props: FundProps, ref)=> 
 
 	const onFundSaveClick = () => {
 		props.onSaved({id: formData.id, name: formData.name, balance: Number(formData.balance)});
-		setFormData(initialState)
 		onClose();
 	};
 

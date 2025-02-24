@@ -25,6 +25,8 @@ const DepositModal = forwardRef<DepositModalRef, Props>((props: Props, ref)=> {
             name: props.deposit?.name ?? "",
             from: props.deposit?.from ?? new Date(),
             to: props.deposit?.to ?? new Date(),
+            percentage: props.deposit?.percentage ?? 0,
+            initialAmount: props.deposit?.initialAmount ?? 0,
         };
     }
 
@@ -62,6 +64,14 @@ const DepositModal = forwardRef<DepositModalRef, Props>((props: Props, ref)=> {
             <FormControl>
                 <FormLabel>Name</FormLabel>
                 <Input name="name" value={depositModalData.name} onChange={handleChange} placeholder='Deposit name' />
+            </FormControl>
+            <FormControl mt={4}>
+                <FormLabel>Percentage</FormLabel>
+                <Input type='number' name="moneyQuantity" value={depositModalData.percentage} onChange={handleChange} placeholder='10' />
+            </FormControl>
+            <FormControl mt={4}>
+                <FormLabel>Initial amount</FormLabel>
+                <Input type='number' name="moneyQuantity" value={depositModalData.initialAmount} onChange={handleChange} placeholder='500' />
             </FormControl>
             <FormControl mt={4}>
                 <FormLabel>From</FormLabel>

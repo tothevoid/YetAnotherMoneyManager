@@ -3,4 +3,6 @@ export type DepositEntity = {
     name: string,
     from: Date,
     to: Date,
+    percentage: number,
+    initialAmount: number
 }

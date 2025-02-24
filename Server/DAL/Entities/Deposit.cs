@@ -10,5 +10,9 @@ namespace MoneyManager.DAL.Entities
         public DateTime From { get; set; }
 
         public DateTime To { get; set; }
+
+        public short Percentage { get; set; }
+
+        public int InitialAmount { get; set; }
     }
 }

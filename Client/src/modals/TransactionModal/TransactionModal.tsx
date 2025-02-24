@@ -11,7 +11,7 @@ import { FormControl, Button, FormLabel, Input, Modal, ModalBody, ModalCloseButt
 type Props = {
 	fundSources: FundEntity[],
 	transaction?: TransactionEntity | null,
-	transactionTypes: TransactionType[],
+	// transactionTypes: TransactionType[],
 	onSaved: (transaction: TransactionEntity) => void
 	// onTypeAdded: (type: TransactionType) => void
 }
@@ -50,9 +50,9 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 			props.fundSources[0] :
 			{id: ""} as FundEntity
 	
-		const transactionType = (props.transactionTypes?.length > 0) ? 
-			props.transactionTypes[0] :
-			"";
+		// const transactionType = (props.transactionTypes?.length > 0) ? 
+		// 	props.transactionTypes[0] :
+		// 	"";
 
 		return {
 			id: props.transaction?.id ?? crypto.randomUUID(),
@@ -60,7 +60,7 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 			date: props.transaction?.date ?? new Date(),
 			moneyQuantity: moneyQuantity,
 			fundSource: props.transaction?.fundSource ?? source,
-			transactionType: props.transaction?.transactionType ?? transactionType
+			// transactionType: props.transaction?.transactionType ?? transactionType
 		};
 	}
 
@@ -69,7 +69,8 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 
 	useEffect(() => {
 		setFormData(getInitialState());
-	}, [props.transaction, props.fundSources, props.transactionTypes]);
+		// props.transactionTypes
+	}, [props.transaction, props.fundSources]);
 
 
 	useImperativeHandle(ref, () => ({

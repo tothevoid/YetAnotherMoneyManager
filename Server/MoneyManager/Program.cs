@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BLL.Interfaces.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -33,6 +34,7 @@ builder.Services.AddScoped<IMongoContext, MongoContext>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<ITransactionsService, TransactionsService>();
 builder.Services.AddTransient<IFundService, FundService>();
+builder.Services.AddTransient<IDepositService, DepositService>();
 builder.Services.AddTransient<ITransactionTypeService, TransactionTypeService>();
 
 var mapperConfig = new MapperConfiguration(cfg =>

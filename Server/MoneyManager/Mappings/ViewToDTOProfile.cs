@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MoneyManager.Model.Common;
 
 namespace MoneyManager.WEB.Mappings
 {
@@ -16,6 +17,7 @@ namespace MoneyManager.WEB.Mappings
             CreateMap<FundModel, FundDTO>().ReverseMap();
             CreateMap<UpdateFundModel, UpdateFundDTO>().ReverseMap();
             CreateMap<TransactionTypeModel, TransactionTypeDTO>().ReverseMap();
+            CreateMap<DepositModel, DepositDTO>().ReverseMap();
         }
     }
 }

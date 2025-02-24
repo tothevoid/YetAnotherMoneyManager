@@ -58,7 +58,7 @@ const DepositModal = forwardRef<DepositModalRef, Props>((props: Props, ref)=> {
     return <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-            <ModalHeader>New fund</ModalHeader>
+            <ModalHeader>Deposit</ModalHeader>
             <ModalCloseButton />
             <ModalBody pb={6}>
             <FormControl>
@@ -67,11 +67,11 @@ const DepositModal = forwardRef<DepositModalRef, Props>((props: Props, ref)=> {
             </FormControl>
             <FormControl mt={4}>
                 <FormLabel>Percentage</FormLabel>
-                <Input type='number' name="moneyQuantity" value={depositModalData.percentage} onChange={handleChange} placeholder='10' />
+                <Input type='number' name="percentage" value={depositModalData.percentage} onChange={handleChange} placeholder='10' />
             </FormControl>
             <FormControl mt={4}>
                 <FormLabel>Initial amount</FormLabel>
-                <Input type='number' name="moneyQuantity" value={depositModalData.initialAmount} onChange={handleChange} placeholder='500' />
+                <Input type='number' name="initialAmount" value={depositModalData.initialAmount} onChange={handleChange} placeholder='500' />
             </FormControl>
             <FormControl mt={4}>
                 <FormLabel>From</FormLabel>

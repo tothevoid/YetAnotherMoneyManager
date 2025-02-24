@@ -1,8 +1,12 @@
-import { Fragment, ReactNode, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { DepositEntity } from "../../models/DepositEntity";
 import DepositModal, { DepositModalRef } from "../../modals/DepositModal/DepositModal";
-import { AddIcon, Button, Card, Container } from "@chakra-ui/icons";
+import { AddIcon, DeleteIcon, EditIcon, } from "@chakra-ui/icons";
+
 import { createDeposit, getDeposits } from "../../api/depositApi";
+import { formatMoney } from "../../formatters/moneyFormatter";
+import { CardBody, Button, Card, Container,  Flex, Stack, Text, SimpleGrid } from "@chakra-ui/react";
+import { formatDate } from "../../formatters/dateFormatter";
 
 interface Props {}
 
@@ -36,21 +40,36 @@ const DepositsPage: React.FC<Props> = () => {
     };
 
     return (
-        <Container>
+        <Fragment>
             <Button onClick={onAdd} leftIcon={<AddIcon/>} colorScheme='purple' size='md'>
                 Add deposit
             </Button>
             <DepositModal ref={modalRef} onSaved={onDepositAdded}/>
-            <Container>
+            <SimpleGrid pt={5} pb={5} spacing={4} templateColumns='repeat(auto-fill, minmax(400px, 3fr))'>
                 {
-                    state.deposits.map(deposit => {
+                    state.deposits.map((deposit: DepositEntity) => {
                         return <Card>
-                            {deposit.name}
+                            <CardBody boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
+                                <Flex justifyContent="space-between" alignItems="center">
+                                    <Stack>
+                                        <Text fontWeight={600}>{deposit.name}</Text>
+                                        <Text fontWeight={600}>{deposit.percentage}%</Text>
+                                        <Text fontWeight={700}>{formatMoney(deposit.initialAmount)}</Text>
+                                        <Text fontWeight={600}>{`${formatDate(deposit.from)} - ${formatDate(deposit.to)}`}</Text>
+                                    </Stack>
+                                    <div>
+                                        <Button background={'white'} size={'sm'}><EditIcon/></Button>
+                                        <Button background={'white'} size={'sm'}>
+                                            <DeleteIcon color={"red.600"}/>
+                                        </Button>
+                                    </div>
+                                </Flex>
+                            </CardBody>
                         </Card>
                     })
                 }
-            </Container>
-        </Container>
+            </SimpleGrid>
+        </Fragment>
     )
     
 }

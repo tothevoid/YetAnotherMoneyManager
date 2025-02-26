@@ -1,13 +1,11 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { DepositEntity } from "../../models/DepositEntity";
 import DepositModal, { DepositModalRef } from "../../modals/DepositModal/DepositModal";
-import { AddIcon, DeleteIcon, EditIcon, } from "@chakra-ui/icons";
-
+import { AddIcon } from "@chakra-ui/icons";
 import { createDeposit, getDeposits } from "../../api/depositApi";
-import { formatMoney } from "../../formatters/moneyFormatter";
-import { CardBody, Button, Card,  Flex, Stack, Text, SimpleGrid } from "@chakra-ui/react";
-import { formatDate } from "../../formatters/dateFormatter";
+import { Button, Flex, SimpleGrid } from "@chakra-ui/react";
 import DepositStats from "../../components/DepositStats/DepositStats";
+import Deposit from "../../components/Deposit/Deposit";
 
 interface Props {}
 
@@ -26,6 +24,12 @@ const DepositsPage: React.FC<Props> = () => {
         initDeposits();
       }, []);
 
+    const modalRef = useRef<DepositModalRef>(null);
+
+    const showDepositModal = () => {
+        modalRef.current?.openModal()
+    };
+
     const onDepositAdded = async (deposit: DepositEntity) => {
         const addedDeposit = await createDeposit(deposit);
         if (!addedDeposit) {
@@ -34,43 +38,35 @@ const DepositsPage: React.FC<Props> = () => {
         setState({deposits: [addedDeposit, ...state.deposits]})
 	};
 
-    const modalRef = useRef<DepositModalRef>(null);
+    
+    const onDepositUpdate = (updatedDeposit: DepositEntity) => {
+        const deposits = state.deposits.map(deposit => 
+            deposit.id === updatedDeposit.id ?
+                {...updatedDeposit}:
+                deposit
+        );
+        setState({deposits});
+    } 
 
-    const onAdd = () => {
-        modalRef.current?.openModal()
-    };
+    const onDepositDeleted = (deletedDeposit: DepositEntity) => {
+        const deposits = state.deposits.filter(deposit => deposit.id !== deletedDeposit.id);
+        setState({deposits});
+    }
 
     return (
         <Fragment> 
             <DepositStats/>
             <Flex>
-                <Button onClick={onAdd} leftIcon={<AddIcon/>} colorScheme='purple' size='md'>
+                <Button onClick={showDepositModal} leftIcon={<AddIcon/>} colorScheme='purple' size='md'>
                     Add deposit
                 </Button>
             </Flex>
             <DepositModal ref={modalRef} onSaved={onDepositAdded}/>
             <SimpleGrid pt={5} pb={5} spacing={4} templateColumns='repeat(auto-fill, minmax(400px, 3fr))'>
                 {
-                    state.deposits.map((deposit: DepositEntity) => {
-                        return <Card>
-                            <CardBody boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
-                                <Flex justifyContent="space-between" alignItems="center">
-                                    <Stack>
-                                        <Text fontWeight={600}>{deposit.name}</Text>
-                                        <Text fontWeight={600}>{deposit.percentage}%</Text>
-                                        <Text fontWeight={700}>{formatMoney(deposit.initialAmount)}</Text>
-                                        <Text fontWeight={600}>{`${formatDate(deposit.from)} - ${formatDate(deposit.to)}`}</Text>
-                                    </Stack>
-                                    <div>
-                                        <Button background={'white'} size={'sm'}><EditIcon/></Button>
-                                        <Button background={'white'} size={'sm'}>
-                                            <DeleteIcon color={"red.600"}/>
-                                        </Button>
-                                    </div>
-                                </Flex>
-                            </CardBody>
-                        </Card>
-                    })
+                    state.deposits.map((deposit: DepositEntity) => 
+                        <Deposit onUpdated={onDepositUpdate} onDeleted={onDepositDeleted} deposit={deposit}/>
+                    )
                 }
             </SimpleGrid>
         </Fragment>

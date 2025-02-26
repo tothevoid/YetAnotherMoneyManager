@@ -23,6 +23,11 @@ export const ConfirmModal = forwardRef<ConfirmModalRef, Props>((props: Props, re
         openModal: onOpen,
     }));
 
+    const onConfirmed = () => {
+        onClose();
+        props.onConfirmed();
+    }
+
     return <AlertDialog
         isOpen={isOpen}
         leastDestructiveRef={cancelRef}
@@ -40,7 +45,7 @@ export const ConfirmModal = forwardRef<ConfirmModalRef, Props>((props: Props, re
                 <Button ref={cancelRef} onClick={onClose}>
                     Cancel
                 </Button>
-                <Button colorScheme='red' onClick={props.onConfirmed} ml={3}>
+                <Button colorScheme='red' onClick={onConfirmed} ml={3}>
                     {props.confirmActionName}
                 </Button>
                 </AlertDialogFooter>

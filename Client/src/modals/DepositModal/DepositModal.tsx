@@ -42,12 +42,12 @@ const DepositModal = forwardRef<DepositModalRef, Props>((props: Props, ref)=> {
         setDepositModalData((prev) => ({ ...prev, [name]: normalizedValue }));
     };
 
-    const onDateChanged = (date: Date | null) => {
+    const onDateChanged = (date: Date | null, modelProperty: string) => {
         if (!date) {
             return;
         }
 
-        setDepositModalData((prev: DepositEntity) => ({ ...prev, date: date }));
+        setDepositModalData((prev: DepositEntity) => ({ ...prev, [modelProperty]: date }));
     }
 
     const onDepositModalSaveClick = () => {
@@ -77,7 +77,7 @@ const DepositModal = forwardRef<DepositModalRef, Props>((props: Props, ref)=> {
                 <FormLabel>From</FormLabel>
                 <DatePicker wrapperClassName="deposit-datepicker"
                     selected={depositModalData.from}
-                    onChange={onDateChanged}
+                    onChange={(date) => onDateChanged(date, "from")}
                     dateFormat="dd.MM.yyyy"
                     customInput={<Input/>}
                 />
@@ -86,7 +86,7 @@ const DepositModal = forwardRef<DepositModalRef, Props>((props: Props, ref)=> {
                 <FormLabel>To</FormLabel>
                 <DatePicker wrapperClassName="deposit-datepicker"
                     selected={depositModalData.to}
-                    onChange={onDateChanged}
+                    onChange={(date) => onDateChanged(date, "to")}
                     dateFormat="dd.MM.yyyy"
                     customInput={<Input/>}
                 />

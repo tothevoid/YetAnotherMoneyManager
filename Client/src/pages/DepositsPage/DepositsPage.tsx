@@ -5,8 +5,9 @@ import { AddIcon, DeleteIcon, EditIcon, } from "@chakra-ui/icons";
 
 import { createDeposit, getDeposits } from "../../api/depositApi";
 import { formatMoney } from "../../formatters/moneyFormatter";
-import { CardBody, Button, Card, Container,  Flex, Stack, Text, SimpleGrid } from "@chakra-ui/react";
+import { CardBody, Button, Card,  Flex, Stack, Text, SimpleGrid } from "@chakra-ui/react";
 import { formatDate } from "../../formatters/dateFormatter";
+import DepositStats from "../../components/DepositStats/DepositStats";
 
 interface Props {}
 
@@ -40,10 +41,13 @@ const DepositsPage: React.FC<Props> = () => {
     };
 
     return (
-        <Fragment>
-            <Button onClick={onAdd} leftIcon={<AddIcon/>} colorScheme='purple' size='md'>
-                Add deposit
-            </Button>
+        <Fragment> 
+            <DepositStats/>
+            <Flex>
+                <Button onClick={onAdd} leftIcon={<AddIcon/>} colorScheme='purple' size='md'>
+                    Add deposit
+                </Button>
+            </Flex>
             <DepositModal ref={modalRef} onSaved={onDepositAdded}/>
             <SimpleGrid pt={5} pb={5} spacing={4} templateColumns='repeat(auto-fill, minmax(400px, 3fr))'>
                 {

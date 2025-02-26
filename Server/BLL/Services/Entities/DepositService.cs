@@ -5,8 +5,13 @@ using MoneyManager.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
+using BLL.DTO;
 using BLL.Interfaces.Entities;
+using MongoDB.Driver.Linq;
+using MoneyManager.Model.Server;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MoneyManager.BLL.Services.Entities
 {
@@ -48,6 +53,57 @@ namespace MoneyManager.BLL.Services.Entities
         {
             await _depositRepo.Delete(deposit.Id);
             _db.Commit();
+        }
+
+        public async Task<DepositMonthSummaryDTO> GetSummary()
+        {
+            var deposits = (await _depositRepo.GetAll()).ToList();
+
+            var dates = new Dictionary<DateOnly, List<(string name, decimal value)>>();
+
+            foreach (var deposit in deposits)
+            {
+                var accumulator = deposit.InitialAmount;
+                var periodStartDate = new DateOnly(deposit.From.Date.Year, deposit.From.Date.Month, deposit.From.Date.Day);
+                var depositEndDate = new DateOnly(deposit.To.Date.Year, deposit.To.Date.Month, deposit.To.Date.Day);
+
+                while (periodStartDate < depositEndDate)
+                {
+                    var periodEndDate = new DateOnly(periodStartDate.Year, periodStartDate.Month, 1).AddMonths(1).AddDays(-1);
+
+                    var days = periodEndDate.DayNumber - periodStartDate.DayNumber;
+                    decimal income = accumulator / 365 * days / 100 * deposit.Percentage;
+                    accumulator += income;
+
+                    var date = new DateOnly(periodStartDate.Year, periodStartDate.Month, 1);
+                    if (dates.ContainsKey(date))
+                    {
+                        dates[date].Add((deposit.Name, income));
+                    }
+                    else
+                    {
+                        dates[date] = new List<(string name, decimal value)>()
+                        {
+                            (deposit.Name, income)
+                        };
+                    }
+
+                    periodStartDate = new DateOnly(periodStartDate.Year, periodStartDate.Month, 1).AddMonths(1);
+                }
+            }
+
+
+            return new DepositMonthSummaryDTO()
+            {
+                Deposits = deposits.Select(deposit => deposit.Name).ToList(),
+                Payments = dates.Select(date =>
+                    new PeriodPaymentDTO
+                    {
+                        Period = date.Key.ToString("MM.yy"),
+                        Payments = date.Value.Select(payment =>
+                            new DepositPaymentDTO { Name = payment.name, Value = payment.value })
+                    })
+            };
         }
     }
 }

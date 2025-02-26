@@ -13,6 +13,6 @@ namespace MoneyManager.BLL.DTO
 
         public short Percentage { get; set; }
 
-        public int InitialAmount { get; set; }
+        public decimal InitialAmount { get; set; }
     }
 }

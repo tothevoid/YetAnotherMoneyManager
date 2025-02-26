@@ -5,7 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BLL.DTO;
+using MoneyManager.Model.Server;
 using MoneyManager.Model.Common;
+using MoneyManager.Model.Charts.Deposit;
 
 namespace MoneyManager.WEB.Mappings
 {
@@ -18,6 +21,10 @@ namespace MoneyManager.WEB.Mappings
             CreateMap<UpdateFundModel, UpdateFundDTO>().ReverseMap();
             CreateMap<TransactionTypeModel, TransactionTypeDTO>().ReverseMap();
             CreateMap<DepositModel, DepositDTO>().ReverseMap();
+
+            CreateMap<DepositMonthSummaryDTO, DepositMonthSummary>();
+            CreateMap<DepositPaymentDTO, DepositPayment>();
+            CreateMap<PeriodPaymentDTO, PeriodPayment>();
         }
     }
 }

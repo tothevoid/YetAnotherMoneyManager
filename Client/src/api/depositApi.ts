@@ -1,3 +1,4 @@
+import { DepositMonthSummary } from '../components/DepositStats/depositMonthSummary';
 import config from '../config' 
 import { DepositEntity } from '../models/DepositEntity';
 import { checkPromiseStatus, logPromiseError } from '../utils/PromiseUtils';
@@ -53,3 +54,13 @@ export const deleteDeposit = async (deletedDeposit: DepositEntity): Promise<bool
 
     return result?.ok ?? false;
 }
+
+export const getDepositsSummary = async (): Promise<DepositMonthSummary | null> => {
+    const url = `${config.api.URL}/Deposit/GetDepositsSummary`;
+    const summary: DepositMonthSummary | null = await fetch(url, {method: "GET"})
+        .then(checkPromiseStatus)
+        .then((response: Response) => response.json())
+        .catch(logPromiseError);
+  
+    return summary;
+};

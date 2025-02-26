@@ -5,6 +5,7 @@ using System;
 using AutoMapper;
 using BLL.Interfaces.Entities;
 using MoneyManager.BLL.DTO;
+using MoneyManager.Model.Charts.Deposit;
 using MoneyManager.Model.Common;
 
 namespace MoneyManager.WEB.Api
@@ -25,22 +26,29 @@ namespace MoneyManager.WEB.Api
         [HttpGet]
         public async Task<IEnumerable<DepositModel>> GetAll()
         {
-            var transactions = await _depositService.GetAll();
-            return _mapper.Map<IEnumerable<DepositModel>>(transactions);
+            var deposits = await _depositService.GetAll();
+            return _mapper.Map<IEnumerable<DepositModel>>(deposits);
+        }
+
+        [HttpGet(nameof(GetDepositsSummary))]
+        public async Task<DepositMonthSummary> GetDepositsSummary()
+        {
+            var summary = await _depositService.GetSummary();
+            return _mapper.Map<DepositMonthSummary>(summary);
         }
 
         [HttpPut]
         public async Task<Guid> Add(DepositModel transaction)
         {
-            var transactionDTO = _mapper.Map<DepositDTO>(transaction);
-            return await _depositService.Add(transactionDTO);
+            var deposit = _mapper.Map<DepositDTO>(transaction);
+            return await _depositService.Add(deposit);
         }
 
         [HttpDelete]
         public async Task Delete(DepositModel transaction)
         {
-            var transactionDTO = _mapper.Map<DepositDTO>(transaction);
-            await _depositService.Delete(transactionDTO);
+            var deposit = _mapper.Map<DepositDTO>(transaction);
+            await _depositService.Delete(deposit);
         }
 
         [HttpPatch]

@@ -1,4 +1,5 @@
 ﻿using MoneyManager.BLL.DTO;
+using MoneyManager.Model.Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace BLL.Interfaces.Entities
         Task Update(DepositDTO modifiedDeposit);
 
         Task Delete(DepositDTO deposit);
-       
+
+        Task<DepositMonthSummaryDTO> GetSummary();
     }
 }

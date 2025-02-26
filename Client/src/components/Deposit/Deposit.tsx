@@ -1,4 +1,4 @@
-import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
+import { EditIcon, DeleteIcon, CopyIcon } from "@chakra-ui/icons";
 import { Card, CardBody, Flex, Stack, Button, Text } from "@chakra-ui/react";
 import { formatDate } from "../../formatters/dateFormatter";
 import { formatMoney } from "../../formatters/moneyFormatter";
@@ -6,15 +6,16 @@ import { DepositEntity } from "../../models/DepositEntity";
 import DepositModal, { DepositModalRef } from "../../modals/DepositModal/DepositModal";
 import { useRef } from "react";
 import { ConfirmModal, ConfirmModalRef } from "../../modals/ConfirmModal/ConfirmModal";
-import { deleteDeposit, updateDeposit } from "../../api/depositApi";
+import { createDeposit, deleteDeposit, updateDeposit } from "../../api/depositApi";
 
 interface Props {
     deposit: DepositEntity
     onUpdated: (deposit: DepositEntity) => void,
+    onCloned: (deposit: DepositEntity) => void,
     onDeleted: (deposit: DepositEntity) => void
 }
 
-const Deposit: React.FC<Props> = ({deposit, onUpdated, onDeleted}) => {
+const Deposit: React.FC<Props> = ({deposit, onUpdated, onCloned, onDeleted}) => {
     const confirmDeleteModalRef = useRef<ConfirmModalRef>(null);
     const editModalRef = useRef<DepositModalRef>(null);
 
@@ -35,12 +36,16 @@ const Deposit: React.FC<Props> = ({deposit, onUpdated, onDeleted}) => {
         confirmDeleteModalRef.current?.openModal()
     }
 
-    const onDeletionConfirmed = async () =>{
+    const onDeletionConfirmed = async () => {
         const isDeleted = await deleteDeposit(deposit);
         if (!isDeleted) {
             return;
         }
         onDeleted(deposit);
+    }
+
+    const onCloneClick = async () => {
+        onCloned(deposit);
     }
 
     return <Card>
@@ -55,6 +60,9 @@ const Deposit: React.FC<Props> = ({deposit, onUpdated, onDeleted}) => {
                 <div>
                     <Button onClick={showEditDepositModal} background={'white'} size={'sm'}>
                         <EditIcon/>
+                    </Button>
+                    <Button onClick={onCloneClick} background={'white'} size={'sm'}>
+                        <CopyIcon/>
                     </Button>
                     <Button onClick={onDeleteClicked} background={'white'} size={'sm'}>
                         <DeleteIcon color={"red.600"}/>

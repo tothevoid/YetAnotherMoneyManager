@@ -65,7 +65,10 @@ const DepositsPage: React.FC<Props> = () => {
             <SimpleGrid pt={5} pb={5} spacing={4} templateColumns='repeat(auto-fill, minmax(400px, 3fr))'>
                 {
                     state.deposits.map((deposit: DepositEntity) => 
-                        <Deposit onUpdated={onDepositUpdate} onDeleted={onDepositDeleted} deposit={deposit}/>
+                        <Deposit deposit={deposit} 
+                            onUpdated={onDepositUpdate} 
+                            onCloned={onDepositAdded} 
+                            onDeleted={onDepositDeleted}/>
                     )
                 }
             </SimpleGrid>

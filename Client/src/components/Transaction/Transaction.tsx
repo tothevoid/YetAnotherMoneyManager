@@ -2,12 +2,12 @@ import React, { useRef } from 'react';
 import { TransactionEntity } from '../../models/TransactionEntity';
 import { FundEntity } from '../../models/FundEntity';
 import { ArrowDownIcon, ArrowUpIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
-import { Flex, Stack, Card, CardBody, Text, Button, AlertDialog, AlertDialogOverlay, 
-	AlertDialogContent, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, useDisclosure } from '@chakra-ui/react';
+import { Flex, Stack, Card, CardBody, Text, Button } from '@chakra-ui/react';
 import TransactionModal, { TransactionModalRef } from '../../modals/TransactionModal/TransactionModal';
 import { TransactionType } from '../../models/TransactionType';
 import { formatMoney } from '../../formatters/moneyFormatter';
 import { formatDate } from '../../formatters/dateFormatter';
+import { ConfirmModal, ConfirmModalRef } from '../../modals/ConfirmModal/ConfirmModal';
 
 
 type Props = { 
@@ -20,14 +20,9 @@ type Props = {
 
 
 const Transaction: React.FC<Props> = (props: Props) => {
-	// const getURL = (transactionType: TransactionType) => 
-	// 	`${config.api.URL}/images/${transactionType.id}.${transactionType.extension}`
 	const {moneyQuantity, transactionType, name, date, fundSource} = props.transaction;
 
-	const { isOpen, onOpen, onClose } = useDisclosure();
-
-	const cancelRef = React.useRef<HTMLButtonElement>(null!);
-
+	const confirmModalRef = useRef<ConfirmModalRef>(null);
  	const editModalRef = useRef<TransactionModalRef>(null);
 
 	const onEditClicked = () => {
@@ -35,6 +30,10 @@ const Transaction: React.FC<Props> = (props: Props) => {
 	};
 
 	const onDeleteClicked = () => {
+		confirmModalRef.current?.openModal();
+	}
+
+	const onDeletionConfirmed = () => {
 		props.onDelete(props.transaction);
 	}
 
@@ -65,38 +64,19 @@ const Transaction: React.FC<Props> = (props: Props) => {
 					<Button background={'white'} size={'sm'} onClick={onEditClicked}>
 						<EditIcon/>
 					</Button>
-					<Button background={'white'} size={'sm'} onClick={onOpen}>
+					<Button background={'white'} size={'sm'} onClick={onDeleteClicked}>
 						<DeleteIcon color={"red.600"}/>
 					</Button>
 				</Flex>
 			</Flex>
 		</CardBody>
-		{/* TODO: Remove duplication. (Fund.tsx) */}
-		<AlertDialog
-			isOpen={isOpen}
-			leastDestructiveRef={cancelRef}
-			onClose={onClose}>
-			<AlertDialogOverlay>
-				<AlertDialogContent>
-					<AlertDialogHeader fontSize='lg' fontWeight='bold'>
-						Delete transaction
-					</AlertDialogHeader>
-					<AlertDialogBody>
-						Are you sure? You can't undo this action afterwards.
-					</AlertDialogBody>
-					
-					<AlertDialogFooter>
-					<Button ref={cancelRef} onClick={onClose}>
-						Cancel
-					</Button>
-					<Button colorScheme='red' onClick={onDeleteClicked} ml={3}>
-						Delete
-					</Button>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialogOverlay>
-		</AlertDialog>
-		<TransactionModal transactionTypes={props.transactionTypes} 
+		<ConfirmModal onConfirmed={onDeletionConfirmed}
+			title="Delete transaction"
+			message="Are you sure? You can't undo this action afterwards."
+			confirmActionName="Delete"
+			ref={confirmModalRef}>
+		</ConfirmModal>
+		<TransactionModal
 			fundSources={props.fundSources} 
 			transaction={props.transaction} 
 			ref={editModalRef} 

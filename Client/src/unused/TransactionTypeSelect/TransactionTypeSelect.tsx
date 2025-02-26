@@ -1,8 +1,7 @@
 import './TransactionTypeSelect.scss'
 import React, { Fragment } from 'react';
 import TransactionTypeForm from '../TransactionTypeForm/TransactionTypeForm';
-import { TransactionType } from '../../models/TransactionType';
-import ConfirmModal from '../../modals/ConfirmModal/ConfirmModal';
+import ConfirmModal from '../ConfirmModalOld/ConfirmModalOld';
 import Button from '../../components/Basic/Button/Button';
 
 type Props = {

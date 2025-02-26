@@ -5,13 +5,10 @@ using MoneyManager.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
 using BLL.DTO;
 using BLL.Interfaces.Entities;
-using MongoDB.Driver.Linq;
 using MoneyManager.Model.Server;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MoneyManager.BLL.Services.Entities
 {
@@ -64,12 +61,13 @@ namespace MoneyManager.BLL.Services.Entities
             foreach (var deposit in deposits)
             {
                 var accumulator = deposit.InitialAmount;
-                var periodStartDate = new DateOnly(deposit.From.Date.Year, deposit.From.Date.Month, deposit.From.Date.Day);
-                var depositEndDate = new DateOnly(deposit.To.Date.Year, deposit.To.Date.Month, deposit.To.Date.Day);
+                var periodStartDate = DateOnly.FromDateTime(deposit.From);
+                var depositEndDate = DateOnly.FromDateTime(deposit.To);
 
                 while (periodStartDate < depositEndDate)
                 {
-                    var periodEndDate = new DateOnly(periodStartDate.Year, periodStartDate.Month, 1).AddMonths(1).AddDays(-1);
+                    var lastMonthDay = new DateOnly(periodStartDate.Year, periodStartDate.Month, 1).AddMonths(1).AddDays(-1);
+                    var periodEndDate = depositEndDate < lastMonthDay ? depositEndDate : lastMonthDay;
 
                     var days = periodEndDate.DayNumber - periodStartDate.DayNumber;
                     decimal income = accumulator / 365 * days / 100 * deposit.Percentage;

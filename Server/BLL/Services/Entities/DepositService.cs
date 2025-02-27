@@ -70,7 +70,7 @@ namespace MoneyManager.BLL.Services.Entities
                     var periodEndDate = depositEndDate < lastMonthDay ? depositEndDate : lastMonthDay;
 
                     var days = periodEndDate.DayNumber - periodStartDate.DayNumber;
-                    decimal income = accumulator / 365 * days / 100 * deposit.Percentage;
+                    decimal income = accumulator / 365 * days / 100 * (decimal) deposit.Percentage;
                     accumulator += income;
 
                     var date = new DateOnly(periodStartDate.Year, periodStartDate.Month, 1);

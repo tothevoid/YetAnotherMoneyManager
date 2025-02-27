@@ -11,7 +11,7 @@ namespace MoneyManager.Model.Common
 
         public DateTime To { get; set; }
 
-        public short Percentage { get; set; }
+        public float Percentage { get; set; }
 
         public decimal InitialAmount { get; set; }
     }

@@ -67,7 +67,7 @@ const DepositModal = forwardRef<DepositModalRef, Props>((props: Props, ref)=> {
             </FormControl>
             <FormControl mt={4}>
                 <FormLabel>Percentage</FormLabel>
-                <Input type='number' name="percentage" value={depositModalData.percentage} onChange={handleChange} placeholder='10' />
+                <Input type="number" step="0.01" name="percentage" value={depositModalData.percentage} onChange={handleChange} placeholder='10' />
             </FormControl>
             <FormControl mt={4}>
                 <FormLabel>Initial amount</FormLabel>

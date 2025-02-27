@@ -54,7 +54,8 @@ namespace MoneyManager.BLL.Services.Entities
 
         public async Task<DepositMonthSummaryDTO> GetSummary()
         {
-            var deposits = (await _depositRepo.GetAll()).ToList();
+            //TODO: IEnumerable order => IQueryable order
+            var deposits = (await _depositRepo.GetAll()).OrderBy(deposit => deposit.From).ToList();
 
             var dates = new Dictionary<DateOnly, List<(string name, decimal value)>>();
 

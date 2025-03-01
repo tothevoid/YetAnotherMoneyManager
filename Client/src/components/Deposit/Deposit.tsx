@@ -1,6 +1,6 @@
 import { EditIcon, DeleteIcon, CopyIcon } from "@chakra-ui/icons";
-import { Card, CardBody, Flex, Stack, Button, Text } from "@chakra-ui/react";
-import { formatDate } from "../../formatters/dateFormatter";
+import { Card, CardBody, Flex, Stack, Button, Text, Container } from "@chakra-ui/react";
+import { formatDate, formatNumericDate } from "../../formatters/dateFormatter";
 import { formatMoney } from "../../formatters/moneyFormatter";
 import { DepositEntity } from "../../models/DepositEntity";
 import DepositModal, { DepositModalRef } from "../../modals/DepositModal/DepositModal";
@@ -48,27 +48,40 @@ const Deposit: React.FC<Props> = ({deposit, onUpdated, onCloned, onDeleted}) => 
         onCloned(deposit);
     }
 
+    const datesColor = deposit.to > new Date() ?
+        "green.500":
+        "red.500";
+
     return <Card>
         <CardBody boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
-            <Flex justifyContent="space-between" alignItems="center">
-                <Stack>
-                    <Text fontWeight={600}>{deposit.name}</Text>
-                    <Text fontWeight={600}>{deposit.percentage}%</Text>
-                    <Text fontWeight={700}>{formatMoney(deposit.initialAmount)}</Text>
-                    <Text fontWeight={600}>{`${formatDate(deposit.from)} - ${formatDate(deposit.to)}`}</Text>
-                </Stack>
-                <div>
-                    <Button onClick={showEditDepositModal} background={'white'} size={'sm'}>
-                        <EditIcon/>
-                    </Button>
-                    <Button onClick={onCloneClick} background={'white'} size={'sm'}>
-                        <CopyIcon/>
-                    </Button>
-                    <Button onClick={onDeleteClicked} background={'white'} size={'sm'}>
-                        <DeleteIcon color={"red.600"}/>
-                    </Button>
-                </div>
-            </Flex>
+            <Stack>
+                <Text fontSize={"xl"} fontWeight={600}>{deposit.name}</Text>
+                <Container padding={0}>
+                    <Flex justifyContent="space-between">
+                        <Text color={"gray.500"}>Initial amount:</Text>
+                        <Text>{formatMoney(deposit.initialAmount)}</Text>
+                    </Flex>
+                    <Flex justifyContent="space-between">
+                        <Text color={"gray.500"}>Percentage:</Text>
+                        <Text >{deposit.percentage}%</Text>
+                    </Flex>
+                    <Flex justifyContent="space-between">
+                        <Text color={"gray.500"}>Dates:</Text>
+                        <Text color={datesColor}>{`${formatNumericDate(deposit.from)} - ${formatNumericDate(deposit.to)}`}</Text>
+                    </Flex>
+                    <Flex paddingTop={4} justifyContent="end">
+                        <Button onClick={showEditDepositModal} background={'white'} size={'sm'}>
+                            <EditIcon/>
+                        </Button>
+                        <Button onClick={onCloneClick} background={'white'} size={'sm'}>
+                            <CopyIcon/>
+                        </Button>
+                        <Button onClick={onDeleteClicked} background={'white'} size={'sm'}>
+                            <DeleteIcon color={"red.600"}/>
+                        </Button>
+                    </Flex>
+                </Container>
+            </Stack>
         </CardBody>
         <ConfirmModal onConfirmed={onDeletionConfirmed}
             title="Delete fund"

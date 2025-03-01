@@ -3,7 +3,7 @@ import { DepositEntity } from "../../models/DepositEntity";
 import DepositModal, { DepositModalRef } from "../../modals/DepositModal/DepositModal";
 import { AddIcon } from "@chakra-ui/icons";
 import { createDeposit, getDeposits } from "../../api/depositApi";
-import { Button, Flex, SimpleGrid } from "@chakra-ui/react";
+import { Button, Text, Flex, SimpleGrid } from "@chakra-ui/react";
 import DepositStats from "../../components/DepositStats/DepositStats";
 import Deposit from "../../components/Deposit/Deposit";
 
@@ -53,19 +53,42 @@ const DepositsPage: React.FC<Props> = () => {
         setState({deposits});
     }
 
+    const getAddButton = () => {
+        return <Button onClick={showDepositModal} leftIcon={<AddIcon/>} colorScheme='purple' size='md'>
+            Add deposit
+        </Button>
+    }
+
+    const getAddButtonWithDeposits = () => {
+        return <Flex paddingTop={4}>
+            {getAddButton()}
+        </Flex>
+    }
+
+    const getAddButtonWithoutDeposits = () => {
+        return <Flex gap={4} direction="column" alignItems="center" justifyContent="center" height="100vh" width="100%">
+            <Text fontSize="2xl">There is no deposits yet.</Text>
+            {getAddButton()}
+        </Flex>
+    }
+
     return (
-        <Fragment> 
-            <DepositStats/>
-            <Flex>
-                <Button onClick={showDepositModal} leftIcon={<AddIcon/>} colorScheme='purple' size='md'>
-                    Add deposit
-                </Button>
-            </Flex>
+        <Fragment>
+            {
+                state.deposits.length > 0 ?
+                    <DepositStats/>:
+                    <Fragment/>
+            }
+            {
+                state.deposits.length > 0 ?
+                    getAddButtonWithDeposits():
+                    getAddButtonWithoutDeposits()
+            }
             <DepositModal ref={modalRef} onSaved={onDepositAdded}/>
             <SimpleGrid pt={5} pb={5} spacing={4} templateColumns='repeat(auto-fill, minmax(400px, 3fr))'>
                 {
                     state.deposits.map((deposit: DepositEntity) => 
-                        <Deposit deposit={deposit} 
+                        <Deposit key={deposit.id} deposit={deposit} 
                             onUpdated={onDepositUpdate} 
                             onCloned={onDepositAdded} 
                             onDeleted={onDepositDeleted}/>

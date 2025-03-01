@@ -67,7 +67,7 @@ const FundModal = forwardRef<FundModalRef, FundProps>((props: FundProps, ref)=> 
 			  </FormControl> */}
 			</ModalBody>
 			<ModalFooter>
-			  <Button onClick={onFundSaveClick} colorScheme='blue' mr={3}>Save</Button>
+			  <Button onClick={onFundSaveClick} colorScheme='purple' mr={3}>Save</Button>
 			  <Button onClick={onClose}>Cancel</Button>
 			</ModalFooter>
 		  </ModalContent>

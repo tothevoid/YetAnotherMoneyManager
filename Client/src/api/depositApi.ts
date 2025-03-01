@@ -1,6 +1,7 @@
 import { DepositMonthSummary } from '../components/DepositStats/depositMonthSummary';
 import config from '../config' 
 import { DepositEntity } from '../models/DepositEntity';
+import { convertToInputDate } from '../utils/DateUtils';
 import { checkPromiseStatus, logPromiseError } from '../utils/PromiseUtils';
 
 export const getDeposits = async (): Promise<DepositEntity[]> => {
@@ -24,7 +25,8 @@ export const getDeposits = async (): Promise<DepositEntity[]> => {
 
 export const createDeposit = async (deposit: DepositEntity): Promise<DepositEntity | void> => {
     const url = `${config.api.URL}/Deposit`;
-    const newDeposit = await fetch(url, { method: "PUT", body: JSON.stringify(deposit),
+
+    const newDeposit = await fetch(url, { method: "PUT", body: prepareDepositEntity(deposit),
         headers: {"Content-Type": "application/json"}})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
@@ -37,7 +39,7 @@ export const createDeposit = async (deposit: DepositEntity): Promise<DepositEnti
 
 export const updateDeposit = async (modifiedDeposit: DepositEntity): Promise<boolean> => {
     const url = `${config.api.URL}/Deposit`;
-    const result = await fetch(url, { method: "PATCH", body: JSON.stringify(modifiedDeposit),  
+    const result = await fetch(url, { method: "PATCH", body: prepareDepositEntity(modifiedDeposit),  
         headers: {"Content-Type": "application/json"}})
         .then(checkPromiseStatus)
         .catch(logPromiseError);
@@ -47,7 +49,7 @@ export const updateDeposit = async (modifiedDeposit: DepositEntity): Promise<boo
 
 export const deleteDeposit = async (deletedDeposit: DepositEntity): Promise<boolean> => {
     const url = `${config.api.URL}/Deposit`;
-    const result = await fetch(url, { method: "DELETE", body: JSON.stringify(deletedDeposit), 
+    const result = await fetch(url, { method: "DELETE", body: prepareDepositEntity(deletedDeposit), 
         headers: {"Content-Type": "application/json"}})
         .then(checkPromiseStatus)
         .catch(logPromiseError);
@@ -64,3 +66,13 @@ export const getDepositsSummary = async (): Promise<DepositMonthSummary | null> 
   
     return summary;
 };
+
+const prepareDepositEntity = (deposit: DepositEntity): string => {
+    const serverDeposit = {...deposit};
+
+    // .NET DateOnly cast
+    serverDeposit.from = convertToInputDate(deposit.from);
+    serverDeposit.to = convertToInputDate(deposit.to);
+
+    return JSON.stringify(serverDeposit);
+}

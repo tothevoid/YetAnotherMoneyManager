@@ -1,12 +1,12 @@
 import { EditIcon, DeleteIcon, CopyIcon } from "@chakra-ui/icons";
 import { Card, CardBody, Flex, Stack, Button, Text, Container } from "@chakra-ui/react";
-import { formatDate, formatNumericDate } from "../../formatters/dateFormatter";
+import {  formatNumericDate } from "../../formatters/dateFormatter";
 import { formatMoney } from "../../formatters/moneyFormatter";
 import { DepositEntity } from "../../models/DepositEntity";
 import DepositModal, { DepositModalRef } from "../../modals/DepositModal/DepositModal";
 import { useRef } from "react";
 import { ConfirmModal, ConfirmModalRef } from "../../modals/ConfirmModal/ConfirmModal";
-import { createDeposit, deleteDeposit, updateDeposit } from "../../api/depositApi";
+import { deleteDeposit, updateDeposit } from "../../api/depositApi";
 
 interface Props {
     deposit: DepositEntity
@@ -68,6 +68,10 @@ const Deposit: React.FC<Props> = ({deposit, onUpdated, onCloned, onDeleted}) => 
                     <Flex justifyContent="space-between">
                         <Text color={"gray.500"}>Dates:</Text>
                         <Text color={datesColor}>{`${formatNumericDate(deposit.from)} - ${formatNumericDate(deposit.to)}`}</Text>
+                    </Flex>
+                    <Flex justifyContent="space-between">
+                        <Text color={"gray.500"}>Estimated earn:</Text>
+                        <Text color={datesColor}>+{formatMoney(deposit?.estimatedEarn ?? 0)}</Text>
                     </Flex>
                     <Flex paddingTop={4} justifyContent="end">
                         <Button onClick={showEditDepositModal} background={'white'} size={'sm'}>

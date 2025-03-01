@@ -34,8 +34,11 @@ namespace MoneyManager.BLL.Services.Entities
         {
             var mappedDeposit = _mapper.Map<Deposit>(deposit);
             mappedDeposit.Id = Guid.NewGuid();
+            mappedDeposit.EstimatedEarn =
+                CalculateIncomeByRange(deposit.From, deposit.To, deposit.InitialAmount, deposit.Percentage);
             await _depositRepo.Add(mappedDeposit);
             _db.Commit();
+            
             return mappedDeposit.Id;
         }
 
@@ -62,16 +65,14 @@ namespace MoneyManager.BLL.Services.Entities
             foreach (var deposit in deposits)
             {
                 var accumulator = deposit.InitialAmount;
-                var periodStartDate = DateOnly.FromDateTime(deposit.From);
-                var depositEndDate = DateOnly.FromDateTime(deposit.To);
+                var periodStartDate = deposit.From;
 
-                while (periodStartDate < depositEndDate)
+                while (periodStartDate < deposit.To)
                 {
                     var lastMonthDay = new DateOnly(periodStartDate.Year, periodStartDate.Month, 1).AddMonths(1).AddDays(-1);
-                    var periodEndDate = depositEndDate < lastMonthDay ? depositEndDate : lastMonthDay;
+                    var periodEndDate = deposit.To < lastMonthDay ? deposit.To : lastMonthDay;
 
-                    var days = periodEndDate.DayNumber - periodStartDate.DayNumber;
-                    decimal income = accumulator / 365 * days / 100 * (decimal) deposit.Percentage;
+                    decimal income = CalculateIncomeByRange(periodStartDate, periodEndDate, accumulator, deposit.Percentage);
                     accumulator += income;
 
                     var date = new DateOnly(periodStartDate.Year, periodStartDate.Month, 1);
@@ -107,6 +108,12 @@ namespace MoneyManager.BLL.Services.Entities
                             })
                     })
             };
+        }
+
+        private decimal CalculateIncomeByRange(DateOnly from, DateOnly to, decimal initialValue, float percentage)
+        {
+            var days = to.DayNumber - from.DayNumber;
+            return initialValue / 365 * days / 100 * (decimal) percentage;
         }
     }
 }

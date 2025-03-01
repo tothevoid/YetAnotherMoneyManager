@@ -166,7 +166,7 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 			</FormControl>
 			</ModalBody>
 			<ModalFooter>
-				<Button onClick={onTransactionSaveClick} colorScheme='blue' mr={3}>Save</Button>
+				<Button onClick={onTransactionSaveClick} colorScheme='purple' mr={3}>Save</Button>
 				<Button onClick={onClose}>Cancel</Button>
 			</ModalFooter>
 		</ModalContent>

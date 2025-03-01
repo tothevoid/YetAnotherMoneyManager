@@ -3,7 +3,8 @@ import "./DepositModal.scss"
 import React, { forwardRef, useImperativeHandle, useState } from 'react'
 import DatePicker from "react-datepicker";
 import { FormControl, Button, FormLabel, Input, Modal, ModalBody, ModalCloseButton, 
-    ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure} from '@chakra-ui/react';
+    ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure,
+    Flex} from '@chakra-ui/react';
 import { DepositEntity } from '../../models/DepositEntity';
 
 
@@ -73,27 +74,29 @@ const DepositModal = forwardRef<DepositModalRef, Props>((props: Props, ref)=> {
                 <FormLabel>Initial amount</FormLabel>
                 <Input type='number' name="initialAmount" value={depositModalData.initialAmount} onChange={handleChange} placeholder='500' />
             </FormControl>
-            <FormControl mt={4}>
-                <FormLabel>From</FormLabel>
-                <DatePicker wrapperClassName="deposit-datepicker"
-                    selected={depositModalData.from}
-                    onChange={(date) => onDateChanged(date, "from")}
-                    dateFormat="dd.MM.yyyy"
-                    customInput={<Input/>}
-                />
-            </FormControl>
-            <FormControl mt={4}>
-                <FormLabel>To</FormLabel>
-                <DatePicker wrapperClassName="deposit-datepicker"
-                    selected={depositModalData.to}
-                    onChange={(date) => onDateChanged(date, "to")}
-                    dateFormat="dd.MM.yyyy"
-                    customInput={<Input/>}
-                />
-            </FormControl>
+            <Flex gap={4} direction="row">
+                <FormControl mt={4}>
+                    <FormLabel>Starts</FormLabel>
+                    <DatePicker wrapperClassName="deposit-datepicker"
+                        selected={depositModalData.from}
+                        onChange={(date) => onDateChanged(date, "from")}
+                        dateFormat="dd.MM.yyyy"
+                        customInput={<Input/>}
+                    />
+                </FormControl>
+                <FormControl mt={4}>
+                    <FormLabel>Ends</FormLabel>
+                    <DatePicker wrapperClassName="deposit-datepicker"
+                        selected={depositModalData.to}
+                        onChange={(date) => onDateChanged(date, "to")}
+                        dateFormat="dd.MM.yyyy"
+                        customInput={<Input/>}
+                    />
+                </FormControl>
+            </Flex>
             </ModalBody>
             <ModalFooter>
-                <Button onClick={onDepositModalSaveClick} colorScheme='blue' mr={3}>Save</Button>
+                <Button onClick={onDepositModalSaveClick} colorScheme='purple' mr={3}>Save</Button>
                 <Button onClick={onClose}>Cancel</Button>
             </ModalFooter>
         </ModalContent>

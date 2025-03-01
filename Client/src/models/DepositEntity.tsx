@@ -4,5 +4,6 @@ export type DepositEntity = {
     from: Date,
     to: Date,
     percentage: number,
-    initialAmount: number
+    initialAmount: number,
+    estimatedEarn?: number | null
 }

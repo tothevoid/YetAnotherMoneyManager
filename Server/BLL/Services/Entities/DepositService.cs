@@ -100,7 +100,11 @@ namespace MoneyManager.BLL.Services.Entities
                     {
                         Period = date.Key.ToString("MM.yy"),
                         Payments = date.Value.Select(payment =>
-                            new DepositPaymentDTO { Name = payment.name, Value = payment.value })
+                            new DepositPaymentDTO
+                            {
+                                Name = payment.name, 
+                                Value = (float) Math.Round(payment.value, 2)
+                            })
                     })
             };
         }

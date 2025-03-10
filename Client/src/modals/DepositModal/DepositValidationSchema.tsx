@@ -2,7 +2,7 @@ import { string, z } from 'zod';
 
 export type DepositFormInput = z.infer<typeof depositValidationSchema>;
 
-const depositValidationSchema = z.object({
+export const depositValidationSchema = z.object({
   id: string().optional(),
   name: z.string().min(1),
   percentage: z.number()
@@ -22,7 +22,4 @@ const depositValidationSchema = z.object({
 .refine(({from, to}) => from < to, {
   message: "Start date must be earlier than end date",
   path: ["from"],
-});;
-
-
-export default depositValidationSchema;
+});

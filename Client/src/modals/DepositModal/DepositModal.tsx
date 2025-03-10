@@ -7,7 +7,7 @@ import { FormControl, Button, FormLabel, Input, Modal, ModalBody, ModalCloseButt
 import { DepositEntity } from '../../models/DepositEntity';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from "react-hook-form";
-import depositValidationSchema, { DepositFormInput } from "./DepositValidationSchema";
+import { depositValidationSchema, DepositFormInput } from "./DepositValidationSchema";
 
 type Props = {
     deposit?: DepositEntity | null,

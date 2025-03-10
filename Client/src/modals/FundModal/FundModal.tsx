@@ -1,8 +1,11 @@
-import { Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, 
+import { Button, FormControl, FormErrorMessage, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, 
 	ModalFooter, ModalHeader, ModalOverlay, 
 	useDisclosure} from "@chakra-ui/react"
-import { forwardRef, useImperativeHandle, useState } from "react"
+import { forwardRef, useImperativeHandle } from "react"
 import { FundEntity } from "../../models/FundEntity";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FundFormInput, fundValidationSchema } from "./FundValidationSchema";
 
 type FundProps = {
 	fund?: FundEntity | null,
@@ -16,27 +19,25 @@ export interface FundModalRef {
 const FundModal = forwardRef<FundModalRef, FundProps>((props: FundProps, ref)=> {
 	const { isOpen, onOpen, onClose } = useDisclosure()
 
-	const initialState = {
-		id: props.fund?.id ?? crypto.randomUUID(),
-		name: props.fund?.name ?? "",
-		balance: props.fund?.balance ?? 0,
-	}
+	const { register, handleSubmit, formState: { errors }} = useForm<FundFormInput>({
+        resolver: zodResolver(fundValidationSchema),
+        mode: "onBlur",
+        defaultValues: {
+			id: props.fund?.id ?? crypto.randomUUID(),
+			name: props.fund?.name ?? "",
+			balance: props.fund?.balance ?? 0,
+        }
+    });
 
 	useImperativeHandle(ref, () => ({
 		openModal: onOpen,
 	}));
 
-	const [formData, setFormData] = useState(initialState);
 
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-	  const { name, value } = e.target;
-	  setFormData((prev) => ({ ...prev, [name]: value }));
-	};
-
-	const onFundSaveClick = () => {
-		props.onSaved({id: formData.id, name: formData.name, balance: Number(formData.balance)});
+	const onSubmit = (fund: FundFormInput) => {
+		props.onSaved(fund as FundEntity);
 		onClose();
-	};
+	}
 
 	return (
 		<Modal
@@ -46,19 +47,21 @@ const FundModal = forwardRef<FundModalRef, FundProps>((props: FundProps, ref)=> 
 			onClose={onClose}
 		>
 		  <ModalOverlay />
-		  <ModalContent>
+		  <ModalContent as="form" onSubmit={handleSubmit(onSubmit)}>
 			<ModalHeader>New fund</ModalHeader>
 			<ModalCloseButton />
 			<ModalBody pb={6}>
-			  <FormControl>
+			  <FormControl  isInvalid={!!errors.name}>
 				<FormLabel>Name</FormLabel>
 				{/* ref={initialRef} */}
-				<Input name="name" value={formData.name} onChange={handleChange} placeholder='Debit card' />
+				<Input {...register("name")} placeholder='Debit card' />
+				<FormErrorMessage>{errors.name?.message}</FormErrorMessage>
 			  </FormControl>
   
-			  <FormControl mt={4}>
+			  <FormControl isInvalid={!!errors.balance} mt={4}>
 				<FormLabel>Balance</FormLabel>
-				<Input type="number" name="balance" value={formData.balance} onChange={handleChange} placeholder='10000' />
+				<Input {...register("balance", { valueAsNumber: true })}  name="balance" placeholder='10000' />
+				<FormErrorMessage>{errors.balance?.message}</FormErrorMessage>
 			  </FormControl>
 
 			  {/* <FormControl mt={4}>
@@ -67,7 +70,7 @@ const FundModal = forwardRef<FundModalRef, FundProps>((props: FundProps, ref)=> 
 			  </FormControl> */}
 			</ModalBody>
 			<ModalFooter>
-			  <Button onClick={onFundSaveClick} colorScheme='purple' mr={3}>Save</Button>
+			  <Button type="submit" colorScheme='purple' mr={3}>Save</Button>
 			  <Button onClick={onClose}>Cancel</Button>
 			</ModalFooter>
 		  </ModalContent>

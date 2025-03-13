@@ -1,40 +1,35 @@
-import React, { forwardRef, useImperativeHandle, useState } from 'react'
+import { forwardRef, useImperativeHandle } from 'react'
 import "./TransactionModal.scss"
 import { TransactionEntity } from '../../models/TransactionEntity';
 import { FundEntity } from '../../models/FundEntity';
-// import { TransactionType } from '../../models/TransactionType';
 import DatePicker from "react-datepicker";
-import { Field, Button, Input, useDisclosure, Select, Dialog, Portal, CloseButton} from '@chakra-ui/react';
+import { Field, Button, Input, useDisclosure, Dialog, Portal, CloseButton} from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TransactionFormInput, TransactionValidationSchema } from './TransactionValidationSchema';
 import { Controller, useForm } from 'react-hook-form';
+import { Select } from "chakra-react-select"
 
 
 type Props = {
 	fundSources: FundEntity[],
 	transaction?: TransactionEntity | null,
-	// transactionTypes: TransactionType[],
 	onSaved: (transaction: TransactionEntity) => void
-	// onTypeAdded: (type: TransactionType) => void
 }
 
 export interface TransactionModalRef {
 	openModal: () => void
 }
 
-type ModalState = {
-	direction: TransactionDirection | null
-}
-
 enum TransactionDirection {
-	Income = 0,
-	Spent = 1
+	Income = "income",
+	Spent = "spent",
 }
 
-const transactionDirections = new Map<TransactionDirection, string>([
-	[TransactionDirection.Income, "Income"],
-	[TransactionDirection.Spent, "Spent"],
-])
+const transactionOptions = {
+	[TransactionDirection.Income]: { label: "Income", value: TransactionDirection.Income },
+	[TransactionDirection.Spent]: { label: "Spent", value: TransactionDirection.Spent },
+} as const;
+
 
 const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, ref)=> {
 	const { open, onOpen, onClose } = useDisclosure()
@@ -43,15 +38,9 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 		Math.abs(props.transaction.moneyQuantity) :
 		0;
 
-	const direction: number | null = props.transaction && props.transaction.moneyQuantity > 0 ?
-		TransactionDirection.Income:
-		TransactionDirection.Spent;
-
-	// const transactionType = (props.transactionTypes?.length > 0) ? 
-		// 	props.transactionTypes[0] :
-		// 	"";
-
-	// transactionType: props.transaction?.transactionType ?? transactionType
+	const direction = props.transaction && props.transaction.moneyQuantity > 0 ?
+		transactionOptions[TransactionDirection.Income]:
+		transactionOptions[TransactionDirection.Spent];
 
 	const source = (props.fundSources?.length > 0) ? 
 		props.fundSources[0] :
@@ -66,11 +55,10 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 			date: props.transaction?.date ?? new Date(),
 			moneyQuantity: moneyQuantity,
 			fundSource: props.transaction?.fundSource ?? source,
+			direction: direction,
 			transactionType: ""
 		}
 	});
-
-	const [modalState, setModalState] = useState<ModalState>({direction});
 
 	// useEffect(() => {
 	// 	setFormData(getInitialState());
@@ -81,22 +69,8 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 		openModal: onOpen,
 	}));
 
-
-	const handleTransactionDirectionChange = ({ target: { value } }: React.ChangeEvent<HTMLSelectElement>) => {
-		const newValue = value ? parseInt(value): null;
-
-		setModalState((prev) => ({ ...prev, direction: newValue }));
-	}
-
-	// const handleSourceChange = ({ target: { name, value } }: React.ChangeEvent<HTMLSelectElement>) => {
-	// 	const source = props.fundSources.find((entity: FundEntity) => entity.id === value);
-	// 	if (source){
-	// 		setFormData((prev) => ({ ...prev, [name]: source }));
-	// 	}
-	// }
-
 	const onTransactionSaveClick = (transaction: TransactionFormInput) => {
-		const multiplier = modalState.direction === TransactionDirection.Income ?
+		const multiplier = transaction.direction.value == TransactionDirection.Income ?
 			1:
 			-1;
 
@@ -121,12 +95,20 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 					</Field.Root>
 					<Field.Root mt={4}>
 						<Field.Label>Direction</Field.Label>
-						{/* <Select name="direction" onChange={handleTransactionDirectionChange} placeholder='Select direction'
-							value={modalState.direction as number}>
-							{[...transactionDirections.entries()].map(([key, value]) => {
-								return <option key={key} value={key}>{value}</option>
-							})}
-						</Select> */}
+						<Controller
+							name="direction"
+							control={control}
+							render={({ field }) => (
+									<Select
+										{...field}
+										getOptionLabel={(e) => e.label}
+										getOptionValue={(e) => e.value}
+										options={Object.values(transactionOptions)}
+										isClearable
+										placeholder='Select source'>
+									</Select>
+								)}
+							/>
 					</Field.Root>
 					<Field.Root mt={4} invalid={!!errors.moneyQuantity}>
 						<Field.Label>Diff</Field.Label>
@@ -152,7 +134,7 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 					</Field.Root>
 					<Field.Root mt={4} invalid={!!errors.fundSource}>
 						<Field.Label>Source</Field.Label>
-						{/* <Controller
+						<Controller
 							name="fundSource"
 							control={control}
 							render={({ field }) => (
@@ -165,7 +147,7 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 										placeholder='Select source'>
 									</Select>
 								)}
-							/> */}
+							/>
 						<Field.ErrorText>{errors.fundSource?.message}</Field.ErrorText>
 					</Field.Root>
 					<Field.Root mt={4} invalid={!!errors.transactionType}>
@@ -189,6 +171,5 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 		</Portal>
 	</Dialog.Root>)
 })
-
 
 export default TransactionModal;

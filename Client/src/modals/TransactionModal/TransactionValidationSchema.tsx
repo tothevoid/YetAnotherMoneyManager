@@ -12,6 +12,10 @@ export const TransactionValidationSchema = z.object({
   fundSource: z.object({
     id: string().nonempty({message: "Fund source is not selected"}),
     name: string()
-  }).required(),
-  transactionType: string().nonempty()
+  }, {message: "Fund source is not selected"}),
+  transactionType: string().nonempty(),
+  direction: z.object({
+    label: string(),
+    value: string()
+  })
 })

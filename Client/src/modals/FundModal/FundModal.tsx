@@ -38,11 +38,7 @@ const FundModal = forwardRef<FundModalRef, FundProps>((props: FundProps, ref)=> 
 	}
 
 	return (
-		<Dialog.Root placement="center" open={open}
-		//   initialFocusRef={initialRef}
-		//   finalFocusRef={finalRef}
-			// onClose={onClose}
-		>
+		<Dialog.Root placement="center" open={open}>
 		  <Portal>
 			<Dialog.Backdrop/>
 			<Dialog.Positioner>
@@ -52,11 +48,9 @@ const FundModal = forwardRef<FundModalRef, FundProps>((props: FundProps, ref)=> 
 							New fund
 						</Dialog.Title>
 					</Dialog.Header>
-					{/* <ModalCloseButton /> */}
 					<Dialog.Body pb={6}>
 					<Field.Root invalid={!!errors.name}>
 						<Field.Label>Name</Field.Label>
-						{/* ref={initialRef} */}
 						<Input {...register("name")} placeholder='Debit card' />
 						<Field.ErrorText>{errors.name?.message}</Field.ErrorText>
 					</Field.Root>

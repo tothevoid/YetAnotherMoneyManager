@@ -44,7 +44,7 @@ const DepositModal = forwardRef<DepositModalRef, Props>((props: Props, ref)=> {
 
     return <Dialog.Root placement="center" open={open}>
         <Portal>
-            <Dialog.Backdrop></Dialog.Backdrop>
+            <Dialog.Backdrop/>
             <Dialog.Positioner>
                 <Dialog.Content as="form" onSubmit={handleSubmit(onSubmit)}>
                     <Dialog.Header>
@@ -52,7 +52,6 @@ const DepositModal = forwardRef<DepositModalRef, Props>((props: Props, ref)=> {
                         Deposit
                         </Dialog.Title>
                     </Dialog.Header>
-                    {/* <ModalCloseButton /> */}
                     <Dialog.Body pb={6}>
                         <Field.Root invalid={!!errors.name}>
                             <Field.Label>Name</Field.Label>

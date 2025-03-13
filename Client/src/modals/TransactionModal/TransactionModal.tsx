@@ -107,9 +107,6 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 	};
 
 	return (<Dialog.Root placement="center" open={open}>
-		{/* //   initialFocusRef={initialRef}
-		//   finalFocusRef={finalRef}
-		// onClose={onClose} */}
 		<Portal>
 			<Dialog.Backdrop/>
 			<Dialog.Positioner>
@@ -117,11 +114,9 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 					<Dialog.Header>
 						<Dialog.Title>New fund</Dialog.Title>
 					</Dialog.Header>
-					{/* <ModalCloseButton /> */}
 					<Dialog.Body pb={6}>
 					<Field.Root invalid={!!errors.name}>
 						<Field.Label>Name</Field.Label>
-						{/* ref={initialRef} */}
 						<Input {...register("name")} autoComplete="off" placeholder='Grocery' />
 					</Field.Root>
 					<Field.Root mt={4}>

@@ -15,9 +15,7 @@ interface Props {
 
 export const ConfirmModal = forwardRef<ConfirmModalRef, Props>((props: Props, ref) => {
     const { open, onOpen, onClose } = useDisclosure();
-
     const cancelRef = React.useRef<HTMLButtonElement>(null!);
-
     useImperativeHandle(ref, () => ({
         openModal: onOpen,
     }));
@@ -29,12 +27,8 @@ export const ConfirmModal = forwardRef<ConfirmModalRef, Props>((props: Props, re
 
     return <Dialog.Root
         placement="center"
-        role="alertdialog"
         open={open}
-        leastDestructiveRef={cancelRef}
-        onClose={onClose}>
-        {/* <AlertDialogOverlay>
-        </AlertDialogOverlay> */}
+        role="alertdialog">
         <Portal>
             <Dialog.Backdrop/>
             <Dialog.Positioner>
@@ -45,17 +39,16 @@ export const ConfirmModal = forwardRef<ConfirmModalRef, Props>((props: Props, re
                     <Dialog.Body>
                         {props.message}
                     </Dialog.Body>
-
                     <Dialog.Footer>
-                        <Button ref={cancelRef} onClick={onClose}>
-                            Cancel
-                        </Button>
                         <Button background="red.600" onClick={onConfirmed} ml={3}>
                             {props.confirmActionName}
                         </Button>
+                        <Dialog.ActionTrigger asChild>
+                            <Button ref={cancelRef} onClick={onClose} variant="outline">Cancel</Button>
+                        </Dialog.ActionTrigger>
                     </Dialog.Footer>
                     <Dialog.CloseTrigger asChild>
-                        <CloseButton size="sm" />
+                        <CloseButton onClick={onClose} size="sm" />
                     </Dialog.CloseTrigger>
                 </Dialog.Content>
             </Dialog.Positioner>

@@ -1,11 +1,13 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
+import React, { forwardRef, useImperativeHandle, useState } from 'react'
 import "./TransactionModal.scss"
 import { TransactionEntity } from '../../models/TransactionEntity';
 import { FundEntity } from '../../models/FundEntity';
 // import { TransactionType } from '../../models/TransactionType';
 import DatePicker from "react-datepicker";
-import { FormControl, Button, FormLabel, Input, Modal, ModalBody, ModalCloseButton, 
-	ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure, Select} from '@chakra-ui/react';
+import { Field, Button, Input, useDisclosure, Select, Dialog, Portal, CloseButton} from '@chakra-ui/react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { TransactionFormInput, TransactionValidationSchema } from './TransactionValidationSchema';
+import { Controller, useForm } from 'react-hook-form';
 
 
 type Props = {
@@ -35,7 +37,7 @@ const transactionDirections = new Map<TransactionDirection, string>([
 ])
 
 const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, ref)=> {
-	const { isOpen, onOpen, onClose } = useDisclosure()
+	const { open, onOpen, onClose } = useDisclosure()
 
 	const moneyQuantity = props.transaction?.moneyQuantity ? 
 		Math.abs(props.transaction.moneyQuantity) :
@@ -45,43 +47,40 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 		TransactionDirection.Income:
 		TransactionDirection.Spent;
 
-	const getInitialState = (): TransactionEntity => {
-		const source = (props.fundSources?.length > 0) ? 
-			props.fundSources[0] :
-			{id: ""} as FundEntity
-	
-		// const transactionType = (props.transactionTypes?.length > 0) ? 
+	// const transactionType = (props.transactionTypes?.length > 0) ? 
 		// 	props.transactionTypes[0] :
 		// 	"";
 
-		return {
+	// transactionType: props.transaction?.transactionType ?? transactionType
+
+	const source = (props.fundSources?.length > 0) ? 
+		props.fundSources[0] :
+		{id: ""} as FundEntity
+
+	const { register, handleSubmit, control, formState: { errors }} = useForm<TransactionFormInput>({
+		resolver: zodResolver(TransactionValidationSchema),
+		mode: "onBlur",
+		defaultValues: {
 			id: props.transaction?.id ?? crypto.randomUUID(),
 			name: props.transaction?.name ?? "",
 			date: props.transaction?.date ?? new Date(),
 			moneyQuantity: moneyQuantity,
 			fundSource: props.transaction?.fundSource ?? source,
-			// transactionType: props.transaction?.transactionType ?? transactionType
-		};
-	}
+			transactionType: ""
+		}
+	});
 
-	const [formData, setFormData] = useState<TransactionEntity>(getInitialState);
 	const [modalState, setModalState] = useState<ModalState>({direction});
 
-	useEffect(() => {
-		setFormData(getInitialState());
-		// props.transactionTypes
-	}, [props.transaction, props.fundSources]);
-
+	// useEffect(() => {
+	// 	setFormData(getInitialState());
+	// 	// props.transactionTypes
+	// }, [props.transaction, props.fundSources]);
 
 	useImperativeHandle(ref, () => ({
 		openModal: onOpen,
 	}));
 
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const { name, value, type } = e.target;
-		const normalizedValue = (type === "number" || type === "price") ? parseFloat(value) : value;
-		setFormData((prev) => ({ ...prev, [name]: normalizedValue }));
-	};
 
 	const handleTransactionDirectionChange = ({ target: { value } }: React.ChangeEvent<HTMLSelectElement>) => {
 		const newValue = value ? parseInt(value): null;
@@ -89,88 +88,111 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 		setModalState((prev) => ({ ...prev, direction: newValue }));
 	}
 
-	const handleSourceChange = ({ target: { name, value } }: React.ChangeEvent<HTMLSelectElement>) => {
-		const source = props.fundSources.find((entity: FundEntity) => entity.id === value);
-		if (source){
-			setFormData((prev) => ({ ...prev, [name]: source }));
-		}
-	}
+	// const handleSourceChange = ({ target: { name, value } }: React.ChangeEvent<HTMLSelectElement>) => {
+	// 	const source = props.fundSources.find((entity: FundEntity) => entity.id === value);
+	// 	if (source){
+	// 		setFormData((prev) => ({ ...prev, [name]: source }));
+	// 	}
+	// }
 
-	const onDateChanged = (date: Date | null) => {
-		if (!date) {
-			return;
-		}
-
-		setFormData((prev: TransactionEntity) => ({ ...prev, date: date }));
-	}
-
-	const onTransactionSaveClick = () => {
+	const onTransactionSaveClick = (transaction: TransactionFormInput) => {
 		const multiplier = modalState.direction === TransactionDirection.Income ?
 			1:
 			-1;
 
+		const formData = transaction as TransactionEntity;
 		formData.moneyQuantity = multiplier * formData.moneyQuantity;
 		props.onSaved(formData);
 		onClose();
 	};
 
-	return (<Modal
-		//   initialFocusRef={initialRef}
+	return (<Dialog.Root placement="center" open={open}>
+		{/* //   initialFocusRef={initialRef}
 		//   finalFocusRef={finalRef}
-			isOpen={isOpen}
-			onClose={onClose}
-		>
-		<ModalOverlay />
-		<ModalContent>
-			<ModalHeader>New fund</ModalHeader>
-			<ModalCloseButton />
-			<ModalBody pb={6}>
-			<FormControl>
-				<FormLabel>Name</FormLabel>
-				{/* ref={initialRef} */}
-				<Input name="name" value={formData.name} onChange={handleChange} placeholder='Grocery' />
-			</FormControl>
-			<FormControl mt={4}>
-				<FormLabel>Direction</FormLabel>
-				<Select name="direction" onChange={handleTransactionDirectionChange} placeholder='Select direction'
-					value={modalState.direction as number}>
-					{[...transactionDirections.entries()].map(([key, value]) => {
-						return <option key={key} value={key}>{value}</option>
-					})}
-				</Select>
-			</FormControl>
-			<FormControl mt={4}>
-				<FormLabel>Diff</FormLabel>
-				<Input type='number' name="moneyQuantity" value={formData.moneyQuantity} onChange={handleChange} placeholder='500' />
-			</FormControl>
-			<FormControl mt={4}>
-				<FormLabel>Date</FormLabel>
-				<DatePicker wrapperClassName="transaction-datepicker"
-					selected={formData.date}
-					onChange={onDateChanged}
-					dateFormat="dd.MM.yyyy"
-					customInput={<Input/>}
-				/>
-			</FormControl>
-			<FormControl mt={4}>
-				<FormLabel>Source</FormLabel>
-				<Select name="fundSource" value={formData.fundSource.id} onChange={handleSourceChange} placeholder='Select source'>
-					{props.fundSources.map(({id, name}) => {
-						return <option key={id} value={id}>{name}</option>
-					})}
-				</Select>
-			</FormControl>
-			<FormControl mt={4}>
-				<FormLabel>Type</FormLabel>
-				<Input name="transactionType" value={formData.transactionType} onChange={handleChange} placeholder='Describe type' />
-			</FormControl>
-			</ModalBody>
-			<ModalFooter>
-				<Button onClick={onTransactionSaveClick} colorScheme='purple' mr={3}>Save</Button>
-				<Button onClick={onClose}>Cancel</Button>
-			</ModalFooter>
-		</ModalContent>
-	</Modal>)
+		// onClose={onClose} */}
+		<Portal>
+			<Dialog.Backdrop/>
+			<Dialog.Positioner>
+				<Dialog.Content as="form" onSubmit={handleSubmit(onTransactionSaveClick)}>
+					<Dialog.Header>
+						<Dialog.Title>New fund</Dialog.Title>
+					</Dialog.Header>
+					{/* <ModalCloseButton /> */}
+					<Dialog.Body pb={6}>
+					<Field.Root invalid={!!errors.name}>
+						<Field.Label>Name</Field.Label>
+						{/* ref={initialRef} */}
+						<Input {...register("name")} autoComplete="off" placeholder='Grocery' />
+					</Field.Root>
+					<Field.Root mt={4}>
+						<Field.Label>Direction</Field.Label>
+						{/* <Select name="direction" onChange={handleTransactionDirectionChange} placeholder='Select direction'
+							value={modalState.direction as number}>
+							{[...transactionDirections.entries()].map(([key, value]) => {
+								return <option key={key} value={key}>{value}</option>
+							})}
+						</Select> */}
+					</Field.Root>
+					<Field.Root mt={4} invalid={!!errors.moneyQuantity}>
+						<Field.Label>Diff</Field.Label>
+						<Input {...register("moneyQuantity", {valueAsNumber: true})} autoComplete="off" type='number' placeholder='500' />
+						<Field.ErrorText>{errors.moneyQuantity?.message}</Field.ErrorText>
+					</Field.Root>
+					<Field.Root mt={4} invalid={!!errors.date}>
+						<Field.Label>Date</Field.Label>
+						<Controller
+							name="date"
+							control={control}
+							render={({ field: {onChange, value} }) => (
+								<DatePicker
+								wrapperClassName="transaction-datepicker"
+								selected={value}
+								onChange={onChange}
+								dateFormat="dd.MM.yyyy"
+								placeholderText="Select date"
+								customInput={<Input/>}/>
+							)}
+							/>
+						<Field.ErrorText>{errors.date?.message}</Field.ErrorText>
+					</Field.Root>
+					<Field.Root mt={4} invalid={!!errors.fundSource}>
+						<Field.Label>Source</Field.Label>
+						{/* <Controller
+							name="fundSource"
+							control={control}
+							render={({ field }) => (
+									<Select
+										{...field}
+										getOptionLabel={(e) => e.name}
+										getOptionValue={(e) => e.id}
+										options={props.fundSources}
+										isClearable
+										placeholder='Select source'>
+									</Select>
+								)}
+							/> */}
+						<Field.ErrorText>{errors.fundSource?.message}</Field.ErrorText>
+					</Field.Root>
+					<Field.Root mt={4} invalid={!!errors.transactionType}>
+						<Field.Label>Type</Field.Label>
+						<Input {...register("transactionType")} placeholder='Describe type' />
+						<Field.ErrorText>{errors.transactionType?.message}</Field.ErrorText>
+					</Field.Root>
+					</Dialog.Body>
+					<Dialog.Footer>
+						<Button type='submit' background='purple.600' mr={3}>Save</Button>
+						<Button onClick={onClose}>Cancel</Button>
+					</Dialog.Footer>
+					<Dialog.CloseTrigger asChild>
+						<CloseButton size="sm" />
+					</Dialog.CloseTrigger>
+				</Dialog.Content>
+				<Dialog.CloseTrigger asChild>
+					<CloseButton size="sm" />
+				</Dialog.CloseTrigger>
+			</Dialog.Positioner>
+		</Portal>
+	</Dialog.Root>)
 })
 
 

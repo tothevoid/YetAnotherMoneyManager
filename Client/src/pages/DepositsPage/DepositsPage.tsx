@@ -86,7 +86,7 @@ const DepositsPage: React.FC<Props> = () => {
                     getAddButtonWithoutDeposits()
             }
             <DepositModal ref={modalRef} onSaved={onDepositAdded}/>
-            <SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(400px, 3fr))'>
+            <SimpleGrid pt={5} pb={5} gap={6} templateColumns='repeat(auto-fill, minmax(300px, 4fr))'>
                 {
                     state.deposits.map((deposit: DepositEntity) => 
                         <Deposit key={deposit.id} deposit={deposit} 

@@ -110,10 +110,10 @@ const DepositModal = forwardRef<DepositModalRef, Props>((props: Props, ref)=> {
                         <Button type="submit" backgroundColor='purple.600' mr={3}>Save</Button>
                         <Button onClick={onClose}>Cancel</Button>
                     </Dialog.Footer>
+                    <Dialog.CloseTrigger asChild>
+                        <CloseButton onClick={onClose} size="sm" />
+                    </Dialog.CloseTrigger>
                 </Dialog.Content>
-                <Dialog.CloseTrigger asChild>
-                    <CloseButton size="sm" />
-                </Dialog.CloseTrigger>
             </Dialog.Positioner>
         </Portal>
     </Dialog.Root>

@@ -160,12 +160,9 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 						<Button onClick={onClose}>Cancel</Button>
 					</Dialog.Footer>
 					<Dialog.CloseTrigger asChild>
-						<CloseButton size="sm" />
+						<CloseButton onClick={onClose} size="sm" />
 					</Dialog.CloseTrigger>
 				</Dialog.Content>
-				<Dialog.CloseTrigger asChild>
-					<CloseButton size="sm" />
-				</Dialog.CloseTrigger>
 			</Dialog.Positioner>
 		</Portal>
 	</Dialog.Root>)

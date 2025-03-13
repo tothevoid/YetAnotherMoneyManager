@@ -55,7 +55,7 @@ const FundModal = forwardRef<FundModalRef, FundProps>((props: FundProps, ref)=> 
 		
 					<Field.Root invalid={!!errors.balance} mt={4}>
 						<Field.Label>Balance</Field.Label>
-						<Input {...register("balance", { valueAsNumber: true })}  name="balance" placeholder='10000' />
+						<Input {...register("balance", { valueAsNumber: true })} name="balance" type="number" placeholder='10000' />
 						<Field.ErrorText>{errors.balance?.message}</Field.ErrorText>
 					</Field.Root>
 

@@ -76,6 +76,7 @@ const DepositModal = forwardRef<DepositModalRef, Props>((props: Props, ref)=> {
                                     control={control}
                                     render={({ field: {onChange, value} }) => (
                                         <DatePicker
+                                        wrapperClassName="deposit-datepicker"
                                         selected={value}
                                         onChange={onChange}
                                         dateFormat="dd.MM.yyyy"
@@ -93,6 +94,7 @@ const DepositModal = forwardRef<DepositModalRef, Props>((props: Props, ref)=> {
                                     control={control}
                                     render={({ field: {onChange, value} }) => (
                                         <DatePicker
+                                        wrapperClassName="deposit-datepicker"
                                         selected={value}
                                         onChange={onChange}
                                         dateFormat="dd.MM.yyyy"

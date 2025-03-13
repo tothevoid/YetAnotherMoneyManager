@@ -1,5 +1,4 @@
-import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, 
-    AlertDialogHeader, AlertDialogOverlay, Button, useDisclosure } from "@chakra-ui/react"
+import { Button, CloseButton, Dialog, Portal, useDisclosure } from "@chakra-ui/react"
 import React, { useImperativeHandle } from "react";
 import { forwardRef } from "react"
 
@@ -15,7 +14,7 @@ interface Props {
 }
 
 export const ConfirmModal = forwardRef<ConfirmModalRef, Props>((props: Props, ref) => {
-    const { isOpen, onOpen, onClose } = useDisclosure();
+    const { open, onOpen, onClose } = useDisclosure();
 
     const cancelRef = React.useRef<HTMLButtonElement>(null!);
 
@@ -28,28 +27,38 @@ export const ConfirmModal = forwardRef<ConfirmModalRef, Props>((props: Props, re
         props.onConfirmed();
     }
 
-    return <AlertDialog
-        isOpen={isOpen}
+    return <Dialog.Root
+        placement="center"
+        role="alertdialog"
+        open={open}
         leastDestructiveRef={cancelRef}
         onClose={onClose}>
-        <AlertDialogOverlay>
-            <AlertDialogContent>
-                <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-                   {props.title}
-                </AlertDialogHeader>
-                <AlertDialogBody>
-                    {props.message}
-                </AlertDialogBody>
+        {/* <AlertDialogOverlay>
+        </AlertDialogOverlay> */}
+        <Portal>
+            <Dialog.Backdrop/>
+            <Dialog.Positioner>
+                <Dialog.Content>
+                    <Dialog.Header fontSize='lg' fontWeight='bold'>
+                        {props.title}
+                    </Dialog.Header>
+                    <Dialog.Body>
+                        {props.message}
+                    </Dialog.Body>
 
-                <AlertDialogFooter>
-                <Button ref={cancelRef} onClick={onClose}>
-                    Cancel
-                </Button>
-                <Button colorScheme='red' onClick={onConfirmed} ml={3}>
-                    {props.confirmActionName}
-                </Button>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialogOverlay>
-    </AlertDialog>;
+                    <Dialog.Footer>
+                        <Button ref={cancelRef} onClick={onClose}>
+                            Cancel
+                        </Button>
+                        <Button background="red.600" onClick={onConfirmed} ml={3}>
+                            {props.confirmActionName}
+                        </Button>
+                    </Dialog.Footer>
+                    <Dialog.CloseTrigger asChild>
+                        <CloseButton size="sm" />
+                    </Dialog.CloseTrigger>
+                </Dialog.Content>
+            </Dialog.Positioner>
+        </Portal>
+    </Dialog.Root>;
 });

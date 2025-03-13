@@ -1,5 +1,5 @@
-import { AddIcon } from "@chakra-ui/icons"
-import { Button } from "@chakra-ui/react"
+import { MdAdd } from "react-icons/md"
+import { Button, Icon } from "@chakra-ui/react"
 import { useRef } from "react"
 
 import { Fragment } from "react/jsx-runtime"
@@ -23,7 +23,10 @@ const AddFundButton: React.FC<FundProps> = ({ onAdded }) => {
 
 	return (
 		<Fragment>
-			<Button onClick={onAdd} leftIcon={<AddIcon/>} colorScheme='purple' size='md'>
+			<Button background="purple.600" onClick={onAdd}>
+				<Icon size='md'>
+					<MdAdd/>
+				</Icon>
 				Add fund
 			</Button>
 			<FundModal ref={modalRef} onSaved={onFundAdded}></FundModal>

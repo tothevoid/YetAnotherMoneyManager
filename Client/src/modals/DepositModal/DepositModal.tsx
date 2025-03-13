@@ -2,12 +2,11 @@ import "./DepositModal.scss"
 
 import { forwardRef, useImperativeHandle } from 'react'
 import DatePicker from "react-datepicker";
-import { FormControl, Button, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, 
-    ModalFooter, ModalHeader, ModalOverlay, useDisclosure, Flex, FormErrorMessage} from '@chakra-ui/react';
+import { Button, Field, Input, Dialog, useDisclosure, Flex, Portal, CloseButton} from '@chakra-ui/react';
 import { DepositEntity } from '../../models/DepositEntity';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from "react-hook-form";
-import { depositValidationSchema, DepositFormInput } from "./DepositValidationSchema";
+import { DepositValidationSchema, DepositFormInput } from "./DepositValidationSchema";
 
 type Props = {
     deposit?: DepositEntity | null,
@@ -19,13 +18,13 @@ export interface DepositModalRef {
 }
 
 const DepositModal = forwardRef<DepositModalRef, Props>((props: Props, ref)=> {
-    const { isOpen, onOpen, onClose } = useDisclosure();
+    const { open, onOpen, onClose } = useDisclosure();
     useImperativeHandle(ref, () => ({
         openModal: onOpen,
     }));
 
     const { register, control, handleSubmit, formState: { errors }} = useForm<DepositFormInput>({
-        resolver: zodResolver(depositValidationSchema),
+        resolver: zodResolver(DepositValidationSchema),
         mode: "onBlur",
         defaultValues: {
             id: props.deposit?.id ?? crypto.randomUUID(),
@@ -43,69 +42,80 @@ const DepositModal = forwardRef<DepositModalRef, Props>((props: Props, ref)=> {
     }
 
 
-    return <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent as="form" onSubmit={handleSubmit(onSubmit)}>
-            <ModalHeader>Deposit</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody pb={6}>
-            <FormControl isInvalid={!!errors.name}>
-                <FormLabel>Name</FormLabel>
-                <Input {...register("name")} autoComplete="off" placeholder='Deposit name' />
-                <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
-            </FormControl>
-            <FormControl isInvalid={!!errors.percentage} mt={4}>
-                <FormLabel>Percentage</FormLabel>
-                <Input {...register("percentage", { valueAsNumber: true })} type="number" placeholder='10' />
-                <FormErrorMessage>{errors.percentage?.message}</FormErrorMessage>
-            </FormControl>
-            <FormControl isInvalid={!!errors.initialAmount} mt={4}>
-                <FormLabel>Initial amount</FormLabel>
-                <Input {...register("initialAmount", { valueAsNumber: true })} type='number' placeholder='10' />
-                <FormErrorMessage>{errors.initialAmount?.message}</FormErrorMessage>
-            </FormControl>
-            <Flex gap={4} direction="row">
-                <FormControl isInvalid={!!errors.from} mt={4}>
-                    <FormLabel>Starts</FormLabel>
-                    <Controller
-                        name="from"
-                        control={control}
-                        render={({ field: {onChange, value} }) => (
-                            <DatePicker
-                            selected={value}
-                            onChange={onChange}
-                            dateFormat="dd.MM.yyyy"
-                            placeholderText="Select from date"
-                            customInput={<Input/>}/>
-                        )}
-                        />
-                    <FormErrorMessage>{errors.from?.message}</FormErrorMessage>
-                </FormControl>
-                <FormControl isInvalid={!!errors.to} mt={4}>
-                    <FormLabel>Ends</FormLabel>
-                    {/* TODO Fix date field duplication */}
-                    <Controller
-                        name="to"
-                        control={control}
-                        render={({ field: {onChange, value} }) => (
-                            <DatePicker
-                            selected={value}
-                            onChange={onChange}
-                            dateFormat="dd.MM.yyyy"
-                            placeholderText="Select to date"
-                            customInput={<Input/>}/>
-                        )}
-                        />
-                    <FormErrorMessage>{errors.to?.message}</FormErrorMessage>
-                </FormControl>
-            </Flex>
-            </ModalBody>
-            <ModalFooter>
-                <Button type="submit" colorScheme='purple' mr={3}>Save</Button>
-                <Button onClick={onClose}>Cancel</Button>
-            </ModalFooter>
-        </ModalContent>
-    </Modal>
+    return <Dialog.Root placement="center" open={open}>
+        <Portal>
+            <Dialog.Backdrop></Dialog.Backdrop>
+            <Dialog.Positioner>
+                <Dialog.Content as="form" onSubmit={handleSubmit(onSubmit)}>
+                    <Dialog.Header>
+                        <Dialog.Title>
+                        Deposit
+                        </Dialog.Title>
+                    </Dialog.Header>
+                    {/* <ModalCloseButton /> */}
+                    <Dialog.Body pb={6}>
+                        <Field.Root invalid={!!errors.name}>
+                            <Field.Label>Name</Field.Label>
+                            <Input {...register("name")} autoComplete="off" placeholder='Deposit name' />
+                            <Field.ErrorText>{errors.name?.message}</Field.ErrorText>
+                        </Field.Root>
+                        <Field.Root invalid={!!errors.percentage} mt={4}>
+                            <Field.Label>Percentage</Field.Label>
+                            <Input {...register("percentage", { valueAsNumber: true })} type="number" placeholder='10' />
+                            <Field.ErrorText>{errors.percentage?.message}</Field.ErrorText>
+                        </Field.Root>
+                        <Field.Root invalid={!!errors.initialAmount} mt={4}>
+                            <Field.Label>Initial amount</Field.Label>
+                            <Input {...register("initialAmount", { valueAsNumber: true })} type='number' placeholder='10' />
+                            <Field.ErrorText>{errors.initialAmount?.message}</Field.ErrorText>
+                        </Field.Root>
+                        <Flex gap={4} direction="row">
+                            <Field.Root invalid={!!errors.from} mt={4}>
+                                <Field.Label>Starts</Field.Label>
+                                <Controller
+                                    name="from"
+                                    control={control}
+                                    render={({ field: {onChange, value} }) => (
+                                        <DatePicker
+                                        selected={value}
+                                        onChange={onChange}
+                                        dateFormat="dd.MM.yyyy"
+                                        placeholderText="Select from date"
+                                        customInput={<Input/>}/>
+                                    )}
+                                    />
+                                <Field.ErrorText>{errors.from?.message}</Field.ErrorText>
+                            </Field.Root>
+                            <Field.Root invalid={!!errors.to} mt={4}>
+                                <Field.Label>Ends</Field.Label>
+                                {/* TODO Fix date field duplication */}
+                                <Controller
+                                    name="to"
+                                    control={control}
+                                    render={({ field: {onChange, value} }) => (
+                                        <DatePicker
+                                        selected={value}
+                                        onChange={onChange}
+                                        dateFormat="dd.MM.yyyy"
+                                        placeholderText="Select to date"
+                                        customInput={<Input/>}/>
+                                    )}
+                                    />
+                                <Field.ErrorText>{errors.to?.message}</Field.ErrorText>
+                            </Field.Root>
+                        </Flex>
+                    </Dialog.Body>
+                    <Dialog.Footer>
+                        <Button type="submit" backgroundColor='purple.600' mr={3}>Save</Button>
+                        <Button onClick={onClose}>Cancel</Button>
+                    </Dialog.Footer>
+                </Dialog.Content>
+                <Dialog.CloseTrigger asChild>
+                    <CloseButton size="sm" />
+                </Dialog.CloseTrigger>
+            </Dialog.Positioner>
+        </Portal>
+    </Dialog.Root>
 })
 
 

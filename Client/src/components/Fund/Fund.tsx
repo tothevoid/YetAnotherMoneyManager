@@ -1,7 +1,7 @@
 import './Fund.scss'
 import { FundEntity } from '../../models/FundEntity';
-import { Button, Card, CardBody, Flex, Stack, Text } from '@chakra-ui/react';
-import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
+import { Button, Card, Flex, Icon, Stack, Text } from '@chakra-ui/react';
+import { MdDelete, MdEdit } from "react-icons/md";
 import { Fragment, useRef } from 'react';
 import FundModal, { FundModalRef } from '../../modals/FundModal/FundModal';
 import { formatMoney } from '../../formatters/moneyFormatter';
@@ -32,22 +32,28 @@ const Fund = (props: Props) => {
     }
 
     return <Fragment>
-        <Card>
-            <CardBody boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
+        <Card.Root>
+            <Card.Body boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
                 <Flex justifyContent="space-between" alignItems="center">
                     <Stack>
                         <Text fontWeight={600}>{name}</Text>
                         <Text fontWeight={700}>{formatMoney(balance)}</Text>
                     </Stack>
                     <div>
-                        <Button background={'white'} size={'sm'} onClick={onEditClicked}><EditIcon/></Button>
+                        <Button background={'white'} size={'sm'} onClick={onEditClicked}>
+                            <Icon color='blackAlpha.800'>
+                                <MdEdit/>
+                            </Icon>
+                        </Button>
                         <Button background={'white'} size={'sm'} onClick={onDeleteClicked}>
-                            <DeleteIcon color={"red.600"}/>
+                            <Icon color={"red.600"}>
+                                <MdDelete/>
+                            </Icon>
                         </Button>
                     </div>
                 </Flex>
-            </CardBody>
-        </Card>
+            </Card.Body>
+        </Card.Root>
         <ConfirmModal onConfirmed={onDeletionConfirmed}
             title="Delete fund"
             message="Are you sure? You can't undo this action afterwards"

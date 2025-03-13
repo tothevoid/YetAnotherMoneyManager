@@ -1,8 +1,8 @@
 import { string, z } from 'zod';
 
-export type DepositFormInput = z.infer<typeof depositValidationSchema>;
+export type DepositFormInput = z.infer<typeof DepositValidationSchema>;
 
-export const depositValidationSchema = z.object({
+export const DepositValidationSchema = z.object({
   id: string().optional(),
   name: z.string().min(1),
   percentage: z.number()

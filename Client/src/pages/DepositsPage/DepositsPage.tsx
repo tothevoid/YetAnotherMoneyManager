@@ -1,11 +1,11 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { DepositEntity } from "../../models/DepositEntity";
 import DepositModal, { DepositModalRef } from "../../modals/DepositModal/DepositModal";
-import { AddIcon } from "@chakra-ui/icons";
 import { createDeposit, getDeposits } from "../../api/depositApi";
 import { Button, Text, Flex, SimpleGrid } from "@chakra-ui/react";
 import DepositStats from "../../components/DepositStats/DepositStats";
 import Deposit from "../../components/Deposit/Deposit";
+import { MdAdd } from "react-icons/md";
 
 interface Props {}
 
@@ -54,7 +54,8 @@ const DepositsPage: React.FC<Props> = () => {
     }
 
     const getAddButton = () => {
-        return <Button onClick={showDepositModal} leftIcon={<AddIcon/>} colorScheme='purple' size='md'>
+        return <Button onClick={showDepositModal} background='purple.600' size='md'>
+            <MdAdd/>
             Add deposit
         </Button>
     }
@@ -85,7 +86,7 @@ const DepositsPage: React.FC<Props> = () => {
                     getAddButtonWithoutDeposits()
             }
             <DepositModal ref={modalRef} onSaved={onDepositAdded}/>
-            <SimpleGrid pt={5} pb={5} spacing={4} templateColumns='repeat(auto-fill, minmax(400px, 3fr))'>
+            <SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(400px, 3fr))'>
                 {
                     state.deposits.map((deposit: DepositEntity) => 
                         <Deposit key={deposit.id} deposit={deposit} 

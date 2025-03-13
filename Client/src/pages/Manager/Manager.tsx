@@ -226,7 +226,7 @@ class Manager extends React.Component<any, State> {
                     onUpdateFundCallback = {this.updateFund} 
                     funds = {funds}>
                 </FundsBar>
-                <SimpleGrid columns={2} spacing={16}>
+                <SimpleGrid columns={2} gap={16}>
                     <Box>
                         <Flex justifyContent={"space-between"}>
                             <Text fontSize="2xl" fontWeight={600}>Transactions</Text>

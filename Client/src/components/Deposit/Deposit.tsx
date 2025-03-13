@@ -1,5 +1,5 @@
-import { EditIcon, DeleteIcon, CopyIcon } from "@chakra-ui/icons";
-import { Card, CardBody, Flex, Stack, Button, Text, Container } from "@chakra-ui/react";
+import { MdDelete, MdEdit, MdContentCopy } from "react-icons/md";
+import { Card, Flex, Stack, Button, Text, Container, Icon } from "@chakra-ui/react";
 import {  formatNumericDate } from "../../formatters/dateFormatter";
 import { formatMoney } from "../../formatters/moneyFormatter";
 import { DepositEntity } from "../../models/DepositEntity";
@@ -52,8 +52,8 @@ const Deposit: React.FC<Props> = ({deposit, onUpdated, onCloned, onDeleted}) => 
         "green.500":
         "red.500";
 
-    return <Card>
-        <CardBody boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
+    return <Card.Root>
+        <Card.Body boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
             <Stack>
                 <Text fontSize={"xl"} fontWeight={600}>{deposit.name}</Text>
                 <Container padding={0}>
@@ -75,18 +75,24 @@ const Deposit: React.FC<Props> = ({deposit, onUpdated, onCloned, onDeleted}) => 
                     </Flex>
                     <Flex paddingTop={4} justifyContent="end">
                         <Button onClick={showEditDepositModal} background={'white'} size={'sm'}>
-                            <EditIcon/>
+                            <Icon color="blackAlpha.800">
+                                <MdEdit/>
+                            </Icon>
                         </Button>
                         <Button onClick={onCloneClick} background={'white'} size={'sm'}>
-                            <CopyIcon/>
+                            <Icon color="blackAlpha.800">
+                                <MdContentCopy/>
+                            </Icon>
                         </Button>
                         <Button onClick={onDeleteClicked} background={'white'} size={'sm'}>
-                            <DeleteIcon color={"red.600"}/>
+                            <Icon color="red.600">
+                                <MdDelete/>
+                            </Icon>
                         </Button>
                     </Flex>
                 </Container>
             </Stack>
-        </CardBody>
+        </Card.Body>
         <ConfirmModal onConfirmed={onDeletionConfirmed}
             title="Delete fund"
             message="Are you sure? You can't undo this action afterwards"
@@ -94,7 +100,7 @@ const Deposit: React.FC<Props> = ({deposit, onUpdated, onCloned, onDeleted}) => 
             ref={confirmDeleteModalRef}>
         </ConfirmModal>
         <DepositModal deposit={deposit} ref={editModalRef} onSaved={onDepositSaved}/>
-    </Card>
+    </Card.Root>
 }
 
 export default Deposit;

@@ -29,7 +29,7 @@ const FundsBar: React.FC<Props> = (props) => {
 				<Text fontSize='3xl'>Funds: {formatMoney(total)}</Text>
 				<AddFundButton onAdded={onAddFundCallback}></AddFundButton>
 			</Flex>
-			<SimpleGrid pt={5} pb={5} spacing={4} templateColumns='repeat(auto-fill, minmax(300px, 3fr))'>
+			<SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(300px, 3fr))'>
 				{
 				props.funds.map((fund: FundEntity) => {
 					return <Fund fund={fund} onEditCallback={onUpdateFundCallback} 

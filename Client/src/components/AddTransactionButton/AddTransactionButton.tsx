@@ -1,11 +1,11 @@
 import { Button } from "@chakra-ui/react"
 import { Fragment } from "react/jsx-runtime"
 import TransactionModal, { TransactionModalRef } from "../../modals/TransactionModal/TransactionModal"
-import { AddIcon } from "@chakra-ui/icons"
 import { TransactionEntity } from "../../models/TransactionEntity"
 import { useRef } from "react"
 import { TransactionType } from "../../models/TransactionType"
 import { FundEntity } from "../../models/FundEntity"
+import { MdAdd } from "react-icons/md"
 
 type Props = {
     fundSources: FundEntity[],
@@ -22,7 +22,9 @@ const AddTransactionButton: React.FC<Props> = (props: Props) => {
     }
 
     return <Fragment>
-        <Button leftIcon={<AddIcon/>} onClick={() => onAddTransactionClick()}>Add transaction</Button>
+        <Button background="purple.600" onClick={() => onAddTransactionClick()}>
+            <MdAdd/>Add transaction
+        </Button>
         <TransactionModal ref={addTransactionModalRef} 
             // onTypeAdded={props.onTypeAdded} 
             transactionTypes={props.transactionTypes} fundSources={props.fundSources}

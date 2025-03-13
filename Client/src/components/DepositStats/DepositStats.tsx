@@ -1,4 +1,4 @@
-import { CircularProgress, Flex, Stack } from '@chakra-ui/react'
+import { ProgressCircle, Flex, Stack } from '@chakra-ui/react'
 import { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { DepositMonthSummary, DepositPayment } from './depositMonthSummary';
@@ -32,7 +32,12 @@ const DepositStats = () => {
 
     if (!chartData) {
         return <Flex padding={5} justifyContent="center">
-            <CircularProgress isIndeterminate color="purple"></CircularProgress>
+            <ProgressCircle.Root color="purple">
+                <ProgressCircle.Circle>
+                    <ProgressCircle.Track />
+                    <ProgressCircle.Range />
+                </ProgressCircle.Circle>
+            </ProgressCircle.Root>
         </Flex>
     }
 

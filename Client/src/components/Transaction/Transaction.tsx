@@ -1,8 +1,9 @@
 import React, { useRef } from 'react';
 import { TransactionEntity } from '../../models/TransactionEntity';
 import { FundEntity } from '../../models/FundEntity';
-import { ArrowDownIcon, ArrowUpIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
-import { Flex, Stack, Card, CardBody, Text, Button } from '@chakra-ui/react';
+import { MdOutlineArrowDownward, MdOutlineArrowUpward, MdEdit } from 'react-icons/md';
+import { MdDelete } from "react-icons/md";
+import { Flex, Stack, Card, CardBody, Text, Button, Icon } from '@chakra-ui/react';
 import TransactionModal, { TransactionModalRef } from '../../modals/TransactionModal/TransactionModal';
 import { TransactionType } from '../../models/TransactionType';
 import { formatMoney } from '../../formatters/moneyFormatter';
@@ -39,11 +40,15 @@ const Transaction: React.FC<Props> = (props: Props) => {
 
 	const getTransactionDirectionIcon = () => {
 		return props.transaction.moneyQuantity > 0 ?
-			<ArrowUpIcon rounded={16} fontSize="32"  background={'green.100'} color={'green.600'}/>:
-			<ArrowDownIcon rounded={16} fontSize="32"  background={'red.100'} color={'red.600'}/>
+			<Icon rounded={16} fontSize="32"  background={'green.100'} color={'green.600'}>
+				<MdOutlineArrowUpward/>
+			</Icon>:
+			<Icon rounded={16} fontSize="32"  background={'red.100'} color={'red.600'}>
+				<MdOutlineArrowDownward/>
+			</Icon>
 	}
 
-	return <Card mt={5} mb={5} boxShadow={"sm"} _hover={{ boxShadow: "md" }}>
+	return <Card.Root mt={5} mb={5} boxShadow={"sm"} _hover={{ boxShadow: "md" }}>
 		<CardBody>
 			<Flex justifyContent="space-between" alignItems="center">
 				{/* {
@@ -60,12 +65,16 @@ const Transaction: React.FC<Props> = (props: Props) => {
 				</Stack>
 				<Flex gap={2} justifyContent="space-between" alignItems="center">
 					<Text background={'green.100'} textAlign={'center'} w={150} rounded={10} padding={1} >{transactionType}</Text>
-					<Text width={100} align={"right"} >{formatMoney(moneyQuantity)}</Text>
+					<Text width={100}>{formatMoney(moneyQuantity)}</Text>
 					<Button background={'white'} size={'sm'} onClick={onEditClicked}>
-						<EditIcon/>
+						<Icon color="blackAlpha.800">
+							<MdEdit/>
+						</Icon>
 					</Button>
 					<Button background={'white'} size={'sm'} onClick={onDeleteClicked}>
-						<DeleteIcon color={"red.600"}/>
+						<Icon color="red.600">
+							<MdDelete/>
+						</Icon>
 					</Button>
 				</Flex>
 			</Flex>
@@ -81,7 +90,7 @@ const Transaction: React.FC<Props> = (props: Props) => {
 			transaction={props.transaction} 
 			ref={editModalRef} 
 			onSaved={props.onUpdate}/>
-	</Card>
+	</Card.Root>
 }
 
 export default Transaction;

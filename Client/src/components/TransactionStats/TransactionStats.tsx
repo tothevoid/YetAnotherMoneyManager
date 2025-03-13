@@ -107,7 +107,7 @@ const TransactionStats = (props: Props) => {
         <Flex gap={4} alignItems={'center'}>
             {
                 [...groupingConfig.values()].map(groupingConfig => {
-                    return <Button key={groupingConfig.group} colorScheme='purple' disabled={groupingConfig.group == selectedGrouping} 
+                    return <Button key={groupingConfig.group} background='purple.600' disabled={groupingConfig.group == selectedGrouping} 
                         onClick={() => {setSelectedGrouping(groupingConfig.group)}}>
                         {groupingConfig.caption}
                     </Button>

@@ -3,7 +3,7 @@ import "./Pagination.css"
 import {getMonthByIndex} from "../../utils/DateUtils"
 import { Calendar } from "../Calendar/Calendar"
 import CalendarIcon from "../../assets/calendar.svg"
-import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons"
+import { MdChevronLeft, MdChevronRight } from "react-icons/md"
 
 type State = {
     isCalendarVisible: boolean
@@ -51,13 +51,13 @@ class Pagination extends Component<Props, State>{
         const date = `${getMonthByIndex(month)}'${year.toString().substring(2)}`
         return <Fragment>
         <div className="pagination-container">
-                <button onClick={this.pageSwitchClick(-1)} className="paging-element paging-button page-previous"><ChevronLeftIcon/></button>
+                <button onClick={this.pageSwitchClick(-1)} className="paging-element paging-button page-previous"><MdChevronLeft/></button>
                 <div className="current-month paging-element">
                     {date}
                     <img alt="calendar" className="calendar-icon" onClick={()=>this.onSwitchCalendarVisibility()} src={CalendarIcon}></img>
                 </div>
                 
-                <button onClick={this.pageSwitchClick(1)} className="paging-element paging-button page-next"><ChevronRightIcon/></button>
+                <button onClick={this.pageSwitchClick(1)} className="paging-element paging-button page-next"><MdChevronRight/></button>
             </div>
             {
                 (isCalendarVisible) ?

@@ -44,9 +44,7 @@ const FundModal = forwardRef<FundModalRef, FundProps>((props: FundProps, ref)=> 
 			<Dialog.Positioner>
 				<Dialog.Content as="form" onSubmit={handleSubmit(onSubmit)}>
 					<Dialog.Header>
-						<Dialog.Title>
-							New fund
-						</Dialog.Title>
+						<Dialog.Title>Fund</Dialog.Title>
 					</Dialog.Header>
 					<Dialog.Body pb={6}>
 					<Field.Root invalid={!!errors.name}>

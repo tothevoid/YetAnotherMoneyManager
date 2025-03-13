@@ -85,7 +85,7 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 			<Dialog.Positioner>
 				<Dialog.Content as="form" onSubmit={handleSubmit(onTransactionSaveClick)}>
 					<Dialog.Header>
-						<Dialog.Title>New fund</Dialog.Title>
+						<Dialog.Title>Transaction</Dialog.Title>
 					</Dialog.Header>
 					<Dialog.Body pb={6}>
 					<Field.Root invalid={!!errors.name}>
@@ -111,7 +111,7 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 					</Field.Root>
 					<Field.Root mt={4} invalid={!!errors.moneyQuantity}>
 						<Field.Label>Diff</Field.Label>
-						<Input {...register("moneyQuantity", {valueAsNumber: true})} autoComplete="off" type='number' placeholder='500' />
+						<Input {...register("moneyQuantity", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='500' />
 						<Field.ErrorText>{errors.moneyQuantity?.message}</Field.ErrorText>
 					</Field.Root>
 					<Field.Root mt={4} invalid={!!errors.date}>
@@ -151,7 +151,7 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 					</Field.Root>
 					<Field.Root mt={4} invalid={!!errors.transactionType}>
 						<Field.Label>Type</Field.Label>
-						<Input {...register("transactionType")} placeholder='Describe type' />
+						<Input {...register("transactionType")} autoComplete="off" placeholder='Describe type' />
 						<Field.ErrorText>{errors.transactionType?.message}</Field.ErrorText>
 					</Field.Root>
 					</Dialog.Body>

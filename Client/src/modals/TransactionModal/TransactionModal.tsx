@@ -9,7 +9,6 @@ import { TransactionFormInput, TransactionValidationSchema } from './Transaction
 import { Controller, useForm } from 'react-hook-form';
 import { Select } from "chakra-react-select"
 
-
 type Props = {
 	fundSources: FundEntity[],
 	transaction?: TransactionEntity | null,
@@ -56,7 +55,7 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 			moneyQuantity: moneyQuantity,
 			fundSource: props.transaction?.fundSource ?? source,
 			direction: direction,
-			transactionType: ""
+			transactionType: props.transaction?.transactionType ?? ""
 		}
 	});
 
@@ -127,7 +126,7 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 								onChange={onChange}
 								dateFormat="dd.MM.yyyy"
 								placeholderText="Select date"
-								customInput={<Input/>}/>
+								customInput={<Input className='transaction-datepicker'/>}/>
 							)}
 							/>
 						<Field.ErrorText>{errors.date?.message}</Field.ErrorText>

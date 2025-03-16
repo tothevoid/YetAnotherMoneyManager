@@ -9,7 +9,7 @@ import Pagination from '../../components/Pagination/Pagination';
 import TransactionStats from '../../components/TransactionStats/TransactionStats';
 import { Box, Flex, SimpleGrid, Text } from '@chakra-ui/react';
 import AddTransactionButton from '../../components/AddTransactionButton/AddTransactionButton';
-import { createTransaction, deleteTransaction, getTransactions, updateTransaction } from '../../api/transactionApi';
+import { getTransactions, updateTransaction } from '../../api/transactionApi';
 import { FundToUpdate } from '../../api/models/fundToUpdate';
 import { getFunds } from '../../api/fundApi';
 
@@ -45,7 +45,7 @@ const Manager: React.FC<any> = () => {
         })
     };
 
-    const onFundAdded = async (addedFund: FundEntity) => {
+    const onFundCreated = async (addedFund: FundEntity) => {
         if (!addedFund) {
             return
         }
@@ -105,8 +105,7 @@ const Manager: React.FC<any> = () => {
         })
     };
 
-    const onTransactionCreated = async (transaction: TransactionEntity) => {
-        const createdTransaction = await createTransaction(transaction);
+    const onTransactionCreated = async (createdTransaction: TransactionEntity) => {
         if (!createdTransaction) {
             return;
         }
@@ -123,14 +122,15 @@ const Manager: React.FC<any> = () => {
     };
 
     const onTransactionDeleted = async (deletedTransaction: TransactionEntity) => { 
-        const isDeleted = await deleteTransaction(deletedTransaction);
-        if (isDeleted) {
-            removeTransaction(deletedTransaction);
-            recalculateFund(deletedTransaction, -1);
+        if (!deletedTransaction) {
+            return;
         }
+
+        deleteTransaction(deletedTransaction);
+        recalculateFund(deletedTransaction, -1);
     };
 
-    const onTransactionUdpated = async (updatedTransaction: TransactionEntity) => {
+    const onTransactionUpdated = async (updatedTransaction: TransactionEntity) => {
         const affectedFunds = await updateTransaction(updatedTransaction);
 
         if (!affectedFunds.length) {
@@ -139,7 +139,7 @@ const Manager: React.FC<any> = () => {
 
         const newFunds = recalculateFunds(affectedFunds);
         if (!isCurrentMonthTransaction(updatedTransaction)) {
-            removeTransaction(updatedTransaction);
+            deleteTransaction(updatedTransaction);
             setState((currentState) => {
                 return {...currentState, funds: newFunds}; 
             });
@@ -163,7 +163,7 @@ const Manager: React.FC<any> = () => {
         });
     };
 
-    const removeTransaction = (deletingTransaction: TransactionEntity) => {
+    const deleteTransaction = (deletingTransaction: TransactionEntity) => {
         setState((currentState: State) => {
             const transactions = currentState.transactions
                 .filter((transaction: TransactionEntity) => transaction.id !== deletingTransaction.id)
@@ -205,8 +205,6 @@ const Manager: React.FC<any> = () => {
         return newFunds;
     };
 
-
-
     const [state, setState] = useState<State>(getDefaultState);
 
     const {transactions, funds, 
@@ -214,7 +212,8 @@ const Manager: React.FC<any> = () => {
     
     return (
         <div>
-            <FundsBar onAddFundCallback = {onFundAdded}
+            <FundsBar 
+                onAddFundCallback = {onFundCreated}
                 onUpdateFundCallback = {onFundUpdated}
                 onDeleteFundCallback = {onFundDeleted} 
                 funds = {funds}>
@@ -233,7 +232,7 @@ const Manager: React.FC<any> = () => {
                         (transactions.length !== 0) ?
                         transactions.map((transaction: TransactionEntity) => {       
                             return <Transaction key={transaction.id} transaction={transaction} 
-                                onDelete={onTransactionDeleted} onUpdate={onTransactionUdpated}
+                                onDelete={onTransactionDeleted} onUpdate={onTransactionUpdated}
                                 fundSources={funds}>
                             </Transaction>
                         }):

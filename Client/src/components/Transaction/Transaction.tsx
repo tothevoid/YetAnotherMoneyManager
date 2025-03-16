@@ -8,6 +8,7 @@ import TransactionModal, { TransactionModalRef } from '../../modals/TransactionM
 import { formatMoney } from '../../formatters/moneyFormatter';
 import { formatDate } from '../../formatters/dateFormatter';
 import { ConfirmModal, ConfirmModalRef } from '../../modals/ConfirmModal/ConfirmModal';
+import { deleteTransaction } from '../../api/transactionApi';
 
 
 type Props = { 
@@ -16,7 +17,6 @@ type Props = {
 	transaction: TransactionEntity,
 	fundSources: FundEntity[],
 } 
-
 
 const Transaction: React.FC<Props> = (props: Props) => {
 	const {moneyQuantity, transactionType, name, date, fundSource} = props.transaction;
@@ -32,7 +32,11 @@ const Transaction: React.FC<Props> = (props: Props) => {
 		confirmModalRef.current?.openModal();
 	}
 
-	const onDeletionConfirmed = () => {
+	const onDeletionConfirmed = async () => {
+		const isDeleted = await deleteTransaction(props.transaction);
+		if (!isDeleted) {
+			return;
+		}
 		props.onDelete(props.transaction);
 	}
 

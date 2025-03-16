@@ -41,7 +41,7 @@ const FundModal = forwardRef<FundModalRef, FundProps>((props: FundProps, ref)=> 
 	const {t} = useTranslation()
 
 	return (
-		<Dialog.Root placement="center" open={open}>
+		<Dialog.Root placement="center" open={open} onEscapeKeyDown={onClose}>
 		  <Portal>
 			<Dialog.Backdrop/>
 			<Dialog.Positioner>

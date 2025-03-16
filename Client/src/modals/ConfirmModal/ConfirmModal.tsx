@@ -29,6 +29,7 @@ export const ConfirmModal = forwardRef<ConfirmModalRef, Props>((props: Props, re
     const { t } = useTranslation();
 
     return <Dialog.Root
+        onEscapeKeyDown={onClose}
         placement="center"
         open={open}
         role="alertdialog">

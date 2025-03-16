@@ -75,7 +75,7 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 		onClose();
 	};
 
-	return (<Dialog.Root placement="center" open={open}>
+	return <Dialog.Root placement="center" open={open} onEscapeKeyDown={onClose}>
 		<Portal>
 			<Dialog.Backdrop/>
 			<Dialog.Positioner>
@@ -161,7 +161,7 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 				</Dialog.Content>
 			</Dialog.Positioner>
 		</Portal>
-	</Dialog.Root>)
+	</Dialog.Root>
 })
 
 export default TransactionModal;

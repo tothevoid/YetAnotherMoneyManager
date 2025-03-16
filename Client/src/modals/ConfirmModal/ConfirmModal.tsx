@@ -1,6 +1,7 @@
 import { Button, CloseButton, Dialog, Portal, useDisclosure } from "@chakra-ui/react"
 import React, { useImperativeHandle } from "react";
 import { forwardRef } from "react"
+import { useTranslation } from "react-i18next";
 
 export interface ConfirmModalRef {
     openModal: () => void
@@ -25,6 +26,8 @@ export const ConfirmModal = forwardRef<ConfirmModalRef, Props>((props: Props, re
         props.onConfirmed();
     }
 
+    const { t } = useTranslation();
+
     return <Dialog.Root
         placement="center"
         open={open}
@@ -44,7 +47,7 @@ export const ConfirmModal = forwardRef<ConfirmModalRef, Props>((props: Props, re
                             {props.confirmActionName}
                         </Button>
                         <Dialog.ActionTrigger asChild>
-                            <Button ref={cancelRef} onClick={onClose} variant="outline">Cancel</Button>
+                            <Button ref={cancelRef} onClick={onClose} variant="outline">{t("modals_cancel_button")}</Button>
                         </Dialog.ActionTrigger>
                     </Dialog.Footer>
                     <Dialog.CloseTrigger asChild>

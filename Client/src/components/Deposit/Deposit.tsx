@@ -53,7 +53,7 @@ const Deposit: React.FC<Props> = ({deposit, onUpdated, onCloned, onDeleted}) => 
         "green.500":
         "red.500";
 
-    const { i18n } = useTranslation();
+    const { i18n, t } = useTranslation();
 
     return <Card.Root>
         <Card.Body boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
@@ -61,19 +61,19 @@ const Deposit: React.FC<Props> = ({deposit, onUpdated, onCloned, onDeleted}) => 
                 <Text fontSize={"xl"} fontWeight={600}>{deposit.name}</Text>
                 <Container padding={0}>
                     <Flex justifyContent="space-between">
-                        <Text color={"gray.500"}>Initial amount:</Text>
+                        <Text color={"gray.500"}>{t("entity_deposit_initial_amount")}:</Text>
                         <Text>{formatMoney(deposit.initialAmount)}</Text>
                     </Flex>
                     <Flex justifyContent="space-between">
-                        <Text color={"gray.500"}>Percentage:</Text>
+                        <Text color={"gray.500"}>{t("entity_deposit_percentage")}:</Text>
                         <Text >{deposit.percentage}%</Text>
                     </Flex>
                     <Flex justifyContent="space-between">
-                        <Text color={"gray.500"}>Dates:</Text>
+                        <Text color={"gray.500"}>{t("entity_deposit_dates")}:</Text>
                         <Text color={datesColor}>{`${formatNumericDate(deposit.from, i18n)} - ${formatNumericDate(deposit.to, i18n)}`}</Text>
                     </Flex>
                     <Flex justifyContent="space-between">
-                        <Text color={"gray.500"}>Estimated earn:</Text>
+                        <Text color={"gray.500"}>{t("entity_deposit_estimated_earn")}:</Text>
                         <Text color={datesColor}>+{formatMoney(deposit?.estimatedEarn ?? 0)}</Text>
                     </Flex>
                     <Flex paddingTop={4} justifyContent="end">
@@ -97,9 +97,9 @@ const Deposit: React.FC<Props> = ({deposit, onUpdated, onCloned, onDeleted}) => 
             </Stack>
         </Card.Body>
         <ConfirmModal onConfirmed={onDeletionConfirmed}
-            title="Delete fund"
-            message="Are you sure? You can't undo this action afterwards"
-            confirmActionName="Delete"
+            title={t("deposit_delete_title")}
+            message={t("modals_delete_message")}
+            confirmActionName={t("modals_delete_button")}
             ref={confirmDeleteModalRef}>
         </ConfirmModal>
         <DepositModal deposit={deposit} ref={editModalRef} onSaved={onDepositSaved}/>

@@ -51,7 +51,7 @@ const DepositModal = forwardRef<DepositModalRef, Props>((props: Props, ref)=> {
                 <Dialog.Content as="form" onSubmit={handleSubmit(onSubmit)}>
                     <Dialog.Header>
                         <Dialog.Title>
-                        Deposit
+                        {t("entity_deposit_name_form_title")}
                         </Dialog.Title>
                     </Dialog.Header>
                     <Dialog.Body pb={6}>
@@ -109,8 +109,8 @@ const DepositModal = forwardRef<DepositModalRef, Props>((props: Props, ref)=> {
                         </Flex>
                     </Dialog.Body>
                     <Dialog.Footer>
-                        <Button type="submit" backgroundColor='purple.600' mr={3}>Save</Button>
-                        <Button onClick={onClose}>Cancel</Button>
+                        <Button type="submit" backgroundColor='purple.600' mr={3}>{t("modals_save_button")}</Button>
+                        <Button onClick={onClose}>{t("modals_cancel_button")}</Button>
                     </Dialog.Footer>
                     <Dialog.CloseTrigger asChild>
                         <CloseButton onClick={onClose} size="sm" />

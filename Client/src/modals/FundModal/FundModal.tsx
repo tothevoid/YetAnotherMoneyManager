@@ -47,7 +47,7 @@ const FundModal = forwardRef<FundModalRef, FundProps>((props: FundProps, ref)=> 
 			<Dialog.Positioner>
 				<Dialog.Content as="form" onSubmit={handleSubmit(onSubmit)}>
 					<Dialog.Header>
-						<Dialog.Title>Fund</Dialog.Title>
+						<Dialog.Title>{t("entity_fund_name_form_title")}</Dialog.Title>
 					</Dialog.Header>
 					<Dialog.Body pb={6}>
 					<Field.Root invalid={!!errors.name}>
@@ -68,8 +68,8 @@ const FundModal = forwardRef<FundModalRef, FundProps>((props: FundProps, ref)=> 
 					</Field.Root> */}
 					</Dialog.Body>
 					<Dialog.Footer>
-					<Button type="submit" background='purple.600' mr={3}>Save</Button>
-					<Button onClick={onClose}>Cancel</Button>
+					<Button type="submit" background='purple.600' mr={3}>{t("modals_save_button")}</Button>
+					<Button onClick={onClose}>{t("modals_cancel_button")}</Button>
 					</Dialog.Footer>
 				</Dialog.Content>
 				<Dialog.CloseTrigger asChild>

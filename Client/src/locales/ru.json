@@ -11,16 +11,24 @@
     "manager_stats_by_source": "По активу",
     "manager_stats_by_type": "По типу",
 
+    "entity_fund_name_form_title": "Cчёт",
     "entity_fund_name": "Название",
     "entity_fund_balance": "Баланс",
 
+    "fund_delete_title": "Удалить счёт",
+
+    "entity_deposit_name_form_title": "Депозит",
     "entity_deposit_name": "Название",
-    "entity_deposit_from": "С",
-    "entity_deposit_to": "По",
+    "entity_deposit_from": "Начало",
+    "entity_deposit_to": "Конец",
     "entity_deposit_percentage": "Процент",
     "entity_deposit_initial_amount": "Начальная сумма",
     "entity_deposit_estimated_earn": "Ожидаемых доход",
+    "entity_deposit_dates": "Даты",
 
+    "deposit_delete_title": "Удалить депозит",
+
+    "entity_transaction_name_form_title": "Транзакция",
     "entity_transaction_name": "Название",
     "entity_transaction_date": "Дата",
     "entity_transaction_money_quantity": "Сумма",
@@ -28,5 +36,12 @@
     "entity_transaction_transaction_type": "Тип",
     "entity_transaction_direction": "Движение средств",
     "entity_transaction_direction_income": "Доход",
-    "entity_transaction_direction_outcome": "Расход"
+    "entity_transaction_direction_outcome": "Расход",
+
+    "transaction_delete_title": "Удалить транзакцию",
+
+    "modals_delete_button": "Удалить",
+    "modals_delete_message": "Вы уверены? Текущее действие невозможно отменить",
+    "modals_cancel_button": "Отменить",
+    "modals_save_button": "Сохранить"
 }

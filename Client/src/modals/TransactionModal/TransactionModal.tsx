@@ -81,7 +81,7 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 			<Dialog.Positioner>
 				<Dialog.Content as="form" onSubmit={handleSubmit(onTransactionSaveClick)}>
 					<Dialog.Header>
-						<Dialog.Title>Transaction</Dialog.Title>
+						<Dialog.Title>{t("entity_transaction_name_form_title")}</Dialog.Title>
 					</Dialog.Header>
 					<Dialog.Body pb={6}>
 					<Field.Root invalid={!!errors.name}>
@@ -152,8 +152,8 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 					</Field.Root>
 					</Dialog.Body>
 					<Dialog.Footer>
-						<Button type='submit' background='purple.600' mr={3}>Save</Button>
-						<Button onClick={onClose}>Cancel</Button>
+						<Button type='submit' background='purple.600' mr={3}>{t("modals_save_button")}</Button>
+						<Button onClick={onClose}>{t("modals_cancel_button")}</Button>
 					</Dialog.Footer>
 					<Dialog.CloseTrigger asChild>
 						<CloseButton onClick={onClose} size="sm" />

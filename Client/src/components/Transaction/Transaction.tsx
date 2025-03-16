@@ -51,7 +51,7 @@ const Transaction: React.FC<Props> = (props: Props) => {
 			</Icon>
 	}
 
-	const { i18n } = useTranslation()
+	const { i18n, t} = useTranslation()
 
 	return <Card.Root mt={5} mb={5} boxShadow={"sm"} _hover={{ boxShadow: "md" }}>
 		<CardBody>
@@ -78,11 +78,11 @@ const Transaction: React.FC<Props> = (props: Props) => {
 					</Button>
 				</Flex>
 			</Flex>
-		</CardBody>
+		</CardBody>	
 		<ConfirmModal onConfirmed={onDeletionConfirmed}
-			title="Delete transaction"
-			message="Are you sure? You can't undo this action afterwards."
-			confirmActionName="Delete"
+			title={t("transaction_delete_title")}
+			message={t("modals_delete_message")}
+			confirmActionName={t("modals_delete_button")}
 			ref={confirmModalRef}>
 		</ConfirmModal>
 		<TransactionModal

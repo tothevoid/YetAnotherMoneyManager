@@ -7,6 +7,7 @@ import FundModal, { FundModalRef } from '../../modals/FundModal/FundModal';
 import { formatMoney } from '../../formatters/moneyFormatter';
 import { ConfirmModal, ConfirmModalRef } from '../../modals/ConfirmModal/ConfirmModal';
 import { deleteFund, updateFund } from '../../api/fundApi';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
     fund: FundEntity,
@@ -46,6 +47,8 @@ const Fund = (props: Props) => {
         props.onDeleteCallback(props.fund);
     }
 
+    const { t } = useTranslation();
+
     return <Fragment>
         <Card.Root>
             <Card.Body boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
@@ -70,9 +73,9 @@ const Fund = (props: Props) => {
             </Card.Body>
         </Card.Root>
         <ConfirmModal onConfirmed={onDeletionConfirmed}
-            title="Delete fund"
-            message="Are you sure? You can't undo this action afterwards"
-            confirmActionName="Delete"
+            title={t("fund_delete_title")}
+            message={t("modals_delete_message")}
+            confirmActionName={t("modals_delete_button")}
             ref={confirmModalRef}>
         </ConfirmModal>
         <FundModal fund={props.fund} ref={editModalRef} onSaved={onFundUpdated}></FundModal>

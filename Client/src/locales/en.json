@@ -11,16 +11,24 @@
     "manager_stats_by_source": "By fund",
     "manager_stats_by_type": "By type",
 
+    "entity_fund_name_form_title": "Fund",
     "entity_fund_name": "Name",
     "entity_fund_balance": "Balance",
 
+    "fund_delete_title": "Delete fund",
+
+    "entity_deposit_name_form_title": "Deposit",
     "entity_deposit_name": "Name",
     "entity_deposit_from": "From",
     "entity_deposit_to": "To",
     "entity_deposit_percentage": "Percentage",
     "entity_deposit_initial_amount": "Inital amount",
     "entity_deposit_estimated_earn": "Estimated earn",
+    "entity_deposit_dates": "Dates",
 
+    "deposit_delete_title": "Delete deposit",
+
+    "entity_transaction_name_form_title": "Transaction",
     "entity_transaction_name": "Name",
     "entity_transaction_date": "Date",
     "entity_transaction_money_quantity": "Ammount",
@@ -28,5 +36,12 @@
     "entity_transaction_transaction_type": "Transaction type",
     "entity_transaction_direction": "Direction",
     "entity_transaction_direction_income": "Income",
-    "entity_transaction_direction_outcome": "Outcome"
+    "entity_transaction_direction_outcome": "Outcome",
+
+    "transaction_delete_title": "Delete transaction",
+
+    "modals_delete_button": "Delete",
+    "modals_delete_message": "Are you sure? You can't undo this action afterwards",
+    "modals_cancel_button": "Cancel",
+    "modals_save_button": "Saves"
 }

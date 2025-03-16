@@ -59,11 +59,6 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 		}
 	});
 
-	// useEffect(() => {
-	// 	setFormData(getInitialState());
-	// 	// props.transactionTypes
-	// }, [props.transaction, props.fundSources]);
-
 	useImperativeHandle(ref, () => ({
 		openModal: onOpen,
 	}));

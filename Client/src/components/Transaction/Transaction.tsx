@@ -5,7 +5,6 @@ import { MdOutlineArrowDownward, MdOutlineArrowUpward, MdEdit } from 'react-icon
 import { MdDelete } from "react-icons/md";
 import { Flex, Stack, Card, CardBody, Text, Button, Icon } from '@chakra-ui/react';
 import TransactionModal, { TransactionModalRef } from '../../modals/TransactionModal/TransactionModal';
-import { TransactionType } from '../../models/TransactionType';
 import { formatMoney } from '../../formatters/moneyFormatter';
 import { formatDate } from '../../formatters/dateFormatter';
 import { ConfirmModal, ConfirmModalRef } from '../../modals/ConfirmModal/ConfirmModal';
@@ -16,7 +15,6 @@ type Props = {
 	onUpdate: (updatedTransaction: TransactionEntity) => void,
 	transaction: TransactionEntity,
 	fundSources: FundEntity[],
-	transactionTypes: TransactionType[]
 } 
 
 
@@ -51,11 +49,6 @@ const Transaction: React.FC<Props> = (props: Props) => {
 	return <Card.Root mt={5} mb={5} boxShadow={"sm"} _hover={{ boxShadow: "md" }}>
 		<CardBody>
 			<Flex justifyContent="space-between" alignItems="center">
-				{/* {
-					transactionType ? 
-						<img src={getURL(transactionType)} alt={name} className="transaction-icon"></img>:
-						<div className="transaction-icon-placeholder"></div>
-				} */}
 				<Stack direction={'row'} alignItems="center">
 					{getTransactionDirectionIcon()}
 					<Stack ml={5}>

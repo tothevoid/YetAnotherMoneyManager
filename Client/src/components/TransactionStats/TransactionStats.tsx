@@ -4,12 +4,10 @@ import { Button, Flex, Stack } from '@chakra-ui/react'
 import { Text } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
-import { TransactionType } from '../../models/TransactionType';
 
 type Props = {
     funds: FundEntity[]
     transactions: TransactionEntity[],
-    transactionTypes: TransactionType[]
 }
 
 type PieChartData = {
@@ -75,9 +73,6 @@ const getNameMapping = <CollectionType,>(
 
 const TransactionStats = (props: Props) => {
     const fundsMapping = getNameMapping(props.funds, (fund) => fund.id, (fund) => fund.name );
-    // const transactionTypeMapping = getNameMapping(props.transactionTypes, 
-    //     (transactionType) => transactionType.id, (transactionType) => transactionType.name );
-
     const [selectedGrouping, setSelectedGrouping] = useState(DataGrouping.BySource);
     const [chartData, setChartData] = useState([] as PieChartData[]);
 

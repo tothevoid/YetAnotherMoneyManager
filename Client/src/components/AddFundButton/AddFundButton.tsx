@@ -5,6 +5,7 @@ import { useRef } from "react"
 import { Fragment } from "react/jsx-runtime"
 import { FundEntity } from "../../models/FundEntity"
 import FundModal, { FundModalRef } from "../../modals/FundModal/FundModal"
+import { createFund } from "../../api/fundApi"
 
 type FundProps = {
 	onAdded: (fund: FundEntity) => void;
@@ -17,8 +18,15 @@ const AddFundButton: React.FC<FundProps> = ({ onAdded }) => {
 		modalRef.current?.openModal()
 	};
 
-	const onFundAdded = (fund: FundEntity) => {
-		onAdded({id: "", name: fund.name, balance: Number(fund.balance)});
+	const onFundAdded = async (fund: FundEntity) => {
+		const newFund = {id: "", name: fund.name, balance: Number(fund.balance)};
+		const createdFundId = await createFund(newFund);
+		if (!createdFundId) {
+			return;
+		}
+
+		newFund.id = createdFundId;
+		onAdded(newFund);
 	};
 
 	return (

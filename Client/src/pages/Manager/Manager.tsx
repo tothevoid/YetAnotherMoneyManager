@@ -11,7 +11,7 @@ import { Box, Flex, SimpleGrid, Text } from '@chakra-ui/react';
 import AddTransactionButton from '../../components/AddTransactionButton/AddTransactionButton';
 import { createTransaction, deleteTransaction, getTransactions, updateTransaction } from '../../api/transactionApi';
 import { FundToUpdate } from '../../api/models/fundToUpdate';
-import { createFund, deleteFund, getFunds, updateFund } from '../../api/fundApi';
+import { getFunds } from '../../api/fundApi';
 
 type State = {
     transactions: TransactionEntity[],
@@ -45,22 +45,20 @@ const Manager: React.FC<any> = () => {
         })
     };
 
-    const onFundAdded = async (fund: FundEntity) => {
-        const createdFundId = await createFund(fund);
-        if (!createdFundId) {
-            return;
+    const onFundAdded = async (addedFund: FundEntity) => {
+        if (!addedFund) {
+            return
         }
-        const newFund = {...fund, id: createdFundId} as FundEntity;
+
         setState((currentState: State) => {
-            const funds = state.funds.concat(newFund);
+            const funds = state.funds.concat(addedFund);
             return {...currentState, funds};
         });
     };
 
     const onFundUpdated = async (updatedFund: FundEntity) => {
-        const isFundUpdated = await updateFund(updatedFund);
-        if (!isFundUpdated) {
-            return;
+        if (!updatedFund) {
+            return
         }
 
         let fundNameChanged = false;
@@ -90,9 +88,7 @@ const Manager: React.FC<any> = () => {
     };
 
     const onFundDeleted = async (deletedFund: FundEntity) => {
-        const isFundDeleted = await deleteFund(deletedFund);
-
-        if (!isFundDeleted) {
+        if (!deletedFund) {
             return;
         }
 

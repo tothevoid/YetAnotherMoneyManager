@@ -6,6 +6,7 @@ import { Fragment, useRef } from 'react';
 import FundModal, { FundModalRef } from '../../modals/FundModal/FundModal';
 import { formatMoney } from '../../formatters/moneyFormatter';
 import { ConfirmModal, ConfirmModalRef } from '../../modals/ConfirmModal/ConfirmModal';
+import { deleteFund, updateFund } from '../../api/fundApi';
 
 type Props = {
     fund: FundEntity,
@@ -27,7 +28,21 @@ const Fund = (props: Props) => {
         confirmModalRef.current?.openModal()
     };
 
-    const onDeletionConfirmed = () => {
+    const onFundUpdated = async (updatedFund: FundEntity) => {
+        const isFundUpdated = await updateFund(updatedFund);
+        if (!isFundUpdated) {
+            return;
+        }
+
+        props.onEditCallback(updatedFund);
+    }
+
+    const onDeletionConfirmed = async (deletedFund: FundEntity) => {
+        const isFundDeleted = await deleteFund(deletedFund);
+        if (!isFundDeleted) {
+            return;
+        }
+
         props.onDeleteCallback(props.fund);
     }
 
@@ -60,7 +75,7 @@ const Fund = (props: Props) => {
             confirmActionName="Delete"
             ref={confirmModalRef}>
         </ConfirmModal>
-        <FundModal fund={props.fund} ref={editModalRef} onSaved={props.onEditCallback}></FundModal>
+        <FundModal fund={props.fund} ref={editModalRef} onSaved={onFundUpdated}></FundModal>
     </Fragment>
 };
 

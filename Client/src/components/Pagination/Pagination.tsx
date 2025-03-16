@@ -1,4 +1,4 @@
-import { Component, Fragment } from "react"
+import { Fragment, useEffect, useState } from "react"
 import "./Pagination.css"
 import {getMonthByIndex} from "../../utils/DateUtils"
 import { Calendar } from "../Calendar/Calendar"
@@ -15,19 +15,17 @@ type Props = {
     onPageSwitched: (month: number, year: number) => void
 }
 
-class Pagination extends Component<Props, State>{
+const Pagination: React.FC<Props> = (props: Props) => {
+    const [state, setState] = useState<State>({isCalendarVisible: false})
 
-    state = {
-        isCalendarVisible: false
-    };
+    useEffect(() => {
+        const {month, year} = props;
+        props.onPageSwitched(month, year);
+    }, []);
+    
 
-    componentDidMount = () => {
-        const {month, year} = this.props;
-        this.props.onPageSwitched(month, year);
-    }
-
-    pageSwitchClick = (direction: number) => () => {
-        let {month, year} = this.props;
+    const pageSwitchClick = (direction: number) => () => {
+        let {month, year} = props;
         if (direction === -1 && month === 1){
             month = 12;
             year += direction;
@@ -37,35 +35,35 @@ class Pagination extends Component<Props, State>{
         } else {
             month += direction;
         }
-        this.props.onPageSwitched(month, year);
+        props.onPageSwitched(month, year);
     }
 
-    onSwitchCalendarVisibility = () =>{
-        const {isCalendarVisible} = this.state;
-        this.setState({isCalendarVisible: !isCalendarVisible});
+    const onSwitchCalendarVisibility = () =>{
+        const {isCalendarVisible} = state;
+        setState({isCalendarVisible: !isCalendarVisible});
     }
 
-    render(){
-        const {isCalendarVisible} = this.state;
-        const {month, year, onPageSwitched} = this.props;
-        const date = `${getMonthByIndex(month)}'${year.toString().substring(2)}`
-        return <Fragment>
-        <div className="pagination-container">
-                <button onClick={this.pageSwitchClick(-1)} className="paging-element paging-button page-previous"><MdChevronLeft/></button>
-                <div className="current-month paging-element">
-                    {date}
-                    <img alt="calendar" className="calendar-icon" onClick={()=>this.onSwitchCalendarVisibility()} src={CalendarIcon}></img>
-                </div>
-                
-                <button onClick={this.pageSwitchClick(1)} className="paging-element paging-button page-next"><MdChevronRight/></button>
+
+    const {isCalendarVisible} = state;
+    const {month, year, onPageSwitched} = props;
+    const date = `${getMonthByIndex(month)}'${year.toString().substring(2)}`
+    return <Fragment>
+    <div className="pagination-container">
+            <button onClick={pageSwitchClick(-1)} className="paging-element paging-button page-previous"><MdChevronLeft/></button>
+            <div className="current-month paging-element">
+                {date}
+                <img alt="calendar" className="calendar-icon" onClick={() => onSwitchCalendarVisibility()} src={CalendarIcon}></img>
             </div>
-            {
-                (isCalendarVisible) ?
-                    <Calendar month={month} year={year} onPageSwitched={onPageSwitched}></Calendar> :
-                    null 
-            }
-        </Fragment> 
-    }
+            
+            <button onClick={pageSwitchClick(1)} className="paging-element paging-button page-next"><MdChevronRight/></button>
+        </div>
+        {
+            (isCalendarVisible) ?
+                <Calendar month={month} year={year} onPageSwitched={onPageSwitched}></Calendar> :
+                null 
+        }
+    </Fragment> 
+    
 }
 
 export default Pagination;

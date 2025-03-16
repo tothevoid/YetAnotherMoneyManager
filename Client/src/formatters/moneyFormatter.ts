@@ -6,7 +6,7 @@ export enum Currency {
 
 const currencyMapping = new Map<Currency, string>([
     [Currency.RUB, "RUB"],
-    [Currency.USD, "USDT"],
+    [Currency.USD, "USD"],
     [Currency.EUR, "EUR"]
 ]);
 

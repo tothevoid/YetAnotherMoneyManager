@@ -5,13 +5,22 @@ import { changeLanguage } from 'i18next';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+const currencyMapping = new Map<string, string>([
+    ["en-US", "EN"],
+    ["ru-RU", "RU"],
+]);
+
+const getLanguageCaption = (currentCode: string) => {
+    return currencyMapping.get(currentCode) ?? ""
+}
+
 const Header = () => {
     const { t, i18n } = useTranslation();
-    const [language, setLanguage] = useState(i18n.language);
+    const [language, setLanguage] = useState(getLanguageCaption(i18n.language));
 
     const updateLanguage = () => {
-        setLanguage(i18n.language);
         const nextLanguage = i18n.language === "en-US" ? "ru-RU" : "en-US";
+        setLanguage(getLanguageCaption(nextLanguage));
         localStorage.setItem("lang", nextLanguage);
         changeLanguage(nextLanguage)
     }
@@ -20,7 +29,7 @@ const Header = () => {
         <HeaderItem title={t("title_manager")} path='/'></HeaderItem>
         <HeaderItem title={t("title_deposits")} path='/Deposits'></HeaderItem>
         <Spacer/>
-        <Button onClick={() => updateLanguage()} background={"gray.400"}>
+        <Button onClick={() => updateLanguage()} background={"purple.600"}>
             {language}
         </Button>
     </div>

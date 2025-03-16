@@ -4,6 +4,7 @@ import {getMonthByIndex} from "../../utils/DateUtils"
 import { Calendar } from "../Calendar/Calendar"
 import CalendarIcon from "../../assets/calendar.svg"
 import { MdChevronLeft, MdChevronRight } from "react-icons/md"
+import { useTranslation } from "react-i18next"
 
 type State = {
     isCalendarVisible: boolean
@@ -43,10 +44,10 @@ const Pagination: React.FC<Props> = (props: Props) => {
         setState({isCalendarVisible: !isCalendarVisible});
     }
 
-
+    const { i18n } = useTranslation();
     const {isCalendarVisible} = state;
     const {month, year, onPageSwitched} = props;
-    const date = `${getMonthByIndex(month)}'${year.toString().substring(2)}`
+    const date = `${getMonthByIndex(month, i18n)}'${year.toString().substring(2)}`
     return <Fragment>
     <div className="pagination-container">
             <button onClick={pageSwitchClick(-1)} className="paging-element paging-button page-previous"><MdChevronLeft/></button>

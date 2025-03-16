@@ -12,6 +12,7 @@ import AddTransactionButton from '../../components/AddTransactionButton/AddTrans
 import { getTransactions, updateTransaction } from '../../api/transactionApi';
 import { FundToUpdate } from '../../api/models/fundToUpdate';
 import { getFunds } from '../../api/fundApi';
+import { useTranslation } from 'react-i18next';
 
 type State = {
     transactions: TransactionEntity[],
@@ -210,6 +211,8 @@ const Manager: React.FC<any> = () => {
     const {transactions, funds, 
         year, month} = state;
     
+    const { t } = useTranslation();
+
     return (
         <div>
             <FundsBar 
@@ -221,7 +224,7 @@ const Manager: React.FC<any> = () => {
             <SimpleGrid columns={2} gap={16}>
                 <Box>
                     <Flex justifyContent={"space-between"}>
-                        <Text fontSize="2xl" fontWeight={600}>Transactions</Text>
+                        <Text fontSize="2xl" fontWeight={600}>{t("manager_transactions_title")}</Text>
                         <AddTransactionButton 
                             fundSources={funds} 
                             onTransactionCreated={onTransactionCreated}/>
@@ -236,7 +239,7 @@ const Manager: React.FC<any> = () => {
                                 fundSources={funds}>
                             </Transaction>
                         }):
-                        <div className="empty-transactions">There is no transactions yet</div>
+                        <div className="empty-transactions">{t("manager_transactions_add_transaction")}</div>
                         }
                     </div>
                 </Box>

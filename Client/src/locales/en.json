@@ -1,4 +1,13 @@
 {
     "title_manager": "Manager",
-    "title_deposits": "Deposits"
+    "title_deposits": "Deposits",
+
+    "manager_funds_summary_title": "Funds",
+    "manager_funds_summary_add": "Add fund",
+    "manager_transactions_title": "Transactions",
+    "manager_transactions_add_transaction": "Add transaction",
+    "manager_transactions_empty": "No transactions",
+    "manager_stats_title": "Stats",
+    "manager_stats_by_source": "By fund",
+    "manager_stats_by_type": "By type"
 }

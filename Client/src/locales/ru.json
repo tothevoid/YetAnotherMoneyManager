@@ -1,4 +1,13 @@
 {
     "title_manager": "Менеджер",
-    "title_deposits": "Депозиты"
+    "title_deposits": "Депозиты",
+    
+    "manager_funds_summary_title": "На счетах",
+    "manager_funds_summary_add": "Добавить актив",
+    "manager_transactions_title": "Транзакции",
+    "manager_transactions_add_transaction": "Добавить траназкцию",
+    "manager_transactions_empty": "Отсутствуют транзакции",
+    "manager_stats_title": "Статистика",
+    "manager_stats_by_source": "По активу",
+    "manager_stats_by_type": "По типу"
 }

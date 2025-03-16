@@ -6,6 +6,7 @@ import { useRef } from "react"
 import { FundEntity } from "../../models/FundEntity"
 import { MdAdd } from "react-icons/md"
 import { createTransaction } from "../../api/transactionApi"
+import { useTranslation } from "react-i18next"
 
 type Props = {
     fundSources: FundEntity[],
@@ -28,9 +29,11 @@ const AddTransactionButton: React.FC<Props> = (props: Props) => {
         props.onTransactionCreated(createdTransaction);
     }
 
+    const { t } = useTranslation();
+
     return <Fragment>
         <Button background="purple.600" onClick={() => onAddTransactionClick()}>
-            <MdAdd/>Add transaction
+            <MdAdd/>{t("manager_transactions_add_transaction")}
         </Button>
         <TransactionModal ref={addTransactionModalRef} 
             fundSources={props.fundSources}

@@ -3,6 +3,7 @@ import { TransactionEntity } from '../../models/TransactionEntity'
 import { Button, Flex, Stack } from '@chakra-ui/react'
 import { Text } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 
 type Props = {
@@ -75,17 +76,18 @@ const TransactionStats = (props: Props) => {
     const fundsMapping = getNameMapping(props.funds, (fund) => fund.id, (fund) => fund.name );
     const [selectedGrouping, setSelectedGrouping] = useState(DataGrouping.BySource);
     const [chartData, setChartData] = useState([] as PieChartData[]);
+    const { t } = useTranslation();
 
     const groupingConfig = new Map<DataGrouping, GroupingConfig>([
         [ DataGrouping.BySource, {
             group: DataGrouping.BySource,
-            caption: "By source",
+            caption: t("manager_stats_by_source"),
             dataFunc: (transactions: TransactionEntity[]) => getGraphData(transactions, (transaction) => transaction.fundSource.id,
                 (key) => fundsMapping.get(key) ?? "Incorrect source")
         }],
         [ DataGrouping.ByType, {
             group: DataGrouping.ByType,
-            caption: "By type",
+            caption: t("manager_stats_by_type"),
             dataFunc: (transactions: TransactionEntity[]) => getGraphData(transactions, (transaction) => transaction.transactionType)
         }]
     ]);
@@ -97,8 +99,9 @@ const TransactionStats = (props: Props) => {
 
 
     const colors = getPossibleColors();
+
     return <Stack>
-        <Text fontSize="2xl" fontWeight={600}>Stats</Text>
+        <Text fontSize="2xl" fontWeight={600}>{t("manager_stats_title")}</Text>
         <Flex gap={4} alignItems={'center'}>
             {
                 [...groupingConfig.values()].map(groupingConfig => {

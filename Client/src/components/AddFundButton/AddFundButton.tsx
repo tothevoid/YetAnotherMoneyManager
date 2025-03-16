@@ -6,6 +6,7 @@ import { Fragment } from "react/jsx-runtime"
 import { FundEntity } from "../../models/FundEntity"
 import FundModal, { FundModalRef } from "../../modals/FundModal/FundModal"
 import { createFund } from "../../api/fundApi"
+import { useTranslation } from "react-i18next"
 
 type FundProps = {
 	onAdded: (fund: FundEntity) => void;
@@ -29,13 +30,15 @@ const AddFundButton: React.FC<FundProps> = ({ onAdded }) => {
 		onAdded(newFund);
 	};
 
+	const { t } = useTranslation();
+
 	return (
 		<Fragment>
 			<Button background="purple.600" onClick={onAdd}>
 				<Icon size='md'>
 					<MdAdd/>
 				</Icon>
-				Add fund
+				{t("manager_funds_summary_add")}
 			</Button>
 			<FundModal ref={modalRef} onSaved={onFundAdded}></FundModal>
 		</Fragment>

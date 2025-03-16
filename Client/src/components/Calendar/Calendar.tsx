@@ -1,6 +1,7 @@
-import { Component } from "react"
+import { useState } from "react"
 import "./Calendar.scss"
 import { getMonthsNames } from "../../utils/DateUtils";
+import { useTranslation } from "react-i18next";
 
 type Props = {
     year: number,
@@ -14,90 +15,96 @@ type State = {
     title: string
 }
 
-export class Calendar extends Component<Props,State>{
-    
-    getTtile = (isYearsMode: boolean, year: number): string => {
+export const Calendar: React.FC<Props> = (props: Props) => {
+    const getTitle = (isYearsMode: boolean, year: number): string => {
         return (isYearsMode) ? 
             `${year} - ${year + 11}` :
             year.toString();
     }
 
-    state = {
-        minimalYear: this.props.year,
-        isYearsMode: false,
-        title: this.getTtile(false, this.props.year)
-    }
-
-    createArray = (): string[] => {
-        const {isYearsMode, minimalYear} = this.state;
-        return (isYearsMode) ?
-            Array.from({length: 12}, (_, index:number) => 
-                (minimalYear + index).toString()) :
-            getMonthsNames().map((name: string) => name.substring(0, 3));
-    }
-
-    onElementClick = (value: string) => {
-        const {onPageSwitched} = this.props;
-        const {isYearsMode} = this.state;
-        if (isYearsMode){
-            const year = parseInt(value);
-            onPageSwitched(this.props.month, year);
-            this.setState({isYearsMode: false, title: this.getTtile(false, year)});
-        } else {
-            const monthIndex = this.getMonthIndex(value);
-            onPageSwitched(monthIndex, this.props.year);
+    const getDefaultState = () => {
+        return {
+            minimalYear: props.year,
+            isYearsMode: false,
+            title: getTitle(false, props.year)
         }
     }
 
-    getMonthIndex = (value: string): number =>{
-        const months = getMonthsNames();
+
+    const createArray = (): string[] => {
+        const {isYearsMode, minimalYear} = state;
+        return (isYearsMode) ?
+            Array.from({length: 12}, (_, index:number) => 
+                (minimalYear + index).toString()) :
+            getMonthsNames(i18n).map((name: string) => name.substring(0, 3));
+    }
+
+    const onElementClick = (value: string) => {
+        const {onPageSwitched} = props;
+        const {isYearsMode} = state;
+        if (isYearsMode){
+            const year = parseInt(value);
+            onPageSwitched(props.month, year);
+            setState((currentState) => {return {...currentState, isYearsMode: false, title: getTitle(false, year)}});
+        } else {
+            const monthIndex = getMonthIndex(value);
+            onPageSwitched(monthIndex, props.year);
+        }
+    }
+
+    const getMonthIndex = (value: string): number =>{
+        const months = getMonthsNames(i18n);
         const month = months
             .filter(x => x.toLowerCase().startsWith(value.toLowerCase()));
         return months.indexOf(month[0]) + 1
     }
 
-    getClasses = (value: string): string =>{
+    const getClasses = (value: string): string =>{
         const defaultClass = "calendar-element";
-        const {year, month} = this.props;
-        const {isYearsMode} = this.state;
-        const monthIndex = this.getMonthIndex(value);
+        const {year, month} = props;
+        const {isYearsMode} = state;
+        const monthIndex = getMonthIndex(value);
         return ((isYearsMode && year === parseInt(value)) || 
             (!isYearsMode && month === monthIndex)) ?
             `${defaultClass} current` :
             defaultClass;
     }
 
-    onLabelClick = () => {
-        const {year} = this.props;
-        const {isYearsMode} = this.state;
+    const onLabelClick = () => {
+        const {year} = props;
+        const {isYearsMode} = state;
         if (!isYearsMode) {
-            this.setState({isYearsMode: true, 
-                title: this.getTtile(true, year)});
+            setState((currentState) => {
+                return {...currentState, isYearsMode: true, title: getTitle(true, year)}
+            });
         }
     }
 
-    onArrowClick = (value: number) => {
-        const {minimalYear} = this.state;
+    const onArrowClick = (value: number) => {
+        const {minimalYear} = state;
         const newMininimal = minimalYear + value * 12;
-        this.setState({minimalYear: newMininimal, title: this.getTtile(true, newMininimal)});
+        setState((currentState) => {
+            return { ...currentState, minimalYear: newMininimal, title: getTitle(true, newMininimal)}
+        });
     }
 
-    render = () => {
-        const {title, isYearsMode} = this.state;
+    const [state, setState] = useState<State>(getDefaultState)
+    const {title, isYearsMode} = state;
 
-        return <div className="calendar">
-            <div className="calendar-header">
-                <button onClick={() => this.onArrowClick(-1)} disabled={!isYearsMode} className="prev-button">&#8592;</button>
-                <span onClick={() => this.onLabelClick()} className="calendar-title">{title}</span>
-                <button onClick={() => this.onArrowClick(1)} disabled={!isYearsMode} className="next-button">&#8594;</button>
-            </div>
-            
-            <div className="calendar-content">
-                {this.createArray().map((element, index)=>{
-                    return <div key={index} onClick={()=>this.onElementClick(element)}
-                        className={this.getClasses(element)}>{element}</div>
-                })}
-            </div>
+    const { i18n} = useTranslation();
+
+    return <div className="calendar">
+        <div className="calendar-header">
+            <button onClick={() => onArrowClick(-1)} disabled={!isYearsMode} className="prev-button">&#8592;</button>
+            <span onClick={() => onLabelClick()} className="calendar-title">{title}</span>
+            <button onClick={() => onArrowClick(1)} disabled={!isYearsMode} className="next-button">&#8594;</button>
         </div>
-    }  
+        
+        <div className="calendar-content">
+            {createArray().map((element, index)=>{
+                return <div key={index} onClick={()=>onElementClick(element)}
+                    className={getClasses(element)}>{element}</div>
+            })}
+        </div>
+    </div> 
 }

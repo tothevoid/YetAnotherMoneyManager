@@ -1,5 +1,7 @@
-export const getMonthByIndex = (index: number) => 
-    getMonthsNames()[index - 1];
+import { i18n } from "i18next";
+
+export const getMonthByIndex = (index: number, i18n: i18n) => 
+    getMonthsNames(i18n)[index - 1];
 
 export const convertToInputDate = (date: Date) => {
     const year = date.getFullYear().toString();
@@ -8,22 +10,14 @@ export const convertToInputDate = (date: Date) => {
     return `${year}-${month}-${day}`;
 }
 
-export const getMonthsNames = () => 
-    [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December'
-    ];
+export const getMonthsNames = (i18n: i18n) => {
+    const formatter = new Intl.DateTimeFormat(i18n.language, { month: 'long' });
 
+     return Array.from({ length: 12 }, (_, i) => 
+        formatter.format(new Date(2000, i, 1)).slice(0, 3)
+    );
+}
+   
 export const getCurrentDate = (): string => {
     const date = new Date();
     return new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().substr(0, 10);

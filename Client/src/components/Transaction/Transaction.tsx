@@ -9,6 +9,7 @@ import { formatMoney } from '../../formatters/moneyFormatter';
 import { formatDate } from '../../formatters/dateFormatter';
 import { ConfirmModal, ConfirmModalRef } from '../../modals/ConfirmModal/ConfirmModal';
 import { deleteTransaction } from '../../api/transactionApi';
+import { useTranslation } from 'react-i18next';
 
 
 type Props = { 
@@ -50,6 +51,8 @@ const Transaction: React.FC<Props> = (props: Props) => {
 			</Icon>
 	}
 
+	const { i18n } = useTranslation()
+
 	return <Card.Root mt={5} mb={5} boxShadow={"sm"} _hover={{ boxShadow: "md" }}>
 		<CardBody>
 			<Flex justifyContent="space-between" alignItems="center">
@@ -57,7 +60,7 @@ const Transaction: React.FC<Props> = (props: Props) => {
 					{getTransactionDirectionIcon()}
 					<Stack ml={5}>
 						<Text fontWeight={700}>{name}</Text>
-						<Text>{formatDate(date, false)} • {fundSource.name}</Text>
+						<Text>{formatDate(date, i18n, false)} • {fundSource.name}</Text>
 					</Stack>
 				</Stack>
 				<Flex gap={2} justifyContent="space-between" alignItems="center">

@@ -7,6 +7,7 @@ import DepositModal, { DepositModalRef } from "../../modals/DepositModal/Deposit
 import { useRef } from "react";
 import { ConfirmModal, ConfirmModalRef } from "../../modals/ConfirmModal/ConfirmModal";
 import { deleteDeposit, updateDeposit } from "../../api/depositApi";
+import { useTranslation } from "react-i18next";
 
 interface Props {
     deposit: DepositEntity
@@ -52,6 +53,8 @@ const Deposit: React.FC<Props> = ({deposit, onUpdated, onCloned, onDeleted}) => 
         "green.500":
         "red.500";
 
+    const { i18n } = useTranslation();
+
     return <Card.Root>
         <Card.Body boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
             <Stack>
@@ -67,7 +70,7 @@ const Deposit: React.FC<Props> = ({deposit, onUpdated, onCloned, onDeleted}) => 
                     </Flex>
                     <Flex justifyContent="space-between">
                         <Text color={"gray.500"}>Dates:</Text>
-                        <Text color={datesColor}>{`${formatNumericDate(deposit.from)} - ${formatNumericDate(deposit.to)}`}</Text>
+                        <Text color={datesColor}>{`${formatNumericDate(deposit.from, i18n)} - ${formatNumericDate(deposit.to, i18n)}`}</Text>
                     </Flex>
                     <Flex justifyContent="space-between">
                         <Text color={"gray.500"}>Estimated earn:</Text>

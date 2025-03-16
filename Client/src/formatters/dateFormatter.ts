@@ -1,27 +1,15 @@
-export enum DateFormat {
-	RU = 0,
-	EN = 1
-}
+import { i18n } from "i18next";
 
-const localeMapping = new Map<DateFormat, string>([
-	[DateFormat.RU, "ru-RU"],
-	[DateFormat.EN, "en-US"],
-]);
-
-export const formatDate = (date: Date, showYear: boolean = true, 
-	format: DateFormat = DateFormat.RU) => {
-	const locale = localeMapping.get(format);
-	return new Intl.DateTimeFormat(locale, {
+export const formatDate = (date: Date, format: i18n, showYear: boolean = true, ) => {
+	return new Intl.DateTimeFormat(format.language, {
 		year: showYear ? "numeric" : undefined,
 		month: "long",
 		day: "numeric"
 	}).format(date);
 };
 
-export const formatNumericDate = (date: Date, showYear: boolean = true, 
-	format: DateFormat = DateFormat.RU) => {
-	const locale = localeMapping.get(format);
-	return new Intl.DateTimeFormat(locale, {
+export const formatNumericDate = (date: Date, format: i18n, showYear: boolean = true) => {
+	return new Intl.DateTimeFormat(format.language, {
 		year: showYear ? "2-digit" : undefined,
 		month: "numeric",
 		day: "numeric"

@@ -4,6 +4,7 @@ import { FundEntity } from "../../models/FundEntity";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FundFormInput, FundValidationSchema } from "./FundValidationSchema";
+import { useTranslation } from "react-i18next";
 
 type FundProps = {
 	fund?: FundEntity | null,
@@ -37,6 +38,8 @@ const FundModal = forwardRef<FundModalRef, FundProps>((props: FundProps, ref)=> 
 		onClose();
 	}
 
+	const {t} = useTranslation()
+
 	return (
 		<Dialog.Root placement="center" open={open}>
 		  <Portal>
@@ -48,13 +51,13 @@ const FundModal = forwardRef<FundModalRef, FundProps>((props: FundProps, ref)=> 
 					</Dialog.Header>
 					<Dialog.Body pb={6}>
 					<Field.Root invalid={!!errors.name}>
-						<Field.Label>Name</Field.Label>
+						<Field.Label>{t("entity_fund_name")}</Field.Label>
 						<Input {...register("name")} autoComplete="off" placeholder='Debit card' />
 						<Field.ErrorText>{errors.name?.message}</Field.ErrorText>
 					</Field.Root>
 		
 					<Field.Root invalid={!!errors.balance} mt={4}>
-						<Field.Label>Balance</Field.Label>
+						<Field.Label>{t("entity_fund_balance")}</Field.Label>
 						<Input {...register("balance", { valueAsNumber: true })} name="balance" type="number" placeholder='10000' />
 						<Field.ErrorText>{errors.balance?.message}</Field.ErrorText>
 					</Field.Root>

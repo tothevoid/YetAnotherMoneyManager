@@ -9,5 +9,24 @@
     "manager_transactions_empty": "Отсутствуют транзакции",
     "manager_stats_title": "Статистика",
     "manager_stats_by_source": "По активу",
-    "manager_stats_by_type": "По типу"
+    "manager_stats_by_type": "По типу",
+
+    "entity_fund_name": "Название",
+    "entity_fund_balance": "Баланс",
+
+    "entity_deposit_name": "Название",
+    "entity_deposit_from": "С",
+    "entity_deposit_to": "По",
+    "entity_deposit_percentage": "Процент",
+    "entity_deposit_initial_amount": "Начальная сумма",
+    "entity_deposit_estimated_earn": "Ожидаемых доход",
+
+    "entity_transaction_name": "Название",
+    "entity_transaction_date": "Дата",
+    "entity_transaction_money_quantity": "Сумма",
+    "entity_transaction_fund_source": "Источник",
+    "entity_transaction_transaction_type": "Тип",
+    "entity_transaction_direction": "Движение средств",
+    "entity_transaction_direction_income": "Доход",
+    "entity_transaction_direction_outcome": "Расход"
 }

@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { TransactionFormInput, TransactionValidationSchema } from './TransactionValidationSchema';
 import { Controller, useForm } from 'react-hook-form';
 import { Select } from "chakra-react-select"
+import { useTranslation } from 'react-i18next';
 
 type Props = {
 	fundSources: FundEntity[],
@@ -24,14 +25,14 @@ enum TransactionDirection {
 	Spent = "spent",
 }
 
-const transactionOptions = {
-	[TransactionDirection.Income]: { label: "Income", value: TransactionDirection.Income },
-	[TransactionDirection.Spent]: { label: "Spent", value: TransactionDirection.Spent },
-} as const;
-
-
 const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, ref)=> {
-	const { open, onOpen, onClose } = useDisclosure()
+	const { open, onOpen, onClose } = useDisclosure();
+	const {t} = useTranslation();
+
+	const transactionOptions = {
+		[TransactionDirection.Income]: { label: t("entity_transaction_direction_income"), value: TransactionDirection.Income },
+		[TransactionDirection.Spent]: { label: t("entity_transaction_direction_outcome"), value: TransactionDirection.Spent },
+	} as const;
 
 	const moneyQuantity = props.transaction?.moneyQuantity ? 
 		Math.abs(props.transaction.moneyQuantity) :
@@ -84,11 +85,11 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 					</Dialog.Header>
 					<Dialog.Body pb={6}>
 					<Field.Root invalid={!!errors.name}>
-						<Field.Label>Name</Field.Label>
+						<Field.Label>{t("entity_transaction_name")}</Field.Label>
 						<Input {...register("name")} autoComplete="off" placeholder='Grocery' />
 					</Field.Root>
 					<Field.Root mt={4}>
-						<Field.Label>Direction</Field.Label>
+						<Field.Label>{t("entity_transaction_direction")}</Field.Label>
 						<Controller
 							name="direction"
 							control={control}
@@ -105,12 +106,12 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 							/>
 					</Field.Root>
 					<Field.Root mt={4} invalid={!!errors.moneyQuantity}>
-						<Field.Label>Diff</Field.Label>
+						<Field.Label>{t("entity_transaction_money_quantity")}</Field.Label>
 						<Input {...register("moneyQuantity", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='500' />
 						<Field.ErrorText>{errors.moneyQuantity?.message}</Field.ErrorText>
 					</Field.Root>
 					<Field.Root mt={4} invalid={!!errors.date}>
-						<Field.Label>Date</Field.Label>
+						<Field.Label>{t("entity_transaction_date")}</Field.Label>
 						<Controller
 							name="date"
 							control={control}
@@ -127,7 +128,7 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 						<Field.ErrorText>{errors.date?.message}</Field.ErrorText>
 					</Field.Root>
 					<Field.Root mt={4} invalid={!!errors.fundSource}>
-						<Field.Label>Source</Field.Label>
+						<Field.Label>{t("entity_transaction_fund_source")}</Field.Label>
 						<Controller
 							name="fundSource"
 							control={control}
@@ -145,7 +146,7 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 						<Field.ErrorText>{errors.fundSource?.message}</Field.ErrorText>
 					</Field.Root>
 					<Field.Root mt={4} invalid={!!errors.transactionType}>
-						<Field.Label>Type</Field.Label>
+						<Field.Label>{t("entity_transaction_transaction_type")}</Field.Label>
 						<Input {...register("transactionType")} autoComplete="off" placeholder='Describe type' />
 						<Field.ErrorText>{errors.transactionType?.message}</Field.ErrorText>
 					</Field.Root>

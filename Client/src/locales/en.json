@@ -9,5 +9,24 @@
     "manager_transactions_empty": "No transactions",
     "manager_stats_title": "Stats",
     "manager_stats_by_source": "By fund",
-    "manager_stats_by_type": "By type"
+    "manager_stats_by_type": "By type",
+
+    "entity_fund_name": "Name",
+    "entity_fund_balance": "Balance",
+
+    "entity_deposit_name": "Name",
+    "entity_deposit_from": "From",
+    "entity_deposit_to": "To",
+    "entity_deposit_percentage": "Percentage",
+    "entity_deposit_initial_amount": "Inital amount",
+    "entity_deposit_estimated_earn": "Estimated earn",
+
+    "entity_transaction_name": "Name",
+    "entity_transaction_date": "Date",
+    "entity_transaction_money_quantity": "Ammount",
+    "entity_transaction_fund_source": "Fund source",
+    "entity_transaction_transaction_type": "Transaction type",
+    "entity_transaction_direction": "Direction",
+    "entity_transaction_direction_income": "Income",
+    "entity_transaction_direction_outcome": "Outcome"
 }

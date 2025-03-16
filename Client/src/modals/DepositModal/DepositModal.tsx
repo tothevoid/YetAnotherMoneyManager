@@ -7,6 +7,7 @@ import { DepositEntity } from '../../models/DepositEntity';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from "react-hook-form";
 import { DepositValidationSchema, DepositFormInput } from "./DepositValidationSchema";
+import { useTranslation } from "react-i18next";
 
 type Props = {
     deposit?: DepositEntity | null,
@@ -41,6 +42,7 @@ const DepositModal = forwardRef<DepositModalRef, Props>((props: Props, ref)=> {
         onClose();
     }
 
+    const {t} = useTranslation()
 
     return <Dialog.Root placement="center" open={open}>
         <Portal>
@@ -54,23 +56,23 @@ const DepositModal = forwardRef<DepositModalRef, Props>((props: Props, ref)=> {
                     </Dialog.Header>
                     <Dialog.Body pb={6}>
                         <Field.Root invalid={!!errors.name}>
-                            <Field.Label>Name</Field.Label>
+                            <Field.Label>{t("entity_deposit_name")}</Field.Label>
                             <Input {...register("name")} autoComplete="off" placeholder='Deposit name' />
                             <Field.ErrorText>{errors.name?.message}</Field.ErrorText>
                         </Field.Root>
                         <Field.Root invalid={!!errors.percentage} mt={4}>
-                            <Field.Label>Percentage</Field.Label>
+                            <Field.Label>{t("entity_deposit_percentage")}</Field.Label>
                             <Input {...register("percentage", { valueAsNumber: true })} type="number" placeholder='10' />
                             <Field.ErrorText>{errors.percentage?.message}</Field.ErrorText>
                         </Field.Root>
                         <Field.Root invalid={!!errors.initialAmount} mt={4}>
-                            <Field.Label>Initial amount</Field.Label>
+                            <Field.Label>{t("entity_deposit_initial_amount")}</Field.Label>
                             <Input {...register("initialAmount", { valueAsNumber: true })} type='number' placeholder='10' />
                             <Field.ErrorText>{errors.initialAmount?.message}</Field.ErrorText>
                         </Field.Root>
                         <Flex gap={4} direction="row">
                             <Field.Root invalid={!!errors.from} mt={4}>
-                                <Field.Label>Starts</Field.Label>
+                                <Field.Label>{t("entity_deposit_from")}</Field.Label>
                                 <Controller
                                     name="from"
                                     control={control}
@@ -87,7 +89,7 @@ const DepositModal = forwardRef<DepositModalRef, Props>((props: Props, ref)=> {
                                 <Field.ErrorText>{errors.from?.message}</Field.ErrorText>
                             </Field.Root>
                             <Field.Root invalid={!!errors.to} mt={4}>
-                                <Field.Label>Ends</Field.Label>
+                                <Field.Label>{t("entity_deposit_to")}</Field.Label>
                                 {/* TODO Fix date field duplication */}
                                 <Controller
                                     name="to"

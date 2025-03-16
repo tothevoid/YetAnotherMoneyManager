@@ -71,10 +71,10 @@ const FundModal = forwardRef<FundModalRef, FundProps>((props: FundProps, ref)=> 
 					<Button type="submit" background='purple.600' mr={3}>{t("modals_save_button")}</Button>
 					<Button onClick={onClose}>{t("modals_cancel_button")}</Button>
 					</Dialog.Footer>
+					<Dialog.CloseTrigger asChild>
+						<CloseButton size="sm" />
+					</Dialog.CloseTrigger>
 				</Dialog.Content>
-				<Dialog.CloseTrigger asChild>
-					<CloseButton size="sm" />
-				</Dialog.CloseTrigger>
 			</Dialog.Positioner>
 		  </Portal>
 		</Dialog.Root>

@@ -37,8 +37,8 @@ const Fund = (props: Props) => {
         props.onEditCallback(updatedFund);
     }
 
-    const onDeletionConfirmed = async (deletedFund: FundEntity) => {
-        const isFundDeleted = await deleteFund(deletedFund);
+    const onDeletionConfirmed = async () => {
+        const isFundDeleted = await deleteFund(props.fund);
         if (!isFundDeleted) {
             return;
         }

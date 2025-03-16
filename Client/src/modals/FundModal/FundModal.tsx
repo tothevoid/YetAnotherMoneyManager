@@ -49,7 +49,7 @@ const FundModal = forwardRef<FundModalRef, FundProps>((props: FundProps, ref)=> 
 					<Dialog.Body pb={6}>
 					<Field.Root invalid={!!errors.name}>
 						<Field.Label>Name</Field.Label>
-						<Input {...register("name")} placeholder='Debit card' />
+						<Input {...register("name")} autoComplete="off" placeholder='Debit card' />
 						<Field.ErrorText>{errors.name?.message}</Field.ErrorText>
 					</Field.Root>
 		

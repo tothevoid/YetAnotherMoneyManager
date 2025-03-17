@@ -113,7 +113,7 @@ namespace MoneyManager.BLL.Services.Entities
                 tasks.Add(_accountRepo.Increment(account.AccountId, x => x.Balance, account.Delta));
             }
             await Task.WhenAll(tasks);
-            return accountToUpdate;
+            return accountsToUpdate;
         }
 
         public async Task Delete(TransactionDTO transactionDTO)

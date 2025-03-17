@@ -3,13 +3,13 @@ import { Fragment } from "react/jsx-runtime"
 import TransactionModal, { TransactionModalRef } from "../../modals/TransactionModal/TransactionModal"
 import { TransactionEntity } from "../../models/TransactionEntity"
 import { useRef } from "react"
-import { FundEntity } from "../../models/FundEntity"
+import { AccountEntity } from "../../models/AccountEntity"
 import { MdAdd } from "react-icons/md"
 import { createTransaction } from "../../api/transactionApi"
 import { useTranslation } from "react-i18next"
 
 type Props = {
-    fundSources: FundEntity[],
+    fundSources: AccountEntity[],
     onTransactionCreated: (transaction: TransactionEntity) => void
 }
 

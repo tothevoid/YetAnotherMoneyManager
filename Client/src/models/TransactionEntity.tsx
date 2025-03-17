@@ -1,4 +1,4 @@
-import { FundEntity } from "./FundEntity";
+import { AccountEntity } from "./AccountEntity";
 // import { TransactionType } from "./TransactionType";
 
 export type TransactionEntity = {
@@ -6,6 +6,6 @@ export type TransactionEntity = {
     name: string,
     date: Date,
     moneyQuantity: number;
-    fundSource: FundEntity,
+    fundSource: AccountEntity,
     transactionType: string
 }

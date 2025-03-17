@@ -1,0 +1,48 @@
+import { MdAdd } from "react-icons/md"
+import { Button, Icon } from "@chakra-ui/react"
+import { useRef } from "react"
+
+import { Fragment } from "react/jsx-runtime"
+import { AccountEntity } from "../../models/AccountEntity"
+import AccountModal, { AccountModalRef } from "../../modals/AccountModal/AccountModal"
+import { createAccount } from "../../api/accountApi"
+import { useTranslation } from "react-i18next"
+
+type AccountProps = {
+	onAdded: (account: AccountEntity) => void;
+};
+
+const AddAccountButton: React.FC<AccountProps> = ({ onAdded }) => {
+	const modalRef = useRef<AccountModalRef>(null);
+	
+	const onAdd = () => {
+		modalRef.current?.openModal()
+	};
+
+	const onAccountAdded = async (account: AccountEntity) => {
+		const newAccount = {id: "", name: account.name, balance: Number(account.balance)};
+		const createdAccountId = await createAccount(newAccount);
+		if (!createdAccountId) {
+			return;
+		}
+
+		newAccount.id = createdAccountId;
+		onAdded(newAccount);
+	};
+
+	const { t } = useTranslation();
+
+	return (
+		<Fragment>
+			<Button background="purple.600" onClick={onAdd}>
+				<Icon size='md'>
+					<MdAdd/>
+				</Icon>
+				{t("manager_accounts_summary_add")}
+			</Button>
+			<AccountModal ref={modalRef} onSaved={onAccountAdded}></AccountModal>
+		</Fragment>
+	)
+}
+
+export default AddAccountButton

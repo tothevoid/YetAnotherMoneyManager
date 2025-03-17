@@ -2,8 +2,8 @@
     "title_manager": "Менеджер",
     "title_deposits": "Депозиты",
     
-    "manager_funds_summary_title": "На счетах",
-    "manager_funds_summary_add": "Добавить актив",
+    "manager_accounts_summary_title": "На счетах",
+    "manager_accounts_summary_add": "Добавить актив",
     "manager_transactions_title": "Транзакции",
     "manager_transactions_add_transaction": "Добавить траназкцию",
     "manager_transactions_empty": "Отсутствуют транзакции",
@@ -11,11 +11,11 @@
     "manager_stats_by_source": "По активу",
     "manager_stats_by_type": "По типу",
 
-    "entity_fund_name_form_title": "Cчёт",
-    "entity_fund_name": "Название",
-    "entity_fund_balance": "Баланс",
+    "entity_account_name_form_title": "Cчёт",
+    "entity_account_name": "Название",
+    "entity_account_balance": "Баланс",
 
-    "fund_delete_title": "Удалить счёт",
+    "account_delete_title": "Удалить счёт",
 
     "entity_deposit_name_form_title": "Депозит",
     "entity_deposit_name": "Название",
@@ -23,7 +23,7 @@
     "entity_deposit_to": "Конец",
     "entity_deposit_percentage": "Процент",
     "entity_deposit_initial_amount": "Начальная сумма",
-    "entity_deposit_estimated_earn": "Ожидаемых доход",
+    "entity_deposit_estimated_earn": "Ожидаемый доход",
     "entity_deposit_dates": "Даты",
 
     "deposit_delete_title": "Удалить депозит",
@@ -32,7 +32,7 @@
     "entity_transaction_name": "Название",
     "entity_transaction_date": "Дата",
     "entity_transaction_money_quantity": "Сумма",
-    "entity_transaction_fund_source": "Источник",
+    "entity_transaction_account_source": "Источник",
     "entity_transaction_transaction_type": "Тип",
     "entity_transaction_direction": "Движение средств",
     "entity_transaction_direction_income": "Доход",

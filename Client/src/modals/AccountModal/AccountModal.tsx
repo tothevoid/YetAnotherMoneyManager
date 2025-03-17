@@ -1,30 +1,30 @@
 import { Button, CloseButton, Dialog, Field, Input, Portal, useDisclosure} from "@chakra-ui/react"
 import { forwardRef, useImperativeHandle } from "react"
-import { FundEntity } from "../../models/FundEntity";
+import { AccountEntity } from "../../models/AccountEntity";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FundFormInput, FundValidationSchema } from "./FundValidationSchema";
+import { AccountFormInput, AccountValidationSchema } from "./AccountValidationSchema";
 import { useTranslation } from "react-i18next";
 
-type FundProps = {
-	fund?: FundEntity | null,
-	onSaved: (fund: FundEntity) => void;
+type AccountProps = {
+	account?: AccountEntity | null,
+	onSaved: (account: AccountEntity) => void;
 };
 
-export interface FundModalRef {
+export interface AccountModalRef {
 	openModal: () => void
 }
 
-const FundModal = forwardRef<FundModalRef, FundProps>((props: FundProps, ref)=> {
+const AccountModal = forwardRef<AccountModalRef, AccountProps>((props: AccountProps, ref)=> {
 	const { open, onOpen, onClose } = useDisclosure()
 
-	const { register, handleSubmit, formState: { errors }} = useForm<FundFormInput>({
-        resolver: zodResolver(FundValidationSchema),
+	const { register, handleSubmit, formState: { errors }} = useForm<AccountFormInput>({
+        resolver: zodResolver(AccountValidationSchema),
         mode: "onBlur",
         defaultValues: {
-			id: props.fund?.id ?? crypto.randomUUID(),
-			name: props.fund?.name ?? "",
-			balance: props.fund?.balance ?? 0,
+			id: props.account?.id ?? crypto.randomUUID(),
+			name: props.account?.name ?? "",
+			balance: props.account?.balance ?? 0,
         }
     });
 
@@ -33,8 +33,8 @@ const FundModal = forwardRef<FundModalRef, FundProps>((props: FundProps, ref)=> 
 	}));
 
 
-	const onSubmit = (fund: FundFormInput) => {
-		props.onSaved(fund as FundEntity);
+	const onSubmit = (account: AccountFormInput) => {
+		props.onSaved(account as AccountEntity);
 		onClose();
 	}
 
@@ -47,17 +47,17 @@ const FundModal = forwardRef<FundModalRef, FundProps>((props: FundProps, ref)=> 
 			<Dialog.Positioner>
 				<Dialog.Content as="form" onSubmit={handleSubmit(onSubmit)}>
 					<Dialog.Header>
-						<Dialog.Title>{t("entity_fund_name_form_title")}</Dialog.Title>
+						<Dialog.Title>{t("entity_account_name_form_title")}</Dialog.Title>
 					</Dialog.Header>
 					<Dialog.Body pb={6}>
 					<Field.Root invalid={!!errors.name}>
-						<Field.Label>{t("entity_fund_name")}</Field.Label>
+						<Field.Label>{t("entity_account_name")}</Field.Label>
 						<Input {...register("name")} autoComplete="off" placeholder='Debit card' />
 						<Field.ErrorText>{errors.name?.message}</Field.ErrorText>
 					</Field.Root>
 		
 					<Field.Root invalid={!!errors.balance} mt={4}>
-						<Field.Label>{t("entity_fund_balance")}</Field.Label>
+						<Field.Label>{t("entity_account_balance")}</Field.Label>
 						<Input {...register("balance", { valueAsNumber: true })} name="balance" type="number" placeholder='10000' />
 						<Field.ErrorText>{errors.balance?.message}</Field.ErrorText>
 					</Field.Root>
@@ -81,4 +81,4 @@ const FundModal = forwardRef<FundModalRef, FundProps>((props: FundProps, ref)=> 
 	)
 })
 
-export default FundModal
+export default AccountModal

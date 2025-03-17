@@ -1,4 +1,4 @@
-import { FundEntity } from '../../models/FundEntity'
+import { AccountEntity } from '../../models/AccountEntity'
 import { TransactionEntity } from '../../models/TransactionEntity'
 import { Button, Flex, Stack } from '@chakra-ui/react'
 import { Text } from '@chakra-ui/react';
@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 
 type Props = {
-    funds: FundEntity[]
+    accounts: AccountEntity[]
     transactions: TransactionEntity[],
 }
 
@@ -73,7 +73,7 @@ const getNameMapping = <CollectionType,>(
 };
 
 const TransactionStats = (props: Props) => {
-    const fundsMapping = getNameMapping(props.funds, (fund) => fund.id, (fund) => fund.name );
+    const accountsMapping = getNameMapping(props.accounts, (account) => account.id, (account) => account.name );
     const [selectedGrouping, setSelectedGrouping] = useState(DataGrouping.BySource);
     const [chartData, setChartData] = useState([] as PieChartData[]);
     const { t } = useTranslation();
@@ -83,7 +83,7 @@ const TransactionStats = (props: Props) => {
             group: DataGrouping.BySource,
             caption: t("manager_stats_by_source"),
             dataFunc: (transactions: TransactionEntity[]) => getGraphData(transactions, (transaction) => transaction.fundSource.id,
-                (key) => fundsMapping.get(key) ?? "Incorrect source")
+                (key) => accountsMapping.get(key) ?? "Incorrect source")
         }],
         [ DataGrouping.ByType, {
             group: DataGrouping.ByType,

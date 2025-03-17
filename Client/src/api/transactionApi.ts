@@ -1,7 +1,7 @@
 import config from '../config' 
 import { TransactionEntity } from '../models/TransactionEntity';
 import { checkPromiseStatus, logPromiseError } from '../utils/PromiseUtils';
-import { FundToUpdate } from './models/fundToUpdate';
+import { AccountToUpdate } from './models/accountToUpdate';
 
 export const getTransactions = async (month: number, year: number): Promise<TransactionEntity[]> => {
     const url = `${config.api.URL}/Transaction?month=${month}&year=${year}`;
@@ -34,15 +34,15 @@ export const createTransaction = async (transaction: TransactionEntity): Promise
     return newTransaction;
 }
 
-export const updateTransaction = async (modifiedTransaction: TransactionEntity): Promise<FundToUpdate[]> => {
+export const updateTransaction = async (modifiedTransaction: TransactionEntity): Promise<AccountToUpdate[]> => {
     const url = `${config.api.URL}/Transaction`;
-    const result: FundToUpdate[] | void = await fetch(url, { method: "PATCH", body: JSON.stringify(modifiedTransaction),  
+    const result: AccountToUpdate[] | void = await fetch(url, { method: "PATCH", body: JSON.stringify(modifiedTransaction),  
         headers: {"Content-Type": "application/json"}})
         .then(checkPromiseStatus)
         .then(response => response.json())
         .catch(logPromiseError);
 
-    return result ? result: [] as FundToUpdate[];
+    return result ? result: [] as AccountToUpdate[];
 }
 
 export const deleteTransaction = async (deletedTransaction: TransactionEntity): Promise<boolean> => {

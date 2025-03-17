@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { TransactionEntity } from '../../models/TransactionEntity';
-import { FundEntity } from '../../models/FundEntity';
+import { AccountEntity } from '../../models/AccountEntity';
 import { MdOutlineArrowDownward, MdOutlineArrowUpward, MdEdit } from 'react-icons/md';
 import { MdDelete } from "react-icons/md";
 import { Flex, Stack, Card, CardBody, Text, Button, Icon } from '@chakra-ui/react';
@@ -16,7 +16,7 @@ type Props = {
 	onDelete: (transaction: TransactionEntity) => void,
 	onUpdate: (updatedTransaction: TransactionEntity) => void,
 	transaction: TransactionEntity,
-	fundSources: FundEntity[],
+	fundSources: AccountEntity[],
 } 
 
 const Transaction: React.FC<Props> = (props: Props) => {

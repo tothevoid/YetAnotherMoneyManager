@@ -1,25 +1,24 @@
-import './Fund.scss'
-import { FundEntity } from '../../models/FundEntity';
+import { AccountEntity } from '../../models/AccountEntity';
 import { Button, Card, Flex, Icon, Stack, Text } from '@chakra-ui/react';
 import { MdDelete, MdEdit } from "react-icons/md";
 import { Fragment, useRef } from 'react';
-import FundModal, { FundModalRef } from '../../modals/FundModal/FundModal';
+import AccountModal, { AccountModalRef } from '../../modals/AccountModal/AccountModal';
 import { formatMoney } from '../../formatters/moneyFormatter';
 import { ConfirmModal, ConfirmModalRef } from '../../modals/ConfirmModal/ConfirmModal';
-import { deleteFund, updateFund } from '../../api/fundApi';
+import { deleteAccount, updateAccount } from '../../api/accountApi';
 import { useTranslation } from 'react-i18next';
 
 type Props = {
-    fund: FundEntity,
-    onDeleteCallback: (fund: FundEntity) => void,
-    onEditCallback: (fund: FundEntity) => void
+    account: AccountEntity,
+    onDeleteCallback: (account: AccountEntity) => void,
+    onEditCallback: (account: AccountEntity) => void
 }
 
-const Fund = (props: Props) => {
-    const {name, balance} = props.fund;
+const Account = (props: Props) => {
+    const {name, balance} = props.account;
 
     const confirmModalRef = useRef<ConfirmModalRef>(null);
-    const editModalRef = useRef<FundModalRef>(null);
+    const editModalRef = useRef<AccountModalRef>(null);
 
     const onEditClicked = () => {
         editModalRef.current?.openModal()
@@ -29,22 +28,22 @@ const Fund = (props: Props) => {
         confirmModalRef.current?.openModal()
     };
 
-    const onFundUpdated = async (updatedFund: FundEntity) => {
-        const isFundUpdated = await updateFund(updatedFund);
-        if (!isFundUpdated) {
+    const onAccountUpdated = async (updatedAccount: AccountEntity) => {
+        const isAccountUpdated = await updateAccount(updatedAccount);
+        if (!isAccountUpdated) {
             return;
         }
 
-        props.onEditCallback(updatedFund);
+        props.onEditCallback(updatedAccount);
     }
 
     const onDeletionConfirmed = async () => {
-        const isFundDeleted = await deleteFund(props.fund);
-        if (!isFundDeleted) {
+        const isAccountDeleted = await deleteAccount(props.account);
+        if (!isAccountDeleted) {
             return;
         }
 
-        props.onDeleteCallback(props.fund);
+        props.onDeleteCallback(props.account);
     }
 
     const { t } = useTranslation();
@@ -73,13 +72,13 @@ const Fund = (props: Props) => {
             </Card.Body>
         </Card.Root>
         <ConfirmModal onConfirmed={onDeletionConfirmed}
-            title={t("fund_delete_title")}
+            title={t("account_delete_title")}
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
             ref={confirmModalRef}>
         </ConfirmModal>
-        <FundModal fund={props.fund} ref={editModalRef} onSaved={onFundUpdated}></FundModal>
+        <AccountModal account={props.account} ref={editModalRef} onSaved={onAccountUpdated}></AccountModal>
     </Fragment>
 };
 
-export default Fund;
+export default Account;

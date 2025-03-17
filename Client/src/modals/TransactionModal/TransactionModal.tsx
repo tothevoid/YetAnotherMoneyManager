@@ -1,7 +1,7 @@
 import { forwardRef, useImperativeHandle } from 'react'
 import "./TransactionModal.scss"
 import { TransactionEntity } from '../../models/TransactionEntity';
-import { FundEntity } from '../../models/FundEntity';
+import { AccountEntity } from '../../models/AccountEntity';
 import DatePicker from "react-datepicker";
 import { Field, Button, Input, useDisclosure, Dialog, Portal, CloseButton} from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,7 +11,7 @@ import { Select } from "chakra-react-select"
 import { useTranslation } from 'react-i18next';
 
 type Props = {
-	fundSources: FundEntity[],
+	fundSources: AccountEntity[],
 	transaction?: TransactionEntity | null,
 	onSaved: (transaction: TransactionEntity) => void
 }
@@ -44,7 +44,7 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 
 	const source = (props.fundSources?.length > 0) ? 
 		props.fundSources[0] :
-		{id: ""} as FundEntity
+		{id: ""} as AccountEntity
 
 	const { register, handleSubmit, control, formState: { errors }} = useForm<TransactionFormInput>({
 		resolver: zodResolver(TransactionValidationSchema),

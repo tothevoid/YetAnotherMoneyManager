@@ -1,22 +1,22 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import "./Manager.scss"
 import Transaction from '../../components/Transaction/Transaction';
-import FundsBar from '../../components/FundsBar/FundsBar';
+import AccountsList from '../../components/AccountsList/AccountsList';
 import { TransactionEntity } from '../../models/TransactionEntity';
-import { FundEntity } from '../../models/FundEntity';
+import { AccountEntity } from '../../models/AccountEntity';
 import { insertByPredicate, reorderByPredicate } from '../../utils/ArrayExtensions'
 import Pagination from '../../components/Pagination/Pagination';
 import TransactionStats from '../../components/TransactionStats/TransactionStats';
 import { Box, Flex, SimpleGrid, Text } from '@chakra-ui/react';
 import AddTransactionButton from '../../components/AddTransactionButton/AddTransactionButton';
 import { getTransactions, updateTransaction } from '../../api/transactionApi';
-import { FundToUpdate } from '../../api/models/fundToUpdate';
-import { getFunds } from '../../api/fundApi';
+import { AccountToUpdate } from '../../api/models/accountToUpdate';
+import { getAccounts } from '../../api/accountApi';
 import { useTranslation } from 'react-i18next';
 
 type State = {
     transactions: TransactionEntity[],
-    funds: FundEntity[],
+    accounts: AccountEntity[],
     month: number,
     year: number
 }
@@ -26,7 +26,7 @@ const getDefaultState = () => {
         month: new Date().getMonth() + 1,
         year: new Date().getFullYear(),
         transactions: [] as TransactionEntity[],
-        funds: [] as FundEntity[],
+        accounts: [] as AccountEntity[],
     };    
 }
 
@@ -34,68 +34,68 @@ const getDefaultState = () => {
 const Manager: React.FC<any> = () => {
     useEffect(() => {
         const initData = async () => {
-            await initFunds();
+            await initAccounts();
         }
         initData();
     }, []);
 
-    const initFunds = async () => {
-        const funds = await getFunds();
+    const initAccounts = async () => {
+        const accounts = await getAccounts();
         setState((currentState) => {
-            return {...currentState, funds}
+            return {...currentState, accounts}
         })
     };
 
-    const onFundCreated = async (addedFund: FundEntity) => {
-        if (!addedFund) {
+    const onAccountCreated = async (addedAccount: AccountEntity) => {
+        if (!addedAccount) {
             return
         }
 
         setState((currentState: State) => {
-            const funds = state.funds.concat(addedFund);
-            return {...currentState, funds};
+            const accounts = state.accounts.concat(addedAccount);
+            return {...currentState, accounts};
         });
     };
 
-    const onFundUpdated = async (updatedFund: FundEntity) => {
-        if (!updatedFund) {
+    const onAccountUpdated = async (updatedAccount: AccountEntity) => {
+        if (!updatedAccount) {
             return
         }
 
-        let fundNameChanged = false;
+        let accountNameChanged = false;
 
         setState((currentState: State) => {
-            const funds = currentState.funds.map((fund: FundEntity) => {
-                if (fund.id === updatedFund.id) {
-                    fundNameChanged = fund.name !== updatedFund.name;
-                    return {...updatedFund}
+            const accounts = currentState.accounts.map((account: AccountEntity) => {
+                if (account.id === updatedAccount.id) {
+                    accountNameChanged = account.name !== updatedAccount.name;
+                    return {...updatedAccount}
                 } 
-                return fund
+                return account
             });
 
-            if (!fundNameChanged) {
-                return {...currentState, funds};
+            if (!accountNameChanged) {
+                return {...currentState, accounts};
             }
             
             const newTransactions = currentState.transactions.map(transaction => {
-                if (transaction.fundSource.id === updatedFund.id) {
-                    transaction.fundSource = {...updatedFund}
+                if (transaction.fundSource.id === updatedAccount.id) {
+                    transaction.fundSource = {...updatedAccount}
                 }
 
                 return transaction;
             });
-            return {...currentState, funds, transactions: newTransactions}
+            return {...currentState, accounts, transactions: newTransactions}
         });
     };
 
-    const onFundDeleted = async (deletedFund: FundEntity) => {
-        if (!deletedFund) {
+    const onAccountDeleted = async (deletedAccount: AccountEntity) => {
+        if (!deletedAccount) {
             return;
         }
 
         setState((currentState: State) => {
-            const funds = currentState.funds.filter((fund: FundEntity) => fund.id !== deletedFund.id)
-            return { ...currentState, funds }
+            const accounts = currentState.accounts.filter((account: AccountEntity) => account.id !== deletedAccount.id)
+            return { ...currentState, accounts }
         });
     };
 
@@ -119,7 +119,7 @@ const Manager: React.FC<any> = () => {
                 return {...currentState, transactions: newTransactions}
             });
         }
-        recalculateFund(createdTransaction, 1);
+        recalculateAccount(createdTransaction, 1);
     };
 
     const onTransactionDeleted = async (deletedTransaction: TransactionEntity) => { 
@@ -128,21 +128,21 @@ const Manager: React.FC<any> = () => {
         }
 
         deleteTransaction(deletedTransaction);
-        recalculateFund(deletedTransaction, -1);
+        recalculateAccount(deletedTransaction, -1);
     };
 
     const onTransactionUpdated = async (updatedTransaction: TransactionEntity) => {
-        const affectedFunds = await updateTransaction(updatedTransaction);
+        const affectedAccounts = await updateTransaction(updatedTransaction);
 
-        if (!affectedFunds.length) {
+        if (!affectedAccounts.length) {
             return;
         }
 
-        const newFunds = recalculateFunds(affectedFunds);
+        const newAccounts = recalculateAccounts(affectedAccounts);
         if (!isCurrentMonthTransaction(updatedTransaction)) {
             deleteTransaction(updatedTransaction);
             setState((currentState) => {
-                return {...currentState, funds: newFunds}; 
+                return {...currentState, accounts: newAccounts}; 
             });
             return;
         }
@@ -160,7 +160,7 @@ const Manager: React.FC<any> = () => {
             (currentElement: TransactionEntity) => (currentElement.id !== updatedTransaction.id));
 
         setState((currentState) => {
-            return {...currentState, transactions: updatedTransactions, funds: newFunds}  
+            return {...currentState, transactions: updatedTransactions, accounts: newAccounts}  
         });
     };
 
@@ -179,54 +179,54 @@ const Manager: React.FC<any> = () => {
                transaction.date.getFullYear() === year
     }
 
-    const recalculateFund = (changedTransaction: TransactionEntity, sign: number) => {
-        const {funds} = state;
-        if (changedTransaction.fundSource && changedTransaction.fundSource.id && funds && funds.length !== 0){
-            const newFunds = funds.map((fund: FundEntity) => {
-                if (fund.id === changedTransaction.fundSource.id){
-                    fund.balance += changedTransaction.moneyQuantity * sign;
+    const recalculateAccount = (changedTransaction: TransactionEntity, sign: number) => {
+        const {accounts} = state;
+        if (changedTransaction.fundSource && changedTransaction.fundSource.id && accounts && accounts.length !== 0){
+            const newAccounts = accounts.map((account: AccountEntity) => {
+                if (account.id === changedTransaction.fundSource.id){
+                    account.balance += changedTransaction.moneyQuantity * sign;
                 } 
-                return fund;
+                return account;
             });
             setState((currentState) => {
-                return {...currentState, funds: newFunds};
+                return {...currentState, accounts: newAccounts};
             });
         }
     };
 
-    const recalculateFunds = (fundsToUpdate: FundToUpdate[]) => {
-        const {funds} = state;
-        const newFunds = funds.map((fund: FundEntity) => {
-            const findResult = fundsToUpdate.find((fundToUpdate) => fundToUpdate.fundId === fund.id);
+    const recalculateAccounts = (accountsToUpdated: AccountToUpdate[]) => {
+        const {accounts} = state;
+        const newAccounts = accounts.map((account: AccountEntity) => {
+            const findResult = accountsToUpdated.find((accountToUpdate) => accountToUpdate.accountId === account.id);
             if (findResult){
-                fund.balance += findResult.delta;
+                account.balance += findResult.delta;
             } 
-            return fund;
+            return account;
         });
-        return newFunds;
+        return newAccounts;
     };
 
     const [state, setState] = useState<State>(getDefaultState);
 
-    const {transactions, funds, 
+    const {transactions, accounts, 
         year, month} = state;
     
     const { t } = useTranslation();
 
     return (
         <div>
-            <FundsBar 
-                onAddFundCallback = {onFundCreated}
-                onUpdateFundCallback = {onFundUpdated}
-                onDeleteFundCallback = {onFundDeleted} 
-                funds = {funds}>
-            </FundsBar>
+            <AccountsList 
+                onAddAccountCallback = {onAccountCreated}
+                onUpdateAccountCallback = {onAccountUpdated}
+                onDeleteAccountCallback = {onAccountDeleted} 
+                accounts = {accounts}>
+            </AccountsList>
             <SimpleGrid columns={2} gap={16}>
                 <Box>
                     <Flex justifyContent={"space-between"}>
                         <Text fontSize="2xl" fontWeight={600}>{t("manager_transactions_title")}</Text>
                         <AddTransactionButton 
-                            fundSources={funds} 
+                            fundSources={accounts} 
                             onTransactionCreated={onTransactionCreated}/>
                     </Flex>
                     <Pagination year={year} month={month} onPageSwitched={loadTransactions}></Pagination>
@@ -236,7 +236,7 @@ const Manager: React.FC<any> = () => {
                         transactions.map((transaction: TransactionEntity) => {       
                             return <Transaction key={transaction.id} transaction={transaction} 
                                 onDelete={onTransactionDeleted} onUpdate={onTransactionUpdated}
-                                fundSources={funds}>
+                                fundSources={accounts}>
                             </Transaction>
                         }):
                         <div className="empty-transactions">{t("manager_transactions_add_transaction")}</div>
@@ -246,7 +246,7 @@ const Manager: React.FC<any> = () => {
                 <Box>
                     {
                         transactions.length > 0 ?
-                            <TransactionStats funds={funds} transactions={transactions}/>:
+                            <TransactionStats accounts={accounts} transactions={transactions}/>:
                             <Fragment/>
                     }
                 </Box>

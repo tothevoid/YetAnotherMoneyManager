@@ -3,9 +3,9 @@ using System;
 
 namespace MoneyManager.BLL.DTO
 {
-    public class UpdateFundDTO
+    public class UpdateAccountDTO
     {
-        public Guid FundId { get; set; }
+        public Guid AccountId { get; set; }
 
         public double Delta { get; set; }
     }

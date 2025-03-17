@@ -16,21 +16,21 @@ namespace MoneyManager.DAL.SpecificRepositories
 
         public async Task<IEnumerable<Transaction>> GetAllFull(int month, int year)
         {
-            var fundCollection = _context.GetCollection<Fund>(nameof(Fund));
+            var accountCollection = _context.GetCollection<Account>(nameof(Account));
             var typeCollection = _context.GetCollection<TransactionType>(nameof(TransactionType));
             var (startDate, endDate) = GetDateRange(month, year);
 
             //TODO: fix AsEnumerable then mongo driver will support inner join
             var query = (from transaction in DbSet.AsQueryable()
                         .Where(x => x.Date >= startDate && x.Date <= endDate).AsEnumerable()
-                        join fund in fundCollection.AsQueryable() on transaction.FundSourceId equals fund.Id into fundJoin
-                        from joinedFund in fundJoin.DefaultIfEmpty()
+                        join account in accountCollection.AsQueryable() on transaction.FundSourceId equals account.Id into accountJoin
+                        from joinedAccount in accountJoin.DefaultIfEmpty()
                         join type in typeCollection.AsQueryable() on transaction.TransactionTypeId equals type.Id into typeJoin
                         from joinedType in typeJoin.DefaultIfEmpty()
 
-                        select new { transaction, joinedFund, joinedType }).ToList();
+                        select new { transaction, joinedAccount, joinedType }).ToList();
 
-            return query.Select(x => x.transaction.AssignFund(x.joinedFund));
+            return query.Select(x => x.transaction.AssignAccount(x.joinedAccount));
             //.AssignType(x.joinedType));
         }
 

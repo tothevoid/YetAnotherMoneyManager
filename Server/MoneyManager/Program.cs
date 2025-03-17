@@ -33,7 +33,7 @@ builder.Services.AddMvc();
 builder.Services.AddScoped<IMongoContext, MongoContext>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<ITransactionsService, TransactionsService>();
-builder.Services.AddTransient<IFundService, FundService>();
+builder.Services.AddTransient<IAccountService, AccountService>();
 builder.Services.AddTransient<IDepositService, DepositService>();
 builder.Services.AddTransient<ITransactionTypeService, TransactionTypeService>();
 

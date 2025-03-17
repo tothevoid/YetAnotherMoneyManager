@@ -17,8 +17,8 @@ namespace MoneyManager.WEB.Mappings
         public ViewToDTOProfile()
         {
             CreateMap<TransactionModel, TransactionDTO>().ReverseMap();
-            CreateMap<FundModel, FundDTO>().ReverseMap();
-            CreateMap<UpdateFundModel, UpdateFundDTO>().ReverseMap();
+            CreateMap<AccountModel, AccountDTO>().ReverseMap();
+            CreateMap<UpdateAccountModel, UpdateAccountDTO>().ReverseMap();
             CreateMap<TransactionTypeModel, TransactionTypeDTO>().ReverseMap();
             CreateMap<DepositModel, DepositDTO>().ReverseMap();
 

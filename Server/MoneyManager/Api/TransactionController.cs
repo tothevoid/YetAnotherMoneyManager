@@ -44,11 +44,11 @@ namespace MoneyManager.WEB.Api
         }
 
         [HttpPatch]
-        public async Task<IEnumerable<UpdateFundModel>> Update(TransactionModel updatedTransaction)
+        public async Task<IEnumerable<UpdateAccountModel>> Update(TransactionModel updatedTransaction)
         {
             var updatedTransactionDTO = _mapper.Map<TransactionDTO>(updatedTransaction);
-            var fundsToUpdate = await _transactionService.Update(updatedTransactionDTO);
-            return _mapper.Map<IEnumerable<UpdateFundModel>>(fundsToUpdate);
+            var accountsToUpdate = await _transactionService.Update(updatedTransactionDTO);
+            return _mapper.Map<IEnumerable<UpdateAccountModel>>(accountsToUpdate);
         }
     }
 }

@@ -4,9 +4,9 @@ using System;
 
 namespace MoneyManager.WEB.Model
 {
-    public class UpdateFundModel
+    public class UpdateAccountModel
     {
-        public Guid FundId { get; set; }
+        public Guid AccountId { get; set; }
 
         public double Delta { get; set; }
     }

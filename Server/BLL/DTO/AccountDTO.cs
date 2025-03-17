@@ -1,9 +1,9 @@
 ﻿using MoneyManager.Common;
 using System;
 
-namespace MoneyManager.DAL.Entities
+namespace MoneyManager.BLL.DTO
 {
-    public class Fund : BaseEntity
+    public class AccountDTO : BaseEntity
     {
         public string Name { get; set; }
 

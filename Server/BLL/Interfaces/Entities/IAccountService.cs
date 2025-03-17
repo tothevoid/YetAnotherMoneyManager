@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace MoneyManager.BLL.Services.Entities
 {
-    public interface IFundService
+    public interface IAccountService
     {
-        Task<IEnumerable<FundDTO>> GetAll();
-        Task<Guid> Add(FundDTO transaction);
-        Task Update(FundDTO fundDTO);
+        Task<IEnumerable<AccountDTO>> GetAll();
+        Task<Guid> Add(AccountDTO transaction);
+        Task Update(AccountDTO accountDTO);
         Task Delete(Guid id);
     }
 }

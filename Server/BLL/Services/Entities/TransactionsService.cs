@@ -13,14 +13,14 @@ namespace MoneyManager.BLL.Services.Entities
     {
         private readonly IUnitOfWork _db;
         private readonly ITransactionRepository _transactionsRepo;
-        private readonly IRepository<Fund> _fundRepo;
+        private readonly IRepository<Account> _accountRepo;
         private readonly IMapper _mapper;
         public TransactionsService(IUnitOfWork uow, IMapper mapper)
         {
             _db = uow;
             _mapper = mapper;
             _transactionsRepo = uow.CreateTransactionRepository();
-            _fundRepo = uow.CreateRepository<Fund>();
+            _accountRepo = uow.CreateRepository<Account>();
         }
 
         public async Task<IEnumerable<TransactionDTO>> GetAll(int month, int year)
@@ -39,7 +39,7 @@ namespace MoneyManager.BLL.Services.Entities
             if (sourceId != default)
             {
                 transaction.FundSourceId = sourceId;
-                tasks.Add(_fundRepo.Increment(sourceId, x => x.Balance, transaction.MoneyQuantity));
+                tasks.Add(_accountRepo.Increment(sourceId, x => x.Balance, transaction.MoneyQuantity));
             }
             //if (transactionTypeId != default)
             //{
@@ -51,7 +51,7 @@ namespace MoneyManager.BLL.Services.Entities
             return transaction.Id;
         }
 
-        public async Task<List<UpdateFundDTO>> Update(TransactionDTO updateTransactionModel)
+        public async Task<List<UpdateAccountDTO>> Update(TransactionDTO updateTransactionModel)
         {
             var transaction = _mapper.Map<Transaction>(updateTransactionModel);
             var sourceId = updateTransactionModel?.FundSource?.Id ?? default;
@@ -71,49 +71,49 @@ namespace MoneyManager.BLL.Services.Entities
             var lastTransaction = await _transactionsRepo.GetById(updateTransactionModel.Id);
             var lastTransactionDTO = _mapper.Map<TransactionDTO>(lastTransaction);
 
-            var fundsToUpdate = await RecalculateFund(task, lastTransactionDTO, updateTransactionModel);
+            var accountsToUpdate = await RecalculateAccount(task, lastTransactionDTO, updateTransactionModel);
             _db.Commit();
-            return fundsToUpdate;
+            return accountsToUpdate;
         }
 
-        private async Task<List<UpdateFundDTO>> RecalculateFund(Task transactionTask, 
-            TransactionDTO lastTransaction, TransactionDTO updateFundModel)
+        private async Task<List<UpdateAccountDTO>> RecalculateAccount(Task transactionTask, 
+            TransactionDTO lastTransaction, TransactionDTO updateAccountModel)
         {
-            var fundToUpdate = new List<UpdateFundDTO>();
+            var accountsToUpdate = new List<UpdateAccountDTO>();
             var tasks = new List<Task>() { transactionTask };
             var lastTransactionId = lastTransaction?.FundSource?.Id ?? default;
-            var updateFundModelId = updateFundModel?.FundSource?.Id ?? default;
-            //fund deleted from transaction
-            if (lastTransactionId != default && updateFundModelId == default)
+            var updateAccountModelId = updateAccountModel?.FundSource?.Id ?? default;
+            //account deleted from transaction
+            if (lastTransactionId != default && updateAccountModelId == default)
             {
                 var difference = lastTransaction.MoneyQuantity * -1;
-                fundToUpdate.Add(new UpdateFundDTO() { FundId = lastTransactionId, Delta = difference });
+                accountsToUpdate.Add(new UpdateAccountDTO() { AccountId = lastTransactionId, Delta = difference });
             }
-            //fund added to transaction
-            else if (lastTransactionId == default && updateFundModelId != default)
+            //account added to transaction
+            else if (lastTransactionId == default && updateAccountModelId != default)
             {
-                fundToUpdate.Add(new UpdateFundDTO() { FundId = updateFundModelId, Delta = updateFundModel.MoneyQuantity });
+                accountsToUpdate.Add(new UpdateAccountDTO() { AccountId = updateAccountModelId, Delta = updateAccountModel.MoneyQuantity });
             }
-            //changed fund from transaction
-            else if (lastTransactionId != default && updateFundModelId != default &&
-                lastTransaction.FundSource.Id != updateFundModel.FundSource.Id)
+            //changed account from transaction
+            else if (lastTransactionId != default && updateAccountModelId != default &&
+                lastTransaction.FundSource.Id != updateAccountModel.FundSource.Id)
             {
-                fundToUpdate.Add(new UpdateFundDTO() { FundId = lastTransactionId, Delta = lastTransaction.MoneyQuantity * -1 });
-                fundToUpdate.Add(new UpdateFundDTO() { FundId = updateFundModelId, Delta = updateFundModel.MoneyQuantity });
+                accountsToUpdate.Add(new UpdateAccountDTO() { AccountId = lastTransactionId, Delta = lastTransaction.MoneyQuantity * -1 });
+                accountsToUpdate.Add(new UpdateAccountDTO() { AccountId = updateAccountModelId, Delta = updateAccountModel.MoneyQuantity });
             }
-            //changed money quantity of the same fund
-            else if (lastTransactionId != default && updateFundModelId != default &&
-                lastTransaction.MoneyQuantity != updateFundModel.MoneyQuantity)
+            //changed money quantity of the same account
+            else if (lastTransactionId != default && updateAccountModelId != default &&
+                lastTransaction.MoneyQuantity != updateAccountModel.MoneyQuantity)
             {
-                var difference = updateFundModel.MoneyQuantity - lastTransaction.MoneyQuantity;
-                fundToUpdate.Add(new UpdateFundDTO() { FundId = updateFundModelId, Delta = difference });
+                var difference = updateAccountModel.MoneyQuantity - lastTransaction.MoneyQuantity;
+                accountsToUpdate.Add(new UpdateAccountDTO() { AccountId = updateAccountModelId, Delta = difference });
             }
-            foreach (var fund in fundToUpdate)
+            foreach (var account in accountsToUpdate)
             {
-                tasks.Add(_fundRepo.Increment(fund.FundId, x => x.Balance, fund.Delta));
+                tasks.Add(_accountRepo.Increment(account.AccountId, x => x.Balance, account.Delta));
             }
             await Task.WhenAll(tasks);
-            return fundToUpdate;
+            return accountToUpdate;
         }
 
         public async Task Delete(TransactionDTO transactionDTO)
@@ -122,7 +122,7 @@ namespace MoneyManager.BLL.Services.Entities
             var sourceId = transactionDTO?.FundSource?.Id ?? default;
             if (sourceId != default && transactionDTO.MoneyQuantity != 0)
             {
-                tasks.Add(_fundRepo.Increment(sourceId, x => x.Balance, transactionDTO.MoneyQuantity * -1));
+                tasks.Add(_accountRepo.Increment(sourceId, x => x.Balance, transactionDTO.MoneyQuantity * -1));
             }
             tasks.Add(_transactionsRepo.Delete(transactionDTO.Id));
             await Task.WhenAll(tasks);

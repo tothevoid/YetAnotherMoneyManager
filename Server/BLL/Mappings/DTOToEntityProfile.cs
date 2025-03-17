@@ -10,7 +10,7 @@ namespace MoneyManager.BLL.Mappings
         public DTOToEntityProfile()
         {
             CreateMap<TransactionDTO, Transaction>().ReverseMap();
-            CreateMap<FundDTO, Fund>().ReverseMap();
+            CreateMap<AccountDTO, Account>().ReverseMap();
             CreateMap<TransactionTypeDTO, TransactionType>().ReverseMap();
             CreateMap<DepositDTO, Deposit>().ReverseMap();
         }

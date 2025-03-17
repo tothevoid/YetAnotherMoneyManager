@@ -4,7 +4,7 @@ using System;
 
 namespace MoneyManager.WEB.Model
 {
-    public class FundModel : BaseEntity
+    public class AccountModel : BaseEntity
     {
         public string Name { get; set; }
 

@@ -11,7 +11,7 @@ import { Select } from "chakra-react-select"
 import { useTranslation } from 'react-i18next';
 
 type Props = {
-	fundSources: AccountEntity[],
+	accounts: AccountEntity[],
 	transaction?: TransactionEntity | null,
 	onSaved: (transaction: TransactionEntity) => void
 }
@@ -42,8 +42,8 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 		transactionOptions[TransactionDirection.Income]:
 		transactionOptions[TransactionDirection.Spent];
 
-	const source = (props.fundSources?.length > 0) ? 
-		props.fundSources[0] :
+	const source = (props.accounts?.length > 0) ? 
+		props.accounts[0] :
 		{id: ""} as AccountEntity
 
 	const { register, handleSubmit, control, formState: { errors }} = useForm<TransactionFormInput>({
@@ -54,7 +54,7 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 			name: props.transaction?.name ?? "",
 			date: props.transaction?.date ?? new Date(),
 			moneyQuantity: moneyQuantity,
-			fundSource: props.transaction?.fundSource ?? source,
+			account: props.transaction?.account ?? source,
 			direction: direction,
 			transactionType: props.transaction?.transactionType ?? ""
 		}
@@ -127,23 +127,23 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 							/>
 						<Field.ErrorText>{errors.date?.message}</Field.ErrorText>
 					</Field.Root>
-					<Field.Root mt={4} invalid={!!errors.fundSource}>
-						<Field.Label>{t("entity_transaction_fund_source")}</Field.Label>
+					<Field.Root mt={4} invalid={!!errors.account}>
+						<Field.Label>{t("entity_transaction_account_source")}</Field.Label>
 						<Controller
-							name="fundSource"
+							name="account"
 							control={control}
 							render={({ field }) => (
 									<Select
 										{...field}
 										getOptionLabel={(e) => e.name}
 										getOptionValue={(e) => e.id}
-										options={props.fundSources}
+										options={props.accounts}
 										isClearable
 										placeholder='Select source'>
 									</Select>
 								)}
 							/>
-						<Field.ErrorText>{errors.fundSource?.message}</Field.ErrorText>
+						<Field.ErrorText>{errors.account?.message}</Field.ErrorText>
 					</Field.Root>
 					<Field.Root mt={4} invalid={!!errors.transactionType}>
 						<Field.Label>{t("entity_transaction_transaction_type")}</Field.Label>

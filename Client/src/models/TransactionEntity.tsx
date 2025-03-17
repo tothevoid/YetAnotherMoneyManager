@@ -6,6 +6,6 @@ export type TransactionEntity = {
     name: string,
     date: Date,
     moneyQuantity: number;
-    fundSource: AccountEntity,
+    account: AccountEntity,
     transactionType: string
 }

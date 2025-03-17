@@ -78,8 +78,8 @@ const Manager: React.FC<any> = () => {
             }
             
             const newTransactions = currentState.transactions.map(transaction => {
-                if (transaction.fundSource.id === updatedAccount.id) {
-                    transaction.fundSource = {...updatedAccount}
+                if (transaction.account.id === updatedAccount.id) {
+                    transaction.account = {...updatedAccount}
                 }
 
                 return transaction;
@@ -181,9 +181,9 @@ const Manager: React.FC<any> = () => {
 
     const recalculateAccount = (changedTransaction: TransactionEntity, sign: number) => {
         const {accounts} = state;
-        if (changedTransaction.fundSource && changedTransaction.fundSource.id && accounts && accounts.length !== 0){
+        if (changedTransaction.account && changedTransaction.account.id && accounts && accounts.length !== 0){
             const newAccounts = accounts.map((account: AccountEntity) => {
-                if (account.id === changedTransaction.fundSource.id){
+                if (account.id === changedTransaction.account.id){
                     account.balance += changedTransaction.moneyQuantity * sign;
                 } 
                 return account;
@@ -226,7 +226,7 @@ const Manager: React.FC<any> = () => {
                     <Flex justifyContent={"space-between"}>
                         <Text fontSize="2xl" fontWeight={600}>{t("manager_transactions_title")}</Text>
                         <AddTransactionButton 
-                            fundSources={accounts} 
+                            accounts={accounts} 
                             onTransactionCreated={onTransactionCreated}/>
                     </Flex>
                     <Pagination year={year} month={month} onPageSwitched={loadTransactions}></Pagination>
@@ -236,7 +236,7 @@ const Manager: React.FC<any> = () => {
                         transactions.map((transaction: TransactionEntity) => {       
                             return <Transaction key={transaction.id} transaction={transaction} 
                                 onDelete={onTransactionDeleted} onUpdate={onTransactionUpdated}
-                                fundSources={accounts}>
+                                accounts={accounts}>
                             </Transaction>
                         }):
                         <div className="empty-transactions">{t("manager_transactions_add_transaction")}</div>

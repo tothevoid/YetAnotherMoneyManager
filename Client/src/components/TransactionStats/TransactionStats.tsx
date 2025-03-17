@@ -82,7 +82,7 @@ const TransactionStats = (props: Props) => {
         [ DataGrouping.BySource, {
             group: DataGrouping.BySource,
             caption: t("manager_stats_by_source"),
-            dataFunc: (transactions: TransactionEntity[]) => getGraphData(transactions, (transaction) => transaction.fundSource.id,
+            dataFunc: (transactions: TransactionEntity[]) => getGraphData(transactions, (transaction) => transaction.account.id,
                 (key) => accountsMapping.get(key) ?? "Incorrect source")
         }],
         [ DataGrouping.ByType, {

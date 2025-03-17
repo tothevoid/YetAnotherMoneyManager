@@ -9,10 +9,10 @@ export const TransactionValidationSchema = z.object({
   moneyQuantity: z.number()
     .nonnegative()
     .gt(0),
-  fundSource: z.object({
-    id: string().nonempty({message: "Fund source is not selected"}),
+  account: z.object({
+    id: string().nonempty({message: "Account is not selected"}),
     name: string()
-  }, {message: "Fund source is not selected"}),
+  }, {message: "Account is not selected"}),
   transactionType: string().nonempty(),
   direction: z.object({
     label: string(),

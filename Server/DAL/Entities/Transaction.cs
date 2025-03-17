@@ -11,9 +11,9 @@ namespace MoneyManager.DAL.Entities
 
         public double MoneyQuantity { get; set; }
 
-        public Account FundSource { get; set; }
+        public Account Account { get; set; }
 
-        public Guid FundSourceId { get; set; }
+        public Guid AccountId { get; set; }
 
         //public TransactionType TransactionType { get; set; }
 
@@ -23,7 +23,7 @@ namespace MoneyManager.DAL.Entities
 
         public Transaction AssignAccount(Account account)
         {
-            FundSource = account;
+            Account = account;
             return this;
         }
 

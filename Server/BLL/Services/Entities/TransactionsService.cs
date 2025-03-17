@@ -33,12 +33,12 @@ namespace MoneyManager.BLL.Services.Entities
         {
             var transaction = _mapper.Map<Transaction>(transactionDTO);
             transaction.Id = Guid.NewGuid();
-            var sourceId = transactionDTO?.FundSource?.Id ?? default;
+            var sourceId = transactionDTO?.Account?.Id ?? default;
             //var transactionTypeId = transactionDTO?.TransactionType?.Id ?? default;
             var tasks = new List<Task>();
             if (sourceId != default)
             {
-                transaction.FundSourceId = sourceId;
+                transaction.AccountId = sourceId;
                 tasks.Add(_accountRepo.Increment(sourceId, x => x.Balance, transaction.MoneyQuantity));
             }
             //if (transactionTypeId != default)
@@ -54,10 +54,10 @@ namespace MoneyManager.BLL.Services.Entities
         public async Task<List<UpdateAccountDTO>> Update(TransactionDTO updateTransactionModel)
         {
             var transaction = _mapper.Map<Transaction>(updateTransactionModel);
-            var sourceId = updateTransactionModel?.FundSource?.Id ?? default;
+            var sourceId = updateTransactionModel?.Account?.Id ?? default;
             if (sourceId != default)
             {
-                transaction.FundSourceId = updateTransactionModel.FundSource.Id;
+                transaction.AccountId = updateTransactionModel.Account.Id;
             }
 
             //TODO: Fix duplication and make it automatic
@@ -81,8 +81,8 @@ namespace MoneyManager.BLL.Services.Entities
         {
             var accountsToUpdate = new List<UpdateAccountDTO>();
             var tasks = new List<Task>() { transactionTask };
-            var lastTransactionId = lastTransaction?.FundSource?.Id ?? default;
-            var updateAccountModelId = updateAccountModel?.FundSource?.Id ?? default;
+            var lastTransactionId = lastTransaction?.Account?.Id ?? default;
+            var updateAccountModelId = updateAccountModel?.Account?.Id ?? default;
             //account deleted from transaction
             if (lastTransactionId != default && updateAccountModelId == default)
             {
@@ -96,7 +96,7 @@ namespace MoneyManager.BLL.Services.Entities
             }
             //changed account from transaction
             else if (lastTransactionId != default && updateAccountModelId != default &&
-                lastTransaction.FundSource.Id != updateAccountModel.FundSource.Id)
+                lastTransaction.Account.Id != updateAccountModel.Account.Id)
             {
                 accountsToUpdate.Add(new UpdateAccountDTO() { AccountId = lastTransactionId, Delta = lastTransaction.MoneyQuantity * -1 });
                 accountsToUpdate.Add(new UpdateAccountDTO() { AccountId = updateAccountModelId, Delta = updateAccountModel.MoneyQuantity });
@@ -119,7 +119,7 @@ namespace MoneyManager.BLL.Services.Entities
         public async Task Delete(TransactionDTO transactionDTO)
         {
             var tasks = new List<Task>();
-            var sourceId = transactionDTO?.FundSource?.Id ?? default;
+            var sourceId = transactionDTO?.Account?.Id ?? default;
             if (sourceId != default && transactionDTO.MoneyQuantity != 0)
             {
                 tasks.Add(_accountRepo.Increment(sourceId, x => x.Balance, transactionDTO.MoneyQuantity * -1));

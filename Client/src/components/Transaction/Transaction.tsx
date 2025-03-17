@@ -16,11 +16,11 @@ type Props = {
 	onDelete: (transaction: TransactionEntity) => void,
 	onUpdate: (updatedTransaction: TransactionEntity) => void,
 	transaction: TransactionEntity,
-	fundSources: AccountEntity[],
+	accounts: AccountEntity[],
 } 
 
 const Transaction: React.FC<Props> = (props: Props) => {
-	const {moneyQuantity, transactionType, name, date, fundSource} = props.transaction;
+	const {moneyQuantity, transactionType, name, date, account} = props.transaction;
 
 	const confirmModalRef = useRef<ConfirmModalRef>(null);
  	const editModalRef = useRef<TransactionModalRef>(null);
@@ -60,7 +60,7 @@ const Transaction: React.FC<Props> = (props: Props) => {
 					{getTransactionDirectionIcon()}
 					<Stack ml={5}>
 						<Text fontWeight={700}>{name}</Text>
-						<Text>{formatDate(date, i18n, false)} • {fundSource.name}</Text>
+						<Text>{formatDate(date, i18n, false)} • {account.name}</Text>
 					</Stack>
 				</Stack>
 				<Flex gap={2} justifyContent="space-between" alignItems="center">
@@ -86,7 +86,7 @@ const Transaction: React.FC<Props> = (props: Props) => {
 			ref={confirmModalRef}>
 		</ConfirmModal>
 		<TransactionModal
-			fundSources={props.fundSources} 
+			accounts={props.accounts} 
 			transaction={props.transaction} 
 			ref={editModalRef} 
 			onSaved={props.onUpdate}/>

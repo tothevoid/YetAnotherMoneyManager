@@ -11,9 +11,9 @@ namespace MoneyManager.WEB.Model
 
         public double MoneyQuantity {get;set;}
 
-        public FundModel FundSource {get;set;}
+        public AccountModel Account {get;set;}
 
-        public Guid FundSourceId { get; set; }
+        public Guid AccountId { get; set; }
 
         public string TransactionType { get; set; }
 

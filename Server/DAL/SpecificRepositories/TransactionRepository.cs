@@ -23,7 +23,7 @@ namespace MoneyManager.DAL.SpecificRepositories
             //TODO: fix AsEnumerable then mongo driver will support inner join
             var query = (from transaction in DbSet.AsQueryable()
                         .Where(x => x.Date >= startDate && x.Date <= endDate).AsEnumerable()
-                        join account in accountCollection.AsQueryable() on transaction.FundSourceId equals account.Id into accountJoin
+                        join account in accountCollection.AsQueryable() on transaction.AccountId equals account.Id into accountJoin
                         from joinedAccount in accountJoin.DefaultIfEmpty()
                         join type in typeCollection.AsQueryable() on transaction.TransactionTypeId equals type.Id into typeJoin
                         from joinedType in typeJoin.DefaultIfEmpty()

@@ -9,7 +9,7 @@ import { createTransaction } from "../../api/transactionApi"
 import { useTranslation } from "react-i18next"
 
 type Props = {
-    fundSources: AccountEntity[],
+    accounts: AccountEntity[],
     onTransactionCreated: (transaction: TransactionEntity) => void
 }
 
@@ -36,7 +36,7 @@ const AddTransactionButton: React.FC<Props> = (props: Props) => {
             <MdAdd/>{t("manager_transactions_add_transaction")}
         </Button>
         <TransactionModal ref={addTransactionModalRef} 
-            fundSources={props.fundSources}
+            accounts={props.accounts}
             onSaved={onTransactionAdded}></TransactionModal>
     </Fragment>
 }

@@ -1,6 +1,6 @@
 import './App.css';
 import Header from './components/Header/Header';
-import Manager from './pages/Manager/Manager'
+import TransactionsPage from './pages/TransactionsPage/TransactionsPage'
 import Footer from './components/Footer/Footer';
 import DepositsPage from './pages/DepositsPage/DepositsPage';
 
@@ -14,8 +14,8 @@ const App = () => {
       <main className="app-main">
         <Router>
           <Routes>
-            <Route path="/" element={<Manager />} />
-            <Route path="/accounts" element={<AccountsPage />} />
+            <Route path="/" element={<AccountsPage /> } />
+            <Route path="/transactions" element={<TransactionsPage />} />
             <Route path="/deposits" element={<DepositsPage />} />
           </Routes>
         </Router>

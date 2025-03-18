@@ -26,9 +26,9 @@ const Header = () => {
     }
 
     return <div className="header">
-        <HeaderItem title={t("title_manager")} path='/'></HeaderItem>
-        <HeaderItem title={t("title_accounts")} path='/Accounts'></HeaderItem>
-        <HeaderItem title={t("title_deposits")} path='/Deposits'></HeaderItem>
+        <HeaderItem title={t("header_accounts")} path='/'></HeaderItem>
+        <HeaderItem title={t("header_transactions")} path='/transactions'></HeaderItem>
+        <HeaderItem title={t("header_deposits")} path='/deposits'></HeaderItem>
         <Spacer/>
         <Button onClick={() => updateLanguage()} background={"purple.600"}>
             {language}

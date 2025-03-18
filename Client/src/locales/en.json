@@ -1,10 +1,11 @@
 {
-    "title_accounts": "Accounts",
-    "title_manager": "Transactions",
-    "title_deposits": "Deposits",
+    "header_accounts": "Accounts",
+    "header_transactions": "Transactions",
+    "header_deposits": "Deposits",
 
-    "manager_accounts_summary_title": "accounts",
-    "manager_accounts_summary_add": "Add account",
+    "accounts_page_summary_title": "accounts",
+    "accounts_page_summary_add": "Add account",
+
     "manager_transactions_title": "Transactions",
     "manager_transactions_add_transaction": "Add transaction",
     "manager_transactions_empty": "No transactions",

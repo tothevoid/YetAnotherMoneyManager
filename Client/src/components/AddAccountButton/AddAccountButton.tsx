@@ -38,7 +38,7 @@ const AddAccountButton: React.FC<AccountProps> = ({ onAdded }) => {
 				<Icon size='md'>
 					<MdAdd/>
 				</Icon>
-				{t("manager_accounts_summary_add")}
+				{t("accounts_page_summary_add")}
 			</Button>
 			<AccountModal ref={modalRef} onSaved={onAccountAdded}></AccountModal>
 		</Fragment>

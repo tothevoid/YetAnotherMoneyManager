@@ -1,5 +1,6 @@
+import "./TransactionsPage.scss"
+
 import React, { Fragment, useEffect, useState } from 'react';
-import "./Manager.scss"
 import Transaction from '../../components/Transaction/Transaction';
 import { TransactionEntity } from '../../models/TransactionEntity';
 import { AccountEntity } from '../../models/AccountEntity';
@@ -28,7 +29,7 @@ const getDefaultState = () => {
     };    
 }
 
-const Manager: React.FC<any> = () => {
+const TransactionsPage: React.FC<any> = () => {
     useEffect(() => {
         const initData = async () => {
             await initAccounts();
@@ -161,5 +162,4 @@ const Manager: React.FC<any> = () => {
     );
 }
 
-
-export default Manager;
+export default TransactionsPage;

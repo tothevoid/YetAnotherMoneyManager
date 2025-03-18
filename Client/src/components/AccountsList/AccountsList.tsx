@@ -29,7 +29,7 @@ const AccountsList: React.FC<Props> = (props) => {
 	return (
 		<Fragment>
 			<Flex justifyContent="space-between" alignItems="center" pt={5} pb={5}>
-				<Text fontSize='3xl'>{t("manager_accounts_summary_title")}: {formatMoney(total)}</Text>
+				<Text fontSize='3xl'>{t("accounts_page_summary_title")}: {formatMoney(total)}</Text>
 				<AddAccountButton onAdded={onAddAccountCallback}></AddAccountButton>
 			</Flex>
 			<SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(300px, 3fr))'>

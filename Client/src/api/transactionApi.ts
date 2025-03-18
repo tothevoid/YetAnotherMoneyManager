@@ -3,8 +3,10 @@ import { TransactionEntity } from '../models/TransactionEntity';
 import { checkPromiseStatus, logPromiseError } from '../utils/PromiseUtils';
 import { AccountToUpdate } from './models/accountToUpdate';
 
+const basicUrl = `${config.api.URL}/Transaction`;
+
 export const getTransactions = async (month: number, year: number): Promise<TransactionEntity[]> => {
-    const url = `${config.api.URL}/Transaction?month=${month}&year=${year}`;
+    const url = `${basicUrl}?month=${month}&year=${year}`;
     const transactions = await fetch(url, {method: "GET"})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
@@ -22,8 +24,7 @@ export const getTransactions = async (month: number, year: number): Promise<Tran
 };
 
 export const createTransaction = async (transaction: TransactionEntity): Promise<TransactionEntity | void> => {
-    const url = `${config.api.URL}/Transaction`;
-    const newTransaction = await fetch(url, { method: "PUT", body: JSON.stringify(transaction),
+    const newTransaction = await fetch(basicUrl, { method: "PUT", body: JSON.stringify(transaction),
         headers: {"Content-Type": "application/json"}})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
@@ -35,8 +36,7 @@ export const createTransaction = async (transaction: TransactionEntity): Promise
 }
 
 export const updateTransaction = async (modifiedTransaction: TransactionEntity): Promise<AccountToUpdate[]> => {
-    const url = `${config.api.URL}/Transaction`;
-    const result: AccountToUpdate[] | void = await fetch(url, { method: "PATCH", body: JSON.stringify(modifiedTransaction),  
+    const result: AccountToUpdate[] | void = await fetch(basicUrl, { method: "PATCH", body: JSON.stringify(modifiedTransaction),  
         headers: {"Content-Type": "application/json"}})
         .then(checkPromiseStatus)
         .then(response => response.json())
@@ -45,10 +45,13 @@ export const updateTransaction = async (modifiedTransaction: TransactionEntity):
     return result ? result: [] as AccountToUpdate[];
 }
 
-export const deleteTransaction = async (deletedTransaction: TransactionEntity): Promise<boolean> => {
-    const url = `${config.api.URL}/Transaction`;
-    const result = await fetch(url, { method: "DELETE", body: JSON.stringify(deletedTransaction), 
-        headers: {"Content-Type": "application/json"}})
+export const deleteTransaction = async (transactionId: string): Promise<boolean> => {
+    if (!transactionId) {
+        return false;
+    }
+
+    const url = `${basicUrl}?id=${transactionId}`;
+    const result = await fetch(url, { method: "DELETE"})
         .then(checkPromiseStatus)
         .catch(logPromiseError);
 

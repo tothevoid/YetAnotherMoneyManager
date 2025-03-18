@@ -38,17 +38,10 @@ namespace MoneyManager.WEB.Api
         }
 
         [HttpPut]
-        public async Task<Guid> Add(DepositModel transaction)
+        public async Task<Guid> Add(DepositModel deposit)
         {
-            var deposit = _mapper.Map<DepositDTO>(transaction);
-            return await _depositService.Add(deposit);
-        }
-
-        [HttpDelete]
-        public async Task Delete(DepositModel transaction)
-        {
-            var deposit = _mapper.Map<DepositDTO>(transaction);
-            await _depositService.Delete(deposit);
+            var depositDto = _mapper.Map<DepositDTO>(deposit);
+            return await _depositService.Add(depositDto);
         }
 
         [HttpPatch]
@@ -56,6 +49,12 @@ namespace MoneyManager.WEB.Api
         {
             var deposit = _mapper.Map<DepositDTO>(modifiedDeposit);
             await _depositService.Update(deposit);
+        }
+
+        [HttpDelete]
+        public async Task Delete(Guid id)
+        {
+            await _depositService.Delete(id);
         }
     }
 }

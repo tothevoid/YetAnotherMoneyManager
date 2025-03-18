@@ -36,19 +36,18 @@ namespace MoneyManager.WEB.Api
             return await _transactionService.Add(transactionDTO);
         }
 
-        [HttpDelete]
-        public async Task Delete(TransactionModel transaction)
-        {
-            var transactionDTO = _mapper.Map<TransactionDTO>(transaction);
-            await _transactionService.Delete(transactionDTO);
-        }
-
         [HttpPatch]
         public async Task<IEnumerable<UpdateAccountModel>> Update(TransactionModel updatedTransaction)
         {
             var updatedTransactionDTO = _mapper.Map<TransactionDTO>(updatedTransaction);
             var accountsToUpdate = await _transactionService.Update(updatedTransactionDTO);
             return _mapper.Map<IEnumerable<UpdateAccountModel>>(accountsToUpdate);
+        }
+
+        [HttpDelete]
+        public async Task Delete(Guid id)
+        {
+            await _transactionService.Delete(id);
         }
     }
 }

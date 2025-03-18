@@ -33,9 +33,12 @@ export const updateAccount = async (modifiedAccount: AccountEntity): Promise<boo
     return result?.ok ?? false;
 }
 
-export const deleteAccount = async (deletingAccount: AccountEntity): Promise<boolean> => {
-    const {id} = deletingAccount;
-    const url = `${basicUrl}?id=${id}`;
+export const deleteAccount = async (accountId: string): Promise<boolean> => {
+    if (!accountId) {
+        return false;
+    }
+
+    const url = `${basicUrl}?id=${accountId}`;
     const result = await fetch(url, { method: "DELETE"})
         .then(checkPromiseStatus)
         .catch(logPromiseError)

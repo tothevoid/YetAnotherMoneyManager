@@ -38,7 +38,7 @@ const Deposit: React.FC<Props> = ({deposit, onUpdated, onCloned, onDeleted}) => 
     }
 
     const onDeletionConfirmed = async () => {
-        const isDeleted = await deleteDeposit(deposit);
+        const isDeleted = await deleteDeposit(deposit?.id);
         if (!isDeleted) {
             return;
         }

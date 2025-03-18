@@ -38,7 +38,7 @@ const Account = (props: Props) => {
     }
 
     const onDeletionConfirmed = async () => {
-        const isAccountDeleted = await deleteAccount(props.account);
+        const isAccountDeleted = await deleteAccount(props.account.id);
         if (!isAccountDeleted) {
             return;
         }

@@ -16,7 +16,7 @@ namespace BLL.Interfaces.Entities
 
         Task Update(DepositDTO modifiedDeposit);
 
-        Task Delete(DepositDTO deposit);
+        Task Delete(Guid id);
 
         Task<DepositMonthSummaryDTO> GetSummary();
     }

@@ -116,15 +116,23 @@ namespace MoneyManager.BLL.Services.Entities
             return accountsToUpdate;
         }
 
-        public async Task Delete(TransactionDTO transactionDTO)
+        public async Task Delete(Guid id)
         {
-            var tasks = new List<Task>();
-            var sourceId = transactionDTO?.Account?.Id ?? default;
-            if (sourceId != default && transactionDTO.MoneyQuantity != 0)
+            var transaction = await _transactionsRepo.GetById(id);
+
+            if (transaction == null)
             {
-                tasks.Add(_accountRepo.Increment(sourceId, x => x.Balance, transactionDTO.MoneyQuantity * -1));
+                throw new ArgumentException(nameof(id));
             }
-            tasks.Add(_transactionsRepo.Delete(transactionDTO.Id));
+
+            var tasks = new List<Task>();
+            var sourceId = transaction?.Account?.Id ?? default;
+            if (sourceId != default && transaction.MoneyQuantity != 0)
+            {
+                tasks.Add(_accountRepo.Increment(sourceId, x => x.Balance, transaction.MoneyQuantity * -1));
+            }
+            tasks.Add(_transactionsRepo.Delete(transaction.Id));
+            
             await Task.WhenAll(tasks);
             _db.Commit();
         }

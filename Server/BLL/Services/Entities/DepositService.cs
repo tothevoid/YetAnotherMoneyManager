@@ -49,9 +49,9 @@ namespace MoneyManager.BLL.Services.Entities
             _db.Commit();
         }
 
-        public async Task Delete(DepositDTO deposit)
+        public async Task Delete(Guid id)
         {
-            await _depositRepo.Delete(deposit.Id);
+            await _depositRepo.Delete(id);
             _db.Commit();
         }
 

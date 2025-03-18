@@ -34,7 +34,7 @@ const Transaction: React.FC<Props> = (props: Props) => {
 	}
 
 	const onDeletionConfirmed = async () => {
-		const isDeleted = await deleteTransaction(props.transaction);
+		const isDeleted = await deleteTransaction(props.transaction?.id);
 		if (!isDeleted) {
 			return;
 		}

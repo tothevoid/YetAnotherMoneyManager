@@ -4,9 +4,10 @@ import { DepositEntity } from '../models/DepositEntity';
 import { convertToInputDate } from '../utils/DateUtils';
 import { checkPromiseStatus, logPromiseError } from '../utils/PromiseUtils';
 
+const basicUrl = `${config.api.URL}/Deposit`;
+
 export const getDeposits = async (): Promise<DepositEntity[]> => {
-    const url = `${config.api.URL}/Deposit`;
-    const deposits = await fetch(url, {method: "GET"})
+    const deposits = await fetch(basicUrl, {method: "GET"})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
         .then((deposits: DepositEntity[]) => 
@@ -24,9 +25,7 @@ export const getDeposits = async (): Promise<DepositEntity[]> => {
 };
 
 export const createDeposit = async (deposit: DepositEntity): Promise<DepositEntity | void> => {
-    const url = `${config.api.URL}/Deposit`;
-
-    const newDeposit = await fetch(url, { method: "PUT", body: prepareDepositEntity(deposit),
+    const newDeposit = await fetch(basicUrl, { method: "PUT", body: prepareDepositEntity(deposit),
         headers: {"Content-Type": "application/json"}})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
@@ -38,8 +37,7 @@ export const createDeposit = async (deposit: DepositEntity): Promise<DepositEnti
 }
 
 export const updateDeposit = async (modifiedDeposit: DepositEntity): Promise<boolean> => {
-    const url = `${config.api.URL}/Deposit`;
-    const result = await fetch(url, { method: "PATCH", body: prepareDepositEntity(modifiedDeposit),  
+    const result = await fetch(basicUrl, { method: "PATCH", body: prepareDepositEntity(modifiedDeposit),  
         headers: {"Content-Type": "application/json"}})
         .then(checkPromiseStatus)
         .catch(logPromiseError);
@@ -47,10 +45,13 @@ export const updateDeposit = async (modifiedDeposit: DepositEntity): Promise<boo
     return result?.ok ?? false;
 }
 
-export const deleteDeposit = async (deletedDeposit: DepositEntity): Promise<boolean> => {
-    const url = `${config.api.URL}/Deposit`;
-    const result = await fetch(url, { method: "DELETE", body: prepareDepositEntity(deletedDeposit), 
-        headers: {"Content-Type": "application/json"}})
+export const deleteDeposit = async (depositId: string): Promise<boolean> => {
+    if (!depositId) {
+        return false;
+    }
+
+    const url = `${basicUrl}?id=${depositId}`;
+    const result = await fetch(url, { method: "DELETE"})
         .then(checkPromiseStatus)
         .catch(logPromiseError);
 
@@ -58,7 +59,7 @@ export const deleteDeposit = async (deletedDeposit: DepositEntity): Promise<bool
 }
 
 export const getDepositsSummary = async (): Promise<DepositMonthSummary | null> => {
-    const url = `${config.api.URL}/Deposit/GetDepositsSummary`;
+    const url = `${basicUrl}/GetDepositsSummary`;
     const summary: DepositMonthSummary | null = await fetch(url, {method: "GET"})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())

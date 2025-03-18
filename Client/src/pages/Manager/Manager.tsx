@@ -1,16 +1,14 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import "./Manager.scss"
 import Transaction from '../../components/Transaction/Transaction';
-import AccountsList from '../../components/AccountsList/AccountsList';
 import { TransactionEntity } from '../../models/TransactionEntity';
 import { AccountEntity } from '../../models/AccountEntity';
 import { insertByPredicate, reorderByPredicate } from '../../utils/ArrayExtensions'
 import Pagination from '../../components/Pagination/Pagination';
 import TransactionStats from '../../components/TransactionStats/TransactionStats';
-import { Box, Flex, SimpleGrid, Text } from '@chakra-ui/react';
+import { Box, Container, Flex, SimpleGrid, Text } from '@chakra-ui/react';
 import AddTransactionButton from '../../components/AddTransactionButton/AddTransactionButton';
 import { getTransactions, updateTransaction } from '../../api/transactionApi';
-import { AccountToUpdate } from '../../api/models/accountToUpdate';
 import { getAccounts } from '../../api/accountApi';
 import { useTranslation } from 'react-i18next';
 
@@ -30,7 +28,6 @@ const getDefaultState = () => {
     };    
 }
 
-//TODO: Simplify component
 const Manager: React.FC<any> = () => {
     useEffect(() => {
         const initData = async () => {
@@ -46,59 +43,6 @@ const Manager: React.FC<any> = () => {
         })
     };
 
-    const onAccountCreated = async (addedAccount: AccountEntity) => {
-        if (!addedAccount) {
-            return
-        }
-
-        setState((currentState: State) => {
-            const accounts = state.accounts.concat(addedAccount);
-            return {...currentState, accounts};
-        });
-    };
-
-    const onAccountUpdated = async (updatedAccount: AccountEntity) => {
-        if (!updatedAccount) {
-            return
-        }
-
-        let accountNameChanged = false;
-
-        setState((currentState: State) => {
-            const accounts = currentState.accounts.map((account: AccountEntity) => {
-                if (account.id === updatedAccount.id) {
-                    accountNameChanged = account.name !== updatedAccount.name;
-                    return {...updatedAccount}
-                } 
-                return account
-            });
-
-            if (!accountNameChanged) {
-                return {...currentState, accounts};
-            }
-            
-            const newTransactions = currentState.transactions.map(transaction => {
-                if (transaction.account.id === updatedAccount.id) {
-                    transaction.account = {...updatedAccount}
-                }
-
-                return transaction;
-            });
-            return {...currentState, accounts, transactions: newTransactions}
-        });
-    };
-
-    const onAccountDeleted = async (deletedAccount: AccountEntity) => {
-        if (!deletedAccount) {
-            return;
-        }
-
-        setState((currentState: State) => {
-            const accounts = currentState.accounts.filter((account: AccountEntity) => account.id !== deletedAccount.id)
-            return { ...currentState, accounts }
-        });
-    };
-
     const loadTransactions = async (month: number, year: number) => {
         const transactions = await getTransactions(month, year);
         setState((currentState) => {
@@ -111,15 +55,16 @@ const Manager: React.FC<any> = () => {
             return;
         }
 
-        if (isCurrentMonthTransaction(createdTransaction)) {
-            const {transactions} = state;
-            const newTransactions = insertByPredicate(transactions, createdTransaction, 
-                (transactionElm: TransactionEntity) => (transactionElm.date <= createdTransaction.date));
-            setState((currentState) => {
-                return {...currentState, transactions: newTransactions}
-            });
+        if (!isCurrentMonthTransaction(createdTransaction)) {
+            return;
         }
-        recalculateAccount(createdTransaction, 1);
+
+        const {transactions} = state;
+        const newTransactions = insertByPredicate(transactions, createdTransaction, 
+            (transactionElm: TransactionEntity) => (transactionElm.date <= createdTransaction.date));
+        setState((currentState) => {
+            return {...currentState, transactions: newTransactions}
+        });
     };
 
     const onTransactionDeleted = async (deletedTransaction: TransactionEntity) => { 
@@ -128,7 +73,6 @@ const Manager: React.FC<any> = () => {
         }
 
         deleteTransaction(deletedTransaction);
-        recalculateAccount(deletedTransaction, -1);
     };
 
     const onTransactionUpdated = async (updatedTransaction: TransactionEntity) => {
@@ -138,12 +82,8 @@ const Manager: React.FC<any> = () => {
             return;
         }
 
-        const newAccounts = recalculateAccounts(affectedAccounts);
         if (!isCurrentMonthTransaction(updatedTransaction)) {
             deleteTransaction(updatedTransaction);
-            setState((currentState) => {
-                return {...currentState, accounts: newAccounts}; 
-            });
             return;
         }
 
@@ -160,7 +100,7 @@ const Manager: React.FC<any> = () => {
             (currentElement: TransactionEntity) => (currentElement.id !== updatedTransaction.id));
 
         setState((currentState) => {
-            return {...currentState, transactions: updatedTransactions, accounts: newAccounts}  
+            return {...currentState, transactions: updatedTransactions}  
         });
     };
 
@@ -179,48 +119,14 @@ const Manager: React.FC<any> = () => {
                transaction.date.getFullYear() === year
     }
 
-    const recalculateAccount = (changedTransaction: TransactionEntity, sign: number) => {
-        const {accounts} = state;
-        if (changedTransaction.account && changedTransaction.account.id && accounts && accounts.length !== 0){
-            const newAccounts = accounts.map((account: AccountEntity) => {
-                if (account.id === changedTransaction.account.id){
-                    account.balance += changedTransaction.moneyQuantity * sign;
-                } 
-                return account;
-            });
-            setState((currentState) => {
-                return {...currentState, accounts: newAccounts};
-            });
-        }
-    };
-
-    const recalculateAccounts = (accountsToUpdated: AccountToUpdate[]) => {
-        const {accounts} = state;
-        const newAccounts = accounts.map((account: AccountEntity) => {
-            const findResult = accountsToUpdated.find((accountToUpdate) => accountToUpdate.accountId === account.id);
-            if (findResult){
-                account.balance += findResult.delta;
-            } 
-            return account;
-        });
-        return newAccounts;
-    };
-
     const [state, setState] = useState<State>(getDefaultState);
 
-    const {transactions, accounts, 
-        year, month} = state;
+    const {transactions, accounts, year, month} = state;
     
     const { t } = useTranslation();
 
     return (
-        <div>
-            <AccountsList 
-                onAddAccountCallback = {onAccountCreated}
-                onUpdateAccountCallback = {onAccountUpdated}
-                onDeleteAccountCallback = {onAccountDeleted} 
-                accounts = {accounts}>
-            </AccountsList>
+        <Container paddingTop={4} paddingBottom={4}>
             <SimpleGrid columns={2} gap={16}>
                 <Box>
                     <Flex justifyContent={"space-between"}>
@@ -251,7 +157,7 @@ const Manager: React.FC<any> = () => {
                     }
                 </Box>
             </SimpleGrid>
-        </div>
+        </Container>
     );
 }
 

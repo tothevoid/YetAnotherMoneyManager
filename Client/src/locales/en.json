@@ -1,5 +1,6 @@
 {
-    "title_manager": "Manager",
+    "title_accounts": "Accounts",
+    "title_manager": "Transactions",
     "title_deposits": "Deposits",
 
     "manager_accounts_summary_title": "accounts",

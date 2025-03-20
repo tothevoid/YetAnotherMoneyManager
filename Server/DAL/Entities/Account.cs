@@ -8,5 +8,9 @@ namespace MoneyManager.DAL.Entities
         public string Name { get; set; }
 
         public double Balance { get; set; }
+
+        public Currency Currency { get; set; }
+
+        public Guid CurrencyId { get; set; }
     }
 }

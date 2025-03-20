@@ -8,5 +8,9 @@ namespace MoneyManager.BLL.DTO
         public string Name { get; set; }
 
         public double Balance { get; set; }
+
+        public CurrencyDTO Currency { get; set; }
+
+        public Guid CurrencyId { get; set; }
     }
 }

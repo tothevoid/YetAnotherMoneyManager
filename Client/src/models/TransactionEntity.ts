@@ -1,5 +1,4 @@
 import { AccountEntity } from "./AccountEntity";
-// import { TransactionType } from "./TransactionType";
 
 export type TransactionEntity = {
     id: string,

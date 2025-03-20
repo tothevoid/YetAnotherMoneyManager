@@ -1,30 +1,54 @@
 import { Button, CloseButton, Dialog, Field, Input, Portal, useDisclosure} from "@chakra-ui/react"
-import { forwardRef, useImperativeHandle } from "react"
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react"
 import { AccountEntity } from "../../models/AccountEntity";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AccountFormInput, AccountValidationSchema } from "./AccountValidationSchema";
 import { useTranslation } from "react-i18next";
+import { getCurrencies } from "../../api/currencyApi";
+import { CurrencyEntity } from "../../models/CurrencyEntity";
+import { Select } from "chakra-react-select";
 
 type AccountProps = {
 	account?: AccountEntity | null,
 	onSaved: (account: AccountEntity) => void;
 };
 
+type State = {
+	currencies: CurrencyEntity[]
+}
+
 export interface AccountModalRef {
 	openModal: () => void
 }
 
 const AccountModal = forwardRef<AccountModalRef, AccountProps>((props: AccountProps, ref)=> {
+  	const [state, setState] = useState<State>({currencies: []})
+	
+	useEffect(() => {
+		const initData = async () => {
+			await initCurrencies();
+		}
+		initData();
+	}, []);
+
+	const initCurrencies = async () => {
+		const currencies = await getCurrencies();
+		setState((currentState) => {
+			return {...currentState, currencies}
+		})
+	};
+
 	const { open, onOpen, onClose } = useDisclosure()
 
-	const { register, handleSubmit, formState: { errors }} = useForm<AccountFormInput>({
+	const { register, handleSubmit, control, formState: { errors }} = useForm<AccountFormInput>({
         resolver: zodResolver(AccountValidationSchema),
         mode: "onBlur",
         defaultValues: {
 			id: props.account?.id ?? crypto.randomUUID(),
 			name: props.account?.name ?? "",
 			balance: props.account?.balance ?? 0,
+			currency: props.account?.currency
         }
     });
 
@@ -55,6 +79,25 @@ const AccountModal = forwardRef<AccountModalRef, AccountProps>((props: AccountPr
 						<Input {...register("name")} autoComplete="off" placeholder='Debit card' />
 						<Field.ErrorText>{errors.name?.message}</Field.ErrorText>
 					</Field.Root>
+
+					<Field.Root mt={4} invalid={!!errors.currency}>
+						<Field.Label>{t("entity_transaction_currency")}</Field.Label>
+						<Controller
+							name="currency"
+							control={control}
+							render={({ field }) => (
+									<Select
+										{...field}
+										getOptionLabel={(e) => e.name}
+										getOptionValue={(e) => e.id}
+										options={state.currencies}
+										isClearable
+										placeholder='Select source'>
+									</Select>
+								)}
+							/>
+						<Field.ErrorText>{errors.currency?.message}</Field.ErrorText>
+					</Field.Root>
 		
 					<Field.Root invalid={!!errors.balance} mt={4}>
 						<Field.Label>{t("entity_account_balance")}</Field.Label>
@@ -68,11 +111,11 @@ const AccountModal = forwardRef<AccountModalRef, AccountProps>((props: AccountPr
 					</Field.Root> */}
 					</Dialog.Body>
 					<Dialog.Footer>
-					<Button type="submit" background='purple.600' mr={3}>{t("modals_save_button")}</Button>
-					<Button onClick={onClose}>{t("modals_cancel_button")}</Button>
+						<Button type="submit" background='purple.600' mr={3}>{t("modals_save_button")}</Button>
+						<Button onClick={onClose}>{t("modals_cancel_button")}</Button>
 					</Dialog.Footer>
 					<Dialog.CloseTrigger asChild>
-						<CloseButton size="sm" />
+						<CloseButton onClick={onClose} size="sm" />
 					</Dialog.CloseTrigger>
 				</Dialog.Content>
 			</Dialog.Positioner>

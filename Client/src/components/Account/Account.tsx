@@ -3,7 +3,7 @@ import { Button, Card, Flex, Icon, Stack, Text } from '@chakra-ui/react';
 import { MdDelete, MdEdit } from "react-icons/md";
 import { Fragment, useRef } from 'react';
 import AccountModal, { AccountModalRef } from '../../modals/AccountModal/AccountModal';
-import { formatMoney } from '../../formatters/moneyFormatter';
+import { formatMoneyByCurrencyCulture } from '../../formatters/moneyFormatter';
 import { ConfirmModal, ConfirmModalRef } from '../../modals/ConfirmModal/ConfirmModal';
 import { deleteAccount, updateAccount } from '../../api/accountApi';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +15,7 @@ type Props = {
 }
 
 const Account = (props: Props) => {
-    const {name, balance} = props.account;
+    const {name, balance, currency} = props.account;
 
     const confirmModalRef = useRef<ConfirmModalRef>(null);
     const editModalRef = useRef<AccountModalRef>(null);
@@ -54,7 +54,7 @@ const Account = (props: Props) => {
                 <Flex justifyContent="space-between" alignItems="center">
                     <Stack>
                         <Text fontWeight={600}>{name}</Text>
-                        <Text fontWeight={700}>{formatMoney(balance)}</Text>
+                        <Text fontWeight={700}>{formatMoneyByCurrencyCulture(balance, currency.name)}</Text>
                     </Stack>
                     <div>
                         <Button background={'white'} size={'sm'} onClick={onEditClicked}>

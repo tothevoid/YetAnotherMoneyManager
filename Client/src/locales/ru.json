@@ -5,6 +5,7 @@
     
     "accounts_page_summary_title": "На счетах",
     "accounts_page_summary_add": "Добавить актив",
+
     "manager_transactions_title": "Транзакции",
     "manager_transactions_add_transaction": "Добавить траназкцию",
     "manager_transactions_empty": "Отсутствуют транзакции",
@@ -15,6 +16,7 @@
     "entity_account_name_form_title": "Cчёт",
     "entity_account_name": "Название",
     "entity_account_balance": "Баланс",
+    "entity_transaction_currency": "Валюта",
 
     "account_delete_title": "Удалить счёт",
 

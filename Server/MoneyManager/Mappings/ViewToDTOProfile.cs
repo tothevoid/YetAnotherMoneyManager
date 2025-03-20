@@ -1,10 +1,6 @@
 ﻿using AutoMapper;
 using MoneyManager.BLL.DTO;
 using MoneyManager.WEB.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using BLL.DTO;
 using MoneyManager.Model.Server;
 using MoneyManager.Model.Common;
@@ -21,6 +17,7 @@ namespace MoneyManager.WEB.Mappings
             CreateMap<UpdateAccountModel, UpdateAccountDTO>().ReverseMap();
             CreateMap<TransactionTypeModel, TransactionTypeDTO>().ReverseMap();
             CreateMap<DepositModel, DepositDTO>().ReverseMap();
+            CreateMap<CurrencyModel, CurrencyDTO>().ReverseMap();
 
             CreateMap<DepositMonthSummaryDTO, DepositMonthSummary>();
             CreateMap<DepositPaymentDTO, DepositPayment>();

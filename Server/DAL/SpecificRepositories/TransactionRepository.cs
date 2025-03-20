@@ -14,7 +14,7 @@ namespace MoneyManager.DAL.SpecificRepositories
     {
         public TransactionRepository(IMongoContext context): base(context){}
 
-        public async Task<IEnumerable<Transaction>> GetAllFull(int month, int year)
+        public IEnumerable<Transaction> GetAllFull(int month, int year)
         {
             var accountCollection = _context.GetCollection<Account>(nameof(Account));
             var typeCollection = _context.GetCollection<TransactionType>(nameof(TransactionType));

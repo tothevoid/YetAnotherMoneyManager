@@ -5,7 +5,7 @@ import { MdOutlineArrowDownward, MdOutlineArrowUpward, MdEdit } from 'react-icon
 import { MdDelete } from "react-icons/md";
 import { Flex, Stack, Card, CardBody, Text, Button, Icon } from '@chakra-ui/react';
 import TransactionModal, { TransactionModalRef } from '../../modals/TransactionModal/TransactionModal';
-import { formatMoney } from '../../formatters/moneyFormatter';
+import { formatMoneyByCurrencyCulture } from '../../formatters/moneyFormatter';
 import { formatDate } from '../../formatters/dateFormatter';
 import { ConfirmModal, ConfirmModalRef } from '../../modals/ConfirmModal/ConfirmModal';
 import { deleteTransaction } from '../../api/transactionApi';
@@ -65,7 +65,7 @@ const Transaction: React.FC<Props> = (props: Props) => {
 				</Stack>
 				<Flex gap={2} justifyContent="space-between" alignItems="center">
 					<Text background={'green.100'} textAlign={'center'} w={150} rounded={10} padding={1} >{transactionType}</Text>
-					<Text width={100}>{formatMoney(moneyQuantity)}</Text>
+					<Text width={100}>{formatMoneyByCurrencyCulture(moneyQuantity, account.currency.name)}</Text>
 					<Button background={'white'} size={'sm'} onClick={onEditClicked}>
 						<Icon color="blackAlpha.800">
 							<MdEdit/>

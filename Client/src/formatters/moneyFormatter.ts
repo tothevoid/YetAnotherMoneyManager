@@ -17,3 +17,12 @@ export const formatMoney = (value: number, currency: Currency = Currency.RUB) =>
       minimumFractionDigits: 2,
     }).format(value);
   };
+
+
+export const formatMoneyByCurrencyCulture = (value: number, currency: string) => {
+    return new Intl.NumberFormat("ru-RU", {
+      style: "currency",
+      currency: currency,
+      minimumFractionDigits: 2,
+    }).format(value);
+  };

@@ -33,6 +33,7 @@ namespace MoneyManager.WEB.Api
         public async Task<Guid> Add(AccountModel account)
         {
             var accountDTO = _mapper.Map<AccountDTO>(account);
+            accountDTO.CurrencyId = accountDTO.Currency.Id; 
             return await _accountService.Add(accountDTO);
         }
 
@@ -40,6 +41,7 @@ namespace MoneyManager.WEB.Api
         public async Task Update(AccountModel account)
         {
             var accountDTO = _mapper.Map<AccountDTO>(account);
+            accountDTO.CurrencyId = accountDTO.Currency.Id;
             await _accountService.Update(accountDTO);
         }
 

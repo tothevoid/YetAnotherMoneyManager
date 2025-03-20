@@ -1,7 +1,5 @@
 ﻿using MoneyManager.Common;
-using MoneyManager.DAL;
 using System;
-using MoneyManager.DAL.Entities;
 
 namespace MoneyManager.WEB.Model
 {
@@ -11,7 +9,7 @@ namespace MoneyManager.WEB.Model
 
         public double Balance { get; set; }
         
-        public Currency Currency { get; set; }
+        public CurrencyModel Currency { get; set; }
 
         public Guid CurrencyId { get; set; }
     }

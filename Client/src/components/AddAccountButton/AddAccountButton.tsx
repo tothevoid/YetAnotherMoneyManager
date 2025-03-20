@@ -20,14 +20,13 @@ const AddAccountButton: React.FC<AccountProps> = ({ onAdded }) => {
 	};
 
 	const onAccountAdded = async (account: AccountEntity) => {
-		const newAccount = {id: "", name: account.name, balance: Number(account.balance)};
-		const createdAccountId = await createAccount(newAccount);
+		const createdAccountId = await createAccount(account);
 		if (!createdAccountId) {
 			return;
 		}
 
-		newAccount.id = createdAccountId;
-		onAdded(newAccount);
+		account.id = createdAccountId;
+		onAdded(account);
 	};
 
 	const { t } = useTranslation();

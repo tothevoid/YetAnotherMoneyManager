@@ -10,6 +10,7 @@ using MoneyManager.DAL.Entities;
 using MoneyManager.Data;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Bson.Serialization;
+using System.Xml;
 
 namespace MoneyManager.DAL.Database
 {
@@ -38,6 +39,12 @@ namespace MoneyManager.DAL.Database
         private void InitializeDefaultData()
         {
             var currencyCollection = Database.GetCollection<Currency>(nameof(Currency));
+
+            if (currencyCollection.Find(FilterDefinition<Currency>.Empty).Any())
+            {
+                return;
+            }
+
             var defaultCurrencies = new DefaultCurrencies().GetCurrencies();
             currencyCollection.InsertMany(defaultCurrencies);
 

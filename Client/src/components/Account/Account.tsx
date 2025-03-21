@@ -1,12 +1,13 @@
 import { AccountEntity } from '../../models/AccountEntity';
 import { Button, Card, Flex, Icon, Stack, Text } from '@chakra-ui/react';
-import { MdDelete, MdEdit } from "react-icons/md";
+import { MdDelete, MdEdit, MdCompareArrows } from "react-icons/md";
 import { Fragment, useRef } from 'react';
 import AccountModal, { AccountModalRef } from '../../modals/AccountModal/AccountModal';
 import { formatMoneyByCurrencyCulture } from '../../formatters/moneyFormatter';
 import { ConfirmModal, ConfirmModalRef } from '../../modals/ConfirmModal/ConfirmModal';
 import { deleteAccount, updateAccount } from '../../api/accountApi';
 import { useTranslation } from 'react-i18next';
+import AccountBalanceTransferModal, { TransferModalRef } from '../../modals/AccountBalanceTransferModal/AccountBalanceTransferModal';
 
 type Props = {
     account: AccountEntity,
@@ -19,6 +20,11 @@ const Account = (props: Props) => {
 
     const confirmModalRef = useRef<ConfirmModalRef>(null);
     const editModalRef = useRef<AccountModalRef>(null);
+    const transferModalRef = useRef<TransferModalRef>(null);
+
+    const onTransferClicked = () => {
+        transferModalRef.current?.openModal()
+    }
 
     const onEditClicked = () => {
         editModalRef.current?.openModal()
@@ -27,6 +33,10 @@ const Account = (props: Props) => {
     const onDeleteClicked = () => {
         confirmModalRef.current?.openModal()
     };
+
+    const onTransfered = () => {
+
+    }
 
     const onAccountUpdated = async (updatedAccount: AccountEntity) => {
         const isAccountUpdated = await updateAccount(updatedAccount);
@@ -57,6 +67,11 @@ const Account = (props: Props) => {
                         <Text fontWeight={700}>{formatMoneyByCurrencyCulture(balance, currency.name)}</Text>
                     </Stack>
                     <div>
+                        <Button background={'white'} size={'sm'} onClick={onTransferClicked}>
+                            <Icon color='blackAlpha.800'>
+                                <MdCompareArrows/>
+                            </Icon>
+                        </Button>
                         <Button background={'white'} size={'sm'} onClick={onEditClicked}>
                             <Icon color='blackAlpha.800'>
                                 <MdEdit/>
@@ -77,6 +92,7 @@ const Account = (props: Props) => {
             confirmActionName={t("modals_delete_button")}
             ref={confirmModalRef}>
         </ConfirmModal>
+        <AccountBalanceTransferModal from={props.account} ref={transferModalRef} onTransfered={onTransfered}></AccountBalanceTransferModal>
         <AccountModal account={props.account} ref={editModalRef} onSaved={onAccountUpdated}></AccountModal>
     </Fragment>
 };

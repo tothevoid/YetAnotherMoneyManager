@@ -20,6 +20,12 @@
 
     "account_delete_title": "Удалить счёт",
 
+    "account_balance_transfer_modal_title": "Перевести сумму",
+    "account_balance_transfer_modal_from": "Со счёта",
+    "account_balance_transfer_modal_to": "На счёт",
+    "account_balance_transfer_modal_balance": "Сумма",
+    "account_balance_transfer_modal_transfer_button": "Перевести",
+
     "entity_deposit_name_form_title": "Депозит",
     "entity_deposit_name": "Название",
     "entity_deposit_from": "Начало",

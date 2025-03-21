@@ -13,6 +13,7 @@ export const AccountBalanceTransferModalValidationSchema = z.object({
 		name: string()
 	}, {message: "To account is not selected"}),
     balance: z.number().gt(0),
+    fee: z.number().gte(0),
 })
 .refine(({from, to}) => from.id !== to.id, {
     message: "From acount is the same as the to account",

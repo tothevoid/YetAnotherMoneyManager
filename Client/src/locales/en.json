@@ -24,6 +24,7 @@
     "account_balance_transfer_modal_from": "From account",
     "account_balance_transfer_modal_to": "To account",
     "account_balance_transfer_modal_balance": "Balance",
+    "account_balance_transfer_modal_fee": "Transfer fee",
     "account_balance_transfer_modal_transfer_button": "Transfer",
 
     "entity_deposit_name_form_title": "Deposit",

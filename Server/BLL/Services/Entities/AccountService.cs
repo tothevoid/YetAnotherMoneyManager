@@ -5,6 +5,7 @@ using MoneyManager.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MoneyManager.BLL.Services.Entities
 {
@@ -12,12 +13,14 @@ namespace MoneyManager.BLL.Services.Entities
     {
         private readonly IUnitOfWork _db;
         private readonly IRepository<Account> _accountRepo;
+        private readonly IRepository<Transaction> _transactionRepo;
         private readonly IMapper _mapper;
         public AccountService(IUnitOfWork uow, IMapper mapper)
         {
             _db = uow;
             _mapper = mapper;
             _accountRepo = uow.CreateRepository<Account>();
+            _transactionRepo = uow.CreateRepository<Transaction>();
         }
 
         public async Task<IEnumerable<AccountDTO>> GetAll()
@@ -29,7 +32,34 @@ namespace MoneyManager.BLL.Services.Entities
         public async Task Update(AccountDTO accountDTO)
         {
             var account = _mapper.Map<Account>(accountDTO);
-            await _accountRepo.Update(account);
+
+            var currentAccountState = await _accountRepo.GetById(account.Id);
+            if (currentAccountState == null)
+            {
+                return;
+            }
+
+            var tasks = new List<Task>()
+            {
+                _accountRepo.Update(account)
+            };
+
+            var balanceDiff = account.Balance - currentAccountState.Balance;
+            if (Math.Abs(balanceDiff) > 0.0001)
+            {
+                var transaction = new Transaction()
+                {
+                    Account = account,
+                    AccountId = account.Id,
+                    Date = DateTime.UtcNow,
+                    Name = $"{currentAccountState.Balance} => {account.Balance}",
+                    TransactionType = "System",
+                    MoneyQuantity = balanceDiff
+                };
+                tasks.Add(_transactionRepo.Add(transaction));
+            }
+
+            await Task.WhenAll(tasks);
             _db.Commit();
         }
 

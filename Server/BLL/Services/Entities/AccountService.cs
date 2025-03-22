@@ -6,8 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BLL.DTO;
 using MoneyManager.WEB.Model;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MoneyManager.BLL.Services.Entities
 {
@@ -102,6 +102,20 @@ namespace MoneyManager.BLL.Services.Entities
 
             await Task.WhenAll(tasks);
             _db.Commit();
+        }
+
+        public async Task<AccountCurrencySummaryDto[]> GetSummary()
+        {
+            //TODO: Group on db level
+            var accounts = await _accountRepo.GetAll(account => account.Active);
+            var groups = accounts.GroupBy(account => account.CurrencyId)
+                .Select(group => new AccountCurrencySummaryDto()
+                {
+                    Name = group.First().Currency.Name, 
+                    Summary = group.Sum(account => account.Balance)
+                });
+
+            return groups.ToArray();
         }
 
         private Transaction GenerateSystemTransaction(Account account, string title, double balance)

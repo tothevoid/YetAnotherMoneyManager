@@ -2,7 +2,7 @@
 using MoneyManager.DAL;
 using System;
 
-namespace MoneyManager.WEB.Model
+namespace MoneyManager.Model.Common
 {
     public class UpdateAccountModel
     {

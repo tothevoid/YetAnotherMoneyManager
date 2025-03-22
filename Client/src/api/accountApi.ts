@@ -3,6 +3,7 @@ import { Transfer } from "../modals/AccountBalanceTransferModal/AccountBalanceTr
 import { AccountEntity, ServerAccountEntity } from "../models/AccountEntity";
 import { convertToInputDate } from "../utils/DateUtils";
 import { checkPromiseStatus, logPromiseError } from "../utils/PromiseUtils";
+import { AccountCurrencySummary } from "./models/accountsSummary";
 
 const basicUrl = `${config.api.URL}/Account`;
 
@@ -63,6 +64,15 @@ export const transferBalance = async (transfer: Transfer): Promise<boolean> => {
         .catch(logPromiseError)
 
     return result?.ok ?? false;
+}
+
+export const getSummary = async (): Promise<AccountCurrencySummary[]> => {
+    const summaries: AccountCurrencySummary[] = await fetch(`${basicUrl}/GetSummary`, { method: "GET"})
+        .then(checkPromiseStatus)
+        .then((response: Response) => response.json())
+        .catch(logPromiseError)
+
+    return summaries ? summaries: [] as AccountCurrencySummary[];
 }
 
 const prepareServerAccount = (account: AccountEntity): string => {

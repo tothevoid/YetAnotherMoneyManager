@@ -6,9 +6,7 @@ using MoneyManager.BLL.Services.Entities;
 using MoneyManager.WEB.Model;
 using AutoMapper;
 using MoneyManager.BLL.DTO;
-using BLL.Interfaces.Entities;
-using MoneyManager.Model.Charts.Deposit;
-using MoneyManager.DAL.Entities;
+using BLL.DTO;
 
 namespace MoneyManager.WEB.Api
 {
@@ -57,6 +55,14 @@ namespace MoneyManager.WEB.Api
         {
             var transferDto = _mapper.Map<AccountTransferDto>(accountTransfer);
             await _accountService.Transfer(transferDto);
+        }
+
+        [HttpGet(nameof(GetSummary))]
+        public async Task<AccountCurrencySummaryModel[]> GetSummary()
+        {
+            var result =  await _accountService.GetSummary();
+            var summaryModel = _mapper.Map<AccountCurrencySummaryModel[]>(result);
+            return summaryModel;
         }
     }
 }

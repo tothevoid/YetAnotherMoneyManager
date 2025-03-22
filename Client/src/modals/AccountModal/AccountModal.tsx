@@ -78,34 +78,33 @@ const AccountModal = forwardRef<AccountModalRef, AccountProps>((props: AccountPr
 						<Dialog.Title>{t("entity_account_name_form_title")}</Dialog.Title>
 					</Dialog.Header>
 					<Dialog.Body pb={6}>
-					<Field.Root invalid={!!errors.name}>
-						<Field.Label>{t("entity_account_name")}</Field.Label>
-						<Input {...register("name")} autoComplete="off" placeholder='Debit card' />
-						<Field.ErrorText>{errors.name?.message}</Field.ErrorText>
-					</Field.Root>
-
-					<Field.Root mt={4} invalid={!!errors.currency}>
-						<Field.Label>{t("entity_transaction_currency")}</Field.Label>
-						<CollectionSelect name="currency" control={control} placeholder="Select currency"
-							collection={state.currencies} 
-							labelSelector={(currency => currency.name)} 
-							valueSelector={(currency => currency.id)}/>
-						<Field.ErrorText>{errors.currency?.message}</Field.ErrorText>
-					</Field.Root>
-					<Field.Root invalid={!!errors.balance} mt={4}>
-						<Field.Label>{t("entity_account_balance")}</Field.Label>
-						<Input {...register("balance", { valueAsNumber: true })} name="balance" type="number" placeholder='10000' />
-						<Field.ErrorText>{errors.balance?.message}</Field.ErrorText>
-					</Field.Root>
-					<Field.Root invalid={!!errors.createdOn} mt={4}>
-						<Field.Label>{t("entity_account_created_on")}</Field.Label>
-						<DateSelect name="createdOn" control={control}/>
-						<Field.ErrorText>{errors.createdOn?.message}</Field.ErrorText>
-					</Field.Root>
-					<Field.Root invalid={!!errors.active} mt={4}>
-						<CheckboxInput name="active" control={control} title={t("entity_account_active")}/>
-						<Field.ErrorText>{errors.active?.message}</Field.ErrorText>
-					</Field.Root>
+						<Field.Root invalid={!!errors.name}>
+							<Field.Label>{t("entity_account_name")}</Field.Label>
+							<Input {...register("name")} autoComplete="off" placeholder='Debit card' />
+							<Field.ErrorText>{errors.name?.message}</Field.ErrorText>
+						</Field.Root>
+						<Field.Root mt={4} invalid={!!errors.currency}>
+							<Field.Label>{t("entity_transaction_currency")}</Field.Label>
+							<CollectionSelect name="currency" control={control} placeholder="Select currency"
+								collection={state.currencies} 
+								labelSelector={(currency => currency.name)} 
+								valueSelector={(currency => currency.id)}/>
+							<Field.ErrorText>{errors.currency?.message}</Field.ErrorText>
+						</Field.Root>
+						<Field.Root invalid={!!errors.balance} mt={4}>
+							<Field.Label>{t("entity_account_balance")}</Field.Label>
+							<Input {...register("balance", { valueAsNumber: true })} name="balance" type="number" placeholder='10000' />
+							<Field.ErrorText>{errors.balance?.message}</Field.ErrorText>
+						</Field.Root>
+						<Field.Root invalid={!!errors.createdOn} mt={4}>
+							<Field.Label>{t("entity_account_created_on")}</Field.Label>
+							<DateSelect name="createdOn" control={control}/>
+							<Field.ErrorText>{errors.createdOn?.message}</Field.ErrorText>
+						</Field.Root>
+						<Field.Root invalid={!!errors.active} mt={4}>
+							<CheckboxInput name="active" control={control} title={t("entity_account_active")}/>
+							<Field.ErrorText>{errors.active?.message}</Field.ErrorText>
+						</Field.Root>
 					</Dialog.Body>
 					<Dialog.Footer>
 						<Button type="submit" background='purple.600' mr={3}>{t("modals_save_button")}</Button>

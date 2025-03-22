@@ -1,28 +1,36 @@
-import { useEffect, useState } from "react";
-import { getAccounts } from "../../api/accountApi";
+import { Fragment, useEffect, useState } from "react";
+import { getAccounts, getSummary } from "../../api/accountApi";
 import { AccountEntity } from "../../models/AccountEntity";
 import AccountsList from "../../components/AccountsList/AccountsList";
+import { AccountCurrencySummary } from "../../api/models/accountsSummary";
+import { Flex, Text } from "@chakra-ui/react";
+import { formatMoneyByCurrencyCulture } from "../../formatters/moneyFormatter";
+import { useTranslation } from "react-i18next";
 
 interface Props {}
 
 interface State {
     accounts: AccountEntity[]
+    accountCurrencySummaries: AccountCurrencySummary[]
 }
 
 const AccountsPage: React.FC<Props> = () => {
-    const [state, setState] = useState<State>({accounts: []});
+    const [state, setState] = useState<State>({accounts: [], accountCurrencySummaries: []});
+
+    const { t } = useTranslation();
 
     useEffect(() => {
         const initData = async () => {
-            await initAccounts();
+            await requestAccountsData();
         }
         initData();
     }, []);
 
-    const initAccounts = async () => {
+    const requestAccountsData = async () => {
         const accounts = await getAccounts();
+        const accountCurrencySummaries = await getSummary() ?? null;
         setState((currentState) => {
-            return {...currentState, accounts}
+            return {...currentState, accounts, accountCurrencySummaries}
         })
     };
 
@@ -73,10 +81,19 @@ const AccountsPage: React.FC<Props> = () => {
     };
 
     const onReloadAccounts = async () => {
-        await initAccounts();
+        await requestAccountsData();
     }
 
-    return (
+    return (<Fragment>
+        {
+            state.accountCurrencySummaries.length > 0 ?
+                <Flex justifyContent="space-between" alignItems="center" pt={5} pb={5}>
+                    <Text fontSize='3xl'>{t("accounts_page_summary_title")}: {state.accountCurrencySummaries.map(currency => 
+                        formatMoneyByCurrencyCulture(currency.summary, currency.name)).join(" | ") }
+                    </Text>
+                </Flex>:
+                <Fragment/>
+        }
         <AccountsList
             onReloadAccounts={onReloadAccounts}
             onAddAccountCallback = {onAccountCreated}
@@ -84,6 +101,7 @@ const AccountsPage: React.FC<Props> = () => {
             onDeleteAccountCallback = {onAccountDeleted} 
             accounts = {state.accounts}>
         </AccountsList>
+    </Fragment>   
     )
 }
 

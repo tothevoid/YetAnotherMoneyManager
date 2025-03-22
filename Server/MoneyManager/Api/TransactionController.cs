@@ -6,6 +6,7 @@ using MoneyManager.BLL.Services.Entities;
 using MoneyManager.WEB.Model;
 using AutoMapper;
 using MoneyManager.BLL.DTO;
+using MoneyManager.Model.Common;
 
 namespace MoneyManager.WEB.Api
 {

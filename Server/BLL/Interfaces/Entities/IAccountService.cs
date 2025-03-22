@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MoneyManager.WEB.Model;
+using BLL.DTO;
 
 namespace MoneyManager.BLL.Services.Entities
 {
@@ -13,5 +14,6 @@ namespace MoneyManager.BLL.Services.Entities
         Task Update(AccountDTO accountDTO);
         Task Delete(Guid id);
         Task Transfer(AccountTransferDto transferDto);
+        Task<AccountCurrencySummaryDto[]> GetSummary();
     }
 }

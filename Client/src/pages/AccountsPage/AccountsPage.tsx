@@ -3,7 +3,7 @@ import { getAccounts, getSummary } from "../../api/accountApi";
 import { AccountEntity } from "../../models/AccountEntity";
 import AccountsList from "../../components/AccountsList/AccountsList";
 import { AccountCurrencySummary } from "../../api/models/accountsSummary";
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, ProgressPropsProvider, Text } from "@chakra-ui/react";
 import { formatMoneyByCurrencyCulture } from "../../formatters/moneyFormatter";
 import { useTranslation } from "react-i18next";
 
@@ -26,11 +26,20 @@ const AccountsPage: React.FC<Props> = () => {
         initData();
     }, []);
 
+    useEffect(() => {
+        const loadSummaries = async () => {
+            const accountCurrencySummaries = await getSummary() ?? null;
+            setState((currentState) => {
+                return {...currentState, accountCurrencySummaries}
+            })
+        }
+        loadSummaries();
+    }, [state.accounts]);
+
     const requestAccountsData = async () => {
         const accounts = await getAccounts();
-        const accountCurrencySummaries = await getSummary() ?? null;
         setState((currentState) => {
-            return {...currentState, accounts, accountCurrencySummaries}
+            return {...currentState, accounts}
         })
     };
 

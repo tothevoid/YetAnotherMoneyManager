@@ -7,7 +7,7 @@ import { TransactionFormInput, TransactionValidationSchema } from './Transaction
 import { Controller, useForm } from 'react-hook-form';
 import { Select } from "chakra-react-select"
 import { useTranslation } from 'react-i18next';
-import DateSelect from '../../controls/DateSelect';
+import DateSelect from '../../controls/DateSelect/DateSelect';
 
 type Props = {
 	accounts: AccountEntity[],

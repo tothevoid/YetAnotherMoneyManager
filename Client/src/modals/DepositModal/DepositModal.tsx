@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from "react-hook-form";
 import { DepositValidationSchema, DepositFormInput } from "./DepositValidationSchema";
 import { useTranslation } from "react-i18next";
-import DateSelect from "../../controls/DateSelect";
+import DateSelect from "../../controls/DateSelect/DateSelect";
 
 type Props = {
     deposit?: DepositEntity | null,

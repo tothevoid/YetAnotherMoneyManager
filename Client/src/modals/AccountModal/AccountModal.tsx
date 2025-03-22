@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { getCurrencies } from "../../api/currencyApi";
 import { CurrencyEntity } from "../../models/CurrencyEntity";
 import { Select } from "chakra-react-select";
-import DateSelect from "../../controls/DateSelect";
+import DateSelect from "../../controls/DateSelect/DateSelect";
 
 type AccountProps = {
 	account?: AccountEntity | null,

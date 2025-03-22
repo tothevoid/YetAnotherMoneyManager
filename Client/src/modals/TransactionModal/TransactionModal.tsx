@@ -2,13 +2,13 @@ import { forwardRef, useImperativeHandle } from 'react'
 import "./TransactionModal.scss"
 import { TransactionEntity } from '../../models/TransactionEntity';
 import { AccountEntity } from '../../models/AccountEntity';
-import DatePicker from "react-datepicker";
 import { Field, Button, Input, useDisclosure, Dialog, Portal, CloseButton} from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TransactionFormInput, TransactionValidationSchema } from './TransactionValidationSchema';
 import { Controller, useForm } from 'react-hook-form';
 import { Select } from "chakra-react-select"
 import { useTranslation } from 'react-i18next';
+import DateSelect from '../../controls/DateSelect';
 
 type Props = {
 	accounts: AccountEntity[],
@@ -112,19 +112,7 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 					</Field.Root>
 					<Field.Root mt={4} invalid={!!errors.date}>
 						<Field.Label>{t("entity_transaction_date")}</Field.Label>
-						<Controller
-							name="date"
-							control={control}
-							render={({ field: {onChange, value} }) => (
-								<DatePicker
-								wrapperClassName="transaction-datepicker"
-								selected={value}
-								onChange={onChange}
-								dateFormat="dd.MM.yyyy"
-								placeholderText="Select date"
-								customInput={<Input className='transaction-datepicker'/>}/>
-							)}
-							/>
+						<DateSelect name="date" control={control}/>
 						<Field.ErrorText>{errors.date?.message}</Field.ErrorText>
 					</Field.Root>
 					<Field.Root mt={4} invalid={!!errors.account}>

@@ -93,16 +93,16 @@ const AccountBalanceTransferModal = forwardRef<TransferModalRef, AccountProps>((
                             name="from"
                             control={control}
                             render={({ field }) => (
-                                    <Select
-                                        {...field}
-                                        getOptionLabel={(e) => e.name}
-                                        getOptionValue={(e) => e.id}
-                                        options={state.accounts}
-                                        isClearable
-                                        placeholder='Select account'>
-                                    </Select>
-                                )}
-                            />
+                                <Select
+                                    {...field}
+                                    getOptionLabel={(e) => e.name}
+                                    getOptionValue={(e) => e.id}
+                                    options={state.accounts}
+                                    isClearable
+                                    placeholder='Select account'>
+                                </Select>
+                            )}
+                        />
                         <Field.ErrorText>{errors.from?.message}</Field.ErrorText>
                     </Field.Root>
 

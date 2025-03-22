@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { getCurrencies } from "../../api/currencyApi";
 import { CurrencyEntity } from "../../models/CurrencyEntity";
 import { Select } from "chakra-react-select";
-import DatePicker from "react-datepicker";
+import DateSelect from "../../controls/DateSelect";
 
 type AccountProps = {
 	account?: AccountEntity | null,
@@ -42,7 +42,6 @@ const AccountModal = forwardRef<AccountModalRef, AccountProps>((props: AccountPr
 
 	const { open, onOpen, onClose } = useDisclosure()
 
-	debugger;
 	const { register, handleSubmit, control, formState: { errors }} = useForm<AccountFormInput>({
         resolver: zodResolver(AccountValidationSchema),
         mode: "onBlur",
@@ -109,19 +108,7 @@ const AccountModal = forwardRef<AccountModalRef, AccountProps>((props: AccountPr
 					</Field.Root>
 					<Field.Root invalid={!!errors.createdOn} mt={4}>
 						<Field.Label>{t("entity_account_created_on")}</Field.Label>
-						<Controller
-							name="createdOn"
-							control={control}
-							render={({ field: {onChange, value} }) => (
-								<DatePicker
-									wrapperClassName="deposit-datepicker"
-									selected={value}
-									onChange={onChange}
-									dateFormat="dd.MM.yyyy"
-									placeholderText="Select to date"
-									customInput={<Input/>}/>
-							)}
-							/>
+						<DateSelect name="createdOn" control={control}/>
 						<Field.ErrorText>{errors.createdOn?.message}</Field.ErrorText>
 					</Field.Root>
 					<Field.Root invalid={!!errors.active} mt={4}>

@@ -1,13 +1,11 @@
-import "./DepositModal.scss"
-
 import { forwardRef, useImperativeHandle } from 'react'
-import DatePicker from "react-datepicker";
 import { Button, Field, Input, Dialog, useDisclosure, Flex, Portal, CloseButton} from '@chakra-ui/react';
 import { DepositEntity } from '../../models/DepositEntity';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { DepositValidationSchema, DepositFormInput } from "./DepositValidationSchema";
 import { useTranslation } from "react-i18next";
+import DateSelect from "../../controls/DateSelect";
 
 type Props = {
     deposit?: DepositEntity | null,
@@ -73,37 +71,13 @@ const DepositModal = forwardRef<DepositModalRef, Props>((props: Props, ref)=> {
                         <Flex gap={4} direction="row">
                             <Field.Root invalid={!!errors.from} mt={4}>
                                 <Field.Label>{t("entity_deposit_from")}</Field.Label>
-                                <Controller
-                                    name="from"
-                                    control={control}
-                                    render={({ field: {onChange, value} }) => (
-                                        <DatePicker
-                                        wrapperClassName="deposit-datepicker"
-                                        selected={value}
-                                        onChange={onChange}
-                                        dateFormat="dd.MM.yyyy"
-                                        placeholderText="Select from date"
-                                        customInput={<Input/>}/>
-                                    )}
-                                    />
+                                <DateSelect name="from" control={control}/>
                                 <Field.ErrorText>{errors.from?.message}</Field.ErrorText>
                             </Field.Root>
                             <Field.Root invalid={!!errors.to} mt={4}>
                                 <Field.Label>{t("entity_deposit_to")}</Field.Label>
                                 {/* TODO Fix date field duplication */}
-                                <Controller
-                                    name="to"
-                                    control={control}
-                                    render={({ field: {onChange, value} }) => (
-                                        <DatePicker
-                                        wrapperClassName="deposit-datepicker"
-                                        selected={value}
-                                        onChange={onChange}
-                                        dateFormat="dd.MM.yyyy"
-                                        placeholderText="Select to date"
-                                        customInput={<Input/>}/>
-                                    )}
-                                    />
+                                <DateSelect name="to" control={control}/>
                                 <Field.ErrorText>{errors.to?.message}</Field.ErrorText>
                             </Field.Root>
                         </Flex>

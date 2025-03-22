@@ -6,6 +6,9 @@ using MoneyManager.BLL.Services.Entities;
 using MoneyManager.WEB.Model;
 using AutoMapper;
 using MoneyManager.BLL.DTO;
+using BLL.Interfaces.Entities;
+using MoneyManager.Model.Charts.Deposit;
+using MoneyManager.DAL.Entities;
 
 namespace MoneyManager.WEB.Api
 {
@@ -48,5 +51,12 @@ namespace MoneyManager.WEB.Api
         [HttpDelete]
         public async Task Delete(Guid id) =>
             await _accountService.Delete(id);
+
+        [HttpPost(nameof(Transfer))]
+        public async Task Transfer(AccountTransferModel accountTransfer)
+        {
+            var transferDto = _mapper.Map<AccountTransferDto>(accountTransfer);
+            await _accountService.Transfer(transferDto);
+        }
     }
 }

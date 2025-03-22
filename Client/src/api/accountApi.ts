@@ -1,4 +1,5 @@
 import config from "../config";
+import { Transfer } from "../modals/AccountBalanceTransferModal/AccountBalanceTransferModal";
 import { AccountEntity } from "../models/AccountEntity";
 import { checkPromiseStatus, logPromiseError } from "../utils/PromiseUtils";
 
@@ -40,6 +41,25 @@ export const deleteAccount = async (accountId: string): Promise<boolean> => {
 
     const url = `${basicUrl}?id=${accountId}`;
     const result = await fetch(url, { method: "DELETE"})
+        .then(checkPromiseStatus)
+        .catch(logPromiseError)
+
+    return result?.ok ?? false;
+}
+
+export const transferBalance = async (transfer: Transfer): Promise<boolean> => {
+    if (!transfer) {
+        return false;
+    }
+
+    const requestTransfer = {
+        ...transfer,
+        from: transfer.from.id,
+        to: transfer.to.id,
+    }
+
+    const result = await fetch(`${basicUrl}/Transfer`, { method: "POST", body: JSON.stringify(requestTransfer),  
+        headers: {"Content-Type": "application/json"}})
         .then(checkPromiseStatus)
         .catch(logPromiseError)
 

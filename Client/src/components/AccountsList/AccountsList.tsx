@@ -13,6 +13,7 @@ const calculateTotal = (items: AccountEntity[]) => {
 
 type Props = {
 	accounts: AccountEntity[],
+	onReloadAccounts: () => void,
 	onAddAccountCallback: (account: AccountEntity) => void,
 	onDeleteAccountCallback: (account: AccountEntity) => void,
 	onUpdateAccountCallback: (account: AccountEntity) => void
@@ -35,7 +36,7 @@ const AccountsList: React.FC<Props> = (props) => {
 			<SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(300px, 3fr))'>
 				{
 				props.accounts.map((account: AccountEntity) => {
-					return <Account account={account} onEditCallback={onUpdateAccountCallback} 
+					return <Account onReloadAccounts={props.onReloadAccounts} account={account} onEditCallback={onUpdateAccountCallback} 
 						onDeleteCallback={onDeleteAccountCallback} key={account.id}/>
 				})
 				}

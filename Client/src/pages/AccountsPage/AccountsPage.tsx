@@ -72,8 +72,13 @@ const AccountsPage: React.FC<Props> = () => {
         });
     };
 
+    const onReloadAccounts = async () => {
+        await initAccounts();
+    }
+
     return (
         <AccountsList
+            onReloadAccounts={onReloadAccounts}
             onAddAccountCallback = {onAccountCreated}
             onUpdateAccountCallback = {onAccountUpdated}
             onDeleteAccountCallback = {onAccountDeleted} 

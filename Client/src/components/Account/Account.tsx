@@ -12,7 +12,8 @@ import AccountBalanceTransferModal, { TransferModalRef } from '../../modals/Acco
 type Props = {
     account: AccountEntity,
     onDeleteCallback: (account: AccountEntity) => void,
-    onEditCallback: (account: AccountEntity) => void
+    onEditCallback: (account: AccountEntity) => void,
+    onReloadAccounts: () => void
 }
 
 const Account = (props: Props) => {
@@ -35,7 +36,7 @@ const Account = (props: Props) => {
     };
 
     const onTransfered = () => {
-
+        props.onReloadAccounts();
     }
 
     const onAccountUpdated = async (updatedAccount: AccountEntity) => {

@@ -4,7 +4,9 @@ using MoneyManager.DAL.Entities;
 using MoneyManager.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using MoneyManager.WEB.Model;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MoneyManager.BLL.Services.Entities
@@ -47,15 +49,8 @@ namespace MoneyManager.BLL.Services.Entities
             var balanceDiff = account.Balance - currentAccountState.Balance;
             if (Math.Abs(balanceDiff) > 0.0001)
             {
-                var transaction = new Transaction()
-                {
-                    Account = account,
-                    AccountId = account.Id,
-                    Date = DateTime.UtcNow,
-                    Name = $"{currentAccountState.Balance} => {account.Balance}",
-                    TransactionType = "System",
-                    MoneyQuantity = balanceDiff
-                };
+                var transaction = GenerateSystemTransaction(account,
+                    $"{currentAccountState.Balance} => {account.Balance}", balanceDiff);
                 tasks.Add(_transactionRepo.Add(transaction));
             }
 
@@ -76,6 +71,50 @@ namespace MoneyManager.BLL.Services.Entities
         {
             await _accountRepo.Delete(id);
             _db.Commit();
+        }
+
+        public async Task Transfer(AccountTransferDto transferDto)
+        {
+            var accounts = (await _accountRepo.GetAll(account => 
+                account.Id == transferDto.From || account.Id == transferDto.To)).ToList();
+            var fromAccount = accounts.FirstOrDefault(account => account.Id == transferDto.From);
+            var toAccount = accounts.FirstOrDefault(account => account.Id == transferDto.To);
+
+            if (fromAccount == null || toAccount == null)
+            {
+                throw new ArgumentException(nameof(transferDto));
+            }
+
+            fromAccount.Balance -= (transferDto.Balance + transferDto.Fee);
+            toAccount.Balance += transferDto.Balance;
+
+            var fromAccountTransaction = GenerateSystemTransaction(fromAccount, $"-{transferDto.Balance} => {toAccount.Name} (Fee: {transferDto.Fee})", 
+                -1 * transferDto.Balance - transferDto.Fee);
+            var toAccountTransaction = GenerateSystemTransaction(fromAccount, $"+{transferDto.Balance} <= {fromAccount.Name}", transferDto.Balance);
+
+            var tasks = new List<Task>()
+            {
+                _accountRepo.Update(fromAccount),
+                _accountRepo.Update(toAccount),
+                _transactionRepo.Add(fromAccountTransaction),
+                _transactionRepo.Add(toAccountTransaction),
+            };
+
+            await Task.WhenAll(tasks);
+            _db.Commit();
+        }
+
+        private Transaction GenerateSystemTransaction(Account account, string title, double balance)
+        {
+            return new Transaction()
+            {
+                Account = account,
+                AccountId = account.Id,
+                Date = DateTime.UtcNow,
+                Name = title,
+                TransactionType = "System",
+                MoneyQuantity = balance
+            };
         }
     }
 }

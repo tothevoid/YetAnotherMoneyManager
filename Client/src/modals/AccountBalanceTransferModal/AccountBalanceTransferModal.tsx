@@ -6,18 +6,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AccountFormInput, AccountBalanceTransferModalValidationSchema } from "./AccountBalanceTransferModalValidationSchema";
 import { useTranslation } from "react-i18next";
 import { Select } from "chakra-react-select";
-import { getAccounts } from "../../api/accountApi";
+import { getAccounts, transferBalance } from "../../api/accountApi";
 
 type AccountProps = {
     from?: AccountEntity | null,
-    onTransfered: (transfer: Transfer) => void;
+    onTransfered: () => void;
 };
 
 type State = {
     accounts: AccountEntity[]
 }
 
-type Transfer = {
+export type Transfer = {
     from: AccountEntity,
     to: AccountEntity,
     balance: number
@@ -63,8 +63,14 @@ const AccountBalanceTransferModal = forwardRef<TransferModalRef, AccountProps>((
     }));
 
 
-    const onSubmit = (transfer: Transfer) => {
-        props.onTransfered({...transfer} as Transfer);
+    const onSubmit = async (transfer: Transfer) => {
+        const isTransfered = await transferBalance(transfer)
+
+        if (!isTransfered) {
+            return;
+        }
+        
+        props.onTransfered();
         onClose();
     }
 

@@ -22,6 +22,7 @@ namespace MoneyManager.WEB.Mappings
             CreateMap<DepositMonthSummaryDTO, DepositMonthSummary>();
             CreateMap<DepositPaymentDTO, DepositPayment>();
             CreateMap<PeriodPaymentDTO, PeriodPayment>();
+            CreateMap<AccountTransferModel, AccountTransferDto>();
         }
     }
 }

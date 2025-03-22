@@ -13,6 +13,10 @@ namespace MoneyManager.DAL.Entities
 
         public Guid CurrencyId { get; set; }
 
+        public DateOnly CreatedOn { get; set; }
+
+        public bool Active { get; set; }
+
         public Account AssignCurrency(Currency currency)
         {
             Currency = currency;

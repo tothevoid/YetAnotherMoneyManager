@@ -12,5 +12,9 @@ namespace MoneyManager.WEB.Model
         public CurrencyModel Currency { get; set; }
 
         public Guid CurrencyId { get; set; }
+
+        public DateOnly CreatedOn { get; set; }
+
+        public bool Active { get; set; }
     }
 }

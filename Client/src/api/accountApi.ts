@@ -1,23 +1,22 @@
 import config from "../config";
 import { Transfer } from "../modals/AccountBalanceTransferModal/AccountBalanceTransferModal";
-import { AccountEntity } from "../models/AccountEntity";
+import { AccountEntity, ServerAccountEntity } from "../models/AccountEntity";
+import { convertToInputDate } from "../utils/DateUtils";
 import { checkPromiseStatus, logPromiseError } from "../utils/PromiseUtils";
 
 const basicUrl = `${config.api.URL}/Account`;
 
 export const getAccounts = async (): Promise<AccountEntity[]> =>  {
-    const accounts = await fetch(basicUrl, {method: "GET"})
+    const accounts: ServerAccountEntity[] = await fetch(basicUrl, {method: "GET"})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
         .catch(logPromiseError);
 
-    return accounts ? accounts : [] as AccountEntity[];
+    return accounts ? accounts.map(prepareClientAccount) : [] as AccountEntity[];
 }
 
 export const createAccount = async (newAccount: AccountEntity): Promise<string | void> => {
-    const {id, ...fieldsExceptId} = newAccount;
-
-    const addedAccountId: string | void = await fetch(basicUrl, { method: "PUT", body: JSON.stringify(fieldsExceptId), 
+    const addedAccountId: string | void = await fetch(basicUrl, { method: "PUT", body: prepareServerAccount(newAccount), 
         headers: {"Content-Type": "application/json"}})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
@@ -26,7 +25,7 @@ export const createAccount = async (newAccount: AccountEntity): Promise<string |
 }
 
 export const updateAccount = async (modifiedAccount: AccountEntity): Promise<boolean> => {
-    const result = await fetch(basicUrl, { method: "PATCH", body: JSON.stringify(modifiedAccount),  
+    const result = await fetch(basicUrl, { method: "PATCH", body: prepareServerAccount(modifiedAccount),  
         headers: {"Content-Type": "application/json"}})
         .then(checkPromiseStatus)
         .catch(logPromiseError)
@@ -64,4 +63,19 @@ export const transferBalance = async (transfer: Transfer): Promise<boolean> => {
         .catch(logPromiseError)
 
     return result?.ok ?? false;
+}
+
+const prepareServerAccount = (account: AccountEntity): string => {
+    const serverDeposit: ServerAccountEntity = {...account,
+        // .NET DateOnly cast
+        createdOn: convertToInputDate(account.createdOn)
+    };
+    return JSON.stringify(serverDeposit);
+}
+
+const prepareClientAccount = (account: ServerAccountEntity): AccountEntity => {
+    const serverDeposit: AccountEntity = {...account,
+        createdOn: new Date(account.createdOn)
+    };
+    return serverDeposit
 }

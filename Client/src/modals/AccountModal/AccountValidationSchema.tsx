@@ -1,13 +1,15 @@
-import { boolean, string, z } from 'zod';
+import {  z } from 'zod';
 
 export type AccountFormInput = z.infer<typeof AccountValidationSchema>;
 
 export const AccountValidationSchema = z.object({
-	id: string().optional(),
+	id: z.string().optional(),
 	name: z.string().min(1),
 	balance: z.number(),
+	active: z.boolean(),
+	createdOn: z.date(),
 	currency: z.object({
-		id: string().nonempty({message: "Currency is not selected"}),
-		name: string()
+		id: z.string().nonempty({message: "Currency is not selected"}),
+		name: z.string()
 	}, {message: "Currency is not selected"}),
 })

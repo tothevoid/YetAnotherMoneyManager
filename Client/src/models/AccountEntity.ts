@@ -1,8 +1,17 @@
 import { CurrencyEntity } from "./CurrencyEntity"
 
-export type AccountEntity = {
+interface AccountCommon {
     id: string,
     name: string,
     balance: number,
-    currency: CurrencyEntity
+    currency: CurrencyEntity,
+    active: boolean,
+}
+
+export interface AccountEntity extends AccountCommon {
+    createdOn: Date
+}
+
+export interface ServerAccountEntity extends AccountCommon {
+    createdOn: string
 }

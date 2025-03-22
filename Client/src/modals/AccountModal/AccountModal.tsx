@@ -1,4 +1,4 @@
-import { Button, CloseButton, Dialog, Field, Input, Portal, useDisclosure} from "@chakra-ui/react"
+import { Button, Checkbox, CloseButton, Dialog, Field, Input, Portal, useDisclosure} from "@chakra-ui/react"
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react"
 import { AccountEntity } from "../../models/AccountEntity";
 import { Controller, useForm } from "react-hook-form";
@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { getCurrencies } from "../../api/currencyApi";
 import { CurrencyEntity } from "../../models/CurrencyEntity";
 import { Select } from "chakra-react-select";
+import DatePicker from "react-datepicker";
 
 type AccountProps = {
 	account?: AccountEntity | null,
@@ -41,6 +42,7 @@ const AccountModal = forwardRef<AccountModalRef, AccountProps>((props: AccountPr
 
 	const { open, onOpen, onClose } = useDisclosure()
 
+	debugger;
 	const { register, handleSubmit, control, formState: { errors }} = useForm<AccountFormInput>({
         resolver: zodResolver(AccountValidationSchema),
         mode: "onBlur",
@@ -48,7 +50,9 @@ const AccountModal = forwardRef<AccountModalRef, AccountProps>((props: AccountPr
 			id: props.account?.id ?? crypto.randomUUID(),
 			name: props.account?.name ?? "",
 			balance: props.account?.balance ?? 0,
-			currency: props.account?.currency
+			currency: props.account?.currency,
+			active: props.account?.active ?? true,
+			createdOn: props.account?.createdOn ?? new Date()
         }
     });
 
@@ -98,17 +102,42 @@ const AccountModal = forwardRef<AccountModalRef, AccountProps>((props: AccountPr
 							/>
 						<Field.ErrorText>{errors.currency?.message}</Field.ErrorText>
 					</Field.Root>
-		
 					<Field.Root invalid={!!errors.balance} mt={4}>
 						<Field.Label>{t("entity_account_balance")}</Field.Label>
 						<Input {...register("balance", { valueAsNumber: true })} name="balance" type="number" placeholder='10000' />
 						<Field.ErrorText>{errors.balance?.message}</Field.ErrorText>
 					</Field.Root>
-
-					{/* <Field.Root mt={4}>
-						<Field.Label>Currency</Field.Label>
-						<Input placeholder='10000' />
-					</Field.Root> */}
+					<Field.Root invalid={!!errors.createdOn} mt={4}>
+						<Field.Label>{t("entity_account_created_on")}</Field.Label>
+						<Controller
+							name="createdOn"
+							control={control}
+							render={({ field: {onChange, value} }) => (
+								<DatePicker
+									wrapperClassName="deposit-datepicker"
+									selected={value}
+									onChange={onChange}
+									dateFormat="dd.MM.yyyy"
+									placeholderText="Select to date"
+									customInput={<Input/>}/>
+							)}
+							/>
+						<Field.ErrorText>{errors.createdOn?.message}</Field.ErrorText>
+					</Field.Root>
+					<Field.Root invalid={!!errors.active} mt={4}>
+						<Controller
+							name="active"
+							control={control}
+							render={({ field: {onChange, value} }) => (
+								<Checkbox.Root checked={value} onCheckedChange={(data) => {onChange(data.checked)}} variant="solid">
+									<Checkbox.HiddenInput />
+									<Checkbox.Control />
+									<Checkbox.Label>{t("entity_account_active")}</Checkbox.Label>
+								</Checkbox.Root>
+							)}
+						/>
+						<Field.ErrorText>{errors.active?.message}</Field.ErrorText>
+					</Field.Root>
 					</Dialog.Body>
 					<Dialog.Footer>
 						<Button type="submit" background='purple.600' mr={3}>{t("modals_save_button")}</Button>
@@ -123,5 +152,4 @@ const AccountModal = forwardRef<AccountModalRef, AccountProps>((props: AccountPr
 		</Dialog.Root>
 	)
 })
-
 export default AccountModal

@@ -1,5 +1,4 @@
 import { forwardRef, useImperativeHandle } from 'react'
-import "./TransactionModal.scss"
 import { TransactionEntity } from '../../models/TransactionEntity';
 import { AccountEntity } from '../../models/AccountEntity';
 import { Field, Button, Input, useDisclosure, Dialog, Portal, CloseButton} from '@chakra-ui/react';

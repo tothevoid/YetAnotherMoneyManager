@@ -1,12 +1,12 @@
 import { Button, CloseButton, Dialog, Field, Input, Portal, useDisclosure} from "@chakra-ui/react"
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react"
 import { AccountEntity } from "../../models/AccountEntity";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AccountFormInput, AccountBalanceTransferModalValidationSchema } from "./AccountBalanceTransferModalValidationSchema";
 import { useTranslation } from "react-i18next";
-import { Select } from "chakra-react-select";
 import { getAccounts, transferBalance } from "../../api/accountApi";
+import CollectionSelect from "../../controls/CollectionSelect/CollectionSelect";
 
 type AccountProps = {
     from?: AccountEntity | null,
@@ -89,39 +89,19 @@ const AccountBalanceTransferModal = forwardRef<TransferModalRef, AccountProps>((
 
                     <Field.Root mt={4} invalid={!!errors.from}>
                         <Field.Label>{t("account_balance_transfer_modal_from")}</Field.Label>
-                        <Controller
-                            name="from"
-                            control={control}
-                            render={({ field }) => (
-                                <Select
-                                    {...field}
-                                    getOptionLabel={(e) => e.name}
-                                    getOptionValue={(e) => e.id}
-                                    options={state.accounts}
-                                    isClearable
-                                    placeholder='Select account'>
-                                </Select>
-                            )}
-                        />
+                        <CollectionSelect name="from" control={control} placeholder="Select sender account"
+                            collection={state.accounts} 
+                            labelSelector={(account => account.name)} 
+                            valueSelector={(account => account.id)}/>
                         <Field.ErrorText>{errors.from?.message}</Field.ErrorText>
                     </Field.Root>
 
                     <Field.Root mt={4} invalid={!!errors.to}>
                         <Field.Label>{t("account_balance_transfer_modal_to")}</Field.Label>
-                        <Controller
-                            name="to"
-                            control={control}
-                            render={({ field }) => (
-                                    <Select
-                                        {...field}
-                                        getOptionLabel={(e) => e.name}
-                                        getOptionValue={(e) => e.id}
-                                        options={state.accounts}
-                                        isClearable
-                                        placeholder='Select account'>
-                                    </Select>
-                                )}
-                            />
+                        <CollectionSelect name="to" control={control} placeholder="Select recepient account"
+                            collection={state.accounts} 
+                            labelSelector={(account => account.name)} 
+                            valueSelector={(account => account.id)}/>
                         <Field.ErrorText>{errors.to?.message}</Field.ErrorText>
                     </Field.Root>
         

@@ -4,10 +4,10 @@ import { AccountEntity } from '../../models/AccountEntity';
 import { Field, Button, Input, useDisclosure, Dialog, Portal, CloseButton} from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TransactionFormInput, TransactionValidationSchema } from './TransactionValidationSchema';
-import { Controller, useForm } from 'react-hook-form';
-import { Select } from "chakra-react-select"
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import DateSelect from '../../controls/DateSelect/DateSelect';
+import CollectionSelect from '../../controls/CollectionSelect/CollectionSelect';
 
 type Props = {
 	accounts: AccountEntity[],
@@ -89,20 +89,10 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 					</Field.Root>
 					<Field.Root mt={4}>
 						<Field.Label>{t("entity_transaction_direction")}</Field.Label>
-						<Controller
-							name="direction"
-							control={control}
-							render={({ field }) => (
-									<Select
-										{...field}
-										getOptionLabel={(e) => e.label}
-										getOptionValue={(e) => e.value}
-										options={Object.values(transactionOptions)}
-										isClearable
-										placeholder='Select source'>
-									</Select>
-								)}
-							/>
+						<CollectionSelect name="direction" control={control} placeholder="Select direction"
+							collection={Object.values(transactionOptions)} 
+							labelSelector={(currency => currency.label)} 
+							valueSelector={(currency => currency.value)}/>
 					</Field.Root>
 					<Field.Root mt={4} invalid={!!errors.moneyQuantity}>
 						<Field.Label>{t("entity_transaction_money_quantity")}</Field.Label>
@@ -116,20 +106,10 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 					</Field.Root>
 					<Field.Root mt={4} invalid={!!errors.account}>
 						<Field.Label>{t("entity_transaction_account_source")}</Field.Label>
-						<Controller
-							name="account"
-							control={control}
-							render={({ field }) => (
-									<Select
-										{...field}
-										getOptionLabel={(e) => e.name}
-										getOptionValue={(e) => e.id}
-										options={props.accounts}
-										isClearable
-										placeholder='Select source'>
-									</Select>
-								)}
-							/>
+						<CollectionSelect name="account" control={control} placeholder="Select account"
+							collection={props.accounts} 
+							labelSelector={(currency => currency.name)} 
+							valueSelector={(currency => currency.id)}/>
 						<Field.ErrorText>{errors.account?.message}</Field.ErrorText>
 					</Field.Root>
 					<Field.Root mt={4} invalid={!!errors.transactionType}>

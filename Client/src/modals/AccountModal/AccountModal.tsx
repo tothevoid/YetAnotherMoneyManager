@@ -7,8 +7,8 @@ import { AccountFormInput, AccountValidationSchema } from "./AccountValidationSc
 import { useTranslation } from "react-i18next";
 import { getCurrencies } from "../../api/currencyApi";
 import { CurrencyEntity } from "../../models/CurrencyEntity";
-import { Select } from "chakra-react-select";
 import DateSelect from "../../controls/DateSelect/DateSelect";
+import CollectionSelect from "../../controls/CollectionSelect/CollectionSelect";
 
 type AccountProps = {
 	account?: AccountEntity | null,
@@ -85,20 +85,10 @@ const AccountModal = forwardRef<AccountModalRef, AccountProps>((props: AccountPr
 
 					<Field.Root mt={4} invalid={!!errors.currency}>
 						<Field.Label>{t("entity_transaction_currency")}</Field.Label>
-						<Controller
-							name="currency"
-							control={control}
-							render={({ field }) => (
-									<Select
-										{...field}
-										getOptionLabel={(e) => e.name}
-										getOptionValue={(e) => e.id}
-										options={state.currencies}
-										isClearable
-										placeholder='Select source'>
-									</Select>
-								)}
-							/>
+						<CollectionSelect name="currency" control={control} placeholder="Select currency"
+							collection={state.currencies} 
+							labelSelector={(currency => currency.name)} 
+							valueSelector={(currency => currency.id)}/>
 						<Field.ErrorText>{errors.currency?.message}</Field.ErrorText>
 					</Field.Root>
 					<Field.Root invalid={!!errors.balance} mt={4}>

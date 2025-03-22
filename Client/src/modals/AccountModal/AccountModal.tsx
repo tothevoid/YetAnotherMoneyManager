@@ -9,6 +9,7 @@ import { getCurrencies } from "../../api/currencyApi";
 import { CurrencyEntity } from "../../models/CurrencyEntity";
 import DateSelect from "../../controls/DateSelect/DateSelect";
 import CollectionSelect from "../../controls/CollectionSelect/CollectionSelect";
+import CheckboxInput from "../../controls/CheckboxInput/CheckboxInput";
 
 type AccountProps = {
 	account?: AccountEntity | null,
@@ -102,17 +103,7 @@ const AccountModal = forwardRef<AccountModalRef, AccountProps>((props: AccountPr
 						<Field.ErrorText>{errors.createdOn?.message}</Field.ErrorText>
 					</Field.Root>
 					<Field.Root invalid={!!errors.active} mt={4}>
-						<Controller
-							name="active"
-							control={control}
-							render={({ field: {onChange, value} }) => (
-								<Checkbox.Root checked={value} onCheckedChange={(data) => {onChange(data.checked)}} variant="solid">
-									<Checkbox.HiddenInput />
-									<Checkbox.Control />
-									<Checkbox.Label>{t("entity_account_active")}</Checkbox.Label>
-								</Checkbox.Root>
-							)}
-						/>
+						<CheckboxInput name="active" control={control} title={t("entity_account_active")}/>
 						<Field.ErrorText>{errors.active?.message}</Field.ErrorText>
 					</Field.Root>
 					</Dialog.Body>

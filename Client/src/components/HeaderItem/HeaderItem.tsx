@@ -8,7 +8,7 @@ type Props = {
 
 const HeaderItem = (props: Props) => {
     const {title} = props;
-    return <Link href={props.path} className="header-item">{title}</Link>
+    return <Link color="text_primary" href={props.path} className="header-item">{title}</Link>
 }
 
 export default HeaderItem;

@@ -11,7 +11,7 @@ export const darkTheme = createSystem(defaultConfig, {
                 card_action_bg: {value: "#1E1E1E"},
                 card_action_icon_primary: {"value": "#f3e8ff"},
                 card_action_icon_danger: {"value": "#dc2626"},
-                header_bg: {"value": "#1a1919"}
+                header_bg: {"value": "#181818"}
             },
         },
     },

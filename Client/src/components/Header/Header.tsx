@@ -1,17 +1,16 @@
-import './Header.scss';
 import HeaderItem from '../HeaderItem/HeaderItem';
-import { Button, Spacer } from '@chakra-ui/react';
+import { Box, Button,Flex, Text } from '@chakra-ui/react';
 import { changeLanguage } from 'i18next';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-const currencyMapping = new Map<string, string>([
+const langMapping = new Map<string, string>([
     ["en-US", "EN"],
     ["ru-RU", "RU"],
 ]);
 
 const getLanguageCaption = (currentCode: string) => {
-    return currencyMapping.get(currentCode) ?? ""
+    return langMapping.get(currentCode) ?? ""
 }
 
 const Header = () => {
@@ -25,15 +24,26 @@ const Header = () => {
         changeLanguage(nextLanguage)
     }
 
-    return <div className="header">
-        <HeaderItem title={t("header_accounts")} path='/'></HeaderItem>
-        <HeaderItem title={t("header_transactions")} path='/transactions'></HeaderItem>
-        <HeaderItem title={t("header_deposits")} path='/deposits'></HeaderItem>
-        <Spacer/>
-        <Button onClick={() => updateLanguage()} background={"purple.600"}>
-            {language}
-        </Button>
-    </div>
+    return ( 
+        <Box>
+            <Flex minH={50} alignItems="center" padding={1} direction={'row'} backgroundColor="header_bg" color="text_primary">
+                <Flex flex={{ base: 1 }} justify="center" align={"center"}>
+                    <Text fontWeight={900} textAlign="center">
+                       YAMM
+                    </Text>
+                    <Flex flex="1">
+                        <HeaderItem title={t("header_accounts")} path='/'></HeaderItem>
+                        <HeaderItem title={t("header_transactions")} path='/transactions'></HeaderItem>
+                        <HeaderItem title={t("header_deposits")} path='/deposits'></HeaderItem>
+                    </Flex>
+                </Flex>
+                <Flex flex="1" justify="flex-end" direction="row">
+                    <Button onClick={() => updateLanguage()} background={"purple.600"}>
+                        {language}
+                    </Button>
+                </Flex>
+            </Flex>
+        </Box>)
 }
    
 

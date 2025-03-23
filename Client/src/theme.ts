@@ -10,7 +10,8 @@ export const darkTheme = createSystem(defaultConfig, {
                 border_primary: {value: "rgba(255, 255, 255, 0.1)"},
                 card_action_bg: {value: "#1E1E1E"},
                 card_action_icon_primary: {"value": "#f3e8ff"},
-                card_action_icon_danger: {"value": "#dc2626"}
+                card_action_icon_danger: {"value": "#dc2626"},
+                header_bg: {"value": "#1a1919"}
             },
         },
     },

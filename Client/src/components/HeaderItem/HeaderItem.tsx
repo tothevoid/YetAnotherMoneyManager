@@ -1,3 +1,4 @@
+import { Link } from '@chakra-ui/react';
 import './HeaderItem.scss';
 
 type Props = {
@@ -7,7 +8,7 @@ type Props = {
 
 const HeaderItem = (props: Props) => {
     const {title} = props;
-    return <a href={props.path} className="header-item">{title}</a>
+    return <Link href={props.path} className="header-item">{title}</Link>
 }
 
 export default HeaderItem;

@@ -5,15 +5,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Model\Server\**" />
+    <Content Remove="Model\Server\**" />
+    <EmbeddedResource Remove="Model\Server\**" />
+    <None Remove="Model\Server\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BLL\BLL.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Model\Server\" />
   </ItemGroup>
 
 </Project>

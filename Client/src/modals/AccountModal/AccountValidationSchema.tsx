@@ -8,6 +8,10 @@ export const AccountValidationSchema = z.object({
 	balance: z.number(),
 	active: z.boolean(),
 	createdOn: z.date(),
+	accountType: z.object({
+		id: z.string().nonempty({message: "Account type is not selected"}),
+		name: z.string()
+	}, {message: "Account type is not selected"}),
 	currency: z.object({
 		id: z.string().nonempty({message: "Currency is not selected"}),
 		name: z.string()

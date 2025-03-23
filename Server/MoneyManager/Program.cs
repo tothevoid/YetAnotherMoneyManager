@@ -37,6 +37,7 @@ builder.Services.AddTransient<IAccountService, AccountService>();
 builder.Services.AddTransient<IDepositService, DepositService>();
 builder.Services.AddTransient<ITransactionTypeService, TransactionTypeService>();
 builder.Services.AddTransient<ICurrencyService, CurrencyService>();
+builder.Services.AddTransient<IAccountTypeService, AccountTypeService>();
 
 var mapperConfig = new MapperConfiguration(cfg =>
 {

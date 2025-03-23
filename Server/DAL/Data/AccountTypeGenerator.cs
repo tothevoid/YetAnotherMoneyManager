@@ -12,7 +12,7 @@ namespace MoneyManager.Data
             return new AccountType[]
             {
                 new() { Id = AccountTypeConstants.Cash, Active = true, Name = "Cash" },
-                new() { Id = AccountTypeConstants.CreditCard, Active = true, Name = "Debit card" },
+                new() { Id = AccountTypeConstants.DebitCard, Active = true, Name = "Debit card" },
                 new() { Id = AccountTypeConstants.CreditCard, Active = true, Name = "Credit card" },
                 new() { Id = AccountTypeConstants.DepositAccount, Active = true, Name = "Deposit account" },
             };

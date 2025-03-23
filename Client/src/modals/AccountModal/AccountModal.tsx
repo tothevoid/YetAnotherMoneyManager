@@ -1,7 +1,7 @@
-import { Button, Checkbox, CloseButton, Dialog, Field, Input, Portal, useDisclosure} from "@chakra-ui/react"
+import { Button, CloseButton, Dialog, Field, Input, Portal, useDisclosure} from "@chakra-ui/react"
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react"
 import { AccountEntity } from "../../models/AccountEntity";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AccountFormInput, AccountValidationSchema } from "./AccountValidationSchema";
 import { useTranslation } from "react-i18next";
@@ -10,6 +10,8 @@ import { CurrencyEntity } from "../../models/CurrencyEntity";
 import DateSelect from "../../controls/DateSelect/DateSelect";
 import CollectionSelect from "../../controls/CollectionSelect/CollectionSelect";
 import CheckboxInput from "../../controls/CheckboxInput/CheckboxInput";
+import { getAccountTypes } from "../../api/accountTypeApi";
+import { AccountTypeEntity } from "../../models/AccountTypeEntity";
 
 type AccountProps = {
 	account?: AccountEntity | null,
@@ -18,6 +20,7 @@ type AccountProps = {
 
 type State = {
 	currencies: CurrencyEntity[]
+	accountTypes: AccountTypeEntity[]
 }
 
 export interface AccountModalRef {
@@ -25,11 +28,12 @@ export interface AccountModalRef {
 }
 
 const AccountModal = forwardRef<AccountModalRef, AccountProps>((props: AccountProps, ref)=> {
-  	const [state, setState] = useState<State>({currencies: []})
+  	const [state, setState] = useState<State>({currencies: [], accountTypes: []})
 	
 	useEffect(() => {
 		const initData = async () => {
 			await initCurrencies();
+			await initAccountTypes();
 		}
 		initData();
 	}, []);
@@ -41,6 +45,13 @@ const AccountModal = forwardRef<AccountModalRef, AccountProps>((props: AccountPr
 		})
 	};
 
+	const initAccountTypes = async () => {
+		const accountTypes = await getAccountTypes();
+		setState((currentState) => {
+			return {...currentState, accountTypes}
+		})
+	}
+
 	const { open, onOpen, onClose } = useDisclosure()
 
 	const { register, handleSubmit, control, formState: { errors }} = useForm<AccountFormInput>({
@@ -51,6 +62,7 @@ const AccountModal = forwardRef<AccountModalRef, AccountProps>((props: AccountPr
 			name: props.account?.name ?? "",
 			balance: props.account?.balance ?? 0,
 			currency: props.account?.currency,
+			accountType: props.account?.accountType,
 			active: props.account?.active ?? true,
 			createdOn: props.account?.createdOn ?? new Date()
         }
@@ -82,6 +94,14 @@ const AccountModal = forwardRef<AccountModalRef, AccountProps>((props: AccountPr
 							<Field.Label>{t("entity_account_name")}</Field.Label>
 							<Input {...register("name")} autoComplete="off" placeholder='Debit card' />
 							<Field.ErrorText>{errors.name?.message}</Field.ErrorText>
+						</Field.Root>
+						<Field.Root mt={4} invalid={!!errors.accountType}>
+							<Field.Label>{t("entity_transaction_type")}</Field.Label>
+							<CollectionSelect name="accountType" control={control} placeholder="Select account type"
+								collection={state.accountTypes} 
+								labelSelector={(accountType => accountType.name)} 
+								valueSelector={(accountType => accountType.id)}/>
+							<Field.ErrorText>{errors.accountType?.message}</Field.ErrorText>
 						</Field.Root>
 						<Field.Root mt={4} invalid={!!errors.currency}>
 							<Field.Label>{t("entity_transaction_currency")}</Field.Label>

@@ -1,3 +1,4 @@
+import { AccountTypeEntity } from "./AccountTypeEntity"
 import { CurrencyEntity } from "./CurrencyEntity"
 
 interface AccountCommon {
@@ -5,6 +6,7 @@ interface AccountCommon {
     name: string,
     balance: number,
     currency: CurrencyEntity,
+    accountType: AccountTypeEntity,
     active: boolean,
 }
 

@@ -17,6 +17,7 @@
     "entity_account_name": "Название",
     "entity_account_balance": "Баланс",
     "entity_transaction_currency": "Валюта",
+    "entity_transaction_type": "Тип",
     "entity_account_active": "Активен",
     "entity_account_created_on": "Дата создания",
 

@@ -28,6 +28,13 @@ const AccountsList: React.FC<Props> = (props) => {
 		initData();
 	}, []);
 
+	useEffect(() => {
+		const reloadData = async () => {
+			await requestAccountsData();
+		}
+		reloadData();
+	}, [state.onlyActive]);
+
 	const requestAccountsData = async () => {
 		const accounts = await getAccounts(state.onlyActive);
 		setState((currentState) => {
@@ -89,7 +96,6 @@ const AccountsList: React.FC<Props> = (props) => {
 		setState((currentState) => {
 			return {...currentState, onlyActive: !!checkboxChange.checked};
 		});
-		await requestAccountsData();
 	}
 
 	return (

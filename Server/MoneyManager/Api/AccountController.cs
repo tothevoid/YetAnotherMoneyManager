@@ -7,6 +7,7 @@ using MoneyManager.WEB.Model;
 using AutoMapper;
 using MoneyManager.BLL.DTO;
 using BLL.DTO;
+using MoneyManager.Model.Controller;
 
 namespace MoneyManager.WEB.Api
 {
@@ -23,10 +24,10 @@ namespace MoneyManager.WEB.Api
             _accountService = accountService;
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<AccountModel>> GetAll()
+        [HttpPost("GetAll")]
+        public async Task<IEnumerable<AccountModel>> GetAll(AccountGetAllConfig getAllConfig)
         {
-            var accounts = await _accountService.GetAll();
+            var accounts = await _accountService.GetAll(getAllConfig.OnlyActive);
             return _mapper.Map<IEnumerable<AccountModel>>(accounts);
         }
 

@@ -56,5 +56,7 @@
     "modals_delete_button": "Удалить",
     "modals_delete_message": "Вы уверены? Текущее действие невозможно отменить",
     "modals_cancel_button": "Отменить",
-    "modals_save_button": "Сохранить"
+    "modals_save_button": "Сохранить",
+
+    "accounts_list_only_active": "Только активные"
 }

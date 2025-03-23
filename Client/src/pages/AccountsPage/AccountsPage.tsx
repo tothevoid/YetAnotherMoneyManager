@@ -1,95 +1,29 @@
 import { Fragment, useEffect, useState } from "react";
 import { getAccounts, getSummary } from "../../api/accountApi";
-import { AccountEntity } from "../../models/AccountEntity";
 import AccountsList from "../../components/AccountsList/AccountsList";
 import { AccountCurrencySummary } from "../../api/models/accountsSummary";
-import { Flex, ProgressPropsProvider, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import { formatMoneyByCurrencyCulture } from "../../formatters/moneyFormatter";
 import { useTranslation } from "react-i18next";
 
 interface Props {}
 
 interface State {
-    accounts: AccountEntity[]
     accountCurrencySummaries: AccountCurrencySummary[]
 }
 
 const AccountsPage: React.FC<Props> = () => {
-    const [state, setState] = useState<State>({accounts: [], accountCurrencySummaries: []});
+    const [state, setState] = useState<State>({accountCurrencySummaries: []});
 
     const { t } = useTranslation();
-
-    useEffect(() => {
-        const initData = async () => {
-            await requestAccountsData();
-        }
-        initData();
-    }, []);
-
-    useEffect(() => {
-        const loadSummaries = async () => {
-            const accountCurrencySummaries = await getSummary() ?? null;
-            setState((currentState) => {
-                return {...currentState, accountCurrencySummaries}
-            })
-        }
-        loadSummaries();
-    }, [state.accounts]);
-
     const requestAccountsData = async () => {
-        const accounts = await getAccounts();
+        const accountCurrencySummaries = await getSummary();
         setState((currentState) => {
-            return {...currentState, accounts}
+            return {...currentState, accountCurrencySummaries}
         })
     };
 
-    const onAccountCreated = async (addedAccount: AccountEntity) => {
-        if (!addedAccount) {
-            return
-        }
-
-        setState((currentState: State) => {
-            const accounts = state.accounts.concat(addedAccount);
-            return {...currentState, accounts};
-        });
-    };
-
-    const onAccountUpdated = async (updatedAccount: AccountEntity) => {
-        if (!updatedAccount) {
-            return
-        }
-
-        let accountNameChanged = false;
-
-        setState((currentState: State) => {
-            const accounts = currentState.accounts.map((account: AccountEntity) => {
-                if (account.id === updatedAccount.id) {
-                    accountNameChanged = account.name !== updatedAccount.name;
-                    return {...updatedAccount}
-                } 
-                return account
-            });
-
-            if (!accountNameChanged) {
-                return {...currentState, accounts};
-            }
-            
-            return {...currentState, accounts}
-        });
-    };
-
-    const onAccountDeleted = async (deletedAccount: AccountEntity) => {
-        if (!deletedAccount) {
-            return;
-        }
-
-        setState((currentState: State) => {
-            const accounts = currentState.accounts.filter((account: AccountEntity) => account.id !== deletedAccount.id)
-            return { ...currentState, accounts }
-        });
-    };
-
-    const onReloadAccounts = async () => {
+    const onAccountsChanged = async () => {
         await requestAccountsData();
     }
 
@@ -103,13 +37,7 @@ const AccountsPage: React.FC<Props> = () => {
                 </Flex>:
                 <Fragment/>
         }
-        <AccountsList
-            onReloadAccounts={onReloadAccounts}
-            onAddAccountCallback = {onAccountCreated}
-            onUpdateAccountCallback = {onAccountUpdated}
-            onDeleteAccountCallback = {onAccountDeleted} 
-            accounts = {state.accounts}>
-        </AccountsList>
+        <AccountsList onAccountsChanged={onAccountsChanged}/>
     </Fragment>   
     )
 }

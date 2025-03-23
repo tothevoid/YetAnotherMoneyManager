@@ -7,11 +7,15 @@ import { AccountCurrencySummary } from "./models/accountsSummary";
 
 const basicUrl = `${config.api.URL}/Account`;
 
-export const getAccounts = async (): Promise<AccountEntity[]> =>  {
-    const accounts: ServerAccountEntity[] = await fetch(basicUrl, {method: "GET"})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
-        .catch(logPromiseError);
+export const getAccounts = async (onlyActive: boolean = false): Promise<AccountEntity[]> =>  {
+    const accounts: ServerAccountEntity[] = await fetch(`${basicUrl}/GetAll`, {
+        method: "POST", 
+        body: JSON.stringify({onlyActive}),
+        headers: {"Content-Type": "application/json"}
+    })
+    .then(checkPromiseStatus)
+    .then((response: Response) => response.json())
+    .catch(logPromiseError);
 
     return accounts ? accounts.map(prepareClientAccount) : [] as AccountEntity[];
 }

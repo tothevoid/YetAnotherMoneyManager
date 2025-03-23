@@ -9,7 +9,7 @@ namespace MoneyManager.BLL.Services.Entities
 {
     public interface IAccountService
     {
-        Task<IEnumerable<AccountDTO>> GetAll();
+        Task<IEnumerable<AccountDTO>> GetAll(bool onlyActive);
         Task<Guid> Add(AccountDTO transaction);
         Task Update(AccountDTO accountDTO);
         Task Delete(Guid id);

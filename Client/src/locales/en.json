@@ -56,5 +56,7 @@
     "modals_delete_button": "Delete",
     "modals_delete_message": "Are you sure? You can't undo this action afterwards",
     "modals_cancel_button": "Cancel",
-    "modals_save_button": "Saves"
+    "modals_save_button": "Saves",
+
+    "accounts_list_only_active": "Only active"
 }

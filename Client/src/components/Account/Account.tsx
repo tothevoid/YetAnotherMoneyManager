@@ -60,30 +60,30 @@ const Account = (props: Props) => {
     const { t } = useTranslation();
 
     return <Fragment>
-        <Card.Root>
-            <Card.Body boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
+        <Card.Root backgroundColor="card_bg" borderColor="border_primary" >
+            <Card.Body color="text_primary" boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
                 <Flex justifyContent="space-between" alignItems="center">
                     <Stack>
                         <Text fontWeight={600}>{name}</Text>
                         <Text fontWeight={700}>{formatMoneyByCurrencyCulture(balance, currency.name)}</Text>
                     </Stack>
-                    <div>
-                        <Button background={'white'} size={'sm'} onClick={onTransferClicked}>
-                            <Icon color='blackAlpha.800'>
+                    <Flex gap={1}>
+                        <Button borderColor="card_action_bg" background="button_background_secondary" size={'sm'} onClick={onTransferClicked}>
+                            <Icon color="card_action_icon_primary">
                                 <MdCompareArrows/>
                             </Icon>
                         </Button>
-                        <Button background={'white'} size={'sm'} onClick={onEditClicked}>
-                            <Icon color='blackAlpha.800'>
+                        <Button borderColor="card_action_bg" background="button_background_secondary" size={'sm'} onClick={onEditClicked}>
+                            <Icon color="card_action_icon_primary">
                                 <MdEdit/>
                             </Icon>
                         </Button>
-                        <Button background={'white'} size={'sm'} onClick={onDeleteClicked}>
-                            <Icon color={"red.600"}>
+                        <Button borderColor="card_action_bg" background="button_background_secondary" size={'sm'} onClick={onDeleteClicked}>
+                            <Icon color="card_action_icon_danger">
                                 <MdDelete/>
                             </Icon>
                         </Button>
-                    </div>
+                    </Flex>
                 </Flex>
             </Card.Body>
         </Card.Root>

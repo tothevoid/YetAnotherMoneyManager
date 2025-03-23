@@ -105,7 +105,7 @@ const AccountsList: React.FC<Props> = (props) => {
 					<Checkbox.Root checked={state.onlyActive} onCheckedChange={onCheckboxChanged} variant="solid">
 						<Checkbox.HiddenInput />
 						<Checkbox.Control />
-						<Checkbox.Label>{t("accounts_list_only_active")}</Checkbox.Label>
+						<Checkbox.Label color="text_primary">{t("accounts_list_only_active")}</Checkbox.Label>
 					</Checkbox.Root>
 				</div>
 				<AddAccountButton onAdded={onAccountCreated}></AddAccountButton>

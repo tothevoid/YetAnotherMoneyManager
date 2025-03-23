@@ -11,7 +11,11 @@ namespace MoneyManager.BLL.DTO
 
         public CurrencyDTO Currency { get; set; }
 
+        public AccountTypeDTO AccountType { get; set; }
+
         public Guid CurrencyId { get; set; }
+
+        public Guid AccountTypeId { get; set; }
 
         public DateOnly CreatedOn { get; set; }
 

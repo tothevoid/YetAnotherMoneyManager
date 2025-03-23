@@ -4,6 +4,7 @@ using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using MoneyManager.DAL.Entities;
@@ -11,6 +12,8 @@ using MoneyManager.Data;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Bson.Serialization;
 using System.Xml;
+using DAL.Interfaces.Utilitary;
+using MoneyManager.Common;
 
 namespace MoneyManager.DAL.Database
 {
@@ -38,18 +41,31 @@ namespace MoneyManager.DAL.Database
 
         private void InitializeDefaultData()
         {
-            var currencyCollection = Database.GetCollection<Currency>(nameof(Currency));
-
-            if (currencyCollection.Find(FilterDefinition<Currency>.Empty).Any())
+            var results = new bool[]
             {
-                return;
+                InitData(GetCollection<Currency>(nameof(Currency)), new CurrencyGenerator().Generate()),
+                InitData(GetCollection<AccountType>(nameof(AccountType)), new AccountTypeGenerator().Generate())
+            };
+
+            if (results.Any(result => result))
+            {
+                SaveChanges();
             }
 
-            var defaultCurrencies = new DefaultCurrencies().GetCurrencies();
-            currencyCollection.InsertMany(defaultCurrencies);
-
-            SaveChanges();
             _isDataInitialized = true;
+        }
+
+        private bool InitData<TEntity>(IMongoCollection<TEntity> collection, IEnumerable<TEntity> data)
+            where TEntity : BaseEntity
+        {
+            if (collection.Find(FilterDefinition<TEntity>.Empty).Any())
+            {
+                return false;
+            }
+
+            collection.InsertMany(data);
+
+            return true;
         }
 
         private void RegisterConventions()

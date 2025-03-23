@@ -1,10 +1,12 @@
-﻿using MoneyManager.DAL.Entities;
+﻿using System;
+using DAL.Interfaces.Utilitary;
+using MoneyManager.DAL.Entities;
 
 namespace MoneyManager.Data
 {
-    public class DefaultCurrencies
+    public class CurrencyGenerator : IDataGenerator<Currency>
     {
-        public Currency[] GetCurrencies()
+        public Currency[] Generate()
         {
             return new Currency[]
             {
@@ -12,6 +14,6 @@ namespace MoneyManager.Data
                 new() { Active = true, Name = "RUB" },
                 new() { Active = true, Name = "EUR" },
             };
-        }    
+        }
     }
 }

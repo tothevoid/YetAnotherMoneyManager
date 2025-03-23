@@ -17,13 +17,16 @@ namespace MoneyManager.DAL.SpecificRepositories
         public IEnumerable<Account> GetAllFull()
         {
             var currencyCollection = _context.GetCollection<Currency>(nameof(Currency));
+            var accountTypeCollection = _context.GetCollection<AccountType>(nameof(AccountType));
             //TODO: fix AsEnumerable then mongo driver will support inner join
             var query = (from account in DbSet.AsQueryable()
                 join currency in currencyCollection.AsQueryable() on account.CurrencyId equals currency.Id into currencyJoin
                 from joinedCurrency in currencyJoin.DefaultIfEmpty()
-                select new { account, joinedCurrency }).ToList();
+                join accountType in accountTypeCollection.AsQueryable() on account.AccountType.Id equals accountType.Id into accountTypeJoin
+                from joinedAccountType in accountTypeJoin.DefaultIfEmpty()
+                select new { account, joinedCurrency, joinedAccountType }).ToList();
 
-            return query.Select(x => x.account.AssignCurrency(x.joinedCurrency));
+            return query.Select(x => x.account.AssignReferences(x.joinedCurrency, x.joinedAccountType));
         }
     }
 }

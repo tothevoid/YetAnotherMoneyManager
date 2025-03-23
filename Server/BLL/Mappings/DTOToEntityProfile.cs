@@ -15,6 +15,7 @@ namespace MoneyManager.BLL.Mappings
             CreateMap<TransactionTypeDTO, TransactionType>().ReverseMap();
             CreateMap<DepositDTO, Deposit>().ReverseMap();
             CreateMap<CurrencyDTO, Currency>().ReverseMap();
+            CreateMap<AccountTypeDTO, AccountType>().ReverseMap();
         }
     }
 }

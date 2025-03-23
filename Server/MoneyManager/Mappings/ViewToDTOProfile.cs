@@ -18,6 +18,7 @@ namespace MoneyManager.WEB.Mappings
             CreateMap<TransactionTypeModel, TransactionTypeDTO>().ReverseMap();
             CreateMap<DepositModel, DepositDTO>().ReverseMap();
             CreateMap<CurrencyModel, CurrencyDTO>().ReverseMap();
+            CreateMap<AccountTypeModel, AccountTypeDTO>().ReverseMap();
 
             CreateMap<DepositMonthSummaryDTO, DepositMonthSummary>();
             CreateMap<DepositPaymentDTO, DepositPayment>();

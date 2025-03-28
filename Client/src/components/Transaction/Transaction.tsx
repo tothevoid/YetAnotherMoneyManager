@@ -43,10 +43,10 @@ const Transaction: React.FC<Props> = (props: Props) => {
 
 	const getTransactionDirectionIcon = () => {
 		return props.transaction.moneyQuantity > 0 ?
-			<Icon rounded={16} fontSize="32"  background={'green.100'} color={'green.600'}>
+			<Icon rounded={16} size={"lg"} fontSize="32" background={'green.100'} color={'green.600'}>
 				<MdOutlineArrowUpward/>
 			</Icon>:
-			<Icon rounded={16} fontSize="32"  background={'red.100'} color={'red.600'}>
+			<Icon rounded={16} size={"lg"} fontSize="32"  background={'red.100'} color={'red.600'}>
 				<MdOutlineArrowDownward/>
 			</Icon>
 	}

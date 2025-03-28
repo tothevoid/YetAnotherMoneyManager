@@ -34,8 +34,6 @@ namespace MoneyManager.BLL.Services.Entities
         {
             var mappedDeposit = _mapper.Map<Deposit>(deposit);
             mappedDeposit.Id = Guid.NewGuid();
-            mappedDeposit.EstimatedEarn =
-                CalculateIncomeByRange(deposit.From, deposit.To, deposit.InitialAmount, deposit.Percentage);
             await _depositRepo.Add(mappedDeposit);
             _db.Commit();
             
@@ -64,7 +62,7 @@ namespace MoneyManager.BLL.Services.Entities
 
             foreach (var deposit in deposits)
             {
-                var accumulator = deposit.InitialAmount;
+                var depositDays = deposit.To.DayNumber - deposit.From.DayNumber;
                 var periodStartDate = deposit.From;
 
                 while (periodStartDate < deposit.To)
@@ -72,19 +70,18 @@ namespace MoneyManager.BLL.Services.Entities
                     var lastMonthDay = new DateOnly(periodStartDate.Year, periodStartDate.Month, 1).AddMonths(1).AddDays(-1);
                     var periodEndDate = deposit.To < lastMonthDay ? deposit.To : lastMonthDay;
 
-                    decimal income = CalculateIncomeByRange(periodStartDate, periodEndDate, accumulator, deposit.Percentage);
-                    accumulator += income;
+                    decimal profit = CalculateProfitInRange(periodStartDate, periodEndDate, depositDays, deposit.EstimatedEarn);
 
                     var date = new DateOnly(periodStartDate.Year, periodStartDate.Month, 1);
                     if (dates.ContainsKey(date))
                     {
-                        dates[date].Add((deposit.Name, income));
+                        dates[date].Add((deposit.Name, profit));
                     }
                     else
                     {
                         dates[date] = new List<(string name, decimal value)>()
                         {
-                            (deposit.Name, income)
+                            (deposit.Name, profit)
                         };
                     }
 
@@ -110,10 +107,10 @@ namespace MoneyManager.BLL.Services.Entities
             };
         }
 
-        private decimal CalculateIncomeByRange(DateOnly from, DateOnly to, decimal initialValue, float percentage)
+        private decimal CalculateProfitInRange(DateOnly from, DateOnly to, int totalDays, decimal estimatedEarn)
         {
             var days = to.DayNumber - from.DayNumber;
-            return initialValue / 365 * days / 100 * (decimal) percentage;
+            return estimatedEarn / totalDays * days;
         }
     }
 }

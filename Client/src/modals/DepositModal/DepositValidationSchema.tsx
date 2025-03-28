@@ -12,6 +12,9 @@ export const DepositValidationSchema = z.object({
   initialAmount: z.number()
     .nonnegative()
     .gt(0),
+  estimatedEarn: z.number()
+    .nonnegative()
+    .gt(0),
   from: z.date(),
   to: z.date(),
 })

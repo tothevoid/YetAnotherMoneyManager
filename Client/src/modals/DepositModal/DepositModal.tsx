@@ -32,6 +32,7 @@ const DepositModal = forwardRef<DepositModalRef, Props>((props: Props, ref)=> {
             to: props.deposit?.to ?? new Date(),
             percentage: props.deposit?.percentage ?? 0,
             initialAmount: props.deposit?.initialAmount ?? 0,
+            estimatedEarn: props.deposit?.estimatedEarn ?? 0,
         }
     });
 
@@ -67,6 +68,11 @@ const DepositModal = forwardRef<DepositModalRef, Props>((props: Props, ref)=> {
                             <Field.Label>{t("entity_deposit_initial_amount")}</Field.Label>
                             <Input {...register("initialAmount", { valueAsNumber: true })} type='number' placeholder='10' />
                             <Field.ErrorText>{errors.initialAmount?.message}</Field.ErrorText>
+                        </Field.Root>
+                        <Field.Root invalid={!!errors.estimatedEarn} mt={4}>
+                            <Field.Label>{t("entity_deposit_estimated_earn")}</Field.Label>
+                            <Input {...register("estimatedEarn", { valueAsNumber: true })} type='number' placeholder='10' />
+                            <Field.ErrorText>{errors.estimatedEarn?.message}</Field.ErrorText>
                         </Field.Root>
                         <Flex gap={4} direction="row">
                             <Field.Root invalid={!!errors.from} mt={4}>

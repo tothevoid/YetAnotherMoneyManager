@@ -55,7 +55,7 @@ const Deposit: React.FC<Props> = ({deposit, onUpdated, onCloned, onDeleted}) => 
 
     const { i18n, t } = useTranslation();
 
-    return <Card.Root>
+    return <Card.Root borderColor="border_primary" color="text_primary" backgroundColor="background_primary">
         <Card.Body boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
             <Stack>
                 <Text fontSize={"xl"} fontWeight={600}>{deposit.name}</Text>
@@ -76,19 +76,19 @@ const Deposit: React.FC<Props> = ({deposit, onUpdated, onCloned, onDeleted}) => 
                         <Text color={"gray.500"}>{t("entity_deposit_estimated_earn")}:</Text>
                         <Text color={datesColor}>+{formatMoney(deposit?.estimatedEarn ?? 0)}</Text>
                     </Flex>
-                    <Flex paddingTop={4} justifyContent="end">
-                        <Button onClick={showEditDepositModal} background={'white'} size={'sm'}>
-                            <Icon color="blackAlpha.800">
+                    <Flex gap={2} paddingTop={4} justifyContent="end">
+                        <Button background={'background_secondary'} onClick={showEditDepositModal} size={'sm'}>
+                            <Icon color="card_action_icon_primary">
                                 <MdEdit/>
                             </Icon>
                         </Button>
-                        <Button onClick={onCloneClick} background={'white'} size={'sm'}>
-                            <Icon color="blackAlpha.800">
+                        <Button background={'background_secondary'} onClick={onCloneClick} size={'sm'}>
+                            <Icon color="card_action_icon_primary">
                                 <MdContentCopy/>
                             </Icon>
                         </Button>
-                        <Button onClick={onDeleteClicked} background={'white'} size={'sm'}>
-                            <Icon color="red.600">
+                        <Button background={'background_secondary'} onClick={onDeleteClicked} size={'sm'}>
+                            <Icon color="card_action_icon_danger">
                                 <MdDelete/>
                             </Icon>
                         </Button>

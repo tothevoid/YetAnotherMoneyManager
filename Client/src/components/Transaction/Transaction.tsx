@@ -53,7 +53,8 @@ const Transaction: React.FC<Props> = (props: Props) => {
 
 	const { i18n, t} = useTranslation()
 
-	return <Card.Root mt={5} mb={5} boxShadow={"sm"} _hover={{ boxShadow: "md" }}>
+	return <Card.Root borderColor="border_primary" color="text_primary" backgroundColor="background_primary" 
+		mt={5} mb={5} boxShadow={"sm"} _hover={{ boxShadow: "md" }}>
 		<CardBody>
 			<Flex justifyContent="space-between" alignItems="center">
 				<Stack direction={'row'} alignItems="center">
@@ -64,15 +65,15 @@ const Transaction: React.FC<Props> = (props: Props) => {
 					</Stack>
 				</Stack>
 				<Flex gap={2} justifyContent="space-between" alignItems="center">
-					<Text background={'green.100'} textAlign={'center'} w={150} rounded={10} padding={1} >{transactionType}</Text>
+					<Text background={'purple.600'} textAlign={'center'} w={150} rounded={10} padding={1} >{transactionType}</Text>
 					<Text width={100}>{formatMoneyByCurrencyCulture(moneyQuantity, account.currency.name)}</Text>
-					<Button background={'white'} size={'sm'} onClick={onEditClicked}>
-						<Icon color="blackAlpha.800">
+					<Button background={'background_secondary'} size={'sm'} onClick={onEditClicked}>
+						<Icon color="card_action_icon_primary">
 							<MdEdit/>
 						</Icon>
 					</Button>
-					<Button background={'white'} size={'sm'} onClick={onDeleteClicked}>
-						<Icon color="red.600">
+					<Button background={'background_secondary'} size={'sm'} onClick={onDeleteClicked}>
+						<Icon color="card_action_icon_danger">
 							<MdDelete/>
 						</Icon>
 					</Button>

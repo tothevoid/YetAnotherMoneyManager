@@ -4,7 +4,7 @@ import {getMonthByIndex} from "../../utils/DateUtils"
 import { Calendar } from "../Calendar/Calendar"
 import { MdChevronLeft, MdChevronRight } from "react-icons/md"
 import { useTranslation } from "react-i18next"
-import { Box, Button } from "@chakra-ui/react"
+import { Button, Flex } from "@chakra-ui/react"
 import { MdCalendarMonth } from "react-icons/md";
 
 
@@ -51,15 +51,15 @@ const Pagination: React.FC<Props> = (props: Props) => {
     const {month, year, onPageSwitched} = props;
     const date = `${getMonthByIndex(month, i18n)}'${year.toString().substring(2)}`
     return <Fragment>
-        <Box className="pagination-container" color="text_primary">
-            <Button color="text_primary" background={'card_action_bg'} onClick={pageSwitchClick(-1)} className="paging-element paging-button page-previous"><MdChevronLeft/></Button>
-            <Button color="text_primary" background={'card_action_bg'} borderRadius={0}  className="calendar-icon current-month paging-element" 
+        <Flex justifyContent="center" className="pagination-container" color="text_primary">
+            <Button color="text_primary" background={'background_primary'} onClick={pageSwitchClick(-1)} className="paging-element paging-button page-previous"><MdChevronLeft/></Button>
+            <Button minW={125} color="text_primary" background={'background_primary'} borderRadius={0}  className="calendar-icon current-month paging-element" 
                 onClick={onSwitchCalendarVisibility}>
                 {date}
                 <MdCalendarMonth/>
             </Button>
-            <Button color="text_primary" background={'card_action_bg'} onClick={pageSwitchClick(1)} className="paging-element paging-button page-next"><MdChevronRight/></Button>
-        </Box>
+            <Button color="text_primary" background={'background_primary'} onClick={pageSwitchClick(1)} className="paging-element paging-button page-next"><MdChevronRight/></Button>
+        </Flex>
         {
             (isCalendarVisible) ?
                 <Calendar month={month} year={year} onPageSwitched={onPageSwitched}></Calendar> :

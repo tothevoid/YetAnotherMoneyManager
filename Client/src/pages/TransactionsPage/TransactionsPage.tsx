@@ -127,7 +127,7 @@ const TransactionsPage: React.FC<any> = () => {
     const { t } = useTranslation();
 
     return (
-        <Container paddingTop={4} paddingBottom={4}>
+        <Container color="text_primary" paddingTop={4} paddingBottom={4}>
             <SimpleGrid columns={2} gap={16}>
                 <Box>
                     <Flex justifyContent={"space-between"}>

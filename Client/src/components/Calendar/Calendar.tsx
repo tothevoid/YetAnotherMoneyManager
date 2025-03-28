@@ -2,6 +2,7 @@ import { useState } from "react"
 import "./Calendar.scss"
 import { getMonthsNames } from "../../utils/DateUtils";
 import { useTranslation } from "react-i18next";
+import { Box } from "@chakra-ui/react";
 
 type Props = {
     year: number,
@@ -41,14 +42,14 @@ export const Calendar: React.FC<Props> = (props: Props) => {
 
     const onElementClick = (value: string) => {
         const {onPageSwitched} = props;
-        const {isYearsMode} = state;
+        const {isYearsMode, minimalYear} = state;
         if (isYearsMode){
             const year = parseInt(value);
             onPageSwitched(props.month, year);
             setState((currentState) => {return {...currentState, isYearsMode: false, title: getTitle(false, year)}});
         } else {
             const monthIndex = getMonthIndex(value);
-            onPageSwitched(monthIndex, props.year);
+            onPageSwitched(monthIndex, minimalYear);
         }
     }
 
@@ -81,23 +82,29 @@ export const Calendar: React.FC<Props> = (props: Props) => {
     }
 
     const onArrowClick = (value: number) => {
-        const {minimalYear} = state;
-        const newMininimal = minimalYear + value * 12;
+        const {minimalYear, isYearsMode} = state;
+
+        const newMininimal = isYearsMode ? 
+            minimalYear + value * 12:
+            minimalYear + value;
+
+        const title = getTitle(isYearsMode, newMininimal)
+
         setState((currentState) => {
-            return { ...currentState, minimalYear: newMininimal, title: getTitle(true, newMininimal)}
+            return { ...currentState, minimalYear: newMininimal, title}
         });
     }
 
     const [state, setState] = useState<State>(getDefaultState)
-    const {title, isYearsMode} = state;
+    const {title} = state;
 
     const { i18n} = useTranslation();
 
-    return <div className="calendar">
+    return <Box backgroundColor="background_primary" color="text_primary"  className="calendar">
         <div className="calendar-header">
-            <button onClick={() => onArrowClick(-1)} disabled={!isYearsMode} className="prev-button">&#8592;</button>
+            <button onClick={() => onArrowClick(-1)} className="prev-button">&#8592;</button>
             <span onClick={() => onLabelClick()} className="calendar-title">{title}</span>
-            <button onClick={() => onArrowClick(1)} disabled={!isYearsMode} className="next-button">&#8594;</button>
+            <button onClick={() => onArrowClick(1)} className="next-button">&#8594;</button>
         </div>
         
         <div className="calendar-content">
@@ -106,5 +113,5 @@ export const Calendar: React.FC<Props> = (props: Props) => {
                     className={getClasses(element)}>{element}</div>
             })}
         </div>
-    </div> 
+    </Box> 
 }

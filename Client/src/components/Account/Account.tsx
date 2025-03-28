@@ -60,7 +60,7 @@ const Account = (props: Props) => {
     const { t } = useTranslation();
 
     return <Fragment>
-        <Card.Root backgroundColor="card_bg" borderColor="border_primary" >
+        <Card.Root backgroundColor="background_primary" borderColor="border_primary" >
             <Card.Body color="text_primary" boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
                 <Flex justifyContent="space-between" alignItems="center">
                     <Stack>
@@ -68,17 +68,17 @@ const Account = (props: Props) => {
                         <Text fontWeight={700}>{formatMoneyByCurrencyCulture(balance, currency.name)}</Text>
                     </Stack>
                     <Flex gap={1}>
-                        <Button borderColor="card_action_bg" background="button_background_secondary" size={'sm'} onClick={onTransferClicked}>
+                        <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={onTransferClicked}>
                             <Icon color="card_action_icon_primary">
                                 <MdCompareArrows/>
                             </Icon>
                         </Button>
-                        <Button borderColor="card_action_bg" background="button_background_secondary" size={'sm'} onClick={onEditClicked}>
+                        <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={onEditClicked}>
                             <Icon color="card_action_icon_primary">
                                 <MdEdit/>
                             </Icon>
                         </Button>
-                        <Button borderColor="card_action_bg" background="button_background_secondary" size={'sm'} onClick={onDeleteClicked}>
+                        <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={onDeleteClicked}>
                             <Icon color="card_action_icon_danger">
                                 <MdDelete/>
                             </Icon>

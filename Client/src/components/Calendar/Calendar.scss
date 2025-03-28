@@ -12,11 +12,9 @@
         .prev-button, .next-button{
             width: 40px;
             height: 40px;
-            background: #414242;
             border: none;
-            color: white;
             &:disabled{
-                color: #414242;
+                // color: #414242;
             } 
         }
         .calendar-title{
@@ -26,7 +24,6 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            background: #414242;
         }        
     }
     .calendar-content{
@@ -36,7 +33,6 @@
         align-items: center;
         flex-wrap: wrap;
         .calendar-element{
-            background: #414242;
             height: 50px;
             width: 25%;
             cursor: pointer;

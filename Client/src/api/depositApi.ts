@@ -3,6 +3,7 @@ import config from '../config'
 import { DepositEntity } from '../models/DepositEntity';
 import { convertToInputDate } from '../utils/DateUtils';
 import { checkPromiseStatus, logPromiseError } from '../utils/PromiseUtils';
+import { DepositsRange } from './models/depositsRange';
 
 const basicUrl = `${config.api.URL}/Deposit`;
 
@@ -56,6 +57,16 @@ export const deleteDeposit = async (depositId: string): Promise<boolean> => {
         .catch(logPromiseError);
 
     return result?.ok ?? false;
+}
+
+export const getDepositsRange = async (): Promise<DepositsRange | null> => {
+    const url = `${basicUrl}/GetDepositsRange`;
+    const result:  DepositsRange | null = await fetch(url, { method: "GET"})
+        .then(checkPromiseStatus)
+        .then((response: Response) => response.json())
+        .catch(logPromiseError);
+
+    return result;
 }
 
 export const getDepositsSummary = async (): Promise<DepositMonthSummary | null> => {

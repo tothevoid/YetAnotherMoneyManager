@@ -7,6 +7,8 @@ using BLL.Interfaces.Entities;
 using MoneyManager.BLL.DTO;
 using MoneyManager.Model.Charts.Deposit;
 using MoneyManager.Model.Common;
+using MoneyManager.Model.Server;
+using MoneyManager.WEB.Model;
 
 namespace MoneyManager.WEB.Api
 {
@@ -55,6 +57,13 @@ namespace MoneyManager.WEB.Api
         public async Task Delete(Guid id)
         {
             await _depositService.Delete(id);
+        }
+
+        [HttpGet(nameof(GetDepositsRange))]
+        public async Task<DepositsRangeModel> GetDepositsRange()
+        {
+            var rangeDto = await _depositService.GetDepositsRange();
+            return _mapper.Map<DepositsRangeModel>(rangeDto);
         }
     }
 }

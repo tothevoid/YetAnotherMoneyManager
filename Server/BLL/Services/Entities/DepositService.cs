@@ -112,6 +112,20 @@ namespace MoneyManager.BLL.Services.Entities
             };
         }
 
+        public async Task<DepositsRangeDto> GetDepositsRange()
+        {
+            var minValueRequest = _depositRepo.GetMin((deposit) => deposit.From);
+            var maxValueRequest = _depositRepo.GetMin((deposit) => deposit.To);
+            await Task.WhenAll(new Task[] {minValueRequest, maxValueRequest});
+
+            var minValue = minValueRequest.Result.From;
+            var maxValue = minValueRequest.Result.To;
+            var rangeStart = new DateOnly(minValue.Year, minValue.Month, 1);
+            var rangeEnd = new DateOnly(maxValue.Year, maxValue.Month, 1).AddMonths(1).AddDays(-1);
+
+            return new DepositsRangeDto() { From = rangeStart, To = rangeEnd };
+        }
+
         private decimal CalculateProfitInRange(DateOnly from, DateOnly to, int totalDays, decimal estimatedEarn)
         {
             var days = to.DayNumber - from.DayNumber;

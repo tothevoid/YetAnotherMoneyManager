@@ -5,6 +5,7 @@ using MoneyManager.DAL.Interfaces;
 using MongoDB.Driver;
 using System.Collections.Generic;
 using MoneyManager.Common;
+using MongoDB.Bson;
 
 namespace MoneyManager.DAL.Database
 {
@@ -61,6 +62,28 @@ namespace MoneyManager.DAL.Database
             var update = new UpdateDefinitionBuilder<TEntity>().Inc(field, delta);
             var idFilter = Builders<TEntity>.Filter.Eq("_id", id);
             await _context.AddCommand(async () => await DbSet.FindOneAndUpdateAsync<TEntity>(idFilter, update));
+        }
+
+        public async Task<TEntity> GetMin(Expression<Func<TEntity, object>> sortField)
+        {
+            var entityWithMinValue = await DbSet
+                .Find(FilterDefinition<TEntity>.Empty)
+                .SortBy(sortField)
+                .Limit(1)
+                .FirstOrDefaultAsync();
+
+            return entityWithMinValue;
+        }
+
+        public async Task<TEntity> GetMax(Expression<Func<TEntity, object>> sortField)
+        {
+            var entityWithMinValue = await DbSet
+                .Find(FilterDefinition<TEntity>.Empty)
+                .SortByDescending(sortField)
+                .Limit(1)
+                .FirstOrDefaultAsync();
+
+            return entityWithMinValue;
         }
 
         public void Dispose()

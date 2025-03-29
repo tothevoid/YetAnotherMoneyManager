@@ -1,4 +1,5 @@
-﻿using MoneyManager.BLL.DTO;
+﻿using BLL.DTO;
+using MoneyManager.BLL.DTO;
 using MoneyManager.Model.Server;
 using System;
 using System.Collections.Generic;
@@ -19,5 +20,7 @@ namespace BLL.Interfaces.Entities
         Task Delete(Guid id);
 
         Task<DepositMonthSummaryDTO> GetSummary();
+
+        Task<DepositsRangeDto> GetDepositsRange();
     }
 }

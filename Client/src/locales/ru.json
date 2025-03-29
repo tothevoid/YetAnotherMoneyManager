@@ -61,5 +61,10 @@
 
     "accounts_list_only_active": "Только активные",
 
-    "data_title": "Данные"
+    "data_title": "Данные",
+    "currencies_data_add": "Добавить валюту",
+    
+    "entity_currency_name_form_title": "Валюта",
+    "entity_currency_name": "Название",
+    "entity_currency_active": "Активна"
 }

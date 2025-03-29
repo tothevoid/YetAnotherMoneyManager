@@ -1,7 +1,10 @@
-import { Box, Checkbox, Input, Table } from "@chakra-ui/react";
+import { Box, Button, Checkbox, Icon, Input, Table } from "@chakra-ui/react";
 import { CurrencyEntity } from "../../../../models/CurrencyEntity";
-import { useEffect, useState } from "react";
-import { getCurrencies, updateCurrency } from "../../../../api/currencyApi";
+import { useEffect, useRef, useState } from "react";
+import { createCurrency, getCurrencies, updateCurrency } from "../../../../api/currencyApi";
+import { MdAdd } from "react-icons/md";
+import { useTranslation } from "react-i18next";
+import CurrencyModal, { CurrencyModalRef } from "../../../../modals/CurrencyModal/CurrencyModal";
 
 interface Props {
 }
@@ -12,7 +15,8 @@ interface State {
 }
 
 const CurrenciesTable: React.FC<Props> = () => {
-    const [state, setState] = useState<State>({currencies: [], hasChanges: false})
+    const [state, setState] = useState<State>({currencies: [], hasChanges: false});
+    const { t } = useTranslation();
 
     useEffect(() => {
         const initData = async () => { 
@@ -65,6 +69,25 @@ const CurrenciesTable: React.FC<Props> = () => {
 
         await updateCurrency({...currency});
     }
+    
+    const modalRef = useRef<CurrencyModalRef>(null);
+    
+    const onAdd = () => {
+        modalRef.current?.openModal()
+    };
+
+    const onCurrencyAdded = async (currency: CurrencyEntity) => {
+        const cureatedCurrencyId = await createCurrency(currency);
+        if (!cureatedCurrencyId) {
+            return;
+        }
+
+        currency.id = cureatedCurrencyId;
+
+        setState((currentState) => {
+            return {...currentState, currencies: [...currentState.currencies, currency]}
+        })
+    };
 
     return <Box color="text_primary">
         <Table.Root>
@@ -94,7 +117,18 @@ const CurrenciesTable: React.FC<Props> = () => {
                     })
                 }
             </Table.Body>
+            <Table.Footer padding={22}>
+                <Box padding={4}>
+                    <Button background="purple.600" onClick={onAdd}>
+                        <Icon size='md'>
+                            <MdAdd/>
+                        </Icon>
+                        {t("currencies_data_add")}
+                    </Button>
+                </Box>
+            </Table.Footer>
         </Table.Root>
+        <CurrencyModal ref={modalRef} onSaved={onCurrencyAdded}></CurrencyModal>
     </Box>
 }
 

@@ -61,5 +61,10 @@
 
     "accounts_list_only_active": "Only active",
 
-    "data_title": "Data"
+    "data_title": "Data",
+    "currencies_data_add": "Add currency",
+
+    "entity_currency_name_form_title": "Currency",
+    "entity_currency_name": "Name",
+    "entity_currency_active": "Active"
 }

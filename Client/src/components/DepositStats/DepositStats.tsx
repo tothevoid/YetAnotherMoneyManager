@@ -7,11 +7,26 @@ import { getDepositsSummary } from '../../api/depositApi';
 const colors = [
     "#ff7c43",
     "#ffa600",
-    "#003f5c",
     "#665191",
     "#a05195",
     "#d45087",
-    "#f95d6a"
+    "#f95d6a",
+    "#556B2F",
+    "#6B8E23",
+    "#2E8B57",
+    "#4682B4",
+    "#5F9EA0",
+    "#20B2AA",
+    "#9370DB",
+    "#BA55D3",
+    "#9932CC",
+    "#D2691E",
+    "#CD853F",
+    "#B8860B",
+    "#C71585",
+    "#DB7093",
+    "#FF6347",
+    "#8FBC8F",
 ]
 
 

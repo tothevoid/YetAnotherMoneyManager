@@ -2,6 +2,7 @@
     "header_accounts": "Accounts",
     "header_transactions": "Transactions",
     "header_deposits": "Deposits",
+    "header_data": "Data",
 
     "accounts_page_summary_title": "Current balance",
     "accounts_page_summary_add": "Add account",
@@ -58,5 +59,7 @@
     "modals_cancel_button": "Cancel",
     "modals_save_button": "Saves",
 
-    "accounts_list_only_active": "Only active"
+    "accounts_list_only_active": "Only active",
+
+    "data_title": "Data"
 }

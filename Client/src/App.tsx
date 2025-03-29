@@ -6,6 +6,7 @@ import DepositsPage from './pages/DepositsPage/DepositsPage';
 
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import AccountsPage from './pages/AccountsPage/AccountsPage';
+import DataPage from './pages/DataPage/DataPage';
 
 const App = () => {
   return (
@@ -17,6 +18,8 @@ const App = () => {
             <Route path="/" element={<AccountsPage /> } />
             <Route path="/transactions" element={<TransactionsPage />} />
             <Route path="/deposits" element={<DepositsPage />} />
+            <Route path="/data" element={<DataPage />} />
+            <Route path="/data/:tab" element={<DataPage />} />
           </Routes>
         </Router>
       </main>

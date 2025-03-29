@@ -115,11 +115,11 @@ namespace MoneyManager.BLL.Services.Entities
         public async Task<DepositsRangeDto> GetDepositsRange()
         {
             var minValueRequest = _depositRepo.GetMin((deposit) => deposit.From);
-            var maxValueRequest = _depositRepo.GetMin((deposit) => deposit.To);
+            var maxValueRequest = _depositRepo.GetMax((deposit) => deposit.To);
             await Task.WhenAll(new Task[] {minValueRequest, maxValueRequest});
 
             var minValue = minValueRequest.Result.From;
-            var maxValue = minValueRequest.Result.To;
+            var maxValue = maxValueRequest.Result.To;
             var rangeStart = new DateOnly(minValue.Year, minValue.Month, 1);
             var rangeEnd = new DateOnly(maxValue.Year, maxValue.Month, 1).AddMonths(1).AddDays(-1);
 

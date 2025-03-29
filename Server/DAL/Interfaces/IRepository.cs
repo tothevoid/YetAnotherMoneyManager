@@ -21,6 +21,6 @@ namespace MoneyManager.DAL.Interfaces
 
         Task Delete(Guid id);
 
-        Task Increment(Guid id, Expression<Func<TEntity, double>> field, double delta);
+        Task Increment(Guid id, Expression<Func<TEntity, decimal>> field, decimal delta);
     }
 }

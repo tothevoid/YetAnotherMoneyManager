@@ -9,7 +9,7 @@ namespace MoneyManager.WEB.Model
 
         public DateTime Date {get;set;}
 
-        public double MoneyQuantity {get;set;}
+        public decimal MoneyQuantity {get;set;}
 
         public AccountModel Account {get;set;}
 

@@ -7,6 +7,6 @@ namespace MoneyManager.BLL.DTO
     {
         public Guid AccountId { get; set; }
 
-        public double Delta { get; set; }
+        public decimal Delta { get; set; }
     }
 }

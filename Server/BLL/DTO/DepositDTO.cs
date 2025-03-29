@@ -11,7 +11,7 @@ namespace MoneyManager.BLL.DTO
 
         public DateOnly To { get; set; }
 
-        public float Percentage { get; set; }
+        public decimal Percentage { get; set; }
 
         public decimal InitialAmount { get; set; }
 

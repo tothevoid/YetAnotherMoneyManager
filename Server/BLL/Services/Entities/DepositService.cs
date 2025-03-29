@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BLL.DTO;
 using BLL.Interfaces.Entities;
+using DAL.Constants;
 using MoneyManager.Model.Server;
 
 namespace MoneyManager.BLL.Services.Entities
@@ -16,12 +17,16 @@ namespace MoneyManager.BLL.Services.Entities
     {
         private readonly IUnitOfWork _db;
         private readonly IRepository<Deposit> _depositRepo;
+        private readonly IRepository<Account> _accountRepo;
+
+
         private readonly IMapper _mapper;
         public DepositService(IUnitOfWork uow, IMapper mapper)
         {
             _db = uow;
             _mapper = mapper;
             _depositRepo = uow.CreateRepository<Deposit>();
+            _accountRepo = uow.CreateRepository<Account>();
         }
 
         public async Task<IEnumerable<DepositDTO>> GetAll()
@@ -101,7 +106,7 @@ namespace MoneyManager.BLL.Services.Entities
                             new DepositPaymentDTO
                             {
                                 Name = payment.name, 
-                                Value = (float) Math.Round(payment.value, 2)
+                                Value = (decimal) Math.Round(payment.value, 2)
                             })
                     })
             };

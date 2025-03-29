@@ -7,6 +7,6 @@ namespace MoneyManager.WEB.Model
     {
         public string Name { get; set; }
 
-        public double Summary { get; set; }
+        public decimal Summary { get; set; }
     }
 }

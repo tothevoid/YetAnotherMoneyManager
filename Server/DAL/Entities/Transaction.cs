@@ -9,7 +9,7 @@ namespace MoneyManager.DAL.Entities
 
         public DateTime Date { get; set; }
 
-        public double MoneyQuantity { get; set; }
+        public decimal MoneyQuantity { get; set; }
 
         public Account Account { get; set; }
 

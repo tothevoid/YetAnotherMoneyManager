@@ -50,7 +50,7 @@ namespace MoneyManager.BLL.Services.Entities
             };
 
             var balanceDiff = account.Balance - currentAccountState.Balance;
-            if (Math.Abs(balanceDiff) > 0.0001)
+            if (Math.Abs(balanceDiff) > 0.0001m)
             {
                 var transaction = GenerateSystemTransaction(account,
                     $"{currentAccountState.Balance} => {account.Balance}", balanceDiff);
@@ -121,7 +121,7 @@ namespace MoneyManager.BLL.Services.Entities
             return groups.ToArray();
         }
 
-        private Transaction GenerateSystemTransaction(Account account, string title, double balance)
+        private Transaction GenerateSystemTransaction(Account account, string title, decimal balance)
         {
             return new Transaction()
             {

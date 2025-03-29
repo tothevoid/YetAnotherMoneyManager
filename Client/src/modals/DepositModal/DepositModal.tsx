@@ -61,17 +61,17 @@ const DepositModal = forwardRef<DepositModalRef, Props>((props: Props, ref)=> {
                         </Field.Root>
                         <Field.Root invalid={!!errors.percentage} mt={4}>
                             <Field.Label>{t("entity_deposit_percentage")}</Field.Label>
-                            <Input {...register("percentage", { valueAsNumber: true })} type="number" placeholder='10' />
+                            <Input {...register("percentage", { valueAsNumber: true })} type="number" step="0.01" placeholder='10' />
                             <Field.ErrorText>{errors.percentage?.message}</Field.ErrorText>
                         </Field.Root>
                         <Field.Root invalid={!!errors.initialAmount} mt={4}>
                             <Field.Label>{t("entity_deposit_initial_amount")}</Field.Label>
-                            <Input {...register("initialAmount", { valueAsNumber: true })} type='number' placeholder='10' />
+                            <Input {...register("initialAmount", { valueAsNumber: true })} type='number' step="0.01" placeholder='10' />
                             <Field.ErrorText>{errors.initialAmount?.message}</Field.ErrorText>
                         </Field.Root>
                         <Field.Root invalid={!!errors.estimatedEarn} mt={4}>
                             <Field.Label>{t("entity_deposit_estimated_earn")}</Field.Label>
-                            <Input {...register("estimatedEarn", { valueAsNumber: true })} type='number' placeholder='10' />
+                            <Input {...register("estimatedEarn", { valueAsNumber: true })} type='number' step="0.01" placeholder='10' />
                             <Field.ErrorText>{errors.estimatedEarn?.message}</Field.ErrorText>
                         </Field.Root>
                         <Flex gap={4} direction="row">

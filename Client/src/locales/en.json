@@ -63,6 +63,7 @@
 
     "data_title": "Data",
     "currencies_data_add": "Add currency",
+    "currencies_delete_title": "Delete currency",
 
     "entity_currency_name_form_title": "Currency",
     "entity_currency_name": "Name",

@@ -63,6 +63,7 @@
 
     "data_title": "Данные",
     "currencies_data_add": "Добавить валюту",
+    "currencies_delete_title": "Удалить валюту",
     
     "entity_currency_name_form_title": "Валюта",
     "entity_currency_name": "Название",

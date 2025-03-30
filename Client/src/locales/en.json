@@ -69,5 +69,8 @@
     "entity_currency_name": "Name",
     "entity_currency_active": "Active",
 
-    "deposits_page_no_deposits": "Нет депозитов в выбранном диапазоне"
+    "deposits_page_no_deposits": "Нет депозитов в выбранном диапазоне",
+    "deposits_chart_type_earnings": "Общий доход по месяцам",
+    "deposits_chart_type_stacked": "Доходы депозитов по месяцам",
+    "earnings_chart_data_title": "Доходы с депозитов"
 }

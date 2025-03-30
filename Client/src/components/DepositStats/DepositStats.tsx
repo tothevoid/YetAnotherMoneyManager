@@ -1,9 +1,15 @@
-import { ProgressCircle, Flex, Stack, Slider } from '@chakra-ui/react'
+import { ProgressCircle, Flex, Box, Stack, Button } from '@chakra-ui/react'
 import { useEffect, useState } from 'react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { DepositMonthSummary, DepositPayment } from './depositMonthSummary';
+import { DepositMonthSummary } from './depositMonthSummary';
 import { getDepositsSummary } from '../../api/depositApi';
-import { CHARTS_COLORS } from './chartsColors';
+import StackedDepositsChart from '../StackedDepositsChart/StackedDepositsChart';
+import DepositsEarningsChart from '../DepositsEarningsChart/DepositsEarningsChart';
+import { useTranslation } from 'react-i18next';
+
+enum ChartType {
+    Earnings,
+    Stacked
+}
 
 interface Props {
     selectedMinMonths: number,
@@ -12,11 +18,15 @@ interface Props {
 
 interface State {
     summary: DepositMonthSummary | null,
+    selectedChartType : ChartType
 }
 
 const DepositStats = (props: Props) => {
     const [state, setState] = useState<State>({
-        summary: null});
+        summary: null,
+        selectedChartType: ChartType.Earnings
+    });
+    const { t } = useTranslation();
 
     useEffect(() => {
         const getData = async () => {
@@ -45,32 +55,29 @@ const DepositStats = (props: Props) => {
         </Flex>
     }
 
-    const data = state.summary.payments.map(payment => {
-        const payments = payment.payments.reduce((accumulator: Map<string, number>, currentValue: DepositPayment) => {
-            if (currentValue?.name && currentValue.value) {
-                accumulator.set(currentValue.name, currentValue.value);
-            }
-            return accumulator;
-        }, new Map<string, number>());
-        return { date: payment.period, ...Object.fromEntries(payments)};
-    })
+    const switchActiveChart = (newType: ChartType) => {
+        setState(currentState => {
+            return {...currentState, selectedChartType: newType};
+        })
+    }
 
-    return <Stack>
-        <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            {
-                state.summary.deposits.map((deposit: string, index: number) => {
-                    //TODO: fix color out of range
-                    return <Bar dataKey={deposit} stackId="a" fill={CHARTS_COLORS[index]}/>
-                })
-            }
-        </BarChart>
-        </ResponsiveContainer>
-    </Stack>
+    return <Box paddingTop={10}>
+        <Stack direction="row">
+            <Button background='purple.600' disabled={state.selectedChartType === ChartType.Earnings} 
+                onClick={() => {switchActiveChart(ChartType.Earnings)}}>
+                {t("deposits_chart_type_earnings")}
+            </Button>
+            <Button background='purple.600' disabled={state.selectedChartType === ChartType.Stacked} 
+                onClick={() => {switchActiveChart(ChartType.Stacked)}}>
+                {t("deposits_chart_type_stacked")}
+            </Button>
+        </Stack>
+        {
+            state.selectedChartType === ChartType.Stacked ?
+                <StackedDepositsChart data={state.summary} /> :
+                <DepositsEarningsChart data={state.summary} />
+        }
+    </Box>
 }
 
 export default DepositStats;

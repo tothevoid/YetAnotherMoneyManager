@@ -50,6 +50,7 @@ const DepositsRangeSlider = (props: Props) => {
             setState((currentState) => {
                 return {...currentState, ...ranges}
             });
+            props.onDepositsRangeChanged(ranges.selectedMinMonths, ranges.selectedMaxMonths);
         }
         getData();
     }, []);

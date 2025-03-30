@@ -46,9 +46,10 @@
     "entity_transaction_name": "Name",
     "entity_transaction_date": "Date",
     "entity_transaction_money_quantity": "Ammount",
-    "entity_transaction_account_source": "account source",
+    "entity_transaction_account_source": "Account source",
     "entity_transaction_transaction_type": "Transaction type",
     "entity_transaction_direction": "Direction",
+    "entity_transaction_cashback": "Cashback",
     "entity_transaction_direction_income": "Income",
     "entity_transaction_direction_outcome": "Outcome",
 

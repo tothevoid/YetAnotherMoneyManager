@@ -21,6 +21,8 @@ namespace MoneyManager.DAL.Entities
 
         public Guid TransactionTypeId { get; set; }
 
+        public decimal Cashback { get; set; }
+
         public Transaction AssignAccount(Account account)
         {
             Account = account;

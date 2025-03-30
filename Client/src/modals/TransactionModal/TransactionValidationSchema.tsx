@@ -17,5 +17,8 @@ export const TransactionValidationSchema = z.object({
   direction: z.object({
     label: string(),
     value: string()
-  })
+  }),
+  cashback: z.number()
+    .nonnegative()
+    .gte(0)
 })

@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle } from 'react'
+import { forwardRef, Fragment, useImperativeHandle } from 'react'
 import { TransactionEntity } from '../../models/TransactionEntity';
 import { AccountEntity } from '../../models/AccountEntity';
 import { Field, Button, Input, useDisclosure, Dialog, Portal, CloseButton} from '@chakra-ui/react';
@@ -45,7 +45,7 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 		props.accounts[0] :
 		{id: ""} as AccountEntity
 
-	const { register, handleSubmit, control, formState: { errors }} = useForm<TransactionFormInput>({
+	const { register, handleSubmit, watch, control, formState: { errors }} = useForm<TransactionFormInput>({
 		resolver: zodResolver(TransactionValidationSchema),
 		mode: "onBlur",
 		defaultValues: {
@@ -55,6 +55,7 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 			moneyQuantity: moneyQuantity,
 			account: props.transaction?.account ?? source,
 			direction: direction,
+			cashback: props.transaction?.cashback ?? 0,
 			transactionType: props.transaction?.transactionType ?? ""
 		}
 	});
@@ -73,6 +74,8 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 		props.onSaved(formData);
 		onClose();
 	};
+
+	const selectedDirection = watch("direction")
 
 	return <Dialog.Root placement="center" open={open} onEscapeKeyDown={onClose}>
 		<Portal>
@@ -99,6 +102,15 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 						<Input {...register("moneyQuantity", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='500' />
 						<Field.ErrorText>{errors.moneyQuantity?.message}</Field.ErrorText>
 					</Field.Root>
+					{
+						selectedDirection.value === TransactionDirection.Spent ?
+							<Field.Root mt={4} invalid={!!errors.cashback}>
+								<Field.Label>{t("entity_transaction_cashback")}</Field.Label>
+								<Input {...register("cashback", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='100' />
+								<Field.ErrorText>{errors.cashback?.message}</Field.ErrorText>
+							</Field.Root>:
+							<Fragment/>
+					}
 					<Field.Root mt={4} invalid={!!errors.date}>
 						<Field.Label>{t("entity_transaction_date")}</Field.Label>
 						<DateSelect name="date" control={control}/>

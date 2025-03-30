@@ -5,6 +5,7 @@ export type TransactionEntity = {
     name: string,
     date: Date,
     moneyQuantity: number;
+    cashback: number,
     account: AccountEntity,
     transactionType: string
 }

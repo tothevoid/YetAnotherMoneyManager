@@ -49,6 +49,7 @@
     "entity_transaction_account_source": "Источник",
     "entity_transaction_transaction_type": "Тип",
     "entity_transaction_direction": "Движение средств",
+    "entity_transaction_cashback": "Кешбек",
     "entity_transaction_direction_income": "Доход",
     "entity_transaction_direction_outcome": "Расход",
 

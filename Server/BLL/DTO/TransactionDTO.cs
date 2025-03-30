@@ -19,5 +19,7 @@ namespace MoneyManager.BLL.DTO
         public string TransactionType { get; set; }
 
         //public Guid TransactionTypeId { get;set; }
+
+        public decimal Cashback { get; set; }
     }
 }

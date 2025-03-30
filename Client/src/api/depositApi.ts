@@ -7,8 +7,11 @@ import { DepositsRange } from './models/depositsRange';
 
 const basicUrl = `${config.api.URL}/Deposit`;
 
-export const getDeposits = async (): Promise<DepositEntity[]> => {
-    const deposits = await fetch(basicUrl, {method: "GET"})
+export const getDeposits = async (monthsFrom: number, monthsTo: number): Promise<DepositEntity[]> => {
+    const url = `${basicUrl}/GetAll`;
+    const deposits = await fetch(url, {method: "POST", 
+        body: getQueryDepositsQueryParamers(monthsFrom, monthsTo),
+        headers: {"Content-Type": "application/json"}})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
         .then((deposits: DepositEntity[]) => 
@@ -69,9 +72,11 @@ export const getDepositsRange = async (): Promise<DepositsRange | null> => {
     return result;
 }
 
-export const getDepositsSummary = async (): Promise<DepositMonthSummary | null> => {
+export const getDepositsSummary = async (monthsFrom: number, monthsTo: number): Promise<DepositMonthSummary | null> => {
     const url = `${basicUrl}/GetDepositsSummary`;
-    const summary: DepositMonthSummary | null = await fetch(url, {method: "GET"})
+    const summary: DepositMonthSummary | null = await fetch(url, {method: "POST",  
+        body: getQueryDepositsQueryParamers(monthsFrom, monthsTo),
+        headers: {"Content-Type": "application/json"}})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
         .catch(logPromiseError);
@@ -87,4 +92,8 @@ const prepareDepositEntity = (deposit: DepositEntity): string => {
     serverDeposit.to = convertToInputDate(deposit.to);
 
     return JSON.stringify(serverDeposit);
+}
+
+const getQueryDepositsQueryParamers = (monthsFrom: number, monthsTo: number) => {
+    return JSON.stringify({monthsFrom, monthsTo});
 }

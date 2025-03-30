@@ -9,6 +9,7 @@ using MoneyManager.Model.Charts.Deposit;
 using MoneyManager.Model.Common;
 using MoneyManager.Model.Server;
 using MoneyManager.WEB.Model;
+using MoneyManager.Model;
 
 namespace MoneyManager.WEB.Api
 {
@@ -25,17 +26,17 @@ namespace MoneyManager.WEB.Api
             _depositService = depositService;
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<DepositModel>> GetAll()
+        [HttpPost(nameof(GetAll))]
+        public async Task<IEnumerable<DepositModel>> GetAll(DepositFiltrationModel filtration)
         {
-            var deposits = await _depositService.GetAll();
+            var deposits = await _depositService.GetAll(filtration.MonthsFrom, filtration.MonthsTo);
             return _mapper.Map<IEnumerable<DepositModel>>(deposits);
         }
 
-        [HttpGet(nameof(GetDepositsSummary))]
-        public async Task<DepositMonthSummary> GetDepositsSummary()
+        [HttpPost(nameof(GetDepositsSummary))]
+        public async Task<DepositMonthSummary> GetDepositsSummary(DepositFiltrationModel filtration)
         {
-            var summary = await _depositService.GetSummary();
+            var summary = await _depositService.GetSummary(filtration.MonthsFrom, filtration.MonthsTo);
             return _mapper.Map<DepositMonthSummary>(summary);
         }
 

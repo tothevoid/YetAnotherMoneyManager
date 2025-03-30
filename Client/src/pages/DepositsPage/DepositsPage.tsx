@@ -6,23 +6,32 @@ import { Button, Text, Flex, SimpleGrid, Slider } from "@chakra-ui/react";
 import DepositStats from "../../components/DepositStats/DepositStats";
 import Deposit from "../../components/Deposit/Deposit";
 import { MdAdd } from "react-icons/md";
+import DepositsRangeSlider from "../../components/DepositsRangeSlider/DepositsRangeSlider";
 
 interface Props {}
 
 interface State {
-    deposits: DepositEntity[]
+    deposits: DepositEntity[],
+    selectedMinMonths: number,
+    selectedMaxMonths: number,
 }
 
 const DepositsPage: React.FC<Props> = () => {
-    const [state, setState] = useState<State>({deposits: []});
+    const [state, setState] = useState<State>({deposits: [], selectedMinMonths: 0, selectedMaxMonths: 0});
 
     useEffect(() => {
         const initDeposits = async () => {
-            const deposits = await getDeposits();
-            setState({deposits});
+            if (!state.selectedMinMonths || !state.selectedMaxMonths) {
+                return;
+            }
+
+            const deposits = await getDeposits(state.selectedMinMonths, state.selectedMaxMonths);
+            setState((currentState) => {
+                return {...currentState, deposits};
+            });
         }
         initDeposits();
-      }, []);
+      }, [state.selectedMinMonths, state.selectedMaxMonths]);
 
     const modalRef = useRef<DepositModalRef>(null);
 
@@ -35,7 +44,10 @@ const DepositsPage: React.FC<Props> = () => {
         if (!addedDeposit) {
             return;
         }
-        setState({deposits: [addedDeposit, ...state.deposits]})
+        setState((currentState) => {
+            const newDeposits = {deposits: [addedDeposit, ...state.deposits]};
+            return {...currentState, deposits: newDeposits};
+        });
 	};
 
     
@@ -45,12 +57,16 @@ const DepositsPage: React.FC<Props> = () => {
                 {...updatedDeposit}:
                 deposit
         );
-        setState({deposits});
+        setState((currentState) => {
+            return {...currentState, deposits};
+        });
     } 
 
     const onDepositDeleted = (deletedDeposit: DepositEntity) => {
         const deposits = state.deposits.filter(deposit => deposit.id !== deletedDeposit.id);
-        setState({deposits});
+        setState((currentState) => {
+            return {...currentState, deposits};
+        });
     }
 
     const getAddButton = () => {
@@ -73,13 +89,20 @@ const DepositsPage: React.FC<Props> = () => {
         </Flex>
     }
 
+    const onDepositsRangeChanged = async (fromMonths: number, toMonths: number) => {
+        setState((currentState) => {
+            return {...currentState, selectedMinMonths: fromMonths, selectedMaxMonths: toMonths};
+        });
+    }
+
     return (
         <Fragment>
             {
-                state.deposits.length > 0 ?
-                    <DepositStats/>:
+                state.deposits.length > 0 && state.selectedMaxMonths && state.selectedMaxMonths ?
+                    <DepositStats selectedMinMonths={state.selectedMinMonths}  selectedMaxMonths={state.selectedMaxMonths}/>:
                     <Fragment/>
             }
+            <DepositsRangeSlider onDepositsRangeChanged={onDepositsRangeChanged} />
             {
                 state.deposits.length > 0 ?
                     getAddButtonWithDeposits():

@@ -11,7 +11,7 @@ namespace BLL.Interfaces.Entities
 {
     public interface IDepositService
     {
-        Task<IEnumerable<DepositDTO>> GetAll();
+        Task<IEnumerable<DepositDTO>> GetAll(int monthsFrom, int monthsTo);
         
         Task<Guid> Add(DepositDTO deposit);
 
@@ -19,7 +19,7 @@ namespace BLL.Interfaces.Entities
 
         Task Delete(Guid id);
 
-        Task<DepositMonthSummaryDTO> GetSummary();
+        Task<DepositMonthSummaryDTO> GetSummary(int monthsFrom, int monthsTo);
 
         Task<DepositsRangeDto> GetDepositsRange();
     }

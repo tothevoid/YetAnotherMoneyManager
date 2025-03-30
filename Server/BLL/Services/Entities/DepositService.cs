@@ -29,9 +29,9 @@ namespace MoneyManager.BLL.Services.Entities
             _accountRepo = uow.CreateRepository<Account>();
         }
 
-        public async Task<IEnumerable<DepositDTO>> GetAll()
+        public async Task<IEnumerable<DepositDTO>> GetAll(int monthsFrom, int monthsTo)
         {
-            var deposits = await _depositRepo.GetAll();
+            var deposits = await GetDeposits(monthsFrom, monthsTo);
             return _mapper.Map<IEnumerable<DepositDTO>>(deposits.OrderByDescending(x => x.From));
         }
 
@@ -58,12 +58,21 @@ namespace MoneyManager.BLL.Services.Entities
             _db.Commit();
         }
 
-        public async Task<DepositMonthSummaryDTO> GetSummary()
+        public async Task<DepositMonthSummaryDTO> GetSummary(int monthsFrom, int monthsTo)
         {
             //TODO: IEnumerable order => IQueryable order
-            var deposits = (await _depositRepo.GetAll()).OrderBy(deposit => deposit.From).ToList();
-
+            //TODO: sort in db
+            var deposits = (await GetDeposits(monthsFrom, monthsTo)).OrderBy(deposit => deposit.From).ToList();
             var dates = new Dictionary<DateOnly, List<(string name, decimal value)>>();
+
+            if (!deposits.Any())
+            {
+                return new DepositMonthSummaryDTO()
+                {
+                    Deposits = Enumerable.Empty<string>(),
+                    Payments = Enumerable.Empty<PeriodPaymentDTO>(),
+                };
+            }
 
             foreach (var deposit in deposits)
             {
@@ -124,6 +133,20 @@ namespace MoneyManager.BLL.Services.Entities
             var rangeEnd = new DateOnly(maxValue.Year, maxValue.Month, 1).AddMonths(1).AddDays(-1);
 
             return new DepositsRangeDto() { From = rangeStart, To = rangeEnd };
+        }
+
+        private async Task<IEnumerable<Deposit>> GetDeposits(int monthsFrom, int monthsTo)
+        {
+            int minYear = (monthsFrom - 1) / 12;
+            int minMonth = (monthsFrom - 1) % 12 + 1;
+
+            int maxYear = (monthsTo - 1) / 12;
+            int maxMonth = (monthsTo - 1) % 12 + 1;
+
+            var rangeMin = new DateOnly(minYear, minMonth, 1);
+            var rangeMax = new DateOnly(maxYear, maxMonth, 1).AddMonths(1).AddDays(-1);
+            
+            return await _depositRepo.GetAll(deposit => deposit.To >= rangeMin && deposit.From <= rangeMax);
         }
 
         private decimal CalculateProfitInRange(DateOnly from, DateOnly to, int totalDays, decimal estimatedEarn)

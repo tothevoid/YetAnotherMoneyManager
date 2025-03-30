@@ -2,66 +2,37 @@ import { ProgressCircle, Flex, Stack, Slider } from '@chakra-ui/react'
 import { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { DepositMonthSummary, DepositPayment } from './depositMonthSummary';
-import { getDepositsRange, getDepositsSummary } from '../../api/depositApi';
+import { getDepositsSummary } from '../../api/depositApi';
 import { CHARTS_COLORS } from './chartsColors';
-import { DepositsRange } from '../../api/models/depositsRange';
+
+interface Props {
+    selectedMinMonths: number,
+    selectedMaxMonths: number,
+}
 
 interface State {
     summary: DepositMonthSummary | null,
-    minMonths: number | null,
-    maxMonths: number | null,
-    selectedMinMonths: number | null,
-    selectedMaxMonths: number | null,
-    marks: {label: string, values: string}[]
 }
 
-const convertRange = (range: DepositsRange) => {
-    debugger;
-    const minDate = new Date(range.from);
-    const minDateMonth = minDate.getMonth() + 1;
-    const minMonths = minDate.getFullYear() * 12 + minDateMonth;
-    const maxDate = new Date(range.to);
-    const maxDateMonth =  maxDate.getMonth() + 1;
-    const maxMonths = maxDate.getFullYear() * 12 + maxDateMonth;
-
-    //TODO: use culture to display date
-    const marks = [
-        { value: minMonths, label: `${minDateMonth}-${minDate.getFullYear()}` },
-        { value: maxMonths, label: `${maxDateMonth}-${maxDate.getFullYear()}` },
-    ]
-
-    debugger;
-    return {minMonths, maxMonths, marks, selectedMinMonths: minMonths, selectedMaxMonths: maxMonths};
-}
-
-const DepositStats = () => {
-    
+const DepositStats = (props: Props) => {
     const [state, setState] = useState<State>({
-        summary: null,
-        minMonths: null, 
-        maxMonths: null, 
-        selectedMinMonths: null, 
-        selectedMaxMonths: null, 
-        marks: []});
+        summary: null});
 
     useEffect(() => {
         const getData = async () => {
-            //TODO: add deposits change rerender
-            const range = await getDepositsRange();
-            if (!range) {
+            if (!props.selectedMinMonths || !props.selectedMaxMonths) {
                 return;
             }
 
-            const ranges = convertRange(range);
-            const summary = await getDepositsSummary();
+            const summary = await getDepositsSummary(props.selectedMinMonths, props.selectedMaxMonths);
             if (summary) {
                 setState((currentState) => {
-                    return {...currentState, ...ranges, summary}
+                    return {...currentState, summary }
                 })
             }
         }
         getData();
-    }, []);
+    }, [props.selectedMinMonths, props.selectedMaxMonths]);
 
     if (!state.summary) {
         return <Flex padding={5} justifyContent="center">
@@ -99,18 +70,6 @@ const DepositStats = () => {
             }
         </BarChart>
         </ResponsiveContainer>
-        {
-            <Slider.Root width={"100%"} min={state.minMonths!} max={state.maxMonths!} onChange={(selectedValues) => {debugger;}} 
-                defaultValue={[state.selectedMinMonths!, state.selectedMaxMonths!]} step={1}>
-                <Slider.Control>
-                <Slider.Track>
-                    <Slider.Range background={"purple.600"} />
-                </Slider.Track>
-                <Slider.Thumbs />
-                <Slider.Marks marks={state.marks}/>
-                </Slider.Control>
-            </Slider.Root>
-        }
     </Stack>
 }
 

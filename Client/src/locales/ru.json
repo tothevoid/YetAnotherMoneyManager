@@ -67,5 +67,7 @@
     
     "entity_currency_name_form_title": "Валюта",
     "entity_currency_name": "Название",
-    "entity_currency_active": "Активна"
+    "entity_currency_active": "Активна",
+
+    "deposits_page_no_deposits": "There is no deposits in selected range"
 }

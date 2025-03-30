@@ -7,6 +7,7 @@ import DepositStats from "../../components/DepositStats/DepositStats";
 import Deposit from "../../components/Deposit/Deposit";
 import { MdAdd } from "react-icons/md";
 import DepositsRangeSlider from "../../components/DepositsRangeSlider/DepositsRangeSlider";
+import { useTranslation } from "react-i18next";
 
 interface Props {}
 
@@ -18,6 +19,7 @@ interface State {
 
 const DepositsPage: React.FC<Props> = () => {
     const [state, setState] = useState<State>({deposits: [], selectedMinMonths: 0, selectedMaxMonths: 0});
+    const { t } = useTranslation();
 
     useEffect(() => {
         const initDeposits = async () => {
@@ -84,7 +86,7 @@ const DepositsPage: React.FC<Props> = () => {
 
     const getAddButtonWithoutDeposits = () => {
         return <Flex gap={4} direction="column" alignItems="center" justifyContent="center" height="100vh" width="100%">
-            <Text fontSize="2xl">There is no deposits yet.</Text>
+            <Text color={"text_primary"} fontSize="2xl">{t("deposits_page_no_deposits")}</Text>
             {getAddButton()}
         </Flex>
     }

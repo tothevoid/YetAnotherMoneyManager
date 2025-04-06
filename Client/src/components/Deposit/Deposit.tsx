@@ -49,11 +49,11 @@ const Deposit: React.FC<Props> = ({deposit, onUpdated, onCloned, onDeleted}) => 
         onCloned(deposit);
     }
 
-    const datesColor = deposit.to > new Date() ?
-        "green.500":
-        "red.500";
-
     const { i18n, t } = useTranslation();
+
+    const estimatedEarnTitle = deposit.to > new Date() ?
+        t("entity_deposit_estimated_earn"):
+        t("entity_deposit_earned");
 
     return <Card.Root borderColor="border_primary" color="text_primary" backgroundColor="background_primary">
         <Card.Body boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
@@ -70,11 +70,11 @@ const Deposit: React.FC<Props> = ({deposit, onUpdated, onCloned, onDeleted}) => 
                     </Flex>
                     <Flex justifyContent="space-between">
                         <Text color={"gray.500"}>{t("entity_deposit_dates")}:</Text>
-                        <Text color={datesColor}>{`${formatNumericDate(deposit.from, i18n)} - ${formatNumericDate(deposit.to, i18n)}`}</Text>
+                        <Text color={"green.500"}>{`${formatNumericDate(deposit.from, i18n)} - ${formatNumericDate(deposit.to, i18n)}`}</Text>
                     </Flex>
                     <Flex justifyContent="space-between">
-                        <Text color={"gray.500"}>{t("entity_deposit_estimated_earn")}:</Text>
-                        <Text color={datesColor}>+{formatMoney(deposit?.estimatedEarn ?? 0)}</Text>
+                        <Text color={"gray.500"}>{estimatedEarnTitle}:</Text>
+                        <Text color={"green.500"}>+{formatMoney(deposit?.estimatedEarn ?? 0)}</Text>
                     </Flex>
                     <Flex gap={2} paddingTop={4} justifyContent="end">
                         <Button background={'background_secondary'} onClick={showEditDepositModal} size={'sm'}>

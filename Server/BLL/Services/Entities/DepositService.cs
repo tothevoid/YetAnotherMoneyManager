@@ -10,6 +10,7 @@ using BLL.DTO;
 using BLL.Interfaces.Entities;
 using DAL.Constants;
 using MoneyManager.Model.Server;
+using System.Linq.Expressions;
 
 namespace MoneyManager.BLL.Services.Entities
 {
@@ -29,9 +30,9 @@ namespace MoneyManager.BLL.Services.Entities
             _accountRepo = uow.CreateRepository<Account>();
         }
 
-        public async Task<IEnumerable<DepositDTO>> GetAll(int monthsFrom, int monthsTo)
+        public async Task<IEnumerable<DepositDTO>> GetAll(int monthsFrom, int monthsTo, bool onlyActive)
         {
-            var deposits = await GetDeposits(monthsFrom, monthsTo);
+            var deposits = await GetDeposits(monthsFrom, monthsTo, onlyActive);
             return _mapper.Map<IEnumerable<DepositDTO>>(deposits.OrderByDescending(x => x.From));
         }
 
@@ -58,11 +59,11 @@ namespace MoneyManager.BLL.Services.Entities
             _db.Commit();
         }
 
-        public async Task<DepositMonthSummaryDTO> GetSummary(int monthsFrom, int monthsTo)
+        public async Task<DepositMonthSummaryDTO> GetSummary(int monthsFrom, int monthsTo, bool onlyActive)
         {
             //TODO: IEnumerable order => IQueryable order
             //TODO: sort in db
-            var deposits = (await GetDeposits(monthsFrom, monthsTo)).OrderBy(deposit => deposit.From).ToList();
+            var deposits = (await GetDeposits(monthsFrom, monthsTo, onlyActive)).OrderBy(deposit => deposit.From).ToList();
             var dates = new Dictionary<DateOnly, List<(string name, decimal value)>>();
 
             if (!deposits.Any())
@@ -135,7 +136,7 @@ namespace MoneyManager.BLL.Services.Entities
             return new DepositsRangeDto() { From = rangeStart, To = rangeEnd };
         }
 
-        private async Task<IEnumerable<Deposit>> GetDeposits(int monthsFrom, int monthsTo)
+        private async Task<IEnumerable<Deposit>> GetDeposits(int monthsFrom, int monthsTo, bool onlyActive)
         {
             int minYear = (monthsFrom - 1) / 12;
             int minMonth = (monthsFrom - 1) % 12 + 1;
@@ -145,8 +146,14 @@ namespace MoneyManager.BLL.Services.Entities
 
             var rangeMin = new DateOnly(minYear, minMonth, 1);
             var rangeMax = new DateOnly(maxYear, maxMonth, 1).AddMonths(1).AddDays(-1);
-            
-            return await _depositRepo.GetAll(deposit => deposit.To >= rangeMin && deposit.From <= rangeMax);
+
+            var currentDate = DateOnly.FromDateTime(DateTime.UtcNow);
+
+            Expression<Func<Deposit, bool>> filter = onlyActive ?
+                (deposit) => deposit.To >= rangeMin && deposit.From <= rangeMax && (deposit.To >= currentDate && deposit.From <= currentDate):
+                (deposit) => deposit.To >= rangeMin && deposit.From <= rangeMax;
+
+            return await _depositRepo.GetAll(filter);
         }
 
         private decimal CalculateProfitInRange(DateOnly from, DateOnly to, int totalDays, decimal estimatedEarn)

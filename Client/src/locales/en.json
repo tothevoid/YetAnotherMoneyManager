@@ -73,5 +73,7 @@
     "deposits_page_no_deposits": "Нет депозитов в выбранном диапазоне",
     "deposits_chart_type_earnings": "Общий доход по месяцам",
     "deposits_chart_type_stacked": "Доходы депозитов по месяцам",
-    "earnings_chart_data_title": "Доходы с депозитов"
+    "earnings_chart_data_title": "Доходы с депозитов",
+
+    "deposits_list_only_active": "Only active"
 }

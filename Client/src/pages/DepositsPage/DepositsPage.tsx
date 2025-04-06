@@ -2,7 +2,7 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { DepositEntity } from "../../models/DepositEntity";
 import DepositModal, { DepositModalRef } from "../../modals/DepositModal/DepositModal";
 import { createDeposit, getDeposits } from "../../api/depositApi";
-import { Button, Text, Flex, SimpleGrid, Slider } from "@chakra-ui/react";
+import { Button, Text, Flex, SimpleGrid, Checkbox } from "@chakra-ui/react";
 import DepositStats from "../../components/DepositStats/DepositStats";
 import Deposit from "../../components/Deposit/Deposit";
 import { MdAdd } from "react-icons/md";
@@ -15,10 +15,11 @@ interface State {
     deposits: DepositEntity[],
     selectedMinMonths: number,
     selectedMaxMonths: number,
+    onlyActive: boolean
 }
 
 const DepositsPage: React.FC<Props> = () => {
-    const [state, setState] = useState<State>({deposits: [], selectedMinMonths: 0, selectedMaxMonths: 0});
+    const [state, setState] = useState<State>({deposits: [], selectedMinMonths: 0, selectedMaxMonths: 0, onlyActive: true});
     const { t } = useTranslation();
 
     useEffect(() => {
@@ -27,13 +28,13 @@ const DepositsPage: React.FC<Props> = () => {
                 return;
             }
 
-            const deposits = await getDeposits(state.selectedMinMonths, state.selectedMaxMonths);
+            const deposits = await getDeposits(state.selectedMinMonths, state.selectedMaxMonths, state.onlyActive);
             setState((currentState) => {
                 return {...currentState, deposits};
             });
         }
         initDeposits();
-      }, [state.selectedMinMonths, state.selectedMaxMonths]);
+    }, [state.selectedMinMonths, state.selectedMaxMonths, state.onlyActive]);
 
     const modalRef = useRef<DepositModalRef>(null);
 
@@ -79,9 +80,7 @@ const DepositsPage: React.FC<Props> = () => {
     }
 
     const getAddButtonWithDeposits = () => {
-        return <Flex paddingTop={4}>
-            {getAddButton()}
-        </Flex>
+        return getAddButton();
     }
 
     const getAddButtonWithoutDeposits = () => {
@@ -97,19 +96,33 @@ const DepositsPage: React.FC<Props> = () => {
         });
     }
 
+    const onCheckboxChanged = async (checkboxChange: any) => {
+		setState((currentState) => {
+			return {...currentState, onlyActive: !!checkboxChange.checked};
+		});
+	}
+
     return (
         <Fragment>
             {
                 state.deposits.length > 0 && state.selectedMaxMonths && state.selectedMaxMonths ?
-                    <DepositStats selectedMinMonths={state.selectedMinMonths}  selectedMaxMonths={state.selectedMaxMonths}/>:
+                    <DepositStats onlyActive={state.onlyActive} selectedMinMonths={state.selectedMinMonths} selectedMaxMonths={state.selectedMaxMonths}/>:
                     <Fragment/>
             }
             <DepositsRangeSlider onDepositsRangeChanged={onDepositsRangeChanged} />
             {
                 state.deposits.length > 0 ?
-                    getAddButtonWithDeposits():
+                    <Flex gap={4} direction="row" alignItems="center" paddingTop={4}>
+                        {getAddButtonWithDeposits()}
+                        <Checkbox.Root checked={state.onlyActive} onCheckedChange={onCheckboxChanged} variant="solid">
+                            <Checkbox.HiddenInput />
+                            <Checkbox.Control />
+                            <Checkbox.Label color="text_primary">{t("deposits_list_only_active")}</Checkbox.Label>
+                        </Checkbox.Root>
+                    </Flex>:
                     getAddButtonWithoutDeposits()
             }
+           
             <DepositModal ref={modalRef} onSaved={onDepositAdded}/>
             <SimpleGrid pt={5} pb={5} gap={6} templateColumns='repeat(auto-fill, minmax(300px, 4fr))'>
                 {

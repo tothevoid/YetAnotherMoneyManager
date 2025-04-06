@@ -7,10 +7,10 @@ import { DepositsRange } from './models/depositsRange';
 
 const basicUrl = `${config.api.URL}/Deposit`;
 
-export const getDeposits = async (monthsFrom: number, monthsTo: number): Promise<DepositEntity[]> => {
+export const getDeposits = async (monthsFrom: number, monthsTo: number, onlyActive: boolean): Promise<DepositEntity[]> => {
     const url = `${basicUrl}/GetAll`;
     const deposits = await fetch(url, {method: "POST", 
-        body: getQueryDepositsQueryParamers(monthsFrom, monthsTo),
+        body: getQueryDepositsQueryParamers(monthsFrom, monthsTo, onlyActive),
         headers: {"Content-Type": "application/json"}})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
@@ -72,10 +72,10 @@ export const getDepositsRange = async (): Promise<DepositsRange | null> => {
     return result;
 }
 
-export const getDepositsSummary = async (monthsFrom: number, monthsTo: number): Promise<DepositMonthSummary | null> => {
+export const getDepositsSummary = async (monthsFrom: number, monthsTo: number, onlyActive: boolean): Promise<DepositMonthSummary | null> => {
     const url = `${basicUrl}/GetDepositsSummary`;
     const summary: DepositMonthSummary | null = await fetch(url, {method: "POST",  
-        body: getQueryDepositsQueryParamers(monthsFrom, monthsTo),
+        body: getQueryDepositsQueryParamers(monthsFrom, monthsTo, onlyActive),
         headers: {"Content-Type": "application/json"}})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
@@ -94,6 +94,6 @@ const prepareDepositEntity = (deposit: DepositEntity): string => {
     return JSON.stringify(serverDeposit);
 }
 
-const getQueryDepositsQueryParamers = (monthsFrom: number, monthsTo: number) => {
-    return JSON.stringify({monthsFrom, monthsTo});
+const getQueryDepositsQueryParamers = (monthsFrom: number, monthsTo: number, onlyActive: boolean) => {
+    return JSON.stringify({monthsFrom, monthsTo, onlyActive});
 }

@@ -29,14 +29,14 @@ namespace MoneyManager.WEB.Api
         [HttpPost(nameof(GetAll))]
         public async Task<IEnumerable<DepositModel>> GetAll(DepositFiltrationModel filtration)
         {
-            var deposits = await _depositService.GetAll(filtration.MonthsFrom, filtration.MonthsTo);
+            var deposits = await _depositService.GetAll(filtration.MonthsFrom, filtration.MonthsTo, filtration.OnlyActive);
             return _mapper.Map<IEnumerable<DepositModel>>(deposits);
         }
 
         [HttpPost(nameof(GetDepositsSummary))]
         public async Task<DepositMonthSummary> GetDepositsSummary(DepositFiltrationModel filtration)
         {
-            var summary = await _depositService.GetSummary(filtration.MonthsFrom, filtration.MonthsTo);
+            var summary = await _depositService.GetSummary(filtration.MonthsFrom, filtration.MonthsTo, filtration.OnlyActive);
             return _mapper.Map<DepositMonthSummary>(summary);
         }
 

@@ -14,6 +14,7 @@ enum ChartType {
 interface Props {
     selectedMinMonths: number,
     selectedMaxMonths: number,
+    onlyActive: boolean
 }
 
 interface State {
@@ -34,7 +35,7 @@ const DepositStats = (props: Props) => {
                 return;
             }
 
-            const summary = await getDepositsSummary(props.selectedMinMonths, props.selectedMaxMonths);
+            const summary = await getDepositsSummary(props.selectedMinMonths, props.selectedMaxMonths, props.onlyActive);
             if (summary) {
                 setState((currentState) => {
                     return {...currentState, summary }

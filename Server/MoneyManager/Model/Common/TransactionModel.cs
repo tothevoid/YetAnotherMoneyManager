@@ -19,6 +19,8 @@ namespace MoneyManager.WEB.Model
 
         public decimal Cashback { get; set; }
 
+        public bool IsSystem { get; set; }
+
         //public TransactionTypeModel TransactionType { get; set; }
 
         //public Guid TransactionTypeId { get; set; }

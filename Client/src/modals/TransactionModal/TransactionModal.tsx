@@ -56,6 +56,7 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 			account: props.transaction?.account ?? source,
 			direction: direction,
 			cashback: props.transaction?.cashback ?? 0,
+			isSystem: props.transaction?.isSystem ?? false,
 			transactionType: props.transaction?.transactionType ?? ""
 		}
 	});

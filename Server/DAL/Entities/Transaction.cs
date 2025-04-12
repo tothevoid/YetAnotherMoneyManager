@@ -23,6 +23,8 @@ namespace MoneyManager.DAL.Entities
 
         public decimal Cashback { get; set; }
 
+        public bool IsSystem { get; set; }
+
         public Transaction AssignAccount(Account account)
         {
             Account = account;

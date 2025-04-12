@@ -130,7 +130,8 @@ namespace MoneyManager.BLL.Services.Entities
                 Date = DateTime.UtcNow,
                 Name = title,
                 TransactionType = "System",
-                MoneyQuantity = balance
+                MoneyQuantity = balance,
+                IsSystem = true
             };
         }
     }

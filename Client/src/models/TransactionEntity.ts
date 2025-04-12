@@ -7,5 +7,6 @@ export type TransactionEntity = {
     moneyQuantity: number;
     cashback: number,
     account: AccountEntity,
-    transactionType: string
+    transactionType: string,
+    isSystem: boolean
 }

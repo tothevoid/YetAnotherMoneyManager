@@ -20,5 +20,6 @@ export const TransactionValidationSchema = z.object({
   }),
   cashback: z.number()
     .nonnegative()
-    .gte(0)
+    .gte(0),
+  isSystem: z.boolean()
 })

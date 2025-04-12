@@ -32,9 +32,12 @@ namespace MoneyManager.WEB.Mappings
             CreateMap<ClientDepositModel, ClientDepositDto>();
             CreateMap<ServerDepositDto, ServerDepositModel>();
 
-
             CreateMap<SecurityModel, SecurityDto>().ReverseMap();
-            CreateMap<SecurityTypeDto, SecurityType>().ReverseMap();
+            CreateMap<SecurityTypeModel, SecurityTypeDto>().ReverseMap();
+            CreateMap<BrokerModel, BrokerDto>().ReverseMap();
+            CreateMap<BrokerAccountModel, BrokerAccountDto>().ReverseMap();
+            CreateMap<BrokerAccountSecurityModel, BrokerAccountSecurityDto>().ReverseMap();
+            CreateMap<BrokerAccountTypeModel, BrokerAccountTypeDto>().ReverseMap();
         }
     }
 }

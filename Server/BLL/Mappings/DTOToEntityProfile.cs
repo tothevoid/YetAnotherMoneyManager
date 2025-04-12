@@ -23,6 +23,10 @@ namespace MoneyManager.BLL.Mappings
 
             CreateMap<SecurityDto, Security>().ReverseMap();
             CreateMap<SecurityTypeDto, SecurityType>().ReverseMap();
+            CreateMap<BrokerDto, Broker>().ReverseMap();
+            CreateMap<BrokerAccountDto, BrokerAccount>().ReverseMap();
+            CreateMap<BrokerAccountSecurityDto, BrokerAccountSecurity>().ReverseMap();
+            CreateMap<BrokerAccountTypeDto, BrokerAccountType>().ReverseMap();
         }
     }
 }

@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MoneyManager.Common;
-using MoneyManager.DAL.Entities;
 
 namespace MoneyManager.DAL.Entities
 {

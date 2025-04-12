@@ -3,7 +3,7 @@ import { i18n } from "i18next";
 export const getMonthByIndex = (index: number, i18n: i18n) => 
     getMonthsNames(i18n)[index - 1];
 
-export const convertToInputDate = (date: Date) => {
+export const convertToDateOnly = (date: Date) => {
     const year = date.getFullYear().toString();
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const day = date.getDate().toString().padStart(2, "0");

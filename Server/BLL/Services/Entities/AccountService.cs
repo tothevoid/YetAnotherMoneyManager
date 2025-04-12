@@ -8,7 +8,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using BLL.DTO;
 using MoneyManager.WEB.Model;
-using System.ComponentModel.Design;
 
 namespace MoneyManager.BLL.Services.Entities
 {
@@ -127,7 +126,7 @@ namespace MoneyManager.BLL.Services.Entities
             {
                 Account = account,
                 AccountId = account.Id,
-                Date = DateTime.UtcNow,
+                Date = DateOnly.FromDateTime(DateTime.UtcNow),
                 Name = title,
                 TransactionType = "System",
                 MoneyQuantity = balance,

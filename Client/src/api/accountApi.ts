@@ -1,7 +1,7 @@
 import config from "../config";
 import { Transfer } from "../modals/AccountBalanceTransferModal/AccountBalanceTransferModal";
 import { AccountEntity, ServerAccountEntity } from "../models/AccountEntity";
-import { convertToInputDate } from "../utils/DateUtils";
+import { convertToDateOnly } from "../utils/DateUtils";
 import { checkPromiseStatus, logPromiseError } from "../utils/PromiseUtils";
 import { AccountCurrencySummary } from "./models/accountsSummary";
 
@@ -82,7 +82,7 @@ export const getSummary = async (): Promise<AccountCurrencySummary[]> => {
 const prepareServerAccount = (account: AccountEntity): string => {
     const serverDeposit: ServerAccountEntity = {...account,
         // .NET DateOnly cast
-        createdOn: convertToInputDate(account.createdOn)
+        createdOn: convertToDateOnly(account.createdOn)
     };
     return JSON.stringify(serverDeposit);
 }

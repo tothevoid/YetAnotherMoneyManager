@@ -7,7 +7,7 @@ namespace MoneyManager.BLL.DTO
     {
         public string Name { get; set; }
 
-        public DateTime Date { get; set; }
+        public DateOnly Date { get; set; }
 
         public decimal MoneyQuantity { get; set; }
 

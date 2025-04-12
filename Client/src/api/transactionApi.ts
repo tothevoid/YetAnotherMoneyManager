@@ -1,5 +1,6 @@
 import config from '../config' 
 import { TransactionEntity } from '../models/TransactionEntity';
+import { convertToDateOnly } from '../utils/DateUtils';
 import { checkPromiseStatus, logPromiseError } from '../utils/PromiseUtils';
 import { AccountToUpdate } from './models/accountToUpdate';
 
@@ -24,7 +25,7 @@ export const getTransactions = async (month: number, year: number): Promise<Tran
 };
 
 export const createTransaction = async (transaction: TransactionEntity): Promise<TransactionEntity | void> => {
-    const newTransaction = await fetch(basicUrl, { method: "PUT", body: JSON.stringify(transaction),
+    const newTransaction = await fetch(basicUrl, { method: "PUT", body: prepareTransactionEntity(transaction),
         headers: {"Content-Type": "application/json"}})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
@@ -36,7 +37,7 @@ export const createTransaction = async (transaction: TransactionEntity): Promise
 }
 
 export const updateTransaction = async (modifiedTransaction: TransactionEntity): Promise<AccountToUpdate[]> => {
-    const result: AccountToUpdate[] | void = await fetch(basicUrl, { method: "PATCH", body: JSON.stringify(modifiedTransaction),  
+    const result: AccountToUpdate[] | void = await fetch(basicUrl, { method: "PATCH", body: prepareTransactionEntity(modifiedTransaction),  
         headers: {"Content-Type": "application/json"}})
         .then(checkPromiseStatus)
         .then(response => response.json())
@@ -56,4 +57,13 @@ export const deleteTransaction = async (transactionId: string): Promise<boolean>
         .catch(logPromiseError);
 
     return result?.ok ?? false;
+}
+
+const prepareTransactionEntity = (transaction: TransactionEntity): string => {
+    const serverTransaction = {...transaction};
+
+    // .NET DateOnly cast
+    serverTransaction.date = convertToDateOnly(serverTransaction.date );
+
+    return JSON.stringify(serverTransaction);
 }

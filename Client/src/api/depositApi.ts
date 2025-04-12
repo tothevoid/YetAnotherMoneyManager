@@ -1,7 +1,7 @@
 import { DepositMonthSummary } from '../components/DepositStats/depositMonthSummary';
 import config from '../config' 
 import { DepositEntity } from '../models/DepositEntity';
-import { convertToInputDate } from '../utils/DateUtils';
+import { convertToDateOnly } from '../utils/DateUtils';
 import { checkPromiseStatus, logPromiseError } from '../utils/PromiseUtils';
 import { DepositsRange } from './models/depositsRange';
 
@@ -88,8 +88,8 @@ const prepareDepositEntity = (deposit: DepositEntity): string => {
     const serverDeposit = {...deposit};
 
     // .NET DateOnly cast
-    serverDeposit.from = convertToInputDate(deposit.from);
-    serverDeposit.to = convertToInputDate(deposit.to);
+    serverDeposit.from = convertToDateOnly(deposit.from);
+    serverDeposit.to = convertToDateOnly(deposit.to);
 
     serverDeposit.currencyId = deposit.currency.id;
 

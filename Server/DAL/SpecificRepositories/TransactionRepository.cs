@@ -41,10 +41,10 @@ namespace MoneyManager.DAL.SpecificRepositories
                 .Result.ToListAsync();
         }
 
-        private (DateTime, DateTime) GetDateRange(int month, int year)
+        private (DateOnly, DateOnly) GetDateRange(int month, int year)
         {
-            var startDate = new DateTime(year, month, 1);
-            var endDate = new DateTime(year, month, 1).AddMonths(1).AddDays(-1);
+            var startDate = new DateOnly(year, month, 1);
+            var endDate = new DateOnly(year, month, 1).AddMonths(1).AddDays(-1);
             return (startDate, endDate);
         }
     }

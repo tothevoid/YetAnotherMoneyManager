@@ -30,18 +30,18 @@ namespace MoneyManager.WEB.Api
         }
 
         [HttpPut]
-        public async Task<Guid> Add(SecurityModel account)
+        public async Task<Guid> Add(SecurityModel security)
         {
-            var securityDto = _mapper.Map<SecurityDto>(account);
+            var securityDto = _mapper.Map<SecurityDto>(security);
             securityDto.CurrencyId = securityDto.Currency.Id;
             securityDto.TypeId = securityDto.Type.Id;
             return await _securityService.Add(securityDto);
         }
 
         [HttpPatch]
-        public async Task Update(SecurityModel account)
+        public async Task Update(SecurityModel security)
         {
-            var securityDto = _mapper.Map<SecurityDto>(account);
+            var securityDto = _mapper.Map<SecurityDto>(security);
             await _securityService.Update(securityDto);
         }
 

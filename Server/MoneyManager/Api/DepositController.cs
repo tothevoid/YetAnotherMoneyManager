@@ -10,6 +10,7 @@ using MoneyManager.Model.Common;
 using MoneyManager.Model.Server;
 using MoneyManager.WEB.Model;
 using MoneyManager.Model;
+using MoneyManager.Model.Deposits;
 
 namespace MoneyManager.WEB.Api
 {
@@ -27,30 +28,30 @@ namespace MoneyManager.WEB.Api
         }
 
         [HttpPost(nameof(GetAll))]
-        public async Task<IEnumerable<DepositModel>> GetAll(DepositFiltrationModel filtration)
+        public IEnumerable<ServerDepositModel> GetAll(DepositFiltrationModel filtration)
         {
-            var deposits = await _depositService.GetAll(filtration.MonthsFrom, filtration.MonthsTo, filtration.OnlyActive);
-            return _mapper.Map<IEnumerable<DepositModel>>(deposits);
+            var deposits = _depositService.GetAll(filtration.MonthsFrom, filtration.MonthsTo, filtration.OnlyActive);
+            return _mapper.Map<IEnumerable<ServerDepositModel>>(deposits);
         }
 
         [HttpPost(nameof(GetDepositsSummary))]
-        public async Task<DepositMonthSummary> GetDepositsSummary(DepositFiltrationModel filtration)
+        public DepositMonthSummary GetDepositsSummary(DepositFiltrationModel filtration)
         {
-            var summary = await _depositService.GetSummary(filtration.MonthsFrom, filtration.MonthsTo, filtration.OnlyActive);
+            var summary = _depositService.GetSummary(filtration.MonthsFrom, filtration.MonthsTo, filtration.OnlyActive);
             return _mapper.Map<DepositMonthSummary>(summary);
         }
 
         [HttpPut]
-        public async Task<Guid> Add(DepositModel deposit)
+        public async Task<Guid> Add(ClientDepositModel deposit)
         {
-            var depositDto = _mapper.Map<DepositDTO>(deposit);
+            var depositDto = _mapper.Map<ClientDepositDto>(deposit);
             return await _depositService.Add(depositDto);
         }
 
         [HttpPatch]
-        public async Task Update(DepositModel modifiedDeposit)
+        public async Task Update(ClientDepositModel modifiedDeposit)
         {
-            var deposit = _mapper.Map<DepositDTO>(modifiedDeposit);
+            var deposit = _mapper.Map<ClientDepositDto>(modifiedDeposit);
             await _depositService.Update(deposit);
         }
 

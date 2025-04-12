@@ -1,9 +1,9 @@
 ﻿using System;
 using MoneyManager.Common;
 
-namespace MoneyManager.Model.Common
+namespace MoneyManager.BLL.DTO
 {
-    public class DepositModel: BaseEntity
+    public class CommonDepositDto: BaseEntity
     {
         public string Name { get; set; }
 
@@ -16,9 +16,5 @@ namespace MoneyManager.Model.Common
         public decimal InitialAmount { get; set; }
 
         public decimal EstimatedEarn { get; set; }
-
-        public Guid CurrencyId { get; set; }
-
-        public Guid? AccountId { get; set; }
     }
 }

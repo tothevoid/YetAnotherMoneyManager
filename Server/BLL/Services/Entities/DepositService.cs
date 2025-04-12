@@ -8,17 +8,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using BLL.DTO;
 using BLL.Interfaces.Entities;
-using DAL.Constants;
 using MoneyManager.Model.Server;
 using System.Linq.Expressions;
+using DAL.Constants;
+using MoneyManager.Model.Deposits;
 
 namespace MoneyManager.BLL.Services.Entities
 {
     public class DepositService : IDepositService
     {
         private readonly IUnitOfWork _db;
-        private readonly IRepository<Deposit> _depositRepo;
-        private readonly IRepository<Account> _accountRepo;
+        private readonly IDepositRepository _depositRepo;
+        private readonly IAccountRepository _accountRepo;
 
 
         private readonly IMapper _mapper;
@@ -26,29 +27,52 @@ namespace MoneyManager.BLL.Services.Entities
         {
             _db = uow;
             _mapper = mapper;
-            _depositRepo = uow.CreateRepository<Deposit>();
-            _accountRepo = uow.CreateRepository<Account>();
+            _depositRepo = uow.CreateDepositRepository();
+            _accountRepo = uow.CreateAccountRepository();
         }
 
-        public async Task<IEnumerable<DepositDTO>> GetAll(int monthsFrom, int monthsTo, bool onlyActive)
+        public IEnumerable<ServerDepositDto> GetAll(int monthsFrom, int monthsTo, bool onlyActive)
         {
-            var deposits = await GetDeposits(monthsFrom, monthsTo, onlyActive);
-            return _mapper.Map<IEnumerable<DepositDTO>>(deposits.OrderByDescending(x => x.From));
+            var deposits = GetDeposits(monthsFrom, monthsTo, onlyActive);
+            return _mapper.Map<IEnumerable<ServerDepositDto>>(deposits.OrderByDescending(x => x.From));
         }
 
-        public async Task<Guid> Add(DepositDTO deposit)
+        public async Task<Guid> Add(ClientDepositDto deposit)
         {
             var mappedDeposit = _mapper.Map<Deposit>(deposit);
             mappedDeposit.Id = Guid.NewGuid();
+            var accountId = await LinkToAccount(deposit);
+            mappedDeposit.AccountId = accountId;
             await _depositRepo.Add(mappedDeposit);
+
+
             _db.Commit();
-            
             return mappedDeposit.Id;
         }
 
-        public async Task Update(DepositDTO updateTransactionModel)
+        public async Task Update(ClientDepositDto modifiedDeposit)
         {
-            var deposit = _mapper.Map<Deposit>(updateTransactionModel);
+            var currentDeposit = await _depositRepo.GetById(modifiedDeposit.Id);
+
+            if (currentDeposit == null)
+            {
+                return;
+            }
+
+            var deposit = _mapper.Map<Deposit>(modifiedDeposit);
+
+            if (currentDeposit.AccountId == Guid.Empty)
+            {
+                var accountId = await LinkToAccount(modifiedDeposit);
+                deposit.AccountId = accountId;
+            }
+            else if (currentDeposit.Account.CurrencyId != modifiedDeposit.CurrencyId)
+            {
+                var account = await _accountRepo.GetById(currentDeposit.AccountId);
+                account.CurrencyId = modifiedDeposit.CurrencyId;
+                await _accountRepo.Update(account);
+            }
+
             await _depositRepo.Update(deposit);
             _db.Commit();
         }
@@ -59,11 +83,11 @@ namespace MoneyManager.BLL.Services.Entities
             _db.Commit();
         }
 
-        public async Task<DepositMonthSummaryDTO> GetSummary(int monthsFrom, int monthsTo, bool onlyActive)
+        public DepositMonthSummaryDTO GetSummary(int monthsFrom, int monthsTo, bool onlyActive)
         {
             //TODO: IEnumerable order => IQueryable order
             //TODO: sort in db
-            var deposits = (await GetDeposits(monthsFrom, monthsTo, onlyActive)).OrderBy(deposit => deposit.From).ToList();
+            var deposits = (GetDeposits(monthsFrom, monthsTo, onlyActive)).OrderBy(deposit => deposit.From).ToList();
             var dates = new Dictionary<DateOnly, List<(string name, decimal value)>>();
 
             if (!deposits.Any())
@@ -136,7 +160,7 @@ namespace MoneyManager.BLL.Services.Entities
             return new DepositsRangeDto() { From = rangeStart, To = rangeEnd };
         }
 
-        private async Task<IEnumerable<Deposit>> GetDeposits(int monthsFrom, int monthsTo, bool onlyActive)
+        private IEnumerable<Deposit> GetDeposits(int monthsFrom, int monthsTo, bool onlyActive)
         {
             int minYear = (monthsFrom - 1) / 12;
             int minMonth = (monthsFrom - 1) % 12 + 1;
@@ -153,13 +177,31 @@ namespace MoneyManager.BLL.Services.Entities
                 (deposit) => deposit.To >= rangeMin && deposit.From <= rangeMax && (deposit.To >= currentDate && deposit.From <= currentDate):
                 (deposit) => deposit.To >= rangeMin && deposit.From <= rangeMax;
 
-            return await _depositRepo.GetAll(filter);
+            return _depositRepo.GetAllFull(filter);
         }
 
         private decimal CalculateProfitInRange(DateOnly from, DateOnly to, int totalDays, decimal estimatedEarn)
         {
             var days = to.DayNumber - from.DayNumber;
             return estimatedEarn / totalDays * days;
+        }
+
+        private async Task<Guid> LinkToAccount(ClientDepositDto deposit)
+        {
+            var accountId = Guid.NewGuid();
+            
+            await _accountRepo.Add(new Account
+            {
+                Id = accountId,
+                Name = deposit.Name,
+                AccountTypeId = AccountTypeConstants.DepositAccount,
+                CreatedOn = DateOnly.FromDateTime(DateTime.UtcNow),
+                Balance = deposit.InitialAmount,
+                Active = true,
+                CurrencyId = deposit.CurrencyId
+            });
+
+            return accountId;
         }
     }
 }

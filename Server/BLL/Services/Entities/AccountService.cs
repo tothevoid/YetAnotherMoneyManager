@@ -15,22 +15,22 @@ namespace MoneyManager.BLL.Services.Entities
     public class AccountService : IAccountService
     {
         private readonly IUnitOfWork _db;
-        private readonly IRepository<Account> _accountRepo;
+        private readonly IAccountRepository _accountRepo;
         private readonly IRepository<Transaction> _transactionRepo;
         private readonly IMapper _mapper;
         public AccountService(IUnitOfWork uow, IMapper mapper)
         {
             _db = uow;
             _mapper = mapper;
-            _accountRepo = uow.CreateRepository<Account>();
+            _accountRepo = uow.CreateAccountRepository();
             _transactionRepo = uow.CreateRepository<Transaction>();
         }
 
-        public async Task<IEnumerable<AccountDTO>> GetAll(bool onlyActive)
+        public IEnumerable<AccountDTO> GetAll(bool onlyActive)
         {
             var transactions = onlyActive ?
-                await _accountRepo.GetAll(account => account.Active) :
-                await _accountRepo.GetAll();
+                _accountRepo.GetAllFull(account => account.Active) :
+                _accountRepo.GetAllFull();
             return _mapper.Map<IEnumerable<AccountDTO>>(transactions);
         }
 

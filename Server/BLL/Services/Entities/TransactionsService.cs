@@ -13,14 +13,14 @@ namespace MoneyManager.BLL.Services.Entities
     {
         private readonly IUnitOfWork _db;
         private readonly ITransactionRepository _transactionsRepo;
-        private readonly IRepository<Account> _accountRepo;
+        private readonly IAccountRepository _accountRepo;
         private readonly IMapper _mapper;
         public TransactionsService(IUnitOfWork uow, IMapper mapper)
         {
             _db = uow;
             _mapper = mapper;
             _transactionsRepo = uow.CreateTransactionRepository();
-            _accountRepo = uow.CreateRepository<Account>();
+            _accountRepo = uow.CreateAccountRepository();
         }
 
         public IEnumerable<TransactionDTO> GetAll(int month, int year)

@@ -5,8 +5,8 @@ using MoneyManager.DAL.Entities;
 
 namespace MoneyManager.DAL.Interfaces
 {
-    public interface IAccountRepository : IRepository<Account>
+    public interface IDepositRepository: IRepository<Deposit>
     {
-        IEnumerable<Account> GetAllFull(Expression<Func<Account, bool>> predicate = null);
+        IEnumerable<Deposit> GetAllFull(Expression<Func<Deposit, bool>> predicate);
     }
 }

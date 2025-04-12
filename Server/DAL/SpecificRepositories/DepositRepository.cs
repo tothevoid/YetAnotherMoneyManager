@@ -1,0 +1,28 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using MoneyManager.DAL.Database;
+using MoneyManager.DAL.Entities;
+using MoneyManager.DAL.Interfaces;
+using MongoDB.Driver;
+
+namespace MoneyManager.DAL.SpecificRepositories
+{
+    internal class DepositRepository : Repository<Deposit>, IDepositRepository
+    {
+        public DepositRepository(IMongoContext context) : base(context) { }
+
+        public IEnumerable<Deposit> GetAllFull(Expression<Func<Deposit, bool>> predicate)
+        {
+            var accountCollection = _context.GetCollection<Account>(nameof(Account));
+            //TODO: fix AsEnumerable then mongo driver will support inner join
+            var query = (from deposit in DbSet.AsQueryable().Where(predicate)
+                join account in accountCollection.AsQueryable() on deposit.AccountId equals account.Id into accountJoin
+                from joinedAccount in accountJoin.DefaultIfEmpty()
+                select new { deposit, joinedAccount }).ToList();
+
+            return query.Select(x => x.deposit.AssignReferences(x.joinedAccount));
+        }
+    }
+}

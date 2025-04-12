@@ -5,6 +5,7 @@ using BLL.DTO;
 using MoneyManager.Model.Server;
 using MoneyManager.Model.Common;
 using MoneyManager.Model.Charts.Deposit;
+using MoneyManager.Model.Deposits;
 
 namespace MoneyManager.WEB.Mappings
 {
@@ -26,6 +27,9 @@ namespace MoneyManager.WEB.Mappings
             CreateMap<PeriodPaymentDTO, PeriodPayment>();
             CreateMap<AccountTransferModel, AccountTransferDto>();
             CreateMap<AccountCurrencySummaryDto, AccountCurrencySummaryModel>();
+
+            CreateMap<ClientDepositModel, ClientDepositDto>();
+            CreateMap<ServerDepositDto, ServerDepositModel>();
         }
     }
 }

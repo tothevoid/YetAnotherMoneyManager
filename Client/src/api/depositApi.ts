@@ -91,6 +91,8 @@ const prepareDepositEntity = (deposit: DepositEntity): string => {
     serverDeposit.from = convertToInputDate(deposit.from);
     serverDeposit.to = convertToInputDate(deposit.to);
 
+    serverDeposit.currencyId = deposit.currency.id;
+
     return JSON.stringify(serverDeposit);
 }
 

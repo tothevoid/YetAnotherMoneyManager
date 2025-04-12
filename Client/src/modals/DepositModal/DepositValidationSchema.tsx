@@ -15,6 +15,10 @@ export const DepositValidationSchema = z.object({
   estimatedEarn: z.number()
     .nonnegative()
     .gt(0),
+  currency: z.object({
+    id: z.string().nonempty({message: "Currency is not selected"}),
+    name: z.string()
+  }, {message: "Currency is not selected"}),
   from: z.date(),
   to: z.date(),
 })

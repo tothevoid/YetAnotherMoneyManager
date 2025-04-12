@@ -48,8 +48,7 @@ const DepositsPage: React.FC<Props> = () => {
             return;
         }
         setState((currentState) => {
-            const newDeposits = {deposits: [addedDeposit, ...state.deposits]};
-            return {...currentState, deposits: newDeposits};
+            return {...currentState, deposits: [addedDeposit, ...state.deposits]};
         });
 	};
 

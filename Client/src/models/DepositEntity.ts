@@ -1,3 +1,5 @@
+import { AccountEntity } from "./AccountEntity"
+
 export type DepositEntity = {
     id: string,
     name: string,
@@ -6,4 +8,5 @@ export type DepositEntity = {
     percentage: number,
     initialAmount: number,
     estimatedEarn?: number | null
+    account?: AccountEntity | null
 }

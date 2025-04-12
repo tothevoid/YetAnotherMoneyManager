@@ -40,6 +40,20 @@ namespace MoneyManager.DAL.Database
             return new TransactionRepository(_context);
         }
 
+        public IDepositRepository CreateDepositRepository()
+        {
+            if (repositories == null)
+                repositories = new Dictionary<string, object>();
+            return new DepositRepository(_context);
+        }
+
+        public IAccountRepository CreateAccountRepository()
+        {
+            if (repositories == null)
+                repositories = new Dictionary<string, object>();
+            return new AccountRepository(_context);
+        }
+
         public void Commit()
         {
             _context.SaveChanges();

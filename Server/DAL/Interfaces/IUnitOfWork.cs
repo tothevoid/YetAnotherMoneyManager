@@ -8,9 +8,13 @@ namespace MoneyManager.DAL.Interfaces
     public interface IUnitOfWork
     {
         IRepository<T> CreateRepository<T>() 
-            where T:BaseEntity;
+            where T: BaseEntity;
 
         ITransactionRepository CreateTransactionRepository();
+
+        IDepositRepository CreateDepositRepository();
+
+        IAccountRepository CreateAccountRepository();
 
         void Commit();
     }

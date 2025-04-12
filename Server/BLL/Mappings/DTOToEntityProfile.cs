@@ -3,6 +3,7 @@ using AutoMapper;
 using BLL.DTO;
 using MoneyManager.BLL.DTO;
 using MoneyManager.DAL.Entities;
+using MoneyManager.Model.Deposits;
 
 namespace MoneyManager.BLL.Mappings
 {
@@ -16,6 +17,9 @@ namespace MoneyManager.BLL.Mappings
             CreateMap<DepositDTO, Deposit>().ReverseMap();
             CreateMap<CurrencyDTO, Currency>().ReverseMap();
             CreateMap<AccountTypeDTO, AccountType>().ReverseMap();
+
+            CreateMap<Deposit, ServerDepositDto>().ReverseMap();
+            CreateMap<ClientDepositDto, Deposit>().ReverseMap();
         }
     }
 }

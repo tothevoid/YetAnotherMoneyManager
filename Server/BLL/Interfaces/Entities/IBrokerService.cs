@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace MoneyManager.BLL.Interfaces.Entities
 {
-    public interface ISecurityTransactionService
+    public interface IBrokerService
     {
-        Task<IEnumerable<SecurityTransactionDto>> GetAll();
-        Task<Guid> Add(SecurityTransactionDto securityTransaction);
-        Task Update(SecurityTransactionDto securityTransaction);
+        Task<IEnumerable<BrokerDto>> GetAll();
+        Task<Guid> Add(BrokerDto security);
+        Task Update(BrokerDto security);
         Task Delete(Guid id);
     }
 }

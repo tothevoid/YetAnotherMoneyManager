@@ -6,6 +6,7 @@ using MoneyManager.Model.Server;
 using MoneyManager.Model.Common;
 using MoneyManager.Model.Charts.Deposit;
 using MoneyManager.Model.Deposits;
+using MoneyManager.DAL.Entities;
 
 namespace MoneyManager.WEB.Mappings
 {

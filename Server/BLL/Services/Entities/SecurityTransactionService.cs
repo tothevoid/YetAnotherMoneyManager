@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MoneyManager.BLL.DTO;
 using MoneyManager.BLL.Interfaces.Entities;
+using MoneyManager.DAL.Entities;
 using MoneyManager.DAL.Interfaces;
 
 namespace MoneyManager.BLL.Services.Entities
@@ -21,9 +22,9 @@ namespace MoneyManager.BLL.Services.Entities
             _securityTransactionRepo = uow.CreateRepository<SecurityTransaction>();
         }
 
-        public IEnumerable<SecurityTransactionDto> GetAll()
+        public async Task<IEnumerable<SecurityTransactionDto>> GetAll()
         {
-            var securityTransactions = _securityTransactionRepo.GetAll();
+            var securityTransactions = await _securityTransactionRepo.GetAll();
             return _mapper.Map<IEnumerable<SecurityTransactionDto>>(securityTransactions);
         }
 

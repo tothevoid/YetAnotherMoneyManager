@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\Server\**" />
+    <Content Remove="Models\Server\**" />
+    <EmbeddedResource Remove="Models\Server\**" />
+    <None Remove="Models\Server\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BLL\MoneyManager.Application.csproj" />
+    <ProjectReference Include="..\Common\MoneyManager.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

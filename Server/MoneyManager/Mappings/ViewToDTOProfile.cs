@@ -3,12 +3,16 @@ using MoneyManager.BLL.DTO;
 using MoneyManager.WEB.Model;
 using BLL.DTO;
 using MoneyManager.Model.Server;
-using MoneyManager.Model.Common;
 using MoneyManager.Model.Charts.Deposit;
 using MoneyManager.Model.Deposits;
-using MoneyManager.DAL.Entities;
+using MoneyManager.WebApi.Models.Deposit;
+using MoneyManager.WebApi.Models.Security;
+using MoneyManager.WebApi.Models.Broker;
+using MoneyManager.WebApi.Models.Account;
+using MoneyManager.WebApi.Models.Currency;
+using MoneyManager.WebApi.Models.Transaction;
 
-namespace MoneyManager.WEB.Mappings
+namespace MoneyManager.WebApi.Mappings
 {
     public class ViewToDTOProfile : Profile
     {

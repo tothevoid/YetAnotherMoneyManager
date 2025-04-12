@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MoneyManager.Common
+namespace MoneyManager.Shared
 {
     public class BaseEntity
     {

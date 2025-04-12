@@ -1,0 +1,13 @@
+﻿using MoneyManager.Common;
+using MoneyManager.DAL;
+using System;
+
+namespace MoneyManager.WebApi.Models.Account
+{
+    public class UpdateAccountModel
+    {
+        public Guid AccountId { get; set; }
+
+        public decimal Delta { get; set; }
+    }
+}

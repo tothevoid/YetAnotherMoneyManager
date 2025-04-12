@@ -13,6 +13,10 @@ namespace MoneyManager.BLL.DTO
 
         public Guid SecurityId { get; set; }
 
+        public BrokerAccountDto BrokerAccount { get; set; }
+
+        public Guid BrokerAccountId { get; set; }
+
         public int Quantity { get; set; }
 
         public decimal Price { get; set; }

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MoneyManager.BLL.DTO;
 using MoneyManager.BLL.Interfaces.Entities;
+using MoneyManager.DAL.Entities;
 using MoneyManager.DAL.Interfaces;
 
 namespace MoneyManager.BLL.Services.Entities

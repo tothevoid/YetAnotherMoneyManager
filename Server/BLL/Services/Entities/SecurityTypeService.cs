@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MoneyManager.BLL.Interfaces.Entities;
 using MoneyManager.BLL.DTO;
 using System;
+using MoneyManager.DAL.Entities;
 
 namespace BLL.Services.Entities
 {

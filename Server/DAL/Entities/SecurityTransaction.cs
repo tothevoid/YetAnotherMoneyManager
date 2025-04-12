@@ -4,14 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MoneyManager.Common;
+using MoneyManager.DAL.Entities;
 
-namespace MoneyManager.BLL.DTO
+namespace MoneyManager.DAL.Entities
 {
     public class SecurityTransaction: BaseEntity
     {
         public Security Security { get; set; }
 
         public Guid SecurityId { get; set; }
+
+        public BrokerAccount BrokerAccount { get; set; }
+
+        public Guid BrokerAccountId { get; set; }
 
         public int Quantity { get; set; }
 

@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MoneyManager.Common;
-using MoneyManager.WEB.Model;
 
 namespace MoneyManager.WEB.Model
 {
@@ -13,6 +8,10 @@ namespace MoneyManager.WEB.Model
         public SecurityModel Security { get; set; }
 
         public Guid SecurityId { get; set; }
+
+        public BrokerAccountModel BrokerAccount { get; set; }
+
+        public Guid BrokerAccountId { get; set; }
 
         public int Quantity { get; set; }
 

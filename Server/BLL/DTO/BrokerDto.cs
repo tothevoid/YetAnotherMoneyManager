@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using MoneyManager.Common;
 
-namespace MoneyManager.DAL.Entities
+namespace MoneyManager.BLL.DTO
 {
-    public class SecurityType: BaseEntity
+    public class BrokerDto: BaseEntity
     {
         public string Name { get; set; }
     }

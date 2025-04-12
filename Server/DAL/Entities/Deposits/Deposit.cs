@@ -1,7 +1,8 @@
-﻿using MoneyManager.Common;
+﻿using MoneyManager.Infrastructure.Entities.Accounts;
+using MoneyManager.Shared.Entities;
 using System;
 
-namespace MoneyManager.DAL.Entities
+namespace MoneyManager.Infrastructure.Entities.Deposits
 {
     public class Deposit : BaseEntity
     {

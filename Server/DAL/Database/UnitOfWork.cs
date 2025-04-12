@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
-using MoneyManager.Common;
-using MoneyManager.DAL.Interfaces;
 using MoneyManager.DAL.SpecificRepositories;
+using MoneyManager.Infrastructure.Interfaces.Base;
+using MoneyManager.Infrastructure.Interfaces.Repositories;
+using MoneyManager.Shared.Entities;
 
-namespace MoneyManager.DAL.Database
+namespace MoneyManager.Infrastructure.Database
 {
     public class UnitOfWork : IDisposable, IUnitOfWork
     {

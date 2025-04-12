@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MoneyManager.Common;
-using MoneyManager.DAL.Entities;
+﻿using MoneyManager.Shared.Entities;
 
-namespace DAL.Interfaces.Utilitary
+namespace MoneyManager.Infrastructure.Interfaces.Utilitary
 {
     public interface IDataGenerator<out TEntity>
         where TEntity: BaseEntity

@@ -1,7 +1,8 @@
 ﻿using System;
-using MoneyManager.Common;
+using MoneyManager.Infrastructure.Entities.Securities;
+using MoneyManager.Shared.Entities;
 
-namespace MoneyManager.DAL.Entities
+namespace MoneyManager.Infrastructure.Entities.Brokers
 {
     public class BrokerAccountSecurity: BaseEntity
     {

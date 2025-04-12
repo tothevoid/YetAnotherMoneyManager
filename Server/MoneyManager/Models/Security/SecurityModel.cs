@@ -1,5 +1,5 @@
 ﻿using System;
-using MoneyManager.Shared;
+using MoneyManager.Shared.Entities;
 using MoneyManager.WebApi.Models.Currency;
 
 namespace MoneyManager.WebApi.Models.Security

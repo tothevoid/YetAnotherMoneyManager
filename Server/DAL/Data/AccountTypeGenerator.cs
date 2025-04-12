@@ -1,9 +1,8 @@
-﻿using DAL.Constants;
-using DAL.Interfaces.Utilitary;
-using MoneyManager.DAL.Entities;
-using System;
+﻿using MoneyManager.Infrastructure.Constants;
+using MoneyManager.Infrastructure.Entities.Account;
+using MoneyManager.Infrastructure.Interfaces.Utilitary;
 
-namespace MoneyManager.Data
+namespace MoneyManager.Infrastructure.Data
 {
     public class AccountTypeGenerator: IDataGenerator<AccountType>
     {

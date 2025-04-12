@@ -1,6 +1,8 @@
-﻿using MoneyManager.DAL.Database;
-using MoneyManager.DAL.Entities;
-using MoneyManager.DAL.Interfaces;
+﻿using MoneyManager.Infrastructure.Database;
+using MoneyManager.Infrastructure.Entities.Accounts;
+using MoneyManager.Infrastructure.Entities.Transactions;
+using MoneyManager.Infrastructure.Interfaces.Database;
+using MoneyManager.Infrastructure.Interfaces.Repositories;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using System;

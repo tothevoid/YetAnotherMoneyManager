@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using MoneyManager.DAL.Database;
-using MoneyManager.DAL.Entities;
-using MoneyManager.DAL.Interfaces;
+using MoneyManager.Infrastructure.Database;
+using MoneyManager.Infrastructure.Entities.Accounts;
+using MoneyManager.Infrastructure.Entities.Deposits;
+using MoneyManager.Infrastructure.Interfaces.Database;
+using MoneyManager.Infrastructure.Interfaces.Repositories;
 using MongoDB.Driver;
 
 namespace MoneyManager.DAL.SpecificRepositories

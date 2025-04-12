@@ -1,7 +1,8 @@
-﻿using MoneyManager.Common;
+﻿using MoneyManager.Infrastructure.Entities.Currencies;
+using MoneyManager.Shared.Entities;
 using System;
 
-namespace MoneyManager.DAL.Entities
+namespace MoneyManager.Infrastructure.Entities.Accounts
 {
     public class Account : BaseEntity
     {

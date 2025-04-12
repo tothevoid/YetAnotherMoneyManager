@@ -1,5 +1,3 @@
-using MoneyManager.DAL.Interfaces;
-using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 using System;
@@ -7,15 +5,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using MoneyManager.DAL.Entities;
-using MoneyManager.Data;
-using MongoDB.Bson.Serialization.Serializers;
-using MongoDB.Bson.Serialization;
-using System.Xml;
-using DAL.Interfaces.Utilitary;
-using MoneyManager.Common;
+using MoneyManager.Infrastructure.Entities.Account;
+using MoneyManager.Infrastructure.Entities.Currency;
+using MoneyManager.Infrastructure.Interfaces.Base;
+using MoneyManager.Infrastructure.Data;
+using MoneyManager.Shared.Entities;
 
-namespace MoneyManager.DAL.Database
+namespace MoneyManager.Infrastructure.Database
 {
     public class MongoContext : IMongoContext
     {

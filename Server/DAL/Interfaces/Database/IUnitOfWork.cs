@@ -1,9 +1,7 @@
-using MoneyManager.Common;
-using System;
-using System.Collections;
-using System.Threading.Tasks;
+using MoneyManager.Infrastructure.Interfaces.Repositories;
+using MoneyManager.Shared.Entities;
 
-namespace MoneyManager.DAL.Interfaces
+namespace MoneyManager.Infrastructure.Interfaces.Database
 {
     public interface IUnitOfWork
     {

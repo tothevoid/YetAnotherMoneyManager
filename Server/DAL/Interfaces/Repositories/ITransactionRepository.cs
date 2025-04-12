@@ -1,11 +1,9 @@
-﻿using MoneyManager.DAL.Entities;
-using System;
-using System.Collections;
+﻿using MoneyManager.Infrastructure.Entities.Transactions;
+using MoneyManager.Infrastructure.Interfaces.Database;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace MoneyManager.DAL.Interfaces
+namespace MoneyManager.Infrastructure.Interfaces.Repositories
 {
     public interface ITransactionRepository: IRepository<Transaction>
     {

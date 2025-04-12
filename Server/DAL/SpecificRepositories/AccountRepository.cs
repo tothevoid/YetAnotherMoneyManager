@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using MoneyManager.DAL.Database;
-using MoneyManager.DAL.Entities;
-using MoneyManager.DAL.Interfaces;
+using MoneyManager.Infrastructure.Database;
+using MoneyManager.Infrastructure.Entities.Accounts;
+using MoneyManager.Infrastructure.Entities.Currencies;
+using MoneyManager.Infrastructure.Interfaces.Database;
+using MoneyManager.Infrastructure.Interfaces.Repositories;
 using MongoDB.Driver;
 
-namespace MoneyManager.DAL.SpecificRepositories
+namespace MoneyManager.Infrastructure.SpecificRepositories
 {
     internal class AccountRepository: Repository<Account>, IAccountRepository
     {

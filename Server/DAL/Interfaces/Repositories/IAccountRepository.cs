@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using MoneyManager.DAL.Entities;
+using MoneyManager.Infrastructure.Entities.Accounts;
+using MoneyManager.Infrastructure.Interfaces.Database;
 
-namespace MoneyManager.DAL.Interfaces
+namespace MoneyManager.Infrastructure.Interfaces.Repositories
 {
     public interface IAccountRepository : IRepository<Account>
     {

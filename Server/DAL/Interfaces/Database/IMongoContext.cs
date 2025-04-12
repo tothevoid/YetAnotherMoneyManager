@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace MoneyManager.DAL.Interfaces
+namespace MoneyManager.Infrastructure.Interfaces.Database
 {
     public interface IMongoContext : IDisposable
     {

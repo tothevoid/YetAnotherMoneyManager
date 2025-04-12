@@ -1,5 +1,5 @@
 ﻿using System;
-using MoneyManager.Shared;
+using MoneyManager.Shared.Entities;
 
 namespace MoneyManager.WebApi.Models.Deposit
 {

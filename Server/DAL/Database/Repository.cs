@@ -1,13 +1,12 @@
 using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using MoneyManager.DAL.Interfaces;
 using MongoDB.Driver;
 using System.Collections.Generic;
-using MoneyManager.Common;
-using MongoDB.Bson;
+using MoneyManager.Shared.Entities;
+using MoneyManager.Infrastructure.Interfaces.Database;
 
-namespace MoneyManager.DAL.Database
+namespace MoneyManager.Infrastructure.Database
 {
     public class Repository<TEntity>: IDisposable, IRepository<TEntity>
         where TEntity: BaseEntity

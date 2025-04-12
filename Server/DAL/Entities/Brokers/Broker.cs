@@ -1,6 +1,6 @@
-﻿using MoneyManager.Common;
+﻿using MoneyManager.Shared.Entities;
 
-namespace MoneyManager.DAL.Entities
+namespace MoneyManager.Infrastructure.Entities.Brokers
 {
     public class Broker: BaseEntity
     {

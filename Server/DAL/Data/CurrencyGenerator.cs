@@ -1,8 +1,7 @@
-﻿using System;
-using DAL.Interfaces.Utilitary;
-using MoneyManager.DAL.Entities;
+﻿using MoneyManager.Infrastructure.Entities.Currency;
+using MoneyManager.Infrastructure.Interfaces.Utilitary;
 
-namespace MoneyManager.Data
+namespace MoneyManager.Infrastructure.Data
 {
     public class CurrencyGenerator : IDataGenerator<Currency>
     {

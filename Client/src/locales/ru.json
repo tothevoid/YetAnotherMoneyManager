@@ -11,7 +11,7 @@
     "manager_transactions_add_transaction": "Добавить траназкцию",
     "manager_transactions_empty": "Отсутствуют транзакции",
     "manager_stats_title": "Статистика",
-    "manager_stats_by_source": "По активу",
+    "manager_stats_by_source": "По счёту",
     "manager_stats_by_type": "По типу",
 
     "entity_account_name_form_title": "Cчёт",

@@ -20,6 +20,9 @@ namespace MoneyManager.BLL.Mappings
 
             CreateMap<Deposit, ServerDepositDto>().ReverseMap();
             CreateMap<ClientDepositDto, Deposit>().ReverseMap();
+
+            CreateMap<SecurityDto, Security>().ReverseMap();
+            CreateMap<SecurityTypeDto, SecurityType>().ReverseMap();
         }
     }
 }

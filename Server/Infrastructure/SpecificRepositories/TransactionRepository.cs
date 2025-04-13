@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MoneyManager.DAL.SpecificRepositories
+namespace MoneyManager.Infrastructure.SpecificRepositories
 {
     public class TransactionRepository: Repository<Transaction>, ITransactionRepository
     {

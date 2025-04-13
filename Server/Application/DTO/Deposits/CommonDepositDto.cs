@@ -1,7 +1,7 @@
 ﻿using MoneyManager.Shared.Entities;
 using System;
 
-namespace MoneyManager.BLL.DTO
+namespace MoneyManager.Application.DTO
 {
     public class CommonDepositDTO: BaseEntity
     {

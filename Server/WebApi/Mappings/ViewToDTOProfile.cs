@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using MoneyManager.BLL.DTO;
+using MoneyManager.Application.DTO;
 using MoneyManager.Model.Deposits;
 using MoneyManager.Application.DTO.Transactions;
 using MoneyManager.Application.DTO.Deposits;

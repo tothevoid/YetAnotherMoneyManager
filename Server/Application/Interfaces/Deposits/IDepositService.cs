@@ -1,4 +1,4 @@
-﻿using MoneyManager.BLL.DTO;
+﻿using MoneyManager.Application.DTO;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

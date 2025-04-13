@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using MoneyManager.DAL.SpecificRepositories;
+using MoneyManager.Infrastructure.SpecificRepositories;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using MoneyManager.Infrastructure.Interfaces.Repositories;
 using MoneyManager.Infrastructure.SpecificRepositories;

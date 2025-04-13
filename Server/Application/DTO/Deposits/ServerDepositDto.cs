@@ -1,6 +1,6 @@
 ﻿using System;
 using MoneyManager.Application.DTO.Accounts;
-using MoneyManager.BLL.DTO;
+using MoneyManager.Application.DTO;
 
 namespace MoneyManager.Model.Deposits
 {

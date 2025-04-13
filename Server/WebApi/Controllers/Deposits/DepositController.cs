@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
 using AutoMapper;
-using MoneyManager.BLL.DTO;
+using MoneyManager.Application.DTO;
 using MoneyManager.Application.Interfaces.Deposits;
 using MoneyManager.WebApi.Models.Deposits;
 using MoneyManager.WebApi.Models.Deposits.Charts;

@@ -9,7 +9,7 @@ using MoneyManager.Infrastructure.Interfaces.Database;
 using MoneyManager.Infrastructure.Interfaces.Repositories;
 using MongoDB.Driver;
 
-namespace MoneyManager.DAL.SpecificRepositories
+namespace MoneyManager.Infrastructure.SpecificRepositories
 {
     internal class DepositRepository : Repository<Deposit>, IDepositRepository
     {

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using MoneyManager.BLL.Mappings;
+using MoneyManager.Application.Mappings;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson;
@@ -20,7 +20,7 @@ using MoneyManager.WebApi.Mappings;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// TODO: Transfer to DAL
+// TODO: Transfer to Infrastructure solution
 BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.CSharpLegacy));
 
 var clientUrl = builder.Configuration.GetSection("Client").GetSection("Url").Value;
@@ -70,4 +70,3 @@ app.UseRouting();
 app.MapControllers();
 
 app.Run();
-

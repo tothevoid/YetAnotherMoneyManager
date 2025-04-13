@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MoneyManager.BLL.DTO
+namespace MoneyManager.Application.DTO
 {
     public class ClientDepositDTO: CommonDepositDTO
     {

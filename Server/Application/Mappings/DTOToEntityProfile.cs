@@ -5,7 +5,7 @@ using MoneyManager.Application.DTO.Currencies;
 using MoneyManager.Application.DTO.Deposits;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.DTO.Transactions;
-using MoneyManager.BLL.DTO;
+using MoneyManager.Application.DTO;
 using MoneyManager.Infrastructure.Entities.Accounts;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Entities.Currencies;
@@ -14,7 +14,7 @@ using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Infrastructure.Entities.Transactions;
 using MoneyManager.Model.Deposits;
 
-namespace MoneyManager.BLL.Mappings
+namespace MoneyManager.Application.Mappings
 {
     public class DTOToEntityProfile : Profile
     {

@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 import { getDepositsRange } from "../../api/depositApi";
 import { PinInputPropsProvider, Slider } from "@chakra-ui/react";
-import { DepositsRange } from "../../api/models/depositsRange";
+import { DepositsRange } from "../../models/deposits/depositsRange";
 
 interface State {
     minMonths: number | null,

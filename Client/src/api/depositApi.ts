@@ -3,7 +3,8 @@ import config from '../config'
 import { DepositEntity } from '../models/deposits/DepositEntity';
 import { convertToDateOnly } from '../utils/DateUtils';
 import { checkPromiseStatus, logPromiseError } from '../utils/PromiseUtils';
-import { DepositsRange } from './models/depositsRange';
+import { DepositsRange } from '../models/deposits/depositsRange';
+import { createEntity, deleteEntity, updateEntity } from './basicApi';
 
 const basicUrl = `${config.api.URL}/Deposit`;
 
@@ -28,38 +29,16 @@ export const getDeposits = async (monthsFrom: number, monthsTo: number, onlyActi
         [] as DepositEntity[];
 };
 
-export const createDeposit = async (deposit: DepositEntity): Promise<DepositEntity | void> => {
-    const newDeposit = await fetch(basicUrl, { method: "PUT", body: prepareDepositEntity(deposit),
-        headers: {"Content-Type": "application/json"}})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
-        .then(id => {
-            return {...deposit, id} as DepositEntity;
-        })
-        .catch(logPromiseError);
-    return newDeposit;
+export const createDeposit = async (createdDeposit: DepositEntity): Promise<DepositEntity | void> => {
+    return await createEntity(basicUrl, prepareDepositEntity(createdDeposit));
 }
 
 export const updateDeposit = async (modifiedDeposit: DepositEntity): Promise<boolean> => {
-    const result = await fetch(basicUrl, { method: "PATCH", body: prepareDepositEntity(modifiedDeposit),  
-        headers: {"Content-Type": "application/json"}})
-        .then(checkPromiseStatus)
-        .catch(logPromiseError);
-
-    return result?.ok ?? false;
+    return await updateEntity(basicUrl, prepareDepositEntity(modifiedDeposit));
 }
 
 export const deleteDeposit = async (depositId: string): Promise<boolean> => {
-    if (!depositId) {
-        return false;
-    }
-
-    const url = `${basicUrl}?id=${depositId}`;
-    const result = await fetch(url, { method: "DELETE"})
-        .then(checkPromiseStatus)
-        .catch(logPromiseError);
-
-    return result?.ok ?? false;
+    return await deleteEntity(basicUrl, depositId)
 }
 
 export const getDepositsRange = async (): Promise<DepositsRange | null> => {
@@ -84,7 +63,7 @@ export const getDepositsSummary = async (monthsFrom: number, monthsTo: number, o
     return summary;
 };
 
-const prepareDepositEntity = (deposit: DepositEntity): string => {
+const prepareDepositEntity = (deposit: DepositEntity): DepositEntity => {
     const serverDeposit = {...deposit};
 
     // .NET DateOnly cast
@@ -93,7 +72,7 @@ const prepareDepositEntity = (deposit: DepositEntity): string => {
 
     serverDeposit.currencyId = deposit.currency.id;
 
-    return JSON.stringify(serverDeposit);
+    return serverDeposit;
 }
 
 const getQueryDepositsQueryParamers = (monthsFrom: number, monthsTo: number, onlyActive: boolean) => {

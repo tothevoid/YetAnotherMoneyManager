@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 import { getAccounts, getSummary } from "../../api/accountApi";
 import AccountsList from "../../components/AccountsList/AccountsList";
-import { AccountCurrencySummary } from "../../api/models/accountsSummary";
+import { AccountCurrencySummary } from "../../models/accounts/accountsSummary";
 import { Flex, Text } from "@chakra-ui/react";
 import { formatMoneyByCurrencyCulture } from "../../formatters/moneyFormatter";
 import { useTranslation } from "react-i18next";

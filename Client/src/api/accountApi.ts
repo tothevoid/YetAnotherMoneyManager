@@ -1,6 +1,6 @@
 import config from "../config";
 import { Transfer } from "../modals/AccountBalanceTransferModal/AccountBalanceTransferModal";
-import { AccountEntity, ServerAccountEntity } from "../models/AccountEntity";
+import { AccountEntity, ServerAccountEntity } from "../models/accounts/AccountEntity";
 import { convertToDateOnly } from "../utils/DateUtils";
 import { checkPromiseStatus, logPromiseError } from "../utils/PromiseUtils";
 import { AccountCurrencySummary } from "./models/accountsSummary";

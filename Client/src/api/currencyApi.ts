@@ -1,5 +1,5 @@
 import config from "../config";
-import { CurrencyEntity } from "../models/CurrencyEntity";
+import { CurrencyEntity } from "../models/currencies/CurrencyEntity";
 import { checkPromiseStatus, logPromiseError } from "../utils/PromiseUtils";
 
 const basicUrl = `${config.api.URL}/Currency`;

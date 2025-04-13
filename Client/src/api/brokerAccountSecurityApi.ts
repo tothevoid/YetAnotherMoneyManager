@@ -1,5 +1,5 @@
 import config from '../config' 
-import { BrokerAccountSecurityEntity } from '../models/BrokerAccountSecurityEntity';
+import { BrokerAccountSecurityEntity } from '../models/brokers/BrokerAccountSecurityEntity';
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from './basicApi';
 
 const basicUrl = `${config.api.URL}/BrokerAccountSecurity`;

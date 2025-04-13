@@ -1,5 +1,5 @@
 import { Box, Button, Checkbox, Icon, Input, Table } from "@chakra-ui/react";
-import { CurrencyEntity } from "../../../../models/CurrencyEntity";
+import { CurrencyEntity } from "../../../../models/currencies/CurrencyEntity";
 import { useEffect, useRef, useState } from "react";
 import { createCurrency, deleteCurrency, getCurrencies, updateCurrency } from "../../../../api/currencyApi";
 import { MdAdd, MdDelete } from "react-icons/md";

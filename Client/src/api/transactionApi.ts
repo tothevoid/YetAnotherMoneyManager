@@ -1,5 +1,5 @@
 import config from '../config' 
-import { TransactionEntity } from '../models/TransactionEntity';
+import { TransactionEntity } from '../models/transactions/TransactionEntity';
 import { convertToDateOnly } from '../utils/DateUtils';
 import { checkPromiseStatus, logPromiseError } from '../utils/PromiseUtils';
 import { AccountToUpdate } from './models/accountToUpdate';

@@ -1,4 +1,4 @@
-import { Currency } from "../formatters/moneyFormatter";
+import { Currency } from "../../formatters/moneyFormatter";
 import { BrokerAccountTypeEntity } from "./BrokerAccountTypeEntity";
 import { BrokerEntity } from "./BrokerEntity";
 

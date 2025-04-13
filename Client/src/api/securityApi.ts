@@ -1,5 +1,5 @@
 import config from '../config' 
-import { SecurityEntity } from '../models/SecurityEntity';
+import { SecurityEntity } from '../models/securities/SecurityEntity';
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from './basicApi';
 
 const basicUrl = `${config.api.URL}/Security`;

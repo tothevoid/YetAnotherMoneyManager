@@ -1,6 +1,6 @@
 import { forwardRef, Fragment, useImperativeHandle } from 'react'
 import { TransactionEntity } from '../../models/TransactionEntity';
-import { AccountEntity } from '../../models/AccountEntity';
+import { AccountEntity } from '../../models/accounts/AccountEntity';
 import { Field, Button, Input, useDisclosure, Dialog, Portal, CloseButton} from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TransactionFormInput, TransactionValidationSchema } from './TransactionValidationSchema';

@@ -1,5 +1,5 @@
 import config from '../config' 
-import { BrokerEntity } from '../models/BrokerEntity';
+import { BrokerEntity } from '../models/brokers/BrokerEntity';
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from './basicApi';
 
 const basicUrl = `${config.api.URL}/Broker`;

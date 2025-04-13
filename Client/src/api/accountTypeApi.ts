@@ -1,8 +1,6 @@
 import config from '../config' 
-import { AccountTypeEntity } from '../models/AccountTypeEntity';
-import { TransactionEntity } from '../models/TransactionEntity';
+import { AccountTypeEntity } from '../models/accounts/AccountTypeEntity';
 import { checkPromiseStatus, logPromiseError } from '../utils/PromiseUtils';
-import { AccountToUpdate } from './models/accountToUpdate';
 
 const basicUrl = `${config.api.URL}/AccountType`;
 

@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CurrencyValidationSchema, CurrencyFormInput } from "./CurrencyValidationSchema";
 import { useTranslation } from "react-i18next";
-import { CurrencyEntity } from "../../models/CurrencyEntity";
+import { CurrencyEntity } from "../../models/currencies/CurrencyEntity";
 import CheckboxInput from "../../controls/CheckboxInput/CheckboxInput";
 
 type Props = {

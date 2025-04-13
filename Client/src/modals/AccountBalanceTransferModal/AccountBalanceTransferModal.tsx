@@ -1,6 +1,6 @@
 import { Button, CloseButton, Dialog, Field, Input, Portal, useDisclosure} from "@chakra-ui/react"
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react"
-import { AccountEntity } from "../../models/AccountEntity";
+import { AccountEntity } from "../../models/accounts/AccountEntity";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AccountFormInput, AccountBalanceTransferModalValidationSchema } from "./AccountBalanceTransferModalValidationSchema";

@@ -1,4 +1,4 @@
-import { AccountEntity } from "./AccountEntity";
+import { AccountEntity } from "../accounts/AccountEntity";
 
 export type TransactionEntity = {
     id: string,

@@ -1,13 +1,13 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { Button, Field, Input, Dialog, useDisclosure, Flex, Portal, CloseButton} from '@chakra-ui/react';
-import { DepositEntity } from '../../models/DepositEntity';
+import { DepositEntity } from '../../models/deposits/DepositEntity';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from "react-hook-form";
 import { DepositValidationSchema, DepositFormInput } from "./DepositValidationSchema";
 import { useTranslation } from "react-i18next";
 import DateSelect from "../../controls/DateSelect/DateSelect";
 import { getCurrencies } from '../../api/currencyApi';
-import { CurrencyEntity } from '../../models/CurrencyEntity';
+import { CurrencyEntity } from '../../models/currencies/CurrencyEntity';
 import CollectionSelect from '../../controls/CollectionSelect/CollectionSelect';
 
 type Props = {

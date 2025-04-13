@@ -1,5 +1,5 @@
+import { CurrencyEntity } from "../currencies/CurrencyEntity"
 import { AccountTypeEntity } from "./AccountTypeEntity"
-import { CurrencyEntity } from "./CurrencyEntity"
 
 interface AccountCommon {
     id: string,

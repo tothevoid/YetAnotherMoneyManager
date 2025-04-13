@@ -1,4 +1,4 @@
-import { BrokerAccountEntity } from "./BrokerAccountEntity";
+import { BrokerAccountEntity } from "../brokers/BrokerAccountEntity";
 import { SecurityEntity } from "./SecurityEntity";
 
 export interface SecurityTransactionEntity {

@@ -3,7 +3,7 @@ import "./TransactionsPage.scss"
 import React, { Fragment, useEffect, useState } from 'react';
 import Transaction from '../../components/Transaction/Transaction';
 import { TransactionEntity } from '../../models/TransactionEntity';
-import { AccountEntity } from '../../models/AccountEntity';
+import { AccountEntity } from '../../models/accounts/AccountEntity';
 import { insertByPredicate, reorderByPredicate } from '../../utils/ArrayExtensions'
 import Pagination from '../../components/Pagination/Pagination';
 import TransactionStats from '../../components/TransactionStats/TransactionStats';

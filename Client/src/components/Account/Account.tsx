@@ -1,4 +1,4 @@
-import { AccountEntity } from '../../models/AccountEntity';
+import { AccountEntity } from '../../models/accounts/AccountEntity';
 import { Button, Card, Flex, Icon, Stack, Text } from '@chakra-ui/react';
 import { MdDelete, MdEdit, MdCompareArrows } from "react-icons/md";
 import { Fragment, useRef } from 'react';

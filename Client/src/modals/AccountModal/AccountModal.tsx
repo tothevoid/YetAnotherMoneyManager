@@ -1,17 +1,17 @@
 import { Button, CloseButton, Dialog, Field, Input, Portal, useDisclosure} from "@chakra-ui/react"
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react"
-import { AccountEntity } from "../../models/AccountEntity";
+import { AccountEntity } from "../../models/accounts/AccountEntity";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AccountFormInput, AccountValidationSchema } from "./AccountValidationSchema";
 import { useTranslation } from "react-i18next";
 import { getCurrencies } from "../../api/currencyApi";
-import { CurrencyEntity } from "../../models/CurrencyEntity";
+import { CurrencyEntity } from "../../models/currencies/CurrencyEntity";
 import DateSelect from "../../controls/DateSelect/DateSelect";
 import CollectionSelect from "../../controls/CollectionSelect/CollectionSelect";
 import CheckboxInput from "../../controls/CheckboxInput/CheckboxInput";
 import { getAccountTypes } from "../../api/accountTypeApi";
-import { AccountTypeEntity } from "../../models/AccountTypeEntity";
+import { AccountTypeEntity } from "../../models/accounts/AccountTypeEntity";
 
 type AccountProps = {
 	account?: AccountEntity | null,

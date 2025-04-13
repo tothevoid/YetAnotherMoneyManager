@@ -2,7 +2,7 @@ import { MdDelete, MdEdit, MdContentCopy } from "react-icons/md";
 import { Card, Flex, Stack, Button, Text, Container, Icon } from "@chakra-ui/react";
 import {  formatNumericDate } from "../../formatters/dateFormatter";
 import { formatMoney } from "../../formatters/moneyFormatter";
-import { DepositEntity } from "../../models/DepositEntity";
+import { DepositEntity } from "../../models/deposits/DepositEntity";
 import DepositModal, { DepositModalRef } from "../../modals/DepositModal/DepositModal";
 import { useRef } from "react";
 import { ConfirmModal, ConfirmModalRef } from "../../modals/ConfirmModal/ConfirmModal";

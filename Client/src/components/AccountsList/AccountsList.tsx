@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import Account from '../Account/Account'
-import { AccountEntity } from '../../models/AccountEntity';
+import { AccountEntity } from '../../models/accounts/AccountEntity';
 import { SimpleGrid } from '@chakra-ui/react/grid';
 import { Checkbox, Flex } from '@chakra-ui/react';
 import AddAccountButton from '../AddAccountButton/AddAccountButton';

@@ -1,7 +1,7 @@
-import DataLayout from "../../components/Data/DataLayout/DataLayout";
-import CurrenciesTable from "../../components/Data/Tables/CurrenciesTable/CurrenciesTable";
-import BanksTable from "../../components/Data/Tables/BanksTable/BanksTable";
 import { useParams } from "react-router-dom";
+import DataLayout from "../../components/data/DataLayout/DataLayout";
+import BanksTable from "../../components/data/Tables/BanksTable/BanksTable";
+import CurrenciesTable from "../../components/data/Tables/CurrenciesTable/CurrenciesTable";
 
 const DataPage = () => {
     const { tab = "currencies" } = useParams(); // Получаем текущий таб из URL

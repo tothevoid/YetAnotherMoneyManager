@@ -1,13 +1,13 @@
-import { AccountEntity } from '../../models/accounts/AccountEntity';
 import { Button, Card, Flex, Icon, Stack, Text } from '@chakra-ui/react';
 import { MdDelete, MdEdit, MdCompareArrows } from "react-icons/md";
 import { Fragment, useRef } from 'react';
-import AccountModal, { AccountModalRef } from '../../modals/AccountModal/AccountModal';
-import { formatMoneyByCurrencyCulture } from '../../formatters/moneyFormatter';
-import { ConfirmModal, ConfirmModalRef } from '../../modals/ConfirmModal/ConfirmModal';
-import { deleteAccount, updateAccount } from '../../api/accounts/accountApi';
 import { useTranslation } from 'react-i18next';
-import AccountBalanceTransferModal, { TransferModalRef } from '../../modals/AccountBalanceTransferModal/AccountBalanceTransferModal';
+import { updateAccount, deleteAccount } from '../../../api/accounts/accountApi';
+import { formatMoneyByCurrencyCulture } from '../../../formatters/moneyFormatter';
+import AccountBalanceTransferModal, { TransferModalRef } from '../../../modals/AccountBalanceTransferModal/AccountBalanceTransferModal';
+import AccountModal, { AccountModalRef } from '../../../modals/AccountModal/AccountModal';
+import { ConfirmModalRef, ConfirmModal } from '../../../modals/ConfirmModal/ConfirmModal';
+import { AccountEntity } from '../../../models/accounts/AccountEntity';
 
 type Props = {
     account: AccountEntity,

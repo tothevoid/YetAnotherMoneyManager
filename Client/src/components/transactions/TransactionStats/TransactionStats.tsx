@@ -1,10 +1,10 @@
 import { AccountEntity } from '../../../models/accounts/AccountEntity'
-import { TransactionEntity } from '../../models/TransactionEntity'
 import { Button, Flex, Stack } from '@chakra-ui/react'
 import { Text } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
+import { TransactionEntity } from '../../../models/transactions/TransactionEntity';
 
 type Props = {
     accounts: AccountEntity[]

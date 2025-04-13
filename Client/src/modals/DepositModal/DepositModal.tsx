@@ -6,9 +6,9 @@ import { useForm } from "react-hook-form";
 import { DepositValidationSchema, DepositFormInput } from "./DepositValidationSchema";
 import { useTranslation } from "react-i18next";
 import DateSelect from "../../controls/DateSelect/DateSelect";
-import { getCurrencies } from '../../api/currencyApi';
 import { CurrencyEntity } from '../../models/currencies/CurrencyEntity';
 import CollectionSelect from '../../controls/CollectionSelect/CollectionSelect';
+import { getCurrencies } from '../../api/currencies/currencyApi';
 
 type Props = {
     deposit?: DepositEntity | null,

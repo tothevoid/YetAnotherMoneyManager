@@ -1,5 +1,4 @@
 import { forwardRef, Fragment, useImperativeHandle } from 'react'
-import { TransactionEntity } from '../../models/TransactionEntity';
 import { AccountEntity } from '../../models/accounts/AccountEntity';
 import { Field, Button, Input, useDisclosure, Dialog, Portal, CloseButton} from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import DateSelect from '../../controls/DateSelect/DateSelect';
 import CollectionSelect from '../../controls/CollectionSelect/CollectionSelect';
+import { TransactionEntity } from '../../models/transactions/TransactionEntity';
 
 type Props = {
 	accounts: AccountEntity[],

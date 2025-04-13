@@ -5,13 +5,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AccountFormInput, AccountValidationSchema } from "./AccountValidationSchema";
 import { useTranslation } from "react-i18next";
-import { getCurrencies } from "../../api/currencyApi";
 import { CurrencyEntity } from "../../models/currencies/CurrencyEntity";
 import DateSelect from "../../controls/DateSelect/DateSelect";
 import CollectionSelect from "../../controls/CollectionSelect/CollectionSelect";
 import CheckboxInput from "../../controls/CheckboxInput/CheckboxInput";
 import { getAccountTypes } from "../../api/accounts/accountTypeApi";
 import { AccountTypeEntity } from "../../models/accounts/AccountTypeEntity";
+import { getCurrencies } from "../../api/currencies/currencyApi";
 
 type AccountProps = {
 	account?: AccountEntity | null,

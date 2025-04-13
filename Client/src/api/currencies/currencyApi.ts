@@ -1,6 +1,6 @@
-import config from "../config";
-import { CurrencyEntity } from "../models/currencies/CurrencyEntity";
-import { createEntity, deleteEntity, getAllEntities, updateEntity } from "./basicApi";
+import config from "../../config";
+import { CurrencyEntity } from "../../models/currencies/CurrencyEntity";
+import { createEntity, deleteEntity, getAllEntities, updateEntity } from "../basicApi";
 
 const basicUrl = `${config.api.URL}/Currency`;
 

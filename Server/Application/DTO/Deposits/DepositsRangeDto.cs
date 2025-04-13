@@ -2,7 +2,7 @@
 
 namespace MoneyManager.Application.DTO.Deposits
 {
-    public class DepositsRangeDto
+    public class DepositsRangeDTO
     {
         public DateOnly From { get; set; }
 

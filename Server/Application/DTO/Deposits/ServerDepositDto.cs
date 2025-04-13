@@ -4,7 +4,7 @@ using MoneyManager.BLL.DTO;
 
 namespace MoneyManager.Model.Deposits
 {
-    public class ServerDepositDto : CommonDepositDto
+    public class ServerDepositDTO : CommonDepositDTO
     {
         public Guid AccountId { get; set; }
 

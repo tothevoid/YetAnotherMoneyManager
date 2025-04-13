@@ -32,13 +32,13 @@ namespace MoneyManager.Application.Services.Deposits
             _accountRepo = uow.CreateAccountRepository();
         }
 
-        public IEnumerable<ServerDepositDto> GetAll(int monthsFrom, int monthsTo, bool onlyActive)
+        public IEnumerable<ServerDepositDTO> GetAll(int monthsFrom, int monthsTo, bool onlyActive)
         {
             var deposits = GetDeposits(monthsFrom, monthsTo, onlyActive);
-            return _mapper.Map<IEnumerable<ServerDepositDto>>(deposits.OrderByDescending(x => x.From));
+            return _mapper.Map<IEnumerable<ServerDepositDTO>>(deposits.OrderByDescending(x => x.From));
         }
 
-        public async Task<Guid> Add(ClientDepositDto deposit)
+        public async Task<Guid> Add(ClientDepositDTO deposit)
         {
             var mappedDeposit = _mapper.Map<Deposit>(deposit);
             mappedDeposit.Id = Guid.NewGuid();
@@ -51,7 +51,7 @@ namespace MoneyManager.Application.Services.Deposits
             return mappedDeposit.Id;
         }
 
-        public async Task Update(ClientDepositDto modifiedDeposit)
+        public async Task Update(ClientDepositDTO modifiedDeposit)
         {
             var currentDeposit = await _depositRepo.GetById(modifiedDeposit.Id);
 
@@ -147,7 +147,7 @@ namespace MoneyManager.Application.Services.Deposits
             };
         }
 
-        public async Task<DepositsRangeDto> GetDepositsRange()
+        public async Task<DepositsRangeDTO> GetDepositsRange()
         {
             var minValueRequest = _depositRepo.GetMin((deposit) => deposit.From);
             var maxValueRequest = _depositRepo.GetMax((deposit) => deposit.To);
@@ -158,7 +158,7 @@ namespace MoneyManager.Application.Services.Deposits
             var rangeStart = new DateOnly(minValue.Year, minValue.Month, 1);
             var rangeEnd = new DateOnly(maxValue.Year, maxValue.Month, 1).AddMonths(1).AddDays(-1);
 
-            return new DepositsRangeDto() { From = rangeStart, To = rangeEnd };
+            return new DepositsRangeDTO() { From = rangeStart, To = rangeEnd };
         }
 
         private IEnumerable<Deposit> GetDeposits(int monthsFrom, int monthsTo, bool onlyActive)
@@ -187,7 +187,7 @@ namespace MoneyManager.Application.Services.Deposits
             return estimatedEarn / totalDays * days;
         }
 
-        private async Task<Guid> LinkToAccount(ClientDepositDto deposit)
+        private async Task<Guid> LinkToAccount(ClientDepositDTO deposit)
         {
             var accountId = Guid.NewGuid();
             

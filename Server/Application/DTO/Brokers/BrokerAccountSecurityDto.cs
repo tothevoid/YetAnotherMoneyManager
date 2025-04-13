@@ -4,13 +4,13 @@ using MoneyManager.Shared.Entities;
 
 namespace MoneyManager.Application.DTO.Brokers
 {
-    public class BrokerAccountSecurityDto: BaseEntity
+    public class BrokerAccountSecurityDTO: BaseEntity
     {
-        public BrokerAccountDto BrokerAccount { get; set; }
+        public BrokerAccountDTO BrokerAccount { get; set; }
 
         public Guid BrokerAccountId { get; set; }
 
-        public SecurityDto Security { get; set; }
+        public SecurityDTO Security { get; set; }
 
         public Guid SecurityId { get; set; }
 

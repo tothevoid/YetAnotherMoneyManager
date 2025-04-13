@@ -32,14 +32,14 @@ namespace MoneyManager.WebApi.Controllers.Securities
         [HttpPut]
         public async Task<Guid> Add(SecurityTypeModel securityType)
         {
-            var securityTypeDto = _mapper.Map<SecurityTypeDto>(securityType);
+            var securityTypeDto = _mapper.Map<SecurityTypeDTO>(securityType);
             return await _securityTypeService.Add(securityTypeDto);
         }
 
         [HttpPatch]
         public async Task Update(SecurityTypeModel securityType)
         {
-            var securityTypeDto = _mapper.Map<SecurityTypeDto>(securityType);
+            var securityTypeDto = _mapper.Map<SecurityTypeDTO>(securityType);
             await _securityTypeService.Update(securityTypeDto);
         }
 

@@ -4,13 +4,13 @@ using MoneyManager.Shared.Entities;
 
 namespace MoneyManager.Application.DTO.Securities
 {
-    public class SecurityDto: BaseEntity
+    public class SecurityDTO: BaseEntity
     {
         public string Name { get; set; }
 
         public string Ticker { get; set; }
 
-        public SecurityTypeDto Type { get; set; }
+        public SecurityTypeDTO Type { get; set; }
 
         public Guid TypeId { get; set; }
 

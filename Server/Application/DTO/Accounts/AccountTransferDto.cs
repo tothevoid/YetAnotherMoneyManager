@@ -2,7 +2,7 @@
 
 namespace MoneyManager.Application.DTO.Accounts
 {
-    public class AccountTransferDto
+    public class AccountTransferDTO
     {
         public Guid From { get; set; }
 

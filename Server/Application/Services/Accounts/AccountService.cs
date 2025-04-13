@@ -76,7 +76,7 @@ namespace MoneyManager.Application.Services.Accounts
             _db.Commit();
         }
 
-        public async Task Transfer(AccountTransferDto transferDto)
+        public async Task Transfer(AccountTransferDTO transferDto)
         {
             var accounts = (await _accountRepo.GetAll(account => 
                 account.Id == transferDto.From || account.Id == transferDto.To)).ToList();
@@ -107,12 +107,12 @@ namespace MoneyManager.Application.Services.Accounts
             _db.Commit();
         }
 
-        public async Task<AccountCurrencySummaryDto[]> GetSummary()
+        public async Task<AccountCurrencySummaryDTO[]> GetSummary()
         {
             //TODO: Group on db level
             var accounts = await _accountRepo.GetAll(account => account.Active);
             var groups = accounts.GroupBy(account => account.CurrencyId)
-                .Select(group => new AccountCurrencySummaryDto()
+                .Select(group => new AccountCurrencySummaryDTO()
                 {
                     Name = group.First().Currency.Name, 
                     Summary = group.Sum(account => account.Balance)

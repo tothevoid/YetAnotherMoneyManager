@@ -54,7 +54,7 @@ namespace MoneyManager.WebApi.Controllers.Accounts
         [HttpPost(nameof(Transfer))]
         public async Task Transfer(AccountTransferModel accountTransfer)
         {
-            var transferDto = _mapper.Map<AccountTransferDto>(accountTransfer);
+            var transferDto = _mapper.Map<AccountTransferDTO>(accountTransfer);
             await _accountService.Transfer(transferDto);
         }
 

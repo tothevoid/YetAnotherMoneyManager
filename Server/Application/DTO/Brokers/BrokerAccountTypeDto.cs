@@ -2,7 +2,7 @@
 
 namespace MoneyManager.Application.DTO.Brokers
 {
-    public class BrokerAccountTypeDto: BaseEntity
+    public class BrokerAccountTypeDTO: BaseEntity
     {
         public string Name { get; set; }
     }

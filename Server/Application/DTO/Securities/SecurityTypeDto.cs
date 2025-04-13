@@ -2,7 +2,7 @@
 
 namespace MoneyManager.Application.DTO.Securities
 {
-    public class SecurityTypeDto: BaseEntity
+    public class SecurityTypeDTO: BaseEntity
     {
         public string Name { get; set; }
     }

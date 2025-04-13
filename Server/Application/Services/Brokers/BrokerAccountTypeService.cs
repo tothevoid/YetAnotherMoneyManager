@@ -21,13 +21,13 @@ namespace MoneyManager.Application.Services.Brokers
             _brokerAccountTypeRepo = uow.CreateRepository<BrokerAccountType>();
         }
 
-        public async Task<IEnumerable<BrokerAccountTypeDto>> GetAll()
+        public async Task<IEnumerable<BrokerAccountTypeDTO>> GetAll()
         {
             var brokerAccountTypes = await _brokerAccountTypeRepo.GetAll();
-            return _mapper.Map<IEnumerable<BrokerAccountTypeDto>>(brokerAccountTypes);
+            return _mapper.Map<IEnumerable<BrokerAccountTypeDTO>>(brokerAccountTypes);
         }
 
-        public async Task<Guid> Add(BrokerAccountTypeDto brokerAccountTypeDto)
+        public async Task<Guid> Add(BrokerAccountTypeDTO brokerAccountTypeDto)
         {
             var brokerAccountType = _mapper.Map<BrokerAccountType>(brokerAccountTypeDto);
             brokerAccountType.Id = Guid.NewGuid();
@@ -36,7 +36,7 @@ namespace MoneyManager.Application.Services.Brokers
             return brokerAccountType.Id;
         }
 
-        public async Task Update(BrokerAccountTypeDto brokerAccountTypeDto)
+        public async Task Update(BrokerAccountTypeDTO brokerAccountTypeDto)
         {
             var brokerAccountType = _mapper.Map<BrokerAccountType>(brokerAccountTypeDto);
             await _brokerAccountTypeRepo.Update(brokerAccountType);

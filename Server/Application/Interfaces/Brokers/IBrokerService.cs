@@ -7,9 +7,9 @@ namespace MoneyManager.Application.Interfaces.Brokers
 {
     public interface IBrokerService
     {
-        Task<IEnumerable<BrokerDto>> GetAll();
-        Task<Guid> Add(BrokerDto security);
-        Task Update(BrokerDto security);
+        Task<IEnumerable<BrokerDTO>> GetAll();
+        Task<Guid> Add(BrokerDTO security);
+        Task Update(BrokerDTO security);
         Task Delete(Guid id);
     }
 }

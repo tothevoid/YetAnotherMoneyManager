@@ -40,14 +40,14 @@ namespace MoneyManager.WebApi.Controllers.Deposits
         [HttpPut]
         public async Task<Guid> Add(ClientDepositModel deposit)
         {
-            var depositDto = _mapper.Map<ClientDepositDto>(deposit);
+            var depositDto = _mapper.Map<ClientDepositDTO>(deposit);
             return await _depositService.Add(depositDto);
         }
 
         [HttpPatch]
         public async Task Update(ClientDepositModel modifiedDeposit)
         {
-            var deposit = _mapper.Map<ClientDepositDto>(modifiedDeposit);
+            var deposit = _mapper.Map<ClientDepositDTO>(modifiedDeposit);
             await _depositService.Update(deposit);
         }
 

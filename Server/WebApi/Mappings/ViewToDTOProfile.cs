@@ -29,22 +29,22 @@ namespace MoneyManager.WebApi.Mappings
             CreateMap<CurrencyModel, CurrencyDTO>().ReverseMap();
             CreateMap<AccountTypeModel, AccountTypeDTO>().ReverseMap();
 
-            CreateMap<DepositsRangeDto, DepositsRangeModel>();
+            CreateMap<DepositsRangeDTO, DepositsRangeModel>();
             CreateMap<DepositMonthSummaryDTO, DepositMonthSummary>();
             CreateMap<DepositPaymentDTO, DepositPayment>();
             CreateMap<PeriodPaymentDTO, PeriodPayment>();
-            CreateMap<AccountTransferModel, AccountTransferDto>();
-            CreateMap<AccountCurrencySummaryDto, AccountCurrencySummaryModel>();
+            CreateMap<AccountTransferModel, AccountTransferDTO>();
+            CreateMap<AccountCurrencySummaryDTO, AccountCurrencySummaryModel>();
 
-            CreateMap<ClientDepositModel, ClientDepositDto>();
-            CreateMap<ServerDepositDto, ServerDepositModel>();
+            CreateMap<ClientDepositModel, ClientDepositDTO>();
+            CreateMap<ServerDepositDTO, ServerDepositModel>();
 
-            CreateMap<SecurityModel, SecurityDto>().ReverseMap();
-            CreateMap<SecurityTypeModel, SecurityTypeDto>().ReverseMap();
-            CreateMap<BrokerModel, BrokerDto>().ReverseMap();
-            CreateMap<BrokerAccountModel, BrokerAccountDto>().ReverseMap();
-            CreateMap<BrokerAccountSecurityModel, BrokerAccountSecurityDto>().ReverseMap();
-            CreateMap<BrokerAccountTypeModel, BrokerAccountTypeDto>().ReverseMap();
+            CreateMap<SecurityModel, SecurityDTO>().ReverseMap();
+            CreateMap<SecurityTypeModel, SecurityTypeDTO>().ReverseMap();
+            CreateMap<BrokerModel, BrokerDTO>().ReverseMap();
+            CreateMap<BrokerAccountModel, BrokerAccountDTO>().ReverseMap();
+            CreateMap<BrokerAccountSecurityModel, BrokerAccountSecurityDTO>().ReverseMap();
+            CreateMap<BrokerAccountTypeModel, BrokerAccountTypeDTO>().ReverseMap();
         }
     }
 }

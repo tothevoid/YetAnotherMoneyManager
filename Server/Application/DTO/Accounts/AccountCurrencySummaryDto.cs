@@ -1,6 +1,6 @@
 ﻿namespace MoneyManager.Application.DTO.Accounts
 {
-    public class AccountCurrencySummaryDto
+    public class AccountCurrencySummaryDTO
     {
         public string Name { get; set; }
 

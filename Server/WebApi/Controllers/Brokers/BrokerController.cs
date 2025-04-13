@@ -32,14 +32,14 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         [HttpPut]
         public async Task<Guid> Add(BrokerModel broker)
         {
-            var brokerDto = _mapper.Map<BrokerDto>(broker);
+            var brokerDto = _mapper.Map<BrokerDTO>(broker);
             return await _brokerService.Add(brokerDto);
         }
 
         [HttpPatch]
         public async Task Update(BrokerModel broker)
         {
-            var brokerDto = _mapper.Map<BrokerDto>(broker);
+            var brokerDto = _mapper.Map<BrokerDTO>(broker);
             await _brokerService.Update(brokerDto);
         }
 

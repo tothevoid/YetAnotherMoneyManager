@@ -33,7 +33,7 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         [HttpPut]
         public async Task<Guid> Add(BrokerAccountSecurityModel brokerAccountSecurity)
         {
-            var brokerAccountSecurityDto = _mapper.Map<BrokerAccountSecurityDto>(brokerAccountSecurity);
+            var brokerAccountSecurityDto = _mapper.Map<BrokerAccountSecurityDTO>(brokerAccountSecurity);
             brokerAccountSecurityDto.BrokerAccountId = brokerAccountSecurityDto.BrokerAccount.Id;
             brokerAccountSecurityDto.SecurityId = brokerAccountSecurityDto.Security.Id;
             return await _brokerAccountSecurityService.Add(brokerAccountSecurityDto);
@@ -42,7 +42,7 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         [HttpPatch]
         public async Task Update(BrokerAccountSecurityModel brokerAccountSecurity)
         {
-            var brokerAccountSecurityDto = _mapper.Map<BrokerAccountSecurityDto>(brokerAccountSecurity);
+            var brokerAccountSecurityDto = _mapper.Map<BrokerAccountSecurityDTO>(brokerAccountSecurity);
             await _brokerAccountSecurityService.Update(brokerAccountSecurityDto);
         }
 

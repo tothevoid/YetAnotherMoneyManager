@@ -22,20 +22,20 @@ namespace MoneyManager.Application.Services.Brokers
             _brokerRepo = uow.CreateRepository<Broker>();
         }
 
-        public async Task<IEnumerable<BrokerDto>> GetAll()
+        public async Task<IEnumerable<BrokerDTO>> GetAll()
         {
             var brokers = await _brokerRepo.GetAll();
-            return _mapper.Map<IEnumerable<BrokerDto>>(brokers);
+            return _mapper.Map<IEnumerable<BrokerDTO>>(brokers);
         }
 
-        public async Task Update(BrokerDto brokersDto)
+        public async Task Update(BrokerDTO brokersDto)
         {
             var brokers = _mapper.Map<Broker>(brokersDto);
             await _brokerRepo.Update(brokers);
             _db.Commit();
         }
 
-        public async Task<Guid> Add(BrokerDto securityDto)
+        public async Task<Guid> Add(BrokerDTO securityDto)
         {
             var broker = _mapper.Map<Broker>(securityDto);
             broker.Id = Guid.NewGuid();

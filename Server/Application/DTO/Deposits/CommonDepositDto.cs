@@ -3,7 +3,7 @@ using System;
 
 namespace MoneyManager.BLL.DTO
 {
-    public class CommonDepositDto: BaseEntity
+    public class CommonDepositDTO: BaseEntity
     {
         public string Name { get; set; }
 

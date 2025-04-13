@@ -22,20 +22,20 @@ namespace MoneyManager.Application.Services.Securities
             _securityRepo = uow.CreateRepository<Security>();
         }
 
-        public IEnumerable<SecurityDto> GetAll(bool onlyActive)
+        public IEnumerable<SecurityDTO> GetAll(bool onlyActive)
         {
             var securities = _securityRepo.GetAll();
-            return _mapper.Map<IEnumerable<SecurityDto>>(securities);
+            return _mapper.Map<IEnumerable<SecurityDTO>>(securities);
         }
 
-        public async Task Update(SecurityDto securityTypeDto)
+        public async Task Update(SecurityDTO securityTypeDto)
         {
             var security = _mapper.Map<Security>(securityTypeDto);
             await _securityRepo.Update(security);
             _db.Commit();
         }
 
-        public async Task<Guid> Add(SecurityDto securityDto)
+        public async Task<Guid> Add(SecurityDTO securityDto)
         {
             var security = _mapper.Map<Security>(securityDto);
             security.Id = Guid.NewGuid();

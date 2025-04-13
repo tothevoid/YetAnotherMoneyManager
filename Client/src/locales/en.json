@@ -88,5 +88,9 @@
 
     "entity_broker_name_form_title": "Broker account",
     "broker_account_delete_title": "Delete broker account",
-    "brocker_accounts_page_summary_add": "Add account"
+    "brocker_accounts_page_summary_add": "Add account",
+
+    "entity_broker_account_type_from_title": "Broker account type",
+    "entity_broker_account_type_name": "Name",
+    "entity_broker_account_type_add": "Add account type"
 }

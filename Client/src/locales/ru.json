@@ -88,5 +88,9 @@
 
     "entity_broker_name_form_title": "Брокерский счёт",
     "broker_account_delete_title": "Удалить брокерский счёт",
-    "brocker_accounts_page_summary_add": "Добавить счёт"
+    "brocker_accounts_page_summary_add": "Добавить счёт",
+
+    "entity_broker_account_type_from_title": "Тип брокерского счёта",
+    "entity_broker_account_type_name": "Название",
+    "entity_broker_account_type_add": "Добавить тип счёта"
 }

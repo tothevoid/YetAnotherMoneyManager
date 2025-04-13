@@ -1,4 +1,4 @@
-import { DepositMonthSummary } from '../../components/DepositStats/depositMonthSummary';
+import { DepositMonthSummary } from '../../components/deposits/DepositStats/depositMonthSummary';
 import config from '../../config' 
 import { DepositEntity } from '../../models/deposits/DepositEntity';
 import { convertToDateOnly } from '../../utils/DateUtils';

@@ -1,11 +1,11 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import Account from '../Account/Account'
-import { AccountEntity } from '../../models/accounts/AccountEntity';
+import { AccountEntity } from '../../../models/accounts/AccountEntity';
 import { SimpleGrid } from '@chakra-ui/react/grid';
 import { Checkbox, Flex } from '@chakra-ui/react';
-import AddAccountButton from '../AddAccountButton/AddAccountButton';
+import AddAccountButton from '../../AddAccountButton/AddAccountButton';
 import { useTranslation } from 'react-i18next';
-import { getAccounts } from '../../api/accounts/accountApi';
+import { getAccounts } from '../../../api/accounts/accountApi';
 
 interface Props {
 	onAccountsChanged: () => void

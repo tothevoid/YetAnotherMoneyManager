@@ -1,14 +1,14 @@
 import "./TransactionsPage.scss"
 
 import React, { Fragment, useEffect, useState } from 'react';
-import Transaction from '../../components/Transaction/Transaction';
+import Transaction from '../../components/transactions/Transaction/Transaction';
 import { TransactionEntity } from '../../models/TransactionEntity';
 import { AccountEntity } from '../../models/accounts/AccountEntity';
 import { insertByPredicate, reorderByPredicate } from '../../utils/ArrayExtensions'
-import Pagination from '../../components/Pagination/Pagination';
-import TransactionStats from '../../components/TransactionStats/TransactionStats';
+import Pagination from '../../components/transactions/Pagination/Pagination';
+import TransactionStats from '../../components/transactions/TransactionStats/TransactionStats';
 import { Box, Container, Flex, SimpleGrid, Text } from '@chakra-ui/react';
-import AddTransactionButton from '../../components/AddTransactionButton/AddTransactionButton';
+import AddTransactionButton from '../../components/transactions/AddTransactionButton/AddTransactionButton';
 import { getTransactions, updateTransaction } from '../../api/transactions/transactionApi';
 import { getAccounts } from '../../api/accounts/accountApi';
 import { useTranslation } from 'react-i18next';

@@ -1,7 +1,7 @@
 import './App.css';
-import Header from './components/Header/Header';
+import Header from './components/structure/Header/Header';
 import TransactionsPage from './pages/TransactionsPage/TransactionsPage'
-import Footer from './components/Footer/Footer';
+import Footer from './components/structure/Footer/Footer';
 import DepositsPage from './pages/DepositsPage/DepositsPage';
 
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';

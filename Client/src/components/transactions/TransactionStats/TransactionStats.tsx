@@ -1,4 +1,4 @@
-import { AccountEntity } from '../../models/accounts/AccountEntity'
+import { AccountEntity } from '../../../models/accounts/AccountEntity'
 import { TransactionEntity } from '../../models/TransactionEntity'
 import { Button, Flex, Stack } from '@chakra-ui/react'
 import { Text } from '@chakra-ui/react';

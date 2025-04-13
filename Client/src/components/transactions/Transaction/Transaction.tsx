@@ -1,14 +1,14 @@
 import React, { useRef } from 'react';
 import { TransactionEntity } from '../../models/TransactionEntity';
-import { AccountEntity } from '../../models/accounts/AccountEntity';
+import { AccountEntity } from '../../../models/accounts/AccountEntity';
 import { MdOutlineArrowDownward, MdOutlineArrowUpward, MdEdit } from 'react-icons/md';
 import { MdDelete } from "react-icons/md";
 import { Flex, Stack, Card, CardBody, Text, Button, Icon } from '@chakra-ui/react';
-import TransactionModal, { TransactionModalRef } from '../../modals/TransactionModal/TransactionModal';
-import { formatMoneyByCurrencyCulture } from '../../formatters/moneyFormatter';
-import { formatDate } from '../../formatters/dateFormatter';
-import { ConfirmModal, ConfirmModalRef } from '../../modals/ConfirmModal/ConfirmModal';
-import { deleteTransaction } from '../../api/transactions/transactionApi';
+import TransactionModal, { TransactionModalRef } from '../../../modals/TransactionModal/TransactionModal';
+import { formatMoneyByCurrencyCulture } from '../../../formatters/moneyFormatter';
+import { formatDate } from '../../../formatters/dateFormatter';
+import { ConfirmModal, ConfirmModalRef } from '../../../modals/ConfirmModal/ConfirmModal';
+import { deleteTransaction } from '../../../api/transactions/transactionApi';
 import { useTranslation } from 'react-i18next';
 
 

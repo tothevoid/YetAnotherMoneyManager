@@ -3,10 +3,10 @@ import { DepositEntity } from "../../models/deposits/DepositEntity";
 import DepositModal, { DepositModalRef } from "../../modals/DepositModal/DepositModal";
 import { createDeposit, getDeposits } from "../../api/deposits/depositApi";
 import { Button, Text, Flex, SimpleGrid, Checkbox } from "@chakra-ui/react";
-import DepositStats from "../../components/DepositStats/DepositStats";
-import Deposit from "../../components/Deposit/Deposit";
+import DepositStats from "../../components/deposits/DepositStats/DepositStats";
+import Deposit from "../../components/deposits/Deposit/Deposit";
 import { MdAdd } from "react-icons/md";
-import DepositsRangeSlider from "../../components/DepositsRangeSlider/DepositsRangeSlider";
+import DepositsRangeSlider from "../../components/deposits/DepositsRangeSlider/DepositsRangeSlider";
 import { useTranslation } from "react-i18next";
 
 interface Props {}

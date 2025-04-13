@@ -1,4 +1,4 @@
-﻿using MoneyManager.Infrastructure.Entities.Currency;
+﻿using MoneyManager.Infrastructure.Entities.Currencies;
 using MoneyManager.Infrastructure.Interfaces.Utilitary;
 
 namespace MoneyManager.Infrastructure.Data

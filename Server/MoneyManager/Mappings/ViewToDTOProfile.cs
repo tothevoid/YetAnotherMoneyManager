@@ -2,18 +2,18 @@
 using MoneyManager.BLL.DTO;
 using MoneyManager.Model.Charts.Deposit;
 using MoneyManager.Model.Deposits;
-using MoneyManager.WebApi.Models.Deposit;
-using MoneyManager.WebApi.Models.Security;
-using MoneyManager.WebApi.Models.Broker;
-using MoneyManager.WebApi.Models.Account;
-using MoneyManager.WebApi.Models.Currency;
-using MoneyManager.WebApi.Models.Transaction;
 using MoneyManager.Application.DTO.Transactions;
 using MoneyManager.Application.DTO.Deposits;
 using MoneyManager.Application.DTO.Accounts;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.DTO.Currencies;
 using MoneyManager.Application.DTO.Securities;
+using MoneyManager.WebApi.Models.Accounts;
+using MoneyManager.WebApi.Models.Brokers;
+using MoneyManager.WebApi.Models.Currencies;
+using MoneyManager.WebApi.Models.Deposits;
+using MoneyManager.WebApi.Models.Securities;
+using MoneyManager.WebApi.Models.Transactions;
 
 namespace MoneyManager.WebApi.Mappings
 {

@@ -1,5 +1,5 @@
 ﻿using MoneyManager.Infrastructure.Constants;
-using MoneyManager.Infrastructure.Entities.Account;
+using MoneyManager.Infrastructure.Entities.Accounts;
 using MoneyManager.Infrastructure.Interfaces.Utilitary;
 
 namespace MoneyManager.Infrastructure.Data

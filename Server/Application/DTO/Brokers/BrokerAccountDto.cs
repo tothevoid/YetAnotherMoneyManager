@@ -19,5 +19,9 @@ namespace MoneyManager.Application.DTO.Brokers
         public BrokerDTO Broker { get; set; }
 
         public Guid BrokerId { get; set; }
+
+        public DateOnly LastUpdateAt { get; set; }
+
+        public decimal AssetsValue { get; set; }
     }
 }

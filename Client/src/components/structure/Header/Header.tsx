@@ -36,6 +36,7 @@ const Header = () => {
                         <HeaderItem title={t("header_transactions")} path='/transactions'></HeaderItem>
                         <HeaderItem title={t("header_deposits")} path='/deposits'></HeaderItem>
                         <HeaderItem title={t("header_data")} path='/data'></HeaderItem>
+                        <HeaderItem title={t("header_broker_account")} path='/broker_accounts'></HeaderItem>
                     </Flex>
                 </Flex>
                 <Flex flex="1" justify="flex-end" direction="row">

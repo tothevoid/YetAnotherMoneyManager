@@ -19,5 +19,9 @@ namespace MoneyManager.WebApi.Models.Brokers
         public BrokerModel Broker { get; set; }
 
         public Guid BrokerId { get; set; }
+
+        public DateOnly LastUpdateAt { get; set; }
+
+        public decimal AssetsValue { get; set; }
     }
 }

@@ -3,6 +3,7 @@
     "header_transactions": "Transactions",
     "header_deposits": "Deposits",
     "header_data": "Data",
+    "header_broker_account": "Broker accounts",
 
     "accounts_page_summary_title": "Current balance",
     "accounts_page_summary_add": "Add account",
@@ -21,6 +22,13 @@
     "entity_transaction_type": "Type",
     "entity_account_active": "Active",
     "entity_account_created_on": "Created on",
+
+    "entity_broker_account_name": "Назание счёта",
+    "entity_broker_account_type": "Тип счёта",
+    "entity_broker_account_currency": "Валюта",
+    "entity_broker_account_broker": "Брокер",
+    "entity_broker_account_last_update_at": "Дата последнего обновления",
+    "entity_broker_account_assets_value": "Стоиость активов",
 
     "account_delete_title": "Delete account",
 
@@ -76,5 +84,9 @@
     "deposits_chart_type_stacked": "Доходы депозитов по месяцам",
     "earnings_chart_data_title": "Доходы с депозитов",
 
-    "deposits_list_only_active": "Only active"
+    "deposits_list_only_active": "Only active",
+
+    "entity_broker_name_form_title": "Broker account",
+    "broker_account_delete_title": "Delete broker account",
+    "brocker_accounts_page_summary_add": "Add account"
 }

@@ -1,4 +1,4 @@
-import { Currency } from "../../formatters/moneyFormatter";
+import { CurrencyEntity } from "../currencies/CurrencyEntity";
 import { BrokerAccountTypeEntity } from "./BrokerAccountTypeEntity";
 import { BrokerEntity } from "./BrokerEntity";
 
@@ -7,8 +7,10 @@ export interface BrokerAccountEntity {
     name: string,
     type: BrokerAccountTypeEntity,
     typeId: string,
-    currency: Currency,
+    currency: CurrencyEntity,
     currencyId: string, 
     broker: BrokerEntity,
-    brokerId: string
+    brokerId: string,
+    lastUpdateAt: Date,
+    assetValue: number
 }

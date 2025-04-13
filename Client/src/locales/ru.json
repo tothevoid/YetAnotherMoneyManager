@@ -3,6 +3,7 @@
     "header_transactions": "Транзакции",
     "header_deposits": "Депозиты",
     "header_data": "Данные",
+    "header_broker_account": "Брокерские счета",
     
     "accounts_page_summary_title": "На счетах",
     "accounts_page_summary_add": "Добавить счёт",
@@ -54,6 +55,13 @@
     "entity_transaction_direction_income": "Доход",
     "entity_transaction_direction_outcome": "Расход",
 
+    "entity_broker_account_name": "Назание счёта",
+    "entity_broker_account_type": "Тип счёта",
+    "entity_broker_account_currency": "Валюта",
+    "entity_broker_account_broker": "Брокер",
+    "entity_broker_account_last_update_at": "Дата последнего обновления",
+    "entity_broker_account_assets_value": "Стоиость активов",
+
     "transaction_delete_title": "Удалить транзакцию",
 
     "modals_delete_button": "Удалить",
@@ -76,5 +84,9 @@
     "deposits_chart_type_stacked": "Deposits earnings by month",
     "earnings_chart_data_title": "Deposits earnings",
 
-    "deposits_list_only_active": "Only active"
+    "deposits_list_only_active": "Only active",
+
+    "entity_broker_name_form_title": "Брокерский счёт",
+    "broker_account_delete_title": "Удалить брокерский счёт",
+    "brocker_accounts_page_summary_add": "Добавить счёт"
 }

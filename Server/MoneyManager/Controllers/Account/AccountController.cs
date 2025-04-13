@@ -2,11 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
-using MoneyManager.BLL.Services.Entities;
-using MoneyManager.WEB.Model;
 using AutoMapper;
-using MoneyManager.BLL.DTO;
 using MoneyManager.WebApi.Models.Account;
+using MoneyManager.Application.DTO.Accounts;
+using MoneyManager.Application.Interfaces.Accounts;
 
 namespace MoneyManager.WebApi.Controllers.Account
 {

@@ -1,8 +1,5 @@
 ﻿using AutoMapper;
 using MoneyManager.BLL.DTO;
-using MoneyManager.WEB.Model;
-using BLL.DTO;
-using MoneyManager.Model.Server;
 using MoneyManager.Model.Charts.Deposit;
 using MoneyManager.Model.Deposits;
 using MoneyManager.WebApi.Models.Deposit;
@@ -11,6 +8,12 @@ using MoneyManager.WebApi.Models.Broker;
 using MoneyManager.WebApi.Models.Account;
 using MoneyManager.WebApi.Models.Currency;
 using MoneyManager.WebApi.Models.Transaction;
+using MoneyManager.Application.DTO.Transactions;
+using MoneyManager.Application.DTO.Deposits;
+using MoneyManager.Application.DTO.Accounts;
+using MoneyManager.Application.DTO.Brokers;
+using MoneyManager.Application.DTO.Currencies;
+using MoneyManager.Application.DTO.Securities;
 
 namespace MoneyManager.WebApi.Mappings
 {

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using MoneyManager.BLL.Services.Entities;
+using MoneyManager.Application.Interfaces.Transactions;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

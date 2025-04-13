@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using MoneyManager.BLL.DTO;
-using MoneyManager.BLL.Services.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 using MoneyManager.WebApi.Models.Currency;
+using MoneyManager.Application.DTO.Currencies;
+using MoneyManager.Application.Interfaces.Currencies;
 
 namespace MoneyManager.WebApi.Controllers.Currency
 {

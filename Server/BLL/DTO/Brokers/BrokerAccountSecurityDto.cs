@@ -1,0 +1,23 @@
+﻿using System;
+using MoneyManager.Application.DTO.Securities;
+using MoneyManager.Shared.Entities;
+
+namespace MoneyManager.Application.DTO.Brokers
+{
+    public class BrokerAccountSecurityDto: BaseEntity
+    {
+        public BrokerAccountDto BrokerAccount { get; set; }
+
+        public Guid BrokerAccountId { get; set; }
+
+        public SecurityDto Security { get; set; }
+
+        public Guid SecurityId { get; set; }
+
+        public int Quantity { get; set; }
+
+        public decimal InitialPrice { get; set; }
+
+        public decimal CurrentPrice { get; set; }
+    }
+}

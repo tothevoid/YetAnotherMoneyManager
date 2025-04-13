@@ -1,5 +1,5 @@
-﻿using System;
-using MoneyManager.Common;
+﻿using MoneyManager.Shared.Entities;
+using System;
 
 namespace MoneyManager.BLL.DTO
 {

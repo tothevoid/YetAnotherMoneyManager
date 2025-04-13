@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
 using AutoMapper;
-using BLL.Interfaces.Entities;
 using MoneyManager.BLL.DTO;
 using MoneyManager.Model.Charts.Deposit;
 using MoneyManager.Model.Common;
 using MoneyManager.Model.Server;
 using MoneyManager.WebApi.Models.Deposit;
+using MoneyManager.Application.Interfaces.Deposits;
 
 namespace MoneyManager.WebApi.Controllers.Deposit
 {

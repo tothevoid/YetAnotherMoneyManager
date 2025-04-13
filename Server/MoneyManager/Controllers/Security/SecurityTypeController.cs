@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
 using AutoMapper;
-using MoneyManager.BLL.DTO;
-using MoneyManager.BLL.Interfaces.Entities;
 using MoneyManager.WebApi.Models.Security;
+using MoneyManager.Application.DTO.Securities;
+using MoneyManager.Application.Interfaces.Securities;
 
 namespace MoneyManager.WebApi.Controllers.Security
 {

@@ -1,5 +1,4 @@
 ﻿using System;
-using MoneyManager.Common;
 
 namespace MoneyManager.BLL.DTO
 {

@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
 using AutoMapper;
-using MoneyManager.BLL.Interfaces.Entities;
-using BLL.DTO;
 using MoneyManager.WebApi.Models.Broker;
+using MoneyManager.Application.DTO.Brokers;
+using MoneyManager.Application.Interfaces.Brokers;
 
 namespace MoneyManager.WebApi.Controllers.Broker
 {

@@ -2,11 +2,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
-using MoneyManager.BLL.Services.Entities;
 using AutoMapper;
-using MoneyManager.BLL.DTO;
 using MoneyManager.WebApi.Models.Transaction;
 using MoneyManager.WebApi.Models.Account;
+using MoneyManager.Application.DTO.Transactions;
+using MoneyManager.Application.Interfaces.Transactions;
 
 namespace MoneyManager.WebApi.Controllers.Transaction
 {

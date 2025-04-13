@@ -92,5 +92,9 @@
 
     "entity_broker_account_type_from_title": "Тип брокерского счёта",
     "entity_broker_account_type_name": "Название",
-    "entity_broker_account_type_add": "Добавить тип счёта"
+    "entity_broker_account_type_add": "Добавить тип счёта",
+
+    "entity_broker_from_title": "Брокер",
+    "entity_broker_name": "Название",
+    "entity_broker_add": "Добавить брокера"
 }

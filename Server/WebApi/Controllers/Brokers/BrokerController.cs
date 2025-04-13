@@ -22,10 +22,10 @@ namespace MoneyManager.WebApi.Controllers.Brokers
             _brokerService = brokerService;
         }
 
-        [HttpPost("GetAll")]
-        public IEnumerable<BrokerModel> GetAll()
+        [HttpGet]
+        public async Task<IEnumerable<BrokerModel>> GetAll()
         {
-            var securities = _brokerService.GetAll();
+            var securities = await _brokerService.GetAll();
             return _mapper.Map<IEnumerable<BrokerModel>>(securities);
         }
 

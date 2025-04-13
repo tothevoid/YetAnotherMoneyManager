@@ -1,6 +1,4 @@
-﻿using MoneyManager.Common;
-using MoneyManager.DAL;
-using System;
+﻿using System;
 
 namespace MoneyManager.WebApi.Models.Accounts
 {

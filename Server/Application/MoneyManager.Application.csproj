@@ -10,8 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DAL\DAL.csproj" />
-    <ProjectReference Include="..\DAL\MoneyManager.Infrastructure.csproj" />
+	  <ProjectReference Include="..\Infrastructure\MoneyManager.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

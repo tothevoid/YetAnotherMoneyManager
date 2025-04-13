@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35913.81 d17.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyManager.WebApi", "MoneyManager\MoneyManager.WebApi.csproj", "{36774950-2887-4089-8CB9-7228667F35EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyManager.WebApi", "WebApi\MoneyManager.WebApi.csproj", "{36774950-2887-4089-8CB9-7228667F35EA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyManager.Application", "BLL\MoneyManager.Application.csproj", "{A39F3A80-CB48-400F-8BDD-744AA810AFAB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyManager.Application", "Application\MoneyManager.Application.csproj", "{A39F3A80-CB48-400F-8BDD-744AA810AFAB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyManager.Infrastructure", "DAL\MoneyManager.Infrastructure.csproj", "{C14BEEAB-B2AE-472C-90BA-733168D393F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyManager.Infrastructure", "Infrastructure\MoneyManager.Infrastructure.csproj", "{C14BEEAB-B2AE-472C-90BA-733168D393F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoneyManager.Shared", "Common\MoneyManager.Shared.csproj", "{97723CDD-A4CE-492F-8251-4129CD41C809}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoneyManager.Shared", "Shared\MoneyManager.Shared.csproj", "{97723CDD-A4CE-492F-8251-4129CD41C809}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

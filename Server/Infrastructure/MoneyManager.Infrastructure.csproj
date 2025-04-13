@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Common\MoneyManager.Shared.csproj" />
+    <ProjectReference Include="..\Shared\MoneyManager.Shared.csproj" />
   </ItemGroup>
 
 </Project>

@@ -3,9 +3,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MoneyManager.BLL.Mappings;
-using MoneyManager.DAL.Database;
-using MoneyManager.DAL.Interfaces;
-using MoneyManager.WEB.Mappings;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson;
@@ -17,6 +14,9 @@ using MoneyManager.Application.Services.Accounts;
 using MoneyManager.Application.Services.Currencies;
 using MoneyManager.Application.Services.Deposits;
 using MoneyManager.Application.Services.Transactions;
+using MoneyManager.Infrastructure.Database;
+using MoneyManager.Infrastructure.Interfaces.Database;
+using MoneyManager.WebApi.Mappings;
 
 var builder = WebApplication.CreateBuilder(args);
 

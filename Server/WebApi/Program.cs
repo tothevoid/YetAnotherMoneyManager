@@ -7,12 +7,16 @@ using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson;
 using MoneyManager.Application.Interfaces.Accounts;
+using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Application.Interfaces.Currencies;
 using MoneyManager.Application.Interfaces.Deposits;
+using MoneyManager.Application.Interfaces.Securities;
 using MoneyManager.Application.Interfaces.Transactions;
 using MoneyManager.Application.Services.Accounts;
+using MoneyManager.Application.Services.Brokers;
 using MoneyManager.Application.Services.Currencies;
 using MoneyManager.Application.Services.Deposits;
+using MoneyManager.Application.Services.Securities;
 using MoneyManager.Application.Services.Transactions;
 using MoneyManager.Infrastructure.Database;
 using MoneyManager.Infrastructure.Interfaces.Database;
@@ -44,6 +48,13 @@ builder.Services.AddTransient<IDepositService, DepositService>();
 builder.Services.AddTransient<ITransactionTypeService, TransactionTypeService>();
 builder.Services.AddTransient<ICurrencyService, CurrencyService>();
 builder.Services.AddTransient<IAccountTypeService, AccountTypeService>();
+builder.Services.AddTransient<IBrokerAccountSecurityService, BrokerAccountSecurityService>();
+builder.Services.AddTransient<IBrokerAccountService, BrokerAccountService>();
+builder.Services.AddTransient<IBrokerAccountTypeService, BrokerAccountTypeService>();
+builder.Services.AddTransient<IBrokerService, BrokerService>();
+builder.Services.AddTransient<ISecurityService, SecurityService>();
+builder.Services.AddTransient<ISecurityTransactionService, SecurityTransactionService>();
+builder.Services.AddTransient<ISecurityTypeService, SecurityTypeService>();
 
 var mapperConfig = new MapperConfiguration(cfg =>
 {

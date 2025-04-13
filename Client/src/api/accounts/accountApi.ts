@@ -1,10 +1,10 @@
-import config from "../config";
-import { Transfer } from "../modals/AccountBalanceTransferModal/AccountBalanceTransferModal";
-import { AccountEntity, ServerAccountEntity } from "../models/accounts/AccountEntity";
-import { convertToDateOnly } from "../utils/DateUtils";
-import { checkPromiseStatus, logPromiseError } from "../utils/PromiseUtils";
-import { AccountCurrencySummary } from "../models/accounts/accountsSummary";
-import { createEntity, deleteEntity, updateEntity } from "./basicApi";
+import config from "../../config";
+import { Transfer } from "../../modals/AccountBalanceTransferModal/AccountBalanceTransferModal";
+import { AccountEntity, ServerAccountEntity } from "../../models/accounts/AccountEntity";
+import { convertToDateOnly } from "../../utils/DateUtils";
+import { checkPromiseStatus, logPromiseError } from "../../utils/PromiseUtils";
+import { AccountCurrencySummary } from "../../models/accounts/accountsSummary";
+import { createEntity, deleteEntity, updateEntity } from "../basicApi";
 
 const basicUrl = `${config.api.URL}/Account`;
 

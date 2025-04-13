@@ -1,6 +1,6 @@
-import config from '../config' 
-import { AccountTypeEntity } from '../models/accounts/AccountTypeEntity';
-import { createEntity, deleteEntity, getAllEntities, updateEntity } from './basicApi';
+import config from '../../config' 
+import { AccountTypeEntity } from '../../models/accounts/AccountTypeEntity';
+import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
 
 const basicUrl = `${config.api.URL}/AccountType`;
 

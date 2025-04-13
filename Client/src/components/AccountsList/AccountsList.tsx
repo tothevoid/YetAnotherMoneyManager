@@ -5,7 +5,7 @@ import { SimpleGrid } from '@chakra-ui/react/grid';
 import { Checkbox, Flex } from '@chakra-ui/react';
 import AddAccountButton from '../AddAccountButton/AddAccountButton';
 import { useTranslation } from 'react-i18next';
-import { getAccounts } from '../../api/accountApi';
+import { getAccounts } from '../../api/accounts/accountApi';
 
 interface Props {
 	onAccountsChanged: () => void

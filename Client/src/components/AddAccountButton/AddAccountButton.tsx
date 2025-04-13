@@ -5,7 +5,7 @@ import { useRef } from "react"
 import { Fragment } from "react/jsx-runtime"
 import { AccountEntity } from "../../models/accounts/AccountEntity"
 import AccountModal, { AccountModalRef } from "../../modals/AccountModal/AccountModal"
-import { createAccount } from "../../api/accountApi"
+import { createAccount } from "../../api/accounts/accountApi"
 import { useTranslation } from "react-i18next"
 
 type AccountProps = {

@@ -9,8 +9,8 @@ import Pagination from '../../components/Pagination/Pagination';
 import TransactionStats from '../../components/TransactionStats/TransactionStats';
 import { Box, Container, Flex, SimpleGrid, Text } from '@chakra-ui/react';
 import AddTransactionButton from '../../components/AddTransactionButton/AddTransactionButton';
-import { getTransactions, updateTransaction } from '../../api/transactionApi';
-import { getAccounts } from '../../api/accountApi';
+import { getTransactions, updateTransaction } from '../../api/transactions/transactionApi';
+import { getAccounts } from '../../api/accounts/accountApi';
 import { useTranslation } from 'react-i18next';
 
 type State = {

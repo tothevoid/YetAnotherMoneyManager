@@ -10,7 +10,7 @@ import { CurrencyEntity } from "../../models/currencies/CurrencyEntity";
 import DateSelect from "../../controls/DateSelect/DateSelect";
 import CollectionSelect from "../../controls/CollectionSelect/CollectionSelect";
 import CheckboxInput from "../../controls/CheckboxInput/CheckboxInput";
-import { getAccountTypes } from "../../api/accountTypeApi";
+import { getAccountTypes } from "../../api/accounts/accountTypeApi";
 import { AccountTypeEntity } from "../../models/accounts/AccountTypeEntity";
 
 type AccountProps = {

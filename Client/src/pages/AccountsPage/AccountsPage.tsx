@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import { getAccounts, getSummary } from "../../api/accountApi";
+import { getAccounts, getSummary } from "../../api/accounts/accountApi";
 import AccountsList from "../../components/AccountsList/AccountsList";
 import { AccountCurrencySummary } from "../../models/accounts/accountsSummary";
 import { Flex, Text } from "@chakra-ui/react";

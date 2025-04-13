@@ -8,7 +8,7 @@ import TransactionModal, { TransactionModalRef } from '../../modals/TransactionM
 import { formatMoneyByCurrencyCulture } from '../../formatters/moneyFormatter';
 import { formatDate } from '../../formatters/dateFormatter';
 import { ConfirmModal, ConfirmModalRef } from '../../modals/ConfirmModal/ConfirmModal';
-import { deleteTransaction } from '../../api/transactionApi';
+import { deleteTransaction } from '../../api/transactions/transactionApi';
 import { useTranslation } from 'react-i18next';
 
 

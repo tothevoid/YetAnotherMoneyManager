@@ -1,7 +1,7 @@
 import { ProgressCircle, Flex, Box, Stack, Button } from '@chakra-ui/react'
 import { useEffect, useState } from 'react';
 import { DepositMonthSummary } from './depositMonthSummary';
-import { getDepositsSummary } from '../../api/depositApi';
+import { getDepositsSummary } from '../../api/deposits/depositApi';
 import StackedDepositsChart from '../StackedDepositsChart/StackedDepositsChart';
 import DepositsEarningsChart from '../DepositsEarningsChart/DepositsEarningsChart';
 import { useTranslation } from 'react-i18next';

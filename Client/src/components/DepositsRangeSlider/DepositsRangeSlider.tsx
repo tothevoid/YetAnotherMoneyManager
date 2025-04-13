@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import { getDepositsRange } from "../../api/depositApi";
+import { getDepositsRange } from "../../api/deposits/depositApi";
 import { PinInputPropsProvider, Slider } from "@chakra-ui/react";
 import { DepositsRange } from "../../models/deposits/depositsRange";
 

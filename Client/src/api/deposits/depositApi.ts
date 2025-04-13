@@ -1,10 +1,10 @@
-import { DepositMonthSummary } from '../components/DepositStats/depositMonthSummary';
-import config from '../config' 
-import { DepositEntity } from '../models/deposits/DepositEntity';
-import { convertToDateOnly } from '../utils/DateUtils';
-import { checkPromiseStatus, logPromiseError } from '../utils/PromiseUtils';
-import { DepositsRange } from '../models/deposits/depositsRange';
-import { createEntity, deleteEntity, updateEntity } from './basicApi';
+import { DepositMonthSummary } from '../../components/DepositStats/depositMonthSummary';
+import config from '../../config' 
+import { DepositEntity } from '../../models/deposits/DepositEntity';
+import { convertToDateOnly } from '../../utils/DateUtils';
+import { checkPromiseStatus, logPromiseError } from '../../utils/PromiseUtils';
+import { DepositsRange } from '../../models/deposits/depositsRange';
+import { createEntity, deleteEntity, updateEntity } from '../basicApi';
 
 const basicUrl = `${config.api.URL}/Deposit`;
 

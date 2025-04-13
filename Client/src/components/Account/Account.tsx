@@ -5,7 +5,7 @@ import { Fragment, useRef } from 'react';
 import AccountModal, { AccountModalRef } from '../../modals/AccountModal/AccountModal';
 import { formatMoneyByCurrencyCulture } from '../../formatters/moneyFormatter';
 import { ConfirmModal, ConfirmModalRef } from '../../modals/ConfirmModal/ConfirmModal';
-import { deleteAccount, updateAccount } from '../../api/accountApi';
+import { deleteAccount, updateAccount } from '../../api/accounts/accountApi';
 import { useTranslation } from 'react-i18next';
 import AccountBalanceTransferModal, { TransferModalRef } from '../../modals/AccountBalanceTransferModal/AccountBalanceTransferModal';
 

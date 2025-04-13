@@ -6,7 +6,7 @@ import { DepositEntity } from "../../models/deposits/DepositEntity";
 import DepositModal, { DepositModalRef } from "../../modals/DepositModal/DepositModal";
 import { useRef } from "react";
 import { ConfirmModal, ConfirmModalRef } from "../../modals/ConfirmModal/ConfirmModal";
-import { deleteDeposit, updateDeposit } from "../../api/depositApi";
+import { deleteDeposit, updateDeposit } from "../../api/deposits/depositApi";
 import { useTranslation } from "react-i18next";
 
 interface Props {

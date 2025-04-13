@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AccountFormInput, AccountBalanceTransferModalValidationSchema } from "./AccountBalanceTransferModalValidationSchema";
 import { useTranslation } from "react-i18next";
-import { getAccounts, transferBalance } from "../../api/accountApi";
+import { getAccounts, transferBalance } from "../../api/accounts/accountApi";
 import CollectionSelect from "../../controls/CollectionSelect/CollectionSelect";
 
 type AccountProps = {

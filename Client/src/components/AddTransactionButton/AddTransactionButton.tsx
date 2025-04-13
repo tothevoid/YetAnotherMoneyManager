@@ -5,7 +5,7 @@ import { TransactionEntity } from "../../models/TransactionEntity"
 import { useRef } from "react"
 import { AccountEntity } from "../../models/accounts/AccountEntity"
 import { MdAdd } from "react-icons/md"
-import { createTransaction } from "../../api/transactionApi"
+import { createTransaction } from "../../api/transactions/transactionApi"
 import { useTranslation } from "react-i18next"
 
 type Props = {

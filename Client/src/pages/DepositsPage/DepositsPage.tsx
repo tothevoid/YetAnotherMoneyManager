@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { DepositEntity } from "../../models/deposits/DepositEntity";
 import DepositModal, { DepositModalRef } from "../../modals/DepositModal/DepositModal";
-import { createDeposit, getDeposits } from "../../api/depositApi";
+import { createDeposit, getDeposits } from "../../api/deposits/depositApi";
 import { Button, Text, Flex, SimpleGrid, Checkbox } from "@chakra-ui/react";
 import DepositStats from "../../components/DepositStats/DepositStats";
 import Deposit from "../../components/Deposit/Deposit";

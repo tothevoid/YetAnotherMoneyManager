@@ -13,9 +13,5 @@ namespace MoneyManager.Application.DTO.Securities
         public SecurityTypeDTO Type { get; set; }
 
         public Guid TypeId { get; set; }
-
-        public CurrencyDTO Currency { get; set; }
-
-        public Guid CurrencyId { get; set; }
     }
 }

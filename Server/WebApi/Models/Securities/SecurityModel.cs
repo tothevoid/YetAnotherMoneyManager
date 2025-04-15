@@ -13,9 +13,5 @@ namespace MoneyManager.WebApi.Models.Securities
         public SecurityTypeModel Type { get; set; }
 
         public Guid TypeId { get; set; }
-
-        public CurrencyModel Currency { get; set; }
-
-        public Guid CurrencyId { get; set; }
     }
 }

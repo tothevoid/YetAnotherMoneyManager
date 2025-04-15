@@ -13,9 +13,5 @@ namespace MoneyManager.Infrastructure.Entities.Securities
         public SecurityType Type { get; set; }
 
         public Guid TypeId { get; set; }
-
-        public Currency Currency { get; set; }
-
-        public Guid CurrencyId { get; set; }
     }
 }

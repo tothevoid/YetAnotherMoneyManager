@@ -1,4 +1,3 @@
-import { CurrencyEntity } from "../currencies/CurrencyEntity";
 import { SecurityTypeEntity } from "./SecurityTypeEntity";
 
 export interface SecurityEntity {
@@ -6,7 +5,5 @@ export interface SecurityEntity {
     name: string,
     ticker: string,
     type: SecurityTypeEntity,
-    typeId: string,
-    currency: CurrencyEntity,
-    currencyId: string
+    typeId: string
 }

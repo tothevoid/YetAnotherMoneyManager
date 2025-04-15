@@ -65,7 +65,7 @@ const SecuritiesList: React.FC<Props> = (props) => {
             <Flex justifyContent="space-between" alignItems="center" pt={5} pb={5}>
                 <AddSecurityButton onAdded={onSecurityCreated}></AddSecurityButton>
             </Flex>
-            <SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(400px, 3fr))'>
+            <SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(300px, 3fr))'>
                 {
                 state.securities.map((security: SecurityEntity) => {
                     return <Security key={security.id} security={security} 

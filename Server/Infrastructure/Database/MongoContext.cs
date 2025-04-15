@@ -10,6 +10,7 @@ using MoneyManager.Shared.Entities;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using MoneyManager.Infrastructure.Entities.Currencies;
 using MoneyManager.Infrastructure.Entities.Accounts;
+using MoneyManager.Infrastructure.Entities.Securities;
 
 namespace MoneyManager.Infrastructure.Database
 {
@@ -40,7 +41,8 @@ namespace MoneyManager.Infrastructure.Database
             var results = new bool[]
             {
                 InitData(GetCollection<Currency>(nameof(Currency)), new CurrencyGenerator().Generate()),
-                InitData(GetCollection<AccountType>(nameof(AccountType)), new AccountTypeGenerator().Generate())
+                InitData(GetCollection<AccountType>(nameof(AccountType)), new AccountTypeGenerator().Generate()),
+                InitData(GetCollection<SecurityType>(nameof(SecurityType)), new SecurityTypeGenerator().Generate())
             };
 
             if (results.Any(result => result))

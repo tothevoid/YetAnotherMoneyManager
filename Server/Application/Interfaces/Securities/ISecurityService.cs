@@ -7,7 +7,7 @@ namespace MoneyManager.Application.Interfaces.Securities
 {
     public interface ISecurityService
     {
-        IEnumerable<SecurityDTO> GetAll(bool onlyActive);
+        Task<IEnumerable<SecurityDTO>> GetAll();
         Task<Guid> Add(SecurityDTO security);
         Task Update(SecurityDTO security);
         Task Delete(Guid id);

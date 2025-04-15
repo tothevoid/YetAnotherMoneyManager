@@ -22,10 +22,10 @@ namespace MoneyManager.WebApi.Controllers.Securities
             _securityService = securityService;
         }
 
-        [HttpPost("GetAll")]
-        public IEnumerable<SecurityModel> GetAll()
+        [HttpGet]
+        public async Task<IEnumerable<SecurityModel>> GetAll()
         {
-            var securities = _securityService.GetAll(true);
+            var securities = await _securityService.GetAll();
             return _mapper.Map<IEnumerable<SecurityModel>>(securities);
         }
 
@@ -33,7 +33,6 @@ namespace MoneyManager.WebApi.Controllers.Securities
         public async Task<Guid> Add(SecurityModel security)
         {
             var securityDto = _mapper.Map<SecurityDTO>(security);
-            securityDto.CurrencyId = securityDto.Currency.Id;
             securityDto.TypeId = securityDto.Type.Id;
             return await _securityService.Add(securityDto);
         }

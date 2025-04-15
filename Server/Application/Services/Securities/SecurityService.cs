@@ -22,9 +22,9 @@ namespace MoneyManager.Application.Services.Securities
             _securityRepo = uow.CreateRepository<Security>();
         }
 
-        public IEnumerable<SecurityDTO> GetAll(bool onlyActive)
+        public async Task<IEnumerable<SecurityDTO>> GetAll()
         {
-            var securities = _securityRepo.GetAll();
+            var securities = await _securityRepo.GetAll();
             return _mapper.Map<IEnumerable<SecurityDTO>>(securities);
         }
 

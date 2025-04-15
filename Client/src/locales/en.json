@@ -4,6 +4,7 @@
     "header_deposits": "Deposits",
     "header_data": "Data",
     "header_broker_account": "Broker accounts",
+    "header_securities": "Securities",
 
     "accounts_page_summary_title": "Current balance",
     "accounts_page_summary_add": "Add account",
@@ -96,5 +97,12 @@
 
     "entity_broker_from_title": "Broker",
     "entity_broker_name": "Name",
-    "entity_broker_add": "Add broker"
+    "entity_broker_add": "Add broker",
+
+    "security_page_summary_add": "Add security",
+    "security_delete_title": "Delete security",
+    "entity_security_from_title": "Security",
+    "entity_security_name": "Name",
+    "entity_security_ticker": "Ticker",
+    "entity_security_type": "Type"
 }

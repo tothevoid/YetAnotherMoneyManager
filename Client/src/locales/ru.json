@@ -4,6 +4,7 @@
     "header_deposits": "Депозиты",
     "header_data": "Данные",
     "header_broker_account": "Брокерские счета",
+    "header_securities": "Ценные бумаги",
     
     "accounts_page_summary_title": "На счетах",
     "accounts_page_summary_add": "Добавить счёт",
@@ -96,5 +97,12 @@
 
     "entity_broker_from_title": "Брокер",
     "entity_broker_name": "Название",
-    "entity_broker_add": "Добавить брокера"
+    "entity_broker_add": "Добавить брокера",
+
+    "security_page_summary_add": "Добавить",
+    "security_delete_title": "Удалить ценную бумагу",
+    "entity_security_from_title": "Ценная бумага",
+    "entity_security_name": "Название",
+    "entity_security_ticker": "Тикер",
+    "entity_security_type": "Тип"
 }

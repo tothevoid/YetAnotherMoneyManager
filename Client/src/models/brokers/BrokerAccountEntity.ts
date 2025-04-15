@@ -12,5 +12,5 @@ export interface BrokerAccountEntity {
     broker: BrokerEntity,
     brokerId: string,
     lastUpdateAt: Date,
-    assetValue: number
+    assetsValue: number
 }

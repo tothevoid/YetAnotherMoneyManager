@@ -28,20 +28,20 @@ namespace MoneyManager.Application.Services.Brokers
             return _mapper.Map<IEnumerable<BrokerDTO>>(brokers);
         }
 
-        public async Task Update(BrokerDTO brokersDto)
-        {
-            var brokers = _mapper.Map<Broker>(brokersDto);
-            await _brokerRepo.Update(brokers);
-            _db.Commit();
-        }
-
-        public async Task<Guid> Add(BrokerDTO securityDto)
+         public async Task<Guid> Add(BrokerDTO securityDto)
         {
             var broker = _mapper.Map<Broker>(securityDto);
             broker.Id = Guid.NewGuid();
             await _brokerRepo.Add(broker);
             _db.Commit();
             return broker.Id;
+        }
+
+        public async Task Update(BrokerDTO brokersDto)
+        {
+            var brokers = _mapper.Map<Broker>(brokersDto);
+            await _brokerRepo.Update(brokers);
+            _db.Commit();
         }
 
         public async Task Delete(Guid id)

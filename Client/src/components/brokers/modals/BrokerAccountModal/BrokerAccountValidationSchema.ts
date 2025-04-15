@@ -16,5 +16,5 @@ export const BrokerAccountValidationSchema = z.object({
         name: z.string()
     }, {message: "Broker is not selected"}),
     lastUpdateAt: z.date().optional(),
-    assetValue: z.number().optional()
+    assetsValue: z.number().optional()
 })

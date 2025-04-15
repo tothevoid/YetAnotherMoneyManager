@@ -1,15 +1,14 @@
 import { Button, Card, Flex, Icon, Stack, Text } from '@chakra-ui/react';
-import { MdDelete, MdEdit, MdCompareArrows } from "react-icons/md";
+import { MdDelete, MdEdit } from "react-icons/md";
 import { Fragment, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { deleteAccount } from '../../../api/accounts/accountApi';
 import { formatMoneyByCurrencyCulture } from '../../../formatters/moneyFormatter';
 import { AccountModalRef } from '../../../modals/AccountModal/AccountModal';
 import { ConfirmModalRef, ConfirmModal } from '../../../modals/ConfirmModal/ConfirmModal';
 import { BrokerAccountEntity } from '../../../models/brokers/BrokerAccountEntity';
 import BrokerAccountModal from '../modals/BrokerAccountModal/BrokerAccountModal';
-import { updateBrokerAccount } from '../../../api/brokers/brokerAccountApi';
-import { formatDate } from '../../../formatters/dateFormatter';
+import { deleteBrokerAccount, updateBrokerAccount } from '../../../api/brokers/brokerAccountApi';
+import { formatDate, formatDateTime } from '../../../formatters/dateFormatter';
 
 type Props = {
     brokerAccount: BrokerAccountEntity,
@@ -19,7 +18,7 @@ type Props = {
 }
 
 const BrokerAccount = (props: Props) => {
-    const {name, broker, currency, type, assetValue, lastUpdateAt} = props.brokerAccount;
+    const {name, broker, currency, type, assetsValue, lastUpdateAt} = props.brokerAccount;
 
     const confirmModalRef = useRef<ConfirmModalRef>(null);
     const editModalRef = useRef<AccountModalRef>(null);
@@ -42,7 +41,7 @@ const BrokerAccount = (props: Props) => {
     }
 
     const onDeletionConfirmed = async () => {
-        const isAccountDeleted = await deleteAccount(props.brokerAccount.id);
+        const isAccountDeleted = await deleteBrokerAccount(props.brokerAccount.id);
         if (!isAccountDeleted) {
             return;
         }
@@ -60,7 +59,7 @@ const BrokerAccount = (props: Props) => {
                         <Text fontWeight={600}>{name}</Text>
                         <Text fontWeight={600}>{broker.name}</Text>
                         <Text fontWeight={600}>{type.name}</Text>
-                        <Text fontWeight={700}>{formatMoneyByCurrencyCulture(assetValue, currency.name)} ({formatDate(lastUpdateAt, i18n)})</Text>
+                        <Text fontWeight={700}>{formatMoneyByCurrencyCulture(assetsValue, currency.name)} ({formatDateTime(lastUpdateAt, i18n, false)})</Text>
                     </Stack>
                     <Flex gap={1}>
                         <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={onEditClicked}>

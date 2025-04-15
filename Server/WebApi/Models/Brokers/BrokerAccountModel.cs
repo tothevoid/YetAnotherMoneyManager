@@ -20,7 +20,7 @@ namespace MoneyManager.WebApi.Models.Brokers
 
         public Guid BrokerId { get; set; }
 
-        public DateOnly LastUpdateAt { get; set; }
+        public DateTime LastUpdateAt { get; set; }
 
         public decimal AssetsValue { get; set; }
     }

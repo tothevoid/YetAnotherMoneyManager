@@ -32,6 +32,8 @@ namespace MoneyManager.Application.Services.Brokers
         {
             var brokerAccount = _mapper.Map<BrokerAccount>(brokerAccountDto);
             brokerAccount.Id = Guid.NewGuid();
+            brokerAccount.LastUpdateAt = DateTime.UtcNow;
+            brokerAccount.AssetsValue = 0;
             await _brokerAccountRepo.Add(brokerAccount);
             _db.Commit();
             return brokerAccount.Id;

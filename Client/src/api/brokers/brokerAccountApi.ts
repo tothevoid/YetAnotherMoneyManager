@@ -5,7 +5,10 @@ import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../bas
 const basicUrl = `${config.api.URL}/BrokerAccount`;
 
 export const getBrokerAccounts = async (): Promise<BrokerAccountEntity[]> => {
-    return await getAllEntities<BrokerAccountEntity>(basicUrl);
+    return (await getAllEntities<BrokerAccountEntity>(basicUrl)).map(brokerAccount => {
+        const lastUpdateAt = new Date(brokerAccount.lastUpdateAt);
+        return {...brokerAccount, lastUpdateAt} as BrokerAccountEntity;
+    });
 };
 
 export const createBrokerAccount = async (addedBroker: BrokerAccountEntity): Promise<BrokerAccountEntity | void> => {

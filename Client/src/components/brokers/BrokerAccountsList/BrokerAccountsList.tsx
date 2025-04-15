@@ -82,7 +82,7 @@ const BrokerAccountsList: React.FC<Props> = (props) => {
             <Flex justifyContent="space-between" alignItems="center" pt={5} pb={5}>
                 <AddBrokerAccountButton onAdded={onBrokerAccountCreated}></AddBrokerAccountButton>
             </Flex>
-            <SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(300px, 3fr))'>
+            <SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(400px, 3fr))'>
                 {
                 state.brokerAccounts.map((brokerAccount: BrokerAccountEntity) => {
                     return <BrokerAccount onReloadBrokerAccounts={onReloadBrokerAccounts} brokerAccount={brokerAccount} onEditCallback={onBrokerAccountUpdated} 

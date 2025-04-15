@@ -8,7 +8,6 @@ import { BrokerAccountEntity } from "../../../../models/brokers/BrokerAccountEnt
 import { CurrencyEntity } from "../../../../models/currencies/CurrencyEntity";
 import { BrokerAccountTypeEntity } from "../../../../models/brokers/BrokerAccountTypeEntity";
 import { BrokerEntity } from "../../../../models/brokers/BrokerEntity";
-import { getAccountTypes } from "../../../../api/accounts/accountTypeApi";
 import { getCurrencies } from "../../../../api/currencies/currencyApi";
 import CollectionSelect from "../../../../controls/CollectionSelect/CollectionSelect";
 import { BrokerAccountFormInput, BrokerAccountValidationSchema } from "./BrokerAccountValidationSchema";
@@ -59,7 +58,7 @@ const BrokerAccountModal = forwardRef<BrokerAccountModalRef, BrokerAccountProps>
             type: props.brokerAccount?.type,
             currency: props.brokerAccount?.currency,
             broker: props.brokerAccount?.broker,
-            assetValue: props.brokerAccount?.assetValue,
+            assetsValue: props.brokerAccount?.assetsValue,
             lastUpdateAt: props.brokerAccount?.lastUpdateAt
         }
     });
@@ -93,7 +92,7 @@ const BrokerAccountModal = forwardRef<BrokerAccountModalRef, BrokerAccountProps>
                         </Field.Root>
                         <Field.Root mt={4} invalid={!!errors.type}>
                             <Field.Label>{t("entity_broker_account_type")}</Field.Label>
-                            <CollectionSelect name="accountType" control={control} placeholder="Select broker account type"
+                            <CollectionSelect name="type" control={control} placeholder="Select broker account type"
                                 collection={state.accountTypes} 
                                 labelSelector={(accountType => accountType.name)} 
                                 valueSelector={(accountType => accountType.id)}/>

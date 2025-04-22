@@ -16,6 +16,8 @@ namespace MoneyManager.Infrastructure.Interfaces.Database
 
         Task<IEnumerable<TEntity>> GetAll(Expression<Func<TEntity, bool>> predicate);
 
+        Task<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
+
         Task Update(TEntity entity);
 
         Task Delete(Guid id);

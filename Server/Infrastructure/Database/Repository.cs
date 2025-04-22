@@ -37,6 +37,12 @@ namespace MoneyManager.Infrastructure.Database
             return entities.ToList();
         }
 
+        public async Task<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
+        {
+            var entities = await DbSet.FindAsync(Builders<TEntity>.Filter.Where(predicate));
+            return entities.FirstOrDefault();
+        }
+
         public async Task<IEnumerable<TEntity>> GetAll(Expression<Func<TEntity, bool>> predicate)
         {
             var entities = await DbSet.FindAsync(Builders<TEntity>.Filter.Where(predicate));

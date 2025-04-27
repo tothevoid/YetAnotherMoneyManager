@@ -104,5 +104,13 @@
     "entity_security_from_title": "Ценная бумага",
     "entity_security_name": "Название",
     "entity_security_ticker": "Тикер",
-    "entity_security_type": "Тип"
+    "entity_security_type": "Тип",
+
+    "broker_account_securities_page_summary_add": "Добавить ценную бумагу",
+    "broker_account_securities_delete_title": "Удалить ценную бумагу",
+    "entity_broker_account_security_form_title": "Ценные бумаги на счете",
+    "entity_broker_account_broker_account": "Брокерский счет",
+    "entity_broker_account_security": "Ценная бумага",
+    "entity_broker_initial_price": "Цена покупки",
+    "entity_broker_quantity": "Количество"
 }

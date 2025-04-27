@@ -9,6 +9,7 @@ import AccountsPage from './pages/AccountsPage/AccountsPage';
 import DataPage from './pages/DataPage/DataPage';
 import BrokerAccountsPage from './pages/BrokerAccountsPage/BrokerAccountsPage';
 import SecuritiesPage from './pages/SecuritiesPage/SecuritiesPage';
+import BrokerAccountPage from './pages/BrokerAccountPage/BrokerAccountPage';
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
             <Route path="/securities" element={<SecuritiesPage />} />
             <Route path="/data" element={<DataPage />} />
             <Route path="/data/:tab" element={<DataPage />} />
+            <Route path="/broker_account/:brokerAccountId" element={<BrokerAccountPage />} />
           </Routes>
         </Router>
       </main>

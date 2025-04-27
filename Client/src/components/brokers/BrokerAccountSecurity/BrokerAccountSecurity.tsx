@@ -1,24 +1,22 @@
-import { Button, Card, Flex, Icon, Link, Stack, Text } from '@chakra-ui/react';
+import { Button, Card, Flex, Icon, Stack, Text } from '@chakra-ui/react';
 import { MdDelete, MdEdit } from "react-icons/md";
 import { Fragment, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { formatMoneyByCurrencyCulture } from '../../../formatters/moneyFormatter';
 import { AccountModalRef } from '../../../modals/AccountModal/AccountModal';
 import { ConfirmModalRef, ConfirmModal } from '../../../modals/ConfirmModal/ConfirmModal';
-import { BrokerAccountEntity } from '../../../models/brokers/BrokerAccountEntity';
-import BrokerAccountModal from '../modals/BrokerAccountModal/BrokerAccountModal';
-import { deleteBrokerAccount, updateBrokerAccount } from '../../../api/brokers/brokerAccountApi';
-import { formatDate, formatDateTime } from '../../../formatters/dateFormatter';
+import { BrokerAccountSecurityEntity } from '../../../models/brokers/BrokerAccountSecurityEntity';
+import { deleteBrokerAccountSecurity, updateBrokerAccountSecurity } from '../../../api/brokers/brokerAccountSecurityApi';
+import BrokerAccountSecurityModal from '../modals/BrokerAccountSecurityModal/BrokerAccountSecurityModal';
 
 type Props = {
-    brokerAccount: BrokerAccountEntity,
-    onDeleteCallback: (account: BrokerAccountEntity) => void,
-    onEditCallback: (account: BrokerAccountEntity) => void,
+    brokerAccountSecurity: BrokerAccountSecurityEntity,
+    onDeleteCallback: (account: BrokerAccountSecurityEntity) => void,
+    onEditCallback: (account: BrokerAccountSecurityEntity) => void,
     onReloadBrokerAccounts: () => void
 }
 
-const BrokerAccount = (props: Props) => {
-    const {id, name, broker, currency, type, assetsValue, lastUpdateAt} = props.brokerAccount;
+const BrokerAccountSecurity = (props: Props) => {
+    const {initialPrice, quantity, security, brokerAccount} = props.brokerAccountSecurity;
 
     const confirmModalRef = useRef<ConfirmModalRef>(null);
     const editModalRef = useRef<AccountModalRef>(null);
@@ -31,37 +29,35 @@ const BrokerAccount = (props: Props) => {
         confirmModalRef.current?.openModal()
     };
 
-    const onBrokerAccountsUpdated = async (updatedBrokerAccount: BrokerAccountEntity) => {
-        const isAccountUpdated = await updateBrokerAccount(updatedBrokerAccount);
-        if (!isAccountUpdated) {
+    const onBrokerAccountsSecurityUpdated = async (updatedBrokerAccountSecurity: BrokerAccountSecurityEntity) => {
+        const brokerAccountSecurityUpdated = await updateBrokerAccountSecurity(updatedBrokerAccountSecurity);
+        if (!brokerAccountSecurityUpdated) {
             return;
         }
 
-        props.onEditCallback(updatedBrokerAccount);
+        props.onEditCallback(updatedBrokerAccountSecurity);
     }
 
     const onDeletionConfirmed = async () => {
-        const isAccountDeleted = await deleteBrokerAccount(props.brokerAccount.id);
-        if (!isAccountDeleted) {
+        const brokerAccountSecurityDeleted = await deleteBrokerAccountSecurity(props.brokerAccountSecurity.id);
+        if (!brokerAccountSecurityDeleted) {
             return;
         }
 
-        props.onDeleteCallback(props.brokerAccount);
+        props.onDeleteCallback(props.brokerAccountSecurity);
     }
 
     const { t, i18n } = useTranslation();
-
-    const accountLink = `../broker_account/${id}`;
 
     return <Fragment>
         <Card.Root backgroundColor="background_primary" borderColor="border_primary" >
             <Card.Body color="text_primary" boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
                 <Flex justifyContent="space-between" alignItems="center">
                     <Stack>
-                        <Link fontSize="2xl" fontWeight={900} color="text_primary" href={accountLink}>{name}</Link>
-                        <Text fontWeight={600}>{broker.name}</Text>
-                        <Text fontWeight={600}>{type.name}</Text>
-                        <Text fontWeight={700}>{formatMoneyByCurrencyCulture(assetsValue, currency.name)} ({formatDateTime(lastUpdateAt, i18n, false)})</Text>
+                        <Text fontWeight={600}>{brokerAccount?.name}</Text>
+                        <Text fontWeight={600}>{security?.name}</Text>
+                        <Text fontWeight={600}>{quantity}</Text>
+                        <Text fontWeight={600}>{initialPrice}</Text>
                     </Stack>
                     <Flex gap={1}>
                         <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={onEditClicked}>
@@ -79,13 +75,14 @@ const BrokerAccount = (props: Props) => {
             </Card.Body>
         </Card.Root>
         <ConfirmModal onConfirmed={onDeletionConfirmed}
-            title={t("broker_account_delete_title")}
+            title={t("broker_account_securities_delete_title")}
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
             ref={confirmModalRef}>
         </ConfirmModal>
-        <BrokerAccountModal brokerAccount={props.brokerAccount} ref={editModalRef} onSaved={onBrokerAccountsUpdated}></BrokerAccountModal>
+        <BrokerAccountSecurityModal brokerAccountSecurity={props.brokerAccountSecurity} 
+            ref={editModalRef} onSaved={onBrokerAccountsSecurityUpdated}></BrokerAccountSecurityModal>
     </Fragment>
 };
 
-export default BrokerAccount;
+export default BrokerAccountSecurity;

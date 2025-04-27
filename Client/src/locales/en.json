@@ -106,7 +106,6 @@
     "entity_security_ticker": "Ticker",
     "entity_security_type": "Type",
 
-    "broker_account_securities_page_summary_add": "Add security",
     "broker_account_securities_delete_title": "Delete security",
     "entity_broker_account_security_form_title": "Broker account security",
     "entity_broker_account_broker_account": "Broker account",

@@ -106,7 +106,6 @@
     "entity_security_ticker": "Тикер",
     "entity_security_type": "Тип",
 
-    "broker_account_securities_page_summary_add": "Добавить ценную бумагу",
     "broker_account_securities_delete_title": "Удалить ценную бумагу",
     "entity_broker_account_security_form_title": "Ценные бумаги на счете",
     "entity_broker_account_broker_account": "Брокерский счет",

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MoneyManager.Application.Integrations.Stock;
 using MoneyManager.Application.Mappings;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Bson.Serialization;
@@ -10,6 +11,7 @@ using MoneyManager.Application.Interfaces.Accounts;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Application.Interfaces.Currencies;
 using MoneyManager.Application.Interfaces.Deposits;
+using MoneyManager.Application.Interfaces.Integrations.Stock;
 using MoneyManager.Application.Interfaces.Securities;
 using MoneyManager.Application.Interfaces.Transactions;
 using MoneyManager.Application.Services.Accounts;
@@ -23,6 +25,8 @@ using MoneyManager.Infrastructure.Interfaces.Database;
 using MoneyManager.WebApi.Mappings;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddHttpClient();
 
 // TODO: Transfer to Infrastructure solution
 BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.CSharpLegacy));
@@ -55,6 +59,9 @@ builder.Services.AddTransient<IBrokerService, BrokerService>();
 builder.Services.AddTransient<ISecurityService, SecurityService>();
 builder.Services.AddTransient<ISecurityTransactionService, SecurityTransactionService>();
 builder.Services.AddTransient<ISecurityTypeService, SecurityTypeService>();
+
+//TODO: make factory
+builder.Services.AddTransient<IStockConnector, MoexConnector>();
 
 var mapperConfig = new MapperConfiguration(cfg =>
 {

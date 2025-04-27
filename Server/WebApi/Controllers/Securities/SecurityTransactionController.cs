@@ -6,6 +6,7 @@ using AutoMapper;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Securities;
 using MoneyManager.WebApi.Models.Securities;
+using MoneyManager.WebApi.Models.Brokers;
 
 namespace MoneyManager.WebApi.Controllers.Securities
 {
@@ -29,11 +30,20 @@ namespace MoneyManager.WebApi.Controllers.Securities
             return _mapper.Map<IEnumerable<SecurityTransactionModel>>(securityTransactions);
         }
 
+        [HttpGet("GetByBrokerAccount")]
+        public async Task<IEnumerable<SecurityTransactionModel>> GetByBrokerAccount([FromQuery] Guid brokerAccountId)
+        {
+            var brokerAccountSecurities = await _securityTransactionService
+                .GetByBrokerAccount(brokerAccountId);
+            return _mapper.Map<IEnumerable<SecurityTransactionModel>>(brokerAccountSecurities);
+        }
+
         [HttpPut]
         public async Task<Guid> Add(SecurityTransactionModel securityTransaction)
         {
             var securityTransactionDto = _mapper.Map<SecurityTransactionDTO>(securityTransaction);
             securityTransactionDto.SecurityId = securityTransactionDto.Security.Id;
+            securityTransactionDto.BrokerAccountId = securityTransactionDto.BrokerAccount.Id;
             return await _securityTransactionService.Add(securityTransactionDto);
         }
 

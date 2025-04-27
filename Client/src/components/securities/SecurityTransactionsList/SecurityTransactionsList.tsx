@@ -3,7 +3,7 @@ import { SimpleGrid } from '@chakra-ui/react/grid';
 import { Flex } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { SecurityTransactionEntity } from '../../../models/securities/SecurityTransactionEntity';
-import { getSecurityTransactions } from '../../../api/securities/securityTransactionApi';
+import { getSecurityTransactionsByBrokerAccount } from '../../../api/securities/securityTransactionApi';
 import AddSecurityTransactionButton from '../AddSecurityTransactionButton/AddSecurityTransactionButton';
 import SecurityTransaction from '../SecurityTransaction/SecurityTransaction';
 
@@ -28,7 +28,7 @@ const SecurityTransactionsList: React.FC<Props> = (props) => {
     }, []);
 
     const requestSecurityTransactions = async () => {
-        const securityTransactions = await getSecurityTransactions();
+        const securityTransactions = await getSecurityTransactionsByBrokerAccount(props.brokerAccountId);
         setState((currentState) => {
             return {...currentState, securities: securityTransactions}
         })

@@ -31,6 +31,13 @@ namespace MoneyManager.Application.Services.Securities
             return _mapper.Map<IEnumerable<SecurityTransactionDTO>>(securityTransactions);
         }
 
+        public async Task<IEnumerable<SecurityTransactionDTO>> GetByBrokerAccount(Guid brokerAccountId)
+        {
+            var securityTransactions = await _securityTransactionRepo
+                .GetAll(securityTransaction => securityTransaction.BrokerAccountId == brokerAccountId);
+            return _mapper.Map<IEnumerable<SecurityTransactionDTO>>(securityTransactions);
+        }
+
         public async Task<Guid> Add(SecurityTransactionDTO securityDto)
         {
             var securityTransaction = _mapper.Map<SecurityTransaction>(securityDto);

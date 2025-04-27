@@ -110,17 +110,17 @@ const SecurityTransactionModal = forwardRef<BrokerAccountModalRef, BrokerAccount
 					    </Field.Root>
                         <Field.Root mt={4} invalid={!!errors.price}>
                             <Field.Label>{t("entity_security_transaction_price")}</Field.Label>
-                            <Input {...register("price", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='100' />
+                            <Input {...register("price", {valueAsNumber: true})} min={0} step="0.01" autoComplete="off" type='number' placeholder='100' />
                             <Field.ErrorText>{errors.price?.message}</Field.ErrorText>
 					    </Field.Root>
                         <Field.Root mt={4} invalid={!!errors.commission}>
                             <Field.Label>{t("entity_security_transaction_commission")}</Field.Label>
-                            <Input {...register("commission", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='500' />
+                            <Input {...register("commission", {valueAsNumber: true})} min={0} step="0.01" autoComplete="off" type='number' placeholder='500' />
                             <Field.ErrorText>{errors.commission?.message}</Field.ErrorText>
 					    </Field.Root>
                         <Field.Root mt={4} invalid={!!errors.tax}>
                             <Field.Label>{t("entity_security_transaction_tax")}</Field.Label>
-                            <Input {...register("tax", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='500' />
+                            <Input {...register("tax", {valueAsNumber: true})} min={0} step="0.01" autoComplete="off" type='number' placeholder='500' />
                             <Field.ErrorText>{errors.tax?.message}</Field.ErrorText>
 					    </Field.Root>
                     </Dialog.Body>

@@ -29,6 +29,13 @@ namespace MoneyManager.WebApi.Controllers.Brokers
             return _mapper.Map<IEnumerable<BrokerAccountModel>>(brokerAccounts);
         }
 
+        [HttpGet("GetById")]
+        public async Task<BrokerAccountModel> GetById([FromQuery] Guid id)
+        {
+            var brokerAccount = await _brokerAccountService.GetById(id);
+            return _mapper.Map<BrokerAccountModel>(brokerAccount);
+        }
+
         [HttpPut]
         public async Task<Guid> Add(BrokerAccountModel brokerAccount)
         {

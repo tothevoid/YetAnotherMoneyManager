@@ -1,11 +1,25 @@
 import config from '../../config' 
 import { BrokerAccountSecurityEntity } from '../../models/brokers/BrokerAccountSecurityEntity';
-import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
+import { checkPromiseStatus, logPromiseError } from '../../utils/PromiseUtils';
+import { convertRecordToJson, createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
 
 const basicUrl = `${config.api.URL}/BrokerAccountSecurity`;
 
 export const getBrokerAccountSecurities = async (): Promise<BrokerAccountSecurityEntity[]> => {
-   return await getAllEntities<BrokerAccountSecurityEntity>(basicUrl);
+    return await getAllEntities<BrokerAccountSecurityEntity>(basicUrl);
+};
+
+export const getByBrokerAccount = async (brokerAccountId: string): Promise<BrokerAccountSecurityEntity[]> => {
+    const entities = await fetch(`${basicUrl}/GetByBrokerAccount`, {method: "POST",  
+            body: convertRecordToJson({brokerAccountId}),
+            headers: {"Content-Type": "application/json"}})
+        .then(checkPromiseStatus)
+        .then((response: Response) => response.json())
+        .catch(logPromiseError);
+     
+    return entities ?
+        entities: 
+        [] as BrokerAccountSecurityEntity[];
 };
 
 export const createBrokerAccountSecurity = async (addedBrokerAccountSecurity: BrokerAccountSecurityEntity): Promise<BrokerAccountSecurityEntity | void> => {

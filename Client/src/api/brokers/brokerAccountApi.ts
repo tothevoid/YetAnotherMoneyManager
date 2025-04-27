@@ -1,6 +1,7 @@
 import config from '../../config' 
 import { BrokerAccountEntity } from '../../models/brokers/BrokerAccountEntity';
-import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
+import { checkPromiseStatus, logPromiseError } from '../../utils/PromiseUtils';
+import { convertRecordToJson, createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
 
 const basicUrl = `${config.api.URL}/BrokerAccount`;
 
@@ -10,6 +11,14 @@ export const getBrokerAccounts = async (): Promise<BrokerAccountEntity[]> => {
         return {...brokerAccount, lastUpdateAt} as BrokerAccountEntity;
     });
 };
+
+export const getBrokerAccountById = async (id: string): Promise<BrokerAccountEntity | void> => {
+    const brokerAccount: BrokerAccountEntity | void = await fetch(`${basicUrl}/GetById?id=${id}`, { method: "GET"})
+        .then(checkPromiseStatus)
+        .then((response: Response) => response.json())
+        .catch(logPromiseError);
+    return brokerAccount;
+}
 
 export const createBrokerAccount = async (addedBroker: BrokerAccountEntity): Promise<BrokerAccountEntity | void> => {
     return await createEntity<BrokerAccountEntity>(basicUrl, addedBroker);

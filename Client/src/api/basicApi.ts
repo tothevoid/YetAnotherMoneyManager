@@ -45,6 +45,6 @@ export const deleteEntity = async (basicUrl: string, recordId: string): Promise<
     return result?.ok ?? false;
 }
 
-const convertRecordToJson = <T>(record: T): string => {
+export const convertRecordToJson = <T>(record: T): string => {
     return JSON.stringify(record);
 }

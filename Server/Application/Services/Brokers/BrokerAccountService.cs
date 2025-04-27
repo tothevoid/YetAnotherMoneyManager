@@ -28,6 +28,12 @@ namespace MoneyManager.Application.Services.Brokers
             return _mapper.Map<IEnumerable<BrokerAccountDTO>>(brokerAccounts);
         }
 
+        public async Task<BrokerAccountDTO> GetById(Guid id)
+        {
+            var brokerAccount = await _brokerAccountRepo.GetById(id);
+            return _mapper.Map<BrokerAccountDTO>(brokerAccount);
+        }
+
         public async Task<Guid> Add(BrokerAccountDTO brokerAccountDto)
         {
             var brokerAccount = _mapper.Map<BrokerAccount>(brokerAccountDto);

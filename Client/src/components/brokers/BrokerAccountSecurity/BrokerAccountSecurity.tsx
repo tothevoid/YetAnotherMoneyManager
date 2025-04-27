@@ -16,7 +16,7 @@ type Props = {
 }
 
 const BrokerAccountSecurity = (props: Props) => {
-    const {initialPrice, quantity, security, brokerAccount} = props.brokerAccountSecurity;
+    const {initialPrice, quantity, security} = props.brokerAccountSecurity;
 
     const confirmModalRef = useRef<ConfirmModalRef>(null);
     const editModalRef = useRef<AccountModalRef>(null);
@@ -54,8 +54,7 @@ const BrokerAccountSecurity = (props: Props) => {
             <Card.Body color="text_primary" boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
                 <Flex justifyContent="space-between" alignItems="center">
                     <Stack>
-                        <Text fontWeight={600}>{brokerAccount?.name}</Text>
-                        <Text fontWeight={600}>{security?.name}</Text>
+                        <Text fontSize="2xl" fontWeight={900}>{security?.name}</Text>
                         <Text fontWeight={600}>{quantity}</Text>
                         <Text fontWeight={600}>{initialPrice}</Text>
                     </Stack>

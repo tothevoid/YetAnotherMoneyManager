@@ -81,18 +81,18 @@ const BrokerAccountSecurityModal = forwardRef<BrokerAccountModalRef, BrokerAccou
                     <Dialog.Body pb={6}>
                         <Field.Root mt={4} invalid={!!errors.brokerAccount}>
                             <Field.Label>{t("entity_broker_account_broker_account")}</Field.Label>
-                            <CollectionSelect name="type" control={control} placeholder="Select broker account"
+                            <CollectionSelect name="brokerAccount" control={control} placeholder="Select broker account"
                                 collection={state.brokerAccounts} 
-                                labelSelector={(accountType => accountType.name)} 
-                                valueSelector={(accountType => accountType.id)}/>
+                                labelSelector={(brokerAccount => brokerAccount.name)} 
+                                valueSelector={(brokerAccount => brokerAccount.id)}/>
                             <Field.ErrorText>{errors.brokerAccount?.message}</Field.ErrorText>
                         </Field.Root>
                         <Field.Root mt={4} invalid={!!errors.security}>
                             <Field.Label>{t("entity_broker_account_security")}</Field.Label>
-                            <CollectionSelect name="currency" control={control} placeholder="Select security"
+                            <CollectionSelect name="security" control={control} placeholder="Select security"
                                 collection={state.securities} 
-                                labelSelector={(currency => currency.name)} 
-                                valueSelector={(currency => currency.id)}/>
+                                labelSelector={(security => security.name)} 
+                                valueSelector={(security => security.id)}/>
                             <Field.ErrorText>{errors.security?.message}</Field.ErrorText>
                         </Field.Root>
                         <Field.Root mt={4} invalid={!!errors.initialPrice}>

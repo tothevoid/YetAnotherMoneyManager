@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import BrokerAccountSecurity from '../BrokerAccountSecurity/BrokerAccountSecurity';
 import { BrokerAccountSecurityEntity } from '../../../models/brokers/BrokerAccountSecurityEntity';
 import AddBrokerAccountSecurityButton from '../AddBrokerAccountSecurityButton/AddBrokerAccountSecurityButton';
-import { getBrokerAccountSecurities, getByBrokerAccount } from '../../../api/brokers/brokerAccountSecurityApi';
+import { getSecuritiesByBrokerAccount } from '../../../api/brokers/brokerAccountSecurityApi';
 
 interface Props {
     brokerAccountId: string
@@ -22,13 +22,13 @@ const BrokerAccountSecuritiesList: React.FC<Props> = (props) => {
 
     useEffect(() => {
         const initData = async () => {
-            await getByBrokerAccount(props.brokerAccountId);
+            await requestBrokerAccountSecurityData();
         }
         initData();
     }, []);
 
     const requestBrokerAccountSecurityData = async () => {
-        const brokerAccountSecurities = await getBrokerAccountSecurities();
+        const brokerAccountSecurities = await getSecuritiesByBrokerAccount(props.brokerAccountId);
         setState((currentState) => {
             return {...currentState, brokerAccountSecurities}
         })

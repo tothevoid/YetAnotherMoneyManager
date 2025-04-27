@@ -1,21 +1,36 @@
 import config from '../../config' 
 import { SecurityTransactionEntity } from '../../models/securities/SecurityTransactionEntity';
+import { convertToDateOnly } from '../../utils/DateUtils';
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
 
 const basicUrl = `${config.api.URL}/SecurityTransaction`;
 
 export const getSecurityTransactions = async (): Promise<SecurityTransactionEntity[]> => {
-   return await getAllEntities<SecurityTransactionEntity>(basicUrl);
+    const securityTransactions = await getAllEntities<SecurityTransactionEntity>(basicUrl);
+    return securityTransactions.map((securityTransaction: SecurityTransactionEntity) => {
+        const date = new Date(securityTransaction.date);
+        return {...securityTransaction, date: date} as SecurityTransactionEntity;
+    });
+   
 };
 
 export const createSecurityTransaction = async (addedSecurityTransaction: SecurityTransactionEntity): Promise<SecurityTransactionEntity | void> => {
-    return await createEntity<SecurityTransactionEntity>(basicUrl, addedSecurityTransaction);
+    return await createEntity<SecurityTransactionEntity>(basicUrl, prepareSecurityTransactionEntity(addedSecurityTransaction));
 }
 
 export const updateSecurityTransaction = async (modifiedSecurityTransaction: SecurityTransactionEntity): Promise<boolean> => {
-    return await updateEntity<SecurityTransactionEntity>(basicUrl, modifiedSecurityTransaction);
+    return await updateEntity<SecurityTransactionEntity>(basicUrl, prepareSecurityTransactionEntity(modifiedSecurityTransaction));
 }
 
 export const deleteSecurityTransaction = async (securityTransactionId: string): Promise<boolean> => {
     return await deleteEntity(basicUrl, securityTransactionId);
+}
+
+const prepareSecurityTransactionEntity = (securityTransaction: SecurityTransactionEntity): SecurityTransactionEntity => {
+    const serverTransaction = {...securityTransaction};
+
+    // .NET DateOnly cast
+    serverTransaction.date = convertToDateOnly(serverTransaction.date );
+
+    return serverTransaction;
 }

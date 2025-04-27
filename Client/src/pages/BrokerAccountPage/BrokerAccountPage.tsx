@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { BrokerAccountEntity } from "../../models/brokers/BrokerAccountEntity";
 import { getBrokerAccountById } from "../../api/brokers/brokerAccountApi";
 import { Text } from "@chakra-ui/react";
+import SecurityTransactionsList from "../../components/securities/SecurityTransactionsList/SecurityTransactionsList";
 
 interface Props {}
 
@@ -41,6 +42,7 @@ const BrokerAccountPage: React.FC<Props> = () => {
     return (<Fragment>
         <Text fontSize="3xl" fontWeight={900} color="text_primary">{state.brokerAccount?.name}</Text>
         <BrokerAccountSecuritiesList brokerAccountId={brokerAccountId}/>
+        <SecurityTransactionsList brokerAccountId={brokerAccountId}/>
     </Fragment>
     )
 }

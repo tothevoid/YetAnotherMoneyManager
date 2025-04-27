@@ -36,6 +36,7 @@ namespace MoneyManager.Application.Mappings
             CreateMap<BrokerAccountDTO, BrokerAccount>().ReverseMap();
             CreateMap<BrokerAccountSecurityDTO, BrokerAccountSecurity>().ReverseMap();
             CreateMap<BrokerAccountTypeDTO, BrokerAccountType>().ReverseMap();
+            CreateMap<SecurityTransactionDTO, SecurityTransaction>().ReverseMap();
         }
     }
 }

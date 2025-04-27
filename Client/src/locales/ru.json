@@ -112,5 +112,16 @@
     "entity_broker_account_broker_account": "Брокерский счет",
     "entity_broker_account_security": "Ценная бумага",
     "entity_broker_initial_price": "Цена покупки",
-    "entity_broker_quantity": "Количество"
+    "entity_broker_quantity": "Количество",
+
+    "entity_securities_transaction_page_summary_add": "Добавить транзакцию",
+    "entity_securities_transaction_delete_title": "Удалить транзакцию",
+    "entity_security_transaction_form_title": "Транзакция с ценной бумагой",
+    "entity_security_transaction_security": "Ценная бумага",
+    "entity_security_transaction_broker_account": "Брокерский счёт",
+    "entity_security_transaction_quantity": "Количество",
+    "entity_security_transaction_price": "Цена",
+    "entity_security_transaction_date": "Дата",
+    "entity_security_transaction_commission": "Комиссия",
+    "entity_security_transaction_tax": "Налог"
 }

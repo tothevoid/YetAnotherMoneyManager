@@ -45,6 +45,7 @@ namespace MoneyManager.WebApi.Mappings
             CreateMap<BrokerAccountModel, BrokerAccountDTO>().ReverseMap();
             CreateMap<BrokerAccountSecurityModel, BrokerAccountSecurityDTO>().ReverseMap();
             CreateMap<BrokerAccountTypeModel, BrokerAccountTypeDTO>().ReverseMap();
+            CreateMap<SecurityTransactionModel, SecurityTransactionDTO>().ReverseMap();
         }
     }
 }

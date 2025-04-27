@@ -9,7 +9,7 @@ export interface SecurityTransactionEntity {
     brokerAccountId: string,
     quantity: number,
     price: number,
-    date: string,
+    date: Date,
     commission: number,
     tax: number
 }

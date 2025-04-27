@@ -22,11 +22,11 @@ namespace MoneyManager.WebApi.Controllers.Securities
             _securityTransactionService = securityTransactionService;
         }
 
-        [HttpPost("GetAll")]
-        public IEnumerable<SecurityTransactionModel> GetAll()
+        [HttpGet]
+        public async Task<IEnumerable<SecurityTransactionModel>> GetAll()
         {
-            var securities = _securityTransactionService.GetAll();
-            return _mapper.Map<IEnumerable<SecurityTransactionModel>>(securities);
+            var securityTransactions = await _securityTransactionService.GetAll();
+            return _mapper.Map<IEnumerable<SecurityTransactionModel>>(securityTransactions);
         }
 
         [HttpPut]

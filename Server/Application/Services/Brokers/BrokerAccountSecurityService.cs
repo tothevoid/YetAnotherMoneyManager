@@ -6,32 +6,34 @@ using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Interfaces.Database;
+using MoneyManager.Infrastructure.Interfaces.Repositories;
 
 namespace MoneyManager.Application.Services.Brokers
 {
     public class BrokerAccountSecurityService : IBrokerAccountSecurityService
     {
         private readonly IUnitOfWork _db;
-
-        private readonly IRepository<BrokerAccountSecurity> _brokerAccountSecurityRepo;
         private readonly IMapper _mapper;
+
+        private readonly IBrokerAccountSecurityRepository _brokerAccountSecurityRepo;
+       
         public BrokerAccountSecurityService(IUnitOfWork uow, IMapper mapper)
         {
             _db = uow;
             _mapper = mapper;
-            _brokerAccountSecurityRepo = uow.CreateRepository<BrokerAccountSecurity>();
+            _brokerAccountSecurityRepo = uow.CreateBrokerAccountSecurityRepository();
         }
 
-        public async Task<IEnumerable<BrokerAccountSecurityDTO>> GetAll()
+        public IEnumerable<BrokerAccountSecurityDTO> GetAll()
         {
-            var brokerAccountSecurities = await _brokerAccountSecurityRepo.GetAll();
+            var brokerAccountSecurities = _brokerAccountSecurityRepo.GetAllFull();
             return _mapper.Map<IEnumerable<BrokerAccountSecurityDTO>>(brokerAccountSecurities);
         }
 
-        public async Task<IEnumerable<BrokerAccountSecurityDTO>> GetByBrokerAccount(Guid brokerAccountId)
+        public IEnumerable<BrokerAccountSecurityDTO> GetByBrokerAccount(Guid brokerAccountId)
         {
-            var brokerAccountSecurities = await _brokerAccountSecurityRepo
-                .GetAll(brokerAccountSecurity => brokerAccountSecurity.BrokerAccountId == brokerAccountId);
+            var brokerAccountSecurities = _brokerAccountSecurityRepo
+                .GetAllFull(brokerAccountSecurity => brokerAccountSecurity.BrokerAccountId == brokerAccountId);
             return _mapper.Map<IEnumerable<BrokerAccountSecurityDTO>>(brokerAccountSecurities);
         }
 

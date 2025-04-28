@@ -19,5 +19,13 @@ namespace MoneyManager.Infrastructure.Entities.Brokers
         public decimal InitialPrice { get; set; }
 
         public decimal CurrentPrice { get; set; }
+
+        public BrokerAccountSecurity AssignReferences(BrokerAccount brokerAccount, Security security)
+        {
+            BrokerAccount = brokerAccount;
+            Security = security;
+
+            return this;
+        }
     }
 }

@@ -14,6 +14,8 @@ namespace MoneyManager.Infrastructure.Interfaces.Database
 
         IAccountRepository CreateAccountRepository();
 
+        IBrokerAccountSecurityRepository CreateBrokerAccountSecurityRepository();
+
         void Commit();
     }
 }

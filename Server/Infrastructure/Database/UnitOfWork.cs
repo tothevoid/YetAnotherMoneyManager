@@ -56,6 +56,14 @@ namespace MoneyManager.Infrastructure.Database
             return new AccountRepository(_context);
         }
 
+        public IBrokerAccountSecurityRepository CreateBrokerAccountSecurityRepository()
+        {
+            if (repositories == null)
+                repositories = new Dictionary<string, object>();
+            return new BrokerAccountSecurityRepository(_context);
+        }
+
+
         public void Commit()
         {
             _context.SaveChanges();

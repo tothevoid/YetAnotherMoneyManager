@@ -84,7 +84,7 @@ namespace MoneyManager.Application.Services.Securities
             SecurityTransactionDTO securityTransaction)
         {
             brokerAccountSecurity.Quantity += securityTransaction.Quantity;
-            brokerAccountSecurity.InitialPrice += securityTransaction.Price;
+            brokerAccountSecurity.InitialPrice += securityTransaction.Price * securityTransaction.Quantity;
 
             await _brokerAccountSecurityRepo.Update(brokerAccountSecurity);
             _db.Commit();
@@ -103,7 +103,7 @@ namespace MoneyManager.Application.Services.Securities
             {
                 SecurityId = securityTransaction.SecurityId,
                 BrokerAccountId = securityTransaction.BrokerAccountId,
-                InitialPrice = securityTransaction.Price,
+                InitialPrice = securityTransaction.Price * securityTransaction.Quantity,
                 Quantity = securityTransaction.Quantity
             };
 

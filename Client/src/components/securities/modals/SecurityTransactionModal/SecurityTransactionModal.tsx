@@ -103,15 +103,15 @@ const SecurityTransactionModal = forwardRef<BrokerAccountModalRef, BrokerAccount
                             <DateSelect name="date" control={control}/>
                             <Field.ErrorText>{errors.date?.message}</Field.ErrorText>
                         </Field.Root>
-                        <Field.Root mt={4} invalid={!!errors.quantity}>
-                            <Field.Label>{t("entity_security_transaction_quantity")}</Field.Label>
-                            <Input {...register("quantity", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='100' />
-                            <Field.ErrorText>{errors.quantity?.message}</Field.ErrorText>
-					    </Field.Root>
                         <Field.Root mt={4} invalid={!!errors.price}>
                             <Field.Label>{t("entity_security_transaction_price")}</Field.Label>
                             <Input {...register("price", {valueAsNumber: true})} min={0} step="0.01" autoComplete="off" type='number' placeholder='100' />
                             <Field.ErrorText>{errors.price?.message}</Field.ErrorText>
+					    </Field.Root>
+                        <Field.Root mt={4} invalid={!!errors.quantity}>
+                            <Field.Label>{t("entity_security_transaction_quantity")}</Field.Label>
+                            <Input {...register("quantity", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='100' />
+                            <Field.ErrorText>{errors.quantity?.message}</Field.ErrorText>
 					    </Field.Root>
                         <Field.Root mt={4} invalid={!!errors.commission}>
                             <Field.Label>{t("entity_security_transaction_commission")}</Field.Label>

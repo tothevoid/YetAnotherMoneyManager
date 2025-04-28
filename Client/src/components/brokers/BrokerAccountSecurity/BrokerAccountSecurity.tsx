@@ -7,6 +7,7 @@ import { ConfirmModalRef, ConfirmModal } from '../../../modals/ConfirmModal/Conf
 import { BrokerAccountSecurityEntity } from '../../../models/brokers/BrokerAccountSecurityEntity';
 import { deleteBrokerAccountSecurity, updateBrokerAccountSecurity } from '../../../api/brokers/brokerAccountSecurityApi';
 import BrokerAccountSecurityModal from '../modals/BrokerAccountSecurityModal/BrokerAccountSecurityModal';
+import { formatMoneyByCurrencyCulture } from '../../../formatters/moneyFormatter';
 
 type Props = {
     brokerAccountSecurity: BrokerAccountSecurityEntity,
@@ -16,7 +17,7 @@ type Props = {
 }
 
 const BrokerAccountSecurity = (props: Props) => {
-    const {initialPrice, quantity, security} = props.brokerAccountSecurity;
+    const {initialPrice, quantity, security, brokerAccount} = props.brokerAccountSecurity;
 
     const confirmModalRef = useRef<ConfirmModalRef>(null);
     const editModalRef = useRef<AccountModalRef>(null);
@@ -54,9 +55,9 @@ const BrokerAccountSecurity = (props: Props) => {
             <Card.Body color="text_primary" boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
                 <Flex justifyContent="space-between" alignItems="center">
                     <Stack>
-                        <Text fontSize="2xl" fontWeight={900}>{security?.name}</Text>
-                        <Text fontWeight={600}>{quantity}</Text>
-                        <Text fontWeight={600}>{initialPrice}</Text>
+                        <Text fontSize="2xl" fontWeight={900}>{security?.name} ({security?.ticker})</Text>
+                        <Text fontWeight={600}>{t("broker_account_security_card_security_quantity")}: {quantity}</Text>
+                        <Text fontWeight={600}>{t("broker_account_security_card_security_price")}: {formatMoneyByCurrencyCulture(initialPrice, brokerAccount?.currency?.name)}</Text>
                     </Stack>
                     <Flex gap={1}>
                         <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={onEditClicked}>

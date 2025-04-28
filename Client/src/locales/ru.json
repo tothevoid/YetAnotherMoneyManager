@@ -113,6 +113,9 @@
     "entity_broker_initial_price": "Цена покупки",
     "entity_broker_quantity": "Количество",
 
+    "broker_account_security_card_security_quantity": "Количество",
+    "broker_account_security_card_security_price": "Стоимость",
+
     "entity_securities_transaction_page_summary_add": "Добавить транзакцию",
     "entity_securities_transaction_delete_title": "Удалить транзакцию",
     "entity_security_transaction_form_title": "Транзакция с ценной бумагой",

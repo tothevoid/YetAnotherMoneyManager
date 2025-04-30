@@ -1,95 +1,88 @@
 using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using MongoDB.Driver;
 using System.Collections.Generic;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using MoneyManager.Shared.Entities;
 using MoneyManager.Infrastructure.Interfaces.Database;
 
 namespace MoneyManager.Infrastructure.Database
 {
-    public class Repository<TEntity>: IDisposable, IRepository<TEntity>
+    public class Repository<TEntity>: IRepository<TEntity>
         where TEntity: BaseEntity
     {
-        protected readonly IMongoContext _context;
-        protected readonly IMongoCollection<TEntity> DbSet;
+        private readonly ApplicationDbContext _context;
+        private readonly DbSet<TEntity> _entities;
 
-        public Repository(IMongoContext context)
+        public Repository(ApplicationDbContext context)
         {
             _context = context;
-            DbSet = _context.GetCollection<TEntity>(typeof(TEntity).Name);
+            _entities = context.Set<TEntity>();
         }
 
         public async Task Add(TEntity entity)
         {
-            await _context.AddCommand(async () => await DbSet.InsertOneAsync(entity));
+            await _entities.AddAsync(entity);
         }
 
         public async Task<TEntity> GetById(Guid id)
         {
-            var data = await DbSet.FindAsync(Builders<TEntity>.Filter.Eq("_id", id));
-            return data.FirstOrDefault();
+            IQueryable<TEntity> query = _entities.AsNoTracking();
+            return await query.Where(entity => entity.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<TEntity>> GetAll()
         {
-            var entities = await DbSet.FindAsync(Builders<TEntity>.Filter.Empty);
-            return entities.ToList();
+            IQueryable<TEntity> query = _entities.AsNoTracking();
+            return await query.ToListAsync();
         }
 
         public async Task<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
         {
-            var entities = await DbSet.FindAsync(Builders<TEntity>.Filter.Where(predicate));
-            return entities.FirstOrDefault();
+            IQueryable<TEntity> query = _entities.AsNoTracking();
+            return await query.Where(predicate).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<TEntity>> GetAll(Expression<Func<TEntity, bool>> predicate)
         {
-            var entities = await DbSet.FindAsync(Builders<TEntity>.Filter.Where(predicate));
-            return entities.ToList();
+            IQueryable<TEntity> query = _entities.AsNoTracking();
+            return await query.Where(predicate).ToListAsync();
         }
 
-        public async Task Update(TEntity entity)
+        public void Update(TEntity entity)
         {
-            await _context.AddCommand(async () =>
-            {
-                await DbSet.ReplaceOneAsync(Builders<TEntity>.Filter.Eq("_id", entity.Id), entity);
-            });
+            _entities.Update(entity);
         }
 
         public async Task Delete(Guid id)
         {
-            await _context.AddCommand(async () => await DbSet.DeleteOneAsync(Builders<TEntity>.Filter.Eq("_id", id)));
+            IQueryable<TEntity> query = _entities.AsNoTracking();
+            var entity = await query.FirstOrDefaultAsync();
+            _entities.Remove(entity);
         }
 
         public async Task Increment(Guid id, Expression<Func<TEntity, decimal>> field, decimal delta)
         {
-            var update = new UpdateDefinitionBuilder<TEntity>().Inc(field, delta);
-            var idFilter = Builders<TEntity>.Filter.Eq("_id", id);
-            await _context.AddCommand(async () => await DbSet.FindOneAndUpdateAsync<TEntity>(idFilter, update));
+            throw new NotImplementedException();
+            //var update = new UpdateDefinitionBuilder<TEntity>().Inc(field, delta);
+            //var idFilter = Builders<TEntity>.Filter.Eq("_id", id);
+            //await _context.AddCommand(async () => await DbSet.FindOneAndUpdateAsync<TEntity>(idFilter, update));
         }
 
         public async Task<TEntity> GetMin(Expression<Func<TEntity, object>> sortField)
         {
-            var entityWithMinValue = await DbSet
-                .Find(FilterDefinition<TEntity>.Empty)
-                .SortBy(sortField)
-                .Limit(1)
-                .FirstOrDefaultAsync();
-
-            return entityWithMinValue;
+            IQueryable<TEntity> query = _entities.AsNoTracking();
+            return await query.OrderBy(sortField).Take(1).FirstOrDefaultAsync(); ;
         }
 
         public async Task<TEntity> GetMax(Expression<Func<TEntity, object>> sortField)
         {
-            var entityWithMinValue = await DbSet
-                .Find(FilterDefinition<TEntity>.Empty)
-                .SortByDescending(sortField)
-                .Limit(1)
-                .FirstOrDefaultAsync();
-
-            return entityWithMinValue;
+            IQueryable<TEntity> query = _entities.AsNoTracking();
+            return await query.OrderByDescending(sortField).Take(1).FirstOrDefaultAsync(); ;
         }
+
+        public async Task SaveChanges() => await _context.SaveChangesAsync();
 
         public void Dispose()
         {

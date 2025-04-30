@@ -6,7 +6,6 @@ using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Interfaces.Database;
-using MoneyManager.Infrastructure.Interfaces.Repositories;
 
 namespace MoneyManager.Application.Services.Brokers
 {
@@ -15,25 +14,25 @@ namespace MoneyManager.Application.Services.Brokers
         private readonly IUnitOfWork _db;
         private readonly IMapper _mapper;
 
-        private readonly IBrokerAccountSecurityRepository _brokerAccountSecurityRepo;
+        private readonly IRepository<BrokerAccountSecurity> _brokerAccountSecurityRepo;
        
         public BrokerAccountSecurityService(IUnitOfWork uow, IMapper mapper)
         {
             _db = uow;
             _mapper = mapper;
-            _brokerAccountSecurityRepo = uow.CreateBrokerAccountSecurityRepository();
+            _brokerAccountSecurityRepo = uow.CreateRepository<BrokerAccountSecurity>();
         }
 
-        public IEnumerable<BrokerAccountSecurityDTO> GetAll()
+        public async Task<IEnumerable<BrokerAccountSecurityDTO>> GetAll()
         {
-            var brokerAccountSecurities = _brokerAccountSecurityRepo.GetAllFull();
+            var brokerAccountSecurities = await _brokerAccountSecurityRepo.GetAll();
             return _mapper.Map<IEnumerable<BrokerAccountSecurityDTO>>(brokerAccountSecurities);
         }
 
-        public IEnumerable<BrokerAccountSecurityDTO> GetByBrokerAccount(Guid brokerAccountId)
+        public async Task<IEnumerable<BrokerAccountSecurityDTO>> GetByBrokerAccount(Guid brokerAccountId)
         {
-            var brokerAccountSecurities = _brokerAccountSecurityRepo
-                .GetAllFull(brokerAccountSecurity => brokerAccountSecurity.BrokerAccountId == brokerAccountId);
+            var brokerAccountSecurities = await _brokerAccountSecurityRepo
+                .GetAll(brokerAccountSecurity => brokerAccountSecurity.BrokerAccountId == brokerAccountId);
             return _mapper.Map<IEnumerable<BrokerAccountSecurityDTO>>(brokerAccountSecurities);
         }
 
@@ -42,21 +41,21 @@ namespace MoneyManager.Application.Services.Brokers
             var brokerAccountSecurity = _mapper.Map<BrokerAccountSecurity>(brokerAccountSecurityDto);
             brokerAccountSecurity.Id = Guid.NewGuid();
             await _brokerAccountSecurityRepo.Add(brokerAccountSecurity);
-            _db.Commit();
+            await _db.Commit();
             return brokerAccountSecurity.Id;
         }
 
         public async Task Update(BrokerAccountSecurityDTO brokerAccountSecurityDto)
         {
             var brokerAccountSecurity = _mapper.Map<BrokerAccountSecurity>(brokerAccountSecurityDto);
-            await _brokerAccountSecurityRepo.Update(brokerAccountSecurity);
-            _db.Commit();
+            _brokerAccountSecurityRepo.Update(brokerAccountSecurity);
+            await _db.Commit();
         }
 
         public async Task Delete(Guid id)
         {
             await _brokerAccountSecurityRepo.Delete(id);
-            _db.Commit();
+            await _db.Commit();
         }
     }
 }

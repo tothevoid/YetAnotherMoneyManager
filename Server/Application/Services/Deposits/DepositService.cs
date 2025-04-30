@@ -13,28 +13,28 @@ using MoneyManager.Infrastructure.Interfaces.Repositories;
 using MoneyManager.Infrastructure.Entities.Deposits;
 using MoneyManager.Infrastructure.Constants;
 using MoneyManager.Infrastructure.Entities.Accounts;
+using MoneyManager.Infrastructure.Database;
 
 namespace MoneyManager.Application.Services.Deposits
 {
     public class DepositService : IDepositService
     {
         private readonly IUnitOfWork _db;
-        private readonly IDepositRepository _depositRepo;
-        private readonly IAccountRepository _accountRepo;
-
+        private readonly IRepository<Deposit> _depositRepo;
+        private readonly IRepository<Account> _accountRepo;
 
         private readonly IMapper _mapper;
         public DepositService(IUnitOfWork uow, IMapper mapper)
         {
             _db = uow;
             _mapper = mapper;
-            _depositRepo = uow.CreateDepositRepository();
-            _accountRepo = uow.CreateAccountRepository();
+            _depositRepo = uow.CreateRepository<Deposit>();
+            _accountRepo = uow.CreateRepository<Account>();
         }
 
-        public IEnumerable<ServerDepositDTO> GetAll(int monthsFrom, int monthsTo, bool onlyActive)
+        public async Task<IEnumerable<ServerDepositDTO>> GetAll(int monthsFrom, int monthsTo, bool onlyActive)
         {
-            var deposits = GetDeposits(monthsFrom, monthsTo, onlyActive);
+            var deposits = await GetDeposits(monthsFrom, monthsTo, onlyActive);
             return _mapper.Map<IEnumerable<ServerDepositDTO>>(deposits.OrderByDescending(x => x.From));
         }
 
@@ -47,7 +47,7 @@ namespace MoneyManager.Application.Services.Deposits
             await _depositRepo.Add(mappedDeposit);
 
 
-            _db.Commit();
+            await _db.Commit();
             return mappedDeposit.Id;
         }
 
@@ -71,24 +71,25 @@ namespace MoneyManager.Application.Services.Deposits
             {
                 var account = await _accountRepo.GetById(currentDeposit.AccountId);
                 account.CurrencyId = modifiedDeposit.CurrencyId;
-                await _accountRepo.Update(account);
+                _accountRepo.Update(account);
             }
 
-            await _depositRepo.Update(deposit);
-            _db.Commit();
+            _depositRepo.Update(deposit);
+            await _db.Commit();
         }
 
         public async Task Delete(Guid id)
         {
             await _depositRepo.Delete(id);
-            _db.Commit();
+            await _db.Commit();
         }
 
-        public DepositMonthSummaryDTO GetSummary(int monthsFrom, int monthsTo, bool onlyActive)
+        public async Task<DepositMonthSummaryDTO> GetSummary(int monthsFrom, int monthsTo, bool onlyActive)
         {
             //TODO: IEnumerable order => IQueryable order
             //TODO: sort in db
-            var deposits = GetDeposits(monthsFrom, monthsTo, onlyActive).OrderBy(deposit => deposit.From).ToList();
+            var deposits = (await GetDeposits(monthsFrom, monthsTo, onlyActive))
+                .OrderBy(deposit => deposit.From).ToList();
             var dates = new Dictionary<DateOnly, List<(string name, decimal value)>>();
 
             if (!deposits.Any())
@@ -161,7 +162,7 @@ namespace MoneyManager.Application.Services.Deposits
             return new DepositsRangeDTO() { From = rangeStart, To = rangeEnd };
         }
 
-        private IEnumerable<Deposit> GetDeposits(int monthsFrom, int monthsTo, bool onlyActive)
+        private async Task<IEnumerable<Deposit>> GetDeposits(int monthsFrom, int monthsTo, bool onlyActive)
         {
             int minYear = (monthsFrom - 1) / 12;
             int minMonth = (monthsFrom - 1) % 12 + 1;
@@ -178,7 +179,7 @@ namespace MoneyManager.Application.Services.Deposits
                 (deposit) => deposit.To >= rangeMin && deposit.From <= rangeMax && deposit.To >= currentDate && deposit.From <= currentDate:
                 (deposit) => deposit.To >= rangeMin && deposit.From <= rangeMax;
 
-            return _depositRepo.GetAllFull(filter);
+            return await _depositRepo.GetAll(filter);
         }
 
         private decimal CalculateProfitInRange(DateOnly from, DateOnly to, int totalDays, decimal estimatedEarn)

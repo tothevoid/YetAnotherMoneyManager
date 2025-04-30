@@ -9,7 +9,7 @@ namespace MoneyManager.Application.Interfaces.Deposits
 {
     public interface IDepositService
     {
-        IEnumerable<ServerDepositDTO> GetAll(int monthsFrom, int monthsTo, bool onlyActive);
+        Task<IEnumerable<ServerDepositDTO>> GetAll(int monthsFrom, int monthsTo, bool onlyActive);
         
         Task<Guid> Add(ClientDepositDTO deposit);
 
@@ -17,7 +17,7 @@ namespace MoneyManager.Application.Interfaces.Deposits
 
         Task Delete(Guid id);
 
-        DepositMonthSummaryDTO GetSummary(int monthsFrom, int monthsTo, bool onlyActive);
+        Task<DepositMonthSummaryDTO> GetSummary(int monthsFrom, int monthsTo, bool onlyActive);
 
         Task<DepositsRangeDTO> GetDepositsRange();
     }

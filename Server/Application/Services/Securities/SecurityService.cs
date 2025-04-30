@@ -31,8 +31,8 @@ namespace MoneyManager.Application.Services.Securities
         public async Task Update(SecurityDTO securityTypeDto)
         {
             var security = _mapper.Map<Security>(securityTypeDto);
-            await _securityRepo.Update(security);
-            _db.Commit();
+            _securityRepo.Update(security);
+            await _db.Commit();
         }
 
         public async Task<Guid> Add(SecurityDTO securityDto)
@@ -40,14 +40,14 @@ namespace MoneyManager.Application.Services.Securities
             var security = _mapper.Map<Security>(securityDto);
             security.Id = Guid.NewGuid();
             await _securityRepo.Add(security);
-            _db.Commit();
+            await _db.Commit();
             return security.Id;
         }
 
         public async Task Delete(Guid id)
         {
             await _securityRepo.Delete(id);
-            _db.Commit();
+            await _db.Commit();
         }
     }
 }

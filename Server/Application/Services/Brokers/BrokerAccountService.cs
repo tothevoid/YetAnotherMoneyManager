@@ -41,21 +41,21 @@ namespace MoneyManager.Application.Services.Brokers
             brokerAccount.LastUpdateAt = DateTime.UtcNow;
             brokerAccount.AssetsValue = 0;
             await _brokerAccountRepo.Add(brokerAccount);
-            _db.Commit();
+            await _db.Commit();
             return brokerAccount.Id;
         }
 
         public async Task Update(BrokerAccountDTO brokerAccountDto)
         {
             var brokerAccount = _mapper.Map<BrokerAccount>(brokerAccountDto);
-            await _brokerAccountRepo.Update(brokerAccount);
-            _db.Commit();
+            _brokerAccountRepo.Update(brokerAccount);
+            await _db.Commit();
         }
 
         public async Task Delete(Guid id)
         {
             await _brokerAccountRepo.Delete(id);
-            _db.Commit();
+            await _db.Commit();
         }
     }
 }

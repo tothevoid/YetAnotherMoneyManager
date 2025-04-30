@@ -32,21 +32,21 @@ namespace MoneyManager.Application.Services.Brokers
             var brokerAccountType = _mapper.Map<BrokerAccountType>(brokerAccountTypeDto);
             brokerAccountType.Id = Guid.NewGuid();
             await _brokerAccountTypeRepo.Add(brokerAccountType);
-            _db.Commit();
+            await _db.Commit();
             return brokerAccountType.Id;
         }
 
         public async Task Update(BrokerAccountTypeDTO brokerAccountTypeDto)
         {
             var brokerAccountType = _mapper.Map<BrokerAccountType>(brokerAccountTypeDto);
-            await _brokerAccountTypeRepo.Update(brokerAccountType);
-            _db.Commit();
+            _brokerAccountTypeRepo.Update(brokerAccountType);
+            await _db.Commit();
         }
 
         public async Task Delete(Guid id)
         {
             await _brokerAccountTypeRepo.Delete(id);
-            _db.Commit();
+            await _db.Commit();
         }
     }
 }

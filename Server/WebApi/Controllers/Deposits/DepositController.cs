@@ -24,9 +24,10 @@ namespace MoneyManager.WebApi.Controllers.Deposits
         }
 
         [HttpPost(nameof(GetAll))]
-        public IEnumerable<ServerDepositModel> GetAll(DepositFiltrationModel filtration)
+        public async Task<IEnumerable<ServerDepositModel>> GetAll(DepositFiltrationModel filtration)
         {
-            var deposits = _depositService.GetAll(filtration.MonthsFrom, filtration.MonthsTo, filtration.OnlyActive);
+            var deposits = await _depositService.GetAll(filtration.MonthsFrom, 
+                filtration.MonthsTo, filtration.OnlyActive);
             return _mapper.Map<IEnumerable<ServerDepositModel>>(deposits);
         }
 

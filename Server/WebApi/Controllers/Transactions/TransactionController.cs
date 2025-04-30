@@ -24,9 +24,9 @@ namespace MoneyManager.WebApi.Controllers.Transactions
         }
        
         [HttpGet]
-        public IEnumerable<TransactionModel> GetAll(int month, int year)
+        public async Task<IEnumerable<TransactionModel>> GetAll(int month, int year)
         {
-            var transactions = _transactionService.GetAll(month, year);
+            var transactions = await _transactionService.GetAll(month, year);
             return _mapper.Map<IEnumerable<TransactionModel>>(transactions);
         }
 

@@ -4,26 +4,28 @@ using MoneyManager.Infrastructure.Interfaces.Database;
 using MoneyManager.Infrastructure.Interfaces.Repositories;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MoneyManager.Infrastructure.Entities.Transactions;
+using System.Linq;
 
 namespace MoneyManager.Application.Services.Transactions
 {
     public class TransactionTypeService: ITransactionTypeService
     {
         private readonly IUnitOfWork _db;
-        private readonly ITransactionRepository _transactionsRepo;
+        private readonly IRepository<Transaction> _transactionsRepo;
         //private readonly IRepository<TransactionType> _transactionTypeRepo;
         private readonly IMapper _mapper;
         public TransactionTypeService(IUnitOfWork uow, IMapper mapper)
         {
             _db = uow;
             _mapper = mapper;
-            _transactionsRepo = uow.CreateTransactionRepository();
+            _transactionsRepo = uow.CreateRepository<Transaction>();
             //_transactionTypeRepo = uow.CreateRepository<TransactionType>();
         }
 
         public async Task<IEnumerable<string>> GetAll()
         {
-            var result = await _transactionsRepo.GetTypes();
+            var result = await GetTypes();
             
             return _mapper.Map<IEnumerable<string>>(result);
         }
@@ -53,7 +55,7 @@ namespace MoneyManager.Application.Services.Transactions
         //            };
         //            var addTransactionTask = _transactionTypeRepo.Add(_mapper.Map<TransactionType>(type));
         //            await Task.WhenAll(copyTask, addTransactionTask);
-        //            _db.Commit();
+        //            await _db.Commit();
         //            return type;
         //        }
         //    }
@@ -70,10 +72,20 @@ namespace MoneyManager.Application.Services.Transactions
         //    };
         //    var type = _mapper.Map<TransactionType>(typeDTO);
         //    await _transactionTypeRepo.Update(type);
-        //    _db.Commit();
+        //    await _db.Commit();
         //}
 
         //public async Task Delete(Guid id) =>
         //    await _transactionTypeRepo.Delete(id);
+
+
+        private async Task<IEnumerable<string>> GetTypes()
+        {
+            //TODO: make db distinct
+            return (await _transactionsRepo.GetAll())
+                .DistinctBy(transaction => transaction.TransactionType)
+                .Select(transaction => transaction.TransactionType)
+                .ToList();
+        }
     }
 }

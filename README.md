@@ -1,16 +1,15 @@
-# Pet project to try new technologies
-
+# Personal money management system
 Stack:
 
 * React 19 + Vite + ChakraUI
 * .NET 9
-* MongoDB
+* Postgres 17.4
 * Docker (optional)
 
 Development:
 
 * install at least .NET 9
-* install [mongodb](https://www.mongodb.com/download-center/community)
+* install [postgres](https://www.postgresql.org/download/)
 * install [Node.js](https://nodejs.org/en/)
 * Navigate to the directory `./Server/MoneyManager`
 * Execute `dotnet run`

@@ -24,9 +24,9 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         }
 
         [HttpPost("GetAll")]
-        public IEnumerable<BrokerAccountSecurityModel> GetAll()
+        public async Task<IEnumerable<BrokerAccountSecurityModel>> GetAll()
         {
-            var brokerAccountSecurities = _brokerAccountSecurityService.GetAll();
+            var brokerAccountSecurities = await _brokerAccountSecurityService.GetAll();
             return _mapper.Map<IEnumerable<BrokerAccountSecurityModel>>(brokerAccountSecurities);
         }
 

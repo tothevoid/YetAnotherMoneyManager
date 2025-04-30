@@ -15,22 +15,22 @@ namespace MoneyManager.Application.Services.Accounts
     public class AccountService : IAccountService
     {
         private readonly IUnitOfWork _db;
-        private readonly IAccountRepository _accountRepo;
+        private readonly IRepository<Account> _accountRepo;
         private readonly IRepository<Transaction> _transactionRepo;
         private readonly IMapper _mapper;
         public AccountService(IUnitOfWork uow, IMapper mapper)
         {
             _db = uow;
             _mapper = mapper;
-            _accountRepo = uow.CreateAccountRepository();
+            _accountRepo = uow.CreateRepository<Account>();
             _transactionRepo = uow.CreateRepository<Transaction>();
         }
 
-        public IEnumerable<AccountDTO> GetAll(bool onlyActive)
+        public async Task<IEnumerable<AccountDTO>> GetAll(bool onlyActive)
         {
             var transactions = onlyActive ?
-                _accountRepo.GetAllFull(account => account.Active) :
-                _accountRepo.GetAllFull();
+                await _accountRepo.GetAll(account => account.Active) :
+                await _accountRepo.GetAll();
             return _mapper.Map<IEnumerable<AccountDTO>>(transactions);
         }
 
@@ -44,21 +44,17 @@ namespace MoneyManager.Application.Services.Accounts
                 return;
             }
 
-            var tasks = new List<Task>()
-            {
-                _accountRepo.Update(account)
-            };
+            _accountRepo.Update(account);
 
             var balanceDiff = account.Balance - currentAccountState.Balance;
             if (Math.Abs(balanceDiff) > 0.0001m)
             {
                 var transaction = GenerateSystemTransaction(account,
                     $"{currentAccountState.Balance} => {account.Balance}", balanceDiff);
-                tasks.Add(_transactionRepo.Add(transaction));
+                await _transactionRepo.Add(transaction);
             }
 
-            await Task.WhenAll(tasks);
-            _db.Commit();
+            await _db.Commit();
         }
 
         public async Task<Guid> Add(AccountDTO transactionDTO)
@@ -66,14 +62,14 @@ namespace MoneyManager.Application.Services.Accounts
             var account = _mapper.Map<Account>(transactionDTO);
             account.Id = Guid.NewGuid();
             await _accountRepo.Add(account);
-            _db.Commit();
+            await _db.Commit();
             return account.Id;
         }
 
         public async Task Delete(Guid id)
         {
             await _accountRepo.Delete(id);
-            _db.Commit();
+            await _db.Commit();
         }
 
         public async Task Transfer(AccountTransferDTO transferDto)
@@ -95,16 +91,17 @@ namespace MoneyManager.Application.Services.Accounts
                 -1 * transferDto.Balance - transferDto.Fee);
             var toAccountTransaction = GenerateSystemTransaction(fromAccount, $"+{transferDto.Balance} <= {fromAccount.Name}", transferDto.Balance);
 
+            _accountRepo.Update(fromAccount);
+            _accountRepo.Update(toAccount);
+
             var tasks = new List<Task>()
             {
-                _accountRepo.Update(fromAccount),
-                _accountRepo.Update(toAccount),
                 _transactionRepo.Add(fromAccountTransaction),
                 _transactionRepo.Add(toAccountTransaction),
             };
 
             await Task.WhenAll(tasks);
-            _db.Commit();
+            await _db.Commit();
         }
 
         public async Task<AccountCurrencySummaryDTO[]> GetSummary()

@@ -7,27 +7,34 @@ using MoneyManager.Infrastructure.Interfaces.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
+using MoneyManager.Infrastructure.Entities.Accounts;
+using MoneyManager.Infrastructure.Database;
+using Microsoft.EntityFrameworkCore;
 
 namespace MoneyManager.Application.Services.Transactions
 {
     public class TransactionsService: ITransactionsService
     {
         private readonly IUnitOfWork _db;
-        private readonly ITransactionRepository _transactionsRepo;
-        private readonly IAccountRepository _accountRepo;
+        private readonly IRepository<Transaction> _transactionsRepo;
+        private readonly IRepository<Account> _accountRepo;
         private readonly IMapper _mapper;
         public TransactionsService(IUnitOfWork uow, IMapper mapper)
         {
             _db = uow;
             _mapper = mapper;
-            _transactionsRepo = uow.CreateTransactionRepository();
-            _accountRepo = uow.CreateAccountRepository();
+            _transactionsRepo = uow.CreateRepository<Transaction>();
+            _accountRepo = uow.CreateRepository<Account>();
         }
 
-        public IEnumerable<TransactionDTO> GetAll(int month, int year)
+        public async Task<IEnumerable<TransactionDTO>> GetAll(int month, int year)
         {
-            var transactions = _transactionsRepo.GetAllFull(month, year);
+            var (startDate, endDate) = GetDateRange(month, year);
+
+            var transactions = await _transactionsRepo.GetAll(transaction => 
+                transaction.Date >= startDate && transaction.Date <= endDate);
             return _mapper.Map<IEnumerable<TransactionDTO>>(transactions.OrderByDescending(x => x.Date));
         }
 
@@ -49,7 +56,7 @@ namespace MoneyManager.Application.Services.Transactions
             //}
             tasks.Add(_transactionsRepo.Add(transaction));
             await Task.WhenAll(tasks);
-            _db.Commit();
+            await _db.Commit();
             return transaction.Id;
         }
 
@@ -69,20 +76,20 @@ namespace MoneyManager.Application.Services.Transactions
             //    transaction.TransactionTypeId = transactionTypeId;
             //}
 
-            var task = _transactionsRepo.Update(transaction);
+            _transactionsRepo.Update(transaction);
             var lastTransaction = await _transactionsRepo.GetById(updateTransactionModel.Id);
             var lastTransactionDTO = _mapper.Map<TransactionDTO>(lastTransaction);
 
-            var accountsToUpdate = await RecalculateAccount(task, lastTransactionDTO, updateTransactionModel);
-            _db.Commit();
+            var accountsToUpdate = await RecalculateAccount(lastTransactionDTO, updateTransactionModel);
+            await _db.Commit();
             return accountsToUpdate;
         }
 
-        private async Task<List<UpdateAccountDTO>> RecalculateAccount(Task transactionTask, 
+        private async Task<List<UpdateAccountDTO>> RecalculateAccount( 
             TransactionDTO lastTransaction, TransactionDTO updateAccountModel)
         {
             var accountsToUpdate = new List<UpdateAccountDTO>();
-            var tasks = new List<Task>() { transactionTask };
+            var tasks = new List<Task>() { };
             var lastTransactionId = lastTransaction?.Account?.Id ?? default;
             var updateAccountModelId = updateAccountModel?.Account?.Id ?? default;
             //account deleted from transaction
@@ -136,7 +143,14 @@ namespace MoneyManager.Application.Services.Transactions
             tasks.Add(_transactionsRepo.Delete(transaction.Id));
             
             await Task.WhenAll(tasks);
-            _db.Commit();
+            await _db.Commit();
+        }
+
+        private (DateOnly, DateOnly) GetDateRange(int month, int year)
+        {
+            var startDate = new DateOnly(year, month, 1);
+            var endDate = new DateOnly(year, month, 1).AddMonths(1).AddDays(-1);
+            return (startDate, endDate);
         }
     }
 }

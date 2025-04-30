@@ -18,7 +18,7 @@ namespace MoneyManager.Infrastructure.Interfaces.Database
 
         Task<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
 
-        Task Update(TEntity entity);
+        void Update(TEntity entity);
 
         Task Delete(Guid id);
 

@@ -7,7 +7,7 @@ namespace MoneyManager.Application.Interfaces.Accounts
 {
     public interface IAccountService
     {
-        IEnumerable<AccountDTO> GetAll(bool onlyActive);
+        Task<IEnumerable<AccountDTO>> GetAll(bool onlyActive);
         Task<Guid> Add(AccountDTO transaction);
         Task Update(AccountDTO accountDTO);
         Task Delete(Guid id);

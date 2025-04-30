@@ -7,7 +7,7 @@ namespace MoneyManager.Application.Interfaces.Transactions
 {
     public interface ITransactionsService
     {
-        IEnumerable<TransactionDTO> GetAll(int month, int year);
+        Task<IEnumerable<TransactionDTO>> GetAll(int month, int year);
         Task<Guid> Add(TransactionDTO transaction);
         Task Delete(Guid id);
         Task<List<UpdateAccountDTO>> Update(TransactionDTO updateAccountModel);

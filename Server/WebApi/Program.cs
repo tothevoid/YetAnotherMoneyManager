@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MoneyManager.Application.Integrations.Stock;
 using MoneyManager.Application.Mappings;
-using MongoDB.Bson.Serialization.Serializers;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson;
 using MoneyManager.Application.Interfaces.Accounts;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Application.Interfaces.Currencies;
@@ -23,13 +21,11 @@ using MoneyManager.Application.Services.Transactions;
 using MoneyManager.Infrastructure.Database;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using MoneyManager.WebApi.Mappings;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpClient();
-
-// TODO: Transfer to Infrastructure solution
-BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.CSharpLegacy));
 
 var clientUrl = builder.Configuration.GetSection("Client").GetSection("Url").Value;
 builder.Services.AddCors(options =>
@@ -39,12 +35,17 @@ builder.Services.AddCors(options =>
         {
             policy.WithOrigins(clientUrl)
                 .AllowAnyMethod()
-                .AllowAnyHeader();
+            .AllowAnyHeader();
         });
 });
+
+
+var dbConnection = builder.Configuration.GetSection("DB").GetSection("ConnectionString").Value;
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(dbConnection));
+
 builder.Services.AddControllers();
 builder.Services.AddMvc();
-builder.Services.AddScoped<IMongoContext, MongoContext>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<ITransactionsService, TransactionsService>();
 builder.Services.AddTransient<IAccountService, AccountService>();

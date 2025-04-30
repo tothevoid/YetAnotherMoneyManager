@@ -30,8 +30,8 @@ namespace MoneyManager.Application.Services.Accounts
         public async Task Update(AccountTypeDTO accountTypeDto)
         {
             var accountType = _mapper.Map<AccountType>(accountTypeDto);
-            await _accountTypeRepo.Update(accountType);
-            _db.Commit();
+            _accountTypeRepo.Update(accountType);
+            await _db.Commit();
         }
 
         public async Task<Guid> Add(AccountTypeDTO accountTypeDto)
@@ -39,14 +39,14 @@ namespace MoneyManager.Application.Services.Accounts
             var accountType = _mapper.Map<AccountType>(accountTypeDto);
             accountType.Id = Guid.NewGuid();
             await _accountTypeRepo.Add(accountType);
-            _db.Commit();
+            await _db.Commit();
             return accountType.Id;
         }
 
         public async Task Delete(Guid id)
         {
             await _accountTypeRepo.Delete(id);
-            _db.Commit();
+            await _db.Commit();
         }
     }
 }

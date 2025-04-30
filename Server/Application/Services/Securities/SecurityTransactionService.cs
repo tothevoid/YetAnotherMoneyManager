@@ -44,15 +44,15 @@ namespace MoneyManager.Application.Services.Securities
             securityTransaction.Id = Guid.NewGuid();
             await ActualizeBrokerAccount(securityDto);
             await _securityTransactionRepo.Add(securityTransaction);
-            _db.Commit();
+            await _db.Commit();
             return securityTransaction.Id;
         }
         public async Task Update(SecurityTransactionDTO securityDto)
         {
             var securityTransaction = _mapper.Map<SecurityTransaction>(securityDto);
             await ActualizeBrokerAccount(securityDto);
-            await _securityTransactionRepo.Update(securityTransaction);
-            _db.Commit();
+            _securityTransactionRepo.Update(securityTransaction);
+            await _db.Commit();
         }
 
         public async Task Delete(Guid id)
@@ -63,7 +63,7 @@ namespace MoneyManager.Application.Services.Securities
             await Task.WhenAll(
                 ActualizeBrokerAccount(securityDto), 
                 _securityTransactionRepo.Delete(id));
-            _db.Commit();
+            await _db.Commit();
         }
 
         private async Task ActualizeBrokerAccount(SecurityTransactionDTO securityTransaction)
@@ -86,8 +86,8 @@ namespace MoneyManager.Application.Services.Securities
             brokerAccountSecurity.Quantity += securityTransaction.Quantity;
             brokerAccountSecurity.InitialPrice += securityTransaction.Price * securityTransaction.Quantity;
 
-            await _brokerAccountSecurityRepo.Update(brokerAccountSecurity);
-            _db.Commit();
+            _brokerAccountSecurityRepo.Update(brokerAccountSecurity);
+            await _db.Commit();
         }
 
         private async Task<BrokerAccountSecurity> FindExistingBrokerAccountSecurity(SecurityTransactionDTO securityTransaction)
@@ -108,7 +108,7 @@ namespace MoneyManager.Application.Services.Securities
             };
 
             await _brokerAccountSecurityRepo.Add(brokerAccountSecurity);
-            _db.Commit();
+            await _db.Commit();
         }
     }
 }

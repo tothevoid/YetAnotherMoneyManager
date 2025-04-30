@@ -23,9 +23,9 @@ namespace MoneyManager.WebApi.Controllers.Accounts
         }
 
         [HttpPost("GetAll")]
-        public IEnumerable<AccountModel> GetAll(AccountGetAllConfig getAllConfig)
+        public async Task<IEnumerable<AccountModel>> GetAll(AccountGetAllConfig getAllConfig)
         {
-            var accounts = _accountService.GetAll(getAllConfig.OnlyActive);
+            var accounts = await _accountService.GetAll(getAllConfig.OnlyActive);
             return _mapper.Map<IEnumerable<AccountModel>>(accounts);
         }
 

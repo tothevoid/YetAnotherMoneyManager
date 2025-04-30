@@ -33,21 +33,21 @@ namespace MoneyManager.Application.Services.Brokers
             var broker = _mapper.Map<Broker>(securityDto);
             broker.Id = Guid.NewGuid();
             await _brokerRepo.Add(broker);
-            _db.Commit();
+            await _db.Commit();
             return broker.Id;
         }
 
         public async Task Update(BrokerDTO brokersDto)
         {
             var brokers = _mapper.Map<Broker>(brokersDto);
-            await _brokerRepo.Update(brokers);
-            _db.Commit();
+            _brokerRepo.Update(brokers);
+            await _db.Commit();
         }
 
         public async Task Delete(Guid id)
         {
             await _brokerRepo.Delete(id);
-            _db.Commit();
+            await _db.Commit();
         }
     }
 }

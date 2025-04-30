@@ -30,8 +30,8 @@ namespace MoneyManager.Application.Services.Currencies
         public async Task Update(CurrencyDTO currencyDto)
         {
             var currency = _mapper.Map<Currency>(currencyDto);
-            await _currencyRepo.Update(currency);
-            _db.Commit();
+            _currencyRepo.Update(currency);
+            await _db.Commit();
         }
 
         public async Task<Guid> Add(CurrencyDTO currencyDto)
@@ -39,14 +39,14 @@ namespace MoneyManager.Application.Services.Currencies
             var currency = _mapper.Map<Currency>(currencyDto);
             currency.Id = Guid.NewGuid();
             await _currencyRepo.Add(currency);
-            _db.Commit();
+            await _db.Commit();
             return currency.Id;
         }
 
         public async Task Delete(Guid id)
         {
             await _currencyRepo.Delete(id);
-            _db.Commit();
+            await _db.Commit();
         }
     }
 }

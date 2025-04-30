@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MoneyManager.Infrastructure.Interfaces.Repositories;
 using MoneyManager.Shared.Entities;
 
@@ -8,14 +9,6 @@ namespace MoneyManager.Infrastructure.Interfaces.Database
         IRepository<T> CreateRepository<T>() 
             where T: BaseEntity;
 
-        ITransactionRepository CreateTransactionRepository();
-
-        IDepositRepository CreateDepositRepository();
-
-        IAccountRepository CreateAccountRepository();
-
-        IBrokerAccountSecurityRepository CreateBrokerAccountSecurityRepository();
-
-        void Commit();
+        Task Commit();
     }
 }

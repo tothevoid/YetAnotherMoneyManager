@@ -16,6 +16,10 @@ Development:
 * Navigate to the directory `./Client`
 * Execute `npm run dev`
 
+Migrations:
+
+`dotnet ef database update --project Infrastructure --startup-project WebApi`
+
 Start with Docker:
 
 * Create `.env` by the `.env.example` reference

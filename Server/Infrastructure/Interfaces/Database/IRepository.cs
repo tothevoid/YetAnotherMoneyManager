@@ -22,8 +22,6 @@ namespace MoneyManager.Infrastructure.Interfaces.Database
 
         Task Delete(Guid id);
 
-        Task Increment(Guid id, Expression<Func<TEntity, decimal>> field, decimal delta);
-
         Task<TEntity> GetMin(Expression<Func<TEntity, object>> sortField);
 
         Task<TEntity> GetMax(Expression<Func<TEntity, object>> sortField);

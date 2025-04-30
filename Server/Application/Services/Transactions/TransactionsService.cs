@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using MoneyManager.Infrastructure.Entities.Accounts;
 using MoneyManager.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Principal;
 
 namespace MoneyManager.Application.Services.Transactions
 {
@@ -43,17 +44,16 @@ namespace MoneyManager.Application.Services.Transactions
             var transaction = _mapper.Map<Transaction>(transactionDTO);
             transaction.Id = Guid.NewGuid();
             var sourceId = transactionDTO?.Account?.Id ?? default;
-            //var transactionTypeId = transactionDTO?.TransactionType?.Id ?? default;
             var tasks = new List<Task>();
             if (sourceId != default)
             {
                 transaction.AccountId = sourceId;
-                tasks.Add(_accountRepo.Increment(sourceId, x => x.Balance, transaction.MoneyQuantity));
+
+                var account = await _accountRepo.GetById(sourceId);
+                account.Balance += transaction.MoneyQuantity;
+                _accountRepo.Update(account);
             }
-            //if (transactionTypeId != default)
-            //{
-            //    transaction.TransactionTypeId = transactionTypeId;
-            //}
+           
             tasks.Add(_transactionsRepo.Add(transaction));
             await Task.WhenAll(tasks);
             await _db.Commit();
@@ -119,7 +119,9 @@ namespace MoneyManager.Application.Services.Transactions
             }
             foreach (var account in accountsToUpdate)
             {
-                tasks.Add(_accountRepo.Increment(account.AccountId, x => x.Balance, account.Delta));
+                var accountEntity = await _accountRepo.GetById(account.AccountId);
+                accountEntity.Balance += account.Delta;
+                _accountRepo.Update(accountEntity);
             }
             await Task.WhenAll(tasks);
             return accountsToUpdate;
@@ -134,15 +136,16 @@ namespace MoneyManager.Application.Services.Transactions
                 throw new ArgumentException(nameof(id));
             }
 
-            var tasks = new List<Task>();
             var sourceId = transaction?.Account?.Id ?? default;
             if (sourceId != default && transaction.MoneyQuantity != 0)
             {
-                tasks.Add(_accountRepo.Increment(sourceId, x => x.Balance, transaction.MoneyQuantity * -1));
+                var accountEntity = await _accountRepo.GetById(sourceId);
+                accountEntity.Balance += transaction.MoneyQuantity * -1;
+                _accountRepo.Update(accountEntity);
+
             }
-            tasks.Add(_transactionsRepo.Delete(transaction.Id));
-            
-            await Task.WhenAll(tasks);
+
+            await _transactionsRepo.Delete(transaction.Id);
             await _db.Commit();
         }
 

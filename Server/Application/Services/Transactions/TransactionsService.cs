@@ -3,16 +3,11 @@ using MoneyManager.Application.DTO.Transactions;
 using MoneyManager.Application.Interfaces.Transactions;
 using MoneyManager.Infrastructure.Entities.Transactions;
 using MoneyManager.Infrastructure.Interfaces.Database;
-using MoneyManager.Infrastructure.Interfaces.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using MoneyManager.Infrastructure.Entities.Accounts;
-using MoneyManager.Infrastructure.Database;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Principal;
 
 namespace MoneyManager.Application.Services.Transactions
 {

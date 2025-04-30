@@ -1,4 +1,6 @@
-﻿using MoneyManager.Infrastructure.Entities.Currencies;
+﻿using System;
+using MoneyManager.Infrastructure.Constants;
+using MoneyManager.Infrastructure.Entities.Currencies;
 using MoneyManager.Infrastructure.Interfaces.Utilitary;
 
 namespace MoneyManager.Infrastructure.Data
@@ -9,9 +11,9 @@ namespace MoneyManager.Infrastructure.Data
         {
             return new Currency[]
             {
-                new() { Active = true, Name = "USD" },
-                new() { Active = true, Name = "RUB" },
-                new() { Active = true, Name = "EUR" },
+                new() { Id = CurrencyConstants.USD, Active = true, Name = "USD" },
+                new() { Id = CurrencyConstants.RUB, Active = true, Name = "RUB" },
+                new() { Id = CurrencyConstants.EUR, Active = true, Name = "EUR" },
             };
         }
     }

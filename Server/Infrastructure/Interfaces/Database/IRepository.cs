@@ -12,10 +12,12 @@ namespace MoneyManager.Infrastructure.Interfaces.Database
         Task Add(TEntity entity);
 
         Task<TEntity> GetById(Guid id,
-            Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null);
+            Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null,
+            bool disableTracking = true);
 
         Task<IEnumerable<TEntity>> GetAll(Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null);
+            Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null,
+            bool disableTracking = true);
 
         Task<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
 

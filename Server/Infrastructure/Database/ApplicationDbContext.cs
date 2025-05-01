@@ -20,18 +20,15 @@ namespace MoneyManager.Infrastructure.Database
 {
     public class ApplicationDbContext : DbContext
     {
-        //private static bool _isDataInitialized;
-
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-            //var mongoClient = new MongoClient(configuration.GetSection("MongoDB").GetSection("ConnectionString").Value);
-            //Database = mongoClient.GetDatabase(configuration.GetSection("MongoDB").GetSection("DatabaseName").Value);
+        }
 
-            ////TODO: fix that workaround
-            //if (!_isDataInitialized)
-            //{
-            //    InitializeDefaultData();
-            //}
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            #if DEBUG
+            optionsBuilder.EnableSensitiveDataLogging();
+            #endif
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

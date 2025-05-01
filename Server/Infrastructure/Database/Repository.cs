@@ -27,9 +27,11 @@ namespace MoneyManager.Infrastructure.Database
         }
 
         public async Task<TEntity> GetById(Guid id,
-            Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null)
+            Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null,
+            bool disableTracking = true)
         {
-            IQueryable<TEntity> query = _entities.AsQueryable();
+            IQueryable<TEntity> query =
+                disableTracking ? _entities.AsQueryable().AsNoTracking() : _entities.AsQueryable();
 
             if (include != null)
             {
@@ -46,9 +48,11 @@ namespace MoneyManager.Infrastructure.Database
         }
 
         public async Task<IEnumerable<TEntity>> GetAll(Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null)
+            Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null,
+            bool disableTracking = true)
         {
-            IQueryable<TEntity> query = _entities.AsQueryable();
+            IQueryable<TEntity> query =
+                disableTracking ? _entities.AsQueryable().AsNoTracking() : _entities.AsQueryable();
 
             if (include != null)
             {

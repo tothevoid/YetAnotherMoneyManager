@@ -62,13 +62,14 @@ const SecurityTransactionsList: React.FC<Props> = (props) => {
         await requestSecurityTransactions();
     }
 
+    
     return (
         <Fragment>
             <Flex justifyContent="space-between" alignItems="center" pt={5} pb={5}>
                 <AddSecurityTransactionButton onAdded={onSecurityTransactionCreated}></AddSecurityTransactionButton>
             </Flex>
-            <SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(300px, 3fr))'>
-                {
+            <div>
+            {
                 state.securities.map((security: SecurityTransactionEntity) => {
                     return <SecurityTransaction key={security.id} securityTransaction={security} 
                         onEditCallback={onSecurityTransactionUpdated} 
@@ -76,7 +77,9 @@ const SecurityTransactionsList: React.FC<Props> = (props) => {
                         onReloadSecurityTransactions={onReloadSecurityTransactions}/>
                 })
                 }
-            </SimpleGrid>
+            </div>
+
+            
         </Fragment>
     );
 }

@@ -39,12 +39,6 @@ namespace MoneyManager.Infrastructure.Database
             return await query.Where(entity => entity.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<TEntity>> GetAll()
-        {
-            IQueryable<TEntity> query = _entities.AsNoTracking();
-            return await query.ToListAsync();
-        }
-
         public async Task<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
         {
             IQueryable<TEntity> query = _entities.AsNoTracking();

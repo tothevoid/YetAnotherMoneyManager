@@ -14,8 +14,6 @@ namespace MoneyManager.Infrastructure.Interfaces.Database
         Task<TEntity> GetById(Guid id,
             Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null);
 
-        Task<IEnumerable<TEntity>> GetAll();
-
         Task<IEnumerable<TEntity>> GetAll(Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null);
 

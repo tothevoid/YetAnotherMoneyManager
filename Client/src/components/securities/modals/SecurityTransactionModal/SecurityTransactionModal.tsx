@@ -57,6 +57,7 @@ const SecurityTransactionModal = forwardRef<BrokerAccountModalRef, BrokerAccount
             date: props.securityTransaction?.date ?? new Date(),
             price: props.securityTransaction?.price ?? 0,
             tax: props.securityTransaction?.tax ?? 0,
+            quantity: props.securityTransaction?.quantity ?? 0
         }
     });
 

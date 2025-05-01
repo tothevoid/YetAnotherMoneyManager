@@ -42,8 +42,6 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         public async Task<Guid> Add(BrokerAccountSecurityModel brokerAccountSecurity)
         {
             var brokerAccountSecurityDto = _mapper.Map<BrokerAccountSecurityDTO>(brokerAccountSecurity);
-            brokerAccountSecurityDto.BrokerAccountId = brokerAccountSecurityDto.BrokerAccount.Id;
-            brokerAccountSecurityDto.SecurityId = brokerAccountSecurityDto.Security.Id;
             return await _brokerAccountSecurityService.Add(brokerAccountSecurityDto);
         }
 

@@ -2,15 +2,19 @@ import { CurrencyEntity } from "../currencies/CurrencyEntity";
 import { BrokerAccountTypeEntity } from "./BrokerAccountTypeEntity";
 import { BrokerEntity } from "./BrokerEntity";
 
-export interface BrokerAccountEntity {
+export interface ServerBrokerAccountEntity {
     id: string,
     name: string,
-    type: BrokerAccountTypeEntity,
-    typeId: string,
-    currency: CurrencyEntity,
-    currencyId: string, 
-    broker: BrokerEntity,
-    brokerId: string,
     lastUpdateAt: Date,
-    assetsValue: number
+    assetsValue: number,
+
+    typeId: string,
+    currencyId: string, 
+    brokerId: string,
+}
+
+export interface BrokerAccountEntity extends ServerBrokerAccountEntity {
+    type: BrokerAccountTypeEntity,
+    currency: CurrencyEntity,
+    broker: BrokerEntity,
 }

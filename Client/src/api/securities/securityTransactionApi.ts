@@ -1,5 +1,5 @@
 import config from '../../config' 
-import { SecurityTransactionEntity } from '../../models/securities/SecurityTransactionEntity';
+import { SecurityTransactionEntity, ServerSecurityTransactionEntity } from '../../models/securities/SecurityTransactionEntity';
 import { convertToDateOnly } from '../../utils/DateUtils';
 import { checkPromiseStatus, logPromiseError } from '../../utils/PromiseUtils';
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
@@ -34,22 +34,26 @@ export const getSecurityTransactionsByBrokerAccount = async (brokerAccountId: st
 
 
 export const createSecurityTransaction = async (addedSecurityTransaction: SecurityTransactionEntity): Promise<SecurityTransactionEntity | void> => {
-    return await createEntity<SecurityTransactionEntity>(basicUrl, prepareSecurityTransactionEntity(addedSecurityTransaction));
+    return await createEntity(basicUrl, prepareServerSecurityTransaction(addedSecurityTransaction));
 }
 
 export const updateSecurityTransaction = async (modifiedSecurityTransaction: SecurityTransactionEntity): Promise<boolean> => {
-    return await updateEntity<SecurityTransactionEntity>(basicUrl, prepareSecurityTransactionEntity(modifiedSecurityTransaction));
+    return await updateEntity(basicUrl, prepareServerSecurityTransaction(modifiedSecurityTransaction));
 }
 
 export const deleteSecurityTransaction = async (securityTransactionId: string): Promise<boolean> => {
     return await deleteEntity(basicUrl, securityTransactionId);
 }
 
-const prepareSecurityTransactionEntity = (securityTransaction: SecurityTransactionEntity): SecurityTransactionEntity => {
-    const serverTransaction = {...securityTransaction};
-
-    // .NET DateOnly cast
-    serverTransaction.date = convertToDateOnly(serverTransaction.date );
-
-    return serverTransaction;
+const prepareServerSecurityTransaction = (securityTransaction: SecurityTransactionEntity): ServerSecurityTransactionEntity => {
+    return {
+        id: securityTransaction.id,
+        commission: securityTransaction.commission,
+        price: securityTransaction.price,
+        quantity: securityTransaction.quantity,
+        tax: securityTransaction.tax,
+        date: convertToDateOnly(securityTransaction.date),
+        brokerAccountId: securityTransaction.brokerAccount.id,
+        securityId: securityTransaction.security.id,
+    }
 }

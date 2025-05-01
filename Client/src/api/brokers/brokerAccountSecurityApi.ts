@@ -1,5 +1,5 @@
 import config from '../../config' 
-import { BrokerAccountSecurityEntity } from '../../models/brokers/BrokerAccountSecurityEntity';
+import { BrokerAccountSecurityEntity, ServerBrokerAccountSecurityEntity } from '../../models/brokers/BrokerAccountSecurityEntity';
 import { checkPromiseStatus, logPromiseError } from '../../utils/PromiseUtils';
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
 
@@ -21,13 +21,26 @@ export const getSecuritiesByBrokerAccount = async (brokerAccountId: string): Pro
 };
 
 export const createBrokerAccountSecurity = async (addedBrokerAccountSecurity: BrokerAccountSecurityEntity): Promise<BrokerAccountSecurityEntity | void> => {
-    return await createEntity<BrokerAccountSecurityEntity>(basicUrl, addedBrokerAccountSecurity);
+    return await createEntity<ServerBrokerAccountSecurityEntity>(basicUrl, 
+        prepareServerBrokerAccountSecurity(addedBrokerAccountSecurity));
 }
 
 export const updateBrokerAccountSecurity = async (modifiedBrokerAccountSecurity: BrokerAccountSecurityEntity): Promise<boolean> => {
-    return await updateEntity<BrokerAccountSecurityEntity>(basicUrl, modifiedBrokerAccountSecurity);
+    return await updateEntity<ServerBrokerAccountSecurityEntity>(basicUrl, 
+        prepareServerBrokerAccountSecurity(modifiedBrokerAccountSecurity));
 }
 
 export const deleteBrokerAccountSecurity = async (brokerAccountSecurityId: string): Promise<boolean> => {
     return await deleteEntity(basicUrl, brokerAccountSecurityId);
+}
+
+const prepareServerBrokerAccountSecurity = (brokerAccountSecurity: BrokerAccountSecurityEntity): ServerBrokerAccountSecurityEntity => {
+    return {
+        id: brokerAccountSecurity.id,
+        brokerAccountId: brokerAccountSecurity.brokerAccount.id,
+        currentPrice: brokerAccountSecurity.currentPrice,
+        initialPrice: brokerAccountSecurity.initialPrice,
+        quantity: brokerAccountSecurity.quantity,
+        securityId: brokerAccountSecurity.security.id
+    };
 }

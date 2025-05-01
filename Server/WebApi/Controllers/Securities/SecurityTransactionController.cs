@@ -42,8 +42,6 @@ namespace MoneyManager.WebApi.Controllers.Securities
         public async Task<Guid> Add(SecurityTransactionModel securityTransaction)
         {
             var securityTransactionDto = _mapper.Map<SecurityTransactionDTO>(securityTransaction);
-            securityTransactionDto.SecurityId = securityTransactionDto.Security.Id;
-            securityTransactionDto.BrokerAccountId = securityTransactionDto.BrokerAccount.Id;
             return await _securityTransactionService.Add(securityTransactionDto);
         }
 

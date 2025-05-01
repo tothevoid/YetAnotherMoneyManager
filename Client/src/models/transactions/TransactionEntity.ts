@@ -1,12 +1,20 @@
 import { AccountEntity } from "../accounts/AccountEntity";
 
-export type TransactionEntity = {
+interface CommonTransactionEntity {
     id: string,
     name: string,
-    date: Date,
     moneyQuantity: number;
     cashback: number,
-    account: AccountEntity,
     transactionType: string,
     isSystem: boolean
+}
+
+export interface ServerTransactionEntity extends CommonTransactionEntity {
+    date: string,
+    accountId: string
+}
+
+export interface TransactionEntity extends CommonTransactionEntity {
+    date: Date,
+    account: AccountEntity,
 }

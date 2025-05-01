@@ -1,6 +1,6 @@
 import { DepositMonthSummary } from '../../components/deposits/DepositStats/depositMonthSummary';
 import config from '../../config' 
-import { DepositEntity } from '../../models/deposits/DepositEntity';
+import { DepositEntity, ServerDepositEntity } from '../../models/deposits/DepositEntity';
 import { convertToDateOnly } from '../../utils/DateUtils';
 import { checkPromiseStatus, logPromiseError } from '../../utils/PromiseUtils';
 import { DepositsRange } from '../../models/deposits/depositsRange';
@@ -63,16 +63,18 @@ export const getDepositsSummary = async (monthsFrom: number, monthsTo: number, o
     return summary;
 };
 
-const prepareDepositEntity = (deposit: DepositEntity): DepositEntity => {
-    const serverDeposit = {...deposit};
-
-    // .NET DateOnly cast
-    serverDeposit.from = convertToDateOnly(deposit.from);
-    serverDeposit.to = convertToDateOnly(deposit.to);
-
-    serverDeposit.currencyId = deposit.currency.id;
-
-    return serverDeposit;
+const prepareDepositEntity = (deposit: DepositEntity): ServerDepositEntity => {
+    return {
+        id: deposit.id,
+        initialAmount: deposit.initialAmount,
+        name: deposit.name,
+        percentage: deposit.percentage,
+        accountId: deposit.account?.id,
+        estimatedEarn: deposit.estimatedEarn,
+        // .NET DateOnly cast
+        from: convertToDateOnly(deposit.from),
+        to: convertToDateOnly(deposit.to),
+    }
 }
 
 const getQueryDepositsQueryParamers = (monthsFrom: number, monthsTo: number, onlyActive: boolean) => {

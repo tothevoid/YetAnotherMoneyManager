@@ -1,5 +1,5 @@
 import config from '../../config' 
-import { TransactionEntity } from '../../models/transactions/TransactionEntity';
+import { ServerTransactionEntity, TransactionEntity } from '../../models/transactions/TransactionEntity';
 import { convertToDateOnly } from '../../utils/DateUtils';
 import { checkPromiseStatus, logPromiseError } from '../../utils/PromiseUtils';
 import { AccountToUpdate } from '../../models/accounts/accountToUpdate';
@@ -26,22 +26,26 @@ export const getTransactions = async (month: number, year: number): Promise<Tran
 };
 
 export const createTransaction = async (transaction: TransactionEntity): Promise<TransactionEntity | void> => {
-    return await createEntity(basicUrl, prepareTransactionEntity(transaction));
+    return await createEntity(basicUrl, prepareServerTransaction(transaction));
 }
 
 export const updateTransaction = async (modifiedTransaction: TransactionEntity): Promise<AccountToUpdate[]> => {
-    return await updateEntity(basicUrl, prepareTransactionEntity(modifiedTransaction));
+    return await updateEntity(basicUrl, prepareServerTransaction(modifiedTransaction));
 }
 
 export const deleteTransaction = async (transactionId: string): Promise<boolean> => {
     return await deleteEntity(basicUrl, transactionId);
 }
 
-const prepareTransactionEntity = (transaction: TransactionEntity): TransactionEntity => {
-    const serverTransaction = {...transaction};
-
-    // .NET DateOnly cast
-    serverTransaction.date = convertToDateOnly(serverTransaction.date );
-
-    return serverTransaction;
+const prepareServerTransaction = (transaction: TransactionEntity): ServerTransactionEntity => {
+    return {
+        id: transaction.id,
+        name: transaction.name,
+        date: convertToDateOnly(transaction.date),
+        isSystem: transaction.isSystem,
+        cashback: transaction.cashback,
+        moneyQuantity: transaction.moneyQuantity,
+        transactionType: transaction.transactionType,
+        accountId: transaction.account.id
+    }
 }

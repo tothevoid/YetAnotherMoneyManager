@@ -40,9 +40,6 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         public async Task<Guid> Add(BrokerAccountModel brokerAccount)
         {
             var brokerAccountDto = _mapper.Map<BrokerAccountDTO>(brokerAccount);
-            brokerAccountDto.CurrencyId = brokerAccountDto.Currency.Id;
-            brokerAccountDto.TypeId = brokerAccountDto.Type.Id;
-            brokerAccountDto.BrokerId = brokerAccountDto.Broker.Id;
             return await _brokerAccountService.Add(brokerAccountDto);
         }
 

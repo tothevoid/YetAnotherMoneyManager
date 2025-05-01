@@ -1,15 +1,22 @@
 import { BrokerAccountEntity } from "../brokers/BrokerAccountEntity";
 import { SecurityEntity } from "./SecurityEntity";
 
-export interface SecurityTransactionEntity {
+interface CommonSecurityTransactionEntity {
     id: string,
-    security: SecurityEntity,
-    securityId: string,
-    brokerAccount: BrokerAccountEntity,
-    brokerAccountId: string,
     quantity: number,
     price: number,
-    date: Date,
     commission: number,
     tax: number
+}
+
+export interface ServerSecurityTransactionEntity extends CommonSecurityTransactionEntity {
+    date: string,
+    securityId: string,
+    brokerAccountId: string,
+}
+
+export interface SecurityTransactionEntity extends CommonSecurityTransactionEntity {
+    date: Date,
+    security: SecurityEntity,
+    brokerAccount: BrokerAccountEntity,
 }

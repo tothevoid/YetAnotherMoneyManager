@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Securities;
 using MoneyManager.Infrastructure.Entities.Brokers;
@@ -27,14 +29,16 @@ namespace MoneyManager.Application.Services.Securities
 
         public async Task<IEnumerable<SecurityTransactionDTO>> GetAll()
         {
-            var securityTransactions = await _securityTransactionRepo.GetAll();
+            var securityTransactions = await _securityTransactionRepo
+                .GetAll(include: GetFullHierarchyColumns);
             return _mapper.Map<IEnumerable<SecurityTransactionDTO>>(securityTransactions);
         }
 
         public async Task<IEnumerable<SecurityTransactionDTO>> GetByBrokerAccount(Guid brokerAccountId)
         {
             var securityTransactions = await _securityTransactionRepo
-                .GetAll(securityTransaction => securityTransaction.BrokerAccountId == brokerAccountId);
+                .GetAll(securityTransaction => securityTransaction.BrokerAccountId == brokerAccountId,
+                    GetFullHierarchyColumns);
             return _mapper.Map<IEnumerable<SecurityTransactionDTO>>(securityTransactions);
         }
 
@@ -109,6 +113,28 @@ namespace MoneyManager.Application.Services.Securities
 
             await _brokerAccountSecurityRepo.Add(brokerAccountSecurity);
             await _db.Commit();
+        }
+
+        private IQueryable<SecurityTransaction> GetFullHierarchyColumns(
+            IQueryable<SecurityTransaction> securityTransactionQuery)
+        {
+            var brokerAccountInclude = securityTransactionQuery
+                .Include(security => security.BrokerAccount);
+
+            brokerAccountInclude.ThenInclude(brokerAccount =>
+                brokerAccount.Type);
+            brokerAccountInclude.ThenInclude(brokerAccount =>
+                brokerAccount.Currency);
+            brokerAccountInclude.ThenInclude(brokerAccount =>
+                brokerAccount.Broker);
+            
+            var securityInclude = brokerAccountInclude
+                .Include(security => security.Security);
+
+            securityInclude.ThenInclude(security =>
+                security.Type);
+
+            return securityTransactionQuery;
         }
     }
 }

@@ -62,12 +62,16 @@ export const getSummary = async (): Promise<AccountCurrencySummary[]> => {
     return summaries ? summaries: [] as AccountCurrencySummary[];
 }
 
-const prepareServerAccount = (account: AccountEntity): AccountEntity => {
-    const serverDeposit: ServerAccountEntity = {...account,
-        // .NET DateOnly cast
-        createdOn: convertToDateOnly(account.createdOn)
+const prepareServerAccount = (account: AccountEntity): ServerAccountEntity => {
+    return {...account,
+        id: account.id,
+        active: account.active,
+        balance: account.balance,
+        name: account.name,
+        createdOn: convertToDateOnly(account.createdOn),
+        accountTypeId: account.accountType.id,
+        currencyId: account.currency.id
     };
-    return serverDeposit;
 }
 
 const prepareClientAccount = (account: ServerAccountEntity): AccountEntity => {

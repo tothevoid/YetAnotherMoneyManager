@@ -5,15 +5,17 @@ interface AccountCommon {
     id: string,
     name: string,
     balance: number,
-    currency: CurrencyEntity,
-    accountType: AccountTypeEntity,
     active: boolean,
 }
 
 export interface AccountEntity extends AccountCommon {
     createdOn: Date
+    currency: CurrencyEntity,
+    accountType: AccountTypeEntity
 }
 
 export interface ServerAccountEntity extends AccountCommon {
-    createdOn: string
+    createdOn: string,
+    currencyId: string,
+    accountTypeId: string
 }

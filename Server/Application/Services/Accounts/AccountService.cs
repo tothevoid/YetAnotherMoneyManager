@@ -5,10 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using MoneyManager.Application.DTO.Accounts;
 using MoneyManager.Application.Interfaces.Accounts;
-using MoneyManager.Infrastructure.Interfaces.Repositories;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using MoneyManager.Infrastructure.Entities.Transactions;
 using MoneyManager.Infrastructure.Entities.Accounts;
+using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace MoneyManager.Application.Services.Accounts
 {
@@ -28,9 +29,11 @@ namespace MoneyManager.Application.Services.Accounts
 
         public async Task<IEnumerable<AccountDTO>> GetAll(bool onlyActive)
         {
-            var transactions = onlyActive ?
-                await _accountRepo.GetAll(account => account.Active) :
-                await _accountRepo.GetAll();
+            Expression<Func<Account, bool>> filter = onlyActive ? 
+                account => account.Active : 
+                null;
+
+            var transactions = await _accountRepo.GetAll(filter, GetFullHierarchyColumns);
             return _mapper.Map<IEnumerable<AccountDTO>>(transactions);
         }
 
@@ -57,9 +60,9 @@ namespace MoneyManager.Application.Services.Accounts
             await _db.Commit();
         }
 
-        public async Task<Guid> Add(AccountDTO transactionDTO)
+        public async Task<Guid> Add(AccountDTO accountDto)
         {
-            var account = _mapper.Map<Account>(transactionDTO);
+            var account = _mapper.Map<Account>(accountDto);
             account.Id = Guid.NewGuid();
             await _accountRepo.Add(account);
             await _db.Commit();
@@ -130,6 +133,12 @@ namespace MoneyManager.Application.Services.Accounts
                 MoneyQuantity = balance,
                 IsSystem = true
             };
+        }
+
+        private IQueryable<Account> GetFullHierarchyColumns(IQueryable<Account> accountQuery)
+        {
+            return accountQuery.Include(account => account.Currency)
+                .Include(account => account.AccountType);
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Infrastructure.Entities.Brokers;
@@ -25,14 +27,16 @@ namespace MoneyManager.Application.Services.Brokers
 
         public async Task<IEnumerable<BrokerAccountSecurityDTO>> GetAll()
         {
-            var brokerAccountSecurities = await _brokerAccountSecurityRepo.GetAll();
+            var brokerAccountSecurities = await _brokerAccountSecurityRepo
+                .GetAll(include: GetFullHierarchyColumns);
             return _mapper.Map<IEnumerable<BrokerAccountSecurityDTO>>(brokerAccountSecurities);
         }
 
         public async Task<IEnumerable<BrokerAccountSecurityDTO>> GetByBrokerAccount(Guid brokerAccountId)
         {
             var brokerAccountSecurities = await _brokerAccountSecurityRepo
-                .GetAll(brokerAccountSecurity => brokerAccountSecurity.BrokerAccountId == brokerAccountId);
+                .GetAll(brokerAccountSecurity => brokerAccountSecurity.BrokerAccountId == brokerAccountId,
+                    GetFullHierarchyColumns);
             return _mapper.Map<IEnumerable<BrokerAccountSecurityDTO>>(brokerAccountSecurities);
         }
 
@@ -56,6 +60,22 @@ namespace MoneyManager.Application.Services.Brokers
         {
             await _brokerAccountSecurityRepo.Delete(id);
             await _db.Commit();
+        }
+
+        private IQueryable<BrokerAccountSecurity> GetFullHierarchyColumns(IQueryable<BrokerAccountSecurity> brokerAccountSecurityQuery)
+        {
+            brokerAccountSecurityQuery
+                .Include(brokerAccountSecurity => brokerAccountSecurity.Security)
+                    .ThenInclude(security => security.Type);
+
+            var brokerAccountInclude = brokerAccountSecurityQuery
+                .Include(brokerAccountSecurity => brokerAccountSecurity.BrokerAccount);
+
+            brokerAccountInclude.ThenInclude(brokerAccount => brokerAccount.Type);
+            brokerAccountInclude.ThenInclude(brokerAccount => brokerAccount.Currency);
+            brokerAccountInclude.ThenInclude(brokerAccount => brokerAccount.Broker);
+
+            return brokerAccountSecurityQuery;
         }
     }
 }

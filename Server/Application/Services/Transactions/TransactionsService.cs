@@ -7,7 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using MoneyManager.Infrastructure.Entities.Accounts;
+using MoneyManager.Infrastructure.Entities.Securities;
 
 namespace MoneyManager.Application.Services.Transactions
 {
@@ -30,7 +32,8 @@ namespace MoneyManager.Application.Services.Transactions
             var (startDate, endDate) = GetDateRange(month, year);
 
             var transactions = await _transactionsRepo.GetAll(transaction => 
-                transaction.Date >= startDate && transaction.Date <= endDate);
+                transaction.Date >= startDate && transaction.Date <= endDate,
+                GetFullHierarchyColumns);
             return _mapper.Map<IEnumerable<TransactionDTO>>(transactions.OrderByDescending(x => x.Date));
         }
 
@@ -149,6 +152,20 @@ namespace MoneyManager.Application.Services.Transactions
             var startDate = new DateOnly(year, month, 1);
             var endDate = new DateOnly(year, month, 1).AddMonths(1).AddDays(-1);
             return (startDate, endDate);
+        }
+
+        private IQueryable<Transaction> GetFullHierarchyColumns(
+            IQueryable<Transaction> transactionQuery)
+        {
+            var accountInclude = transactionQuery
+                .Include(transaction => transaction.Account);
+
+            accountInclude.ThenInclude(brokerAccount =>
+                brokerAccount.Currency);
+            accountInclude.ThenInclude(brokerAccount =>
+                brokerAccount.AccountType);
+
+            return transactionQuery;
         }
     }
 }

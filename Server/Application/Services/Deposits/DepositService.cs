@@ -14,6 +14,7 @@ using MoneyManager.Infrastructure.Entities.Deposits;
 using MoneyManager.Infrastructure.Constants;
 using MoneyManager.Infrastructure.Entities.Accounts;
 using MoneyManager.Infrastructure.Database;
+using Microsoft.EntityFrameworkCore;
 
 namespace MoneyManager.Application.Services.Deposits
 {
@@ -53,7 +54,7 @@ namespace MoneyManager.Application.Services.Deposits
 
         public async Task Update(ClientDepositDTO modifiedDeposit)
         {
-            var currentDeposit = await _depositRepo.GetById(modifiedDeposit.Id);
+            var currentDeposit = await _depositRepo.GetById(modifiedDeposit.Id, GetFullHierarchyColumns);
 
             if (currentDeposit == null)
             {
@@ -179,7 +180,7 @@ namespace MoneyManager.Application.Services.Deposits
                 (deposit) => deposit.To >= rangeMin && deposit.From <= rangeMax && deposit.To >= currentDate && deposit.From <= currentDate:
                 (deposit) => deposit.To >= rangeMin && deposit.From <= rangeMax;
 
-            return await _depositRepo.GetAll(filter);
+            return await _depositRepo.GetAll(filter, GetFullHierarchyColumns);
         }
 
         private decimal CalculateProfitInRange(DateOnly from, DateOnly to, int totalDays, decimal estimatedEarn)
@@ -204,6 +205,16 @@ namespace MoneyManager.Application.Services.Deposits
             });
 
             return accountId;
+        }
+
+        private IQueryable<Deposit> GetFullHierarchyColumns(IQueryable<Deposit> depositQuery)
+        {
+            var accountInclude = depositQuery.Include(deposit => deposit.Account);
+
+            accountInclude.ThenInclude(account => account.AccountType);
+            accountInclude.ThenInclude(account => account.Currency);
+
+            return depositQuery;
         }
     }
 }

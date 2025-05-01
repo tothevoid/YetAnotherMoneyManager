@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Securities;
+using MoneyManager.Infrastructure.Entities.Deposits;
 using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Infrastructure.Interfaces.Database;
 
@@ -24,7 +27,7 @@ namespace MoneyManager.Application.Services.Securities
 
         public async Task<IEnumerable<SecurityDTO>> GetAll()
         {
-            var securities = await _securityRepo.GetAll();
+            var securities = await _securityRepo.GetAll(include: GetFullHierarchyColumns);
             return _mapper.Map<IEnumerable<SecurityDTO>>(securities);
         }
 
@@ -48,6 +51,11 @@ namespace MoneyManager.Application.Services.Securities
         {
             await _securityRepo.Delete(id);
             await _db.Commit();
+        }
+
+        private IQueryable<Security> GetFullHierarchyColumns(IQueryable<Security> securityQuery)
+        {
+            return securityQuery.Include(security => security.Type);
         }
     }
 }

@@ -26,9 +26,16 @@ namespace MoneyManager.Infrastructure.Database
             await _entities.AddAsync(entity);
         }
 
-        public async Task<TEntity> GetById(Guid id)
+        public async Task<TEntity> GetById(Guid id,
+            Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null)
         {
-            IQueryable<TEntity> query = _entities.AsNoTracking();
+            IQueryable<TEntity> query = _entities.AsQueryable();
+
+            if (include != null)
+            {
+                query = include(query);
+            }
+
             return await query.Where(entity => entity.Id == id).FirstOrDefaultAsync();
         }
 
@@ -44,10 +51,22 @@ namespace MoneyManager.Infrastructure.Database
             return await query.Where(predicate).FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<TEntity>> GetAll(Expression<Func<TEntity, bool>> predicate)
+        public async Task<IEnumerable<TEntity>> GetAll(Expression<Func<TEntity, bool>> filter = null,
+            Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null)
         {
-            IQueryable<TEntity> query = _entities.AsNoTracking();
-            return await query.Where(predicate).ToListAsync();
+            IQueryable<TEntity> query = _entities.AsQueryable();
+
+            if (include != null)
+            {
+                query = include(query);
+            }
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            return await query.ToListAsync();
         }
 
         public void Update(TEntity entity)

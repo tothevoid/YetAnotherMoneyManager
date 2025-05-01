@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Infrastructure.Entities.Brokers;
@@ -24,7 +26,8 @@ namespace MoneyManager.Application.Services.Brokers
 
         public async Task<IEnumerable<BrokerAccountDTO>> GetAll()
         {
-            var brokerAccounts = await _brokerAccountRepo.GetAll();
+            var brokerAccounts = await _brokerAccountRepo
+                .GetAll(include: GetFullHierarchyColumns);
             return _mapper.Map<IEnumerable<BrokerAccountDTO>>(brokerAccounts);
         }
 
@@ -56,6 +59,16 @@ namespace MoneyManager.Application.Services.Brokers
         {
             await _brokerAccountRepo.Delete(id);
             await _db.Commit();
+        }
+
+        private IQueryable<BrokerAccount> GetFullHierarchyColumns(IQueryable<BrokerAccount> brokerAccountQuery)
+        {
+            brokerAccountQuery
+                .Include(brokerAccount => brokerAccount.Type)
+                .Include(brokerAccount => brokerAccount.Currency)
+                .Include(brokerAccount => brokerAccount.Broker);
+
+            return brokerAccountQuery;
         }
     }
 }

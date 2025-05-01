@@ -40,8 +40,6 @@ namespace MoneyManager.WebApi.Controllers.Accounts
         public async Task Update(AccountModel account)
         {
             var accountDTO = _mapper.Map<AccountDTO>(account);
-            accountDTO.CurrencyId = accountDTO.Currency.Id;
-            accountDTO.AccountTypeId = accountDTO.AccountType.Id;
             await _accountService.Update(accountDTO);
         }
 

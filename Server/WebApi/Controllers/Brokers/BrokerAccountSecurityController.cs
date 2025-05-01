@@ -31,9 +31,9 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         }
 
         [HttpGet("GetByBrokerAccount")]
-        public IEnumerable<BrokerAccountSecurityModel> GetByBrokerAccount([FromQuery] Guid brokerAccountId)
+        public async Task<IEnumerable<BrokerAccountSecurityModel>> GetByBrokerAccount([FromQuery] Guid brokerAccountId)
         {
-            var brokerAccountSecurities = _brokerAccountSecurityService
+            var brokerAccountSecurities = await _brokerAccountSecurityService
                 .GetByBrokerAccount(brokerAccountId);
             return _mapper.Map<IEnumerable<BrokerAccountSecurityModel>>(brokerAccountSecurities);
         }

@@ -137,7 +137,8 @@ namespace MoneyManager.Application.Services.Accounts
 
         private IQueryable<Account> GetFullHierarchyColumns(IQueryable<Account> accountQuery)
         {
-            return accountQuery.Include(account => account.Currency)
+            return accountQuery
+                .Include(account => account.Currency)
                 .Include(account => account.AccountType);
         }
     }

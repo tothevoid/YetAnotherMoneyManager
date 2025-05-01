@@ -216,13 +216,10 @@ namespace MoneyManager.Application.Services.Deposits
         }
 
         private IQueryable<Deposit> GetFullHierarchyColumns(IQueryable<Deposit> depositQuery)
-        {
-            var accountInclude = depositQuery.Include(deposit => deposit.Account);
-
-            accountInclude.ThenInclude(account => account.AccountType);
-            accountInclude.ThenInclude(account => account.Currency);
-
-            return depositQuery;
+        { 
+            return depositQuery
+                .Include(deposit => deposit.Account.AccountType)
+                .Include(deposit => deposit.Account.Currency);
         }
     }
 }

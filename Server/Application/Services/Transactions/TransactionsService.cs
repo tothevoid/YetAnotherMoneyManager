@@ -157,15 +157,9 @@ namespace MoneyManager.Application.Services.Transactions
         private IQueryable<Transaction> GetFullHierarchyColumns(
             IQueryable<Transaction> transactionQuery)
         {
-            var accountInclude = transactionQuery
-                .Include(transaction => transaction.Account);
-
-            accountInclude.ThenInclude(brokerAccount =>
-                brokerAccount.Currency);
-            accountInclude.ThenInclude(brokerAccount =>
-                brokerAccount.AccountType);
-
-            return transactionQuery;
+            return transactionQuery
+                .Include(transaction => transaction.Account.Currency)
+                .Include(transaction => transaction.Account.AccountType);
         }
     }
 }

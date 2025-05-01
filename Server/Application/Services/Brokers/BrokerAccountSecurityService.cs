@@ -64,18 +64,11 @@ namespace MoneyManager.Application.Services.Brokers
 
         private IQueryable<BrokerAccountSecurity> GetFullHierarchyColumns(IQueryable<BrokerAccountSecurity> brokerAccountSecurityQuery)
         {
-            brokerAccountSecurityQuery
-                .Include(brokerAccountSecurity => brokerAccountSecurity.Security)
-                    .ThenInclude(security => security.Type);
-
-            var brokerAccountInclude = brokerAccountSecurityQuery
-                .Include(brokerAccountSecurity => brokerAccountSecurity.BrokerAccount);
-
-            brokerAccountInclude.ThenInclude(brokerAccount => brokerAccount.Type);
-            brokerAccountInclude.ThenInclude(brokerAccount => brokerAccount.Currency);
-            brokerAccountInclude.ThenInclude(brokerAccount => brokerAccount.Broker);
-
-            return brokerAccountSecurityQuery;
+            return brokerAccountSecurityQuery
+                .Include(brokerAccountSecurity => brokerAccountSecurity.Security.Type)
+                .Include(brokerAccountSecurity => brokerAccountSecurity.BrokerAccount.Type)
+                .Include(brokerAccountSecurity => brokerAccountSecurity.BrokerAccount.Currency)
+                .Include(brokerAccountSecurity => brokerAccountSecurity.BrokerAccount.Broker);
         }
     }
 }

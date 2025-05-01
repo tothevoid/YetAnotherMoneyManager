@@ -63,7 +63,7 @@ export const getSummary = async (): Promise<AccountCurrencySummary[]> => {
 }
 
 const prepareServerAccount = (account: AccountEntity): ServerAccountEntity => {
-    return {...account,
+    return {
         id: account.id,
         active: account.active,
         balance: account.balance,

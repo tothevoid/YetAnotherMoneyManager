@@ -33,8 +33,6 @@ namespace MoneyManager.WebApi.Controllers.Accounts
         public async Task<Guid> Add(AccountModel account)
         {
             var accountDTO = _mapper.Map<AccountDTO>(account);
-            accountDTO.CurrencyId = accountDTO.Currency.Id;
-            accountDTO.AccountTypeId = accountDTO.AccountType.Id;
             return await _accountService.Add(accountDTO);
         }
 

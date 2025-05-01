@@ -155,8 +155,16 @@ namespace MoneyManager.Application.Services.Deposits
             var maxValueRequest = _depositRepo.GetMax((deposit) => deposit.To);
             await Task.WhenAll(new Task[] {minValueRequest, maxValueRequest});
 
-            var minValue = minValueRequest.Result.From;
-            var maxValue = maxValueRequest.Result.To;
+            var minValueEntity = minValueRequest.Result;
+            var maxValueEntity = maxValueRequest.Result;
+
+            if (minValueEntity == null || maxValueEntity == null)
+            {
+                return null;
+            }
+            
+            var minValue = minValueEntity.From;
+            var maxValue = maxValueEntity.To;
             var rangeStart = new DateOnly(minValue.Year, minValue.Month, 1);
             var rangeEnd = new DateOnly(maxValue.Year, maxValue.Month, 1).AddMonths(1).AddDays(-1);
 

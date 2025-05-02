@@ -6,6 +6,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Shared.Entities;
 using MoneyManager.Infrastructure.Interfaces.Database;
+using MoneyManager.Infrastructure.Migrations;
 
 namespace MoneyManager.Infrastructure.Database
 {
@@ -49,6 +50,8 @@ namespace MoneyManager.Infrastructure.Database
 
         public async Task<IEnumerable<TEntity>> GetAll(Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null,
+            int recordsLimit = -1,
+            int recordsOffset = -1,
             bool disableTracking = true)
         {
             IQueryable<TEntity> query =
@@ -64,7 +67,29 @@ namespace MoneyManager.Infrastructure.Database
                 query = query.Where(filter);
             }
 
+            if (recordsLimit > 0)
+            {
+                query = query.Take(recordsLimit);
+            }
+
+            if (recordsOffset > 0)
+            {
+                query = query.Skip(recordsOffset);
+            }
+
             return await query.ToListAsync();
+        }
+
+        public async Task<int> GetCount(Expression<Func<TEntity, bool>> filter = null)
+        {
+            IQueryable<TEntity> query = _entities.AsQueryable().AsNoTracking();
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            return await query.CountAsync();
         }
 
         public void Update(TEntity entity)

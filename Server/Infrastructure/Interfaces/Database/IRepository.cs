@@ -17,7 +17,11 @@ namespace MoneyManager.Infrastructure.Interfaces.Database
 
         Task<IEnumerable<TEntity>> GetAll(Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null,
+            int recordsLimit = -1,
+            int recordsOffset = -1,
             bool disableTracking = true);
+
+        Task<int> GetCount(Expression<Func<TEntity, bool>> filter = null);
 
         Task<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
 

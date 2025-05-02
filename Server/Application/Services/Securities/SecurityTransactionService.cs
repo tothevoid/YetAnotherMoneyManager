@@ -10,6 +10,7 @@ using MoneyManager.Application.Interfaces.Securities;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Infrastructure.Interfaces.Database;
+using MoneyManager.Infrastructure.Queries;
 
 namespace MoneyManager.Application.Services.Securities
 {
@@ -31,10 +32,16 @@ namespace MoneyManager.Application.Services.Securities
         public async Task<IEnumerable<SecurityTransactionDTO>> GetAll(Guid brokerAccountId,
             int recordsQuantity, int pageIndex)
         {
+            var complexQuery = new ComplexQueryBuilder<SecurityTransaction>()
+                .AddFilter(GetBaseFilter(brokerAccountId))
+                .AddJoins(GetFullHierarchyColumns)
+                .AddPagination(securityTransaction => securityTransaction.Date, recordsQuantity,
+                    (pageIndex - 1) * recordsQuantity, true)
+                .DisableTracking()
+                .GetQuery();
+
             var brokerAccountSecurities = await _securityTransactionRepo
-                .GetAll(GetBaseFilter(brokerAccountId), GetFullHierarchyColumns,
-                    recordsQuantity,
-                    (pageIndex - 1) * recordsQuantity);
+                .GetAll(complexQuery);
             return _mapper.Map<IEnumerable<SecurityTransactionDTO>>(brokerAccountSecurities);
         }
 

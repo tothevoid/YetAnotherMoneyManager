@@ -55,7 +55,7 @@ const BrokerAccountSecurity = (props: Props) => {
             <Card.Body color="text_primary" boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
                 <Flex justifyContent="space-between" alignItems="center">
                     <Stack>
-                        <Text fontSize="2xl" fontWeight={900}>{security?.name} ({security?.ticker})</Text>
+                        <Text fontSize="xl" fontWeight={900}>{security?.name} ({security?.ticker})</Text>
                         <Text fontWeight={600}>{t("broker_account_security_card_security_quantity")}: {quantity}</Text>
                         <Text fontWeight={600}>{t("broker_account_security_card_security_price")}: {formatMoneyByCurrencyCulture(initialPrice, brokerAccount?.currency?.name)}</Text>
                     </Stack>

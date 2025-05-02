@@ -12,7 +12,7 @@ export const SecurityTransactionValidationSchema = z.object({
         id: z.string().nonempty({message: "Broker account is not selected"}),
         name: z.string()
     }, {message: "Broker account is not selected"}),
-    price: z.number().gt(0),
+    price: z.number().gte(0),
     date: z.date(),
     commission: z.number().gte(0),
     tax: z.number().gte(0),

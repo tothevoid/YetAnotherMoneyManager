@@ -16,6 +16,12 @@ export const getSecuritiesByBrokerAccount = async (brokerAccountId: string): Pro
         [] as BrokerAccountSecurityEntity[];
 };
 
+export const pullBrokerAccountQuotations = async (brokerAccountId: string) => {
+    await fetch(`${basicUrl}/PullQuotations?brokerAccountId=${brokerAccountId}`, {method: "GET"})
+        .then(checkPromiseStatus)
+        .catch(logPromiseError);
+}
+
 export const createBrokerAccountSecurity = async (addedBrokerAccountSecurity: BrokerAccountSecurityEntity): Promise<BrokerAccountSecurityEntity | void> => {
     return await createEntity<ServerBrokerAccountSecurityEntity>(basicUrl, 
         prepareServerBrokerAccountSecurity(addedBrokerAccountSecurity));

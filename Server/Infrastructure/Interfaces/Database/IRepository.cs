@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using MoneyManager.Infrastructure.Queries;
+using MoneyManager.Shared.Entities;
 
 namespace MoneyManager.Infrastructure.Interfaces.Database
 {
     public interface IRepository<TEntity>: IDisposable
-        where TEntity: class
+        where TEntity: BaseEntity
     {
         Task Add(TEntity entity);
 
@@ -17,9 +19,8 @@ namespace MoneyManager.Infrastructure.Interfaces.Database
 
         Task<IEnumerable<TEntity>> GetAll(Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null,
-            int recordsLimit = -1,
-            int recordsOffset = -1,
             bool disableTracking = true);
+        Task<IEnumerable<TEntity>> GetAll(ComplexQuery<TEntity> complexQuery);
 
         Task<int> GetCount(Expression<Func<TEntity, bool>> filter = null);
 

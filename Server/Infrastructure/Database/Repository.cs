@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using MoneyManager.Shared.Entities;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using MoneyManager.Infrastructure.Migrations;
+using MoneyManager.Infrastructure.Queries;
 
 namespace MoneyManager.Infrastructure.Database
 {
@@ -50,8 +51,6 @@ namespace MoneyManager.Infrastructure.Database
 
         public async Task<IEnumerable<TEntity>> GetAll(Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null,
-            int recordsLimit = -1,
-            int recordsOffset = -1,
             bool disableTracking = true)
         {
             IQueryable<TEntity> query =
@@ -67,14 +66,39 @@ namespace MoneyManager.Infrastructure.Database
                 query = query.Where(filter);
             }
 
-            if (recordsOffset > 0)
+            return await query.ToListAsync();
+        }
+
+        public async Task<IEnumerable<TEntity>> GetAll(ComplexQuery<TEntity> complexQuery)
+        {
+            IQueryable<TEntity> query =
+                complexQuery.TrackingDisabled ? _entities.AsQueryable().AsNoTracking() : _entities.AsQueryable();
+
+            if (complexQuery.Filter != null)
             {
-                query = query.Skip(recordsOffset);
+                query = query.Where(complexQuery.Filter);
             }
 
-            if (recordsLimit > 0)
+            if (complexQuery.OrderBy != null)
             {
-                query = query.Take(recordsLimit);
+                query = complexQuery.IsDescending
+                    ? query.OrderByDescending(complexQuery.OrderBy)
+                    : query.OrderBy(complexQuery.OrderBy);
+            }
+
+            if (complexQuery.RecordsOffset > 0)
+            {
+                query = query.Skip(complexQuery.RecordsOffset);
+            }
+
+            if (complexQuery.RecordsLimit > 0)
+            {
+                query = query.Take(complexQuery.RecordsLimit);
+            }
+
+            if (complexQuery.Joins != null)
+            {
+                query = complexQuery.Joins(query);
             }
 
             return await query.ToListAsync();

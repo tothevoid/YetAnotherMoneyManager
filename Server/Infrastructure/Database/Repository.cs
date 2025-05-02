@@ -67,14 +67,14 @@ namespace MoneyManager.Infrastructure.Database
                 query = query.Where(filter);
             }
 
-            if (recordsLimit > 0)
-            {
-                query = query.Take(recordsLimit);
-            }
-
             if (recordsOffset > 0)
             {
                 query = query.Skip(recordsOffset);
+            }
+
+            if (recordsLimit > 0)
+            {
+                query = query.Take(recordsLimit);
             }
 
             return await query.ToListAsync();

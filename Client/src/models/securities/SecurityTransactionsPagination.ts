@@ -1,4 +1,4 @@
 export interface SecurityTransactionsPagination {
     pageSize: number,
-    pagesQuantity: number
+    recordsQuantity: number
 }

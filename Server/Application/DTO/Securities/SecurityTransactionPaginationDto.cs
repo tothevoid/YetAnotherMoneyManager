@@ -10,6 +10,6 @@ namespace MoneyManager.Application.DTO.Securities
     {
         public int PageSize { get; set; }
 
-        public int PagesQuantity { get; set; }
+        public int RecordsQuantity { get; set; }
     }
 }

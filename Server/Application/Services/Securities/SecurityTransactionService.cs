@@ -46,7 +46,7 @@ namespace MoneyManager.Application.Services.Securities
             return new SecurityTransactionPaginationDto()
             {
                 PageSize = pageSize,
-                PagesQuantity = (int)Math.Ceiling(recordsQuantity * 1.0 / pageSize)
+                RecordsQuantity = recordsQuantity
             };
         }
         private Expression<Func<SecurityTransaction, bool>> GetBaseFilter(Guid brokerAccountId)

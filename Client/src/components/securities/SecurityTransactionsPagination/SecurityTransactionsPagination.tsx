@@ -11,12 +11,12 @@ interface Props {
 
 interface State {
     pageSize: number,
-    pagesQuantity: number,
+    recordsQuantity: number,
     currentPage: number
 }
 
 const SecurityTransactionsPagination: React.FC<Props> = (props) => {
-    const [state, setState] = useState<State>({ pageSize: -1, pagesQuantity: -1, currentPage: -1 })
+    const [state, setState] = useState<State>({ pageSize: -1, recordsQuantity: -1, currentPage: -1 })
 
     useEffect(() => {
         const initData = async () => {
@@ -35,36 +35,38 @@ const SecurityTransactionsPagination: React.FC<Props> = (props) => {
         setState((currentState) => {
             return {...currentState, currentPage: 1, 
                 pageSize: paginationConfig.pageSize, 
-                pagesQuantity: paginationConfig.pagesQuantity 
+                recordsQuantity: paginationConfig.recordsQuantity 
             }
         })
         props.onPageChanged(paginationConfig.pageSize, 0)
     };
 
-    const { pageSize, pagesQuantity } = state;
+    const onPageChange = (page: number, pageSize: number) => {
+        props.onPageChanged(pageSize, page);
+    }
 
-    if (pagesQuantity <= 1){
+    const { pageSize, recordsQuantity } = state;
+
+    if (recordsQuantity <= 1){
         return <Fragment/>
     }
 
     return (
-        <Pagination.Root count={pagesQuantity} pageSize={pageSize} defaultPage={1}>
+        <Pagination.Root onPageChange={({page, pageSize}) => onPageChange(page, pageSize)} 
+            count={recordsQuantity} pageSize={pageSize} defaultPage={1}>
             <ButtonGroup variant="ghost" size="lg">
             <Pagination.PrevTrigger asChild>
                 <IconButton color="text_primary">
                     <LuChevronLeft />
                 </IconButton>
             </Pagination.PrevTrigger>
-            <Pagination.Context>
-            {
-                ({ pages }) => pages.map((page, index) =>
-                    page.type === "page" ? 
-                        <Pagination.Item color="text_primary" key={index} {...page}>{page.value}</Pagination.Item>: 
-                        <Pagination.Ellipsis key={index} index={index} />
-                )
-            }
-            </Pagination.Context>
-    
+            <Pagination.Items
+                render={(page) => (
+                <IconButton color="text_primary" variant={{ base: "ghost", _selected: "outline" }}>
+                {page.value}
+                </IconButton>
+            )}
+            />
             <Pagination.NextTrigger asChild>
                 <IconButton color="text_primary">
                     <LuChevronRight />

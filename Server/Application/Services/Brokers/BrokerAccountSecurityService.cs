@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Brokers;
+using MoneyManager.Application.Interfaces.Integrations.Stock;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Interfaces.Database;
 
@@ -18,12 +20,14 @@ namespace MoneyManager.Application.Services.Brokers
         private readonly IMapper _mapper;
 
         private readonly IRepository<BrokerAccountSecurity> _brokerAccountSecurityRepo;
-       
-        public BrokerAccountSecurityService(IUnitOfWork uow, IMapper mapper)
+        private readonly IStockConnector _stockConnector;
+
+        public BrokerAccountSecurityService(IUnitOfWork uow, IMapper mapper, IStockConnector stockConnector)
         {
             _db = uow;
             _mapper = mapper;
             _brokerAccountSecurityRepo = uow.CreateRepository<BrokerAccountSecurity>();
+            _stockConnector = stockConnector;
         }
 
         public async Task<IEnumerable<BrokerAccountSecurityDTO>> GetByBrokerAccount(Guid brokerAccountId)
@@ -31,6 +35,35 @@ namespace MoneyManager.Application.Services.Brokers
             var brokerAccountSecurities = await _brokerAccountSecurityRepo
                 .GetAll(GetBaseFilter(brokerAccountId), GetFullHierarchyColumns);
             return _mapper.Map<IEnumerable<BrokerAccountSecurityDTO>>(brokerAccountSecurities);
+        }
+
+        public async Task PullQuotations(Guid brokerAccountId)
+        {
+            //TODO: limit data to only ticker
+            var brokerAccountSecurities = await _brokerAccountSecurityRepo
+                .GetAll((brokerAccountSecurity) => brokerAccountSecurity.BrokerAccountId == brokerAccountId,
+                (query) => query.Include((brokerAccount) => brokerAccount.Security));
+
+            var tickers = brokerAccountSecurities
+                .Select(brokerAccountSecurity => brokerAccountSecurity.Security.Ticker)
+                .ToArray();
+
+            var tickersValues = await _stockConnector.GetValuesByTickers(tickers);
+
+            //TODO: possible reuse brokerAccountSecurities
+            var brokerAccountSecuritiesToUpdated = await _brokerAccountSecurityRepo
+              .GetAll((brokerAccountSecurity) => tickers.Contains(brokerAccountSecurity.Security.Ticker),
+              (query) => query.Include((brokerAccount) => brokerAccount.Security),
+              disableTracking: false);
+
+            foreach (var brokerAccountSecurity in brokerAccountSecuritiesToUpdated)
+            {
+                var value = tickersValues.GetValueOrDefault(brokerAccountSecurity.Security.Ticker);
+
+                brokerAccountSecurity.CurrentPrice = value * brokerAccountSecurity.Quantity;
+            }
+
+            await _db.Commit();
         }
 
         public async Task<Guid> Add(BrokerAccountSecurityDTO brokerAccountSecurityDto)

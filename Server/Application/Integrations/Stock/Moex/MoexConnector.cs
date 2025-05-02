@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -39,9 +40,16 @@ namespace MoneyManager.Application.Integrations.Stock
 
             foreach (var marketData in tickersData.MarketData.Data)
             {
-                var ticker = marketData[tickerIndex];
-                var value = Convert.ToDecimal(marketData[valueIndex]);
-                var date = Convert.ToDateTime(marketData[dateIndex]);
+                var ticker = Convert.ToString(marketData[tickerIndex]);
+
+                var rawValue = marketData[valueIndex];
+                if (rawValue == null)
+                {
+                    continue;
+                }
+
+                var value = Convert.ToDecimal(rawValue.ToString(), CultureInfo.InvariantCulture);
+                var date = Convert.ToDateTime(marketData[dateIndex].ToString());
 
                 marketValues.Add(new MarketValue() { Ticker = ticker, Value = value, Date = date });
             }

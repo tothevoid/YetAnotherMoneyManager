@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Securities;
+using MoneyManager.Application.Integrations.Stock;
+using MoneyManager.Application.Interfaces.Integrations.Stock;
 using MoneyManager.Application.Interfaces.Securities;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Entities.Securities;
@@ -21,6 +23,7 @@ namespace MoneyManager.Application.Services.Securities
         private readonly IRepository<SecurityTransaction> _securityTransactionRepo;
         private readonly IRepository<BrokerAccountSecurity> _brokerAccountSecurityRepo;
         private readonly IMapper _mapper;
+
         public SecurityTransactionService(IUnitOfWork uow, IMapper mapper)
         {
             _db = uow;
@@ -56,6 +59,7 @@ namespace MoneyManager.Application.Services.Securities
                 RecordsQuantity = recordsQuantity
             };
         }
+
         private Expression<Func<SecurityTransaction, bool>> GetBaseFilter(Guid brokerAccountId)
         {
             return transaction => transaction.BrokerAccountId == brokerAccountId;

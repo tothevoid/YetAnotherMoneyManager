@@ -9,6 +9,6 @@ namespace MoneyManager.Application.Integrations.Stock.Moex.Model
         public string[] Columns { get; set; }
 
         [JsonPropertyName("data")]
-        public IEnumerable<string[]> Data { get; set; }
+        public IEnumerable<object[]> Data { get; set; }
     }
 }

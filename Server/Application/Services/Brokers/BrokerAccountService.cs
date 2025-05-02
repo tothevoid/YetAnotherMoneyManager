@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Brokers;
+using MoneyManager.Application.Interfaces.Integrations.Stock;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Interfaces.Database;
 
@@ -17,6 +18,7 @@ namespace MoneyManager.Application.Services.Brokers
 
         private readonly IRepository<BrokerAccount> _brokerAccountRepo;
         private readonly IMapper _mapper;
+       
         public BrokerAccountService(IUnitOfWork uow, IMapper mapper)
         {
             _db = uow;
@@ -30,6 +32,7 @@ namespace MoneyManager.Application.Services.Brokers
                 .GetAll(include: GetFullHierarchyColumns);
             return _mapper.Map<IEnumerable<BrokerAccountDTO>>(brokerAccounts);
         }
+
 
         public async Task<BrokerAccountDTO> GetById(Guid id)
         {

@@ -30,6 +30,12 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
             return this;
         }
 
+        private MoexUrlBuilder AddTickers(IEnumerable<string> tickers)
+        {
+            _additionalParameters.Add($"securities={string.Join(',', tickers)}");
+            return this;
+        }
+
         public string BuildSecuritiesQuery(IEnumerable<string> tickers)
         {
             if (tickers == null || !tickers.Any())
@@ -37,11 +43,12 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
                 throw new ArgumentException(nameof(tickers));
             }
 
+            AddTickers(tickers);
             RemoveMeta();
             IncludeOnlyMarketData();
             SelectMarketColumns();
 
-            var url = $"{_baseUrl}/iss/engines/stock/markets/shares/securities.json";
+            var url = $"{_baseUrl}/engines/stock/markets/shares/securities.json";
             if (_additionalParameters.Any())
             {
                 var combinedParameters = string.Join("&", _additionalParameters);

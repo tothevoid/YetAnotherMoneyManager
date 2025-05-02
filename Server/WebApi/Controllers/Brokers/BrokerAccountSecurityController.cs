@@ -7,6 +7,7 @@ using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.WebApi.Models.Brokers;
 using MoneyManager.WebApi.Models.Securities;
+using MoneyManager.Application.Services.Brokers;
 
 namespace MoneyManager.WebApi.Controllers.Brokers
 {
@@ -30,6 +31,12 @@ namespace MoneyManager.WebApi.Controllers.Brokers
             var brokerAccountSecurities = await _brokerAccountSecurityService
                 .GetByBrokerAccount(brokerAccountId);
             return _mapper.Map<IEnumerable<BrokerAccountSecurityModel>>(brokerAccountSecurities);
+        }
+
+        [HttpGet(nameof(PullQuotations))]
+        public async Task PullQuotations([FromQuery] Guid brokerAccountId)
+        {
+            await _brokerAccountSecurityService.PullQuotations(brokerAccountId);
         }
 
         [HttpPut]

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -27,19 +28,30 @@ namespace MoneyManager.Application.Services.Securities
             _brokerAccountSecurityRepo = uow.CreateRepository<BrokerAccountSecurity>();
         }
 
-        public async Task<IEnumerable<SecurityTransactionDTO>> GetAll()
+        public async Task<IEnumerable<SecurityTransactionDTO>> GetAll(Guid brokerAccountId,
+            int recordsQuantity, int pageIndex)
         {
-            var securityTransactions = await _securityTransactionRepo
-                .GetAll(include: GetFullHierarchyColumns);
-            return _mapper.Map<IEnumerable<SecurityTransactionDTO>>(securityTransactions);
+            var brokerAccountSecurities = await _securityTransactionRepo
+                .GetAll(GetBaseFilter(brokerAccountId), GetFullHierarchyColumns,
+                    recordsQuantity,
+                    (pageIndex - 1) * recordsQuantity);
+            return _mapper.Map<IEnumerable<SecurityTransactionDTO>>(brokerAccountSecurities);
         }
 
-        public async Task<IEnumerable<SecurityTransactionDTO>> GetByBrokerAccount(Guid brokerAccountId)
+        public async Task<SecurityTransactionPaginationDto> GetPagination(Guid brokerAccountId)
         {
-            var securityTransactions = await _securityTransactionRepo
-                .GetAll(securityTransaction => securityTransaction.BrokerAccountId == brokerAccountId,
-                    GetFullHierarchyColumns);
-            return _mapper.Map<IEnumerable<SecurityTransactionDTO>>(securityTransactions);
+            int pageSize = 20;
+            var recordsQuantity = await _securityTransactionRepo.GetCount(GetBaseFilter(brokerAccountId));
+
+            return new SecurityTransactionPaginationDto()
+            {
+                PageSize = pageSize,
+                PagesQuantity = (int)Math.Ceiling(recordsQuantity * 1.0 / pageSize)
+            };
+        }
+        private Expression<Func<SecurityTransaction, bool>> GetBaseFilter(Guid brokerAccountId)
+        {
+            return transaction => transaction.BrokerAccountId == brokerAccountId;
         }
 
         public async Task<Guid> Add(SecurityTransactionDTO securityDto)
@@ -51,6 +63,7 @@ namespace MoneyManager.Application.Services.Securities
             await _db.Commit();
             return securityTransaction.Id;
         }
+
         public async Task Update(SecurityTransactionDTO securityDto)
         {
             await ApplyModifiedTransaction(securityDto);

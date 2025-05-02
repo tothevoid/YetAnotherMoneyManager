@@ -1,13 +1,9 @@
 import config from '../../config' 
 import { BrokerAccountSecurityEntity, ServerBrokerAccountSecurityEntity } from '../../models/brokers/BrokerAccountSecurityEntity';
 import { checkPromiseStatus, logPromiseError } from '../../utils/PromiseUtils';
-import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
+import { createEntity, deleteEntity, updateEntity } from '../basicApi';
 
 const basicUrl = `${config.api.URL}/BrokerAccountSecurity`;
-
-export const getBrokerAccountSecurities = async (): Promise<BrokerAccountSecurityEntity[]> => {
-    return await getAllEntities<BrokerAccountSecurityEntity>(basicUrl);
-};
 
 export const getSecuritiesByBrokerAccount = async (brokerAccountId: string): Promise<BrokerAccountSecurityEntity[]> => {
     const entities = await fetch(`${basicUrl}/GetByBrokerAccount?brokerAccountId=${brokerAccountId}`, {method: "GET"})

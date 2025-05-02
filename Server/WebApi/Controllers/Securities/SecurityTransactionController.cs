@@ -23,19 +23,20 @@ namespace MoneyManager.WebApi.Controllers.Securities
             _securityTransactionService = securityTransactionService;
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<SecurityTransactionModel>> GetAll()
+        [HttpPost(nameof(GetAll))]
+        public async Task<IEnumerable<SecurityTransactionModel>> GetAll(SecurityTransactionsRequestModel request)
         {
-            var securityTransactions = await _securityTransactionService.GetAll();
+            var securityTransactions = await _securityTransactionService
+                .GetAll(request.BrokerAccountId, request.RecordsQuantity, request.PageIndex);
             return _mapper.Map<IEnumerable<SecurityTransactionModel>>(securityTransactions);
         }
 
-        [HttpGet("GetByBrokerAccount")]
-        public async Task<IEnumerable<SecurityTransactionModel>> GetByBrokerAccount([FromQuery] Guid brokerAccountId)
+        [HttpGet(nameof(GetPagination))]
+        public async Task<SecurityTransactionPaginationModel> GetPagination([FromQuery] Guid brokerAccountId)
         {
-            var brokerAccountSecurities = await _securityTransactionService
-                .GetByBrokerAccount(brokerAccountId);
-            return _mapper.Map<IEnumerable<SecurityTransactionModel>>(brokerAccountSecurities);
+            var pagination = await _securityTransactionService
+                .GetPagination(brokerAccountId);
+            return _mapper.Map<SecurityTransactionPaginationModel>(pagination);
         }
 
         [HttpPut]

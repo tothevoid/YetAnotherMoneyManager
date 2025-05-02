@@ -1,38 +1,24 @@
-import React, { Fragment, useEffect, useState } from 'react';
-import { SimpleGrid } from '@chakra-ui/react/grid';
+import React, { Fragment, useState } from 'react';
 import { Flex } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { SecurityTransactionEntity } from '../../../models/securities/SecurityTransactionEntity';
-import { getSecurityTransactionsByBrokerAccount } from '../../../api/securities/securityTransactionApi';
 import AddSecurityTransactionButton from '../AddSecurityTransactionButton/AddSecurityTransactionButton';
 import SecurityTransaction from '../SecurityTransaction/SecurityTransaction';
+import SecurityTransactionsPagination from '../SecurityTransactionsPagination/SecurityTransactionsPagination';
+import { getSecurityTransactions } from '../../../api/securities/securityTransactionApi';
 
 interface Props {
     brokerAccountId: string
 }
 
 interface State {
-    securities: SecurityTransactionEntity[]
+    transactions: SecurityTransactionEntity[]
 }
 
 const SecurityTransactionsList: React.FC<Props> = (props) => {
     const { t } = useTranslation()
 
-    const [state, setState] = useState<State>({ securities: [] })
-
-    useEffect(() => {
-        const initData = async () => {
-            await requestSecurityTransactions();
-        }
-        initData();
-    }, []);
-
-    const requestSecurityTransactions = async () => {
-        const securityTransactions = await getSecurityTransactionsByBrokerAccount(props.brokerAccountId);
-        setState((currentState) => {
-            return {...currentState, securities: securityTransactions}
-        })
-    };
+    const [state, setState] = useState<State>({ transactions: [] })
 
     const onSecurityTransactionCreated = async (addedSecurityTransaction: SecurityTransactionEntity) => {
         if (!addedSecurityTransaction) {
@@ -59,9 +45,19 @@ const SecurityTransactionsList: React.FC<Props> = (props) => {
     };
 
     const onReloadSecurityTransactions = async () => {
-        await requestSecurityTransactions();
+        // await requestSecurityTransactions();
     }
 
+    const onPageChanged = async (pageSize: number, currentPage: number) => {
+        const transactions = await getSecurityTransactions({
+            brokerAccountId: props.brokerAccountId,
+            recordsQuantity: pageSize,
+            pageIndex: currentPage
+        });
+        setState((currentState) => {
+            return {...currentState, transactions}
+        })
+    }
     
     return (
         <Fragment>
@@ -70,7 +66,7 @@ const SecurityTransactionsList: React.FC<Props> = (props) => {
             </Flex>
             <div>
             {
-                state.securities.map((security: SecurityTransactionEntity) => {
+                state.transactions.map((security: SecurityTransactionEntity) => {
                     return <SecurityTransaction key={security.id} securityTransaction={security} 
                         onEditCallback={onSecurityTransactionUpdated} 
                         onDeleteCallback={onSecurityTransactionDeleted}
@@ -78,8 +74,9 @@ const SecurityTransactionsList: React.FC<Props> = (props) => {
                 })
                 }
             </div>
-
-            
+            <Flex justifyContent={"center"}>
+                <SecurityTransactionsPagination brokerAccountId={props.brokerAccountId} onPageChanged={onPageChanged}/>
+            </Flex>
         </Fragment>
     );
 }

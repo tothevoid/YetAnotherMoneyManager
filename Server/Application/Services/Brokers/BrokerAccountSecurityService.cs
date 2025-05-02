@@ -26,33 +26,11 @@ namespace MoneyManager.Application.Services.Brokers
             _brokerAccountSecurityRepo = uow.CreateRepository<BrokerAccountSecurity>();
         }
 
-        public async Task<IEnumerable<BrokerAccountSecurityDTO>> GetAll(Guid brokerAccountId, 
-            int recordsQuantity, int pageIndex)
-        {
-            var brokerAccountSecurities = await _brokerAccountSecurityRepo
-                .GetAll(GetBaseFilter(brokerAccountId), GetFullHierarchyColumns,
-                    recordsQuantity,
-                    (pageIndex - 1) * recordsQuantity);
-            return _mapper.Map<IEnumerable<BrokerAccountSecurityDTO>>(brokerAccountSecurities);
-        }
-
         public async Task<IEnumerable<BrokerAccountSecurityDTO>> GetByBrokerAccount(Guid brokerAccountId)
         {
             var brokerAccountSecurities = await _brokerAccountSecurityRepo
                 .GetAll(GetBaseFilter(brokerAccountId), GetFullHierarchyColumns);
             return _mapper.Map<IEnumerable<BrokerAccountSecurityDTO>>(brokerAccountSecurities);
-        }
-
-        public async Task<BrokerAccountSecurityPaginationDto> GetPagination(Guid brokerAccountId)
-        {
-            int pageSize = 20;
-            var recordsQuantity = await _brokerAccountSecurityRepo.GetCount(GetBaseFilter(brokerAccountId));
-
-            return new BrokerAccountSecurityPaginationDto()
-            {
-                PageSize = pageSize,
-                PagesQuantity = (int) Math.Ceiling(recordsQuantity * 1.0 / pageSize)
-            };
         }
 
         public async Task<Guid> Add(BrokerAccountSecurityDTO brokerAccountSecurityDto)

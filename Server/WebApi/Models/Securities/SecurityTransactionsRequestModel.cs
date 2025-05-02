@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace MoneyManager.WebApi.Models.Brokers
+namespace MoneyManager.WebApi.Models.Securities
 {
-    public class BrokerAccountSecurityRequestModel
+    public class SecurityTransactionsRequestModel
     {
         public int RecordsQuantity { get; set; }
 

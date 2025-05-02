@@ -1,6 +1,6 @@
-﻿namespace MoneyManager.WebApi.Models.Brokers
+﻿namespace MoneyManager.WebApi.Models.Securities
 {
-    public class BrokerAccountSecurityPaginationModel
+    public class SecurityTransactionPaginationModel
     {
         public int PageSize { get; set; }
 

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.DTO.Brokers
+namespace MoneyManager.Application.DTO.Securities
 {
-    public class BrokerAccountSecurityPaginationDto
+    public class SecurityTransactionPaginationDto
     {
         public int PageSize { get; set; }
 

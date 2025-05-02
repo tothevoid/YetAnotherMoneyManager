@@ -11,6 +11,19 @@ export const getAllEntities = async <T> (basicUrl: string): Promise<T[]> => {
         [] as T[];
 };
 
+export const getAllEntitiesByConfig = async <TInput, TOutput> (basicUrl: string, data: TInput): Promise<TOutput[]> => {
+    const entities = await fetch(basicUrl, {method: "POST", body: convertRecordToJson(data),
+            headers: {"Content-Type": "application/json"}
+        })
+        .then(checkPromiseStatus)
+        .then((response: Response) => response.json())
+        .catch(logPromiseError);
+  
+    return entities ?
+        entities: 
+        [] as TOutput[];
+};
+
 export const createEntity = async<T> (basicUrl: string, addedEntity: T): Promise<T | void> => {
     const newEntity = await fetch(basicUrl, { method: "PUT", body: convertRecordToJson(addedEntity),
         headers: {"Content-Type": "application/json"}})

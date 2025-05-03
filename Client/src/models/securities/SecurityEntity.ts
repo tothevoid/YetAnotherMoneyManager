@@ -4,7 +4,7 @@ export interface CommonSecurityEntity {
     id: string,
     name: string,
     ticker: string,
-    currentPrice: number,
+    actualPrice: number,
 }
 
 export interface ServerSecurityEntity extends CommonSecurityEntity {

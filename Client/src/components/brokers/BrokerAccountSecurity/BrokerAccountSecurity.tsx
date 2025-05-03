@@ -1,6 +1,6 @@
-import { Button, Card, Flex, Icon, Stack, Text } from '@chakra-ui/react';
+import { Button, Card, Flex, Icon, Span, Stack, Text } from '@chakra-ui/react';
 import { MdDelete, MdEdit } from "react-icons/md";
-import { Fragment, useRef } from 'react';
+import { act, Fragment, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AccountModalRef } from '../../../modals/AccountModal/AccountModal';
 import { ConfirmModalRef, ConfirmModal } from '../../../modals/ConfirmModal/ConfirmModal';
@@ -50,6 +50,15 @@ const BrokerAccountSecurity = (props: Props) => {
 
     const { t, i18n } = useTranslation();
 
+    const actualPrice = security.actualPrice * quantity;
+    const profitAndLoss = actualPrice - price;
+
+    const color = profitAndLoss > 0 ?
+        "green.600":
+        "red.600";
+
+    const percentage = profitAndLoss / actualPrice * 100;
+
     return <Fragment>
         <Card.Root backgroundColor="background_primary" borderColor="border_primary" >
             <Card.Body color="text_primary" boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
@@ -58,8 +67,11 @@ const BrokerAccountSecurity = (props: Props) => {
                         <Text fontSize="xl" fontWeight={900}>{security?.name} ({security?.ticker})</Text>
                         <Text fontWeight={600}>{t("broker_account_security_card_security_quantity")}: {quantity}</Text>
                         <Text fontWeight={600}>{t("broker_account_security_card_security_initial_price")}: {formatMoneyByCurrencyCulture(price, brokerAccount?.currency?.name)}</Text>
-                        <Text fontWeight={600}>{t("broker_account_security_card_security_current_price")}: {formatMoneyByCurrencyCulture(security.currentPrice, brokerAccount?.currency?.name)}</Text>
-                        <Text fontWeight={600}>{t("broker_account_security_card_security_p&l")}: {formatMoneyByCurrencyCulture(security.currentPrice - price, brokerAccount?.currency?.name)}</Text>
+                        <Text fontWeight={600}>{t("broker_account_security_card_security_current_price")}: {formatMoneyByCurrencyCulture(actualPrice, brokerAccount?.currency?.name)}</Text>
+                        <Text fontWeight={600}>
+                            {t("broker_account_security_card_security_p&l")}:
+                            <Span paddingLeft={1.5} color={color}>{formatMoneyByCurrencyCulture(profitAndLoss, brokerAccount?.currency?.name)} ({percentage.toFixed(2)}%)</Span>
+                        </Text>
                     </Stack>
                     <Flex gap={1}>
                         <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={onEditClicked}>

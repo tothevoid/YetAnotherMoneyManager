@@ -35,7 +35,7 @@ const prepareServerSecurity = (security: SecurityEntity): ServerSecurityEntity =
         name: security.name,
         ticker: security.ticker,
         typeId: security.type.id,
-        currentPrice: security.currentPrice,
+        actualPrice: security.actualPrice,
         priceFetchedAt: convertToDateOnly(security.priceFetchedAt),
     };
 }

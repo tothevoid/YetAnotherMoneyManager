@@ -1,5 +1,5 @@
 import { MdAdd } from "react-icons/md"
-import { Button, Icon } from "@chakra-ui/react"
+import { Button, Icon, ProgressPropsProvider } from "@chakra-ui/react"
 import { useRef } from "react"
 import { Fragment } from "react/jsx-runtime"
 import { AccountModalRef } from "../../../modals/AccountModal/AccountModal"
@@ -9,10 +9,11 @@ import { createSecurityTransaction } from "../../../api/securities/securityTrans
 import SecurityTransactionModal from "../modals/SecurityTransactionModal/SecurityTransactionModal"
 
 type Props = {
+    brokerAccountId: string,
     onAdded: (security: SecurityTransactionEntity) => void;
 };
 
-const AddSecurityTransactionButton: React.FC<Props> = ({ onAdded }) => {
+const AddSecurityTransactionButton: React.FC<Props> = ({ onAdded, brokerAccountId }) => {
     const modalRef = useRef<AccountModalRef>(null);
     
     const onAdd = () => {
@@ -30,6 +31,10 @@ const AddSecurityTransactionButton: React.FC<Props> = ({ onAdded }) => {
 
     const { t } = useTranslation();
 
+    const securityTransaction: SecurityTransactionEntity = {
+        brokerAccount: {id: brokerAccountId}
+    }
+
     return (
         <Fragment>
             <Button background="purple.600" onClick={onAdd}>
@@ -38,7 +43,7 @@ const AddSecurityTransactionButton: React.FC<Props> = ({ onAdded }) => {
                 </Icon>
                 {t("entity_securities_transaction_page_summary_add")}
             </Button>
-            <SecurityTransactionModal ref={modalRef} onSaved={onSecurityTransactionAdded}></SecurityTransactionModal>
+            <SecurityTransactionModal securityTransaction={securityTransaction} ref={modalRef} onSaved={onSecurityTransactionAdded}></SecurityTransactionModal>
         </Fragment>
     )
 }

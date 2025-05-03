@@ -83,14 +83,6 @@ const SecurityTransactionModal = forwardRef<BrokerAccountModalRef, BrokerAccount
                         <Dialog.Title>{t("entity_security_transaction_form_title")}</Dialog.Title>
                     </Dialog.Header>
                     <Dialog.Body pb={6}>
-                        <Field.Root mt={4} invalid={!!errors.brokerAccount}>
-                            <Field.Label>{t("entity_security_transaction_broker_account")}</Field.Label>
-                            <CollectionSelect name="brokerAccount" control={control} placeholder="Select broker account"
-                                collection={state.brokerAccounts} 
-                                labelSelector={(brokerAccount => brokerAccount.name)} 
-                                valueSelector={(brokerAccount => brokerAccount.id)}/>
-                            <Field.ErrorText>{errors.brokerAccount?.message}</Field.ErrorText>
-                        </Field.Root>
                         <Field.Root mt={4} invalid={!!errors.security}>
                             <Field.Label>{t("entity_security_transaction_security")}</Field.Label>
                             <CollectionSelect name="security" control={control} placeholder="Select security"

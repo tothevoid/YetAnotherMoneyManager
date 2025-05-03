@@ -79,7 +79,7 @@ const SecurityTransactionsList: React.FC<Props> = (props) => {
     return (
         <Fragment>
             <Flex alignItems="center" gapX={5}>
-                <AddSecurityTransactionButton onAdded={onSecurityTransactionCreated}/>
+                <AddSecurityTransactionButton brokerAccountId={props.brokerAccountId} onAdded={onSecurityTransactionCreated}/>
                 <Button background="purple.600" onClick={pullQuotations}>
                     <Icon size='md'>
                         <MdRefresh/>

@@ -12,11 +12,10 @@ interface Props {
 interface State {
     pageSize: number,
     recordsQuantity: number,
-    currentPage: number
 }
 
 const SecurityTransactionsPagination: React.FC<Props> = (props) => {
-    const [state, setState] = useState<State>({ pageSize: -1, recordsQuantity: -1, currentPage: -1 })
+    const [state, setState] = useState<State>({ pageSize: -1, recordsQuantity: -1})
 
     useEffect(() => {
         const initData = async () => {
@@ -33,7 +32,7 @@ const SecurityTransactionsPagination: React.FC<Props> = (props) => {
         }
 
         setState((currentState) => {
-            return {...currentState, currentPage: 1, 
+            return {...currentState, 
                 pageSize: paginationConfig.pageSize, 
                 recordsQuantity: paginationConfig.recordsQuantity 
             }

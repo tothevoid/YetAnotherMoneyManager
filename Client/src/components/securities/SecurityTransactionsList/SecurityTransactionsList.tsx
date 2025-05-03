@@ -6,7 +6,7 @@ import AddSecurityTransactionButton from '../AddSecurityTransactionButton/AddSec
 import SecurityTransaction from '../SecurityTransaction/SecurityTransaction';
 import SecurityTransactionsPagination from '../SecurityTransactionsPagination/SecurityTransactionsPagination';
 import { getSecurityTransactions } from '../../../api/securities/securityTransactionApi';
-import { MdAdd, MdRefresh } from 'react-icons/md';
+import { MdRefresh } from 'react-icons/md';
 import { pullBrokerAccountQuotations } from '../../../api/brokers/brokerAccountSecurityApi';
 
 interface Props {
@@ -14,13 +14,15 @@ interface Props {
 }
 
 interface State {
+    currentPage: number,
+    pageSize: number,
     transactions: SecurityTransactionEntity[]
 }
 
 const SecurityTransactionsList: React.FC<Props> = (props) => {
     const { t } = useTranslation()
 
-    const [state, setState] = useState<State>({ transactions: [] })
+    const [state, setState] = useState<State>({ transactions: [], currentPage: 1, pageSize: -1 })
 
     const onSecurityTransactionCreated = async (addedSecurityTransaction: SecurityTransactionEntity) => {
         if (!addedSecurityTransaction) {
@@ -47,17 +49,24 @@ const SecurityTransactionsList: React.FC<Props> = (props) => {
     };
 
     const onReloadSecurityTransactions = async () => {
-        // await requestSecurityTransactions();
+        const transactions = await requestTransactions(state.currentPage, state.pageSize)
+        setState((currentState) => {
+            return {...currentState, transactions}
+        })
+    }
+
+    const requestTransactions = async (currentPage: number, pageSize: number) => {
+        return await getSecurityTransactions({
+            brokerAccountId: props.brokerAccountId,
+            recordsQuantity: pageSize,
+            pageIndex: currentPage,
+        });
     }
 
     const onPageChanged = async (pageSize: number, currentPage: number) => {
-        const transactions = await getSecurityTransactions({
-            brokerAccountId: props.brokerAccountId,
-            recordsQuantity: pageSize,
-            pageIndex: currentPage
-        });
+        const transactions = await requestTransactions(pageSize, currentPage);
         setState((currentState) => {
-            return {...currentState, transactions}
+            return {...currentState, currentPage, pageSize, transactions}
         })
     }
     

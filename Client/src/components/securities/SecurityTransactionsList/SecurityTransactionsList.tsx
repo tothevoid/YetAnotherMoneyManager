@@ -10,7 +10,8 @@ import { MdRefresh } from 'react-icons/md';
 import { pullBrokerAccountQuotations } from '../../../api/brokers/brokerAccountSecurityApi';
 
 interface Props {
-    brokerAccountId: string
+    brokerAccountId: string,
+    onDataReloaded: () => void
 }
 
 interface State {
@@ -53,6 +54,7 @@ const SecurityTransactionsList: React.FC<Props> = (props) => {
         setState((currentState) => {
             return {...currentState, transactions}
         })
+        props.onDataReloaded();
     }
 
     const requestTransactions = async (currentPage: number, pageSize: number) => {

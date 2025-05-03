@@ -1,6 +1,6 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import BrokerAccountSecuritiesList from "../../components/brokers/BrokerAccountSecuritiesList/BrokerAccountSecuritiesList";
+import BrokerAccountSecuritiesList, { BrokerAccountSecuritiesListRef } from "../../components/brokers/BrokerAccountSecuritiesList/BrokerAccountSecuritiesList";
 import { useParams } from "react-router-dom";
 import { BrokerAccountEntity } from "../../models/brokers/BrokerAccountEntity";
 import { getBrokerAccountById } from "../../api/brokers/brokerAccountApi";
@@ -14,8 +14,8 @@ interface State {
 }
 
 const BrokerAccountPage: React.FC<Props> = () => {
-
     const { t } = useTranslation();
+    const securitiesRef = useRef<BrokerAccountSecuritiesListRef>(null);
 
     const { brokerAccountId } = useParams(); // Получаем текущий таб из URL
 
@@ -24,6 +24,7 @@ const BrokerAccountPage: React.FC<Props> = () => {
     }
 
     const [state, setState] = useState<State>({ brokerAccount: null })
+   
 
     useEffect(() => {
         const initData = async () => {
@@ -39,10 +40,14 @@ const BrokerAccountPage: React.FC<Props> = () => {
         initData();
     }, []);
 
+    const onDataReloaded = async () => {
+        await securitiesRef.current?.reloadData();
+    }
+
     return (<Fragment>
         <Text fontSize="3xl" fontWeight={900} color="text_primary">{state.brokerAccount?.name}</Text>
-        <BrokerAccountSecuritiesList brokerAccountId={brokerAccountId}/>
-        <SecurityTransactionsList brokerAccountId={brokerAccountId}/>
+        <BrokerAccountSecuritiesList ref={securitiesRef} brokerAccountId={brokerAccountId}/>
+        <SecurityTransactionsList onDataReloaded={onDataReloaded} brokerAccountId={brokerAccountId}/>
     </Fragment>
     )
 }

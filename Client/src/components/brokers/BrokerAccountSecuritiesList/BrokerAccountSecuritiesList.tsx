@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import { forwardRef, Fragment, useEffect, useImperativeHandle, useState } from 'react';
 import { SimpleGrid } from '@chakra-ui/react/grid';
 import { useTranslation } from 'react-i18next';
 import BrokerAccountSecurity from '../BrokerAccountSecurity/BrokerAccountSecurity';
@@ -13,7 +13,11 @@ interface State {
     brokerAccountSecurities: BrokerAccountSecurityEntity[]
 }
 
-const BrokerAccountSecuritiesList: React.FC<Props> = (props) => {
+export interface BrokerAccountSecuritiesListRef {
+    reloadData: () => Promise<void>
+}
+
+const BrokerAccountSecuritiesList = forwardRef<BrokerAccountSecuritiesListRef, Props>((props: Props, ref)=> {
     const { t } = useTranslation()
 
     const [state, setState] = useState<State>({ brokerAccountSecurities: [] })
@@ -25,19 +29,15 @@ const BrokerAccountSecuritiesList: React.FC<Props> = (props) => {
         initData();
     }, []);
 
+    useImperativeHandle(ref, () => ({
+        reloadData: requestBrokerAccountSecurityData,
+    }));
+
     const requestBrokerAccountSecurityData = async () => {
         const brokerAccountSecurities = await getSecuritiesByBrokerAccount(props.brokerAccountId);
         setState((currentState) => {
             return {...currentState, brokerAccountSecurities}
         })
-    };
-
-    const onBrokerAccountSecurityAdded = async (addedBrokerAccountSecurity: BrokerAccountSecurityEntity) => {
-        if (!addedBrokerAccountSecurity) {
-            return
-        }
-
-        await onReloadBrokerAccountSecurities();
     };
 
     const onBrokerAccountSecurityUpdated = async (updateBrokerAccountSecurity: BrokerAccountSecurityEntity) => {
@@ -73,6 +73,6 @@ const BrokerAccountSecuritiesList: React.FC<Props> = (props) => {
             </SimpleGrid>
         </Fragment>
     );
-}
+});
 
 export default BrokerAccountSecuritiesList;

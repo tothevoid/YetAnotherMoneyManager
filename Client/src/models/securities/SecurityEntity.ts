@@ -1,12 +1,18 @@
 import { SecurityTypeEntity } from "./SecurityTypeEntity";
 
-export interface ServerSecurityEntity {
+export interface CommonSecurityEntity {
     id: string,
     name: string,
     ticker: string,
-    typeId: string
+    currentPrice: number,
 }
 
-export interface SecurityEntity extends ServerSecurityEntity {
-    type: SecurityTypeEntity
+export interface ServerSecurityEntity extends CommonSecurityEntity {
+    typeId: string,
+    priceFetchedAt: string
+}
+
+export interface SecurityEntity extends CommonSecurityEntity {
+    type: SecurityTypeEntity,
+    priceFetchedAt: Date
 }

@@ -17,7 +17,7 @@ type Props = {
 }
 
 const BrokerAccountSecurity = (props: Props) => {
-    const {initialPrice, currentPrice, quantity, security, brokerAccount} = props.brokerAccountSecurity;
+    const {price, quantity, security, brokerAccount} = props.brokerAccountSecurity;
 
     const confirmModalRef = useRef<ConfirmModalRef>(null);
     const editModalRef = useRef<AccountModalRef>(null);
@@ -57,9 +57,9 @@ const BrokerAccountSecurity = (props: Props) => {
                     <Stack>
                         <Text fontSize="xl" fontWeight={900}>{security?.name} ({security?.ticker})</Text>
                         <Text fontWeight={600}>{t("broker_account_security_card_security_quantity")}: {quantity}</Text>
-                        <Text fontWeight={600}>{t("broker_account_security_card_security_initial_price")}: {formatMoneyByCurrencyCulture(initialPrice, brokerAccount?.currency?.name)}</Text>
-                        <Text fontWeight={600}>{t("broker_account_security_card_security_current_price")}: {formatMoneyByCurrencyCulture(currentPrice, brokerAccount?.currency?.name)}</Text>
-                        <Text fontWeight={600}>{t("broker_account_security_card_security_p&l")}: {formatMoneyByCurrencyCulture(currentPrice - initialPrice, brokerAccount?.currency?.name)}</Text>
+                        <Text fontWeight={600}>{t("broker_account_security_card_security_initial_price")}: {formatMoneyByCurrencyCulture(price, brokerAccount?.currency?.name)}</Text>
+                        <Text fontWeight={600}>{t("broker_account_security_card_security_current_price")}: {formatMoneyByCurrencyCulture(security.currentPrice, brokerAccount?.currency?.name)}</Text>
+                        <Text fontWeight={600}>{t("broker_account_security_card_security_p&l")}: {formatMoneyByCurrencyCulture(security.currentPrice - price, brokerAccount?.currency?.name)}</Text>
                     </Stack>
                     <Flex gap={1}>
                         <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={onEditClicked}>

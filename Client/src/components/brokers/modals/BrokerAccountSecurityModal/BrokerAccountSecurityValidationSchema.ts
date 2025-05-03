@@ -13,5 +13,5 @@ export const BrokerAccountSecurityValidationSchema = z.object({
         name: z.string()
     }, {message: "Security is not selected"}),
     quantity: z.number().gt(0),
-    initialPrice: z.number().gt(0)
+    price: z.number().gt(0)
 })

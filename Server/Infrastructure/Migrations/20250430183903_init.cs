@@ -227,7 +227,7 @@ namespace MoneyManager.Infrastructure.Migrations
                     BrokerAccountId = table.Column<Guid>(type: "uuid", nullable: false),
                     SecurityId = table.Column<Guid>(type: "uuid", nullable: false),
                     Quantity = table.Column<int>(type: "integer", nullable: false),
-                    InitialPrice = table.Column<decimal>(type: "numeric", nullable: false),
+                    price = table.Column<decimal>(type: "numeric", nullable: false),
                     CurrentPrice = table.Column<decimal>(type: "numeric", nullable: false)
                 },
                 constraints: table =>

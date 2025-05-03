@@ -52,7 +52,7 @@ const BrokerAccountSecurityModal = forwardRef<BrokerAccountModalRef, BrokerAccou
             id: props.brokerAccountSecurity?.id ?? crypto.randomUUID(),
             brokerAccount: props.brokerAccountSecurity?.brokerAccount,
             security: props.brokerAccountSecurity?.security,
-            initialPrice:  props.brokerAccountSecurity?.initialPrice ?? 0,
+            price:  props.brokerAccountSecurity?.price ?? 0,
             quantity:  props.brokerAccountSecurity?.quantity ?? 0
         }
     });
@@ -95,10 +95,10 @@ const BrokerAccountSecurityModal = forwardRef<BrokerAccountModalRef, BrokerAccou
                                 valueSelector={(security => security.id)}/>
                             <Field.ErrorText>{errors.security?.message}</Field.ErrorText>
                         </Field.Root>
-                        <Field.Root mt={4} invalid={!!errors.initialPrice}>
+                        <Field.Root mt={4} invalid={!!errors.price}>
                             <Field.Label>{t("entity_broker_initial_price")}</Field.Label>
-                            <Input {...register("initialPrice", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='500' />
-                            <Field.ErrorText>{errors.initialPrice?.message}</Field.ErrorText>
+                            <Input {...register("price", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='500' />
+                            <Field.ErrorText>{errors.price?.message}</Field.ErrorText>
 					    </Field.Root>
                         <Field.Root mt={4} invalid={!!errors.quantity}>
                             <Field.Label>{t("entity_broker_quantity")}</Field.Label>

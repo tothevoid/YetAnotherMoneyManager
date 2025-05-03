@@ -13,5 +13,9 @@ namespace MoneyManager.WebApi.Models.Securities
         public SecurityTypeModel Type { get; set; }
 
         public Guid TypeId { get; set; }
+
+        public decimal ActualPrice { get; set; }
+
+        public DateTime PriceFetchedAt { get; set; }
     }
 }

@@ -6,8 +6,7 @@ export interface ServerBrokerAccountSecurityEntity {
     brokerAccountId: string,
     securityId: string,
     quantity: number,
-    initialPrice: number,
-    currentPrice: number
+    price: number
 }
 
 export interface BrokerAccountSecurityEntity extends ServerBrokerAccountSecurityEntity {

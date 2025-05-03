@@ -105,7 +105,7 @@ namespace MoneyManager.Application.Services.Securities
             {
                 SecurityId = securityTransaction.SecurityId,
                 BrokerAccountId = securityTransaction.BrokerAccountId,
-                InitialPrice = securityTransaction.Price * securityTransaction.Quantity,
+                Price = securityTransaction.Price * securityTransaction.Quantity,
                 Quantity = securityTransaction.Quantity
             };
 
@@ -119,7 +119,7 @@ namespace MoneyManager.Application.Services.Securities
             if (brokerAccountSecurity != null)
             {
                 brokerAccountSecurity.Quantity += securityTransaction.Quantity;
-                brokerAccountSecurity.InitialPrice += securityTransaction.Quantity * securityTransaction.Price;
+                brokerAccountSecurity.Price += securityTransaction.Quantity * securityTransaction.Price;
                 _brokerAccountSecurityRepo.Update(brokerAccountSecurity);
                 await _db.Commit();
             }
@@ -162,7 +162,7 @@ namespace MoneyManager.Application.Services.Securities
             var priceDiff = modifiedSecurityTransaction.Quantity * modifiedSecurityTransaction.Price -
                                    committedSecurityTransaction.Quantity * committedSecurityTransaction.Price;
 
-            brokerAccountSecurity.InitialPrice += priceDiff;
+            brokerAccountSecurity.Price += priceDiff;
 
             _brokerAccountSecurityRepo.Update(brokerAccountSecurity);
             await _db.Commit();
@@ -180,7 +180,7 @@ namespace MoneyManager.Application.Services.Securities
             }    
 
             brokerAccountSecurity.Quantity -= securityTransaction.Quantity;
-            brokerAccountSecurity.InitialPrice -= securityTransaction.Quantity * securityTransaction.Price;
+            brokerAccountSecurity.Price -= securityTransaction.Quantity * securityTransaction.Price;
             _brokerAccountSecurityRepo.Update(brokerAccountSecurity);
             await _db.Commit();
         }

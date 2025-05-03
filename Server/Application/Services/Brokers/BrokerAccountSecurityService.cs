@@ -10,6 +10,7 @@ using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Application.Interfaces.Integrations.Stock;
 using MoneyManager.Infrastructure.Entities.Brokers;
+using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Infrastructure.Interfaces.Database;
 
 namespace MoneyManager.Application.Services.Brokers
@@ -20,6 +21,7 @@ namespace MoneyManager.Application.Services.Brokers
         private readonly IMapper _mapper;
 
         private readonly IRepository<BrokerAccountSecurity> _brokerAccountSecurityRepo;
+        private readonly IRepository<Security> _securityRepo;
         private readonly IStockConnector _stockConnector;
 
         public BrokerAccountSecurityService(IUnitOfWork uow, IMapper mapper, IStockConnector stockConnector)
@@ -27,6 +29,8 @@ namespace MoneyManager.Application.Services.Brokers
             _db = uow;
             _mapper = mapper;
             _brokerAccountSecurityRepo = uow.CreateRepository<BrokerAccountSecurity>();
+            _securityRepo = uow.CreateRepository<Security>();
+
             _stockConnector = stockConnector;
         }
 
@@ -51,16 +55,15 @@ namespace MoneyManager.Application.Services.Brokers
             var tickersValues = await _stockConnector.GetValuesByTickers(tickers);
 
             //TODO: possible reuse brokerAccountSecurities
-            var brokerAccountSecuritiesToUpdated = await _brokerAccountSecurityRepo
-              .GetAll((brokerAccountSecurity) => tickers.Contains(brokerAccountSecurity.Security.Ticker),
-              (query) => query.Include((brokerAccount) => brokerAccount.Security),
-              disableTracking: false);
+            var brokerAccountSecuritiesToUpdated = await _securityRepo
+              .GetAll((security) => tickers.Contains(security.Ticker),
+                  disableTracking: false);
 
-            foreach (var brokerAccountSecurity in brokerAccountSecuritiesToUpdated)
+            foreach (var security in brokerAccountSecuritiesToUpdated)
             {
-                var value = tickersValues.GetValueOrDefault(brokerAccountSecurity.Security.Ticker);
-
-                brokerAccountSecurity.CurrentPrice = value * brokerAccountSecurity.Quantity;
+                var value = tickersValues.GetValueOrDefault(security.Ticker);
+                security.ActualPrice = value;
+                security.PriceFetchedAt = DateTime.UtcNow;
             }
 
             await _db.Commit();

@@ -40,8 +40,7 @@ const prepareServerBrokerAccountSecurity = (brokerAccountSecurity: BrokerAccount
     return {
         id: brokerAccountSecurity.id,
         brokerAccountId: brokerAccountSecurity.brokerAccount.id,
-        currentPrice: brokerAccountSecurity.currentPrice,
-        initialPrice: brokerAccountSecurity.initialPrice,
+        price: brokerAccountSecurity.price,
         quantity: brokerAccountSecurity.quantity,
         securityId: brokerAccountSecurity.security.id
     };

@@ -16,8 +16,6 @@ namespace MoneyManager.Application.DTO.Brokers
 
         public int Quantity { get; set; }
 
-        public decimal InitialPrice { get; set; }
-
-        public decimal CurrentPrice { get; set; }
+        public decimal Price { get; set; }
     }
 }

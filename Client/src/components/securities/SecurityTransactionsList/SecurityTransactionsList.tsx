@@ -66,7 +66,7 @@ const SecurityTransactionsList: React.FC<Props> = (props) => {
     }
 
     const onPageChanged = async (pageSize: number, currentPage: number) => {
-        const transactions = await requestTransactions(pageSize, currentPage);
+        const transactions = await requestTransactions(currentPage, pageSize);
         setState((currentState) => {
             return {...currentState, currentPage, pageSize, transactions}
         })

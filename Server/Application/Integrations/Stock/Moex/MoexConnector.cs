@@ -33,8 +33,9 @@ namespace MoneyManager.Application.Integrations.Stock
             var columnsIndexes = GetColumnIndexMapping(tickersData.MarketData.Columns.ToArray());
 
             var tickerIndex = columnsIndexes["SECID"];
-            var valueIndex = columnsIndexes["LAST"];
+            var lastValueIndex = columnsIndexes["LAST"];
             var dateIndex = columnsIndexes["SYSTIME"];
+            var marketPriceIndex = columnsIndexes["MARKETPRICE"];
 
             var marketValues = new List<MarketValue>();
 
@@ -42,10 +43,15 @@ namespace MoneyManager.Application.Integrations.Stock
             {
                 var ticker = Convert.ToString(marketData[tickerIndex]);
 
-                var rawValue = marketData[valueIndex];
+                var rawValue = marketData[lastValueIndex];
                 if (rawValue == null)
                 {
-                    continue;
+                    rawValue = marketData[marketPriceIndex];
+
+                    if (rawValue == null)
+                    {
+                        continue;
+                    }
                 }
 
                 var value = Convert.ToDecimal(rawValue.ToString(), CultureInfo.InvariantCulture);

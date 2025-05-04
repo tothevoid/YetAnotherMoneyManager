@@ -26,7 +26,7 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
 
         public MoexUrlBuilder SelectMarketColumns()
         {
-            _additionalParameters.Add("marketdata.columns=SECID,LAST,SYSTIME");
+            _additionalParameters.Add("marketdata.columns=SECID,LAST,SYSTIME,MARKETPRICE");
             return this;
         }
 

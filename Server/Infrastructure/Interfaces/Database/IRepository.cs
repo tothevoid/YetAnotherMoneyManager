@@ -33,5 +33,8 @@ namespace MoneyManager.Infrastructure.Interfaces.Database
         Task<TEntity> GetMin(Expression<Func<TEntity, object>> sortField);
 
         Task<TEntity> GetMax(Expression<Func<TEntity, object>> sortField);
+
+        Task<decimal> GetSum(Expression<Func<TEntity, decimal>> projection,
+            Expression<Func<TEntity, bool>> filter = null);
     }
 }

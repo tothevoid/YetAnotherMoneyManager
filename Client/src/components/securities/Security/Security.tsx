@@ -16,7 +16,7 @@ type Props = {
 }
 
 const Security = (props: Props) => {
-    const {name, ticker, type} = props.security;
+    const {name, ticker, type, actualPrice} = props.security;
 
     const confirmModalRef = useRef<ConfirmModalRef>(null);
     const editModalRef = useRef<AccountModalRef>(null);
@@ -54,8 +54,10 @@ const Security = (props: Props) => {
             <Card.Body color="text_primary" boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
                 <Flex justifyContent="space-between" alignItems="center">
                     <Stack>
-                        <Text fontWeight={600}>{name} ({ticker})</Text>
+                        <Text fontSize={"2xl"} fontWeight={600}>{ticker}</Text>
+                        <Text fontWeight={600}>{name}</Text>
                         <Text fontWeight={600}>{type.name}</Text>
+                        <Text fontWeight={600}>{actualPrice}</Text>
                     </Stack>
                     <Flex gap={1}>
                         <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={onEditClicked}>

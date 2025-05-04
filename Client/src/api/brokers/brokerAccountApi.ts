@@ -6,10 +6,7 @@ import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../bas
 const basicUrl = `${config.api.URL}/BrokerAccount`;
 
 export const getBrokerAccounts = async (): Promise<BrokerAccountEntity[]> => {
-    return (await getAllEntities<BrokerAccountEntity>(basicUrl)).map(brokerAccount => {
-        const lastUpdateAt = new Date(brokerAccount.lastUpdateAt);
-        return {...brokerAccount, lastUpdateAt} as BrokerAccountEntity;
-    });
+    return await getAllEntities<BrokerAccountEntity>(basicUrl);
 };
 
 export const getBrokerAccountById = async (id: string): Promise<BrokerAccountEntity | void> => {
@@ -39,7 +36,6 @@ const prepareServerBrokerAccount = (brokerAccount: BrokerAccountEntity): ServerB
         typeId: brokerAccount.type.id,
         currencyId: brokerAccount.currency.id,
         brokerId: brokerAccount.broker.id,
-        lastUpdateAt: brokerAccount.lastUpdateAt,
         assetsValue: brokerAccount.assetsValue
     };
 }

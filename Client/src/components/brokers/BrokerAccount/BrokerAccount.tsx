@@ -18,7 +18,7 @@ type Props = {
 }
 
 const BrokerAccount = (props: Props) => {
-    const {id, name, broker, currency, type, assetsValue, lastUpdateAt} = props.brokerAccount;
+    const {id, name, broker, currency, type, assetsValue} = props.brokerAccount;
 
     const confirmModalRef = useRef<ConfirmModalRef>(null);
     const editModalRef = useRef<AccountModalRef>(null);
@@ -61,7 +61,7 @@ const BrokerAccount = (props: Props) => {
                         <Link fontSize="2xl" fontWeight={900} color="text_primary" href={accountLink}>{name}</Link>
                         <Text fontWeight={600}>{broker.name}</Text>
                         <Text fontWeight={600}>{type.name}</Text>
-                        <Text fontWeight={700}>{formatMoneyByCurrencyCulture(assetsValue, currency.name)} ({formatDateTime(lastUpdateAt, i18n, false)})</Text>
+                        <Text fontWeight={700}>{formatMoneyByCurrencyCulture(assetsValue, currency.name)}</Text>
                     </Stack>
                     <Flex gap={1}>
                         <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={onEditClicked}>

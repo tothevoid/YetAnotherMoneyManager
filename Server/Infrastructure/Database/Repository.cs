@@ -140,6 +140,18 @@ namespace MoneyManager.Infrastructure.Database
             return await query.OrderByDescending(sortField).Take(1).FirstOrDefaultAsync(); ;
         }
 
+        public async Task<decimal> GetSum(Expression<Func<TEntity, decimal>> projection, 
+            Expression<Func<TEntity, bool>> filter = null)
+        {
+            IQueryable<TEntity> query = _entities.AsNoTracking();
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            return await query.SumAsync(projection);
+        }
+
         public async Task SaveChanges() => await _context.SaveChangesAsync();
 
         public void Dispose()

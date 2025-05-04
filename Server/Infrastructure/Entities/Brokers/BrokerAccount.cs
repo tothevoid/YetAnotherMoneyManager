@@ -19,9 +19,5 @@ namespace MoneyManager.Infrastructure.Entities.Brokers
         public Broker Broker { get; set; }
 
         public Guid BrokerId { get; set; }
-
-        public DateTime LastUpdateAt { get; set; }
-
-        public decimal AssetsValue { get; set; }
     }
 }

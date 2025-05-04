@@ -5,7 +5,6 @@ import { BrokerEntity } from "./BrokerEntity";
 export interface ServerBrokerAccountEntity {
     id: string,
     name: string,
-    lastUpdateAt: Date,
     assetsValue: number,
 
     typeId: string,

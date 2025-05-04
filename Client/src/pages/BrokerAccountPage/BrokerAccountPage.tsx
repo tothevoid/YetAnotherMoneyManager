@@ -4,8 +4,9 @@ import BrokerAccountSecuritiesList, { BrokerAccountSecuritiesListRef } from "../
 import { useParams } from "react-router-dom";
 import { BrokerAccountEntity } from "../../models/brokers/BrokerAccountEntity";
 import { getBrokerAccountById } from "../../api/brokers/brokerAccountApi";
-import { Text } from "@chakra-ui/react";
+import { Stack, Text } from "@chakra-ui/react";
 import SecurityTransactionsList from "../../components/securities/SecurityTransactionsList/SecurityTransactionsList";
+import { formatMoneyByCurrencyCulture } from "../../formatters/moneyFormatter";
 
 interface Props {}
 
@@ -44,8 +45,15 @@ const BrokerAccountPage: React.FC<Props> = () => {
         await securitiesRef.current?.reloadData();
     }
 
+    const assetsValue = state.brokerAccount ?
+        formatMoneyByCurrencyCulture(state.brokerAccount?.assetsValue, state.brokerAccount?.currency.name):
+        "";
+
     return (<Fragment>
-        <Text fontSize="3xl" fontWeight={900} color="text_primary">{state.brokerAccount?.name}</Text>
+        <Stack gapX={2} direction={"row"} color="text_primary">
+            <Text fontSize="3xl" fontWeight={900}> {state.brokerAccount?.name}: </Text>
+            <Text fontSize="3xl" fontWeight={900}>{assetsValue}</Text>
+        </Stack>
         <BrokerAccountSecuritiesList ref={securitiesRef} brokerAccountId={brokerAccountId}/>
         <SecurityTransactionsList onDataReloaded={onDataReloaded} brokerAccountId={brokerAccountId}/>
     </Fragment>

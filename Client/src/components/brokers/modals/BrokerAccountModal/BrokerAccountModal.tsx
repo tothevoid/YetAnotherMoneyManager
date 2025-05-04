@@ -59,7 +59,6 @@ const BrokerAccountModal = forwardRef<BrokerAccountModalRef, BrokerAccountProps>
             currency: props.brokerAccount?.currency,
             broker: props.brokerAccount?.broker,
             assetsValue: props.brokerAccount?.assetsValue,
-            lastUpdateAt: props.brokerAccount?.lastUpdateAt
         }
     });
 

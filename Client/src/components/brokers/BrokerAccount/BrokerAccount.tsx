@@ -1,4 +1,4 @@
-import { Button, Card, Flex, Icon, Link, Stack, Text } from '@chakra-ui/react';
+import { Button, Card, Flex, Icon, Link, Span, Stack, Text } from '@chakra-ui/react';
 import { MdDelete, MdEdit } from "react-icons/md";
 import { Fragment, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -8,7 +8,7 @@ import { ConfirmModalRef, ConfirmModal } from '../../../modals/ConfirmModal/Conf
 import { BrokerAccountEntity } from '../../../models/brokers/BrokerAccountEntity';
 import BrokerAccountModal from '../modals/BrokerAccountModal/BrokerAccountModal';
 import { deleteBrokerAccount, updateBrokerAccount } from '../../../api/brokers/brokerAccountApi';
-import { formatDate, formatDateTime } from '../../../formatters/dateFormatter';
+import { calculateDiff } from '../../../utils/NumericDiffsUtilities';
 
 type Props = {
     brokerAccount: BrokerAccountEntity,
@@ -18,7 +18,7 @@ type Props = {
 }
 
 const BrokerAccount = (props: Props) => {
-    const {id, name, broker, currency, type, assetsValue} = props.brokerAccount;
+    const {id, name, broker, currency, type, initialValue, currentValue} = props.brokerAccount;
 
     const confirmModalRef = useRef<ConfirmModalRef>(null);
     const editModalRef = useRef<AccountModalRef>(null);
@@ -53,6 +53,8 @@ const BrokerAccount = (props: Props) => {
 
     const accountLink = `../broker_account/${id}`;
 
+    const {profitAndLoss, profitAndLossPercentage, color} = calculateDiff(currentValue, initialValue);
+
     return <Fragment>
         <Card.Root backgroundColor="background_primary" borderColor="border_primary" >
             <Card.Body color="text_primary" boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
@@ -61,7 +63,10 @@ const BrokerAccount = (props: Props) => {
                         <Link fontSize="2xl" fontWeight={900} color="text_primary" href={accountLink}>{name}</Link>
                         <Text fontWeight={600}>{broker.name}</Text>
                         <Text fontWeight={600}>{type.name}</Text>
-                        <Text fontWeight={700}>{formatMoneyByCurrencyCulture(assetsValue, currency.name)}</Text>
+                        <Stack gapX={1} direction="row">
+                            <Span>{formatMoneyByCurrencyCulture(currentValue, currency.name)}</Span>
+                            <Span color={color}>({profitAndLoss.toFixed(2)} | {profitAndLossPercentage.toFixed(2)})</Span>
+                        </Stack>
                     </Stack>
                     <Flex gap={1}>
                         <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={onEditClicked}>

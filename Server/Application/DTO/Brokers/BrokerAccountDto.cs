@@ -20,6 +20,8 @@ namespace MoneyManager.Application.DTO.Brokers
 
         public Guid BrokerId { get; set; }
 
-        public decimal AssetsValue { get; set; }
+        public decimal InitialValue { get; set; }
+
+        public decimal CurrentValue { get; set; }
     }
 }

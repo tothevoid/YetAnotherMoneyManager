@@ -83,8 +83,10 @@ namespace MoneyManager.Application.Services.Brokers
             var securities = await _brokerAccountService
                 .GetByBrokerAccount(brokerAccount.Id);
 
-            brokerAccount.AssetsValue = securities.Sum(accountSecurity => 
+            brokerAccount.CurrentValue = securities.Sum(accountSecurity => 
                 accountSecurity.Quantity * accountSecurity.Security.ActualPrice);
+            brokerAccount.InitialValue = securities.Sum(accountSecurity =>
+                accountSecurity.Price);
         }
 
         private IQueryable<BrokerAccount> GetFullHierarchyColumns(IQueryable<BrokerAccount> brokerAccountQuery)

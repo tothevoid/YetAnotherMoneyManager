@@ -4,9 +4,10 @@ import BrokerAccountSecuritiesList, { BrokerAccountSecuritiesListRef } from "../
 import { useParams } from "react-router-dom";
 import { BrokerAccountEntity } from "../../models/brokers/BrokerAccountEntity";
 import { getBrokerAccountById } from "../../api/brokers/brokerAccountApi";
-import { Stack, Text } from "@chakra-ui/react";
+import { Span, Stack, Text } from "@chakra-ui/react";
 import SecurityTransactionsList from "../../components/securities/SecurityTransactionsList/SecurityTransactionsList";
 import { formatMoneyByCurrencyCulture } from "../../formatters/moneyFormatter";
+import { calculateDiff } from "../../utils/NumericDiffsUtilities";
 
 interface Props {}
 
@@ -45,14 +46,21 @@ const BrokerAccountPage: React.FC<Props> = () => {
         await securitiesRef.current?.reloadData();
     }
 
-    const assetsValue = state.brokerAccount ?
-        formatMoneyByCurrencyCulture(state.brokerAccount?.assetsValue, state.brokerAccount?.currency.name):
+    const initialValue = state.brokerAccount?.initialValue ?? 0;
+    const currentValue = state.brokerAccount?.currentValue ?? 0
+
+    const currentValueLabel = state.brokerAccount ?
+        formatMoneyByCurrencyCulture(currentValue, state.brokerAccount?.currency.name):
         "";
+
+    const {profitAndLoss, profitAndLossPercentage, color} = calculateDiff(currentValue, initialValue);
 
     return (<Fragment>
         <Stack gapX={2} direction={"row"} color="text_primary">
             <Text fontSize="3xl" fontWeight={900}> {state.brokerAccount?.name}: </Text>
-            <Text fontSize="3xl" fontWeight={900}>{assetsValue}</Text>
+            <Text fontSize="3xl" fontWeight={900}>
+                {currentValueLabel} (<Span color={color}>{profitAndLoss.toFixed(2)} | {profitAndLossPercentage.toFixed(2)}%</Span>)
+            </Text>
         </Stack>
         <BrokerAccountSecuritiesList ref={securitiesRef} brokerAccountId={brokerAccountId}/>
         <SecurityTransactionsList onDataReloaded={onDataReloaded} brokerAccountId={brokerAccountId}/>

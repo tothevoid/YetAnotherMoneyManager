@@ -5,7 +5,8 @@ import { BrokerEntity } from "./BrokerEntity";
 export interface ServerBrokerAccountEntity {
     id: string,
     name: string,
-    assetsValue: number,
+    initialValue: number,
+    currentValue: number,
 
     typeId: string,
     currencyId: string, 

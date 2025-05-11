@@ -8,6 +8,7 @@ import { Span, Stack, Text } from "@chakra-ui/react";
 import SecurityTransactionsList from "../../components/securities/SecurityTransactionsList/SecurityTransactionsList";
 import { formatMoneyByCurrencyCulture } from "../../formatters/moneyFormatter";
 import { calculateDiff } from "../../utils/NumericDiffsUtilities";
+import { useSignalR } from "../../messages/SignalRHook";
 
 interface Props {}
 
@@ -26,23 +27,31 @@ const BrokerAccountPage: React.FC<Props> = () => {
     }
 
     const [state, setState] = useState<State>({ brokerAccount: null })
-   
+
+    const onQuotesRecalculated = async (message: string) => {
+        await onDataReloaded();
+    }
+
+    useSignalR(onQuotesRecalculated);
+
+    const initData = async () => {
+        const brokerAccount = await getBrokerAccountById(brokerAccountId);
+        if (!brokerAccount) {
+            return;
+        }
+
+        setState((currentState) => {
+            return {...currentState, brokerAccount}
+        })
+    }
 
     useEffect(() => {
-        const initData = async () => {
-            const brokerAccount = await getBrokerAccountById(brokerAccountId);
-            if (!brokerAccount) {
-                return;
-            }
-
-            setState((currentState) => {
-                return {...currentState, brokerAccount}
-            })
-        }
         initData();
     }, []);
+    
 
     const onDataReloaded = async () => {
+        await initData();
         await securitiesRef.current?.reloadData();
     }
 

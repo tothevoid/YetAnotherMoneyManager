@@ -12,6 +12,7 @@
   "dependencies": {
     "@chakra-ui/react": "^3.17.0",
     "@emotion/react": "^11.14.0",
+    "@microsoft/signalr": "^8.0.7",
     "@types/node": "^22.13.1",
     "@types/react-datepicker": "^6.2.0",
     "axios": "^1.7.9",

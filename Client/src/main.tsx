@@ -11,7 +11,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ChakraProvider value={darkTheme}>
       <Box backgroundColor="background_main">
-        <App />
+          <App />
       </Box>
     </ChakraProvider>
   </StrictMode>,

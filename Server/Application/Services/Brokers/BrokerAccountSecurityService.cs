@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net.Http;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Brokers;
@@ -12,6 +14,8 @@ using MoneyManager.Application.Interfaces.Integrations.Stock;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Infrastructure.Interfaces.Database;
+using MoneyManager.Infrastructure.Interfaces.Messages;
+using MoneyManager.Infrastructure.Messages;
 
 namespace MoneyManager.Application.Services.Brokers
 {
@@ -24,12 +28,16 @@ namespace MoneyManager.Application.Services.Brokers
         private readonly IRepository<Security> _securityRepo;
         private readonly IStockConnector _stockConnector;
 
-        public BrokerAccountSecurityService(IUnitOfWork uow, IMapper mapper, IStockConnector stockConnector)
+        private IServerNotifier _serverNotifier;
+
+        public BrokerAccountSecurityService(IUnitOfWork uow, IMapper mapper, 
+            IStockConnector stockConnector, IServerNotifier serverNotifier)
         {
             _db = uow;
             _mapper = mapper;
             _brokerAccountSecurityRepo = uow.CreateRepository<BrokerAccountSecurity>();
             _securityRepo = uow.CreateRepository<Security>();
+            _serverNotifier = serverNotifier;
 
             _stockConnector = stockConnector;
         }
@@ -67,6 +75,7 @@ namespace MoneyManager.Application.Services.Brokers
             }
 
             await _db.Commit();
+            await _serverNotifier.SendToAll("Updated");
         }
 
         public async Task<Guid> Add(BrokerAccountSecurityDTO brokerAccountSecurityDto)

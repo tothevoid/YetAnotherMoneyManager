@@ -22,6 +22,8 @@ using MoneyManager.Infrastructure.Database;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using MoneyManager.WebApi.Mappings;
 using Microsoft.Extensions.Configuration;
+using MoneyManager.Infrastructure.Interfaces.Messages;
+using MoneyManager.Infrastructure.Messages;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +37,7 @@ builder.Services.AddCors(options =>
         {
             policy.WithOrigins(clientUrl)
                 .AllowAnyMethod()
+                .AllowCredentials()
             .AllowAnyHeader();
         });
 });
@@ -44,6 +47,7 @@ var dbConnection = builder.Configuration.GetSection("DB").GetSection("Connection
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(dbConnection));
 
+builder.Services.AddSignalR();
 builder.Services.AddControllers();
 builder.Services.AddMvc();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -60,6 +64,9 @@ builder.Services.AddTransient<IBrokerService, BrokerService>();
 builder.Services.AddTransient<ISecurityService, SecurityService>();
 builder.Services.AddTransient<ISecurityTransactionService, SecurityTransactionService>();
 builder.Services.AddTransient<ISecurityTypeService, SecurityTypeService>();
+
+builder.Services.AddScoped<IServerNotifier, ServerNotifier>();
+
 
 //TODO: make factory
 builder.Services.AddTransient<IStockConnector, MoexConnector>();
@@ -85,6 +92,8 @@ if (!app.Environment.IsDevelopment())
 
 //app.UseHttpsRedirection()
 
+app.MapHub<ServerMessagesHub>("/messages");
+    
 app.UseRouting();
 app.MapControllers();
 

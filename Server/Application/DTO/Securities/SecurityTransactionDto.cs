@@ -20,7 +20,9 @@ namespace MoneyManager.Application.DTO.Securities
 
         public DateTime Date { get; set; }
 
-        public decimal Commission { get; set; }
+        public decimal BrokerCommission { get; set; }
+
+        public decimal StockExchangeCommission { get; set; }
 
         public decimal Tax { get; set; }
     }

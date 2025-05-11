@@ -2,7 +2,6 @@ import config from '../../config'
 import { SecurityTransactionEntity, ServerSecurityTransactionEntity } from '../../models/securities/SecurityTransactionEntity';
 import { SecurityTransactionsPagination } from '../../models/securities/SecurityTransactionsPagination';
 import { SecurityTransactionsRequest } from '../../models/securities/SecurityTransactionsRequest';
-import { convertToDateOnly } from '../../utils/DateUtils';
 import { checkPromiseStatus, logPromiseError } from '../../utils/PromiseUtils';
 import { createEntity, deleteEntity, getAllEntitiesByConfig, updateEntity } from '../basicApi';
 
@@ -46,7 +45,7 @@ const prepareServerSecurityTransaction = (securityTransaction: SecurityTransacti
         price: securityTransaction.price,
         quantity: securityTransaction.quantity,
         tax: securityTransaction.tax,
-        date: convertToDateOnly(securityTransaction.date),
+        date: securityTransaction.date,
         brokerAccountId: securityTransaction.brokerAccount.id,
         securityId: securityTransaction.security.id,
     }

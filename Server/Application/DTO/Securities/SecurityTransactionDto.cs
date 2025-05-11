@@ -18,7 +18,7 @@ namespace MoneyManager.Application.DTO.Securities
 
         public decimal Price { get; set; }
 
-        public DateOnly Date { get; set; }
+        public DateTime Date { get; set; }
 
         public decimal Commission { get; set; }
 

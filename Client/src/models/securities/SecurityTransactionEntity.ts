@@ -6,17 +6,16 @@ interface CommonSecurityTransactionEntity {
     quantity: number,
     price: number,
     commission: number,
-    tax: number
+    tax: number,
+    date: Date
 }
 
 export interface ServerSecurityTransactionEntity extends CommonSecurityTransactionEntity {
-    date: string,
     securityId: string,
     brokerAccountId: string,
 }
 
 export interface SecurityTransactionEntity extends CommonSecurityTransactionEntity {
-    date: Date,
     security: SecurityEntity,
     brokerAccount: BrokerAccountEntity,
 }

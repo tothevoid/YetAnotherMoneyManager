@@ -1,13 +1,13 @@
 import { Button, Card, CardBody, Flex, Icon, Span, Stack, Text } from '@chakra-ui/react';
 import { MdDelete, MdEdit } from "react-icons/md";
-import { Fragment, useRef } from 'react';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AccountModalRef } from '../../../modals/AccountModal/AccountModal';
 import { ConfirmModalRef, ConfirmModal } from '../../../modals/ConfirmModal/ConfirmModal';
 import { SecurityTransactionEntity } from '../../../models/securities/SecurityTransactionEntity';
 import SecurityTransactionModal from '../modals/SecurityTransactionModal/SecurityTransactionModal';
 import { deleteSecurityTransaction, updateSecurityTransaction } from '../../../api/securities/securityTransactionApi';
-import { formatDate } from '../../../formatters/dateFormatter';
+import { formatDateTime } from '../../../formatters/dateFormatter';
 import { formatMoneyByCurrencyCulture } from '../../../formatters/moneyFormatter';
 
 type Props = {
@@ -56,7 +56,7 @@ const SecurityTransaction = (props: Props) => {
         <CardBody>
             <Flex justifyContent="space-between" alignItems="center">
                 <Stack direction={'row'} alignItems="center">
-                    <Text textAlign={'center'} w={125} rounded={10} padding={1} background={'purple.600'}>{formatDate(date, i18n, false)}</Text>
+                    <Text textAlign={'center'} w={125} rounded={10} padding={1} background={'purple.600'}>{formatDateTime(date, i18n, false)}</Text>
                     <Text fontWeight={700}>{security?.name} ({security?.ticker})</Text>
                 </Stack>
                 <Flex gap={2} justifyContent="space-between" alignItems="center">

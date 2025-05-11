@@ -124,7 +124,13 @@ namespace MoneyManager.Infrastructure.Database
         public async Task Delete(Guid id)
         {
             IQueryable<TEntity> query = _entities.AsNoTracking();
-            var entity = await query.FirstOrDefaultAsync();
+            var entity = await query.FirstOrDefaultAsync(entity => entity.Id == id);
+
+            if (entity == null)
+            {
+                return;
+            }
+
             _entities.Remove(entity);
         }
 

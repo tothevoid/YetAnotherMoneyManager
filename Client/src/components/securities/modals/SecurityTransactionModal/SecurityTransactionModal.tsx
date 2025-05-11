@@ -93,7 +93,7 @@ const SecurityTransactionModal = forwardRef<BrokerAccountModalRef, BrokerAccount
                         </Field.Root>
                         <Field.Root mt={4} invalid={!!errors.date}>
 						    <Field.Label>{t("entity_security_transaction_date")}</Field.Label>
-                            <DateSelect name="date" control={control}/>
+                            <DateSelect name="date" control={control} isDateTime={true}/>
                             <Field.ErrorText>{errors.date?.message}</Field.ErrorText>
                         </Field.Root>
                         <Field.Root mt={4} invalid={!!errors.price}>

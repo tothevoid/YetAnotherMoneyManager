@@ -7,19 +7,25 @@ import { Control, Controller } from "react-hook-form"
 interface Props {
     name: string
     control: Control<any>
-    fullWidth?: boolean
+    fullWidth?: boolean,
+    isDateTime?: boolean,
 }
 
-const DateSelect: React.FC<Props> = ({name, control, fullWidth = true}) => {
+const DateSelect: React.FC<Props> = ({name, control, fullWidth = true, isDateTime = false}) => {
+    const format = isDateTime ?
+        "dd.MM.yyyy HH:mm:ss":
+        "dd.MM.yyyy";
+
     return <Controller
         name={name}
         control={control}
         render={({ field: {onChange, value} }) => (
             <DatePicker
+                showTimeSelect={isDateTime} 
                 wrapperClassName={fullWidth ? "date-select-full-with": undefined}
                 selected={value}
                 onChange={onChange}
-                dateFormat="dd.MM.yyyy"
+                dateFormat={format}
                 customInput={<Input/>}/>
         )}
     />

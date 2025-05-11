@@ -9,6 +9,7 @@ using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Application.Interfaces.Integrations.Stock;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Interfaces.Database;
+using MoneyManager.Infrastructure.Queries;
 
 namespace MoneyManager.Application.Services.Brokers
 {
@@ -32,8 +33,13 @@ namespace MoneyManager.Application.Services.Brokers
 
         public async Task<IEnumerable<BrokerAccountDTO>> GetAll()
         {
+            var query = new ComplexQueryBuilder<BrokerAccount>()
+                .AddOrder(brokerAccount => brokerAccount.Name)
+                .AddJoins(GetFullHierarchyColumns)
+                .GetQuery();
+
             var brokerAccounts = await _brokerAccountRepo
-                .GetAll(include: GetFullHierarchyColumns);
+                .GetAll(query);
 
             var brokerAccountsDtos = _mapper.Map<IEnumerable<BrokerAccountDTO>>(brokerAccounts)
                 .ToList();

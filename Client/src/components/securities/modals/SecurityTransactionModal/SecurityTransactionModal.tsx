@@ -53,7 +53,8 @@ const SecurityTransactionModal = forwardRef<BrokerAccountModalRef, BrokerAccount
             id: props.securityTransaction?.id ?? crypto.randomUUID(),
             brokerAccount: props.securityTransaction?.brokerAccount,
             security: props.securityTransaction?.security,
-            commission: props.securityTransaction?.commission ?? 0,
+            brokerCommission: props.securityTransaction?.brokerCommission ?? 0,
+            stockExchangeCommission: props.securityTransaction?.stockExchangeCommission ?? 0,
             date: props.securityTransaction?.date ?? new Date(),
             price: props.securityTransaction?.price ?? 0,
             tax: props.securityTransaction?.tax ?? 0,
@@ -106,10 +107,15 @@ const SecurityTransactionModal = forwardRef<BrokerAccountModalRef, BrokerAccount
                             <Input {...register("quantity", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='100' />
                             <Field.ErrorText>{errors.quantity?.message}</Field.ErrorText>
 					    </Field.Root>
-                        <Field.Root mt={4} invalid={!!errors.commission}>
-                            <Field.Label>{t("entity_security_transaction_commission")}</Field.Label>
-                            <Input {...register("commission", {valueAsNumber: true})} min={0} step="0.01" autoComplete="off" type='number' placeholder='500' />
-                            <Field.ErrorText>{errors.commission?.message}</Field.ErrorText>
+                        <Field.Root mt={4} invalid={!!errors.brokerCommission}>
+                            <Field.Label>{t("entity_security_transaction_broker_commission")}</Field.Label>
+                            <Input {...register("brokerCommission", {valueAsNumber: true})} min={0} step="0.01" autoComplete="off" type='number' placeholder='500' />
+                            <Field.ErrorText>{errors.brokerCommission?.message}</Field.ErrorText>
+					    </Field.Root>
+                        <Field.Root mt={4} invalid={!!errors.stockExchangeCommission}>
+                            <Field.Label>{t("entity_security_transaction_stock_exchange_commission")}</Field.Label>
+                            <Input {...register("stockExchangeCommission", {valueAsNumber: true})} min={0} step="0.01" autoComplete="off" type='number' placeholder='500' />
+                            <Field.ErrorText>{errors.stockExchangeCommission?.message}</Field.ErrorText>
 					    </Field.Root>
                         <Field.Root mt={4} invalid={!!errors.tax}>
                             <Field.Label>{t("entity_security_transaction_tax")}</Field.Label>

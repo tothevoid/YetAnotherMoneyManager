@@ -5,7 +5,8 @@ interface CommonSecurityTransactionEntity {
     id: string,
     quantity: number,
     price: number,
-    commission: number,
+    brokerCommission: number,
+    stockExchangeCommission: number,
     tax: number,
     date: Date
 }

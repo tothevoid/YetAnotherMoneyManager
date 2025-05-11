@@ -18,7 +18,7 @@ type Props = {
 }
 
 const SecurityTransaction = (props: Props) => {
-    const { brokerAccount, security, commission, date, price, quantity, tax } = props.securityTransaction;
+    const { brokerAccount, security, brokerCommission, stockExchangeCommission, date, price, quantity, tax } = props.securityTransaction;
 
     const confirmModalRef = useRef<ConfirmModalRef>(null);
     const editModalRef = useRef<AccountModalRef>(null);

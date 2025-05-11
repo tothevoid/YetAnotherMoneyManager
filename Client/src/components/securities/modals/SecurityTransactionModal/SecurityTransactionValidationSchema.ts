@@ -13,7 +13,8 @@ export const SecurityTransactionValidationSchema = z.object({
     }),
     price: z.number().gte(0),
     date: z.date(),
-    commission: z.number().gte(0),
+    brokerCommission: z.number().gte(0),
+    stockExchangeCommission: z.number().gte(0),
     tax: z.number().gte(0),
     quantity: z.number().gt(0)
 })

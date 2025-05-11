@@ -127,6 +127,7 @@
     "entity_security_transaction_quantity": "Quantity",
     "entity_security_transaction_price": "Price",
     "entity_security_transaction_date": "Date",
-    "entity_security_transaction_commission": "Commission",
+    "entity_security_transaction_broker_commission": "Broker commission",
+    "entity_security_transaction_stock_exchange_commission": "Stock exchange commission",
     "entity_security_transaction_tax": "Tax"
 }

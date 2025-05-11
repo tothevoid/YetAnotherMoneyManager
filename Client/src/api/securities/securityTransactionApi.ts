@@ -41,7 +41,8 @@ const prepareClientSecurityTransaction = (securityTransaction: SecurityTransacti
 const prepareServerSecurityTransaction = (securityTransaction: SecurityTransactionEntity): ServerSecurityTransactionEntity => {
     return {
         id: securityTransaction.id,
-        commission: securityTransaction.commission,
+        brokerCommission: securityTransaction.brokerCommission,
+        stockExchangeCommission: securityTransaction.stockExchangeCommission,
         price: securityTransaction.price,
         quantity: securityTransaction.quantity,
         tax: securityTransaction.tax,

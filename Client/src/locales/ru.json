@@ -127,6 +127,7 @@
     "entity_security_transaction_quantity": "Количество",
     "entity_security_transaction_price": "Цена",
     "entity_security_transaction_date": "Дата",
-    "entity_security_transaction_commission": "Комиссия",
+    "entity_security_transaction_broker_commission": "Комиссия брокера",
+    "entity_security_transaction_stock_exchange_commission": "Комиссия биржи",
     "entity_security_transaction_tax": "Налог"
 }

@@ -44,6 +44,7 @@ namespace MoneyManager.Infrastructure.Database
             modelBuilder.ApplyConfiguration(new SecurityConfiguration());
             modelBuilder.ApplyConfiguration(new SecurityTransactionConfiguration());
             modelBuilder.ApplyConfiguration(new SecurityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new DividendConfiguration());
             modelBuilder.ApplyConfiguration(new TransactionConfiguration());
             modelBuilder.ApplyConfiguration(new TransactionTypeConfiguration());
 

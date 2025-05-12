@@ -40,6 +40,7 @@ namespace MoneyManager.WebApi.Mappings
             CreateMap<ServerDepositDTO, ServerDepositModel>();
 
             CreateMap<SecurityModel, SecurityDTO>().ReverseMap();
+            CreateMap<DividendModel, DividendDto>().ReverseMap();
             CreateMap<SecurityTypeModel, SecurityTypeDTO>().ReverseMap();
             CreateMap<BrokerModel, BrokerDTO>().ReverseMap();
             CreateMap<BrokerAccountModel, BrokerAccountDTO>().ReverseMap();

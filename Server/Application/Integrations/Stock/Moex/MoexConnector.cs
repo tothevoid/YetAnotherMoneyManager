@@ -60,7 +60,7 @@ namespace MoneyManager.Application.Integrations.Stock
                 marketValues.Add(new MarketValue() { Ticker = ticker, Value = value, Date = date });
             }
 
-            return marketValues.OrderBy(marketValue => marketValue.Date)
+            return marketValues.OrderByDescending(marketValue => marketValue.Date)
                 .DistinctBy(marketValue => marketValue.Ticker)
                 .ToDictionary((marketValue) => marketValue.Ticker, (marketValue) => marketValue.Value);
         }

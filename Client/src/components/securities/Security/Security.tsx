@@ -1,4 +1,4 @@
-import { Button, Card, Flex, Icon, Stack, Text } from '@chakra-ui/react';
+import { Button, Card, Flex, Icon, Link, Stack, Text } from '@chakra-ui/react';
 import { MdDelete, MdEdit } from "react-icons/md";
 import { Fragment, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -16,7 +16,7 @@ type Props = {
 }
 
 const Security = (props: Props) => {
-    const {name, ticker, type, actualPrice} = props.security;
+    const {id, name, ticker, type, actualPrice} = props.security;
 
     const confirmModalRef = useRef<ConfirmModalRef>(null);
     const editModalRef = useRef<AccountModalRef>(null);
@@ -49,12 +49,14 @@ const Security = (props: Props) => {
 
     const { t, i18n } = useTranslation();
 
+    const securityLink = `../security/${id}`;
+
     return <Fragment>
         <Card.Root backgroundColor="background_primary" borderColor="border_primary" >
             <Card.Body color="text_primary" boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
                 <Flex justifyContent="space-between" alignItems="center">
                     <Stack>
-                        <Text fontSize={"2xl"} fontWeight={600}>{ticker}</Text>
+                        <Link fontSize="2xl" fontWeight={600} color="text_primary" href={securityLink}>{ticker}</Link>
                         <Text fontWeight={600}>{name}</Text>
                         <Text fontWeight={600}>{type.name}</Text>
                         <Text fontWeight={600}>{actualPrice}</Text>

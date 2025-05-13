@@ -129,5 +129,13 @@
     "entity_security_transaction_date": "Date",
     "entity_security_transaction_broker_commission": "Broker commission",
     "entity_security_transaction_stock_exchange_commission": "Stock exchange commission",
-    "entity_security_transaction_tax": "Tax"
+    "entity_security_transaction_tax": "Tax",
+
+    "dividends_list_title": "Dividends",
+    "entity_dividend_form_title": "Dividend",
+    "entity_dividend_security": "Stock",
+    "entity_dividend_declaration_date": "Declaration date",
+    "entity_dividend_snapshot_date": "Snapshot date",
+    "entity_dividend_payment_date": "Payment date",
+    "entity_dividend_security_amount": "Dividend"
 }

@@ -15,5 +15,7 @@ namespace MoneyManager.WebApi.Models.Securities
         public DateOnly SnapshotDate { get; set; }
 
         public DateOnly PaymentDate { get; set; }
+
+        public decimal Amount { get; set; }
     }
 }

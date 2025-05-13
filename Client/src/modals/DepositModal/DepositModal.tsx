@@ -133,5 +133,4 @@ const DepositModal = forwardRef<DepositModalRef, Props>((props: Props, ref)=> {
     </Dialog.Root>
 })
 
-
 export default DepositModal;

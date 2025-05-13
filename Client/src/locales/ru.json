@@ -129,5 +129,14 @@
     "entity_security_transaction_date": "Дата",
     "entity_security_transaction_broker_commission": "Комиссия брокера",
     "entity_security_transaction_stock_exchange_commission": "Комиссия биржи",
-    "entity_security_transaction_tax": "Налог"
+    "entity_security_transaction_tax": "Налог",
+
+    "dividends_list_title": "Дивиденды",
+    "entity_dividend_form_title": "Дивиденд",
+    "entity_dividend_security": "Акция",
+    "entity_dividend_declaration_date": "Дата объявления",
+    "entity_dividend_snapshot_date": "Дата фиксации",
+    "entity_dividend_payment_date": "Дата выплаты",
+    "entity_dividend_security_amount": "Дивиденд"
+
 }

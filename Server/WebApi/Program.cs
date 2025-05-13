@@ -64,6 +64,7 @@ builder.Services.AddTransient<IBrokerService, BrokerService>();
 builder.Services.AddTransient<ISecurityService, SecurityService>();
 builder.Services.AddTransient<ISecurityTransactionService, SecurityTransactionService>();
 builder.Services.AddTransient<ISecurityTypeService, SecurityTypeService>();
+builder.Services.AddTransient<IDividendService, DividendService>();
 
 builder.Services.AddScoped<IServerNotifier, ServerNotifier>();
 

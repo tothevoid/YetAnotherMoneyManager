@@ -1,4 +1,4 @@
-import { Button, Card, Flex, Icon, Span, Stack, Text } from '@chakra-ui/react';
+import { Button, Card, Flex, Icon, Link, Span, Stack, Text } from '@chakra-ui/react';
 import { MdDelete, MdEdit } from "react-icons/md";
 import { act, Fragment, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -59,12 +59,14 @@ const BrokerAccountSecurity = (props: Props) => {
 
     const percentage = profitAndLoss / actualPrice * 100;
 
+    const securityLink = `../security/${security.id}`;
+
     return <Fragment>
         <Card.Root backgroundColor="background_primary" borderColor="border_primary" >
             <Card.Body color="text_primary" boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
                 <Flex justifyContent="space-between" alignItems="center">
                     <Stack>
-                        <Text fontSize="xl" fontWeight={900}>{security?.name} ({security?.ticker})</Text>
+                        <Link color="text_primary" href={securityLink} fontSize="xl" fontWeight={900}>{security?.name} ({security?.ticker})</Link>
                         <Text fontWeight={600}>{t("broker_account_security_card_security_quantity")}: {quantity}</Text>
                         <Text fontWeight={600}>{t("broker_account_security_card_security_initial_price")}: {formatMoneyByCurrencyCulture(price, brokerAccount?.currency?.name)}</Text>
                         <Text fontWeight={600}>{t("broker_account_security_card_security_current_price")}: {formatMoneyByCurrencyCulture(actualPrice, brokerAccount?.currency?.name)}</Text>

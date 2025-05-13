@@ -1,13 +1,11 @@
 import React, { Fragment, useState } from 'react';
-import { Button, Flex, Icon } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { SecurityTransactionEntity } from '../../../models/securities/SecurityTransactionEntity';
 import AddSecurityTransactionButton from '../AddSecurityTransactionButton/AddSecurityTransactionButton';
 import SecurityTransaction from '../SecurityTransaction/SecurityTransaction';
 import SecurityTransactionsPagination from '../SecurityTransactionsPagination/SecurityTransactionsPagination';
 import { getSecurityTransactions } from '../../../api/securities/securityTransactionApi';
-import { MdRefresh } from 'react-icons/md';
-import { pullBrokerAccountQuotations } from '../../../api/brokers/brokerAccountSecurityApi';
 
 interface Props {
     brokerAccountId: string,
@@ -72,20 +70,10 @@ const SecurityTransactionsList: React.FC<Props> = (props) => {
         })
     }
     
-    const pullQuotations = async () => {
-        pullBrokerAccountQuotations(props.brokerAccountId);
-    }
-
     return (
         <Fragment>
             <Flex alignItems="center" gapX={5}>
                 <AddSecurityTransactionButton brokerAccountId={props.brokerAccountId} onAdded={onSecurityTransactionCreated}/>
-                <Button background="purple.600" onClick={pullQuotations}>
-                    <Icon size='md'>
-                        <MdRefresh/>
-                    </Icon>
-                    {t("entity_securities_transaction_page_summary_pull_quotations")}
-                </Button>
             </Flex>
            
             <div>

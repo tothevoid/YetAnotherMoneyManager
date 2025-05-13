@@ -4,16 +4,20 @@ import BrokerAccountSecuritiesList, { BrokerAccountSecuritiesListRef } from "../
 import { useParams } from "react-router-dom";
 import { BrokerAccountEntity } from "../../models/brokers/BrokerAccountEntity";
 import { getBrokerAccountById } from "../../api/brokers/brokerAccountApi";
-import { Span, Stack, Text } from "@chakra-ui/react";
+import { Button, Icon, Span, Stack, Text } from "@chakra-ui/react";
 import SecurityTransactionsList from "../../components/securities/SecurityTransactionsList/SecurityTransactionsList";
 import { formatMoneyByCurrencyCulture } from "../../formatters/moneyFormatter";
 import { calculateDiff } from "../../utils/NumericDiffsUtilities";
 import { useSignalR } from "../../messages/SignalRHook";
+import { MdRefresh } from "react-icons/md";
+import { pullBrokerAccountQuotations } from "../../api/brokers/brokerAccountSecurityApi";
+import "./BrokerAccountPage.scss"
 
 interface Props {}
 
 interface State {
-    brokerAccount: BrokerAccountEntity | null
+    brokerAccount: BrokerAccountEntity | null,
+    isReloading: boolean
 }
 
 const BrokerAccountPage: React.FC<Props> = () => {
@@ -26,7 +30,7 @@ const BrokerAccountPage: React.FC<Props> = () => {
         return <Fragment/>
     }
 
-    const [state, setState] = useState<State>({ brokerAccount: null })
+    const [state, setState] = useState<State>({ brokerAccount: null, isReloading: false })
 
     const onQuotesRecalculated = async (message: string) => {
         await onDataReloaded();
@@ -41,7 +45,7 @@ const BrokerAccountPage: React.FC<Props> = () => {
         }
 
         setState((currentState) => {
-            return {...currentState, brokerAccount}
+            return {...currentState, brokerAccount, isReloading: false}
         })
     }
 
@@ -55,6 +59,13 @@ const BrokerAccountPage: React.FC<Props> = () => {
         await securitiesRef.current?.reloadData();
     }
 
+    const pullQuotations = async () => {
+       setState((currentState) => {
+            return {...currentState, isReloading: true}
+        })
+        pullBrokerAccountQuotations(brokerAccountId);
+    }
+
     const initialValue = state.brokerAccount?.initialValue ?? 0;
     const currentValue = state.brokerAccount?.currentValue ?? 0
 
@@ -65,11 +76,19 @@ const BrokerAccountPage: React.FC<Props> = () => {
     const {profitAndLoss, profitAndLossPercentage, color} = calculateDiff(currentValue, initialValue);
 
     return (<Fragment>
-        <Stack gapX={2} direction={"row"} color="text_primary">
+        <Stack alignItems={"center"} gapX={2} direction={"row"} color="text_primary">
             <Text fontSize="3xl" fontWeight={900}> {state.brokerAccount?.name}: </Text>
             <Text fontSize="3xl" fontWeight={900}>
                 {currentValueLabel} (<Span color={color}>{profitAndLoss.toFixed(2)} | {profitAndLossPercentage.toFixed(2)}%</Span>)
             </Text>
+            <Button disabled={state.isReloading} background="transparent" onClick={pullQuotations}>
+                <Icon 
+                    transition="transform 0.3s ease"
+                    animation={state.isReloading ? 'loading-spin 1.5s linear infinite' : 'none'}
+                    size='md'>
+                    <MdRefresh/>
+                </Icon>
+            </Button>
         </Stack>
         <BrokerAccountSecuritiesList ref={securitiesRef} brokerAccountId={brokerAccountId}/>
         <SecurityTransactionsList onDataReloaded={onDataReloaded} brokerAccountId={brokerAccountId}/>

@@ -21,7 +21,10 @@ export const useSignalR = (onMessage: (message: string) => Promise<void>) => {
 		connectionRef.current = connection;
 
 		return () => {
-			connection.stop();
+			if (connection && connection.state === signalR.HubConnectionState.Connected) {
+				connection.stop();
+			}
+			
 		};
 	}, [onMessage]);
 

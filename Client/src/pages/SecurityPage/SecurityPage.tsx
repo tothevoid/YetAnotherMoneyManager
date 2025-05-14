@@ -5,6 +5,7 @@ import { getSecurityById } from "../../api/securities/securityApi";
 import { SecurityEntity } from "../../models/securities/SecurityEntity";
 import { Stack, Text} from "@chakra-ui/react";
 import DividendList from "../../components/securities/DividendsList/DividendList";
+import SecurityHistory from "../../components/securities/SecurityHistory/SecurityHistory";
 
 interface Props {}
 
@@ -52,6 +53,7 @@ const SecurityPage: React.FC<Props> = () => {
 			</Stack>
 			<Text>{type.name}</Text>
 			<Text>{actualPrice}</Text>
+			<SecurityHistory ticker={ticker}/>
 			<DividendList securityId={securityId}/>
 		</Stack>
 	)

@@ -9,6 +9,7 @@ namespace MoneyManager.Application.Interfaces.Securities
     {
         Task<IEnumerable<SecurityDTO>> GetAll();
         Task<SecurityDTO> GetById(Guid id);
+        Task<IEnumerable<SecurityHistoryValueDto>> GetTickerHistory(string ticker);
         Task<Guid> Add(SecurityDTO security);
         Task Update(SecurityDTO security);
         Task Delete(Guid id);

@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.DTO.Securities;
+using MoneyManager.Application.Interfaces.Integrations.Stock;
 using MoneyManager.Application.Interfaces.Securities;
 using MoneyManager.Infrastructure.Entities.Deposits;
 using MoneyManager.Infrastructure.Entities.Securities;
@@ -13,17 +14,20 @@ using MoneyManager.Infrastructure.Interfaces.Database;
 
 namespace MoneyManager.Application.Services.Securities
 {
-    public class SecurityService: ISecurityService
+    public class SecurityService : ISecurityService
     {
         private readonly IUnitOfWork _db;
 
         private readonly IRepository<Security> _securityRepo;
+        private readonly IStockConnector _stockConnector;
         private readonly IMapper _mapper;
-        public SecurityService(IUnitOfWork uow, IMapper mapper)
+
+        public SecurityService(IUnitOfWork uow, IMapper mapper, IStockConnector stockConnector)
         {
             _db = uow;
             _mapper = mapper;
             _securityRepo = uow.CreateRepository<Security>();
+            _stockConnector = stockConnector;
         }
 
         public async Task<IEnumerable<SecurityDTO>> GetAll()
@@ -37,6 +41,14 @@ namespace MoneyManager.Application.Services.Securities
             var security = await _securityRepo.GetById(id, GetFullHierarchyColumns);
             var securityDto = _mapper.Map<SecurityDTO>(security);
             return securityDto;
+        }
+
+        public async Task<IEnumerable<SecurityHistoryValueDto>> GetTickerHistory(string ticker)
+        {
+            var to = DateOnly.FromDateTime(DateTime.Now);
+            var from = to.AddDays(-30);
+
+            return await _stockConnector.GetTickerHistory(ticker, from, to);
         }
 
         public async Task Update(SecurityDTO securityTypeDto)

@@ -1,6 +1,6 @@
 import { Button, Card, Flex, Icon, Link, Span, Stack, Text } from '@chakra-ui/react';
 import { MdDelete, MdEdit } from "react-icons/md";
-import { act, Fragment, useRef } from 'react';
+import { Fragment, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AccountModalRef } from '../../../modals/AccountModal/AccountModal';
 import { ConfirmModalRef, ConfirmModal } from '../../../modals/ConfirmModal/ConfirmModal';

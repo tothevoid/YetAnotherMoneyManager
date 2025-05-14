@@ -1,5 +1,8 @@
+import { i18n } from 'i18next';
 import config from '../../config' 
+import { formatDate } from '../../formatters/dateFormatter';
 import { SecurityEntity, ServerSecurityEntity } from '../../models/securities/SecurityEntity';
+import { SecurityHistory } from '../../models/securities/SecurityHistory';
 import { convertToDateOnly } from '../../utils/DateUtils';
 import { checkPromiseStatus, logPromiseError } from '../../utils/PromiseUtils';
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
@@ -17,6 +20,22 @@ export const getSecurityById = async (id: string): Promise<SecurityEntity | void
         .then((response: Response) => response.json())
         .catch(logPromiseError);
     return brokerAccount;
+}
+
+export const getTickerHistory = async (ticker: string, format: i18n): Promise<SecurityHistory[] | void> => {
+   const tickerHistoryValues: SecurityHistory[] | void = await fetch(`${basicUrl}/GetTickerHistory?ticker=${ticker}`, { method: "GET"})
+        .then(checkPromiseStatus)
+        .then((response: Response) => response.json())
+        .then((securityHistories: SecurityHistory[]) => {
+            return securityHistories.map(securityHistory => {
+                return {
+                    value: securityHistory.value,
+                    date: formatDate(new Date(securityHistory.date), format)
+                }
+            })
+        })
+        .catch(logPromiseError);
+    return tickerHistoryValues;
 }
 
 export const createSecurity = async (addedSecurity: SecurityEntity): Promise<SecurityEntity | void> => {

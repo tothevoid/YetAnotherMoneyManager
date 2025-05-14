@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using AutoMapper;
 using MoneyManager.Application.DTO.Securities;
+using MoneyManager.Application.Interfaces.Integrations.Stock;
 using MoneyManager.Application.Interfaces.Securities;
 using MoneyManager.WebApi.Models.Securities;
 using MoneyManager.WebApi.Models.Brokers;
@@ -30,11 +31,18 @@ namespace MoneyManager.WebApi.Controllers.Securities
             return _mapper.Map<IEnumerable<SecurityModel>>(securities);
         }
 
-        [HttpGet("GetById")]
+        [HttpGet(nameof(GetById))]
         public async Task<SecurityModel> GetById([FromQuery] Guid id)
         {
             var brokerAccount = await _securityService.GetById(id);
             return _mapper.Map<SecurityModel>(brokerAccount);
+        }
+
+        [HttpGet(nameof(GetTickerHistory))]
+        public async Task<IEnumerable<SecurityHistoryValueModel>> GetTickerHistory([FromQuery] string ticker)
+        {
+            var brokerAccount = await _securityService.GetTickerHistory(ticker);
+            return _mapper.Map<IEnumerable<SecurityHistoryValueModel>>(brokerAccount);
         }
 
         [HttpPut]

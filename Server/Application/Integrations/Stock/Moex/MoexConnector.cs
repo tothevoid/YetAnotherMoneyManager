@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Integrations.Stock.Moex;
 using MoneyManager.Application.Integrations.Stock.Moex.Model;
 using MoneyManager.Application.Interfaces.Integrations.Stock;
@@ -18,6 +19,41 @@ namespace MoneyManager.Application.Integrations.Stock
         public MoexConnector(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
+        }
+
+        public async Task<IEnumerable<SecurityHistoryValueDto>> GetTickerHistory(string ticker, DateOnly from, DateOnly to)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+
+            var query = new MoexUrlBuilder()
+                .GetHistoricalQuery(ticker, from, to);
+
+            var result = await httpClient.GetAsync(query);
+            var tickerHistory = await result.Content.ReadFromJsonAsync<MoexHistoryResponse>();
+
+            var columnsIndexes = GetColumnIndexMapping(tickerHistory.History.Columns.ToArray());
+
+            var tradeDate = columnsIndexes["TRADEDATE"];
+            var closeValue = columnsIndexes["CLOSE"];
+
+            var historyValues = new List<SecurityHistoryValueDto>();
+
+            foreach (var marketData in tickerHistory.History.Data)
+            {
+                var rawValue = marketData[closeValue];
+
+                if (rawValue == null)
+                {
+                    continue;
+                }
+
+                var value = Convert.ToDecimal(rawValue.ToString(), CultureInfo.InvariantCulture);
+                var date = Convert.ToDateTime(marketData[tradeDate].ToString());
+
+                historyValues.Add(new SecurityHistoryValueDto() { Value = value, Date = DateOnly.FromDateTime(date)});
+            }
+
+            return historyValues;
         }
 
         public async Task<Dictionary<string, decimal>> GetValuesByTickers(IEnumerable<string> tickers)

@@ -13,7 +13,10 @@ export const TransactionValidationSchema = z.object({
     id: string().nonempty({message: "Account is not selected"}),
     name: string()
   }, {message: "Account is not selected"}),
-  transactionType: string().nonempty(),
+  transactionType: z.object({
+    id: z.string().nonempty({message: "Transaction type is not selected"}),
+    name: z.string()
+  }, {message: "Transaction type is not selected"}),
   direction: z.object({
     label: string(),
     value: string()

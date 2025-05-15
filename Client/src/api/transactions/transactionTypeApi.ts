@@ -4,8 +4,12 @@ import { createEntity, deleteEntity, getAllEntities, updateEntity } from "../bas
 
 const basicUrl = `${config.api.URL}/TransactionType`;
 
-export const getTransactionTypes = async (): Promise<TransactionTypeEntity[]> =>  {
-    return await getAllEntities<TransactionTypeEntity>(basicUrl)
+export const getTransactionTypes = async (onlyActive: boolean = false): Promise<TransactionTypeEntity[]> =>  {
+    const url = onlyActive ?
+        `${basicUrl}?onlyActive=true`:
+        basicUrl;
+
+    return await getAllEntities<TransactionTypeEntity>(url)
 }
 
 export const createTransactionType = async (transactionType: TransactionTypeEntity): Promise<string | void> => {

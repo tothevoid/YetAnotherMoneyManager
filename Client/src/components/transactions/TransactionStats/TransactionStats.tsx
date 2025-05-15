@@ -88,7 +88,7 @@ const TransactionStats = (props: Props) => {
         [ DataGrouping.ByType, {
             group: DataGrouping.ByType,
             caption: t("manager_stats_by_type"),
-            dataFunc: (transactions: TransactionEntity[]) => getGraphData(transactions, (transaction) => transaction.transactionType)
+            dataFunc: (transactions: TransactionEntity[]) => getGraphData(transactions, (transaction) => transaction.transactionType.name)
         }]
     ]);
 

@@ -45,7 +45,7 @@ const prepareServerTransaction = (transaction: TransactionEntity): ServerTransac
         isSystem: transaction.isSystem,
         cashback: transaction.cashback,
         moneyQuantity: transaction.moneyQuantity,
-        transactionType: transaction.transactionType,
+        transactionTypeId: transaction.transactionType.id,
         accountId: transaction.account.id
     }
 }

@@ -1,4 +1,4 @@
-import { forwardRef, Fragment, useImperativeHandle } from 'react'
+import { forwardRef, Fragment, useEffect, useImperativeHandle, useState } from 'react'
 import { AccountEntity } from '../../models/accounts/AccountEntity';
 import { Field, Button, Input, useDisclosure, Dialog, Portal, CloseButton} from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import DateSelect from '../../controls/DateSelect/DateSelect';
 import CollectionSelect from '../../controls/CollectionSelect/CollectionSelect';
 import { TransactionEntity } from '../../models/transactions/TransactionEntity';
+import { getTransactionTypes } from '../../api/transactions/transactionTypeApi';
 
 type Props = {
 	accounts: AccountEntity[],
@@ -27,6 +28,22 @@ enum TransactionDirection {
 const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, ref)=> {
 	const { open, onOpen, onClose } = useDisclosure();
 	const {t} = useTranslation();
+
+	const [state, setState] = useState({transactionTypes: []});
+
+	const initTransactionTypes = async () => {
+		const transactionTypes = await getTransactionTypes(true);
+		setState((currentState) => {
+			return {...currentState, transactionTypes}
+		})
+	};
+	
+	useEffect(() => {
+		const initData = async () => {
+			await initTransactionTypes();
+		}
+		initData();
+	}, []);
 
 	const transactionOptions = {
 		[TransactionDirection.Income]: { label: t("entity_transaction_direction_income"), value: TransactionDirection.Income },
@@ -125,9 +142,12 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 							valueSelector={(currency => currency.id)}/>
 						<Field.ErrorText>{errors.account?.message}</Field.ErrorText>
 					</Field.Root>
-					<Field.Root mt={4} invalid={!!errors.transactionType}>
+					 <Field.Root mt={4} invalid={!!errors.transactionType}>
 						<Field.Label>{t("entity_transaction_transaction_type")}</Field.Label>
-						<Input {...register("transactionType")} autoComplete="off" placeholder='Describe type' />
+						<CollectionSelect name="transactionType" control={control} placeholder="Select type"
+							collection={state.transactionTypes} 
+							labelSelector={(transactionType => transactionType.name)} 
+							valueSelector={(transactionType => transactionType.id)}/>
 						<Field.ErrorText>{errors.transactionType?.message}</Field.ErrorText>
 					</Field.Root>
 					</Dialog.Body>

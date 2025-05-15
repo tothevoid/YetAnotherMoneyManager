@@ -158,6 +158,7 @@ namespace MoneyManager.Application.Services.Transactions
             IQueryable<Transaction> transactionQuery)
         {
             return transactionQuery
+                .Include(transaction => transaction.TransactionType)
                 .Include(transaction => transaction.Account.Currency)
                 .Include(transaction => transaction.Account.AccountType);
         }

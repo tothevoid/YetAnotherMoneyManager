@@ -6,5 +6,7 @@ namespace MoneyManager.Application.DTO.Transactions
     public class TransactionTypeDTO: BaseEntity
     {
         public string Name { get; set; }
+
+        public bool Active { get; set; }
     }
 }

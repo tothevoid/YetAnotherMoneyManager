@@ -24,9 +24,9 @@ namespace MoneyManager.WebApi.Controllers.Transactions
         }
 
         [HttpGet]
-        public async Task<IEnumerable<TransactionTypeModel>> GetAll()
+        public async Task<IEnumerable<TransactionTypeModel>> GetAll(bool onlyActive = false)
         {
-            var transactions = await _transactionTypeService.GetAll();
+            var transactions = await _transactionTypeService.GetAll(onlyActive);
             return _mapper.Map<IEnumerable<TransactionTypeModel>>(transactions);
         }
 

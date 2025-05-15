@@ -8,7 +8,7 @@ namespace MoneyManager.Application.Interfaces.Transactions
 {
     public interface ITransactionTypeService
     {
-        Task<IEnumerable<TransactionTypeDTO>> GetAll();
+        Task<IEnumerable<TransactionTypeDTO>> GetAll(bool onlyActive);
 
         Task<TransactionTypeDTO> Add(TransactionTypeDTO transactionTypeDto);
 

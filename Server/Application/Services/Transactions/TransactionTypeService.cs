@@ -21,9 +21,11 @@ namespace MoneyManager.Application.Services.Transactions
             _transactionTypeRepo = uow.CreateRepository<TransactionType>();
         }
 
-        public async Task<IEnumerable<TransactionTypeDTO>> GetAll()
+        public async Task<IEnumerable<TransactionTypeDTO>> GetAll(bool onlyActive = false)
         {
-            var result = await _transactionTypeRepo.GetAll();
+            var result = onlyActive
+                ? await _transactionTypeRepo.GetAll(transaction => transaction.Active)
+                : await _transactionTypeRepo.GetAll();
             return _mapper.Map<IEnumerable<TransactionTypeDTO>>(result);
         }
 

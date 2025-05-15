@@ -53,7 +53,7 @@ const TransactionTypeModal = forwardRef<TransactionTypeModalRef, Props>((props: 
                     <Dialog.Body pb={6}>
                         <Field.Root invalid={!!errors.name}>
                             <Field.Label>{t("entity_transaction_type_name")}</Field.Label>
-                            <Input {...register("name")} autoComplete="off" placeholder='USD' />
+                            <Input {...register("name")} autoComplete="off" placeholder='grocery' />
                             <Field.ErrorText>{errors.name?.message}</Field.ErrorText>
                         </Field.Root>
                         <Field.Root invalid={!!errors.active} mt={4}>

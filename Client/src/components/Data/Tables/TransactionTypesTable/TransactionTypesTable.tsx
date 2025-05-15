@@ -10,13 +10,13 @@ import TransactionTypeModal, { TransactionTypeModalRef } from "../../../../modal
 interface Props {}
 
 interface State {
-    transactionType: TransactionTypeEntity[],
+    transactionTypes: TransactionTypeEntity[],
     hasChanges: boolean,
     currentTransactionTypeId: string | null
 }
 
 const TransactionTypesTable: React.FC<Props> = () => {
-    const [state, setState] = useState<State>({transactionType: [], hasChanges: false, currentTransactionTypeId: null});
+    const [state, setState] = useState<State>({transactionTypes: [], hasChanges: false, currentTransactionTypeId: null});
     const { t } = useTranslation();
     const modalRef = useRef<TransactionTypeModalRef>(null);
     const confirmModalRef = useRef<ConfirmModalRef>(null);
@@ -35,7 +35,7 @@ const TransactionTypesTable: React.FC<Props> = () => {
     const onCellChanged = (transactionTypeId: string, propertyName: string, newValue: any) => {
         let hasChanges = false;
 
-        const updatedTransactionType = state.transactionType.map((transactionType: TransactionTypeEntity) => {
+        const updatedTransactionType = state.transactionTypes.map((transactionType: TransactionTypeEntity) => {
             if (transactionType.id !== transactionTypeId) {
                 return transactionType;
             }
@@ -54,7 +54,7 @@ const TransactionTypesTable: React.FC<Props> = () => {
         }
 
         setState((currentState) => {
-            return {...currentState, transactionType: updatedTransactionType, hasChanges: true}
+            return {...currentState, transactionTypes: updatedTransactionType, hasChanges: true}
         })
     }
 
@@ -63,7 +63,7 @@ const TransactionTypesTable: React.FC<Props> = () => {
             return;
         }
 
-        const transactionType = state.transactionType.find((transactionType: TransactionTypeEntity) => {
+        const transactionType = state.transactionTypes.find((transactionType: TransactionTypeEntity) => {
             return transactionType.id === transactionTypeId;
         });
         if (!transactionType) {
@@ -86,7 +86,7 @@ const TransactionTypesTable: React.FC<Props> = () => {
         transactionType.id = createdTransactionTypeId;
 
         setState((currentState) => {
-            return {...currentState, transactionType: [...currentState.transactionType, transactionType]}
+            return {...currentState, transactionTypes: [...currentState.transactionTypes, transactionType]}
         })
     };
 
@@ -110,12 +110,12 @@ const TransactionTypesTable: React.FC<Props> = () => {
             return;
         }
 
-        const transactionTypes = state.transactionType.filter((transactionType: TransactionTypeEntity) => {
+        const transactionTypes = state.transactionTypes.filter((transactionType: TransactionTypeEntity) => {
             return transactionType.id !== state.currentTransactionTypeId;
         });
 
         setState((currentState) => {
-            return {...currentState, transactionType: transactionTypes, currentTransactionTypeId: null}
+            return {...currentState, transactionTypes: transactionTypes, currentTransactionTypeId: null}
         })
     }
 
@@ -130,7 +130,7 @@ const TransactionTypesTable: React.FC<Props> = () => {
             </Table.Header>
             <Table.Body>
                 {
-                    state.transactionType.map((transactionType: TransactionTypeEntity) => {
+                    state.transactionTypes.map((transactionType: TransactionTypeEntity) => {
                         return <Table.Row border="none" bg="none" color="text_primary" key={transactionType.id}>
                             <Table.Cell>
                                 <Input onBlur={() => onCellBlur(transactionType.id)} type="text" value={transactionType.name}

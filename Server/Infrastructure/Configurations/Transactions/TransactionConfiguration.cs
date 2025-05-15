@@ -10,6 +10,7 @@ namespace MoneyManager.Infrastructure.Configurations.Transactions
         public void Configure(EntityTypeBuilder<Transaction> accountConfiguration)
         {
             accountConfiguration.HasOne(x => x.Account);
+            accountConfiguration.HasOne(x => x.TransactionType);
         }
     }
 }

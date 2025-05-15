@@ -13,6 +13,7 @@ using MoneyManager.Infrastructure.Data;
 using MoneyManager.Infrastructure.Entities.Accounts;
 using MoneyManager.Infrastructure.Entities.Currencies;
 using MoneyManager.Infrastructure.Entities.Securities;
+using MoneyManager.Infrastructure.Entities.Transactions;
 using MoneyManager.Shared.Entities;
 using AccountConfiguration = MoneyManager.Infrastructure.Configurations.Accounts.AccountConfiguration;
 
@@ -58,6 +59,7 @@ namespace MoneyManager.Infrastructure.Database
             builder.Entity<Currency>().HasData(new CurrencyGenerator().Generate());
             builder.Entity<AccountType>().HasData(new AccountTypeGenerator().Generate());
             builder.Entity<SecurityType>().HasData(new SecurityTypeGenerator().Generate());
+            builder.Entity<TransactionType>().HasData(new TransactionTypeGenerator().Generate());
         }
     }
 }

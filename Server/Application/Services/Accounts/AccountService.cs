@@ -10,6 +10,7 @@ using MoneyManager.Infrastructure.Entities.Transactions;
 using MoneyManager.Infrastructure.Entities.Accounts;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using MoneyManager.Infrastructure.Constants;
 
 namespace MoneyManager.Application.Services.Accounts
 {
@@ -129,7 +130,7 @@ namespace MoneyManager.Application.Services.Accounts
                 AccountId = account.Id,
                 Date = DateOnly.FromDateTime(DateTime.UtcNow),
                 Name = title,
-                TransactionType = "System",
+                TransactionTypeId = TransactionTypeConstants.System,
                 MoneyQuantity = balance,
                 IsSystem = true
             };

@@ -16,10 +16,9 @@ namespace MoneyManager.Application.DTO.Transactions
 
         public Guid AccountId { get; set; }
 
-        //public TransactionTypeDTO TransactionType { get; set; }
-        public string TransactionType { get; set; }
+        public TransactionTypeDTO TransactionType { get; set; }
 
-        //public Guid TransactionTypeId { get;set; }
+        public Guid TransactionTypeId { get;set; }
 
         public decimal Cashback { get; set; }
 

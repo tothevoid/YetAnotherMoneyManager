@@ -16,15 +16,13 @@ namespace MoneyManager.WebApi.Models.Transactions
 
         public Guid AccountId { get; set; }
 
-        public string TransactionType { get; set; }
-
         public decimal Cashback { get; set; }
 
         public bool IsSystem { get; set; }
 
-        //public TransactionTypeModel TransactionType { get; set; }
+        public TransactionTypeModel TransactionType { get; set; }
 
-        //public Guid TransactionTypeId { get; set; }
+        public Guid TransactionTypeId { get; set; }
 
     }
 }

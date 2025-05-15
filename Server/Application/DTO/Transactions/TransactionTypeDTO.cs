@@ -1,13 +1,10 @@
 ﻿using System;
+using MoneyManager.Shared.Entities;
 
 namespace MoneyManager.Application.DTO.Transactions
 {
-    public class TransactionTypeDTO
+    public class TransactionTypeDTO: BaseEntity
     {
-        public Guid Id { get; set; }
-
         public string Name { get; set; }
-
-        public string Extension { get; set; }
     }
 }

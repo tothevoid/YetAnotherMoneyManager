@@ -16,26 +16,12 @@ namespace MoneyManager.Infrastructure.Entities.Transactions
 
         public Guid AccountId { get; set; }
 
-        //public TransactionType TransactionType { get; set; }
-
-        public string TransactionType { get; set; }
+        public TransactionType TransactionType { get; set; }
 
         public Guid TransactionTypeId { get; set; }
 
         public decimal Cashback { get; set; }
 
         public bool IsSystem { get; set; }
-
-        public Transaction AssignAccount(Account account)
-        {
-            Account = account;
-            return this;
-        }
-
-        //public Transaction AssignType(TransactionType transactionType)
-        //{
-        //    TransactionType = transactionType;
-        //    return this;
-        //}
     }
 }

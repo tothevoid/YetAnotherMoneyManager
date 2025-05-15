@@ -48,7 +48,7 @@ const SecurityPage: React.FC<Props> = () => {
 	return (
 		<Stack color="text_primary">
 			<Stack alignItems="center" gap={2} direction="row">
-				<Text fontSize="2xl">{ticker}</Text>
+				<Text fontWeight={900} fontSize="3xl">{ticker}</Text>
 				<Text>({name})</Text>
 			</Stack>
 			<Text>{type.name}</Text>

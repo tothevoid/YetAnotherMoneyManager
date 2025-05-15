@@ -39,8 +39,6 @@ const SecurityHistory: React.FC<Props> = (props) => {
             <LineChart data={state.tickerHistoryValues}
                 margin={{
                     top: 20,
-                    right: 30,
-                    left: 30,
                     bottom: 20,
                 }}>
                 <CartesianGrid strokeDasharray="3 3" />

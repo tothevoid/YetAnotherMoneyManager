@@ -79,15 +79,10 @@ namespace MoneyManager.Application.Integrations.Stock
             {
                 var ticker = Convert.ToString(marketData[tickerIndex]);
 
-                var rawValue = marketData[lastValueIndex];
+                var rawValue = marketData[lastValueIndex] ?? marketData[marketPriceIndex];
                 if (rawValue == null)
                 {
-                    rawValue = marketData[marketPriceIndex];
-
-                    if (rawValue == null)
-                    {
-                        continue;
-                    }
+                    continue;
                 }
 
                 var value = Convert.ToDecimal(rawValue.ToString(), CultureInfo.InvariantCulture);

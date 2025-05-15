@@ -46,7 +46,7 @@ namespace MoneyManager.Application.Services.Securities
         public async Task<IEnumerable<SecurityHistoryValueDto>> GetTickerHistory(string ticker)
         {
             var to = DateOnly.FromDateTime(DateTime.Now);
-            var from = to.AddDays(-30);
+            var from = to.AddMonths(-3);
 
             return await _stockConnector.GetTickerHistory(ticker, from, to);
         }

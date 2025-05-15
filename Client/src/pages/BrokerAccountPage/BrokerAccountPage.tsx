@@ -76,7 +76,7 @@ const BrokerAccountPage: React.FC<Props> = () => {
     const {profitAndLoss, profitAndLossPercentage, color} = calculateDiff(currentValue, initialValue);
 
     return (<Fragment>
-        <Stack alignItems={"center"} gapX={2} direction={"row"} color="text_primary">
+        <Stack alignItems={"end"} gapX={2} direction={"row"} color="text_primary">
             <Text fontSize="3xl" fontWeight={900}> {state.brokerAccount?.name}: </Text>
             <Text fontSize="3xl" fontWeight={900}>
                 {currentValueLabel} (<Span color={color}>{profitAndLoss.toFixed(2)} | {profitAndLossPercentage.toFixed(2)}%</Span>)

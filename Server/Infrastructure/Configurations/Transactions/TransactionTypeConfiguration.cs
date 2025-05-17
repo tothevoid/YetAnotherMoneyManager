@@ -6,7 +6,7 @@ namespace MoneyManager.Infrastructure.Configurations.Transactions
 {
     public class TransactionTypeConfiguration : IEntityTypeConfiguration<TransactionType>
     {
-        public void Configure(EntityTypeBuilder<TransactionType> accountConfiguration)
+        public void Configure(EntityTypeBuilder<TransactionType> transactionTypeConfiguration)
         {
         }
     }

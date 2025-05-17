@@ -1,5 +1,5 @@
 import { Button, CloseButton, Dialog, Field, Input, Portal, useDisclosure} from "@chakra-ui/react"
-import { forwardRef, useEffect, useImperativeHandle, useState } from "react"
+import { ChangeEvent, forwardRef, useEffect, useImperativeHandle, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
@@ -10,7 +10,7 @@ import { getSecurityTypes } from "../../../../api/securities/securityTypeApi";
 
 interface SecuirtyModalProps {
     security?: SecurityEntity | null,
-    onSaved: (security: SecurityEntity) => void;
+    onSaved: (security: SecurityEntity, icon: File | null) => void;
 };
 
 interface State {
@@ -24,8 +24,9 @@ export interface SecurityModalRef {
 const SecurityModal = forwardRef<SecurityModalRef, SecuirtyModalProps>((props: SecuirtyModalProps, ref)=> {
     const { open, onOpen, onClose } = useDisclosure()
 
+    const [icon, setIcon] = useState<File | null>(null);
     const [state, setState] = useState<State>({securityTypes: []})
-        
+
     useEffect(() => {
         const initData = async () => {
             await requestData();
@@ -57,9 +58,14 @@ const SecurityModal = forwardRef<SecurityModalRef, SecuirtyModalProps>((props: S
 
 
     const onSubmit = (security: SecurityFormInput) => {
-        props.onSaved(security as SecurityEntity);
+        props.onSaved(security as SecurityEntity, icon);
         onClose();
     }
+
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const selectedFile = e.target.files?.[0] || null;
+        setIcon(selectedFile);
+    };
 
     const {t} = useTranslation()
 
@@ -73,6 +79,7 @@ const SecurityModal = forwardRef<SecurityModalRef, SecuirtyModalProps>((props: S
                         <Dialog.Title>{t("entity_security_from_title")}</Dialog.Title>
                     </Dialog.Header>
                     <Dialog.Body pb={6}>
+                        <Input type="file" accept="image/*" onChange={handleFileChange} />
                         <Field.Root invalid={!!errors.name}>
                             <Field.Label>{t("entity_security_name")}</Field.Label>
                             <Input {...register("name")} autoComplete="off" placeholder='Debit card' />

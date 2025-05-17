@@ -1,12 +1,14 @@
-import { Button, Card, Flex, Icon, Link, Stack, Text } from '@chakra-ui/react';
+import { Button, Card, Flex, Icon, Link, Stack, Text, Image } from '@chakra-ui/react';
 import { MdDelete, MdEdit } from "react-icons/md";
 import { Fragment, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AccountModalRef } from '../../../modals/AccountModal/AccountModal';
 import { ConfirmModalRef, ConfirmModal } from '../../../modals/ConfirmModal/ConfirmModal';
 import { SecurityEntity } from '../../../models/securities/SecurityEntity';
-import { deleteSecurity, updateSecurity } from '../../../api/securities/securityApi';
+import { deleteSecurity, getIconUrl, updateSecurity } from '../../../api/securities/securityApi';
 import SecurityModal from '../modals/SecurityModal/SecurityModal';
+import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
+
 
 type Props = {
     security: SecurityEntity,
@@ -16,7 +18,7 @@ type Props = {
 }
 
 const Security = (props: Props) => {
-    const {id, name, ticker, type, actualPrice} = props.security;
+    const {id, name, ticker, type, actualPrice, iconKey} = props.security;
 
     const confirmModalRef = useRef<ConfirmModalRef>(null);
     const editModalRef = useRef<AccountModalRef>(null);
@@ -29,8 +31,8 @@ const Security = (props: Props) => {
         confirmModalRef.current?.openModal()
     };
 
-    const onSecurityUpdated = async (security: SecurityEntity) => {
-        const isAccountUpdated = await updateSecurity(security);
+    const onSecurityUpdated = async (security: SecurityEntity, icon: File | null) => {
+        const isAccountUpdated = await updateSecurity(security, icon);
         if (!isAccountUpdated) {
             return;
         }
@@ -51,12 +53,19 @@ const Security = (props: Props) => {
 
     const securityLink = `../security/${id}`;
 
+    const icon = iconKey ?
+        <Image h={8} w={8} rounded={16} src={getIconUrl(iconKey)}/>:
+        <HiOutlineBuildingOffice2 size={32} color="#aaa" />
+
     return <Fragment>
         <Card.Root backgroundColor="background_primary" borderColor="border_primary" >
             <Card.Body color="text_primary" boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
                 <Flex justifyContent="space-between" alignItems="center">
                     <Stack>
-                        <Link fontSize="2xl" fontWeight={600} color="text_primary" href={securityLink}>{ticker}</Link>
+                        <Stack justifyContent={"start"} direction="row">
+                            {icon}
+                            <Link fontSize="2xl" fontWeight={600} color="text_primary" href={securityLink}>{ticker}</Link>
+                        </Stack>
                         <Text fontWeight={600}>{name}</Text>
                         <Text fontWeight={600}>{type.name}</Text>
                         <Text fontWeight={600}>{actualPrice}</Text>

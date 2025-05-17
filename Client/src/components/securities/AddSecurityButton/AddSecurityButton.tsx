@@ -20,8 +20,8 @@ const AddBrokerAccountButton: React.FC<BrokerAccountProps> = ({ onAdded }) => {
         modalRef.current?.openModal()
     };
 
-    const onSecurityAdded = async (security: SecurityEntity) => {
-        const createdSecurity = await createSecurity(security);
+    const onSecurityAdded = async (security: SecurityEntity, icon: File | null) => {
+        const createdSecurity = await createSecurity(security, icon);
         if (!createdSecurity) {
             return;
         }

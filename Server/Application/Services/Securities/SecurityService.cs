@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.DTO.Securities;
+using MoneyManager.Application.Interfaces.FileStorage;
 using MoneyManager.Application.Interfaces.Integrations.Stock;
 using MoneyManager.Application.Interfaces.Securities;
 using MoneyManager.Infrastructure.Entities.Deposits;
@@ -21,13 +23,17 @@ namespace MoneyManager.Application.Services.Securities
         private readonly IRepository<Security> _securityRepo;
         private readonly IStockConnector _stockConnector;
         private readonly IMapper _mapper;
+        private readonly IFileStorageService _fileStorageService;
+        private const string _iconsBucket = "security";
 
-        public SecurityService(IUnitOfWork uow, IMapper mapper, IStockConnector stockConnector)
+        public SecurityService(IUnitOfWork uow, IMapper mapper, IStockConnector stockConnector, 
+            IFileStorageService fileStorageService)
         {
             _db = uow;
             _mapper = mapper;
             _securityRepo = uow.CreateRepository<Security>();
             _stockConnector = stockConnector;
+            _fileStorageService = fileStorageService;
         }
 
         public async Task<IEnumerable<SecurityDTO>> GetAll()
@@ -51,26 +57,48 @@ namespace MoneyManager.Application.Services.Securities
             return await _stockConnector.GetTickerHistory(ticker, from, to);
         }
 
-        public async Task Update(SecurityDTO securityTypeDto)
-        {
-            var security = _mapper.Map<Security>(securityTypeDto);
-            _securityRepo.Update(security);
-            await _db.Commit();
-        }
-
-        public async Task<Guid> Add(SecurityDTO securityDto)
+        public async Task<Guid> Add(SecurityDTO securityDto, IFormFile? securityIcon)
         {
             var security = _mapper.Map<Security>(securityDto);
             security.Id = Guid.NewGuid();
+            
+            if (securityIcon != null)
+            {
+                var key = security.Id.ToString();
+                await _fileStorageService.UploadFile(_iconsBucket, securityIcon, key);
+                security.IconKey = key;
+            }
+
             await _securityRepo.Add(security);
             await _db.Commit();
+
             return security.Id;
+        }
+
+        public async Task Update(SecurityDTO securityTypeDto, IFormFile? securityIcon)
+        {
+            var security = _mapper.Map<Security>(securityTypeDto);
+
+            if (securityIcon != null)
+            {
+                var key = security.Id.ToString();
+                await _fileStorageService.UploadFile(_iconsBucket, securityIcon, key);
+                security.IconKey = key;
+            }
+
+            _securityRepo.Update(security);
+            await _db.Commit();
         }
 
         public async Task Delete(Guid id)
         {
             await _securityRepo.Delete(id);
             await _db.Commit();
+        }
+
+        public async Task<string> GetIconUrl(string iconKey)
+        {
+            return await _fileStorageService.GetFileUrl(_iconsBucket, iconKey);
         }
 
         private IQueryable<Security> GetFullHierarchyColumns(IQueryable<Security> securityQuery)

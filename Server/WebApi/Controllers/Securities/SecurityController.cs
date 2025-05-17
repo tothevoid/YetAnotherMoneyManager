@@ -2,12 +2,16 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
+using System.Text.Json;
 using AutoMapper;
+using Minio;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Integrations.Stock;
 using MoneyManager.Application.Interfaces.Securities;
 using MoneyManager.WebApi.Models.Securities;
 using MoneyManager.WebApi.Models.Brokers;
+using Minio.DataModel.Args;
+using Microsoft.AspNetCore.Http;
 
 namespace MoneyManager.WebApi.Controllers.Securities
 {
@@ -18,10 +22,13 @@ namespace MoneyManager.WebApi.Controllers.Securities
     {
         private readonly ISecurityService _securityService;
         private readonly IMapper _mapper;
-        public SecurityController(ISecurityService securityService, IMapper mapper)
+        private readonly IMinioClient _minioClient;
+
+        public SecurityController(ISecurityService securityService, IMapper mapper, IMinioClient minioClient)
         {
             _mapper = mapper;
             _securityService = securityService;
+            _minioClient = minioClient;
         }
 
         [HttpGet]
@@ -46,21 +53,30 @@ namespace MoneyManager.WebApi.Controllers.Securities
         }
 
         [HttpPut]
-        public async Task<Guid> Add(SecurityModel security)
+        public async Task<Guid> Add([FromForm] string securityJson, [FromForm] IFormFile? securityIcon)
         {
+            var security = JsonSerializer.Deserialize<SecurityModel>(securityJson);
             var securityDto = _mapper.Map<SecurityDTO>(security);
-            return await _securityService.Add(securityDto);
+            return await _securityService.Add(securityDto, securityIcon);
         }
 
         [HttpPatch]
-        public async Task Update(SecurityModel security)
+        public async Task Update([FromForm] string securityJson, [FromForm] IFormFile? securityIcon)
         {
+            var security = JsonSerializer.Deserialize<SecurityModel>(securityJson);
             var securityDto = _mapper.Map<SecurityDTO>(security);
-            await _securityService.Update(securityDto);
+            await _securityService.Update(securityDto, securityIcon);
         }
 
         [HttpDelete]
         public async Task Delete(Guid id) =>
             await _securityService.Delete(id);
+
+        [HttpGet("icon")]
+        public async Task<IActionResult> GetSecurityIcon(string iconKey)
+        {
+            var url = await _securityService.GetIconUrl(iconKey);
+            return Redirect(url);
+        }
     }
 }

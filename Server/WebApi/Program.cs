@@ -24,6 +24,9 @@ using MoneyManager.WebApi.Mappings;
 using Microsoft.Extensions.Configuration;
 using MoneyManager.Infrastructure.Interfaces.Messages;
 using MoneyManager.Infrastructure.Messages;
+using Minio;
+using MoneyManager.Application.Services.FileStorage;
+using MoneyManager.Application.Interfaces.FileStorage;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +50,20 @@ var dbConnection = builder.Configuration.GetSection("DB").GetSection("Connection
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(dbConnection));
 
+
+var fileStorageSection = builder.Configuration.GetSection("FileStorage");
+
+var host = fileStorageSection.GetSection("Host").Value;
+var user = fileStorageSection.GetSection("User").Value;
+var password = fileStorageSection.GetSection("Password").Value;
+
+
+builder.Services.AddMinio(configureClient => configureClient
+    .WithEndpoint(host, 9000)
+    .WithSSL(false)
+    .WithCredentials(user, password)
+    .Build());
+
 builder.Services.AddSignalR();
 builder.Services.AddControllers();
 builder.Services.AddMvc();
@@ -67,7 +84,7 @@ builder.Services.AddTransient<ISecurityTypeService, SecurityTypeService>();
 builder.Services.AddTransient<IDividendService, DividendService>();
 
 builder.Services.AddScoped<IServerNotifier, ServerNotifier>();
-
+builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 
 //TODO: make factory
 builder.Services.AddTransient<IStockConnector, MoexConnector>();

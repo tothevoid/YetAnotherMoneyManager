@@ -38,16 +38,30 @@ export const getTickerHistory = async (ticker: string, format: i18n): Promise<Se
     return tickerHistoryValues;
 }
 
-export const createSecurity = async (addedSecurity: SecurityEntity): Promise<SecurityEntity | void> => {
-    return await createEntity<ServerSecurityEntity>(basicUrl, prepareServerSecurity(addedSecurity));
+export const createSecurity = async (addedSecurity: SecurityEntity, file: File | null): Promise<SecurityEntity | void> => {
+    return await fetch(basicUrl, { method: "PUT", body: generateFrom(prepareServerSecurity(addedSecurity), file)})
+        .then(checkPromiseStatus)
+        .then((response: Response) => response.json())
+        .then(id => {
+            return {...addedSecurity, id} as T;
+        })
+        .catch(logPromiseError);
 }
 
-export const updateSecurity = async (modifiedSecurity: SecurityEntity): Promise<boolean> => {
-    return await updateEntity<ServerSecurityEntity>(basicUrl, prepareServerSecurity(modifiedSecurity));
+export const updateSecurity = async (modifiedSecurity: SecurityEntity, file: File | null): Promise<boolean> => {
+    const securityResponse = await fetch(basicUrl, { method: "PATCH", body: generateFrom(prepareServerSecurity(modifiedSecurity), file)})
+        .then(checkPromiseStatus)
+        .catch(logPromiseError)
+
+    return securityResponse?.ok ?? false;
 }
 
 export const deleteSecurity = async (securityId: string): Promise<boolean> => {
     return await deleteEntity(basicUrl, securityId);
+}
+
+export const getIconUrl = (iconKey: string): string => {
+    return `${basicUrl}/icon?iconKey=${iconKey}`;
 }
 
 const prepareClientSecurity = (security: SecurityEntity): SecurityEntity => {
@@ -58,12 +72,27 @@ const prepareClientSecurity = (security: SecurityEntity): SecurityEntity => {
 }
 
 const prepareServerSecurity = (security: SecurityEntity): ServerSecurityEntity => {
-    return {
+    const convertedSecurity: ServerSecurityEntity = {
         id: security.id,
         name: security.name,
         ticker: security.ticker,
         typeId: security.type.id,
         actualPrice: security.actualPrice,
-        priceFetchedAt: convertToDateOnly(security.priceFetchedAt),
+        iconKey: security.iconKey
     };
+
+    if (security.priceFetchedAt) {
+        convertedSecurity.priceFetchedAt = convertToDateOnly(security.priceFetchedAt);
+    }
+
+    return convertedSecurity;
+}
+
+const generateFrom = (security: ServerSecurityEntity, file: File | null) => {
+    const formData = new FormData();
+    formData.append("securityJson", JSON.stringify(security));
+    if (file) {
+        formData.append("securityIcon", file);
+    }
+    return formData;
 }

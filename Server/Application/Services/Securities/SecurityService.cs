@@ -103,7 +103,9 @@ namespace MoneyManager.Application.Services.Securities
 
         private IQueryable<Security> GetFullHierarchyColumns(IQueryable<Security> securityQuery)
         {
-            return securityQuery.Include(security => security.Type);
+            return securityQuery
+                .Include(security => security.Type)
+                .Include(security => security.Currency);
         }
     }
 }

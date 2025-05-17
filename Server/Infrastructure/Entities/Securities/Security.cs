@@ -19,5 +19,9 @@ namespace MoneyManager.Infrastructure.Entities.Securities
         public DateTime PriceFetchedAt { get; set; }
 
         public string IconKey { get; set; }
+
+        public Currency Currency { get; set; }
+
+        public Guid CurrencyId { get; set; }
     }
 }

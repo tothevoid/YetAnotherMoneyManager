@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.Json.Serialization;
+using MoneyManager.Infrastructure.Entities.Currencies;
 using MoneyManager.Shared.Entities;
 using MoneyManager.WebApi.Models.Currencies;
 
@@ -30,5 +31,11 @@ namespace MoneyManager.WebApi.Models.Securities
 
         [JsonPropertyName("iconKey")]
         public string IconKey { get; set; }
+
+        [JsonPropertyName("currency")]
+        public Currency Currency { get; set; }
+
+        [JsonPropertyName("currencyId")]
+        public Guid CurrencyId { get; set; }
     }
 }

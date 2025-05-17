@@ -10,6 +10,7 @@ namespace MoneyManager.Infrastructure.Configurations.Securities
         public void Configure(EntityTypeBuilder<Security> accountConfiguration)
         {
             accountConfiguration.HasOne(x => x.Type);
+            accountConfiguration.HasOne(x => x.Currency);
         }
     }
 }

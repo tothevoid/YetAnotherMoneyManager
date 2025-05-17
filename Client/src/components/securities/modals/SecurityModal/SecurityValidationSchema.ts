@@ -10,4 +10,8 @@ export const SecurityValidationSchema = z.object({
         id: z.string().nonempty({message: "Type is not selected"}),
         name: z.string()
     }, {message: "Type is not selected"}),
+    currency: z.object({
+        id: z.string().nonempty({message: "Currency is not selected"}),
+        name: z.string()
+    }, {message: "Currency is not selected"}),
 })

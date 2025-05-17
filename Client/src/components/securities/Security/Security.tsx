@@ -8,6 +8,7 @@ import { SecurityEntity } from '../../../models/securities/SecurityEntity';
 import { deleteSecurity, getIconUrl, updateSecurity } from '../../../api/securities/securityApi';
 import SecurityModal from '../modals/SecurityModal/SecurityModal';
 import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
+import { formatMoney, formatMoneyByCurrencyCulture } from '../../../formatters/moneyFormatter';
 
 
 type Props = {
@@ -18,7 +19,7 @@ type Props = {
 }
 
 const Security = (props: Props) => {
-    const {id, name, ticker, type, actualPrice, iconKey} = props.security;
+    const {id, name, ticker, type, actualPrice, currency, iconKey} = props.security;
 
     const confirmModalRef = useRef<ConfirmModalRef>(null);
     const editModalRef = useRef<AccountModalRef>(null);
@@ -68,7 +69,7 @@ const Security = (props: Props) => {
                         </Stack>
                         <Text fontWeight={600}>{name}</Text>
                         <Text fontWeight={600}>{type.name}</Text>
-                        <Text fontWeight={600}>{actualPrice}</Text>
+                        <Text fontWeight={600}>{formatMoneyByCurrencyCulture(actualPrice, currency.name)}</Text>
                     </Stack>
                     <Flex gap={1}>
                         <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={onEditClicked}>

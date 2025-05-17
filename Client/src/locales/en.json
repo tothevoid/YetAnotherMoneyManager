@@ -105,6 +105,7 @@
     "entity_security_name": "Name",
     "entity_security_ticker": "Ticker",
     "entity_security_type": "Type",
+    "entity_security_currency": "Currency",
 
     "broker_account_securities_delete_title": "Delete security",
     "entity_broker_account_security_form_title": "Broker account security",

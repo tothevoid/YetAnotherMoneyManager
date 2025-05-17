@@ -9,6 +9,8 @@ import CollectionSelect from "../../../../controls/CollectionSelect/CollectionSe
 import { getSecurityTypes } from "../../../../api/securities/securityTypeApi";
 import { MdFileUpload } from "react-icons/md";
 import { getIconUrl } from "../../../../api/securities/securityApi";
+import { getCurrencies } from "../../../../api/currencies/currencyApi";
+import { CurrencyEntity } from "../../../../models/currencies/CurrencyEntity";
 
 interface SecuirtyModalProps {
     security?: SecurityEntity | null,
@@ -17,6 +19,7 @@ interface SecuirtyModalProps {
 
 interface State {
     securityTypes: SecurityEntity[]
+    currencies: CurrencyEntity[]
 }
 
 export interface SecurityModalRef {
@@ -32,7 +35,7 @@ const SecurityModal = forwardRef<SecurityModalRef, SecuirtyModalProps>((props: S
 
     const [icon, setIcon] = useState<File | null>(null);
     const [iconUrl, setIconUrl] = useState<string | null>(defaultIconUrl);
-    const [state, setState] = useState<State>({securityTypes: []})
+    const [state, setState] = useState<State>({securityTypes: [], currencies: []})
 
     useEffect(() => {
         const initData = async () => {
@@ -43,8 +46,10 @@ const SecurityModal = forwardRef<SecurityModalRef, SecuirtyModalProps>((props: S
 
     const requestData = async () => {
         const securityTypes = await getSecurityTypes();
+        const currencies = await getCurrencies();
+
         setState((currentState) => {
-            return {...currentState, securityTypes }
+            return {...currentState, securityTypes, currencies }
         })
     };
 
@@ -55,7 +60,8 @@ const SecurityModal = forwardRef<SecurityModalRef, SecuirtyModalProps>((props: S
             id: props.security?.id ?? crypto.randomUUID(),
             name: props.security?.name ?? "",
             ticker: props.security?.ticker ?? "",
-            type: props.security?.type
+            type: props.security?.type,
+            currency: props.security?.currency
         }
     });
 
@@ -141,6 +147,14 @@ const SecurityModal = forwardRef<SecurityModalRef, SecuirtyModalProps>((props: S
                                 labelSelector={(currency => currency.name)} 
                                 valueSelector={(currency => currency.id)}/>
                             <Field.ErrorText>{errors.type?.message}</Field.ErrorText>
+                        </Field.Root>
+                        <Field.Root mt={4} invalid={!!errors.currency}>
+                            <Field.Label>{t("entity_security_currency")}</Field.Label>
+                            <CollectionSelect name="currency" control={control} placeholder="Select currency"
+                                collection={state.currencies} 
+                                labelSelector={(currency => currency.name)} 
+                                valueSelector={(currency => currency.id)}/>
+                            <Field.ErrorText>{errors.currency?.message}</Field.ErrorText>
                         </Field.Root>
                     </Dialog.Body>
                     <Dialog.Footer>

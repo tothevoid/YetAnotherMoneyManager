@@ -19,7 +19,6 @@ const SecurityHistory: React.FC<Props> = (props) => {
     const [state, setState] = useState({tickerHistoryValues: []})
 
     const initData = async () => {
-        debugger;
         const tickerHistoryValues = await getTickerHistory(props.ticker, i18n);
         if (!tickerHistoryValues) {
             return;

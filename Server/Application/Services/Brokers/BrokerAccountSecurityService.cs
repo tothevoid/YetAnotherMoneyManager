@@ -108,6 +108,7 @@ namespace MoneyManager.Application.Services.Brokers
         private IQueryable<BrokerAccountSecurity> GetFullHierarchyColumns(IQueryable<BrokerAccountSecurity> brokerAccountSecurityQuery)
         {
             return brokerAccountSecurityQuery
+                .Include(brokerAccountSecurity => brokerAccountSecurity.Security.Currency)
                 .Include(brokerAccountSecurity => brokerAccountSecurity.Security.Type)
                 .Include(brokerAccountSecurity => brokerAccountSecurity.BrokerAccount.Type)
                 .Include(brokerAccountSecurity => brokerAccountSecurity.BrokerAccount.Currency)

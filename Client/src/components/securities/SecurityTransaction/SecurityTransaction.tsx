@@ -61,8 +61,8 @@ const SecurityTransaction = (props: Props) => {
                 </Stack>
                 <Flex gap={2} justifyContent="space-between" alignItems="center">
                     <Text>
-                        <Span>{formatMoneyByCurrencyCulture(price * quantity, brokerAccount.currency.name)} </Span>
-                        <Span pl={2.5} pr={2.5}>({formatMoneyByCurrencyCulture(price, brokerAccount.currency.name)} x {quantity})</Span>
+                        <Span>{formatMoneyByCurrencyCulture(price * quantity, security.currency.name)} </Span>
+                        <Span pl={2.5} pr={2.5}>({formatMoneyByCurrencyCulture(price, security.currency.name)} x {quantity})</Span>
                         
                     </Text>
                     <Button background={'background_secondary'} size={'sm'} onClick={onEditClicked}>

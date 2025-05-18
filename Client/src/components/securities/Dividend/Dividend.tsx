@@ -61,7 +61,7 @@ const Dividend = (props: Props) => {
                     </Stack>
                 </Stack>
                 <Flex gap={2} justifyContent="space-between" alignItems="center">
-                    <Text width={100}>{amount}</Text>
+                    <Text width={100}>{formatMoneyByCurrencyCulture(amount, security.currency.name)}</Text>
                     <Button background={'background_secondary'} size={'sm'} onClick={onEditClicked}>
                         <Icon color="card_action_icon_primary">
                             <MdEdit/>

@@ -191,7 +191,8 @@ namespace MoneyManager.Application.Services.Securities
                 .Include(security => security.BrokerAccount.Type)
                 .Include(security => security.BrokerAccount.Currency)
                 .Include(security => security.BrokerAccount.Broker)
-                .Include(security => security.Security.Type);
+                .Include(security => security.Security.Type)
+                .Include(security => security.Security.Currency);
         }
     }
 }

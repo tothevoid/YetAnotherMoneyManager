@@ -6,7 +6,7 @@ namespace MoneyManager.WebApi.Models.Securities
 {
     public class DividendModel : BaseEntity
     {
-        public Security Security { get; set; }
+        public SecurityModel Security { get; set; }
 
         public Guid SecurityId { get; set; }
 

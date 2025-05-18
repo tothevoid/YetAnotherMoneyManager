@@ -57,7 +57,7 @@ namespace MoneyManager.Application.Services.Securities
 
         private IQueryable<Dividend> GetFullHierarchyColumns(IQueryable<Dividend> dividendQuery)
         {
-            return dividendQuery.Include(dividend => dividend.Security);
+            return dividendQuery.Include(dividend => dividend.Security.Currency);
         }
     }
 }

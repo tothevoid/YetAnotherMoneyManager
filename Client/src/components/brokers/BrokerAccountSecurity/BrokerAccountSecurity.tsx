@@ -78,11 +78,11 @@ const BrokerAccountSecurity = (props: Props) => {
                             <Link color="text_primary" href={securityLink} fontSize="xl" fontWeight={900}>{security?.name} ({security?.ticker})</Link>
                         </Stack>
                         <Text fontWeight={600}>{t("broker_account_security_card_security_quantity")}: {quantity}</Text>
-                        <Text fontWeight={600}>{t("broker_account_security_card_security_initial_price")}: {formatMoneyByCurrencyCulture(price, brokerAccount?.currency?.name)}</Text>
-                        <Text fontWeight={600}>{t("broker_account_security_card_security_current_price")}: {formatMoneyByCurrencyCulture(actualPrice, brokerAccount?.currency?.name)}</Text>
+                        <Text fontWeight={600}>{t("broker_account_security_card_security_initial_price")}: {formatMoneyByCurrencyCulture(price, security?.currency?.name)}</Text>
+                        <Text fontWeight={600}>{t("broker_account_security_card_security_current_price")}: {formatMoneyByCurrencyCulture(actualPrice, security?.currency?.name)}</Text>
                         <Text fontWeight={600}>
                             {t("broker_account_security_card_security_p&l")}:
-                            <Span paddingLeft={1.5} color={color}>{formatMoneyByCurrencyCulture(profitAndLoss, brokerAccount?.currency?.name)} ({percentage.toFixed(2)}%)</Span>
+                            <Span paddingLeft={1.5} color={color}>{formatMoneyByCurrencyCulture(profitAndLoss, security?.currency?.name)} ({percentage.toFixed(2)}%)</Span>
                         </Text>
                     </Stack>
                     <Flex gap={1}>

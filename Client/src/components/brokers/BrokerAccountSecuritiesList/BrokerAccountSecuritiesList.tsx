@@ -62,7 +62,7 @@ const BrokerAccountSecuritiesList = forwardRef<BrokerAccountSecuritiesListRef, P
 
     return (
         <Fragment>
-            <SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(400px, 3fr))'>
+            <SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(350px, 3fr))'>
                 {
                 state.brokerAccountSecurities.map((brokerAccountSecurity: BrokerAccountSecurityEntity) => {
                     return <BrokerAccountSecurity onReloadBrokerAccounts={onReloadBrokerAccountSecurities} 

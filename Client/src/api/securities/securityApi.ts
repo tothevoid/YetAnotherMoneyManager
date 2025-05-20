@@ -82,7 +82,8 @@ const prepareServerSecurity = (security: SecurityEntity): ServerSecurityEntity =
         ticker: security.ticker,
         typeId: security.type.id,
         actualPrice: security.actualPrice,
-        iconKey: security.iconKey
+        iconKey: security.iconKey,
+        currencyId: security.currency.id
     };
 
     if (security.priceFetchedAt) {

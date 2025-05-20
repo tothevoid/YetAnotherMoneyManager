@@ -48,6 +48,21 @@ namespace MoneyManager.Application.Services.Securities
             return _mapper.Map<IEnumerable<SecurityTransactionDTO>>(brokerAccountSecurities);
         }
 
+        public async Task<IEnumerable<SecurityTransactionDTO>> GetTransactionsBySecurity(Guid securityId)
+        {
+            var complexQuery = new ComplexQueryBuilder<SecurityTransaction>()
+                .AddFilter(securityTransaction => securityTransaction.SecurityId == securityId)
+                .AddJoins(GetFullHierarchyColumns)
+                .AddOrder(securityTransaction => securityTransaction.Date)
+                .DisableTracking()
+                .GetQuery();
+
+            var transactions = await _securityTransactionRepo
+                .GetAll(complexQuery);
+
+            return _mapper.Map<IEnumerable<SecurityTransactionDTO>>(transactions);
+        }
+
         public async Task<SecurityTransactionPaginationDto> GetPagination(Guid brokerAccountId)
         {
             int pageSize = 20;

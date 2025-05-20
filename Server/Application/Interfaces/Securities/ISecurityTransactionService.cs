@@ -8,6 +8,7 @@ namespace MoneyManager.Application.Interfaces.Securities
     public interface ISecurityTransactionService
     {
         Task<IEnumerable<SecurityTransactionDTO>> GetAll(Guid brokerAccountId, int recordsQuantity, int pageIndex);
+        Task<IEnumerable<SecurityTransactionDTO>> GetTransactionsBySecurity(Guid securityId);
         Task<SecurityTransactionPaginationDto> GetPagination(Guid brokerAccountId);
         Task<Guid> Add(SecurityTransactionDTO securityTransaction);
         Task Update(SecurityTransactionDTO securityTransaction);

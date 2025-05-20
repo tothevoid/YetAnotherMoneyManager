@@ -21,6 +21,16 @@ export const gerSecurityTransactionsPagination = async (brokerAccountId: string)
         .catch(logPromiseError);
 };
 
+export const getTransactionsBySecurity = async (securityId: string): Promise<SecurityTransactionEntity[] | void> => {
+    return await fetch(`${basicUrl}/GetTransactionsBySecurity?securityId=${securityId}`, {method: "GET"})
+        .then(checkPromiseStatus)
+        .then((response: Response) => response.json())
+        .catch(logPromiseError)
+        .then((securityTransactions: SecurityTransactionEntity[]) => {
+            return securityTransactions.map(prepareClientSecurityTransaction)
+        }) ;
+};
+
 export const createSecurityTransaction = async (addedSecurityTransaction: SecurityTransactionEntity): Promise<SecurityTransactionEntity | void> => {
     return await createEntity(basicUrl, prepareServerSecurityTransaction(addedSecurityTransaction));
 }

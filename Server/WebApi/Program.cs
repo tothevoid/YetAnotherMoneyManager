@@ -25,8 +25,10 @@ using Microsoft.Extensions.Configuration;
 using MoneyManager.Infrastructure.Interfaces.Messages;
 using MoneyManager.Infrastructure.Messages;
 using Minio;
+using MoneyManager.Application.Integrations.Currency;
 using MoneyManager.Application.Services.FileStorage;
 using MoneyManager.Application.Interfaces.FileStorage;
+using MoneyManager.Application.Interfaces.Integrations.Currency;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -87,7 +89,9 @@ builder.Services.AddScoped<IServerNotifier, ServerNotifier>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 
 //TODO: make factory
+//TODO: possible change AddTransient to AddSingleton
 builder.Services.AddTransient<IStockConnector, MoexConnector>();
+builder.Services.AddTransient<ICurrencyGrabber, CbrCurrencyGrabber>();
 
 var mapperConfig = new MapperConfiguration(cfg =>
 {

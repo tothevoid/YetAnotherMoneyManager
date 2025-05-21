@@ -5,17 +5,29 @@ import BrokerAccountTypesTable from "../../components/Data/Tables/BrokerAccountT
 import BrokersTable from "../../components/Data/Tables/BrokersTable/BrokersTable";
 import CurrenciesTable from "../../components/Data/Tables/CurrenciesTable/CurrenciesTable";
 import TransactionTypesTable from "../../components/Data/Tables/TransactionTypesTable/TransactionTypesTable";
+import { FC, Fragment } from "react";
 
 const DataPage = () => {
-    const { tab = "currencies" } = useParams(); // Получаем текущий таб из URL
+    const tabs = new Map<string, FC>(
+        [
+            ["transaction_types",  TransactionTypesTable],
+            ["currencies", CurrenciesTable],
+            ["banks", BanksTable],
+            ["broker_account_types", BrokerAccountTypesTable],
+            ["brokers", BrokersTable]
+        ]
+    );
+
+    const { tab = [...tabs.keys()][0] } = useParams(); // Получаем текущий таб из URL
+    const Component = tabs.get(tab);
+
+    if (!Component){
+        return <Fragment/>
+    }
 
     return (
         <DataLayout>
-            {tab === "transaction_types" && <TransactionTypesTable />}
-            {tab === "currencies" && <CurrenciesTable />}
-            {tab === "banks" && <BanksTable />}
-            {tab === "broker_account_types" && <BrokerAccountTypesTable />}
-            {tab === "brokers" && <BrokersTable />}
+            <Component/>
         </DataLayout>
     );
 }

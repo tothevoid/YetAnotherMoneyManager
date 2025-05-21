@@ -5,7 +5,7 @@ import { SecurityEntity, ServerSecurityEntity } from '../../models/securities/Se
 import { SecurityHistory } from '../../models/securities/SecurityHistory';
 import { convertToDateOnly } from '../../utils/DateUtils';
 import { checkPromiseStatus, logPromiseError } from '../../utils/PromiseUtils';
-import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
+import { deleteEntity, getAllEntities } from '../basicApi';
 
 const basicUrl = `${config.api.URL}/Security`;
 
@@ -39,7 +39,7 @@ export const getTickerHistory = async (ticker: string, format: i18n): Promise<Se
 }
 
 export const createSecurity = async (addedSecurity: SecurityEntity, file: File | null): Promise<SecurityEntity | void> => {
-    return await fetch(basicUrl, { method: "PUT", body: generateFrom(prepareServerSecurity(addedSecurity), file)})
+    return await fetch(basicUrl, { method: "PUT", body: generateForm(prepareServerSecurity(addedSecurity), file)})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
         .then(id => {
@@ -49,7 +49,7 @@ export const createSecurity = async (addedSecurity: SecurityEntity, file: File |
 }
 
 export const updateSecurity = async (modifiedSecurity: SecurityEntity, file: File | null): Promise<boolean> => {
-    const securityResponse = await fetch(basicUrl, { method: "PATCH", body: generateFrom(prepareServerSecurity(modifiedSecurity), file)})
+    const securityResponse = await fetch(basicUrl, { method: "PATCH", body: generateForm(prepareServerSecurity(modifiedSecurity), file)})
         .then(checkPromiseStatus)
         .catch(logPromiseError)
 
@@ -93,7 +93,7 @@ const prepareServerSecurity = (security: SecurityEntity): ServerSecurityEntity =
     return convertedSecurity;
 }
 
-const generateFrom = (security: ServerSecurityEntity, file: File | null) => {
+const generateForm = (security: ServerSecurityEntity, file: File | null) => {
     const formData = new FormData();
     formData.append("securityJson", JSON.stringify(security));
     if (file) {

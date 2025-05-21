@@ -10,9 +10,9 @@ export default function SettingsSidebar() {
 	const { t } = useTranslation();
 
 	return (
-		<Box color={"text_primary"} bg="background_primary" w={{ base: "full", md: 60 }} pos="fixed" h="full"
+		<Box color={"text_primary"} bg="background_primary" w="60px" height="100%"
 			borderRight="1px" borderColor={"white"}>
-			<Stack gap={4} p={4}>
+			<Stack height="100%" pos="fixed" gap={4} p={4}>
 				<Text fontSize="xl" fontWeight="bold" p={2}>
 					{t("data_title")}
 				</Text>

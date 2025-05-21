@@ -8,5 +8,7 @@ namespace MoneyManager.Application.DTO.Transactions
         public string Name { get; set; }
 
         public bool Active { get; set; }
+
+        public string IconKey { get; set; }
     }
 }

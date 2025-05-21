@@ -7,5 +7,7 @@ namespace MoneyManager.Infrastructure.Entities.Transactions
         public string Name { get; set; }
 
         public bool Active { get; set; }
+
+        public string IconKey { get; set; }
     }
 }

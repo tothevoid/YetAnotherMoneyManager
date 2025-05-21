@@ -22,9 +22,10 @@ namespace MoneyManager.Application.Services.FileStorage
 
         public async Task UploadFile(string bucketName, IFormFile file, string key)
         {
-            var buckets = await _minio.ListBucketsAsync();
+            var existsArgs = new BucketExistsArgs().WithBucket(bucketName);
+            var hasBucket = await _minio.BucketExistsAsync(existsArgs);
 
-            if (buckets.Buckets == null || !buckets.Buckets.Any())
+            if (!hasBucket)
             {
                 await _minio.MakeBucketAsync(new MakeBucketArgs().WithBucket(bucketName));
             }

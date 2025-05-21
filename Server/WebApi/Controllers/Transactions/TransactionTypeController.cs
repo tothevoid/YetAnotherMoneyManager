@@ -3,10 +3,12 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using MoneyManager.Application.Interfaces.Transactions;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using MoneyManager.Application.DTO.Transactions;
 using MoneyManager.WebApi.Models.Transactions;
+using MoneyManager.WebApi.Models.Securities;
 
 namespace MoneyManager.WebApi.Controllers.Transactions
 {
@@ -31,22 +33,34 @@ namespace MoneyManager.WebApi.Controllers.Transactions
         }
 
         [HttpPut]
-        public async Task<TransactionTypeModel> Add(TransactionTypeModel transactionType)
+        public async Task<TransactionTypeModel> Add([FromForm] string transactionTypeJson, [FromForm] IFormFile? transactionTypeIcon)
         {
+            var transactionType = JsonSerializer.Deserialize<TransactionTypeModel>(transactionTypeJson);
             var transactionTypeDto = _mapper.Map<TransactionTypeDTO>(transactionType);
-            var res = await _transactionTypeService.Add(transactionTypeDto);
-            return _mapper.Map<TransactionTypeModel>(res);
+            var transactionTypeResult = await _transactionTypeService.Add(transactionTypeDto, transactionTypeIcon);
+
+            return _mapper.Map<TransactionTypeModel>(transactionTypeResult);
         }
 
         [HttpPatch]
-        public async Task Update(TransactionTypeModel transactionType)
+        public async Task<TransactionTypeModel> Update([FromForm] string transactionTypeJson, [FromForm] IFormFile? transactionTypeIcon)
         {
+            var transactionType = JsonSerializer.Deserialize<TransactionTypeModel>(transactionTypeJson);
             var transactionTypeDto = _mapper.Map<TransactionTypeDTO>(transactionType);
-            await _transactionTypeService.Update(transactionTypeDto);
+            var transactionTypeResult = await _transactionTypeService.Update(transactionTypeDto, transactionTypeIcon);
+
+            return _mapper.Map<TransactionTypeModel>(transactionTypeResult);
         }
 
         [HttpDelete]
         public async Task Delete(Guid id) =>
             await _transactionTypeService.Delete(id);
+
+        [HttpGet("icon")]
+        public async Task<IActionResult> GetSecurityIcon(string iconKey)
+        {
+            var url = await _transactionTypeService.GetIconUrl(iconKey);
+            return Redirect(url);
+        }
     }
 }

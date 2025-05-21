@@ -1,22 +1,25 @@
-import { Box, Button, Checkbox, Icon, Input, Table } from "@chakra-ui/react";
-import { useEffect, useRef, useState } from "react";
-import { MdAdd, MdDelete } from "react-icons/md";
+import { Box, Button, Checkbox, Icon, Table, Text, Image } from "@chakra-ui/react";
+import { Fragment, useEffect, useRef, useState } from "react";
+import { MdAdd, MdDelete, MdEdit, MdOutlinePayment } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { ConfirmModal, ConfirmModalRef } from "../../../../modals/ConfirmModal/ConfirmModal";
 import { TransactionTypeEntity } from "../../../../models/transactions/TransactionTypeEntity";
-import { createTransactionType, deleteTransactionType, getTransactionTypes, updateTransactionType } from "../../../../api/transactions/transactionTypeApi";
+import { createTransactionType, deleteTransactionType, getTransactionTypeIconUrl, getTransactionTypes, updateTransactionType } from "../../../../api/transactions/transactionTypeApi";
 import TransactionTypeModal, { TransactionTypeModalRef } from "../../../../modals/TransactionTypeModal/TransactionTypeModal";
 
 interface Props {}
 
 interface State {
-    transactionTypes: TransactionTypeEntity[],
-    hasChanges: boolean,
-    currentTransactionTypeId: string | null
+    transactionTypes: TransactionTypeEntity[]
 }
 
 const TransactionTypesTable: React.FC<Props> = () => {
-    const [state, setState] = useState<State>({transactionTypes: [], hasChanges: false, currentTransactionTypeId: null});
+    const [state, setState] = useState<State>({
+        transactionTypes: []});
+
+    const [transactionTypeToDeleteId, setTransactionTypeToDeleteId] = useState<string | null>();
+    const [updatedTransactionType, setUpdatedTransactionType] = useState<TransactionTypeEntity | null>();
+
     const { t } = useTranslation();
     const modalRef = useRef<TransactionTypeModalRef>(null);
     const confirmModalRef = useRef<ConfirmModalRef>(null);
@@ -32,100 +35,106 @@ const TransactionTypesTable: React.FC<Props> = () => {
         initData();
     }, []);
 
-    const onCellChanged = (transactionTypeId: string, propertyName: string, newValue: any) => {
-        let hasChanges = false;
-
-        const updatedTransactionType = state.transactionTypes.map((transactionType: TransactionTypeEntity) => {
-            if (transactionType.id !== transactionTypeId) {
-                return transactionType;
-            }
-
-            const currentValue = transactionType[propertyName];
-            if (currentValue === newValue) {
-                return transactionType;
-            }
-
-            hasChanges = true;
-            return {...transactionType, [propertyName]: newValue};
-        });
-
-        if (!hasChanges) {
-            return;
+    useEffect(() => {
+        if (transactionTypeToDeleteId) {
+            confirmModalRef.current?.openModal();
         }
+    }, [transactionTypeToDeleteId]);
 
-        setState((currentState) => {
-            return {...currentState, transactionTypes: updatedTransactionType, hasChanges: true}
-        })
-    }
-
-    const onCellBlur = async (transactionTypeId: string) => {
-        if (!state.hasChanges){
-            return;
+    useEffect(() => {
+        if (updatedTransactionType) {
+            modalRef.current?.openModal(); 
         }
-
-        const transactionType = state.transactionTypes.find((transactionType: TransactionTypeEntity) => {
-            return transactionType.id === transactionTypeId;
-        });
-        if (!transactionType) {
-            return;
-        }
-
-        await updateTransactionType({...transactionType});
-    }
+    }, [updatedTransactionType]);
     
     const onAdd = () => {
         modalRef.current?.openModal()
     };
 
-    const onTransactionTypeAdded = async (transactionType: TransactionTypeEntity) => {
-        const createdTransactionTypeId = await createTransactionType(transactionType);
-        if (!createdTransactionTypeId) {
+    const onEditClicked = (transactionType: TransactionTypeEntity) => {
+        setUpdatedTransactionType(transactionType);
+    }
+
+    const onTransactionTypeSaved = async (savedTransactionType: TransactionTypeEntity, icon: File | null) => {
+        const isModified = state.transactionTypes
+            .findIndex(transactionType => transactionType.id === savedTransactionType.id) >= 0;
+
+        if (isModified) {
+            await onTransactionTypeUpdated(savedTransactionType, icon);
+        } else {
+            await onTransactionTypeAdded(savedTransactionType, icon);
+        }
+    };
+
+    const onTransactionTypeAdded = async (savedTransactionType: TransactionTypeEntity, icon: File | null) => {
+        const addedTransactionType = await createTransactionType(savedTransactionType, icon);
+        if (!addedTransactionType) {
             return;
         }
 
-        transactionType.id = createdTransactionTypeId;
+        setState((currentState) => {
+            return {...currentState, transactionTypes: [...currentState.transactionTypes, addedTransactionType]}
+        })
+    }
+
+    const onTransactionTypeUpdated = async (savedTransactionType: TransactionTypeEntity, icon: File | null) => {
+        const updatedTransactionType = await updateTransactionType(savedTransactionType, icon);
+        if (!updatedTransactionType) {
+            return;
+        }
 
         setState((currentState) => {
-            return {...currentState, transactionTypes: [...currentState.transactionTypes, transactionType]}
+            return {...currentState, transactionTypes: currentState.transactionTypes.map(transactionType => 
+                transactionType.id !== savedTransactionType.id ?
+                    transactionType:
+                    updatedTransactionType
+            )}
         })
-    };
+        setUpdatedTransactionType(null)
+    }
 
     const onDeleteClicked = async (transactionType: TransactionTypeEntity) => {
-        setState((currentState) => {
-            return {...currentState, currentTransactionTypeId: transactionType.id}
-        })
-        confirmModalRef.current?.openModal()
+        setTransactionTypeToDeleteId(transactionType.id)
     }
 
     const onDeleteConfirmed = async () => {
-        const {currentTransactionTypeId} = state;
-
-        if (!currentTransactionTypeId){
+        if (!transactionTypeToDeleteId){
             return;
         }
 
-        const isDeleted = await deleteTransactionType(currentTransactionTypeId);
+        const isDeleted = await deleteTransactionType(transactionTypeToDeleteId);
         
         if (!isDeleted) {
             return;
         }
 
         const transactionTypes = state.transactionTypes.filter((transactionType: TransactionTypeEntity) => {
-            return transactionType.id !== state.currentTransactionTypeId;
+            return transactionType.id !== transactionTypeToDeleteId;
         });
 
         setState((currentState) => {
-            return {...currentState, transactionTypes: transactionTypes, currentTransactionTypeId: null}
+            return {...currentState, transactionTypes: transactionTypes}
         })
+        setTransactionTypeToDeleteId(null);
     }
 
     return <Box color="text_primary">
+        <Box>
+            <Button background="purple.600" onClick={onAdd}>
+                <Icon size='md'>
+                    <MdAdd/>
+                </Icon>
+                {t("transaction_type_data_add")}
+            </Button>
+        </Box>
         <Table.Root>
             <Table.Header>
                 <Table.Row border="none" bg="none" color="text_primary">
+                    <Table.ColumnHeader/>
                     <Table.ColumnHeader color="text_primary">Name</Table.ColumnHeader>
                     <Table.ColumnHeader color="text_primary">Active</Table.ColumnHeader>
-                    <Table.ColumnHeader color="text_primary">Delete</Table.ColumnHeader>
+                    <Table.ColumnHeader/>
+                    <Table.ColumnHeader/>
                 </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -133,16 +142,33 @@ const TransactionTypesTable: React.FC<Props> = () => {
                     state.transactionTypes.map((transactionType: TransactionTypeEntity) => {
                         return <Table.Row border="none" bg="none" color="text_primary" key={transactionType.id}>
                             <Table.Cell>
-                                <Input onBlur={() => onCellBlur(transactionType.id)} type="text" value={transactionType.name}
-                                    onChange={(handler) => onCellChanged(transactionType.id, "name", handler.target.value)}>
-                                </Input>
+                                {
+                                    transactionType.iconKey ?
+                                        <Image h={8} w={8} rounded={16} src={getTransactionTypeIconUrl(transactionType?.iconKey)}
+                                            objectFit="contain"
+                                            borderColor="gray.200"
+                                            borderRadius="md">
+                                        </Image>:
+                                        <MdOutlinePayment size={32} color="#aaa"/>
+                                }
+                            </Table.Cell>
+                            <Table.Cell>
+                                <Text>
+                                    {transactionType.name}
+                                </Text>
                             </Table.Cell>
                             <Table.Cell width={10}>
-                                <Checkbox.Root onBlur={() => onCellBlur(transactionType.id)} checked={transactionType.active} variant="subtle"
-                                    onCheckedChange={(data) => {onCellChanged(transactionType.id, "active", data.checked)}}>
+                                <Checkbox.Root disabled checked={transactionType.active} variant="subtle">
                                     <Checkbox.HiddenInput />
                                     <Checkbox.Control />
                                 </Checkbox.Root>
+                            </Table.Cell>
+                            <Table.Cell width={10}>
+                                <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={() => onEditClicked(transactionType)}>
+                                    <Icon color="card_action_icon_primary">
+                                        <MdEdit/>
+                                    </Icon>
+                                </Button>
                             </Table.Cell>
                             <Table.Cell width={10}>
                                 <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={() => onDeleteClicked(transactionType)}>
@@ -156,15 +182,9 @@ const TransactionTypesTable: React.FC<Props> = () => {
                 }
             </Table.Body>
         </Table.Root>
-        <Box padding={4}>
-            <Button background="purple.600" onClick={onAdd}>
-                <Icon size='md'>
-                    <MdAdd/>
-                </Icon>
-                {t("transaction_type_data_add")}
-            </Button>
-        </Box>
-        <TransactionTypeModal ref={modalRef} onSaved={onTransactionTypeAdded}></TransactionTypeModal>
+        <TransactionTypeModal transactionType={updatedTransactionType}
+            ref={modalRef} onSaved={onTransactionTypeSaved}>
+        </TransactionTypeModal>
         <ConfirmModal onConfirmed={onDeleteConfirmed}
                     title={t("transaction_type_delete_title")}
                     message={t("modals_delete_message")}

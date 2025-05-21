@@ -15,7 +15,9 @@ import SecurityPage from './pages/SecurityPage/SecurityPage';
 const App = () => {
   return (
     <div className="app">
-      <Header/>
+      <div className="header">
+        <Header/>
+      </div>
       <main className="app-main">
         <Router>
           <Routes>
@@ -31,7 +33,9 @@ const App = () => {
           </Routes>
         </Router>
       </main>
-      <Footer/>
+      <div className="footer-container">
+        <Footer/>
+      </div>
     </div>
   );
 }

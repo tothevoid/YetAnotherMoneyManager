@@ -1,8 +1,8 @@
 import React, { useRef } from 'react';
 import { AccountEntity } from '../../../models/accounts/AccountEntity';
-import { MdOutlineArrowDownward, MdOutlineArrowUpward, MdEdit } from 'react-icons/md';
+import { MdOutlineArrowDownward, MdOutlineArrowUpward, MdEdit, MdOutlinePayment } from 'react-icons/md';
 import { MdDelete } from "react-icons/md";
-import { Flex, Stack, Card, CardBody, Text, Button, Icon } from '@chakra-ui/react';
+import { Flex, Stack, Card, CardBody, Text, Button, Icon, Image } from '@chakra-ui/react';
 import TransactionModal, { TransactionModalRef } from '../../../modals/TransactionModal/TransactionModal';
 import { formatMoneyByCurrencyCulture } from '../../../formatters/moneyFormatter';
 import { formatDate } from '../../../formatters/dateFormatter';
@@ -10,6 +10,8 @@ import { ConfirmModal, ConfirmModalRef } from '../../../modals/ConfirmModal/Conf
 import { deleteTransaction } from '../../../api/transactions/transactionApi';
 import { useTranslation } from 'react-i18next';
 import { TransactionEntity } from '../../../models/transactions/TransactionEntity';
+import { getIconUrl } from '../../../api/securities/securityApi';
+import { getTransactionTypeIconUrl } from '../../../api/transactions/transactionTypeApi';
 
 
 type Props = { 
@@ -53,19 +55,23 @@ const Transaction: React.FC<Props> = (props: Props) => {
 
 	const { i18n, t} = useTranslation()
 
+	const icon = transactionType.iconKey ?
+		<Image h={8} w={8} src={getTransactionTypeIconUrl(transactionType.iconKey)}/>:
+		<MdOutlinePayment size={32} color="#aaa" />
+
 	return <Card.Root borderColor="border_primary" color="text_primary" backgroundColor="background_primary" 
 		mt={5} mb={5} boxShadow={"sm"} _hover={{ boxShadow: "md" }}>
 		<CardBody>
 			<Flex justifyContent="space-between" alignItems="center">
 				<Stack direction={'row'} alignItems="center">
-					{getTransactionDirectionIcon()}
+					{icon}
 					<Stack ml={5}>
 						<Text fontWeight={700}>{name}</Text>
 						<Text>{formatDate(date, i18n, false)} • {account.name}</Text>
 					</Stack>
 				</Stack>
 				<Flex gap={2} justifyContent="space-between" alignItems="center">
-					<Text background={'purple.600'} textAlign={'center'} w={150} rounded={10} padding={1} >{transactionType.name}</Text>
+					{getTransactionDirectionIcon()}
 					<Text width={100}>{formatMoneyByCurrencyCulture(moneyQuantity, account.currency.name)}</Text>
 					<Button background={'background_secondary'} size={'sm'} onClick={onEditClicked}>
 						<Icon color="card_action_icon_primary">

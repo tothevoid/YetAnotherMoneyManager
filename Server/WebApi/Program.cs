@@ -29,6 +29,8 @@ using MoneyManager.Application.Integrations.Currency;
 using MoneyManager.Application.Services.FileStorage;
 using MoneyManager.Application.Interfaces.FileStorage;
 using MoneyManager.Application.Interfaces.Integrations.Currency;
+using MoneyManager.Application.Interfaces.User;
+using MoneyManager.Application.Services.User;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -84,6 +86,7 @@ builder.Services.AddTransient<ISecurityService, SecurityService>();
 builder.Services.AddTransient<ISecurityTransactionService, SecurityTransactionService>();
 builder.Services.AddTransient<ISecurityTypeService, SecurityTypeService>();
 builder.Services.AddTransient<IDividendService, DividendService>();
+builder.Services.AddTransient<IUserProfileService, UserProfileService>();
 
 builder.Services.AddScoped<IServerNotifier, ServerNotifier>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();

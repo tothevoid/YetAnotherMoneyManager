@@ -10,7 +10,6 @@ import { ConfirmModal, ConfirmModalRef } from '../../../modals/ConfirmModal/Conf
 import { deleteTransaction } from '../../../api/transactions/transactionApi';
 import { useTranslation } from 'react-i18next';
 import { TransactionEntity } from '../../../models/transactions/TransactionEntity';
-import { getIconUrl } from '../../../api/securities/securityApi';
 import { getTransactionTypeIconUrl } from '../../../api/transactions/transactionTypeApi';
 
 

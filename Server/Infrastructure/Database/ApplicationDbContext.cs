@@ -9,11 +9,13 @@ using MoneyManager.Infrastructure.Configurations.Currencies;
 using MoneyManager.Infrastructure.Configurations.Deposits;
 using MoneyManager.Infrastructure.Configurations.Securities;
 using MoneyManager.Infrastructure.Configurations.Transactions;
+using MoneyManager.Infrastructure.Configurations.User;
 using MoneyManager.Infrastructure.Data;
 using MoneyManager.Infrastructure.Entities.Accounts;
 using MoneyManager.Infrastructure.Entities.Currencies;
 using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Infrastructure.Entities.Transactions;
+using MoneyManager.Infrastructure.Entities.User;
 using MoneyManager.Shared.Entities;
 using AccountConfiguration = MoneyManager.Infrastructure.Configurations.Accounts.AccountConfiguration;
 
@@ -48,6 +50,7 @@ namespace MoneyManager.Infrastructure.Database
             modelBuilder.ApplyConfiguration(new DividendConfiguration());
             modelBuilder.ApplyConfiguration(new TransactionConfiguration());
             modelBuilder.ApplyConfiguration(new TransactionTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new UserProfileConfiguration());
 
             InitializeDefaultData(modelBuilder);
 
@@ -60,6 +63,7 @@ namespace MoneyManager.Infrastructure.Database
             builder.Entity<AccountType>().HasData(new AccountTypeGenerator().Generate());
             builder.Entity<SecurityType>().HasData(new SecurityTypeGenerator().Generate());
             builder.Entity<TransactionType>().HasData(new TransactionTypeGenerator().Generate());
+            builder.Entity<UserProfile>().HasData(new UserProfileGenerator().Generate());
         }
     }
 }

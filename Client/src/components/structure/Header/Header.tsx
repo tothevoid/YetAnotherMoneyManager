@@ -1,27 +1,16 @@
 import HeaderItem from '../HeaderItem/HeaderItem';
-import { Box, Button,Flex, Text } from '@chakra-ui/react';
-import { changeLanguage } from 'i18next';
-import { useState } from 'react';
+import { Box, Button,Flex, Icon, Text } from '@chakra-ui/react';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-
-const langMapping = new Map<string, string>([
-    ["en-US", "EN"],
-    ["ru-RU", "RU"],
-]);
-
-const getLanguageCaption = (currentCode: string) => {
-    return langMapping.get(currentCode) ?? ""
-}
+import { MdOutlineSettings } from 'react-icons/md';
+import UserProfileSettingsModal, { UserProfileSettingsModalRef } from '../../../modals/UserProfileSettingsModal/UserProfileSettingsModal';
 
 const Header = () => {
-    const { t, i18n } = useTranslation();
-    const [language, setLanguage] = useState(getLanguageCaption(i18n.language));
+    const { t } = useTranslation();
+    const userProfileSettingsRef = useRef<UserProfileSettingsModalRef>(null);
 
-    const updateLanguage = () => {
-        const nextLanguage = i18n.language === "en-US" ? "ru-RU" : "en-US";
-        setLanguage(getLanguageCaption(nextLanguage));
-        localStorage.setItem("lang", nextLanguage);
-        changeLanguage(nextLanguage)
+    const onOpenSettingsClick = () => {
+        userProfileSettingsRef.current?.openModal();
     }
 
     return ( 
@@ -41,10 +30,13 @@ const Header = () => {
                     </Flex>
                 </Flex>
                 <Flex flex="1" justify="flex-end" direction="row">
-                    <Button onClick={() => updateLanguage()} background={"purple.600"}>
-                        {language}
+                    <Button borderColor="background_secondary" background="button_background_secondary" size={'2xl'} onClick={onOpenSettingsClick}>
+                        <Icon color="card_action_icon_primary">
+                            <MdOutlineSettings/>
+                        </Icon>
                     </Button>
                 </Flex>
+                <UserProfileSettingsModal ref={userProfileSettingsRef}/>
             </Flex>
         </Box>)
 }

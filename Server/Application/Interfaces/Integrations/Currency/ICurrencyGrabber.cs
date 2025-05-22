@@ -8,6 +8,6 @@ namespace MoneyManager.Application.Interfaces.Integrations.Currency
 {
     public interface ICurrencyGrabber
     {
-        public Task<Dictionary<string, decimal>> GetCurrency(string mainCurrency, HashSet<string> requestedCurrencies);
+        public Task<Dictionary<string, decimal>> GetRates(string mainCurrency, HashSet<string> requestedCurrencies);
     }
 }

@@ -125,6 +125,7 @@ const CurrenciesTable: React.FC<Props> = () => {
             <Table.Header>
                 <Table.Row border="none" bg="none" color="text_primary">
                     <Table.ColumnHeader color="text_primary">Name</Table.ColumnHeader>
+                    <Table.ColumnHeader color="text_primary">Rate</Table.ColumnHeader>
                     <Table.ColumnHeader color="text_primary">Active</Table.ColumnHeader>
                     <Table.ColumnHeader color="text_primary">Delete</Table.ColumnHeader>
                 </Table.Row>
@@ -137,6 +138,9 @@ const CurrenciesTable: React.FC<Props> = () => {
                                 <Input onBlur={() => onCellBlur(currency.id)} type="text" value={currency.name}
                                     onChange={(handler) => onCellChanged(currency.id, "name", handler.target.value)}>
                                 </Input>
+                            </Table.Cell>
+                            <Table.Cell>
+                                <Input disabled value={currency.rate}></Input>
                             </Table.Cell>
                             <Table.Cell width={10}>
                                 <Checkbox.Root onBlur={() => onCellBlur(currency.id)} checked={currency.active} variant="subtle"

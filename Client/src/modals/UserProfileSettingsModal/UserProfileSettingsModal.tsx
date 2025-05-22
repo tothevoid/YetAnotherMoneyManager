@@ -83,12 +83,6 @@ const UserProfileSettingsModal = forwardRef<UserProfileSettingsModalRef, Props>(
         onClose();
     }
 
-    const watchedValues = watch();
-
-    useEffect(() => {
-    console.log("watched form values:", watchedValues);
-    }, [watchedValues]);
-
     const {t} = useTranslation()
 
     return (

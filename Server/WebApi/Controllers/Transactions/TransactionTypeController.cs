@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using MoneyManager.Application.DTO.Transactions;
 using MoneyManager.WebApi.Models.Transactions;
-using MoneyManager.WebApi.Models.Securities;
 
 namespace MoneyManager.WebApi.Controllers.Transactions
 {

@@ -1,16 +1,12 @@
 ﻿using AutoMapper;
-using MoneyManager.Application.DTO.Currencies;
-using MoneyManager.Application.Interfaces.Currencies;
-using MoneyManager.Infrastructure.Entities.Currencies;
 using MoneyManager.Infrastructure.Interfaces.Database;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using MoneyManager.Application.DTO;
 using MoneyManager.Application.Interfaces.User;
 using MoneyManager.Infrastructure.Entities.User;
 using Microsoft.EntityFrameworkCore;
-using MoneyManager.Infrastructure.Entities.Securities;
+using MoneyManager.Application.Interfaces.Currencies;
 
 namespace MoneyManager.Application.Services.User
 {
@@ -19,11 +15,14 @@ namespace MoneyManager.Application.Services.User
         private readonly IUnitOfWork _db;
         private readonly IRepository<UserProfile> _userProfileRepo;
         private readonly IMapper _mapper;
-        public UserProfileService(IUnitOfWork uow, IMapper mapper)
+        private readonly ICurrencyService _currencyService;
+
+        public UserProfileService(IUnitOfWork uow, IMapper mapper, ICurrencyService currencyService)
         {
             _db = uow;
             _mapper = mapper;
             _userProfileRepo = uow.CreateRepository<UserProfile>();
+            _currencyService = currencyService;
         }
 
         public async Task<UserProfileDto> Get()
@@ -34,9 +33,18 @@ namespace MoneyManager.Application.Services.User
 
         public async Task Update(UserProfileDto userProfileDto)
         {
+            var currentUserState = await Get();
             var userProfile = _mapper.Map<UserProfile>(userProfileDto);
+
+            var currencyChanged = currentUserState.CurrencyId != userProfile.CurrencyId;
+
             _userProfileRepo.Update(userProfile);
             await _db.Commit();
+
+            if (currencyChanged)
+            {
+                await _currencyService.SyncRates(userProfileDto.Currency);
+            }
         }
 
         private IQueryable<UserProfile> GetFullHierarchyColumns(IQueryable<UserProfile> userProfileQuery)

@@ -7,6 +7,7 @@ namespace MoneyManager.Application.Interfaces.Currencies
 {
     public interface ICurrencyService
     {
+        Task SyncRates(CurrencyDTO mainCurrency);
         Task<IEnumerable<CurrencyDTO>> GetAll();
         Task<Guid> Add(CurrencyDTO currency);
         Task Update(CurrencyDTO currency);

@@ -19,7 +19,7 @@ namespace MoneyManager.Application.Integrations.Currency
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<Dictionary<string, decimal>> GetCurrency(string mainCurrency, HashSet<string> requestedCurrencies)
+        public async Task<Dictionary<string, decimal>> GetRates(string mainCurrency, HashSet<string> requestedCurrencies)
         {
             var httpClient = _httpClientFactory.CreateClient();
             var response = await httpClient.GetAsync("https://www.cbr-xml-daily.ru/latest.js");

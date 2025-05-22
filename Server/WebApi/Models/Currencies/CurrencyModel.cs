@@ -7,5 +7,7 @@ namespace MoneyManager.WebApi.Models.Currencies
         public string Name { get; set; }
 
         public bool Active { get; set; }
+
+        public decimal Rate { get; set; }
     }
 }

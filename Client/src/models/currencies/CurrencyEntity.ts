@@ -1,5 +1,6 @@
 export type CurrencyEntity = {
     id: string,
     name: string,
-    active: boolean
+    active: boolean,
+    rate: number
 }

@@ -151,12 +151,8 @@ namespace MoneyManager.Application.Services.Deposits
 
         public async Task<DepositsRangeDTO> GetDepositsRange()
         {
-            var minValueRequest = _depositRepo.GetMin((deposit) => deposit.From);
-            var maxValueRequest = _depositRepo.GetMax((deposit) => deposit.To);
-            await Task.WhenAll(new Task[] {minValueRequest, maxValueRequest});
-
-            var minValueEntity = minValueRequest.Result;
-            var maxValueEntity = maxValueRequest.Result;
+            var minValueEntity = await _depositRepo.GetMin((deposit) => deposit.From);
+            var maxValueEntity = await _depositRepo.GetMax((deposit) => deposit.To);
 
             if (minValueEntity == null || maxValueEntity == null)
             {
@@ -185,7 +181,7 @@ namespace MoneyManager.Application.Services.Deposits
             var currentDate = DateOnly.FromDateTime(DateTime.UtcNow);
 
             Expression<Func<Deposit, bool>> filter = onlyActive ?
-                (deposit) => deposit.To >= rangeMin && deposit.From <= rangeMax && deposit.To >= currentDate && deposit.From <= currentDate:
+                (deposit) => deposit.To >= rangeMin && deposit.From <= rangeMax && deposit.To >= currentDate:
                 (deposit) => deposit.To >= rangeMin && deposit.From <= rangeMax;
 
             return await _depositRepo.GetAll(filter, GetFullHierarchyColumns);

@@ -35,12 +35,12 @@ namespace MoneyManager.Application.Integrations.Currency
             var mainCurrencyRate = currenciesInfo.Rates.FirstOrDefault(rate =>
                 rate.Key == mainCurrency);
 
-            currenciesInfo.Rates[CbrBaseCurrency] = mainCurrencyRate.Value;
-
-            return currenciesInfo
+            var rates = currenciesInfo
                 .Rates.Where(rate => requestedCurrencies.Contains(rate.Key))
                 .ToDictionary(rate => rate.Key, rate => 
                     rate.Value / mainCurrencyRate.Value);
+            rates[CbrBaseCurrency] = 1 / mainCurrencyRate.Value;
+            return rates;
         }
     }
 }

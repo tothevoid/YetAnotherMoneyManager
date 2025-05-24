@@ -71,6 +71,7 @@ const prepareDepositEntity = (deposit: DepositEntity): ServerDepositEntity => {
         percentage: deposit.percentage,
         accountId: deposit.account?.id,
         estimatedEarn: deposit.estimatedEarn,
+        currencyId: deposit.currency?.id,
         // .NET DateOnly cast
         from: convertToDateOnly(deposit.from),
         to: convertToDateOnly(deposit.to),

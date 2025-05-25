@@ -5,6 +5,7 @@
     "header_data": "Data",
     "header_broker_account": "Broker accounts",
     "header_securities": "Securities",
+    "header_debts": "Debts",
 
     "accounts_page_summary_title": "Current balance",
     "accounts_page_summary_add": "Add account",
@@ -158,5 +159,19 @@
     "user_profile_settings_currency": "Display in currency",
     "user_profile_settings_currency_placeholder": "Select currency",
     "user_profile_settings_language": "Display in language",
-    "user_profile_settings_language_placeholder": "Select language"
+    "user_profile_settings_language_placeholder": "Select language",
+
+    "entity_debt_form_title": "Debt",
+    "entity_debt_name": "Name",
+    "entity_debt_amount": "Amount",
+    "entity_debt_currency": "Currency",
+    "entity_debt_date": "Date",
+    "entity_debt_paid_on": "Payment date",
+
+    "entity_debt_payment_form_title": "Debt payment",
+    "entity_debt_payment_amount": "Amount",
+    "entity_debt_payment_target_account": "Account",
+    "entity_debt_payment_transaction": "Transaction",
+    "entity_debt_payment_debt": "Debt",
+    "entity_debt_payment_date": "Date"
 }

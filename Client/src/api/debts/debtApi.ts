@@ -10,16 +10,16 @@ export const getDebts = async (): Promise<ClientDebtEntity[]> =>  {
         .then(debts => debts.map(prepareClientDebt))
 }
 
-export const createCurrency = async (newDebt: ClientDebtEntity): Promise<string | void> => {
-    const result = await createEntity(basicUrl, prepareServerDebt(newDebt));
-    return result?.id;
+export const createDebt = async (newDebt: ClientDebtEntity): Promise<ClientDebtEntity | void> => {
+    return await createEntity(basicUrl, prepareServerDebt(newDebt))
+        .then(prepareClientDebt);
 }
 
-export const updateCurrency = async (updatedDept: ClientDebtEntity): Promise<boolean> => {
+export const updateDebt = async (updatedDept: ClientDebtEntity): Promise<boolean> => {
     return await updateEntity(basicUrl, prepareServerDebt(updatedDept));
 }
 
-export const deleteCurrency = async (debtId: string): Promise<boolean> => {
+export const deleteDebt = async (debtId: string): Promise<boolean> => {
     return await deleteEntity(basicUrl, debtId);
 }
 
@@ -36,10 +36,16 @@ const prepareServerDebt = (debt: ClientDebtEntity): ServerDebtEntity => {
         id: debt.id,
         name: debt.name,
         amount: debt.amount,
-        currencyId: debt.currency.id,
-        date: convertToDateOnly(debt.date),
-        paidOn: convertToDateOnly(debt.paidOn),
+        currencyId: debt.currency.id
     };
+
+    if (debt.date) {
+        convertedSecurity.date = convertToDateOnly(debt.date);
+    }
+
+    if (debt.paidOn) {
+        convertedSecurity.paidOn = convertToDateOnly(debt.paidOn);
+    }
 
     return convertedSecurity;
 }

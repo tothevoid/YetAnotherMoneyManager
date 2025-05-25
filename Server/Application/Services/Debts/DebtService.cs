@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using MoneyManager.Application.DTO.Debts;
 using MoneyManager.Application.Interfaces.Debts;
 using MoneyManager.Infrastructure.Entities.Debts;
+using Microsoft.EntityFrameworkCore;
+using MoneyManager.Infrastructure.Entities.Securities;
 
 namespace MoneyManager.Application.Services.Debts
 {
@@ -27,7 +29,7 @@ namespace MoneyManager.Application.Services.Debts
 
         public async Task<IEnumerable<DebtDto>> GetAll()
         {
-            var debts = await _debtRepo.GetAll();
+            var debts = await _debtRepo.GetAll(include: GetFullHierarchyColumns);
             return _mapper.Map<IEnumerable<DebtDto>>(debts);
         }
 
@@ -53,6 +55,12 @@ namespace MoneyManager.Application.Services.Debts
         {
             await _debtRepo.Delete(id);
             await _db.Commit();
+        }
+
+        private IQueryable<Debt> GetFullHierarchyColumns(IQueryable<Debt> debtQuery)
+        {
+            return debtQuery
+                .Include(debt => debt.Currency);
         }
     }
 }

@@ -5,6 +5,7 @@
     "header_data": "Данные",
     "header_broker_account": "Брокерские счета",
     "header_securities": "Ценные бумаги",
+    "header_debts": "Долги",
     
     "accounts_page_summary_title": "На счетах",
     "accounts_page_summary_add": "Добавить счёт",
@@ -158,5 +159,19 @@
     "user_profile_settings_currency": "Отображать в валюте",
     "user_profile_settings_currency_placeholder": "Выберите валюту",
     "user_profile_settings_language": "Отображать на языке",
-    "user_profile_settings_language_placeholder": "Выберите язык"
+    "user_profile_settings_language_placeholder": "Выберите язык",
+
+    "entity_debt_form_title": "Долг",
+    "entity_debt_name": "Название",
+    "entity_debt_amount": "Сумма",
+    "entity_debt_currency": "Валюта",
+    "entity_debt_date": "Дата",
+    "entity_debt_paid_on": "Дата выплаты",
+
+    "entity_debt_payment_form_title": "Выплата долга",
+    "entity_debt_payment_amount": "Сумма",
+    "entity_debt_payment_target_account": "Счёт",
+    "entity_debt_payment_transaction": "Транзакция",
+    "entity_debt_payment_debt": "Долг",
+    "entity_debt_payment_date": "Дата"
 }

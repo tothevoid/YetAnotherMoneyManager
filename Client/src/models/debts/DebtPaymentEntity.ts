@@ -1,5 +1,6 @@
 import { AccountEntity } from "../accounts/AccountEntity";
 import { TransactionEntity } from "../transactions/TransactionEntity";
+import { ClientDebtEntity } from "./DebtEntity";
 
 export interface CommonDebtPaymentEntity {
     id: string,

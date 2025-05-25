@@ -12,6 +12,7 @@ import SecuritiesPage from './pages/SecuritiesPage/SecuritiesPage';
 import BrokerAccountPage from './pages/BrokerAccountPage/BrokerAccountPage';
 import SecurityPage from './pages/SecurityPage/SecurityPage';
 import DashboardPage from './pages/DashboardPage/DashboardPage';
+import DebtsPage from './pages/DebtsPage/DebtsPage';
 
 const App = () => {
   return (
@@ -28,6 +29,7 @@ const App = () => {
             <Route path="/deposits" element={<DepositsPage />} />
             <Route path="/broker_accounts" element={<BrokerAccountsPage />} />
             <Route path="/securities" element={<SecuritiesPage />} />
+            <Route path="/debts" element={<DebtsPage />} />
             <Route path="/data" element={<DataPage />} />
             <Route path="/data/:tab" element={<DataPage />} />
             <Route path="/broker_account/:brokerAccountId" element={<BrokerAccountPage />} />

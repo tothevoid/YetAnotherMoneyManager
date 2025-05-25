@@ -25,6 +25,7 @@ const Header = () => {
                         <HeaderItem title={t("header_deposits")} path='/deposits'></HeaderItem>
                         <HeaderItem title={t("header_broker_account")} path='/broker_accounts'></HeaderItem>
                         <HeaderItem title={t("header_securities")} path='/securities'></HeaderItem>
+                        <HeaderItem title={t("header_debts")} path='/debts'></HeaderItem>
                         <HeaderItem title={t("header_data")} path='/data'></HeaderItem>
                     </Flex>
                 </Flex>

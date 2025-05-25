@@ -10,17 +10,17 @@ export const getDebtPayments = async (): Promise<ClientDebtPaymentEntity[]> =>  
         .then(debtPayments => debtPayments.map(prepareClientDebtPayment))
 }
 
-export const createDebtPayment = async (newDebtPayment: ClientDebtPaymentEntity): Promise<string | void> => {
-    const result = await createEntity(basicUrl, prepareServerDebtPayment(newDebtPayment));
-    return result?.id;
+export const createDebtPayment = async (newDebtPayment: ClientDebtPaymentEntity): Promise<ClientDebtPaymentEntity | void> => {
+    return await createEntity(basicUrl, prepareServerDebtPayment(newDebtPayment))
+        .then(prepareClientDebtPayment);
 }
 
 export const updateDebtPayment = async (updatedDebtPayment: ClientDebtPaymentEntity): Promise<boolean> => {
     return await updateEntity(basicUrl, prepareServerDebtPayment(updatedDebtPayment));
 }
 
-export const deleteDebtPayment = async (currencyId: string): Promise<boolean> => {
-    return await deleteEntity(basicUrl, currencyId);
+export const deleteDebtPayment = async (debtPaymentId: string): Promise<boolean> => {
+    return await deleteEntity(basicUrl, debtPaymentId);
 }
 
 const prepareClientDebtPayment = (debtPayment: ServerDebtPaymentEntity): ClientDebtPaymentEntity => {

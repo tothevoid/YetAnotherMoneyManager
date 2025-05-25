@@ -55,9 +55,9 @@ const getGraphData = (transactions: TransactionEntity[],
 
 const getPossibleColors = () => {
     return [
-        "#FF6347", "#4B0082", "#2E8B57", "#D2691E", "#8A2BE2",
-        "#7FFF00", "#DCDCDC", "#A52A2A", "#5F9EA0", "#FF4500",
-        "#6A5ACD", "#C71585", "#4682B4", "#32CD32", "#8B4513",
+        "#FF6347", "#2E8B57", "#D2691E",
+        "#DCDCDC", "#A52A2A", "#5F9EA0", "#FF4500",
+        "#6A5ACD", "#C71585", "#4682B4", "#8B4513",
         "#B8860B", "#20B2AA", "#FF8C00", "#6B8E23", "#483D8B"
     ]
 }

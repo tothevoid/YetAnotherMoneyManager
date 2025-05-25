@@ -147,11 +147,10 @@
 
     "header_dashboard": "Итоги",
     "dashboard_title": "Итоги",
-    "dashboard_total": "Всего в ",
-    "dashboard_total_in_securities": "В ценных бумагах",
-    "dashboard_total_in_accounts": "На банковских счетах",
+    "dashboard_total": "Всего",
     "dashboard_cash": "Наличные",
     "dashboard_securities": "Ценные бумаги",
+    "dashboard_total_accounts": "Счета",
     "dashboard_deposits": "Депозиты",
     "dashboard_bank_accounts": "Банковские счета"
 }

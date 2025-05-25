@@ -147,11 +147,10 @@
 
     "header_dashboard": "Dashboard",
     "dashboard_title": "Summaries",
-    "dashboard_total": "Total in ",
-    "dashboard_total_in_securities": "In securities",
-    "dashboard_total_in_accounts": "In accounts",
+    "dashboard_total": "Total",
     "dashboard_cash": "Cash",
     "dashboard_securities": "Securities",
+    "dashboard_total_accounts": "Accounts",
     "dashboard_deposits": "Deposits",
     "dashboard_bank_accounts": "Bank accounts"
 }

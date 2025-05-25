@@ -152,5 +152,11 @@
     "dashboard_securities": "Ценные бумаги",
     "dashboard_total_accounts": "Счета",
     "dashboard_deposits": "Депозиты",
-    "dashboard_bank_accounts": "Банковские счета"
+    "dashboard_bank_accounts": "Банковские счета",
+
+    "user_profile_settings_title": "Конфигурация приложения",
+    "user_profile_settings_currency": "Отображать в валюте",
+    "user_profile_settings_currency_placeholder": "Выберите валюту",
+    "user_profile_settings_language": "Отображать на языке",
+    "user_profile_settings_language_placeholder": "Выберите язык"
 }

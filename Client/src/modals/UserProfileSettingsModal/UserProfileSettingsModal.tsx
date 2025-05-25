@@ -60,7 +60,7 @@ const UserProfileSettingsModal = forwardRef<UserProfileSettingsModalRef, Props>(
         })
     };
 
-    const { reset, watch, handleSubmit, control, formState: { errors }} = useForm<UserProfileFormInput>({
+    const { reset, handleSubmit, control, formState: { errors }} = useForm<UserProfileFormInput>({
         resolver: zodResolver(UserProfileValidationSchema),
         mode: "onBlur",
         defaultValues: convertToSchemaValues(user)
@@ -92,20 +92,20 @@ const UserProfileSettingsModal = forwardRef<UserProfileSettingsModalRef, Props>(
             <Dialog.Positioner>
                 <Dialog.Content as="form" onSubmit={handleSubmit(onSubmit)}>
                     <Dialog.Header>
-                        <Dialog.Title>{t("account_balance_transfer_modal_title")}</Dialog.Title>
+                        <Dialog.Title>{t("user_profile_settings_title")}</Dialog.Title>
                     </Dialog.Header>
                     <Dialog.Body pb={6}>
                     <Field.Root mt={4} invalid={!!errors.currency}>
-                        <Field.Label>Currency</Field.Label>
-                        <CollectionSelect name="currency" control={control} placeholder="Select currency account"
+                        <Field.Label>{t("user_profile_settings_currency")}</Field.Label>
+                        <CollectionSelect name="currency" control={control} placeholder={t("user_profile_settings_currency_placeholder")}
                             collection={state.currencies} 
                             labelSelector={(currency => currency.name)} 
                             valueSelector={(currency => currency.id)}/>
                         <Field.ErrorText>{errors.currency?.message}</Field.ErrorText>
                     </Field.Root>
                     <Field.Root mt={4} invalid={!!errors.languageCode}>
-                        <Field.Label>Language</Field.Label>
-                        <CollectionSelect name="languageCode" control={control} placeholder="Select language"
+                        <Field.Label>{t("user_profile_settings_language")}</Field.Label>
+                        <CollectionSelect name="languageCode" control={control} placeholder={t("user_profile_settings_language_placeholder")}
                             collection={state.languages} 
                             labelSelector={(language => language.key)} 
                             valueSelector={(language => language.value)}/>

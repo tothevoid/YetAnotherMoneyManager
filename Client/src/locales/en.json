@@ -152,5 +152,11 @@
     "dashboard_securities": "Securities",
     "dashboard_total_accounts": "Accounts",
     "dashboard_deposits": "Deposits",
-    "dashboard_bank_accounts": "Bank accounts"
+    "dashboard_bank_accounts": "Bank accounts",
+
+    "user_profile_settings_title": "Application configuration",
+    "user_profile_settings_currency": "Display in currency",
+    "user_profile_settings_currency_placeholder": "Select currency",
+    "user_profile_settings_language": "Display in language",
+    "user_profile_settings_language_placeholder": "Select language"
 }

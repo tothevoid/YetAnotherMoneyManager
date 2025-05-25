@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using MoneyManager.Infrastructure.Configurations.Accounts;
 using MoneyManager.Infrastructure.Configurations.Brokers;
 using MoneyManager.Infrastructure.Configurations.Currencies;
+using MoneyManager.Infrastructure.Configurations.Debts;
 using MoneyManager.Infrastructure.Configurations.Deposits;
 using MoneyManager.Infrastructure.Configurations.Securities;
 using MoneyManager.Infrastructure.Configurations.Transactions;
@@ -51,6 +52,8 @@ namespace MoneyManager.Infrastructure.Database
             modelBuilder.ApplyConfiguration(new TransactionConfiguration());
             modelBuilder.ApplyConfiguration(new TransactionTypeConfiguration());
             modelBuilder.ApplyConfiguration(new UserProfileConfiguration());
+            modelBuilder.ApplyConfiguration(new DebtConfiguration());
+            modelBuilder.ApplyConfiguration(new DebtPaymentConfiguration());
 
             InitializeDefaultData(modelBuilder);
 

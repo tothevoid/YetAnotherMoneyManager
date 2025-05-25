@@ -17,6 +17,7 @@ using MoneyManager.WebApi.Models.Transactions;
 using MoneyManager.WebApi.Models.User;
 using MoneyManager.WebApi.Models.Dashboard;
 using MoneyManager.Application.DTO.Dashboard;
+using MoneyManager.Application.DTO.Debts;
 
 namespace MoneyManager.WebApi.Mappings
 {
@@ -60,6 +61,9 @@ namespace MoneyManager.WebApi.Mappings
             CreateMap<BrokerAccountStatsDto, BrokerAccountStatsModel>();
             CreateMap<AccountStatsDto, AccountStatsModel>();
             CreateMap<DistributionDto, DistributionModel>().ReverseMap();
+
+            CreateMap<DebtDto, DebtModel>().ReverseMap();
+            CreateMap<DebtPayment, DebtPaymentModel>().ReverseMap();
         }
     }
 }

@@ -26,12 +26,14 @@ using MoneyManager.Infrastructure.Interfaces.Messages;
 using MoneyManager.Infrastructure.Messages;
 using Minio;
 using MoneyManager.Application.Integrations.Currency;
+using MoneyManager.Application.Interfaces.Debts;
 using MoneyManager.Application.Services.FileStorage;
 using MoneyManager.Application.Interfaces.FileStorage;
 using MoneyManager.Application.Interfaces.Integrations.Currency;
 using MoneyManager.Application.Interfaces.User;
 using MoneyManager.Application.Services.User;
 using MoneyManager.Application.Services.Dashboard;
+using MoneyManager.Application.Services.Debts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -89,6 +91,8 @@ builder.Services.AddTransient<ISecurityTypeService, SecurityTypeService>();
 builder.Services.AddTransient<IDividendService, DividendService>();
 builder.Services.AddTransient<IUserProfileService, UserProfileService>();
 builder.Services.AddTransient<IDashboardService, DashboardService>();
+builder.Services.AddTransient<IDebtService, DebtService>();
+builder.Services.AddTransient<IDebtPaymentService, DebtPaymentService>();
 
 builder.Services.AddScoped<IServerNotifier, ServerNotifier>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();

@@ -27,6 +27,12 @@ namespace MoneyManager.Application.Services.Transactions
             _accountRepo = uow.CreateRepository<Account>();
         }
 
+        public async Task<TransactionDTO> GetById(Guid id)
+        {
+            var transaction =  await _transactionsRepo.GetById(id);
+            return _mapper.Map<TransactionDTO>(transaction);
+        }
+
         public async Task<IEnumerable<TransactionDTO>> GetAll(int month, int year)
         {
             var (startDate, endDate) = GetDateRange(month, year);

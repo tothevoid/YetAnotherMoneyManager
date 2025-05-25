@@ -14,6 +14,7 @@ using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Infrastructure.Entities.Transactions;
 using MoneyManager.Infrastructure.Entities.User;
 using MoneyManager.Model.Deposits;
+using MoneyManager.Application.DTO.Debts;
 
 namespace MoneyManager.Application.Mappings
 {
@@ -40,6 +41,9 @@ namespace MoneyManager.Application.Mappings
             CreateMap<BrokerAccountTypeDTO, BrokerAccountType>().ReverseMap();
             CreateMap<SecurityTransactionDTO, SecurityTransaction>().ReverseMap();
             CreateMap<UserProfileDto, UserProfile>().ReverseMap();
+
+            CreateMap<DebtDto, Debt>().ReverseMap();
+            CreateMap<DebtPaymentDto, DebtPayment>().ReverseMap();
         }
     }
 }

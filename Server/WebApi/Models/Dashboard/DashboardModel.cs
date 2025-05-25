@@ -1,13 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using MoneyManager.Application.DTO.Dashboard;
+using System.Collections.Generic;
 
 namespace MoneyManager.WebApi.Models.Dashboard
 {
     public class DashboardModel
     {
         public decimal Total { get; set; }
-        public TransactionStatsModel TransactionStats { get; set; } = new TransactionStatsModel();
-        public BrokerAccountStatsModel BrokerAccountStats { get; set; } = new BrokerAccountStatsModel();
-        public AccountStatsModel AccountStats { get; set; } = new AccountStatsModel();
+        public TransactionStatsModel TransactionStats { get; set; }
+        public BrokerAccountStatsModel BrokerAccountStats { get; set; }
+        public AccountStatsModel AccountStats { get; set; }
+        public DebtStatsModel DebtStats { get; set; }
     }
 
     public class TransactionStatsModel
@@ -22,6 +24,13 @@ namespace MoneyManager.WebApi.Models.Dashboard
     }
 
     public class BrokerAccountStatsModel
+    {
+        public decimal Total { get; set; }
+
+        public IEnumerable<DistributionModel> Distribution { get; set; }
+    }
+
+    public class DebtStatsModel
     {
         public decimal Total { get; set; }
 

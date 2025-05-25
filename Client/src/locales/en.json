@@ -154,6 +154,7 @@
     "dashboard_total_accounts": "Accounts",
     "dashboard_deposits": "Deposits",
     "dashboard_bank_accounts": "Bank accounts",
+    "dashboard_debts": "Долги",
 
     "user_profile_settings_title": "Application configuration",
     "user_profile_settings_currency": "Display in currency",

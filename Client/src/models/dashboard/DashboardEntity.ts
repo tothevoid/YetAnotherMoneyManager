@@ -2,6 +2,7 @@ export interface Dashboard {
     transactionStats: TransactionStats,
     brokerAccountStats: BrokerAccountStats,
     accountStats: AccountStats,
+    debtStats: DebtStats,
     total: number
 }
 
@@ -33,4 +34,9 @@ export interface DistributionModel
     currency: string,
     amount: number,
     convertedAmount: number
+}
+
+export interface DebtStats {
+    total: number,
+    distribution: DistributionModel[],
 }

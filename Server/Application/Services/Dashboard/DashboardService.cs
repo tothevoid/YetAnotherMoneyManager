@@ -15,6 +15,9 @@ using System.Transactions;
 using MoneyManager.Infrastructure.Entities.Accounts;
 using System.Security.Principal;
 using MoneyManager.Application.DTO.Transactions;
+using MoneyManager.Application.Interfaces.Debts;
+using MoneyManager.Application.Services.Debts;
+using MoneyManager.Infrastructure.Entities.Brokers;
 
 namespace MoneyManager.Application.Services.Dashboard
 {
@@ -26,10 +29,11 @@ namespace MoneyManager.Application.Services.Dashboard
         private readonly IDepositService _depositService;
         private readonly ITransactionsService _transactionsService;
         private readonly IBrokerAccountService _brokerAccountService;
+        private readonly IDebtService _debtService;
 
         public DashboardService(IUnitOfWork uow, IMapper mapper, IAccountService accountService, 
             IDepositService depositService, ITransactionsService transactionsService,
-            IBrokerAccountService brokerAccountService)
+            IBrokerAccountService brokerAccountService, IDebtService debtService)
         {
             _db = uow;
             _mapper = mapper;
@@ -37,20 +41,23 @@ namespace MoneyManager.Application.Services.Dashboard
             _depositService = depositService;
             _transactionsService = transactionsService;
             _brokerAccountService = brokerAccountService;
+            _debtService = debtService;
         }
 
         public async Task<DashboardDto> GetDashboard()
         {
             var accountStats = await GetAccountData();
-            var transactionStats = await GetTransactionDate();
             var brokerAccountStats = await GetBrokerAccountData();
+            var debtsStats = await GetDebtsData();
 
             return new DashboardDto()
             {
-                Total = accountStats.Total + brokerAccountStats.Total,
-                AccountStats = await GetAccountData(),
-                TransactionStats = await GetTransactionDate(),
-                BrokerAccountStats = await GetBrokerAccountData()
+                //TODO: make it via setters
+                Total = accountStats.Total + brokerAccountStats.Total + debtsStats.Total,
+                AccountStats = accountStats,
+                BrokerAccountStats = brokerAccountStats,
+                DebtStats = debtsStats,
+                TransactionStats = await GetTransactionDate()
             };
         }
 
@@ -193,6 +200,35 @@ namespace MoneyManager.Application.Services.Dashboard
             {
                 Total = brokerAccountsSummary,
                 Distribution = brokerAccountsValues
+            };
+        }
+
+        private async Task<DebtStatsDto> GetDebtsData()
+        {
+            var debts = await _debtService.GetAll();
+
+            var debtsDistribution = new List<DistributionDto>();
+            decimal debtsSummary = 0;
+
+            foreach (var debt in debts)
+            {
+                var key = debt.Name;
+                var convertedAmount = debt.Amount * debt.Currency.Rate;
+                debtsSummary += convertedAmount;
+
+                debtsDistribution.Add(new DistributionDto()
+                {
+                    Name = debt.Name,
+                    Currency = debt.Currency.Name,
+                    Amount = debt.Amount,
+                    ConvertedAmount = convertedAmount
+                });
+            }
+
+            return new DebtStatsDto()
+            {
+                Total = debtsSummary,
+                Distribution = debtsDistribution
             };
         }
     }

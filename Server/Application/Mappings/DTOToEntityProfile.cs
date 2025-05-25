@@ -15,6 +15,7 @@ using MoneyManager.Infrastructure.Entities.Transactions;
 using MoneyManager.Infrastructure.Entities.User;
 using MoneyManager.Model.Deposits;
 using MoneyManager.Application.DTO.Debts;
+using MoneyManager.Infrastructure.Entities.Debts;
 
 namespace MoneyManager.Application.Mappings
 {

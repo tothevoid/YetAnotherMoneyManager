@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using MoneyManager.Application.DTO.Debts;
 using MoneyManager.Infrastructure.Configurations.Accounts;
+using MoneyManager.Infrastructure.Entities.Debts;
 
 namespace MoneyManager.Infrastructure.Configurations.Debts
 {

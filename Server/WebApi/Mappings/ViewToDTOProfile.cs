@@ -18,6 +18,8 @@ using MoneyManager.WebApi.Models.User;
 using MoneyManager.WebApi.Models.Dashboard;
 using MoneyManager.Application.DTO.Dashboard;
 using MoneyManager.Application.DTO.Debts;
+using MoneyManager.Infrastructure.Entities.Debts;
+using MoneyManager.WebApi.Models.Debts;
 
 namespace MoneyManager.WebApi.Mappings
 {

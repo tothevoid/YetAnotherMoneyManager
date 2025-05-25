@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MoneyManager.Application.DTO.Debts;
 using MoneyManager.Application.Interfaces.Debts;
+using MoneyManager.Infrastructure.Entities.Debts;
 
 namespace MoneyManager.Application.Services.Debts
 {

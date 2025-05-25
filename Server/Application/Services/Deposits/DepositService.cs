@@ -39,6 +39,13 @@ namespace MoneyManager.Application.Services.Deposits
             return _mapper.Map<IEnumerable<ServerDepositDTO>>(deposits.OrderByDescending(x => x.From));
         }
 
+        public async Task<IEnumerable<ServerDepositDTO>> GetAllActive()
+        {
+            var deposits = await _depositRepo.GetAll(deposit => deposit.To > DateOnly.FromDateTime(DateTime.Now), 
+                include: GetFullHierarchyColumns);
+            return _mapper.Map<IEnumerable<ServerDepositDTO>>(deposits.OrderByDescending(x => x.From));
+        }
+
         public async Task<Guid> Add(ClientDepositDTO deposit)
         {
             var mappedDeposit = _mapper.Map<Deposit>(deposit);

@@ -2,7 +2,7 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { DepositEntity } from "../../models/deposits/DepositEntity";
 import DepositModal, { DepositModalRef } from "../../modals/DepositModal/DepositModal";
 import { createDeposit, getDeposits } from "../../api/deposits/depositApi";
-import { Button, Text, Flex, SimpleGrid, Checkbox } from "@chakra-ui/react";
+import { Button, Text, Flex, SimpleGrid, Checkbox, Box} from "@chakra-ui/react";
 import DepositStats from "../../components/deposits/DepositStats/DepositStats";
 import Deposit from "../../components/deposits/Deposit/Deposit";
 import { MdAdd } from "react-icons/md";
@@ -102,7 +102,7 @@ const DepositsPage: React.FC<Props> = () => {
 	}
 
     return (
-        <Fragment>
+        <Box paddingBlock={10}>
             {
                 state.deposits.length > 0 && state.selectedMaxMonths && state.selectedMaxMonths ?
                     <DepositStats onlyActive={state.onlyActive} selectedMinMonths={state.selectedMinMonths} selectedMaxMonths={state.selectedMaxMonths}/>:
@@ -133,7 +133,7 @@ const DepositsPage: React.FC<Props> = () => {
                     )
                 }
             </SimpleGrid>
-        </Fragment>
+        </Box>
     )
     
 }

@@ -110,7 +110,7 @@ const AccountsList: React.FC<Props> = (props) => {
 				</div>
 				<AddAccountButton onAdded={onAccountCreated}></AddAccountButton>
 			</Flex>
-			<SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(300px, 3fr))'>
+			<SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(350px, 3fr))'>
 				{
 				state.accounts.map((account: AccountEntity) => {
 					return <Account onReloadAccounts={onReloadAccounts} account={account} onEditCallback={onAccountUpdated} 

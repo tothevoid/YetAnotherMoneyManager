@@ -11,6 +11,7 @@ import BrokerAccountsPage from './pages/BrokerAccountsPage/BrokerAccountsPage';
 import SecuritiesPage from './pages/SecuritiesPage/SecuritiesPage';
 import BrokerAccountPage from './pages/BrokerAccountPage/BrokerAccountPage';
 import SecurityPage from './pages/SecurityPage/SecurityPage';
+import DashboardPage from './pages/DashboardPage/DashboardPage';
 
 const App = () => {
   return (
@@ -21,7 +22,8 @@ const App = () => {
       <main className="app-main">
         <Router>
           <Routes>
-            <Route path="/" element={<AccountsPage /> } />
+            <Route path="/" element={<DashboardPage />} />  
+            <Route path="/accounts" element={<AccountsPage /> } />
             <Route path="/transactions" element={<TransactionsPage />} />
             <Route path="/deposits" element={<DepositsPage />} />
             <Route path="/broker_accounts" element={<BrokerAccountsPage />} />

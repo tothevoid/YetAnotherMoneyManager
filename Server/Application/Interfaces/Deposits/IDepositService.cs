@@ -10,7 +10,9 @@ namespace MoneyManager.Application.Interfaces.Deposits
     public interface IDepositService
     {
         Task<IEnumerable<ServerDepositDTO>> GetAll(int monthsFrom, int monthsTo, bool onlyActive);
-        
+
+        Task<IEnumerable<ServerDepositDTO>> GetAllActive();
+
         Task<Guid> Add(ClientDepositDTO deposit);
 
         Task Update(ClientDepositDTO modifiedDeposit);

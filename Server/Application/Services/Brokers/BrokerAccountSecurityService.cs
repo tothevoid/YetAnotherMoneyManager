@@ -42,6 +42,13 @@ namespace MoneyManager.Application.Services.Brokers
             _stockConnector = stockConnector;
         }
 
+        public async Task<IEnumerable<BrokerAccountSecurityDTO>> GetAll()
+        {
+            var brokerAccountSecurities = await _brokerAccountSecurityRepo
+                .GetAll(include: GetFullHierarchyColumns);
+            return _mapper.Map<IEnumerable<BrokerAccountSecurityDTO>>(brokerAccountSecurities);
+        }
+
         public async Task<IEnumerable<BrokerAccountSecurityDTO>> GetByBrokerAccount(Guid brokerAccountId)
         {
             var brokerAccountSecurities = await _brokerAccountSecurityRepo

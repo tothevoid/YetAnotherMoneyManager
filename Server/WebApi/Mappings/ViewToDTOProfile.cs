@@ -15,6 +15,8 @@ using MoneyManager.WebApi.Models.Deposits.Charts;
 using MoneyManager.WebApi.Models.Securities;
 using MoneyManager.WebApi.Models.Transactions;
 using MoneyManager.WebApi.Models.User;
+using MoneyManager.WebApi.Models.Dashboard;
+using MoneyManager.Application.DTO.Dashboard;
 
 namespace MoneyManager.WebApi.Mappings
 {
@@ -52,6 +54,12 @@ namespace MoneyManager.WebApi.Mappings
             CreateMap<SecurityHistoryValueDto, SecurityHistoryValueModel>().ReverseMap();
 
             CreateMap<UserProfileModel, UserProfileDto>().ReverseMap();
+
+            CreateMap<DashboardDto, DashboardModel>();
+            CreateMap<TransactionStatsDto, TransactionStatsModel>();
+            CreateMap<BrokerAccountStatsDto, BrokerAccountStatsModel>();
+            CreateMap<AccountStatsDto, AccountStatsModel>();
+            CreateMap<DistributionDto, DistributionModel>().ReverseMap();
         }
     }
 }

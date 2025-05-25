@@ -1,6 +1,6 @@
 .app {
 	display: grid;
-	grid-template-rows: 60px 1fr 30px; /* Первая строка - хедер, вторая - основное содержимое */
+	grid-template-rows: 64px 1fr 30px; /* Первая строка - хедер, вторая - основное содержимое */
 }
 
 .header {

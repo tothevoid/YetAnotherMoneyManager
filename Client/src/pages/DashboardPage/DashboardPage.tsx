@@ -50,6 +50,7 @@ const DashboardPage: React.FC<Props> = () => {
         { name: t("dashboard_cash"), convertedAmount: dashboard.accountStats.totalCash, currency, amount: dashboard.accountStats.totalCash },
         { name: t("dashboard_securities"), convertedAmount: dashboard.brokerAccountStats.total, currency, amount: dashboard.brokerAccountStats.total},
         { name: t("dashboard_deposits"), convertedAmount: dashboard.accountStats.totalDeposit, currency, amount: dashboard.accountStats.totalDeposit },
+        { name: t("dashboard_deposit_incomes"), convertedAmount: dashboard.depositsIncomes.total, currency, amount: dashboard.depositsIncomes.total },
         { name: t("dashboard_bank_accounts"), convertedAmount: dashboard.accountStats.totalBankAccount, currency, amount: dashboard.accountStats.totalBankAccount },
         { name: t("dashboard_debts"), convertedAmount: dashboard.debtStats.total, currency, amount: dashboard.debtStats.total }
     ]
@@ -89,6 +90,14 @@ const DashboardPage: React.FC<Props> = () => {
                         <Stack gapY={2}>
                             <Text fontWeight={700} fontSize={"xl"}>{t("dashboard_deposits")}: {formatMoneyByCurrencyCulture(dashboard.accountStats.totalDeposit, currency)}</Text>
                             <DistributionChart data={dashboard.accountStats.depositsDistribution} mainCurrency={user.currency.name}/>
+                        </Stack>
+                    </Card.Body>
+                </Card.Root>
+                <Card.Root backgroundColor="background_primary" borderColor="border_primary">
+                    <Card.Body color="text_primary">
+                        <Stack gapY={2}>
+                            <Text fontWeight={700} fontSize={"xl"}>{t("dashboard_deposit_incomes")}: {formatMoneyByCurrencyCulture(dashboard.depositsIncomes.total, currency)}</Text>
+                            <DistributionChart data={dashboard.depositsIncomes.distribution} mainCurrency={user.currency.name}/>
                         </Stack>
                     </Card.Body>
                 </Card.Root>

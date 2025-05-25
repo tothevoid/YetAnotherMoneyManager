@@ -9,6 +9,7 @@ namespace MoneyManager.Application.DTO.Dashboard
         public BrokerAccountStatsDto BrokerAccountStats { get; set; } = new BrokerAccountStatsDto();
         public AccountStatsDto AccountStats { get; set; } = new AccountStatsDto();
         public DebtStatsDto DebtStats { get; set; } = new DebtStatsDto();
+        public DepositsIncomesDto DepositsIncomes { get; set; } = new DepositsIncomesDto();
     }
 
     public class TransactionStatsDto
@@ -30,6 +31,13 @@ namespace MoneyManager.Application.DTO.Dashboard
     }
 
     public class DebtStatsDto
+    {
+        public decimal Total { get; set; }
+
+        public IEnumerable<DistributionDto> Distribution { get; set; }
+    }
+
+    public class DepositsIncomesDto
     {
         public decimal Total { get; set; }
 

@@ -153,6 +153,7 @@
     "dashboard_securities": "Ценные бумаги",
     "dashboard_total_accounts": "Счета",
     "dashboard_deposits": "Депозиты",
+    "dashboard_deposit_incomes": "Заблокированные доходы депозитов",
     "dashboard_bank_accounts": "Банковские счета",
     "dashboard_debts": "Долги",
 

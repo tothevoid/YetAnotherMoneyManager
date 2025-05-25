@@ -64,6 +64,8 @@ namespace MoneyManager.WebApi.Mappings
             CreateMap<AccountStatsDto, AccountStatsModel>();
             CreateMap<DistributionDto, DistributionModel>().ReverseMap();
             CreateMap<DebtStatsDto, DebtStatsModel>().ReverseMap();
+            CreateMap<DepositsIncomesDto, DepositsIncomesModel>().ReverseMap();
+            
 
             CreateMap<DebtDto, DebtModel>().ReverseMap();
             CreateMap<DebtPayment, DebtPaymentModel>().ReverseMap();

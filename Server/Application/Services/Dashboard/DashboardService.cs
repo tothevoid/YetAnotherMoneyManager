@@ -10,6 +10,7 @@ using MoneyManager.Application.DTO.Accounts;
 using MoneyManager.Application.Interfaces.Deposits;
 using MoneyManager.Application.Interfaces.Transactions;
 using System;
+using System.Runtime.CompilerServices;
 using MoneyManager.Application.Interfaces.Brokers;
 using System.Transactions;
 using MoneyManager.Infrastructure.Entities.Accounts;
@@ -49,14 +50,16 @@ namespace MoneyManager.Application.Services.Dashboard
             var accountStats = await GetAccountData();
             var brokerAccountStats = await GetBrokerAccountData();
             var debtsStats = await GetDebtsData();
+            var depositsIncomes = await GetDepositsIncomesData();
 
             return new DashboardDto()
             {
                 //TODO: make it via setters
-                Total = accountStats.Total + brokerAccountStats.Total + debtsStats.Total,
+                Total = accountStats.Total + brokerAccountStats.Total + debtsStats.Total + depositsIncomes.Total,
                 AccountStats = accountStats,
                 BrokerAccountStats = brokerAccountStats,
                 DebtStats = debtsStats,
+                DepositsIncomes = depositsIncomes,
                 TransactionStats = await GetTransactionDate()
             };
         }
@@ -114,7 +117,6 @@ namespace MoneyManager.Application.Services.Dashboard
         private async Task<AccountStatsDto> GetAccountData()
         {
             var accounts = await _accountService.GetAll(true);
-            var deposits = await _depositService.GetAllActive();
 
             var cashValuesDistribution = new List<DistributionDto>();
             var depositsDistribution = new List<DistributionDto>();
@@ -230,6 +232,40 @@ namespace MoneyManager.Application.Services.Dashboard
                 Total = debtsSummary,
                 Distribution = debtsDistribution
             };
+        }
+
+        private async Task<DepositsIncomesDto> GetDepositsIncomesData()
+        {
+            var deposits = await _depositService.GetAllActive();
+
+            var debtsDistribution = new List<DistributionDto>();
+            decimal debtsSummary = 0;
+
+            foreach (var deposit in deposits)
+            {
+                var key = deposit.Name;
+                var currency = deposit.Account.Currency;
+                var totalDays = deposit.To.DayNumber - deposit.From.DayNumber;
+                var daysPassed = DateOnly.FromDateTime(DateTime.Now).DayNumber - deposit.From.DayNumber;
+                var amount = deposit.EstimatedEarn / totalDays * daysPassed;
+                var convertedAmount = amount * currency.Rate;
+                debtsSummary += convertedAmount;
+
+                debtsDistribution.Add(new DistributionDto()
+                {
+                    Name = key,
+                    Currency = currency.Name,
+                    Amount = amount,
+                    ConvertedAmount = convertedAmount
+                });
+            }
+
+            return new DepositsIncomesDto()
+            {
+                Total = debtsSummary,
+                Distribution = debtsDistribution
+            };
+
         }
     }
 }

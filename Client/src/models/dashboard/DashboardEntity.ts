@@ -3,6 +3,7 @@ export interface Dashboard {
     brokerAccountStats: BrokerAccountStats,
     accountStats: AccountStats,
     debtStats: DebtStats,
+    depositsIncomes: DepositsIncomes
     total: number
 }
 
@@ -37,6 +38,11 @@ export interface DistributionModel
 }
 
 export interface DebtStats {
+    total: number,
+    distribution: DistributionModel[],
+}
+
+export interface DepositsIncomes {
     total: number,
     distribution: DistributionModel[],
 }

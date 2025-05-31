@@ -3,12 +3,18 @@ import './HeaderItem.scss';
 
 type Props = {
     title: string
-    path: string
+    active: boolean
 }
 
 const HeaderItem = (props: Props) => {
     const {title} = props;
-    return <Link color="text_primary" href={props.path} className="header-item">{title}</Link>
+
+    const additionalConfig = props.active ? {
+        background: "background_primary",
+        borderRadius: "10px"
+    }: {}
+
+    return <Link {...additionalConfig} color="text_primary" className="header-item">{title}</Link>
 }
 
 export default HeaderItem;

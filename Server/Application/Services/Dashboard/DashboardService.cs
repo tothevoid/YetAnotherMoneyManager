@@ -10,15 +10,11 @@ using MoneyManager.Application.DTO.Accounts;
 using MoneyManager.Application.Interfaces.Deposits;
 using MoneyManager.Application.Interfaces.Transactions;
 using System;
-using System.Runtime.CompilerServices;
+using System.Linq;
 using MoneyManager.Application.Interfaces.Brokers;
-using System.Transactions;
-using MoneyManager.Infrastructure.Entities.Accounts;
-using System.Security.Principal;
 using MoneyManager.Application.DTO.Transactions;
 using MoneyManager.Application.Interfaces.Debts;
-using MoneyManager.Application.Services.Debts;
-using MoneyManager.Infrastructure.Entities.Brokers;
+using MoneyManager.Application.Interfaces.User;
 
 namespace MoneyManager.Application.Services.Dashboard
 {
@@ -31,10 +27,12 @@ namespace MoneyManager.Application.Services.Dashboard
         private readonly ITransactionsService _transactionsService;
         private readonly IBrokerAccountService _brokerAccountService;
         private readonly IDebtService _debtService;
+        private readonly IUserProfileService _userProfile;
 
         public DashboardService(IUnitOfWork uow, IMapper mapper, IAccountService accountService, 
             IDepositService depositService, ITransactionsService transactionsService,
-            IBrokerAccountService brokerAccountService, IDebtService debtService)
+            IBrokerAccountService brokerAccountService, IDebtService debtService, 
+            IUserProfileService userProfile)
         {
             _db = uow;
             _mapper = mapper;
@@ -43,6 +41,7 @@ namespace MoneyManager.Application.Services.Dashboard
             _transactionsService = transactionsService;
             _brokerAccountService = brokerAccountService;
             _debtService = debtService;
+            _userProfile = userProfile;
         }
 
         public async Task<DashboardDto> GetDashboard()
@@ -66,25 +65,29 @@ namespace MoneyManager.Application.Services.Dashboard
 
         private async Task<TransactionStatsDto> GetTransactionDate()
         {
-            var currentDate = DateTime.Now;
-            var transactions = await _transactionsService.GetAll(currentDate.Month, currentDate.Year);
+            var userProfile = await _userProfile.Get();
 
-            var spents = new List<DistributionDto>();
-            var incomes = new List<DistributionDto>();
+            var currentDate = DateTime.Now;
+            var transactions = (await _transactionsService
+                .GetAll(currentDate.Month, currentDate.Year))
+                //TODO: migrate to db level
+                .Where(transaction => !transaction.IsSystem);
+
+            var spents = new Dictionary<string, decimal>();
+            var incomes = new Dictionary<string, decimal>();
 
             decimal spentsTotal = 0;
             decimal incomesTotal = 0;
 
             foreach (var transaction in transactions) 
             {
-              
                 if (transaction.MoneyQuantity > 0)
                 {
-                    spentsTotal += HandleTransaction(transaction, spents);
+                    incomesTotal += HandleTransaction(transaction, incomes);
                 }
                 else
                 {
-                    incomesTotal += HandleTransaction(transaction, incomes);
+                    spentsTotal += HandleTransaction(transaction, spents);
                 }
             }
 
@@ -92,24 +95,38 @@ namespace MoneyManager.Application.Services.Dashboard
             {
                 SpentsTotal = spentsTotal,
                 IncomesTotal = incomesTotal,
-                SpentsDistribution = spents,
-                IncomesDistribution = incomes
+                SpentsDistribution = GetTransactionsDistribution(userProfile.Currency.Name, spents),
+                IncomesDistribution = GetTransactionsDistribution(userProfile.Currency.Name, incomes)
             };
         }
 
-        private decimal HandleTransaction(TransactionDTO transaction, List<DistributionDto> distribution)
+        private IEnumerable<DistributionDto> GetTransactionsDistribution(string currencyName, 
+            Dictionary<string, decimal> transactionTypesDistribution)
+        {
+            return transactionTypesDistribution
+                .Select(spent => new DistributionDto()
+                {
+                    Name = spent.Key,
+                    Currency = currencyName,
+                    Amount = spent.Value,
+                    ConvertedAmount = spent.Value
+                });
+        }
+
+        private decimal HandleTransaction(TransactionDTO transaction, Dictionary<string, decimal> distribution)
         {
             var typeName = transaction.TransactionType.Name;
             var amount = Math.Abs(transaction.MoneyQuantity);
             var convertedAmount = amount * transaction.Account.Currency.Rate;
-            
-            distribution.Add(new DistributionDto()
+
+            if (distribution.ContainsKey(typeName))
             {
-                Name = typeName,
-                Currency = transaction.Account.Currency.Name,
-                Amount = transaction.Account.Balance,
-                ConvertedAmount = convertedAmount
-            });
+                distribution[typeName] += convertedAmount;
+            }
+            else
+            {
+                distribution.Add(typeName, convertedAmount);
+            }
 
             return convertedAmount;
         }

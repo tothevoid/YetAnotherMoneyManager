@@ -9,7 +9,7 @@ import TransactionStats from '../../components/transactions/TransactionStats/Tra
 import { Box, Container, Flex, SimpleGrid, Text } from '@chakra-ui/react';
 import AddTransactionButton from '../../components/transactions/AddTransactionButton/AddTransactionButton';
 import { getTransactions, updateTransaction } from '../../api/transactions/transactionApi';
-import { getAccounts } from '../../api/accounts/accountApi';
+import { getAccounts, getAccountsByTypes } from '../../api/accounts/accountApi';
 import { useTranslation } from 'react-i18next';
 import { TransactionEntity } from "../../models/transactions/TransactionEntity";
 
@@ -38,7 +38,11 @@ const TransactionsPage: React.FC<any> = () => {
     }, []);
 
     const initAccounts = async () => {
-        const accounts = await getAccounts();
+        const accounts = await getAccountsByTypes([
+            "6ea1867f-c067-412c-b443-8b9bc2467202",	// Credit card
+            "a08f5553-379e-4294-a2e5-75e88219433c",	// Cash
+            "cda2ce07-551e-48cf-988d-270c0d022866"	// Debit card
+        ], true);
         setState((currentState) => {
             return {...currentState, accounts}
         })

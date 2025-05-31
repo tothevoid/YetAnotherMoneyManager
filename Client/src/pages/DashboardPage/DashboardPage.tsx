@@ -122,40 +122,16 @@ const DashboardPage: React.FC<Props> = () => {
                 <Card.Root backgroundColor="background_primary" borderColor="border_primary">
                     <Card.Body color="text_primary">
                         <Stack gapY={2}>
-                            <Text fontWeight={700} fontSize={"xl"}>Spents</Text>
-                            <Text fontWeight={600} fontSize={"md"}>Total: {formatMoneyByCurrencyCulture(dashboard.transactionStats.spentsTotal, currency)}</Text>
-                            {
-                               dashboard.transactionStats.spentsDistribution.map((spent) => 
-                                    <Stack gapX={2} direction={"row"}>
-                                        <Text>
-                                            {spent.name} - {formatMoneyByCurrencyCulture(spent.amount, spent.currency)}
-                                        </Text>
-                                        <Text>
-                                            ({formatMoneyByCurrencyCulture(spent.convertedAmount, currency)})
-                                        </Text>
-                                    </Stack>
-                                )
-                            }
+                            <Text fontWeight={700} fontSize={"xl"}>Spents: {formatMoneyByCurrencyCulture(dashboard.transactionStats.spentsTotal, currency)}</Text>
+                            <DistributionChart data={dashboard.transactionStats.spentsDistribution} mainCurrency={user.currency.name}/>
                         </Stack>
                     </Card.Body>
                 </Card.Root>
                 <Card.Root backgroundColor="background_primary" borderColor="border_primary">
                     <Card.Body color="text_primary">
                          <Stack gapY={2}>
-                            <Text fontWeight={700} fontSize={"xl"}>Incomes</Text>
-                            <Text fontWeight={600} fontSize={"md"}>Total: {formatMoneyByCurrencyCulture(dashboard.transactionStats.incomesTotal, currency)}</Text>
-                            {
-                               dashboard.transactionStats.incomesDistribution.map((spent) => 
-                                    <Stack gapX={2} direction={"row"}>
-                                        <Text>
-                                            {spent.name} - {formatMoneyByCurrencyCulture(spent.amount, spent.currency)}
-                                        </Text>
-                                        <Text>
-                                            ({formatMoneyByCurrencyCulture(spent.convertedAmount, currency)})
-                                        </Text>
-                                    </Stack>
-                                )
-                            }
+                            <Text fontWeight={700} fontSize={"xl"}>Incomes: {formatMoneyByCurrencyCulture(dashboard.transactionStats.incomesTotal, currency)}</Text>
+                            <DistributionChart data={dashboard.transactionStats.incomesDistribution} mainCurrency={user.currency.name}/>
                         </Stack>
                     </Card.Body>
                 </Card.Root>

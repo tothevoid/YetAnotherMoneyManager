@@ -1,7 +1,6 @@
 import './App.css';
 import Header from './components/structure/Header/Header';
 import TransactionsPage from './pages/TransactionsPage/TransactionsPage'
-import Footer from './components/structure/Footer/Footer';
 import DepositsPage from './pages/DepositsPage/DepositsPage';
 
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -37,9 +36,6 @@ const App = () => {
           </Routes>
         </Router>
       </main>
-      <div className="footer-container">
-        <Footer/>
-      </div>
     </div>
   );
 }

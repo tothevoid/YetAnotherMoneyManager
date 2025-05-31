@@ -1,4 +1,6 @@
-﻿namespace MoneyManager.WebApi.Models.Accounts
+﻿using System;
+
+namespace MoneyManager.WebApi.Models.Accounts
 {
     public class AccountGetAllConfig
     {

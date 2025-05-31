@@ -29,6 +29,13 @@ namespace MoneyManager.WebApi.Controllers.Accounts
             return _mapper.Map<IEnumerable<AccountModel>>(accounts);
         }
 
+        [HttpPost("GetAllByTypes")]
+        public async Task<IEnumerable<AccountModel>> GetAllByTypes(AccountGetAllByTypesConfig getAllConfig)
+        {
+            var accounts = await _accountService.GetAllByTypes(getAllConfig.TypesIds, getAllConfig.OnlyActive);
+            return _mapper.Map<IEnumerable<AccountModel>>(accounts);
+        }
+
         [HttpPut]
         public async Task<Guid> Add(AccountModel account)
         {

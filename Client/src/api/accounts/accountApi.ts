@@ -21,6 +21,19 @@ export const getAccounts = async (onlyActive: boolean = false): Promise<AccountE
     return accounts ? accounts.map(prepareClientAccount) : [] as AccountEntity[];
 }
 
+export const getAccountsByTypes = async (typesIds: string[], onlyActive: boolean = false): Promise<AccountEntity[]> =>  {
+    const accounts: ServerAccountEntity[] = await fetch(`${basicUrl}/GetAllByTypes`, {
+        method: "POST", 
+        body: JSON.stringify({onlyActive, typesIds}),
+        headers: {"Content-Type": "application/json"}
+    })
+    .then(checkPromiseStatus)
+    .then((response: Response) => response.json())
+    .catch(logPromiseError);
+
+    return accounts ? accounts.map(prepareClientAccount) : [] as AccountEntity[];
+}
+
 export const createAccount = async (newAccount: AccountEntity): Promise<string | void> => {
     const createdEntity = await createEntity(basicUrl, prepareServerAccount(newAccount));
     return createdEntity?.id;

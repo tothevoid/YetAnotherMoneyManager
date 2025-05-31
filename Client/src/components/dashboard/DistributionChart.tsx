@@ -46,7 +46,8 @@ const DistributionChart = (props: Props) => {
                     <Tooltip contentStyle={{
                         backgroundColor: '#333333',
                         borderColor: '#555555',
-                        color: "#FFFFFF" 
+                        color: "#FFFFFF",
+                        borderRadius: "10px"
                     }} itemStyle={{ color: "#E0E0E0" }} formatter={formatLabel}/>
                     <Legend />
                 </PieChart>

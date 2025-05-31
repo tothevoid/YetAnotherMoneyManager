@@ -11,7 +11,6 @@ import { TransactionEntity } from '../../models/transactions/TransactionEntity';
 import { getTransactionTypes } from '../../api/transactions/transactionTypeApi';
 
 type Props = {
-	accounts: AccountEntity[],
 	transaction?: TransactionEntity | null,
 	onSaved: (transaction: TransactionEntity) => void
 }

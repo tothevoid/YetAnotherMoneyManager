@@ -30,9 +30,18 @@ namespace MoneyManager.Application.Services.Accounts
 
         public async Task<IEnumerable<AccountDTO>> GetAll(bool onlyActive)
         {
-            Expression<Func<Account, bool>> filter = onlyActive ? 
-                account => account.Active : 
-                null;
+            Expression<Func<Account, bool>> filter = onlyActive ? account => account.Active : null;
+
+            var transactions = await _accountRepo.GetAll(filter, GetFullHierarchyColumns);
+            return _mapper.Map<IEnumerable<AccountDTO>>(transactions);
+        }
+
+        public async Task<IEnumerable<AccountDTO>> GetAllByTypes(Guid[] typesIds, bool onlyActive = false)
+        {
+            Expression<Func<Account, bool>> filter = null;
+
+            filter = account =>
+                (!onlyActive || account.Active) && typesIds.Contains(account.AccountTypeId);
 
             var transactions = await _accountRepo.GetAll(filter, GetFullHierarchyColumns);
             return _mapper.Map<IEnumerable<AccountDTO>>(transactions);

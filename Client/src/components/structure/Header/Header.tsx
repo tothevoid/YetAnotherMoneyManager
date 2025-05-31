@@ -1,5 +1,5 @@
 import HeaderItem from '../HeaderItem/HeaderItem';
-import { Box, Button,Flex, Icon, Image } from '@chakra-ui/react';
+import { Box, Button,Flex, Icon, Image, Link } from '@chakra-ui/react';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MdOutlineSettings } from 'react-icons/md';
@@ -17,7 +17,9 @@ const Header = () => {
         <Box pos="fixed" w={"100%"} zIndex={1000}>
             <Flex minH={50} alignItems="center" padding={1} direction={'row'} backgroundColor="header_bg" color="text_primary">
                 <Flex flex={{ base: 1 }} justify="center" align={"center"}>
-                    <Image width="30px" src="src/assets/icon.svg"></Image>
+                    <Link href='/'>
+                        <Image marginInline={"10px"} width="30px" src="src/assets/icon.svg"></Image>
+                    </Link>
                     <Flex flex="1">
                         <HeaderItem title={t("header_dashboard")} path='/'></HeaderItem>
                         <HeaderItem title={t("header_accounts")} path='/accounts'></HeaderItem>

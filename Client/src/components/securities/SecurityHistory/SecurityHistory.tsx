@@ -3,20 +3,20 @@ import { Box } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { getTickerHistory } from "../../../api/securities/securityApi";
-import { ClientSecurityHistory } from "../../../models/securities/SecurityHistory";
+import { SecurityHistoryValue } from "../../../models/securities/SecurityHistoryValue";
 
 interface Props {
     ticker: string
 }
 
 interface State {
-    tickerHistoryValues: ClientSecurityHistory[]
+    tickerHistoryValues: SecurityHistoryValue[]
 }
 
 const SecurityHistory: React.FC<Props> = (props) => {
-    const { t, i18n } = useTranslation();
+    const { i18n } = useTranslation();
 
-    const [state, setState] = useState({tickerHistoryValues: []})
+    const [state, setState] = useState<State>({tickerHistoryValues: []})
 
     const initData = async () => {
         const tickerHistoryValues = await getTickerHistory(props.ticker, i18n);
@@ -42,7 +42,7 @@ const SecurityHistory: React.FC<Props> = (props) => {
                 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date"/>
-                <YAxis/>
+                <YAxis domain={['dataMin - 10', 'dataMax + 10']}/>
                 <Tooltip />
                 <Legend />
                 <Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} name=""/>

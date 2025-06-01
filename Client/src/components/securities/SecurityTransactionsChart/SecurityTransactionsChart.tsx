@@ -1,9 +1,7 @@
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line } from "recharts";
 import { Box } from "@chakra-ui/react";
-import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { getTransactionsBySecurity } from "../../../api/securities/securityTransactionApi";
-import { SecurityEntity } from "../../../models/securities/SecurityEntity";
 import { SecurityTransactionEntity } from "../../../models/securities/SecurityTransactionEntity";
 
 interface Props {
@@ -15,8 +13,6 @@ interface State {
 }
 
 const SecurityTransactionsChart: React.FC<Props> = (props) => {
-    const { t, i18n } = useTranslation();
-
     const [state, setState] = useState<State>({transactions: []})
 
     const initData = async () => {
@@ -43,7 +39,7 @@ const SecurityTransactionsChart: React.FC<Props> = (props) => {
                 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date"/>
-                <YAxis/>
+                <YAxis domain={['dataMin - 10', 'dataMax + 10']}/>
                 <Tooltip />
                 <Legend />
                 <Line type="monotone" dataKey="price" stroke="#8884d8" activeDot={{ r: 8 }} name=""/>

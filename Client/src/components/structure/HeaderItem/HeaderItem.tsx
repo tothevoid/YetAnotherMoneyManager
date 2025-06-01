@@ -1,4 +1,4 @@
-import { Link } from '@chakra-ui/react';
+import { Text } from '@chakra-ui/react';
 import './HeaderItem.scss';
 
 type Props = {
@@ -14,7 +14,7 @@ const HeaderItem = (props: Props) => {
         borderRadius: "10px"
     }: {}
 
-    return <Link {...additionalConfig} color="text_primary" className="header-item">{title}</Link>
+    return <Text {...additionalConfig} color="text_primary" className="header-item">{title}</Text>
 }
 
 export default HeaderItem;

@@ -2,7 +2,7 @@ import { i18n } from 'i18next';
 import config from '../../config' 
 import { formatDate } from '../../formatters/dateFormatter';
 import { SecurityEntity, ServerSecurityEntity } from '../../models/securities/SecurityEntity';
-import { SecurityHistory } from '../../models/securities/SecurityHistory';
+import { SecurityHistoryValue } from '../../models/securities/SecurityHistoryValue';
 import { convertToDateOnly } from '../../utils/DateUtils';
 import { checkPromiseStatus, logPromiseError } from '../../utils/PromiseUtils';
 import { deleteEntity, getAllEntities } from '../basicApi';
@@ -22,11 +22,11 @@ export const getSecurityById = async (id: string): Promise<SecurityEntity | void
     return brokerAccount;
 }
 
-export const getTickerHistory = async (ticker: string, format: i18n): Promise<SecurityHistory[] | void> => {
-   const tickerHistoryValues: SecurityHistory[] | void = await fetch(`${basicUrl}/GetTickerHistory?ticker=${ticker}`, { method: "GET"})
+export const getTickerHistory = async (ticker: string, format: i18n): Promise<SecurityHistoryValue[] | void> => {
+   const tickerHistoryValues: SecurityHistoryValue[] | void = await fetch(`${basicUrl}/GetTickerHistory?ticker=${ticker}`, { method: "GET"})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
-        .then((securityHistories: SecurityHistory[]) => {
+        .then((securityHistories: SecurityHistoryValue[]) => {
             return securityHistories.map(securityHistory => {
                 return {
                     value: securityHistory.value,

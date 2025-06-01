@@ -175,5 +175,9 @@
     "entity_debt_payment_target_account": "Счёт",
     "entity_debt_payment_transaction": "Транзакция",
     "entity_debt_payment_debt": "Долг",
-    "entity_debt_payment_date": "Дата"
+    "entity_debt_payment_date": "Дата",
+
+    "security_page_tabs_history": "История котировок",
+    "security_page_tabs_transactions": "Транзакции",
+    "security_page_tabs_dividends": "Дивиденды"
 }

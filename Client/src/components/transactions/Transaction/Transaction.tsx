@@ -55,7 +55,7 @@ const Transaction: React.FC<Props> = (props: Props) => {
 	const { i18n, t} = useTranslation()
 
 	const icon = transactionType.iconKey ?
-		<Image h={8} w={8} src={getTransactionTypeIconUrl(transactionType.iconKey)}/>:
+		<Image title={transactionType.name} h={8} w={8} src={getTransactionTypeIconUrl(transactionType.iconKey)}/>:
 		<MdOutlinePayment size={32} color="#aaa" />
 
 	return <Card.Root borderColor="border_primary" color="text_primary" backgroundColor="background_primary" 
@@ -64,14 +64,14 @@ const Transaction: React.FC<Props> = (props: Props) => {
 			<Flex justifyContent="space-between" alignItems="center">
 				<Stack direction={'row'} alignItems="center">
 					{icon}
-					<Stack ml={5}>
+					<Stack direction={"row"} ml={5}>
 						<Text fontWeight={700}>{name}</Text>
-						<Text>{formatDate(date, i18n, false)} • {account.name}</Text>
+						<Text>{account.name}</Text>
 					</Stack>
 				</Stack>
 				<Flex gap={2} justifyContent="space-between" alignItems="center">
 					{getTransactionDirectionIcon()}
-					<Text width={100}>{formatMoneyByCurrencyCulture(moneyQuantity, account.currency.name)}</Text>
+					<Text width={150}>{formatMoneyByCurrencyCulture(moneyQuantity, account.currency.name)}</Text>
 					<Button background={'background_secondary'} size={'sm'} onClick={onEditClicked}>
 						<Icon color="card_action_icon_primary">
 							<MdEdit/>

@@ -7,8 +7,8 @@ import { createEntity, deleteEntity, updateEntity } from '../basicApi';
 
 const basicUrl = `${config.api.URL}/Transaction`;
 
-export const getTransactions = async (month: number, year: number): Promise<TransactionEntity[]> => {
-    const url = `${basicUrl}?month=${month}&year=${year}`;
+export const getTransactions = async (month: number, year: number, showSystem: boolean): Promise<TransactionEntity[]> => {
+    const url = `${basicUrl}?month=${month}&year=${year}&showSystem=${showSystem}`;
     const transactions = await fetch(url, {method: "GET"})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())

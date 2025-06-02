@@ -69,7 +69,7 @@ namespace MoneyManager.Application.Services.Dashboard
 
             var currentDate = DateTime.Now;
             var transactions = (await _transactionsService
-                .GetAll(currentDate.Month, currentDate.Year))
+                .GetAll(currentDate.Month, currentDate.Year, false))
                 //TODO: migrate to db level
                 .Where(transaction => !transaction.IsSystem);
 

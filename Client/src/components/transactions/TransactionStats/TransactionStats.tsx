@@ -1,10 +1,13 @@
 import { AccountEntity } from '../../../models/accounts/AccountEntity'
-import { Button, Flex, Stack } from '@chakra-ui/react'
+import { Box, Button, Flex, Stack } from '@chakra-ui/react'
 import { Text } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { TransactionEntity } from '../../../models/transactions/TransactionEntity';
+import { getChartLabelConfig } from '../../../utils/ChartUtilities';
+import { useUserProfile } from '../../../contexts/UserProfileContext';
+import { formatMoneyByCurrencyCulture } from '../../../formatters/moneyFormatter';
 
 type Props = {
     accounts: AccountEntity[]
@@ -38,7 +41,7 @@ const getGraphData = (transactions: TransactionEntity[],
         .reduce(
         (accumulator: Map<string, number>, currentValue: TransactionEntity) => {
             const key = keySelector(currentValue);
-            let currentQuantity = currentValue.moneyQuantity;
+            let currentQuantity = currentValue.moneyQuantity * currentValue.account.currency.rate;
             if (accumulator.has(key)) {
                 currentQuantity += accumulator.get(key) ?? 0;
             }
@@ -73,10 +76,11 @@ const getNameMapping = <CollectionType,>(
 };
 
 const TransactionStats = (props: Props) => {
-    const accountsMapping = getNameMapping(props.accounts, (account) => account.id, (account) => account.name );
+    const accountsMapping = getNameMapping(props.accounts, (account) => account.id, (account) => account.name);
     const [selectedGrouping, setSelectedGrouping] = useState(DataGrouping.BySource);
     const [chartData, setChartData] = useState([] as PieChartData[]);
     const { t } = useTranslation();
+    const { user } = useUserProfile()
 
     const groupingConfig = new Map<DataGrouping, GroupingConfig>([
         [ DataGrouping.BySource, {
@@ -102,30 +106,33 @@ const TransactionStats = (props: Props) => {
 
     return <Stack>
         <Text fontSize="2xl" fontWeight={600}>{t("manager_stats_title")}</Text>
-        <Flex gap={4} alignItems={'center'}>
-            {
-                [...groupingConfig.values()].map(groupingConfig => {
-                    return <Button key={groupingConfig.group} background='purple.600' disabled={groupingConfig.group == selectedGrouping} 
-                        onClick={() => {setSelectedGrouping(groupingConfig.group)}}>
-                        {groupingConfig.caption}
-                    </Button>
-                })
-            }
-        </Flex>
-
-        <div style={{ width: '100%', height: 300 }}>
-            <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                    <Pie data={chartData} cx="50%" cy="50%" outerRadius={100} dataKey="value">
-                    {chartData.map((_, index) => (
-                        <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
-                        ))}
-                    </Pie>
-                    <Tooltip />
-                    <Legend/>
-                </PieChart>
-            </ResponsiveContainer>
-        </div>
+        <Box padding="25px" borderRadius="10px" background="background_primary" width="100%">
+            <Flex gap={4} alignItems={'center'}>
+                {
+                    [...groupingConfig.values()].map(groupingConfig => {
+                        return <Button key={groupingConfig.group} background='purple.600' disabled={groupingConfig.group == selectedGrouping} 
+                            onClick={() => {setSelectedGrouping(groupingConfig.group)}}>
+                            {groupingConfig.caption}
+                        </Button>
+                    })
+                }
+            </Flex>
+            <Box style={{ width: '100%', height: 400 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                        <Pie data={chartData} cx="50%" cy="50%" outerRadius={100} dataKey="value">
+                            {
+                                chartData.map((_, index) => (
+                                    <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />))
+                            }
+                        </Pie>
+                        <Tooltip itemStyle={{ color: '#FFFFFF' }} contentStyle={getChartLabelConfig()} formatter={(value, name) => [formatMoneyByCurrencyCulture(value, user?.currency.name), name]} />
+                        <Legend/>
+                    </PieChart>
+                </ResponsiveContainer>
+            </Box>
+            
+        </Box>
     </Stack>
 }
 

@@ -130,7 +130,7 @@ const TransactionTypesTable: React.FC<Props> = () => {
         <Table.Root>
             <Table.Header>
                 <Table.Row border="none" bg="none" color="text_primary">
-                    <Table.ColumnHeader/>
+                    <Table.ColumnHeader w={"10px"}/>
                     <Table.ColumnHeader color="text_primary">Name</Table.ColumnHeader>
                     <Table.ColumnHeader color="text_primary">Active</Table.ColumnHeader>
                     <Table.ColumnHeader/>

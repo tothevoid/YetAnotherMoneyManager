@@ -16,6 +16,7 @@
     "manager_stats_title": "Статистика",
     "manager_stats_by_source": "По счёту",
     "manager_stats_by_type": "По типу",
+    "manager_transactions_show_system": "Показать системные",
 
     "entity_account_name_form_title": "Cчёт",
     "entity_account_name": "Название",

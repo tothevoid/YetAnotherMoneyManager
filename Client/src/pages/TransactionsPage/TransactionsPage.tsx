@@ -6,27 +6,32 @@ import { AccountEntity } from '../../models/accounts/AccountEntity';
 import { insertByPredicate, reorderByPredicate } from '../../utils/ArrayExtensions'
 import Pagination from '../../components/transactions/Pagination/Pagination';
 import TransactionStats from '../../components/transactions/TransactionStats/TransactionStats';
-import { Box, Container, Flex, SimpleGrid, Text } from '@chakra-ui/react';
+import { Box, Checkbox, Flex, SimpleGrid, Text } from '@chakra-ui/react';
 import AddTransactionButton from '../../components/transactions/AddTransactionButton/AddTransactionButton';
 import { getTransactions, updateTransaction } from '../../api/transactions/transactionApi';
-import { getAccounts, getAccountsByTypes } from '../../api/accounts/accountApi';
+import { getAccountsByTypes } from '../../api/accounts/accountApi';
 import { useTranslation } from 'react-i18next';
 import { TransactionEntity } from "../../models/transactions/TransactionEntity";
+import { formatDate } from "../../formatters/dateFormatter";
+import { formatMoneyByCurrencyCulture } from "../../formatters/moneyFormatter";
+import { useUserProfile } from "../../contexts/UserProfileContext";
 
 type State = {
     transactions: TransactionEntity[],
     accounts: AccountEntity[],
     month: number,
     year: number
+    showSystem: boolean
 }
 
-const getDefaultState = () => {
+const getDefaultState = (): State => {
     return {
         month: new Date().getMonth() + 1,
         year: new Date().getFullYear(),
         transactions: [] as TransactionEntity[],
         accounts: [] as AccountEntity[],
-    };    
+        showSystem: false
+    };
 }
 
 const TransactionsPage: React.FC<any> = () => {
@@ -49,7 +54,7 @@ const TransactionsPage: React.FC<any> = () => {
     };
 
     const loadTransactions = async (month: number, year: number) => {
-        const transactions = await getTransactions(month, year);
+        const transactions = await getTransactions(month, year, state.showSystem);
         setState((currentState) => {
             return {...currentState, month, year, transactions}
         })
@@ -128,10 +133,48 @@ const TransactionsPage: React.FC<any> = () => {
 
     const {transactions, accounts, year, month} = state;
     
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+
+    const { user } = useUserProfile();
+
+    const onCheckboxChanged = async (checkboxChange: any) => {
+		setState((currentState) => {
+			return {...currentState, showSystem: !!checkboxChange.checked};
+		});
+	}
+
+    useEffect(() => {
+        const loadTransactions = async () => {
+            const transactions = await getTransactions(state.month, state.year, state.showSystem);
+            setState((currentState) => {
+                return {...currentState, month, year, transactions}
+            })
+        };
+        loadTransactions();
+    }, [state.showSystem]);
+
+    const groupedTransactions = transactions.reduce((accumulator: Map<number, TransactionEntity[]>, currentValue: TransactionEntity) => {
+        const day = currentValue.date.getDate();
+        if (accumulator.has(day)) {
+            accumulator.get(day).push(currentValue);
+        } else {
+            accumulator.set(day, [currentValue]);
+        }
+
+        return accumulator;
+    }, new Map<number, TransactionEntity[]>);
+
+    const calculateSummary = (transactions: TransactionEntity[]) => {
+        const transaction = transactions.reduce((accumulator, currentValue) => {
+            accumulator += currentValue.moneyQuantity * currentValue.account.currency.rate;
+            return accumulator;
+        }, 0)
+
+        return formatMoneyByCurrencyCulture(transaction, user?.currency.name);
+    }
 
     return (
-        <Container color="text_primary" paddingTop={4} paddingBottom={4}>
+        <Box color="text_primary" paddingTop={4} paddingBottom={4}>
             <SimpleGrid columns={2} gap={16}>
                 <Box>
                     <Flex justifyContent={"space-between"}>
@@ -140,17 +183,35 @@ const TransactionsPage: React.FC<any> = () => {
                             accounts={accounts} 
                             onTransactionCreated={onTransactionCreated}/>
                     </Flex>
+                    <Box marginBlock={"10px"}>
+                        <Checkbox.Root checked={state.showSystem} onCheckedChange={onCheckboxChanged} variant="solid">
+                            <Checkbox.HiddenInput />
+                            <Checkbox.Control />
+                            <Checkbox.Label color="text_primary">{t("manager_transactions_show_system")}</Checkbox.Label>
+                        </Checkbox.Root>
+                    </Box>
                     <Pagination year={year} month={month} onPageSwitched={loadTransactions}></Pagination>
                     <div className="transactions">
                         {
-                        (transactions.length !== 0) ?
-                        transactions.map((transaction: TransactionEntity) => {       
-                            return <Transaction key={transaction.id} transaction={transaction} 
-                                onDelete={onTransactionDeleted} onUpdate={onTransactionUpdated}
-                                accounts={accounts}>
-                            </Transaction>
-                        }):
-                        <div className="empty-transactions">{t("manager_transactions_add_transaction")}</div>
+                            transactions.length ?
+                                [...groupedTransactions.entries()].map(([transactionDay, transactions]) => 
+                                    <Fragment>
+                                        <Flex justifyContent="space-between">
+                                            <Text key={transactionDay}>{formatDate(new Date(state.year, state.month - 1, transactionDay), i18n, false)}</Text>
+                                            <Text key={transactionDay}>{calculateSummary(transactions)}</Text>
+                                        </Flex>
+                                        
+                                        {
+                                            transactions.map((transaction: TransactionEntity) => {       
+                                                return <Transaction key={transaction.id} transaction={transaction} 
+                                                    onDelete={onTransactionDeleted} onUpdate={onTransactionUpdated}
+                                                    accounts={accounts}>
+                                                </Transaction>
+                                            })
+                                        }
+                                    </Fragment>
+                                ):
+                                <div className="empty-transactions">{t("manager_transactions_add_transaction")}</div>
                         }
                     </div>
                 </Box>
@@ -162,7 +223,7 @@ const TransactionsPage: React.FC<any> = () => {
                     }
                 </Box>
             </SimpleGrid>
-        </Container>
+        </Box>
     );
 }
 

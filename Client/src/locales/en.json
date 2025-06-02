@@ -16,6 +16,7 @@
     "manager_stats_title": "Stats",
     "manager_stats_by_source": "By account",
     "manager_stats_by_type": "By type",
+    "manager_transactions_show_system": "Show system",
 
     "entity_account_name_form_title": "account",
     "entity_account_name": "Name",

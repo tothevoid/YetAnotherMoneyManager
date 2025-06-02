@@ -33,12 +33,12 @@ namespace MoneyManager.Application.Services.Transactions
             return _mapper.Map<TransactionDTO>(transaction);
         }
 
-        public async Task<IEnumerable<TransactionDTO>> GetAll(int month, int year)
+        public async Task<IEnumerable<TransactionDTO>> GetAll(int month, int year, bool showSystem)
         {
             var (startDate, endDate) = GetDateRange(month, year);
 
             var transactions = await _transactionsRepo.GetAll(transaction => 
-                transaction.Date >= startDate && transaction.Date <= endDate,
+                transaction.Date >= startDate && transaction.Date <= endDate && (showSystem || !transaction.IsSystem),
                 GetFullHierarchyColumns);
             return _mapper.Map<IEnumerable<TransactionDTO>>(transactions.OrderByDescending(x => x.Date));
         }

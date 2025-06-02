@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { DistributionModel } from '../../models/dashboard/DashboardEntity';
 import { formatMoneyByCurrencyCulture } from '../../formatters/moneyFormatter';
+import { getChartLabelConfig } from '../../utils/ChartUtilities';
 
 const getPossibleColors = () => {
     return [
@@ -39,16 +40,13 @@ const DistributionChart = (props: Props) => {
             <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                     <Pie data={props.data} cx="50%" cy="50%" outerRadius={100} dataKey="convertedAmount">
-                    {props.data.map((_, index) => (
-                        <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
-                    ))}
+                    {
+                        props.data.map((_, index) => (
+                            <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+                        ))
+                    }
                     </Pie>
-                    <Tooltip contentStyle={{
-                        backgroundColor: '#333333',
-                        borderColor: '#555555',
-                        color: "#FFFFFF",
-                        borderRadius: "10px"
-                    }} itemStyle={{ color: "#E0E0E0" }} formatter={formatLabel}/>
+                    <Tooltip contentStyle={getChartLabelConfig()} itemStyle={{ color: "#E0E0E0" }} formatter={formatLabel}/>
                     <Legend />
                 </PieChart>
             </ResponsiveContainer>

@@ -3,6 +3,8 @@ import { Box } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { getTransactionsBySecurity } from "../../../api/securities/securityTransactionApi";
 import { SecurityTransactionEntity } from "../../../models/securities/SecurityTransactionEntity";
+import { formatDate } from "../../../formatters/dateFormatter";
+import { useTranslation } from "react-i18next";
 
 interface Props {
     securityId: string
@@ -15,14 +17,21 @@ interface State {
 const SecurityTransactionsChart: React.FC<Props> = (props) => {
     const [state, setState] = useState<State>({transactions: []})
 
+    const { i18n } = useTranslation();
+
     const initData = async () => {
         const transactions = await getTransactionsBySecurity(props.securityId);
         if (!transactions) {
             return;
         }
 
+        const fixedTransactions = transactions.map(transaction => {
+            transaction.date = formatDate(transaction.date, i18n)
+            return transaction;
+        })
+
         setState((currentState) => {
-            return {...currentState, transactions}
+            return {...currentState, transactions: fixedTransactions}
         })
     }
 

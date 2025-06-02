@@ -10,7 +10,7 @@ namespace MoneyManager.Infrastructure.Entities.Transactions
 
         public DateOnly Date { get; set; }
 
-        public decimal MoneyQuantity { get; set; }
+        public decimal Amount { get; set; }
 
         public Account Account { get; set; }
 

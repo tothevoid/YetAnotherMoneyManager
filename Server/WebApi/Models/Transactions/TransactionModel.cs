@@ -10,7 +10,7 @@ namespace MoneyManager.WebApi.Models.Transactions
 
         public DateOnly Date {get;set;}
 
-        public decimal MoneyQuantity {get;set;}
+        public decimal Amount {get;set;}
 
         public AccountModel Account {get;set;}
 

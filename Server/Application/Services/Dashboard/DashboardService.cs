@@ -81,7 +81,7 @@ namespace MoneyManager.Application.Services.Dashboard
 
             foreach (var transaction in transactions) 
             {
-                if (transaction.MoneyQuantity > 0)
+                if (transaction.Amount > 0)
                 {
                     incomesTotal += HandleTransaction(transaction, incomes);
                 }
@@ -116,7 +116,7 @@ namespace MoneyManager.Application.Services.Dashboard
         private decimal HandleTransaction(TransactionDTO transaction, Dictionary<string, decimal> distribution)
         {
             var typeName = transaction.TransactionType.Name;
-            var amount = Math.Abs(transaction.MoneyQuantity);
+            var amount = Math.Abs(transaction.Amount);
             var convertedAmount = amount * transaction.Account.Currency.Rate;
 
             if (distribution.ContainsKey(typeName))

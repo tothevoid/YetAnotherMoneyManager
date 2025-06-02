@@ -37,11 +37,11 @@ const getGraphData = (transactions: TransactionEntity[],
     const data: Array<PieChartData> = []
 
     transactions
-        .filter(transaction => transaction.moneyQuantity < 0)
+        .filter(transaction => transaction.amount < 0)
         .reduce(
         (accumulator: Map<string, number>, currentValue: TransactionEntity) => {
             const key = keySelector(currentValue);
-            let currentQuantity = currentValue.moneyQuantity * currentValue.account.currency.rate;
+            let currentQuantity = currentValue.amount * currentValue.account.currency.rate;
             if (accumulator.has(key)) {
                 currentQuantity += accumulator.get(key) ?? 0;
             }

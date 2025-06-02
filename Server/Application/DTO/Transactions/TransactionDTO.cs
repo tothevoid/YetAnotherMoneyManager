@@ -10,7 +10,7 @@ namespace MoneyManager.Application.DTO.Transactions
 
         public DateOnly Date { get; set; }
 
-        public decimal MoneyQuantity { get; set; }
+        public decimal Amount { get; set; }
 
         public AccountDTO Account { get; set; }
 

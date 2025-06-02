@@ -57,7 +57,7 @@ namespace MoneyManager.Application.Services.Debts
             {
                 transactionDto.AccountId = debtDto.TargetAccountId;
                 transactionDto.Date = debtDto.Date;
-                transactionDto.MoneyQuantity = debtDto.Amount;
+                transactionDto.Amount = debtDto.Amount;
 
                 await _transactionService.Update(transactionDto);
             }
@@ -92,7 +92,7 @@ namespace MoneyManager.Application.Services.Debts
                 Id = transactionId,
                 AccountId = debtPaymentDto.TargetAccountId,
                 Date = debtPaymentDto.Date,
-                MoneyQuantity = debtPaymentDto.Amount,
+                Amount = debtPaymentDto.Amount,
                 IsSystem = true,
                 //TODO: add special name and type
                 Name = "Debt",

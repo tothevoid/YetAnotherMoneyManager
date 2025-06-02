@@ -4,7 +4,7 @@ import { TransactionTypeEntity } from "./TransactionTypeEntity";
 interface CommonTransactionEntity {
     id: string,
     name: string,
-    moneyQuantity: number;
+    amount: number;
     cashback: number,
     isSystem: boolean
 }

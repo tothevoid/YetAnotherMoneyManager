@@ -140,7 +140,7 @@ namespace MoneyManager.Application.Services.Accounts
                 Date = DateOnly.FromDateTime(DateTime.UtcNow),
                 Name = title,
                 TransactionTypeId = TransactionTypeConstants.System,
-                MoneyQuantity = balance,
+                Amount = balance,
                 IsSystem = true
             };
         }

@@ -49,11 +49,11 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 		[TransactionDirection.Spent]: { label: t("entity_transaction_direction_outcome"), value: TransactionDirection.Spent },
 	} as const;
 
-	const moneyQuantity = props.transaction?.moneyQuantity ? 
-		Math.abs(props.transaction.moneyQuantity) :
+	const amount = props.transaction?.amount ? 
+		Math.abs(props.transaction.amount) :
 		0;
 
-	const direction = props.transaction && props.transaction.moneyQuantity > 0 ?
+	const direction = props.transaction && props.transaction.amount > 0 ?
 		transactionOptions[TransactionDirection.Income]:
 		transactionOptions[TransactionDirection.Spent];
 
@@ -68,7 +68,7 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 			id: props.transaction?.id ?? crypto.randomUUID(),
 			name: props.transaction?.name ?? "",
 			date: props.transaction?.date ?? new Date(),
-			moneyQuantity: moneyQuantity,
+			amount,
 			account: props.transaction?.account ?? source,
 			direction: direction,
 			cashback: props.transaction?.cashback ?? 0,
@@ -87,7 +87,7 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 			-1;
 
 		const formData = transaction as TransactionEntity;
-		formData.moneyQuantity = multiplier * formData.moneyQuantity;
+		formData.amount = multiplier * formData.amount;
 		props.onSaved(formData);
 		onClose();
 	};
@@ -114,10 +114,10 @@ const TransactionModal = forwardRef<TransactionModalRef, Props>((props: Props, r
 							labelSelector={(currency => currency.label)} 
 							valueSelector={(currency => currency.value)}/>
 					</Field.Root>
-					<Field.Root mt={4} invalid={!!errors.moneyQuantity}>
+					<Field.Root mt={4} invalid={!!errors.amount}>
 						<Field.Label>{t("entity_transaction_money_quantity")}</Field.Label>
-						<Input {...register("moneyQuantity", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='500' />
-						<Field.ErrorText>{errors.moneyQuantity?.message}</Field.ErrorText>
+						<Input {...register("amount", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='500' />
+						<Field.ErrorText>{errors.amount?.message}</Field.ErrorText>
 					</Field.Root>
 					{
 						selectedDirection.value === TransactionDirection.Spent ?

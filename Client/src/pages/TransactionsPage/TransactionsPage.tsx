@@ -166,7 +166,7 @@ const TransactionsPage: React.FC<any> = () => {
 
     const calculateSummary = (transactions: TransactionEntity[]) => {
         const transaction = transactions.reduce((accumulator, currentValue) => {
-            accumulator += currentValue.moneyQuantity * currentValue.account.currency.rate;
+            accumulator += currentValue.amount * currentValue.account.currency.rate;
             return accumulator;
         }, 0)
 

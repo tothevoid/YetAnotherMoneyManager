@@ -21,7 +21,7 @@ type Props = {
 } 
 
 const Transaction: React.FC<Props> = (props: Props) => {
-	const {moneyQuantity, transactionType, name, date, account} = props.transaction;
+	const {amount, transactionType, name, date, account} = props.transaction;
 
 	const confirmModalRef = useRef<ConfirmModalRef>(null);
  	const editModalRef = useRef<TransactionModalRef>(null);
@@ -43,7 +43,7 @@ const Transaction: React.FC<Props> = (props: Props) => {
 	}
 
 	const getTransactionDirectionIcon = () => {
-		return props.transaction.moneyQuantity > 0 ?
+		return props.transaction.amount > 0 ?
 			<Icon rounded={16} size={"lg"} fontSize="32" background={'green.100'} color={'green.600'}>
 				<MdOutlineArrowUpward/>
 			</Icon>:
@@ -71,7 +71,7 @@ const Transaction: React.FC<Props> = (props: Props) => {
 				</Stack>
 				<Flex gap={2} justifyContent="space-between" alignItems="center">
 					{getTransactionDirectionIcon()}
-					<Text width={150}>{formatMoneyByCurrencyCulture(moneyQuantity, account.currency.name)}</Text>
+					<Text width={150}>{formatMoneyByCurrencyCulture(amount, account.currency.name)}</Text>
 					<Button background={'background_secondary'} size={'sm'} onClick={onEditClicked}>
 						<Icon color="card_action_icon_primary">
 							<MdEdit/>

@@ -54,7 +54,7 @@ namespace MoneyManager.Application.Services.Transactions
                 transaction.AccountId = sourceId;
 
                 var account = await _accountRepo.GetById(sourceId);
-                account.Balance += transaction.MoneyQuantity;
+                account.Balance += transaction.Amount;
                 _accountRepo.Update(account);
             }
            
@@ -99,26 +99,26 @@ namespace MoneyManager.Application.Services.Transactions
             //account deleted from transaction
             if (lastTransactionId != default && updateAccountModelId == default)
             {
-                var difference = lastTransaction.MoneyQuantity * -1;
+                var difference = lastTransaction.Amount * -1;
                 accountsToUpdate.Add(new UpdateAccountDTO() { AccountId = lastTransactionId, Delta = difference });
             }
             //account added to transaction
             else if (lastTransactionId == default && updateAccountModelId != default)
             {
-                accountsToUpdate.Add(new UpdateAccountDTO() { AccountId = updateAccountModelId, Delta = updateAccountModel.MoneyQuantity });
+                accountsToUpdate.Add(new UpdateAccountDTO() { AccountId = updateAccountModelId, Delta = updateAccountModel.Amount });
             }
             //changed account from transaction
             else if (lastTransactionId != default && updateAccountModelId != default &&
                 lastTransaction.Account.Id != updateAccountModel.Account.Id)
             {
-                accountsToUpdate.Add(new UpdateAccountDTO() { AccountId = lastTransactionId, Delta = lastTransaction.MoneyQuantity * -1 });
-                accountsToUpdate.Add(new UpdateAccountDTO() { AccountId = updateAccountModelId, Delta = updateAccountModel.MoneyQuantity });
+                accountsToUpdate.Add(new UpdateAccountDTO() { AccountId = lastTransactionId, Delta = lastTransaction.Amount * -1 });
+                accountsToUpdate.Add(new UpdateAccountDTO() { AccountId = updateAccountModelId, Delta = updateAccountModel.Amount });
             }
             //changed money quantity of the same account
             else if (lastTransactionId != default && updateAccountModelId != default &&
-                lastTransaction.MoneyQuantity != updateAccountModel.MoneyQuantity)
+                lastTransaction.Amount != updateAccountModel.Amount)
             {
-                var difference = updateAccountModel.MoneyQuantity - lastTransaction.MoneyQuantity;
+                var difference = updateAccountModel.Amount - lastTransaction.Amount;
                 accountsToUpdate.Add(new UpdateAccountDTO() { AccountId = updateAccountModelId, Delta = difference });
             }
             foreach (var account in accountsToUpdate)
@@ -141,10 +141,10 @@ namespace MoneyManager.Application.Services.Transactions
             }
 
             var sourceId = transaction?.Account?.Id ?? default;
-            if (sourceId != default && transaction.MoneyQuantity != 0)
+            if (sourceId != default && transaction.Amount != 0)
             {
                 var accountEntity = await _accountRepo.GetById(sourceId);
-                accountEntity.Balance += transaction.MoneyQuantity * -1;
+                accountEntity.Balance += transaction.Amount * -1;
                 _accountRepo.Update(accountEntity);
 
             }

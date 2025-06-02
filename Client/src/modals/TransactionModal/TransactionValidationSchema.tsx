@@ -6,7 +6,7 @@ export const TransactionValidationSchema = z.object({
   id: string().optional(),
   name: z.string().min(1),
   date: z.date(),
-  moneyQuantity: z.number()
+  amount: z.number()
     .nonnegative()
     .gt(0),
   account: z.object({

@@ -44,7 +44,7 @@ const prepareServerTransaction = (transaction: TransactionEntity): ServerTransac
         date: convertToDateOnly(transaction.date),
         isSystem: transaction.isSystem,
         cashback: transaction.cashback,
-        moneyQuantity: transaction.moneyQuantity,
+        amount: transaction.amount,
         transactionTypeId: transaction.transactionType.id,
         accountId: transaction.account.id
     }

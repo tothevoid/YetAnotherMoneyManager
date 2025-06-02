@@ -1,6 +1,6 @@
 import "./TransactionsPage.scss"
 
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import Transaction from '../../components/transactions/Transaction/Transaction';
 import { AccountEntity } from '../../models/accounts/AccountEntity';
 import { insertByPredicate, reorderByPredicate } from '../../utils/ArrayExtensions'
@@ -8,13 +8,16 @@ import Pagination from '../../components/transactions/Pagination/Pagination';
 import TransactionStats from '../../components/transactions/TransactionStats/TransactionStats';
 import { Box, Checkbox, Flex, SimpleGrid, Text } from '@chakra-ui/react';
 import AddTransactionButton from '../../components/transactions/AddTransactionButton/AddTransactionButton';
-import { getTransactions, updateTransaction } from '../../api/transactions/transactionApi';
+import { createTransaction, getTransactions, updateTransaction } from '../../api/transactions/transactionApi';
 import { getAccountsByTypes } from '../../api/accounts/accountApi';
 import { useTranslation } from 'react-i18next';
 import { TransactionEntity } from "../../models/transactions/TransactionEntity";
 import { formatDate } from "../../formatters/dateFormatter";
 import { formatMoneyByCurrencyCulture } from "../../formatters/moneyFormatter";
 import { useUserProfile } from "../../contexts/UserProfileContext";
+import ShowModalButton from "../../components/common/ShowModalButton/ShowModalButton";
+import TransactionModal from "../../modals/TransactionModal/TransactionModal";
+import { BaseModalRef } from "../../common/ModalUtilities";
 
 type State = {
     transactions: TransactionEntity[],
@@ -173,15 +176,30 @@ const TransactionsPage: React.FC<any> = () => {
         return formatMoneyByCurrencyCulture(transaction, user?.currency.name);
     }
 
+    const addTransactionModalRef = useRef<BaseModalRef>(null);
+            
+    const onAddTransactionClick = () => {
+        addTransactionModalRef.current?.openModal()
+    }
+
+    const onTransactionAdded = async (transaction: TransactionEntity) => {
+        const createdTransaction = await createTransaction(transaction);
+        if (!createdTransaction) {
+            return;
+        }
+
+        onTransactionCreated(createdTransaction);
+    }
+
     return (
         <Box color="text_primary" paddingTop={4} paddingBottom={4}>
             <SimpleGrid columns={2} gap={16}>
                 <Box>
                     <Flex justifyContent={"space-between"}>
                         <Text fontSize="2xl" fontWeight={600}>{t("manager_transactions_title")}</Text>
-                        <AddTransactionButton 
-                            accounts={accounts} 
-                            onTransactionCreated={onTransactionCreated}/>
+                        <ShowModalButton buttonTitle={t("manager_transactions_add_transaction")} onClick={onAddTransactionClick}>
+                            <TransactionModal modalRef={addTransactionModalRef} accounts={state.accounts} onSaved={onTransactionAdded}/>
+                        </ShowModalButton>
                     </Flex>
                     <Box marginBlock={"10px"}>
                         <Checkbox.Root checked={state.showSystem} onCheckedChange={onCheckboxChanged} variant="solid">
@@ -217,9 +235,7 @@ const TransactionsPage: React.FC<any> = () => {
                 </Box>
                 <Box>
                     {
-                        transactions.length > 0 ?
-                            <TransactionStats accounts={accounts} transactions={transactions}/>:
-                            <Fragment/>
+                        transactions.length > 0 && <TransactionStats accounts={accounts} transactions={transactions}/>
                     }
                 </Box>
             </SimpleGrid>

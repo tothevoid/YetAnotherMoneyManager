@@ -16,6 +16,7 @@ import { TransactionTypeEntity } from '../../models/transactions/TransactionType
 interface ModalProps {
 	modalRef: RefObject<BaseModalRef | null>,
 	transaction?: TransactionEntity | null,
+	accounts: AccountEntity[],
 	onSaved: (transaction: TransactionEntity) => void
 }
 
@@ -91,7 +92,7 @@ const TransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
 		props.modalRef?.current?.closeModal();
 	};
 
-	const selectedDirection = watch("direction")
+	const selectedDirection = watch("direction");
 
 	return <BaseFormModal ref={props.modalRef} title={t("entity_transaction_name_form_title")} submitHandler={handleSubmit(onTransactionSaveClick)}>
 		<Field.Root invalid={!!errors.name}>
@@ -141,7 +142,6 @@ const TransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
 			<Field.ErrorText>{errors.transactionType?.message}</Field.ErrorText>
 		</Field.Root>
 	</BaseFormModal>
-
 }
 
 export default TransactionModal;

@@ -36,7 +36,7 @@ const prepareServerDebtPayment = (debtPayment: ClientDebtPaymentEntity): ServerD
         amount: debtPayment.amount,
         debtId: debtPayment.debt.id,
         targetAccountId: debtPayment.targetAccount.id,
-        transactionId: debtPayment.transaction.id,
+        transactionId: debtPayment.transaction?.id,
         date: convertToDateOnly(debtPayment.date)
     };
 

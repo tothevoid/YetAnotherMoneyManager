@@ -11,7 +11,7 @@ import DebtPaymentModal from '../modals/DebtPaymentModal/DebtPaymentModal';
 import { BaseModalRef } from '../../../common/ModalUtilities';
 
 type Props = {
-    debt: ClientDebtPaymentEntity,
+    debtPayment: ClientDebtPaymentEntity,
     onEditCallback: (debt: ClientDebtPaymentEntity) => void,
     onDeleteCallback: (debt: ClientDebtPaymentEntity) => void,
 }

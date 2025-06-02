@@ -10,10 +10,8 @@ import { deleteTransaction } from '../../../api/transactions/transactionApi';
 import { useTranslation } from 'react-i18next';
 import { TransactionEntity } from '../../../models/transactions/TransactionEntity';
 import { getTransactionTypeIconUrl } from '../../../api/transactions/transactionTypeApi';
-import { BaseModalRef } from '../../common/BaseFormModal';
 
-
-type Props = { 
+interface Props { 
 	onDelete: (transaction: TransactionEntity) => void,
 	onUpdate: (updatedTransaction: TransactionEntity) => void,
 	transaction: TransactionEntity,
@@ -52,7 +50,7 @@ const Transaction: React.FC<Props> = (props: Props) => {
 			</Icon>
 	}
 
-	const { i18n, t} = useTranslation()
+	const { t } = useTranslation()
 
 	const icon = transactionType.iconKey ?
 		<Image title={transactionType.name} h={8} w={8} src={getTransactionTypeIconUrl(transactionType.iconKey)}/>:
@@ -89,12 +87,11 @@ const Transaction: React.FC<Props> = (props: Props) => {
 			title={t("transaction_delete_title")}
 			message={t("modals_delete_message")}
 			confirmActionName={t("modals_delete_button")}
-			ref={confirmModalRef}>
-		</ConfirmModal>
+			ref={confirmModalRef}/>
 		<TransactionModal
 			accounts={props.accounts} 
 			transaction={props.transaction} 
-			ref={editModalRef} 
+			modalRef={editModalRef} 
 			onSaved={props.onUpdate}/>
 	</Card.Root>
 }

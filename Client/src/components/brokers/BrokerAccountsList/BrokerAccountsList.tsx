@@ -1,11 +1,13 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { SimpleGrid } from '@chakra-ui/react/grid';
 import { Flex } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
-import { getBrokerAccounts } from '../../../api/brokers/brokerAccountApi';
+import { createBrokerAccount, getBrokerAccounts } from '../../../api/brokers/brokerAccountApi';
 import BrokerAccount from '../BrokerAccount/BrokerAccount';
-import AddBrokerAccountButton from '../AddBrokerAccountButton/AddBrokerAccountButton';
 import { BrokerAccountEntity } from '../../../models/brokers/BrokerAccountEntity';
+import ShowModalButton from '../../common/ShowModalButton/ShowModalButton';
+import { BaseModalRef } from '../../../common/ModalUtilities';
+import BrokerAccountModal from '../modals/BrokerAccountModal/BrokerAccountModal';
 
 interface Props {
     
@@ -77,10 +79,27 @@ const BrokerAccountsList: React.FC<Props> = (props) => {
         await requestAccountsData();
     }
 
+    const modalRef = useRef<BaseModalRef>(null);
+    
+    const onAdd = () => {
+        modalRef.current?.openModal()
+    };
+
+    const onAccountAdded = async (brokerAccount: BrokerAccountEntity) => {
+        const createdBrokerAccount = await createBrokerAccount(brokerAccount);
+        if (!createdBrokerAccount) {
+            return;
+        }
+
+        onBrokerAccountCreated(createdBrokerAccount);
+    };
+
     return (
         <Fragment>
             <Flex justifyContent="space-between" alignItems="center" pt={5} pb={5}>
-                <AddBrokerAccountButton onAdded={onBrokerAccountCreated}></AddBrokerAccountButton>
+                <ShowModalButton buttonTitle={t("broker_accounts_page_summary_add")} onClick={onAdd}>
+                    <BrokerAccountModal modalRef={modalRef} onSaved={onAccountAdded}/>
+                </ShowModalButton>
             </Flex>
             <SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(400px, 3fr))'>
                 {

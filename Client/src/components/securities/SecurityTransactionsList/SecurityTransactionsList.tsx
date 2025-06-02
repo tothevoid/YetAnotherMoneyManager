@@ -1,11 +1,14 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useRef, useState } from 'react';
 import { Flex } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { SecurityTransactionEntity } from '../../../models/securities/SecurityTransactionEntity';
 import AddSecurityTransactionButton from '../AddSecurityTransactionButton/AddSecurityTransactionButton';
 import SecurityTransaction from '../SecurityTransaction/SecurityTransaction';
 import SecurityTransactionsPagination from '../SecurityTransactionsPagination/SecurityTransactionsPagination';
-import { getSecurityTransactions } from '../../../api/securities/securityTransactionApi';
+import { createSecurityTransaction, getSecurityTransactions } from '../../../api/securities/securityTransactionApi';
+import ShowModalButton from '../../common/ShowModalButton/ShowModalButton';
+import { BaseModalRef } from '../../../common/ModalUtilities';
+import SecurityTransactionModal from '../modals/SecurityTransactionModal/SecurityTransactionModal';
 
 interface Props {
     brokerAccountId: string,
@@ -69,11 +72,32 @@ const SecurityTransactionsList: React.FC<Props> = (props) => {
             return {...currentState, currentPage, pageSize, transactions}
         })
     }
+
+    const modalRef = useRef<BaseModalRef>(null);
     
+    const onAdd = () => {
+        modalRef.current?.openModal()
+    };
+
+    const onSecurityTransactionAdded = async (securityTransaction: SecurityTransactionEntity) => {
+        const transaction = await createSecurityTransaction(securityTransaction);
+        if (!transaction) {
+            return;
+        }
+
+        onSecurityTransactionCreated(transaction);
+    };
+
+    const securityTransaction: SecurityTransactionEntity = {
+        brokerAccount: {id: props.brokerAccountId}
+    }
+
     return (
         <Fragment>
             <Flex alignItems="center" gapX={5}>
-                <AddSecurityTransactionButton brokerAccountId={props.brokerAccountId} onAdded={onSecurityTransactionCreated}/>
+                <ShowModalButton buttonTitle={t("entity_securities_transaction_page_summary_add")} onClick={onAdd}>
+                    <SecurityTransactionModal securityTransaction={securityTransaction} modalRef={modalRef} onSaved={onSecurityTransactionAdded}/>
+                </ShowModalButton>
             </Flex>
            
             <div>

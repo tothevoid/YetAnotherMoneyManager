@@ -1,13 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SimpleGrid, Box} from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { ClientDebtEntity } from "../../models/debts/DebtEntity";
-import { createDebt, getDebts, updateDebt } from "../../api/debts/debtApi";
-import AddDebtButton from "../../components/debts/AddDebtButton/AddDebtButton";
-import AddDebtPaymentButton from "../../components/debts/AddDebtPaymentButton/AddDebtPaymentButton";
+import { createDebt, getDebts } from "../../api/debts/debtApi";
 import { ClientDebtPaymentEntity } from "../../models/debts/DebtPaymentEntity";
 import { createDebtPayment, getDebtPayments, updateDebtPayment } from "../../api/debts/debtPaymentApi";
 import Debt from "../../components/debts/Debt/Debt";
+import DebtPayment from "../../components/debts/DebtPayment/DebtPayment";
+import { BaseModalRef } from "../../common/ModalUtilities";
+import DebtModal from "../../components/debts/modals/DebtModal.tsx/DebtModal";
+import ShowModalButton from "../../components/common/ShowModalButton/ShowModalButton";
+import DebtPaymentModal from "../../components/debts/modals/DebtPaymentModal/DebtPaymentModal";
 
 interface Props {}
 
@@ -72,7 +75,7 @@ const DebtsPage: React.FC<Props> = () => {
     };
 
     
-    const onDeptPaymentUpdated = async (debtPayment: ClientDebtPaymentEntity) => {
+    const onDebtPaymentUpdated = async (debtPayment: ClientDebtPaymentEntity) => {
         const deptPaymentUpdated = await updateDebtPayment(debtPayment);
 
         if (!deptPaymentUpdated) {
@@ -90,7 +93,7 @@ const DebtsPage: React.FC<Props> = () => {
         });
     } 
 
-    const onDeptPaymentDeleted = (deletedDebtPayment: ClientDebtPaymentEntity) => {
+    const onDebtPaymentDeleted = (deletedDebtPayment: ClientDebtPaymentEntity) => {
         const debtPayments = state.debtPayments
             .filter(debtPayment => debtPayment.id !== deletedDebtPayment.id);
         setState((currentState) => {
@@ -98,9 +101,42 @@ const DebtsPage: React.FC<Props> = () => {
         });
     }
 
+    const modalRef = useRef<BaseModalRef>(null);
+        
+    const onAdd = () => {
+        modalRef.current?.openModal()
+    };
+    
+    const addDebt = async (debt: ClientDebtEntity) => {
+        const createdDebt = await createDebt(debt);
+        if (!createdDebt) {
+            return;
+        }
+
+        onDebtAdded(createdDebt);
+    };
+
+   
+    const debtPaymentModalRef = useRef<BaseModalRef>(null);
+    
+    const onAddDebtPayment = () => {
+        debtPaymentModalRef.current?.openModal()
+    };
+
+    const addDebtPayment = async (debt: ClientDebtPaymentEntity) => {
+        const createdDebtPayment = await createDebtPayment(debt);
+        if (!createdDebtPayment) {
+            return;
+        }
+
+        onDebtPaymentAdded(createdDebtPayment);
+    };
+
     return (
         <Box paddingBlock={10}>
-            <AddDebtButton onAdded={onDebtAdded}/>
+            <ShowModalButton buttonTitle={t("security_page_summary_add")} onClick={onAdd}>
+                <DebtModal modalRef={modalRef} onSaved={addDebt}/>
+            </ShowModalButton>
             <SimpleGrid pt={5} pb={5} gap={6} templateColumns='repeat(auto-fill, minmax(300px, 4fr))'>
                 {
                     state.debts.map((debt: ClientDebtEntity) => 
@@ -110,14 +146,15 @@ const DebtsPage: React.FC<Props> = () => {
                     )
                 }
             </SimpleGrid>
-            <AddDebtPaymentButton onAdded={onDebtPaymentAdded}/>
+            <ShowModalButton buttonTitle={t("security_page_summary_add")} onClick={onAddDebtPayment}>
+                <DebtPaymentModal modalRef={debtPaymentModalRef} onSaved={addDebtPayment}/>
+            </ShowModalButton>
             <SimpleGrid pt={5} pb={5} gap={6} templateColumns='repeat(auto-fill, minmax(300px, 4fr))'>
                 {
-                    state.debts.map((debt: ClientDebtEntity) => 
-                        <DebtPayment key={deposit.id} deposit={deposit} 
-                            onUpdated={onDeptUpdated} 
-                            onCloned={onDebtAdded} 
-                            onDeleted={onDeptDeleted}/>
+                    state.debtPayments.map((payment: ClientDebtPaymentEntity) => 
+                        <DebtPayment key={payment.id} debtPayment={payment}
+                            onEditCallback={onDebtPaymentUpdated} 
+                            onDeleteCallback={onDebtPaymentDeleted}/>
                     )
                 }
             </SimpleGrid>

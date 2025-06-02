@@ -1,11 +1,13 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { SimpleGrid } from '@chakra-ui/react/grid';
 import { Flex } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import Security from '../Security/Security';
 import { SecurityEntity } from '../../../models/securities/SecurityEntity';
-import AddSecurityButton from '../AddSecurityButton/AddSecurityButton';
-import { getSecurities } from '../../../api/securities/securityApi';
+import { createSecurity, getSecurities } from '../../../api/securities/securityApi';
+import ShowModalButton from '../../common/ShowModalButton/ShowModalButton';
+import { BaseModalRef } from '../../../common/ModalUtilities';
+import SecurityModal from '../modals/SecurityModal/SecurityModal';
 
 interface Props {}
 
@@ -60,19 +62,36 @@ const SecuritiesList: React.FC<Props> = (props) => {
         await requestSecuritiesData();
     }
 
+    const modalRef = useRef<BaseModalRef>(null);
+    
+    const onAdd = () => {
+        modalRef.current?.openModal()
+    };
+
+    const onSecurityAdded = async (security: SecurityEntity, icon: File | null) => {
+        const createdSecurity = await createSecurity(security, icon);
+        if (!createdSecurity) {
+            return;
+        }
+
+        onSecurityCreated(createdSecurity);
+    };
+
     return (
         <Fragment>
             <Flex justifyContent="space-between" alignItems="center" pt={5} pb={5}>
-                <AddSecurityButton onAdded={onSecurityCreated}></AddSecurityButton>
+                <ShowModalButton buttonTitle={t("security_page_summary_add")} onClick={onAdd}>
+                    <SecurityModal modalRef={modalRef} onSaved={onSecurityAdded}/>
+                </ShowModalButton>
             </Flex>
             <SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(300px, 3fr))'>
                 {
-                state.securities.map((security: SecurityEntity) => {
-                    return <Security key={security.id} security={security} 
-                        onEditCallback={onSecurityUpdated} 
-                        onDeleteCallback={onSecurityDeleted}
-                        onReloadSecurities={onReloadSecurities}/>
-                })
+                    state.securities.map((security: SecurityEntity) => {
+                        return <Security key={security.id} security={security} 
+                            onEditCallback={onSecurityUpdated} 
+                            onDeleteCallback={onSecurityDeleted}
+                            onReloadSecurities={onReloadSecurities}/>
+                    })
                 }
             </SimpleGrid>
         </Fragment>

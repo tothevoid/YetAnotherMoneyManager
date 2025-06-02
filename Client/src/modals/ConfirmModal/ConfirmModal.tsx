@@ -2,10 +2,7 @@ import { Button, CloseButton, Dialog, Portal, useDisclosure } from "@chakra-ui/r
 import React, { useImperativeHandle } from "react";
 import { forwardRef } from "react"
 import { useTranslation } from "react-i18next";
-
-export interface ConfirmModalRef {
-    openModal: () => void
-}
+import { BaseModalRef } from "../../common/modals";
 
 interface Props {
     onConfirmed: () => void
@@ -14,7 +11,7 @@ interface Props {
     confirmActionName: string
 }
 
-export const ConfirmModal = forwardRef<ConfirmModalRef, Props>((props: Props, ref) => {
+export const ConfirmModal = forwardRef<BaseModalRef, Props>((props: Props, ref) => {
     const { open, onOpen, onClose } = useDisclosure();
     const cancelRef = React.useRef<HTMLButtonElement>(null!);
     useImperativeHandle(ref, () => ({

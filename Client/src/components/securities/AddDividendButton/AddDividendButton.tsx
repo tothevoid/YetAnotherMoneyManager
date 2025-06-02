@@ -1,11 +1,12 @@
 import { MdAdd } from "react-icons/md"
-import { Button, Icon, ProgressPropsProvider } from "@chakra-ui/react"
+import { Button, Icon } from "@chakra-ui/react"
 import { useRef } from "react"
 import { Fragment } from "react/jsx-runtime"
 import { useTranslation } from "react-i18next"
-import DividendModal, { DividendModalRef } from "../../../modals/DividendModal/DividendModal"
+import DividendModal from "../../../modals/DividendModal/DividendModal"
 import { DividendEntity } from "../../../models/securities/DividendEntity"
 import { createDividend } from "../../../api/securities/dividendApi"
+import { BaseModalRef } from "../../../common/ModalUtilities"
 
 type Props = {
     securityId: string,
@@ -13,7 +14,7 @@ type Props = {
 };
 
 const AddDividendButton: React.FC<Props> = ({ onAdded, securityId }) => {
-    const modalRef = useRef<DividendModalRef>(null);
+    const modalRef = useRef<BaseModalRef>(null);
     
     const onAdd = () => {
         modalRef.current?.openModal()
@@ -40,7 +41,7 @@ const AddDividendButton: React.FC<Props> = ({ onAdded, securityId }) => {
                 </Icon>
                 {t("security_page_summary_add")}
             </Button>
-            <DividendModal dividend={dividend} ref={modalRef} onSaved={onDividendAdded}></DividendModal>
+            <DividendModal dividend={dividend} modalRef={modalRef} onSaved={onDividendAdded}/>
         </Fragment>
     )
 }

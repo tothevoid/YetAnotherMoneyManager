@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { DepositEntity } from "../../models/deposits/DepositEntity";
-import DepositModal, { DepositModalRef } from "../../modals/DepositModal/DepositModal";
+import DepositModal from "../../modals/DepositModal/DepositModal";
 import { createDeposit, getDeposits } from "../../api/deposits/depositApi";
 import { Button, Text, Flex, SimpleGrid, Checkbox, Box} from "@chakra-ui/react";
 import DepositStats from "../../components/deposits/DepositStats/DepositStats";
@@ -8,6 +8,7 @@ import Deposit from "../../components/deposits/Deposit/Deposit";
 import { MdAdd } from "react-icons/md";
 import DepositsRangeSlider from "../../components/deposits/DepositsRangeSlider/DepositsRangeSlider";
 import { useTranslation } from "react-i18next";
+import { BaseModalRef } from "../../common/ModalUtilities";
 
 interface Props {}
 
@@ -36,7 +37,7 @@ const DepositsPage: React.FC<Props> = () => {
         initDeposits();
     }, [state.selectedMinMonths, state.selectedMaxMonths, state.onlyActive]);
 
-    const modalRef = useRef<DepositModalRef>(null);
+    const modalRef = useRef<BaseModalRef>(null);
 
     const showDepositModal = () => {
         modalRef.current?.openModal()
@@ -52,7 +53,6 @@ const DepositsPage: React.FC<Props> = () => {
         });
 	};
 
-    
     const onDepositUpdate = (updatedDeposit: DepositEntity) => {
         const deposits = state.deposits.map(deposit => 
             deposit.id === updatedDeposit.id ?
@@ -121,8 +121,7 @@ const DepositsPage: React.FC<Props> = () => {
                     </Flex>:
                     getAddButtonWithoutDeposits()
             }
-           
-            <DepositModal ref={modalRef} onSaved={onDepositAdded}/>
+            <DepositModal modalRef={modalRef} onSaved={onDepositAdded}/>
             <SimpleGrid pt={5} pb={5} gap={6} templateColumns='repeat(auto-fill, minmax(300px, 4fr))'>
                 {
                     state.deposits.map((deposit: DepositEntity) => 

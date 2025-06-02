@@ -1,19 +1,19 @@
 import config from '../../config' 
-import { SecurityTransactionEntity } from '../../models/securities/SecurityTransactionEntity';
+import { SecurityTypeEntity } from '../../models/securities/SecurityTypeEntity';
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
 
 const basicUrl = `${config.api.URL}/SecurityType`;
 
-export const getSecurityTypes = async (): Promise<SecurityTransactionEntity[]> => {
-   return await getAllEntities<SecurityTransactionEntity>(basicUrl);
+export const getSecurityTypes = async (): Promise<SecurityTypeEntity[]> => {
+   return await getAllEntities<SecurityTypeEntity>(basicUrl);
 };
 
-export const createSecurityType = async (addedSecurityType: SecurityTransactionEntity): Promise<SecurityTransactionEntity | void> => {
-    return await createEntity<SecurityTransactionEntity>(basicUrl, addedSecurityType);
+export const createSecurityType = async (addedSecurityType: SecurityTypeEntity): Promise<SecurityTypeEntity | void> => {
+    return await createEntity<SecurityTypeEntity>(basicUrl, addedSecurityType);
 }
 
-export const updateSecurityType = async (modifiedSecurityType: SecurityTransactionEntity): Promise<boolean> => {
-    return await updateEntity<SecurityTransactionEntity>(basicUrl, modifiedSecurityType);
+export const updateSecurityType = async (modifiedSecurityType: SecurityTypeEntity): Promise<boolean> => {
+    return await updateEntity<SecurityTypeEntity>(basicUrl, modifiedSecurityType);
 }
 
 export const deleteSecurityType = async (securityTypeId: string): Promise<boolean> => {

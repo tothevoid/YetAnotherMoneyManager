@@ -3,18 +3,18 @@ import { Button, Icon } from "@chakra-ui/react"
 import { useRef } from "react"
 
 import { Fragment } from "react/jsx-runtime"
-import { AccountModalRef } from "../../../modals/AccountModal/AccountModal"
 import { useTranslation } from "react-i18next"
 import SecurityModal from "../modals/SecurityModal/SecurityModal"
 import { createSecurity } from "../../../api/securities/securityApi"
 import { SecurityEntity } from "../../../models/securities/SecurityEntity"
+import { BaseModalRef } from "../../../common/ModalUtilities"
 
 type BrokerAccountProps = {
     onAdded: (security: SecurityEntity) => void;
 };
 
 const AddBrokerAccountButton: React.FC<BrokerAccountProps> = ({ onAdded }) => {
-    const modalRef = useRef<AccountModalRef>(null);
+    const modalRef = useRef<BaseModalRef>(null);
     
     const onAdd = () => {
         modalRef.current?.openModal()
@@ -39,7 +39,7 @@ const AddBrokerAccountButton: React.FC<BrokerAccountProps> = ({ onAdded }) => {
                 </Icon>
                 {t("security_page_summary_add")}
             </Button>
-            <SecurityModal ref={modalRef} onSaved={onSecurityAdded}></SecurityModal>
+            <SecurityModal modalRef={modalRef} onSaved={onSecurityAdded}></SecurityModal>
         </Fragment>
     )
 }

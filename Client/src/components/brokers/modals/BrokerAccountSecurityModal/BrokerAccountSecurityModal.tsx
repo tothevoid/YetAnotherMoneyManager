@@ -1,5 +1,5 @@
-import { Button, CloseButton, Dialog, Field, Input, Portal, useDisclosure} from "@chakra-ui/react"
-import { forwardRef, useEffect, useImperativeHandle, useState } from "react"
+import { Button, CloseButton, Dialog, Field, Input, Portal} from "@chakra-ui/react"
+import React, { RefObject, useEffect, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
@@ -10,10 +10,13 @@ import { getBrokerAccounts } from "../../../../api/brokers/brokerAccountApi";
 import { BrokerAccountEntity } from "../../../../models/brokers/BrokerAccountEntity";
 import { SecurityEntity } from "../../../../models/securities/SecurityEntity";
 import { BrokerAccountSecurityFormInput, BrokerAccountSecurityValidationSchema } from "./BrokerAccountSecurityValidationSchema";
+import { BaseModalRef } from "../../../../common/ModalUtilities";
+import BaseFormModal from "../../../common/BaseFormModal";
 
-interface BrokerAccountProps {
+interface ModalProps {
+    modalRef: RefObject<BaseModalRef | null>,
     brokerAccountSecurity?: BrokerAccountSecurityEntity | null,
-    onSaved: (account: BrokerAccountSecurityEntity) => void;
+    onSaved: (account: BrokerAccountSecurityEntity) => void
 };
 
 interface State {
@@ -21,11 +24,7 @@ interface State {
     securities: SecurityEntity[]
 }
 
-export interface BrokerAccountModalRef {
-    openModal: () => void
-}
-
-const BrokerAccountSecurityModal = forwardRef<BrokerAccountModalRef, BrokerAccountProps>((props: BrokerAccountProps, ref)=> {
+const BrokerAccountSecurityModal: React.FC<ModalProps> = (props: ModalProps) => {
     const [state, setState] = useState<State>({ brokerAccounts: [], securities: []})
     
     useEffect(() => {
@@ -43,7 +42,6 @@ const BrokerAccountSecurityModal = forwardRef<BrokerAccountModalRef, BrokerAccou
         })
     };
 
-    const { open, onOpen, onClose } = useDisclosure()
 
     const { register, handleSubmit, control, formState: { errors }} = useForm<BrokerAccountSecurityFormInput>({
         resolver: zodResolver(BrokerAccountSecurityValidationSchema),
@@ -57,66 +55,41 @@ const BrokerAccountSecurityModal = forwardRef<BrokerAccountModalRef, BrokerAccou
         }
     });
 
-    useImperativeHandle(ref, () => ({
-        openModal: onOpen,
-    }));
-
 
     const onSubmit = (brokerAccountSecurity: BrokerAccountSecurityFormInput) => {
         props.onSaved(brokerAccountSecurity as BrokerAccountSecurityEntity);
-        onClose();
+        props.modalRef?.current?.closeModal();
     }
 
     const {t} = useTranslation()
 
-    return (
-        <Dialog.Root placement="center" open={open} onEscapeKeyDown={onClose}>
-          <Portal>
-            <Dialog.Backdrop/>
-            <Dialog.Positioner>
-                <Dialog.Content as="form" onSubmit={handleSubmit(onSubmit)}>
-                    <Dialog.Header>
-                        <Dialog.Title>{t("entity_broker_account_security_form_title")}</Dialog.Title>
-                    </Dialog.Header>
-                    <Dialog.Body pb={6}>
-                        <Field.Root mt={4} invalid={!!errors.brokerAccount}>
-                            <Field.Label>{t("entity_broker_account_broker_account")}</Field.Label>
-                            <CollectionSelect name="brokerAccount" control={control} placeholder="Select broker account"
-                                collection={state.brokerAccounts} 
-                                labelSelector={(brokerAccount => brokerAccount.name)} 
-                                valueSelector={(brokerAccount => brokerAccount.id)}/>
-                            <Field.ErrorText>{errors.brokerAccount?.message}</Field.ErrorText>
-                        </Field.Root>
-                        <Field.Root mt={4} invalid={!!errors.security}>
-                            <Field.Label>{t("entity_broker_account_security")}</Field.Label>
-                            <CollectionSelect name="security" control={control} placeholder="Select security"
-                                collection={state.securities} 
-                                labelSelector={(security => security.name)} 
-                                valueSelector={(security => security.id)}/>
-                            <Field.ErrorText>{errors.security?.message}</Field.ErrorText>
-                        </Field.Root>
-                        <Field.Root mt={4} invalid={!!errors.price}>
-                            <Field.Label>{t("entity_broker_initial_price")}</Field.Label>
-                            <Input {...register("price", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='500' />
-                            <Field.ErrorText>{errors.price?.message}</Field.ErrorText>
-					    </Field.Root>
-                        <Field.Root mt={4} invalid={!!errors.quantity}>
-                            <Field.Label>{t("entity_broker_quantity")}</Field.Label>
-                            <Input {...register("quantity", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='500' />
-                            <Field.ErrorText>{errors.quantity?.message}</Field.ErrorText>
-					    </Field.Root>
-                    </Dialog.Body>
-                    <Dialog.Footer>
-                        <Button type="submit" background='purple.600' mr={3}>{t("modals_save_button")}</Button>
-                        <Button onClick={onClose}>{t("modals_cancel_button")}</Button>
-                    </Dialog.Footer>
-                    <Dialog.CloseTrigger asChild>
-                        <CloseButton onClick={onClose} size="sm" />
-                    </Dialog.CloseTrigger>
-                </Dialog.Content>
-            </Dialog.Positioner>
-          </Portal>
-        </Dialog.Root>
-    )
-})
+    return <BaseFormModal ref={props.modalRef} title={t("entity_broker_account_security_form_title")} submitHandler={handleSubmit(onSubmit)}>
+        <Field.Root mt={4} invalid={!!errors.brokerAccount}>
+            <Field.Label>{t("entity_broker_account_broker_account")}</Field.Label>
+            <CollectionSelect name="brokerAccount" control={control} placeholder="Select broker account"
+                collection={state.brokerAccounts} 
+                labelSelector={(brokerAccount => brokerAccount.name)} 
+                valueSelector={(brokerAccount => brokerAccount.id)}/>
+            <Field.ErrorText>{errors.brokerAccount?.message}</Field.ErrorText>
+        </Field.Root>
+        <Field.Root mt={4} invalid={!!errors.security}>
+            <Field.Label>{t("entity_broker_account_security")}</Field.Label>
+            <CollectionSelect name="security" control={control} placeholder="Select security"
+                collection={state.securities} 
+                labelSelector={(security => security.name)} 
+                valueSelector={(security => security.id)}/>
+            <Field.ErrorText>{errors.security?.message}</Field.ErrorText>
+        </Field.Root>
+        <Field.Root mt={4} invalid={!!errors.price}>
+            <Field.Label>{t("entity_broker_initial_price")}</Field.Label>
+            <Input {...register("price", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='500' />
+            <Field.ErrorText>{errors.price?.message}</Field.ErrorText>
+        </Field.Root>
+        <Field.Root mt={4} invalid={!!errors.quantity}>
+            <Field.Label>{t("entity_broker_quantity")}</Field.Label>
+            <Input {...register("quantity", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='500' />
+            <Field.ErrorText>{errors.quantity?.message}</Field.ErrorText>
+        </Field.Root>
+    </BaseFormModal>
+}
 export default BrokerAccountSecurityModal

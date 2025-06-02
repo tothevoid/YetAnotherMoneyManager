@@ -113,12 +113,12 @@ const DebtsPage: React.FC<Props> = () => {
             <AddDebtPaymentButton onAdded={onDebtPaymentAdded}/>
             <SimpleGrid pt={5} pb={5} gap={6} templateColumns='repeat(auto-fill, minmax(300px, 4fr))'>
                 {
-                    // state.debts.map((debt: ClientDebtEntity) => 
-                    //     <Deposit key={deposit.id} deposit={deposit} 
-                    //         onUpdated={onDeptUpdated} 
-                    //         onCloned={onDebtAdded} 
-                    //         onDeleted={onDeptDeleted}/>
-                    // )
+                    state.debts.map((debt: ClientDebtEntity) => 
+                        <DebtPayment key={deposit.id} deposit={deposit} 
+                            onUpdated={onDeptUpdated} 
+                            onCloned={onDebtAdded} 
+                            onDeleted={onDeptDeleted}/>
+                    )
                 }
             </SimpleGrid>
         </Box>

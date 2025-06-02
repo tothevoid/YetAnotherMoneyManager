@@ -4,16 +4,17 @@ import { useRef } from "react"
 
 import { Fragment } from "react/jsx-runtime"
 import { AccountEntity } from "../../../models/accounts/AccountEntity"
-import AccountModal, { AccountModalRef } from "../../../modals/AccountModal/AccountModal"
+import AccountModal from "../../../modals/AccountModal/AccountModal"
 import { createAccount } from "../../../api/accounts/accountApi"
 import { useTranslation } from "react-i18next"
+import { BaseModalRef } from "../../../common/ModalUtilities"
 
 type AccountProps = {
 	onAdded: (account: AccountEntity) => void;
 };
 
 const AddAccountButton: React.FC<AccountProps> = ({ onAdded }) => {
-	const modalRef = useRef<AccountModalRef>(null);
+	const modalRef = useRef<BaseModalRef>(null);
 	
 	const onAdd = () => {
 		modalRef.current?.openModal()
@@ -39,7 +40,7 @@ const AddAccountButton: React.FC<AccountProps> = ({ onAdded }) => {
 				</Icon>
 				{t("accounts_page_summary_add")}
 			</Button>
-			<AccountModal ref={modalRef} onSaved={onAccountAdded}></AccountModal>
+			<AccountModal modalRef={modalRef} onSaved={onAccountAdded}/>
 		</Fragment>
 	)
 }

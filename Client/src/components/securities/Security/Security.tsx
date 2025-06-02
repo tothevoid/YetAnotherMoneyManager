@@ -2,13 +2,13 @@ import { Button, Card, Flex, Icon, Link, Stack, Text, Image } from '@chakra-ui/r
 import { MdDelete, MdEdit } from "react-icons/md";
 import { Fragment, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AccountModalRef } from '../../../modals/AccountModal/AccountModal';
-import { ConfirmModalRef, ConfirmModal } from '../../../modals/ConfirmModal/ConfirmModal';
+import { ConfirmModal } from '../../../modals/ConfirmModal/ConfirmModal';
 import { SecurityEntity } from '../../../models/securities/SecurityEntity';
 import { deleteSecurity, getIconUrl, updateSecurity } from '../../../api/securities/securityApi';
 import SecurityModal from '../modals/SecurityModal/SecurityModal';
 import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
-import { formatMoney, formatMoneyByCurrencyCulture } from '../../../formatters/moneyFormatter';
+import { formatMoneyByCurrencyCulture } from '../../../formatters/moneyFormatter';
+import { BaseModalRef } from '../../../common/ModalUtilities';
 
 
 type Props = {
@@ -21,8 +21,8 @@ type Props = {
 const Security = (props: Props) => {
     const {id, name, ticker, type, actualPrice, currency, iconKey} = props.security;
 
-    const confirmModalRef = useRef<ConfirmModalRef>(null);
-    const editModalRef = useRef<AccountModalRef>(null);
+    const confirmModalRef = useRef<BaseModalRef>(null);
+    const editModalRef = useRef<BaseModalRef>(null);
 
     const onEditClicked = () => {
         editModalRef.current?.openModal()
@@ -90,9 +90,8 @@ const Security = (props: Props) => {
             title={t("security_delete_title")}
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
-            ref={confirmModalRef}>
-        </ConfirmModal>
-        <SecurityModal security={props.security} ref={editModalRef} onSaved={onSecurityUpdated}></SecurityModal>
+            ref={confirmModalRef}/>
+        <SecurityModal security={props.security} modalRef={editModalRef} onSaved={onSecurityUpdated}/>
     </Fragment>
 };
 

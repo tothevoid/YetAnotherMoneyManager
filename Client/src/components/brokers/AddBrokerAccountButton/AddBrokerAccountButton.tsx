@@ -3,18 +3,18 @@ import { Button, Icon } from "@chakra-ui/react"
 import { useRef } from "react"
 
 import { Fragment } from "react/jsx-runtime"
-import { AccountModalRef } from "../../../modals/AccountModal/AccountModal"
 import { useTranslation } from "react-i18next"
 import { BrokerAccountEntity } from "../../../models/brokers/BrokerAccountEntity"
 import { createBrokerAccount } from "../../../api/brokers/brokerAccountApi"
 import BrokerAccountModal from "../modals/BrokerAccountModal/BrokerAccountModal"
+import { BaseModalRef } from "../../../common/ModalUtilities"
 
 type BrokerAccountProps = {
     onAdded: (account: BrokerAccountEntity) => void;
 };
 
 const AddBrokerAccountButton: React.FC<BrokerAccountProps> = ({ onAdded }) => {
-    const modalRef = useRef<AccountModalRef>(null);
+    const modalRef = useRef<BaseModalRef>(null);
     
     const onAdd = () => {
         modalRef.current?.openModal()
@@ -39,7 +39,7 @@ const AddBrokerAccountButton: React.FC<BrokerAccountProps> = ({ onAdded }) => {
                 </Icon>
                 {t("broker_accounts_page_summary_add")}
             </Button>
-            <BrokerAccountModal ref={modalRef} onSaved={onAccountAdded}></BrokerAccountModal>
+            <BrokerAccountModal modalRef={modalRef} onSaved={onAccountAdded}/>
         </Fragment>
     )
 }

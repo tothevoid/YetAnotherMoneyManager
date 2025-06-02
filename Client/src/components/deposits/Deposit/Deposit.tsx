@@ -3,11 +3,12 @@ import { Card, Flex, Stack, Button, Text, Container, Icon } from "@chakra-ui/rea
 import {  formatNumericDate } from "../../../formatters/dateFormatter";
 import { formatMoney } from "../../../formatters/moneyFormatter";
 import { DepositEntity } from "../../../models/deposits/DepositEntity";
-import DepositModal, { DepositModalRef } from "../../../modals/DepositModal/DepositModal";
+import DepositModal from "../../../modals/DepositModal/DepositModal";
 import { useRef } from "react";
-import { ConfirmModal, ConfirmModalRef } from "../../../modals/ConfirmModal/ConfirmModal";
+import { ConfirmModal } from "../../../modals/ConfirmModal/ConfirmModal";
 import { deleteDeposit, updateDeposit } from "../../../api/deposits/depositApi";
 import { useTranslation } from "react-i18next";
+import { BaseModalRef } from "../../../common/ModalUtilities";
 
 interface Props {
     deposit: DepositEntity
@@ -17,8 +18,8 @@ interface Props {
 }
 
 const Deposit: React.FC<Props> = ({deposit, onUpdated, onCloned, onDeleted}) => {
-    const confirmDeleteModalRef = useRef<ConfirmModalRef>(null);
-    const editModalRef = useRef<DepositModalRef>(null);
+    const confirmDeleteModalRef = useRef<BaseModalRef>(null);
+    const editModalRef = useRef<BaseModalRef>(null);
 
     const showEditDepositModal = () => {
         editModalRef.current?.openModal()
@@ -100,9 +101,8 @@ const Deposit: React.FC<Props> = ({deposit, onUpdated, onCloned, onDeleted}) => 
             title={t("deposit_delete_title")}
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
-            ref={confirmDeleteModalRef}>
-        </ConfirmModal>
-        <DepositModal deposit={deposit} ref={editModalRef} onSaved={onDepositSaved}/>
+            ref={confirmDeleteModalRef}/>
+        <DepositModal deposit={deposit} modalRef={editModalRef} onSaved={onDepositSaved}/>
     </Card.Root>
 }
 

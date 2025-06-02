@@ -2,14 +2,14 @@ import { Button, Card, Flex, Icon, Link, Span, Stack, Text, Image } from '@chakr
 import { MdDelete, MdEdit } from "react-icons/md";
 import { Fragment, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AccountModalRef } from '../../../modals/AccountModal/AccountModal';
-import { ConfirmModalRef, ConfirmModal } from '../../../modals/ConfirmModal/ConfirmModal';
+import { ConfirmModal } from '../../../modals/ConfirmModal/ConfirmModal';
 import { BrokerAccountSecurityEntity } from '../../../models/brokers/BrokerAccountSecurityEntity';
 import { deleteBrokerAccountSecurity, updateBrokerAccountSecurity } from '../../../api/brokers/brokerAccountSecurityApi';
 import BrokerAccountSecurityModal from '../modals/BrokerAccountSecurityModal/BrokerAccountSecurityModal';
 import { formatMoneyByCurrencyCulture } from '../../../formatters/moneyFormatter';
 import { getIconUrl } from '../../../api/securities/securityApi';
 import { HiOutlineBuildingOffice2 } from 'react-icons/hi2';
+import { BaseModalRef } from '../../../common/ModalUtilities';
 
 type Props = {
     brokerAccountSecurity: BrokerAccountSecurityEntity,
@@ -21,8 +21,8 @@ type Props = {
 const BrokerAccountSecurity = (props: Props) => {
     const {price, quantity, security, brokerAccount} = props.brokerAccountSecurity;
 
-    const confirmModalRef = useRef<ConfirmModalRef>(null);
-    const editModalRef = useRef<AccountModalRef>(null);
+    const confirmModalRef = useRef<BaseModalRef>(null);
+    const editModalRef = useRef<BaseModalRef>(null);
 
     const onEditClicked = () => {
         editModalRef.current?.openModal()
@@ -104,10 +104,8 @@ const BrokerAccountSecurity = (props: Props) => {
             title={t("broker_account_securities_delete_title")}
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
-            ref={confirmModalRef}>
-        </ConfirmModal>
-        <BrokerAccountSecurityModal brokerAccountSecurity={props.brokerAccountSecurity} 
-            ref={editModalRef} onSaved={onBrokerAccountsSecurityUpdated}></BrokerAccountSecurityModal>
+            ref={confirmModalRef}/>
+        <BrokerAccountSecurityModal brokerAccountSecurity={props.brokerAccountSecurity} modalRef={editModalRef} onSaved={onBrokerAccountsSecurityUpdated}/>
     </Fragment>
 };
 

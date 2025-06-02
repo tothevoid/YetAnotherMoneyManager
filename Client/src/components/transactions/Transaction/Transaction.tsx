@@ -3,14 +3,14 @@ import { AccountEntity } from '../../../models/accounts/AccountEntity';
 import { MdOutlineArrowDownward, MdOutlineArrowUpward, MdEdit, MdOutlinePayment } from 'react-icons/md';
 import { MdDelete } from "react-icons/md";
 import { Flex, Stack, Card, CardBody, Text, Button, Icon, Image } from '@chakra-ui/react';
-import TransactionModal, { TransactionModalRef } from '../../../modals/TransactionModal/TransactionModal';
+import TransactionModal from '../../../modals/TransactionModal/TransactionModal';
 import { formatMoneyByCurrencyCulture } from '../../../formatters/moneyFormatter';
-import { formatDate } from '../../../formatters/dateFormatter';
-import { ConfirmModal, ConfirmModalRef } from '../../../modals/ConfirmModal/ConfirmModal';
+import { ConfirmModal } from '../../../modals/ConfirmModal/ConfirmModal';
 import { deleteTransaction } from '../../../api/transactions/transactionApi';
 import { useTranslation } from 'react-i18next';
 import { TransactionEntity } from '../../../models/transactions/TransactionEntity';
 import { getTransactionTypeIconUrl } from '../../../api/transactions/transactionTypeApi';
+import { BaseModalRef } from '../../common/BaseFormModal';
 
 
 type Props = { 
@@ -23,8 +23,8 @@ type Props = {
 const Transaction: React.FC<Props> = (props: Props) => {
 	const {amount, transactionType, name, date, account} = props.transaction;
 
-	const confirmModalRef = useRef<ConfirmModalRef>(null);
- 	const editModalRef = useRef<TransactionModalRef>(null);
+	const confirmModalRef = useRef<BaseModalRef>(null);
+ 	const editModalRef = useRef<BaseModalRef>(null);
 
 	const onEditClicked = () => {
 		editModalRef.current?.openModal()

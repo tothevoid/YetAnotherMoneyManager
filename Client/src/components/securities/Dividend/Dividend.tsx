@@ -1,13 +1,14 @@
 import { Button, Card, CardBody, Flex, Icon, Stack, Text } from '@chakra-ui/react';
 import { MdDelete, MdEdit } from "react-icons/md";
-import { Fragment, useRef } from 'react';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ConfirmModalRef, ConfirmModal } from '../../../modals/ConfirmModal/ConfirmModal';
+import { ConfirmModal } from '../../../modals/ConfirmModal/ConfirmModal';
 import { deleteDividend, updateDividend } from '../../../api/securities/dividendApi';
-import DividendModal, { DividendModalRef } from '../../../modals/DividendModal/DividendModal';
+import DividendModal from '../../../modals/DividendModal/DividendModal';
 import { DividendEntity } from '../../../models/securities/DividendEntity';
 import { formatDate } from '../../../formatters/dateFormatter';
 import { formatMoneyByCurrencyCulture } from '../../../formatters/moneyFormatter';
+import { BaseModalRef } from '../../../common/ModalUtilities';
 
 type Props = {
     dividend: DividendEntity,
@@ -19,8 +20,8 @@ type Props = {
 const Dividend = (props: Props) => {
     const {id, amount, security, declarationDate, paymentDate, snapshotDate} = props.dividend;
 
-    const confirmModalRef = useRef<ConfirmModalRef>(null);
-    const editModalRef = useRef<DividendModalRef>(null);
+    const confirmModalRef = useRef<BaseModalRef>(null);
+    const editModalRef = useRef<BaseModalRef>(null);
 
     const onEditClicked = () => {
         editModalRef.current?.openModal()
@@ -79,12 +80,8 @@ const Dividend = (props: Props) => {
             title={t("transaction_delete_title")}
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
-            ref={confirmModalRef}>
-        </ConfirmModal>
-        <DividendModal
-            dividend={props.dividend} 
-            ref={editModalRef} 
-            onSaved={props.onEditCallback}/>
+            ref={confirmModalRef}/>
+        <DividendModal dividend={props.dividend} modalRef={editModalRef} onSaved={props.onEditCallback}/>
     </Card.Root>
 };
 

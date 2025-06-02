@@ -1,6 +1,6 @@
 import { string, z } from 'zod';
 
-export type AccountFormInput = z.infer<typeof AccountBalanceTransferModalValidationSchema>;
+export type AccountBalanceTransferFormInput = z.infer<typeof AccountBalanceTransferModalValidationSchema>;
 
 export const AccountBalanceTransferModalValidationSchema = z.object({
 	id: string().optional(),

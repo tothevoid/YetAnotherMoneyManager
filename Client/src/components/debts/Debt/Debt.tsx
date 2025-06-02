@@ -2,13 +2,13 @@ import { Button, Card, Flex, Icon, Stack, Text } from '@chakra-ui/react';
 import { MdDelete, MdEdit } from "react-icons/md";
 import { Fragment, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ConfirmModalRef, ConfirmModal } from '../../../modals/ConfirmModal/ConfirmModal';
+import { ConfirmModal } from '../../../modals/ConfirmModal/ConfirmModal';
 import { formatMoneyByCurrencyCulture } from '../../../formatters/moneyFormatter';
 import { ClientDebtEntity } from '../../../models/debts/DebtEntity';
-import DebtModal, { DebtModalRef } from '../modals/DebtModal.tsx/DebtModal';
+import DebtModal from '../modals/DebtModal.tsx/DebtModal';
 import { deleteDebt, updateDebt } from '../../../api/debts/debtApi';
 import { formatDate } from '../../../formatters/dateFormatter';
-
+import { BaseModalRef } from '../../../common/ModalUtilities';
 
 type Props = {
     debt: ClientDebtEntity,
@@ -19,8 +19,8 @@ type Props = {
 const Debt = (props: Props) => {
     const {name, amount, date, currency, paidOn} = props.debt;
 
-    const confirmModalRef = useRef<ConfirmModalRef>(null);
-    const editModalRef = useRef<DebtModalRef>(null);
+    const confirmModalRef = useRef<BaseModalRef>(null);
+    const editModalRef = useRef<BaseModalRef>(null);
 
     const onEditClicked = () => {
         editModalRef.current?.openModal()
@@ -78,9 +78,8 @@ const Debt = (props: Props) => {
             title={t("security_delete_title")}
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
-            ref={confirmModalRef}>
-        </ConfirmModal>
-        <DebtModal debt={props.debt} ref={editModalRef} onSaved={onDebtUpdated}/>
+            ref={confirmModalRef}/>
+        <DebtModal debt={props.debt} modalRef={editModalRef} onSaved={onDebtUpdated}/>
     </Fragment>
 };
 

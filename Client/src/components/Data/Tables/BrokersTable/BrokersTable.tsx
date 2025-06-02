@@ -2,13 +2,13 @@ import { Box, Button, Icon, Input, Table } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { MdAdd, MdDelete } from "react-icons/md";
 import { useTranslation } from "react-i18next";
-import { ConfirmModal, ConfirmModalRef } from "../../../../modals/ConfirmModal/ConfirmModal";
+import { ConfirmModal } from "../../../../modals/ConfirmModal/ConfirmModal";
 import { BrokerEntity } from "../../../../models/brokers/BrokerEntity";
 import { createBroker, deleteBroker, getBrokers, updateBroker } from "../../../../api/brokers/brokerApi";
-import BrokerModal, { BrokerModalRef } from "../../../brokers/modals/BrokerModal/BrokerModal";
+import BrokerModal from "../../../brokers/modals/BrokerModal/BrokerModal";
+import { BaseModalRef } from "../../../../common/ModalUtilities";
 
-interface Props {
-}
+interface Props {}
 
 interface State {
     brokers: BrokerEntity[],
@@ -19,8 +19,9 @@ interface State {
 const BrokersTable: React.FC<Props> = () => {
     const [state, setState] = useState<State>({brokers: [], hasChanges: false, currentBrokerId: null});
     const { t } = useTranslation();
-    const modalRef = useRef<BrokerModalRef>(null);
-    const confirmModalRef = useRef<ConfirmModalRef>(null);
+
+    const modalRef = useRef<BaseModalRef>(null);
+    const confirmModalRef = useRef<BaseModalRef>(null);
 
     useEffect(() => {
         const initData = async () => { 
@@ -155,13 +156,12 @@ const BrokersTable: React.FC<Props> = () => {
                 {t("entity_broker_add")}
             </Button>
         </Box>
-        <BrokerModal ref={modalRef} onSaved={onBrokerAdded}></BrokerModal>
+        <BrokerModal modalRef={modalRef} onSaved={onBrokerAdded}/>
         <ConfirmModal onConfirmed={onDeleteConfirmed}
-                    title={t("brokers_delete_title")}
-                    message={t("modals_delete_message")}
-                    confirmActionName={t("modals_delete_button")}
-                    ref={confirmModalRef}>
-        </ConfirmModal>
+            title={t("brokers_delete_title")}
+            message={t("modals_delete_message")}
+            confirmActionName={t("modals_delete_button")}
+            ref={confirmModalRef}/>
     </Box>
 }
 

@@ -2,13 +2,13 @@ import { Button, Card, CardBody, Flex, Icon, Span, Stack, Text } from '@chakra-u
 import { MdDelete, MdEdit } from "react-icons/md";
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AccountModalRef } from '../../../modals/AccountModal/AccountModal';
-import { ConfirmModalRef, ConfirmModal } from '../../../modals/ConfirmModal/ConfirmModal';
+import { ConfirmModal } from '../../../modals/ConfirmModal/ConfirmModal';
 import { SecurityTransactionEntity } from '../../../models/securities/SecurityTransactionEntity';
 import SecurityTransactionModal from '../modals/SecurityTransactionModal/SecurityTransactionModal';
 import { deleteSecurityTransaction, updateSecurityTransaction } from '../../../api/securities/securityTransactionApi';
 import { formatDateTime } from '../../../formatters/dateFormatter';
 import { formatMoneyByCurrencyCulture } from '../../../formatters/moneyFormatter';
+import { BaseModalRef } from '../../../common/ModalUtilities';
 
 type Props = {
     securityTransaction: SecurityTransactionEntity,
@@ -20,8 +20,8 @@ type Props = {
 const SecurityTransaction = (props: Props) => {
     const { brokerAccount, security, brokerCommission, stockExchangeCommission, date, price, quantity, tax } = props.securityTransaction;
 
-    const confirmModalRef = useRef<ConfirmModalRef>(null);
-    const editModalRef = useRef<AccountModalRef>(null);
+    const confirmModalRef = useRef<BaseModalRef>(null);
+    const editModalRef = useRef<BaseModalRef>(null);
 
     const onEditClicked = () => {
         editModalRef.current?.openModal()
@@ -82,10 +82,8 @@ const SecurityTransaction = (props: Props) => {
             title={t("entity_securities_transaction_delete_title")}
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
-            ref={confirmModalRef}>
-        </ConfirmModal>
-        <SecurityTransactionModal securityTransaction={props.securityTransaction} 
-            ref={editModalRef} onSaved={onSecurityTransactionUpdated}></SecurityTransactionModal>
+            ref={confirmModalRef}/>
+        <SecurityTransactionModal securityTransaction={props.securityTransaction}  modalRef={editModalRef} onSaved={onSecurityTransactionUpdated}/>
     </Card.Root>
 };
 

@@ -1,12 +1,13 @@
 import { Button } from "@chakra-ui/react"
 import { Fragment } from "react/jsx-runtime"
-import TransactionModal, { TransactionModalRef } from "../../../modals/TransactionModal/TransactionModal"
+import TransactionModal from "../../../modals/TransactionModal/TransactionModal"
 import { useRef } from "react"
 import { AccountEntity } from "../../../models/accounts/AccountEntity"
 import { MdAdd } from "react-icons/md"
 import { createTransaction } from "../../../api/transactions/transactionApi"
 import { useTranslation } from "react-i18next"
 import { TransactionEntity } from "../../../models/transactions/TransactionEntity"
+import { BaseModalRef } from "../../../common/ModalUtilities"
 
 type Props = {
     accounts: AccountEntity[],
@@ -14,7 +15,7 @@ type Props = {
 }
 
 const AddTransactionButton: React.FC<Props> = (props: Props) => {
-    const addTransactionModalRef = useRef<TransactionModalRef>(null);
+    const addTransactionModalRef = useRef<BaseModalRef>(null);
             
     const onAddTransactionClick = () => {
         addTransactionModalRef.current?.openModal()
@@ -35,9 +36,9 @@ const AddTransactionButton: React.FC<Props> = (props: Props) => {
         <Button background="purple.600" onClick={() => onAddTransactionClick()}>
             <MdAdd/>{t("manager_transactions_add_transaction")}
         </Button>
-        <TransactionModal ref={addTransactionModalRef} 
+        <TransactionModal modalRef={addTransactionModalRef} 
             accounts={props.accounts}
-            onSaved={onTransactionAdded}></TransactionModal>
+            onSaved={onTransactionAdded}/>
     </Fragment>
 }
 

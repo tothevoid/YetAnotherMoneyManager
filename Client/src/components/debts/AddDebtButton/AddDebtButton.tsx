@@ -3,17 +3,17 @@ import { Button, Icon } from "@chakra-ui/react"
 import { useRef } from "react"
 import { Fragment } from "react/jsx-runtime"
 import { useTranslation } from "react-i18next"
-import { DividendModalRef } from "../../../modals/DividendModal/DividendModal"
 import { ClientDebtEntity } from "../../../models/debts/DebtEntity"
 import { createDebt } from "../../../api/debts/debtApi"
 import DebtModal from "../modals/DebtModal.tsx/DebtModal"
+import { BaseModalRef } from "../../../common/ModalUtilities"
 
 type Props = {
     onAdded: (debt: ClientDebtEntity) => void;
 };
 
 const AddDebtButton: React.FC<Props> = ({ onAdded }) => {
-    const modalRef = useRef<DividendModalRef>(null);
+    const modalRef = useRef<BaseModalRef>(null);
     
     const onAdd = () => {
         modalRef.current?.openModal()
@@ -38,7 +38,7 @@ const AddDebtButton: React.FC<Props> = ({ onAdded }) => {
                 </Icon>
                 {t("security_page_summary_add")}
             </Button>
-            <DebtModal ref={modalRef} onSaved={onDebtAdded}/>
+            <DebtModal modalRef={modalRef} onSaved={onDebtAdded}/>
         </Fragment>
     )
 }

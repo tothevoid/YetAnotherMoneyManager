@@ -1,16 +1,14 @@
-import { Box, Button, Checkbox, Icon, Input, Table } from "@chakra-ui/react";
+import { Box, Button, Icon, Input, Table } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { MdAdd, MdDelete } from "react-icons/md";
 import { useTranslation } from "react-i18next";
-import { CurrencyModalRef } from "../../../../modals/CurrencyModal/CurrencyModal";
-import { ConfirmModal, ConfirmModalRef } from "../../../../modals/ConfirmModal/ConfirmModal";
+import { ConfirmModal } from "../../../../modals/ConfirmModal/ConfirmModal";
 import BrokerAccountTypeTypeModal from "../../../brokers/modals/BrokerAccountTypeModal/BrokerAccountTypeModal";
 import { createBrokerAccountType, deleteBrokerAccountType, getBrokerAccountTypes, updateBrokerAccountType } from "../../../../api/brokers/brokerAccountTypeApi";
 import { BrokerAccountTypeEntity } from "../../../../models/brokers/BrokerAccountTypeEntity";
+import { BaseModalRef } from "../../../../common/ModalUtilities";
 
-interface Props {
-
-}
+interface Props {}
 
 interface State {
     brokerAccountTypes: BrokerAccountTypeEntity[],
@@ -21,8 +19,9 @@ interface State {
 const BrokerAccountTypesTable: React.FC<Props> = () => {
     const [state, setState] = useState<State>({brokerAccountTypes: [], hasChanges: false, currentBrokerAccountId: null});
     const { t } = useTranslation();
-    const modalRef = useRef<CurrencyModalRef>(null);
-    const confirmModalRef = useRef<ConfirmModalRef>(null);
+
+    const modalRef = useRef<BaseModalRef>(null);
+    const confirmModalRef = useRef<BaseModalRef>(null);
 
     useEffect(() => {
         const initData = async () => { 
@@ -157,13 +156,12 @@ const BrokerAccountTypesTable: React.FC<Props> = () => {
                 {t("entity_broker_account_type_add")}
             </Button>
         </Box>
-        <BrokerAccountTypeTypeModal ref={modalRef} onSaved={onBrokerAccountTypeAdded}></BrokerAccountTypeTypeModal>
+        <BrokerAccountTypeTypeModal modalRef={modalRef} onSaved={onBrokerAccountTypeAdded}/>
         <ConfirmModal onConfirmed={onDeleteConfirmed}
-                    title={t("brokerAccountTypes_delete_title")}
-                    message={t("modals_delete_message")}
-                    confirmActionName={t("modals_delete_button")}
-                    ref={confirmModalRef}>
-        </ConfirmModal>
+            title={t("brokerAccountTypes_delete_title")}
+            message={t("modals_delete_message")}
+            confirmActionName={t("modals_delete_button")}
+            ref={confirmModalRef}/>
     </Box>
 }
 

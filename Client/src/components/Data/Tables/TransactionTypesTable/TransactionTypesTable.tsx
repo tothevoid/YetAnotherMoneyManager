@@ -1,11 +1,12 @@
 import { Box, Button, Checkbox, Icon, Table, Text, Image } from "@chakra-ui/react";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MdAdd, MdDelete, MdEdit, MdOutlinePayment } from "react-icons/md";
 import { useTranslation } from "react-i18next";
-import { ConfirmModal, ConfirmModalRef } from "../../../../modals/ConfirmModal/ConfirmModal";
+import { ConfirmModal } from "../../../../modals/ConfirmModal/ConfirmModal";
 import { TransactionTypeEntity } from "../../../../models/transactions/TransactionTypeEntity";
 import { createTransactionType, deleteTransactionType, getTransactionTypeIconUrl, getTransactionTypes, updateTransactionType } from "../../../../api/transactions/transactionTypeApi";
-import TransactionTypeModal, { TransactionTypeModalRef } from "../../../../modals/TransactionTypeModal/TransactionTypeModal";
+import TransactionTypeModal from "../../../../modals/TransactionTypeModal/TransactionTypeModal";
+import { BaseModalRef } from "../../../../common/ModalUtilities";
 
 interface Props {}
 
@@ -21,8 +22,8 @@ const TransactionTypesTable: React.FC<Props> = () => {
     const [updatedTransactionType, setUpdatedTransactionType] = useState<TransactionTypeEntity | null>();
 
     const { t } = useTranslation();
-    const modalRef = useRef<TransactionTypeModalRef>(null);
-    const confirmModalRef = useRef<ConfirmModalRef>(null);
+    const modalRef = useRef<BaseModalRef>(null);
+    const confirmModalRef = useRef<BaseModalRef>(null);
 
     useEffect(() => {
         const initData = async () => { 
@@ -179,18 +180,15 @@ const TransactionTypesTable: React.FC<Props> = () => {
                             </Table.Cell>
                         </Table.Row>
                     })
-                }
+                }modalRef
             </Table.Body>
         </Table.Root>
-        <TransactionTypeModal transactionType={updatedTransactionType}
-            ref={modalRef} onSaved={onTransactionTypeSaved}>
-        </TransactionTypeModal>
+        <TransactionTypeModal transactionType={updatedTransactionType} modalRef={modalRef} onSaved={onTransactionTypeSaved}/>
         <ConfirmModal onConfirmed={onDeleteConfirmed}
-                    title={t("transaction_type_delete_title")}
-                    message={t("modals_delete_message")}
-                    confirmActionName={t("modals_delete_button")}
-                    ref={confirmModalRef}>
-        </ConfirmModal>
+            title={t("transaction_type_delete_title")}
+            message={t("modals_delete_message")}
+            confirmActionName={t("modals_delete_button")}
+            ref={confirmModalRef}/>
     </Box>
 }
 

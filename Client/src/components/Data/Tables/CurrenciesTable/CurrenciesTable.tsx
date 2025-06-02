@@ -3,12 +3,12 @@ import { CurrencyEntity } from "../../../../models/currencies/CurrencyEntity";
 import { useEffect, useRef, useState } from "react";
 import { MdAdd, MdDelete } from "react-icons/md";
 import { useTranslation } from "react-i18next";
-import CurrencyModal, { CurrencyModalRef } from "../../../../modals/CurrencyModal/CurrencyModal";
-import { ConfirmModal, ConfirmModalRef } from "../../../../modals/ConfirmModal/ConfirmModal";
+import CurrencyModal from "../../../../modals/CurrencyModal/CurrencyModal";
+import { ConfirmModal } from "../../../../modals/ConfirmModal/ConfirmModal";
 import { getCurrencies, updateCurrency, createCurrency, deleteCurrency } from "../../../../api/currencies/currencyApi";
+import { BaseModalRef } from "../../../../common/ModalUtilities";
 
-interface Props {
-}
+interface Props {}
 
 interface State {
     currencies: CurrencyEntity[],
@@ -19,8 +19,9 @@ interface State {
 const CurrenciesTable: React.FC<Props> = () => {
     const [state, setState] = useState<State>({currencies: [], hasChanges: false, currentCurrencyId: null});
     const { t } = useTranslation();
-    const modalRef = useRef<CurrencyModalRef>(null);
-    const confirmModalRef = useRef<ConfirmModalRef>(null);
+
+    const modalRef = useRef<BaseModalRef>(null);
+    const confirmModalRef = useRef<BaseModalRef>(null);
 
     useEffect(() => {
         const initData = async () => { 
@@ -169,13 +170,12 @@ const CurrenciesTable: React.FC<Props> = () => {
                 {t("currencies_data_add")}
             </Button>
         </Box>
-        <CurrencyModal ref={modalRef} onSaved={onCurrencyAdded}></CurrencyModal>
+        <CurrencyModal modalRef={modalRef} onSaved={onCurrencyAdded}/>
         <ConfirmModal onConfirmed={onDeleteConfirmed}
-                    title={t("currencies_delete_title")}
-                    message={t("modals_delete_message")}
-                    confirmActionName={t("modals_delete_button")}
-                    ref={confirmModalRef}>
-        </ConfirmModal>
+            title={t("currencies_delete_title")}
+            message={t("modals_delete_message")}
+            confirmActionName={t("modals_delete_button")}
+            ref={confirmModalRef}/>
     </Box>
 }
 

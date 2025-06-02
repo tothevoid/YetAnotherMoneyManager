@@ -3,12 +3,12 @@ import { MdDelete, MdEdit } from "react-icons/md";
 import { Fragment, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatMoneyByCurrencyCulture } from '../../../formatters/moneyFormatter';
-import { AccountModalRef } from '../../../modals/AccountModal/AccountModal';
-import { ConfirmModalRef, ConfirmModal } from '../../../modals/ConfirmModal/ConfirmModal';
+import { ConfirmModal } from '../../../modals/ConfirmModal/ConfirmModal';
 import { BrokerAccountEntity } from '../../../models/brokers/BrokerAccountEntity';
 import BrokerAccountModal from '../modals/BrokerAccountModal/BrokerAccountModal';
 import { deleteBrokerAccount, updateBrokerAccount } from '../../../api/brokers/brokerAccountApi';
 import { calculateDiff } from '../../../utils/NumericDiffsUtilities';
+import { BaseModalRef } from '../../../common/ModalUtilities';
 
 type Props = {
     brokerAccount: BrokerAccountEntity,
@@ -20,8 +20,8 @@ type Props = {
 const BrokerAccount = (props: Props) => {
     const {id, name, broker, currency, type, initialValue, currentValue} = props.brokerAccount;
 
-    const confirmModalRef = useRef<ConfirmModalRef>(null);
-    const editModalRef = useRef<AccountModalRef>(null);
+    const confirmModalRef = useRef<BaseModalRef>(null);
+    const editModalRef = useRef<BaseModalRef>(null);
 
     const onEditClicked = () => {
         editModalRef.current?.openModal()
@@ -87,9 +87,8 @@ const BrokerAccount = (props: Props) => {
             title={t("broker_account_delete_title")}
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
-            ref={confirmModalRef}>
-        </ConfirmModal>
-        <BrokerAccountModal brokerAccount={props.brokerAccount} ref={editModalRef} onSaved={onBrokerAccountsUpdated}></BrokerAccountModal>
+            ref={confirmModalRef}/>
+        <BrokerAccountModal brokerAccount={props.brokerAccount} modalRef={editModalRef} onSaved={onBrokerAccountsUpdated}/>
     </Fragment>
 };
 

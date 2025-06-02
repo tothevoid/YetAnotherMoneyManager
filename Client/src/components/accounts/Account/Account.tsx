@@ -4,10 +4,11 @@ import { Fragment, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { updateAccount, deleteAccount } from '../../../api/accounts/accountApi';
 import { formatMoneyByCurrencyCulture } from '../../../formatters/moneyFormatter';
-import AccountBalanceTransferModal, { TransferModalRef } from '../../../modals/AccountBalanceTransferModal/AccountBalanceTransferModal';
-import AccountModal, { AccountModalRef } from '../../../modals/AccountModal/AccountModal';
-import { ConfirmModalRef, ConfirmModal } from '../../../modals/ConfirmModal/ConfirmModal';
+import AccountBalanceTransferModal from '../../../modals/AccountBalanceTransferModal/AccountBalanceTransferModal';
+import AccountModal from '../../../modals/AccountModal/AccountModal';
+import { ConfirmModal } from '../../../modals/ConfirmModal/ConfirmModal';
 import { AccountEntity } from '../../../models/accounts/AccountEntity';
+import { BaseModalRef } from '../../../common/ModalUtilities';
 
 type Props = {
     account: AccountEntity,
@@ -19,9 +20,9 @@ type Props = {
 const Account = (props: Props) => {
     const {name, balance, currency} = props.account;
 
-    const confirmModalRef = useRef<ConfirmModalRef>(null);
-    const editModalRef = useRef<AccountModalRef>(null);
-    const transferModalRef = useRef<TransferModalRef>(null);
+    const confirmModalRef = useRef<BaseModalRef>(null);
+    const editModalRef = useRef<BaseModalRef>(null);
+    const transferModalRef = useRef<BaseModalRef>(null);
 
     const onTransferClicked = () => {
         transferModalRef.current?.openModal()
@@ -91,10 +92,9 @@ const Account = (props: Props) => {
             title={t("account_delete_title")}
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
-            ref={confirmModalRef}>
-        </ConfirmModal>
-        <AccountBalanceTransferModal from={props.account} ref={transferModalRef} onTransfered={onTransfered}></AccountBalanceTransferModal>
-        <AccountModal account={props.account} ref={editModalRef} onSaved={onAccountUpdated}></AccountModal>
+            ref={confirmModalRef}/>
+        <AccountBalanceTransferModal from={props.account} modalRef={transferModalRef} onTransfered={onTransfered}/>
+        <AccountModal account={props.account} modalRef={editModalRef} onSaved={onAccountUpdated}/>
     </Fragment>
 };
 

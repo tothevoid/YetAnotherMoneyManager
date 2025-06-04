@@ -14,3 +14,23 @@ export const reorderByPredicate = <T>(array: T[], newElement: T,
     const filteredArray = array.filter(searchPredicate);
     return insertByPredicate(filteredArray, newElement, reorderPredicate)
 }
+
+export const groupByKey = <KeyT, ValueT>(records: ValueT[], keySelector: (value: ValueT) => KeyT) => {
+    return records.reduce((accumulator: Map<KeyT, ValueT[]>, currentValue: ValueT) => {
+        const key = keySelector(currentValue);
+        if (accumulator.has(key)) {
+            accumulator.get(key).push(currentValue);
+        } else {
+            accumulator.set(key, [currentValue]);
+        }
+
+        return accumulator;
+    }, new Map<KeyT, ValueT[]>);
+}
+
+export const sumEntities = <T>(records: T[], entitySumSelector: (entity: T) => number) => {
+    return records.reduce((accumulator, currentValue) => {
+        accumulator += entitySumSelector(currentValue);
+        return accumulator;
+    }, 0)
+}

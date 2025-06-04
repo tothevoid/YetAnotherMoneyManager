@@ -11,7 +11,8 @@
     "accounts_page_summary_add": "Добавить счёт",
 
     "manager_transactions_title": "Транзакции",
-    "manager_transactions_add_transaction": "Добавить траназкцию",
+    "manager_transactions_add_transaction": "Добавить транзакцию",
+    "manager_transactions_no_transactions": "В текущем периоде нет транзакций",
     "manager_transactions_empty": "Отсутствуют транзакции",
     "manager_stats_title": "Статистика",
     "manager_stats_by_source": "По счёту",

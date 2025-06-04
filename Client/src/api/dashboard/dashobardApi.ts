@@ -1,6 +1,6 @@
 import config from "../../config";
 import { Dashboard } from "../../models/dashboard/DashboardEntity";
-import { checkPromiseStatus, logPromiseError } from "../../utils/PromiseUtils";
+import { checkPromiseStatus, logPromiseError } from "../../shared/utilities/webApiUtilities";
 
 const basicUrl = `${config.api.URL}/Dashboard`;
 

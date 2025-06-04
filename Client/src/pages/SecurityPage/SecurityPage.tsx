@@ -4,10 +4,10 @@ import { useParams } from "react-router-dom";
 import { getSecurityById } from "../../api/securities/securityApi";
 import { SecurityEntity } from "../../models/securities/SecurityEntity";
 import { HStack, RadioCard, Stack, Text} from "@chakra-ui/react";
-import DividendList from "../../components/securities/DividendsList/DividendList";
-import SecurityHistory from "../../components/securities/SecurityHistory/SecurityHistory";
-import { formatMoneyByCurrencyCulture } from "../../formatters/moneyFormatter";
-import SecurityTransactionsChart from "../../components/securities/SecurityTransactionsChart/SecurityTransactionsChart";
+import { formatMoneyByCurrencyCulture } from "../../shared/utilities/formatters/moneyFormatter";
+import DividendList from "./components/DividendsList/DividendList";
+import SecurityHistory from "./components/SecurityHistory/SecurityHistory";
+import SecurityTransactionsChart from "./components/SecurityTransactionsChart/SecurityTransactionsChart";
 
 interface State {
 	security: SecurityEntity

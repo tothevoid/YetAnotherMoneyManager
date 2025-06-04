@@ -1,4 +1,4 @@
-import { checkPromiseStatus, logPromiseError } from "../utils/PromiseUtils";
+import { checkPromiseStatus, logPromiseError } from "../shared/utilities/webApiUtilities";
 
 export const getAllEntities = async <T> (basicUrl: string): Promise<T[]> => {
     const entities = await fetch(basicUrl, {method: "GET"})

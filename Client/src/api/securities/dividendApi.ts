@@ -1,7 +1,7 @@
 import config from '../../config' 
 import { DividendEntity, ServerDividendEntity } from '../../models/securities/DividendEntity';
-import { convertToDateOnly } from '../../utils/DateUtils';
-import { checkPromiseStatus, logPromiseError } from '../../utils/PromiseUtils';
+import { convertToDateOnly } from '../../shared/utilities/dateUtils';
+import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { createEntity, deleteEntity, updateEntity } from '../basicApi';
 
 const basicUrl = `${config.api.URL}/Dividend`;

@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
-import SecuritiesList from "../../components/securities/SecuritiesList/SecuritiesList";
+import SecuritiesList from "./components/SecuritiesList/SecuritiesList";
 
 interface Props {}
 

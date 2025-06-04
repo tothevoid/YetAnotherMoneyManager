@@ -1,6 +1,6 @@
 import config from "../../config";
 import { TransactionTypeEntity } from "../../models/transactions/TransactionTypeEntity";
-import { checkPromiseStatus, logPromiseError } from "../../utils/PromiseUtils";
+import { checkPromiseStatus, logPromiseError } from "../../shared/utilities/webApiUtilities";
 import { deleteEntity, getAllEntities } from "../basicApi";
 
 const basicUrl = `${config.api.URL}/TransactionType`;

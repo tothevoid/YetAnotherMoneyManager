@@ -1,6 +1,6 @@
 import config from "../../config";
 import { ClientDebtEntity, ServerDebtEntity } from "../../models/debts/DebtEntity";
-import { convertToDateOnly } from "../../utils/DateUtils";
+import { convertToDateOnly } from "../../shared/utilities/dateUtils";
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from "../basicApi";
 
 const basicUrl = `${config.api.URL}/Debt`;

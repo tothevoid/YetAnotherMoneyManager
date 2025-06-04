@@ -1,10 +1,10 @@
 import { i18n } from 'i18next';
 import config from '../../config' 
-import { formatDate } from '../../formatters/dateFormatter';
+import { formatDate } from '../../shared/utilities/formatters/dateFormatter';
 import { SecurityEntity, ServerSecurityEntity } from '../../models/securities/SecurityEntity';
 import { SecurityHistoryValue } from '../../models/securities/SecurityHistoryValue';
-import { convertToDateOnly } from '../../utils/DateUtils';
-import { checkPromiseStatus, logPromiseError } from '../../utils/PromiseUtils';
+import { convertToDateOnly } from '../../shared/utilities/dateUtils';
+import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { deleteEntity, getAllEntities } from '../basicApi';
 
 const basicUrl = `${config.api.URL}/Security`;

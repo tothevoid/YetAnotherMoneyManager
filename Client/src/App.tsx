@@ -1,17 +1,17 @@
 import './App.css';
-import Header from './components/structure/Header/Header';
-import TransactionsPage from './pages/TransactionsPage/TransactionsPage'
-import DepositsPage from './pages/DepositsPage/DepositsPage';
+import Header from '../features/Navigation/Header/Header';
+import TransactionsPage from './pages/Transactions/TransactionsPage'
+import DepositsPage from './pages/Deposits/DepositsPage';
 
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import AccountsPage from './pages/AccountsPage/AccountsPage';
-import DataPage from './pages/DataPage/DataPage';
-import BrokerAccountsPage from './pages/BrokerAccountsPage/BrokerAccountsPage';
+import AccountsPage from './pages/Accounts/AccountsPage';
+import DataPage from './pages/Data/DataPage';
+import BrokerAccountsPage from './pages/BrokerAccounts/BrokerAccountsPage';
 import SecuritiesPage from './pages/SecuritiesPage/SecuritiesPage';
-import BrokerAccountPage from './pages/BrokerAccountPage/BrokerAccountPage';
+import BrokerAccountPage from './pages/BrokerAccount/BrokerAccountPage';
 import SecurityPage from './pages/SecurityPage/SecurityPage';
-import DashboardPage from './pages/DashboardPage/DashboardPage';
-import DebtsPage from './pages/DebtsPage/DebtsPage';
+import DashboardPage from './pages/Dashboard/DashboardPage';
+import DebtsPage from './pages/Debts/DebtsPage';
 
 const App = () => {
   return (

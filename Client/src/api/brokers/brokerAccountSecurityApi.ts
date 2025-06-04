@@ -1,6 +1,6 @@
 import config from '../../config' 
 import { BrokerAccountSecurityEntity, ServerBrokerAccountSecurityEntity } from '../../models/brokers/BrokerAccountSecurityEntity';
-import { checkPromiseStatus, logPromiseError } from '../../utils/PromiseUtils';
+import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { createEntity, deleteEntity, updateEntity } from '../basicApi';
 
 const basicUrl = `${config.api.URL}/BrokerAccountSecurity`;

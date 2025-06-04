@@ -1,8 +1,8 @@
 import config from "../../config";
 import { Transfer } from "../../modals/AccountBalanceTransferModal/AccountBalanceTransferModal";
 import { AccountEntity, ServerAccountEntity } from "../../models/accounts/AccountEntity";
-import { convertToDateOnly } from "../../utils/DateUtils";
-import { checkPromiseStatus, logPromiseError } from "../../utils/PromiseUtils";
+import { convertToDateOnly } from "../../shared/utilities/dateUtils";
+import { checkPromiseStatus, logPromiseError } from "../../shared/utilities/webApiUtilities";
 import { AccountCurrencySummary } from "../../models/accounts/accountsSummary";
 import { createEntity, deleteEntity, updateEntity } from "../basicApi";
 

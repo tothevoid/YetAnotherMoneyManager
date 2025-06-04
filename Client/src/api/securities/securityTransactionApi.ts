@@ -2,7 +2,7 @@ import config from '../../config'
 import { SecurityTransactionEntity, ServerSecurityTransactionEntity } from '../../models/securities/SecurityTransactionEntity';
 import { SecurityTransactionsPagination } from '../../models/securities/SecurityTransactionsPagination';
 import { SecurityTransactionsRequest } from '../../models/securities/SecurityTransactionsRequest';
-import { checkPromiseStatus, logPromiseError } from '../../utils/PromiseUtils';
+import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { createEntity, deleteEntity, getAllEntitiesByConfig, updateEntity } from '../basicApi';
 
 const basicUrl = `${config.api.URL}/SecurityTransaction`;

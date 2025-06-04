@@ -1,6 +1,6 @@
 import config from "../../config";
 import { UserProfileEntity } from "../../models/user/UserProfileEntity";
-import { checkPromiseStatus, logPromiseError } from "../../utils/PromiseUtils";
+import { checkPromiseStatus, logPromiseError } from "../../shared/utilities/webApiUtilities";
 import { updateEntity } from "../basicApi";
 
 const basicUrl = `${config.api.URL}/UserProfile`;

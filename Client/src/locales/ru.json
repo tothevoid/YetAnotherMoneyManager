@@ -59,12 +59,12 @@
     "entity_transaction_direction_income": "Доход",
     "entity_transaction_direction_outcome": "Расход",
 
-    "entity_broker_account_name": "Назание счёта",
+    "entity_broker_account_name": "Название счёта",
     "entity_broker_account_type": "Тип счёта",
     "entity_broker_account_currency": "Валюта",
     "entity_broker_account_broker": "Брокер",
     "entity_broker_account_last_update_at": "Дата последнего обновления",
-    "entity_broker_account_assets_value": "Стоиость активов",
+    "entity_broker_account_assets_value": "Стоимость активов",
 
     "transaction_delete_title": "Удалить транзакцию",
 

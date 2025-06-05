@@ -27,12 +27,12 @@
     "entity_account_active": "Active",
     "entity_account_created_on": "Created on",
 
-    "entity_broker_account_name": "Назание счёта",
-    "entity_broker_account_type": "Тип счёта",
-    "entity_broker_account_currency": "Валюта",
-    "entity_broker_account_broker": "Брокер",
-    "entity_broker_account_last_update_at": "Дата последнего обновления",
-    "entity_broker_account_assets_value": "Стоиость активов",
+    "entity_broker_account_name": "Account name",
+    "entity_broker_account_type": "Account type",
+    "entity_broker_account_currency": "Currency",
+    "entity_broker_account_broker": "Broker",
+    "entity_broker_account_last_update_at": "Last update at",
+    "entity_broker_account_assets_value": "Assets value",
 
     "account_delete_title": "Delete account",
 
@@ -48,7 +48,7 @@
     "entity_deposit_from": "From",
     "entity_deposit_to": "To",
     "entity_deposit_percentage": "Percentage",
-    "entity_deposit_initial_amount": "Inital amount",
+    "entity_deposit_initial_amount": "Initial amount",
     "entity_deposit_estimated_earn": "Estimated earn",
     "entity_deposit_dates": "Dates",
     "entity_deposit_earned": "Earned",
@@ -58,7 +58,7 @@
     "entity_transaction_name_form_title": "Transaction",
     "entity_transaction_name": "Name",
     "entity_transaction_date": "Date",
-    "entity_transaction_money_quantity": "Ammount",
+    "entity_transaction_money_quantity": "Amount",
     "entity_transaction_account_source": "Account source",
     "entity_transaction_transaction_type": "Transaction type",
     "entity_transaction_direction": "Direction",
@@ -83,10 +83,10 @@
     "entity_currency_name": "Name",
     "entity_currency_active": "Active",
 
-    "deposits_page_no_deposits": "Нет депозитов в выбранном диапазоне",
-    "deposits_chart_type_earnings": "Общий доход по месяцам",
-    "deposits_chart_type_stacked": "Доходы депозитов по месяцам",
-    "earnings_chart_data_title": "Доходы с депозитов",
+    "deposits_page_no_deposits": "No deposits in current range",
+    "deposits_chart_type_earnings": "Total earnings by months",
+    "deposits_chart_type_stacked": "Deposits earnings by months",
+    "earnings_chart_data_title": "Deposits earnings",
 
     "deposits_list_only_active": "Only active",
 

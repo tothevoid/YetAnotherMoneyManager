@@ -3,7 +3,7 @@ import { MdDelete, MdEdit } from "react-icons/md";
 import { Fragment, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { HiOutlineBuildingOffice2 } from 'react-icons/hi2';
-import { updateSecurity, deleteSecurity, getIconUrl } from '../../../../api/securities/securityApi';
+import { getIconUrl } from '../../../../api/securities/securityApi';
 import { SecurityEntity } from '../../../../models/securities/SecurityEntity';
 import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModal';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
@@ -13,7 +13,7 @@ import SecurityModal from '../../modals/SecurityModal/SecurityModal';
 type Props = {
     security: SecurityEntity,
     onDeleteCallback: (security: SecurityEntity) => void,
-    onEditCallback: (security: SecurityEntity) => void,
+    onEditCallback: (security: SecurityEntity, file: File | null) => void,
     onReloadSecurities: () => void
 }
 
@@ -31,25 +31,7 @@ const Security = (props: Props) => {
         confirmModalRef.current?.openModal()
     };
 
-    const onSecurityUpdated = async (security: SecurityEntity, icon: File | null) => {
-        const isAccountUpdated = await updateSecurity(security, icon);
-        if (!isAccountUpdated) {
-            return;
-        }
-
-        props.onEditCallback(security);
-    }
-
-    const onDeletionConfirmed = async () => {
-        const isAccountDeleted = await deleteSecurity(props.security.id);
-        if (!isAccountDeleted) {
-            return;
-        }
-
-        props.onDeleteCallback(props.security);
-    }
-
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
 
     const securityLink = `../security/${id}`;
 
@@ -85,12 +67,12 @@ const Security = (props: Props) => {
                 </Flex>
             </Card.Body>
         </Card.Root>
-        <ConfirmModal onConfirmed={onDeletionConfirmed}
+        <ConfirmModal onConfirmed={() => props.onDeleteCallback(props.security)}
             title={t("security_delete_title")}
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
             ref={confirmModalRef}/>
-        <SecurityModal security={props.security} modalRef={editModalRef} onSaved={onSecurityUpdated}/>
+        <SecurityModal security={props.security} modalRef={editModalRef} onSaved={props.onEditCallback}/>
     </Fragment>
 };
 

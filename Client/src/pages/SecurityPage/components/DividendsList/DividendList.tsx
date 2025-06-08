@@ -1,104 +1,58 @@
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import React, { Fragment, useRef } from 'react';
 import { Box, Flex, Text } from '@chakra-ui/react';
 import Dividend from '../Dividend/Dividend';
 import { useTranslation } from 'react-i18next';
-import { getDividends, createDividend } from '../../../../api/securities/dividendApi';
 import { DividendEntity } from '../../../../models/securities/DividendEntity';
 import ShowModalButton from '../../../../shared/components/ShowModalButton/ShowModalButton';
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 import DividendModal from '../../modals/DividendModal/DividendModal';
+import { useDividends } from '../../hooks/useDividends';
 
 interface Props {
-    securityId: string
-}
-
-interface State {
-    dividends: DividendEntity[]
+	securityId: string
 }
 
 const DividendList: React.FC<Props> = (props) => {
-    const [state, setState] = useState<State>({ dividends: [] })
+	const {
+		dividends,
+		createDividendEntity,
+		updateDividendEntity,
+		deleteDividendEntity,
+		reloadDividends
+	} = useDividends({securityId: props.securityId});
 
-    useEffect(() => {
-        const initData = async () => {
-            await requestDividends();
-        }
-        initData();
-    }, []);
+	const onReloadDividends = async () => {
+		await reloadDividends();
+	}
 
-    const requestDividends = async () => {
-        const dividends = await getDividends(props.securityId);
-        setState((currentState) => {
-            return {...currentState, dividends}
-        })
-    };
+	const modalRef = useRef<BaseModalRef>(null);
+	
+	const onAdd = () => {
+		modalRef.current?.openModal()
+	};
 
-    const onDividendAdded = async (addedDividend: DividendEntity) => {
-        if (!addedDividend) {
-            return
-        }
+	const { t } = useTranslation();
+	const dividend: DividendEntity = { security: {id: props.securityId} };
 
-        await onReloadDividends();
-    };
-
-    const onDividendUpdated = async (updatedDividend: DividendEntity) => {
-        if (!updatedDividend) {
-            return
-        }
-
-        await onReloadDividends();
-    };
-
-    const onDividendDeleted = async (deletedDividend: DividendEntity) => {
-        if (!deletedDividend) {
-            return;
-        }
-
-        await onReloadDividends();
-    };
-
-    const onReloadDividends = async () => {
-        await requestDividends();
-    }
-
-    const modalRef = useRef<BaseModalRef>(null);
-    
-    const onAdd = () => {
-        modalRef.current?.openModal()
-    };
-
-    const addDividend = async (dividend: DividendEntity) => {
-        const createdDividend = await createDividend(dividend);
-        if (!createdDividend) {
-            return;
-        }
-
-        onDividendAdded(createdDividend);
-    };
-
-    const { t } = useTranslation();
-    const dividend: DividendEntity = { security: {id: props.securityId} };
-
-    return (
-        <Fragment>
-            <Text fontSize="2xl">{t("dividends_list_title")}</Text>
-            <Flex direction={'column-reverse'} justifyContent="space-between" pt={5} pb={5}>
-                <ShowModalButton buttonTitle={t("security_page_summary_add")} onClick={onAdd}>
-                    <DividendModal dividend={dividend} modalRef={modalRef} onSaved={addDividend}/>
-                </ShowModalButton>
-            </Flex>
-            <Box>
-                {
-                state.dividends.map((security: DividendEntity) => {
-                    return <Dividend key={security.id} dividend={security} 
-                        onEditCallback={onDividendUpdated} 
-                        onDeleteCallback={onDividendDeleted}
-                        onReloadDividends={onReloadDividends}/>
-                })
-                }
-            </Box>
-        </Fragment>
-    );
+	return (
+		<Fragment>
+			<Text fontSize="2xl">{t("dividends_list_title")}</Text>
+			<Flex direction={'column-reverse'} justifyContent="space-between" pt={5} pb={5}>
+				<ShowModalButton buttonTitle={t("security_page_summary_add")} onClick={onAdd}>
+					<DividendModal dividend={dividend} modalRef={modalRef} onSaved={createDividendEntity}/>
+				</ShowModalButton>
+			</Flex>
+			<Box>
+				{
+					dividends.map((security: DividendEntity) => 
+						<Dividend key={security.id} dividend={security} 
+							onEditCallback={updateDividendEntity} 
+							onDeleteCallback={deleteDividendEntity}
+							onReloadDividends={onReloadDividends}/>)
+				}
+			</Box>
+		</Fragment>
+	);
 }
 
 export default DividendList;

@@ -2,7 +2,6 @@ import { Button, Card, CardBody, Flex, Icon, Stack, Text } from '@chakra-ui/reac
 import { MdDelete, MdEdit } from "react-icons/md";
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { updateDividend, deleteDividend } from '../../../../api/securities/dividendApi';
 import { DividendEntity } from '../../../../models/securities/DividendEntity';
 import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModal';
 import { formatDate } from '../../../../shared/utilities/formatters/dateFormatter';
@@ -31,24 +30,6 @@ const Dividend = (props: Props) => {
         confirmModalRef.current?.openModal()
     };
 
-    const onDividendUpdated = async (dividend: DividendEntity) => {
-        const isAccountUpdated = await updateDividend(dividend);
-        if (!isAccountUpdated) {
-            return;
-        }
-
-        props.onEditCallback(dividend);
-    }
-
-    const onDeletionConfirmed = async () => {
-        const isAccountDeleted = await deleteDividend(id);
-        if (!isAccountDeleted) {
-            return;
-        }
-
-        props.onDeleteCallback(props.dividend);
-    }
-
     const { t, i18n } = useTranslation();
     return <Card.Root borderColor="border_primary" color="text_primary" backgroundColor="background_primary" 
         mt={5} mb={5} boxShadow={"sm"} _hover={{ boxShadow: "md" }}>
@@ -76,7 +57,7 @@ const Dividend = (props: Props) => {
                 </Flex>
             </Flex>
         </CardBody>	
-        <ConfirmModal onConfirmed={onDeletionConfirmed}
+        <ConfirmModal onConfirmed={() => props.onDeleteCallback(props.dividend)}
             title={t("transaction_delete_title")}
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}

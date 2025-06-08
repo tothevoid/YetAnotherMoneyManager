@@ -8,7 +8,7 @@ import { deleteSecurityTransaction, updateSecurityTransaction } from '../../../.
 import { formatDateTime } from '../../../../shared/utilities/formatters/dateFormatter';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
-import SecurityTransactionModal from '../../../BrokerAccount/modals/SecurityTransactionModal/SecurityTransactionModal';
+import SecurityTransactionModal from '../../modals/SecurityTransactionModal/SecurityTransactionModal';
 
 type Props = {
     securityTransaction: SecurityTransactionEntity,

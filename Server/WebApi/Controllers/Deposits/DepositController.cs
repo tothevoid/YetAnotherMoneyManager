@@ -32,9 +32,9 @@ namespace MoneyManager.WebApi.Controllers.Deposits
         }
 
         [HttpPost(nameof(GetDepositsSummary))]
-        public DepositMonthSummary GetDepositsSummary(DepositFiltrationModel filtration)
+        public async Task<DepositMonthSummary> GetDepositsSummary(DepositFiltrationModel filtration)
         {
-            var summary = _depositService.GetSummary(filtration.MonthsFrom, filtration.MonthsTo, filtration.OnlyActive);
+            var summary = await _depositService.GetSummary(filtration.MonthsFrom, filtration.MonthsTo, filtration.OnlyActive);
             return _mapper.Map<DepositMonthSummary>(summary);
         }
 

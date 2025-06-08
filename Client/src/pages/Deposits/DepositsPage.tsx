@@ -58,7 +58,7 @@ const DepositsPage: React.FC<Props> = () => {
 
 	const { selectedMinMonths, selectedMaxMonths, onlyActive } = depositsQueryParameters;
 
-	return <Box paddingBlock={10}>
+	return <Box paddingTop={5}>
 		{
 			deposits.length > 0 && selectedMaxMonths && selectedMaxMonths ?
 				<DepositStats onlyActive={onlyActive} selectedMinMonths={selectedMinMonths} selectedMaxMonths={selectedMaxMonths}/>:

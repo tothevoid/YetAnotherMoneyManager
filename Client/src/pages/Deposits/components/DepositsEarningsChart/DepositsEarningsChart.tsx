@@ -2,9 +2,12 @@ import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, L
 import { DepositMonthSummary, DepositPayment } from "../DepositStats/depositMonthSummary";
 import { Box } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
+import { getChartLabelConfig } from "../../../../shared/utilities/chartUtilities";
+import { formatMoneyByCurrencyCulture } from "../../../../shared/utilities/formatters/moneyFormatter";
 
 interface Props {
-	data: DepositMonthSummary
+	data: DepositMonthSummary,
+	currencyName: string
 }
 
 const DepositsEarningsChart = (props: Props) => {
@@ -29,7 +32,7 @@ const DepositsEarningsChart = (props: Props) => {
 				<CartesianGrid strokeDasharray="3 3" />
 				<XAxis dataKey="date"/>
 				<YAxis/>
-				<Tooltip />
+				<Tooltip contentStyle={getChartLabelConfig()} formatter={(value, name) => [formatMoneyByCurrencyCulture(value, props.currencyName), name]}/>
 				<Legend />
 				<Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} name={t("earnings_chart_data_title")}/>
 			</LineChart>

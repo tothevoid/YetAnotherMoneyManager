@@ -2,9 +2,12 @@ import { Stack } from "@chakra-ui/react"
 import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import { CHARTS_COLORS } from "../DepositStats/chartsColors"
 import { DepositMonthSummary, DepositPayment } from "../DepositStats/depositMonthSummary"
+import { getChartLabelConfig } from "../../../../shared/utilities/chartUtilities"
+import { formatMoneyByCurrencyCulture } from "../../../../shared/utilities/formatters/moneyFormatter"
 
 interface Props {
-    data: DepositMonthSummary
+    data: DepositMonthSummary,
+    currencyName: string
 }
 
 const StackedDepositsChart = (props: Props) => {
@@ -23,7 +26,7 @@ const StackedDepositsChart = (props: Props) => {
         <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
             <XAxis dataKey="date" />
             <YAxis />
-            <Tooltip />
+            <Tooltip contentStyle={getChartLabelConfig()} formatter={(value, name) => [formatMoneyByCurrencyCulture(value, props.currencyName), name]} />
             <Legend />
             {
                 props.data.deposits.map((deposit: string, index: number) => {

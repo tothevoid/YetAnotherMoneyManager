@@ -4,7 +4,6 @@ import { Fragment, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModal';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
-import { deleteDebt, updateDebt } from '../../../../api/debts/debtApi';
 import { formatDate } from '../../../../shared/utilities/formatters/dateFormatter';
 import { ClientDebtPaymentEntity } from '../../../../models/debts/DebtPaymentEntity';
 import DebtPaymentModal from '../../modals/DebtPaymentModal/DebtPaymentModal';
@@ -29,24 +28,6 @@ const DebtPayment = (props: Props) => {
     const onDeleteClicked = () => {
         confirmModalRef.current?.openModal()
     };
-
-    const onDebtUpdated = async (debt: ClientDebtPaymentEntity) => {
-        const debtUpdated = await updateDebt(debt);
-        if (!debtUpdated) {
-            return;
-        }
-
-        props.onEditCallback(debt);
-    }
-
-    const onDeletionConfirmed = async () => {
-        const deleted = await deleteDebt(props.debt.id);
-        if (!deleted) {
-            return;
-        }
-
-        props.onDeleteCallback(props.debt);
-    }
 
     const { t, i18n } = useTranslation();
 
@@ -73,12 +54,12 @@ const DebtPayment = (props: Props) => {
                 </Flex>
             </Card.Body>
         </Card.Root>
-        <ConfirmModal onConfirmed={onDeletionConfirmed}
+        <ConfirmModal onConfirmed={() => props.onDeleteCallback(props.debtPayment)}
             title={t("security_delete_title")}
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
             ref={confirmModalRef}/>
-        <DebtPaymentModal debt={props.debt} modalRef={editModalRef} onSaved={onDebtUpdated}/>
+        <DebtPaymentModal debtPayment={props.debtPayment} modalRef={editModalRef} onSaved={props.onEditCallback}/>
     </Fragment>
 };
 

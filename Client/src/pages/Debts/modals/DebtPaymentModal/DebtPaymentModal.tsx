@@ -15,7 +15,7 @@ import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 
 interface Props {
-	debt?: ClientDebtPaymentEntity | null,
+	debtPayment?: ClientDebtPaymentEntity | null,
 	onSaved: (debt: ClientDebtPaymentEntity) => void;
 	modalRef: RefObject<BaseModalRef | null>
 };
@@ -48,11 +48,11 @@ const DebtPaymentModal: React.FC<Props> = (props: Props) => {
 		resolver: zodResolver(DebtPaymentValidationSchema),
 		mode: "onBlur",
 		defaultValues: {
-			id: props.debt?.id ?? crypto.randomUUID(),
-			amount: props.debt?.amount ?? 0,
-			date: props.debt?.date ?? new Date(),
-			debt: props.debt?.debt,
-			targetAccount: props.debt?.targetAccount
+			id: props.debtPayment?.id ?? crypto.randomUUID(),
+			amount: props.debtPayment?.amount ?? 0,
+			date: props.debtPayment?.date ?? new Date(),
+			debt: props.debtPayment?.debt,
+			targetAccount: props.debtPayment?.targetAccount
 		}
 	});
 

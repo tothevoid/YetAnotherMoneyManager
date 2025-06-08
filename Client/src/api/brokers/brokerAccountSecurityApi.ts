@@ -1,7 +1,7 @@
 import config from '../../config' 
 import { BrokerAccountSecurityEntity, ServerBrokerAccountSecurityEntity } from '../../models/brokers/BrokerAccountSecurityEntity';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
-import { createEntity, deleteEntity, updateEntity } from '../basicApi';
+import { deleteEntity, updateEntity } from '../basicApi';
 
 const basicUrl = `${config.api.URL}/BrokerAccountSecurity`;
 
@@ -20,11 +20,6 @@ export const pullBrokerAccountQuotations = async (brokerAccountId: string) => {
     await fetch(`${basicUrl}/PullQuotations?brokerAccountId=${brokerAccountId}`, {method: "GET"})
         .then(checkPromiseStatus)
         .catch(logPromiseError);
-}
-
-export const createBrokerAccountSecurity = async (addedBrokerAccountSecurity: BrokerAccountSecurityEntity): Promise<BrokerAccountSecurityEntity | void> => {
-    return await createEntity<ServerBrokerAccountSecurityEntity>(basicUrl, 
-        prepareServerBrokerAccountSecurity(addedBrokerAccountSecurity));
 }
 
 export const updateBrokerAccountSecurity = async (modifiedBrokerAccountSecurity: BrokerAccountSecurityEntity): Promise<boolean> => {

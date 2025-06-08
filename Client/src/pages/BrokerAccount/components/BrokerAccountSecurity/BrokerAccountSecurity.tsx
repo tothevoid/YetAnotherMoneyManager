@@ -3,7 +3,6 @@ import { MdDelete, MdEdit } from "react-icons/md";
 import { Fragment, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { HiOutlineBuildingOffice2 } from 'react-icons/hi2';
-import { updateBrokerAccountSecurity, deleteBrokerAccountSecurity } from '../../../../api/brokers/brokerAccountSecurityApi';
 import { getIconUrl } from '../../../../api/securities/securityApi';
 import { BrokerAccountSecurityEntity } from '../../../../models/brokers/BrokerAccountSecurityEntity';
 import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModal';
@@ -31,24 +30,6 @@ const BrokerAccountSecurity = (props: Props) => {
     const onDeleteClicked = () => {
         confirmModalRef.current?.openModal()
     };
-
-    const onBrokerAccountsSecurityUpdated = async (updatedBrokerAccountSecurity: BrokerAccountSecurityEntity) => {
-        const brokerAccountSecurityUpdated = await updateBrokerAccountSecurity(updatedBrokerAccountSecurity);
-        if (!brokerAccountSecurityUpdated) {
-            return;
-        }
-
-        props.onEditCallback(updatedBrokerAccountSecurity);
-    }
-
-    const onDeletionConfirmed = async () => {
-        const brokerAccountSecurityDeleted = await deleteBrokerAccountSecurity(props.brokerAccountSecurity.id);
-        if (!brokerAccountSecurityDeleted) {
-            return;
-        }
-
-        props.onDeleteCallback(props.brokerAccountSecurity);
-    }
 
     const { t, i18n } = useTranslation();
 
@@ -100,12 +81,12 @@ const BrokerAccountSecurity = (props: Props) => {
                 </Flex>
             </Card.Body>
         </Card.Root>
-        <ConfirmModal onConfirmed={onDeletionConfirmed}
+        <ConfirmModal onConfirmed={() => props.onDeleteCallback(props.brokerAccountSecurity)}
             title={t("broker_account_securities_delete_title")}
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
             ref={confirmModalRef}/>
-        <BrokerAccountSecurityModal brokerAccountSecurity={props.brokerAccountSecurity} modalRef={editModalRef} onSaved={onBrokerAccountsSecurityUpdated}/>
+        <BrokerAccountSecurityModal brokerAccountSecurity={props.brokerAccountSecurity} modalRef={editModalRef} onSaved={props.onEditCallback}/>
     </Fragment>
 };
 

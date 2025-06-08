@@ -1,119 +1,72 @@
-import React, { Fragment, useRef, useState } from 'react';
-import { Flex } from '@chakra-ui/react';
+import React, { Fragment, useRef } from 'react';
+import { Box, Flex } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { SecurityTransactionEntity } from '../../../../models/securities/SecurityTransactionEntity';
-import SecurityTransaction from '../../../SecurityPage/components/SecurityTransaction/SecurityTransaction';
-import { createSecurityTransaction, getSecurityTransactions } from '../../../../api/securities/securityTransactionApi';
+import SecurityTransaction from '../SecurityTransaction/SecurityTransaction';
 import ShowModalButton from '../../../../shared/components/ShowModalButton/ShowModalButton';
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
-import SecurityTransactionsPagination from '../../../SecuritiesPage/components/SecurityTransactionsPagination/SecurityTransactionsPagination';
+import SecurityTransactionsPagination from '../SecurityTransactionsPagination/SecurityTransactionsPagination';
 import SecurityTransactionModal from '../../modals/SecurityTransactionModal/SecurityTransactionModal';
+import { useSecurityTransactions } from '../../hooks/useSecurityTransactions';
 
 interface Props {
-    brokerAccountId: string,
-    onDataReloaded: () => void
-}
-
-interface State {
-    currentPage: number,
-    pageSize: number,
-    transactions: SecurityTransactionEntity[]
+	brokerAccountId: string,
+	onDataReloaded: () => void
 }
 
 const SecurityTransactionsList: React.FC<Props> = (props) => {
-    const { t } = useTranslation()
+	const { t } = useTranslation()
 
-    const [state, setState] = useState<State>({ transactions: [], currentPage: 1, pageSize: -1 })
+	const {
+		securityTransactions,
+		createSecurityTransactionEntity,
+		updatedSecurityTransactionEntity,
+		deleteSecurityTransactionEntity,
+		securityTransactionsQueryParameters, 
+		setSecurityTransactionsQueryParameters,
+		reloadSecurityTransactions
+	} = useSecurityTransactions({currentPage: 1, pageSize: -1, brokerAccountId: props.brokerAccountId });
 
-    const onSecurityTransactionCreated = async (addedSecurityTransaction: SecurityTransactionEntity) => {
-        if (!addedSecurityTransaction) {
-            return
-        }
+	const onReloadSecurityTransactions = async () => {
+		await reloadSecurityTransactions();
+		props.onDataReloaded();
+	}
 
-        await onReloadSecurityTransactions();
-    };
+	const onPageChanged = async (pageSize: number, currentPage: number) => {
+		setSecurityTransactionsQueryParameters({pageSize, currentPage, brokerAccountId: securityTransactionsQueryParameters.brokerAccountId});
+	}
 
-    const onSecurityTransactionUpdated = async (updatedSecurityTransaction: SecurityTransactionEntity) => {
-        if (!updatedSecurityTransaction) {
-            return
-        }
+	const modalRef = useRef<BaseModalRef>(null);
+	
+	const onAdd = () => {
+		modalRef.current?.openModal()
+	};
 
-        await onReloadSecurityTransactions();
-    };
+	const securityTransaction: SecurityTransactionEntity = {
+		brokerAccount: {id: props.brokerAccountId}
+	}
 
-    const onSecurityTransactionDeleted = async (deletedSecurity: SecurityTransactionEntity) => {
-        if (!deletedSecurity) {
-            return;
-        }
-
-        await onReloadSecurityTransactions();
-    };
-
-    const onReloadSecurityTransactions = async () => {
-        const transactions = await requestTransactions(state.currentPage, state.pageSize)
-        setState((currentState) => {
-            return {...currentState, transactions}
-        })
-        props.onDataReloaded();
-    }
-
-    const requestTransactions = async (currentPage: number, pageSize: number) => {
-        return await getSecurityTransactions({
-            brokerAccountId: props.brokerAccountId,
-            recordsQuantity: pageSize,
-            pageIndex: currentPage,
-        });
-    }
-
-    const onPageChanged = async (pageSize: number, currentPage: number) => {
-        const transactions = await requestTransactions(currentPage, pageSize);
-        setState((currentState) => {
-            return {...currentState, currentPage, pageSize, transactions}
-        })
-    }
-
-    const modalRef = useRef<BaseModalRef>(null);
-    
-    const onAdd = () => {
-        modalRef.current?.openModal()
-    };
-
-    const onSecurityTransactionAdded = async (securityTransaction: SecurityTransactionEntity) => {
-        const transaction = await createSecurityTransaction(securityTransaction);
-        if (!transaction) {
-            return;
-        }
-
-        onSecurityTransactionCreated(transaction);
-    };
-
-    const securityTransaction: SecurityTransactionEntity = {
-        brokerAccount: {id: props.brokerAccountId}
-    }
-
-    return (
-        <Fragment>
-            <Flex alignItems="center" gapX={5}>
-                <ShowModalButton buttonTitle={t("entity_securities_transaction_page_summary_add")} onClick={onAdd}>
-                    <SecurityTransactionModal securityTransaction={securityTransaction} modalRef={modalRef} onSaved={onSecurityTransactionAdded}/>
-                </ShowModalButton>
-            </Flex>
-           
-            <div>
-            {
-                state.transactions.map((security: SecurityTransactionEntity) => {
-                    return <SecurityTransaction key={security.id} securityTransaction={security} 
-                        onEditCallback={onSecurityTransactionUpdated} 
-                        onDeleteCallback={onSecurityTransactionDeleted}
-                        onReloadSecurityTransactions={onReloadSecurityTransactions}/>
-                })
-                }
-            </div>
-            <Flex justifyContent={"center"}>
-                <SecurityTransactionsPagination brokerAccountId={props.brokerAccountId} onPageChanged={onPageChanged}/>
-            </Flex>
-        </Fragment>
-    );
+	return (
+		<Fragment>
+			<Flex alignItems="center" gapX={5}>
+				<ShowModalButton buttonTitle={t("entity_securities_transaction_page_summary_add")} onClick={onAdd}>
+					<SecurityTransactionModal securityTransaction={securityTransaction} modalRef={modalRef} onSaved={createSecurityTransactionEntity}/>
+				</ShowModalButton>
+			</Flex>
+			<Box>
+			{
+				securityTransactions.map((security: SecurityTransactionEntity) => 
+					<SecurityTransaction key={security.id} securityTransaction={security} 
+						onEditCallback={updatedSecurityTransactionEntity} 
+						onDeleteCallback={deleteSecurityTransactionEntity}
+						onReloadSecurityTransactions={onReloadSecurityTransactions}/>)
+			}
+			</Box>
+			<Flex justifyContent={"center"}>
+				<SecurityTransactionsPagination brokerAccountId={props.brokerAccountId} onPageChanged={onPageChanged}/>
+			</Flex>
+		</Fragment>
+	);
 }
 
 export default SecurityTransactionsList;

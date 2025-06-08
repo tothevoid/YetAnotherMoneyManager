@@ -1,78 +1,44 @@
-import { forwardRef, Fragment, useEffect, useImperativeHandle, useState } from 'react';
+import { forwardRef, Fragment, useImperativeHandle } from 'react';
 import { SimpleGrid } from '@chakra-ui/react/grid';
 import { useTranslation } from 'react-i18next';
 import BrokerAccountSecurity from '../BrokerAccountSecurity/BrokerAccountSecurity';
-import { getSecuritiesByBrokerAccount } from '../../../../api/brokers/brokerAccountSecurityApi';
 import { BrokerAccountSecurityEntity } from '../../../../models/brokers/BrokerAccountSecurityEntity';
+import { useBrokerAccountsSecurities } from '../../hooks/useBrokerAccountsSecurities';
 
 interface Props {
-    brokerAccountId: string
-}
-
-interface State {
-    brokerAccountSecurities: BrokerAccountSecurityEntity[]
+	brokerAccountId: string
 }
 
 export interface BrokerAccountSecuritiesListRef {
-    reloadData: () => Promise<void>
+	reloadData: () => Promise<void>
 }
 
 const BrokerAccountSecuritiesList = forwardRef<BrokerAccountSecuritiesListRef, Props>((props: Props, ref)=> {
-    const { t } = useTranslation()
+	const { t } = useTranslation()
 
-    const [state, setState] = useState<State>({ brokerAccountSecurities: [] })
+	const { 
+		brokerAccountSecurities,
+		updateBrokerAccountSecurityEntity,
+		deleteBrokerAccountSecurityEntity,
+		reloadBrokerAccountSecurities
+	} = useBrokerAccountsSecurities({brokerAccountId: props.brokerAccountId});
 
-    useEffect(() => {
-        const initData = async () => {
-            await requestBrokerAccountSecurityData();
-        }
-        initData();
-    }, []);
+	useImperativeHandle(ref, () => ({
+		reloadData: reloadBrokerAccountSecurities,
+	}));
 
-    useImperativeHandle(ref, () => ({
-        reloadData: requestBrokerAccountSecurityData,
-    }));
-
-    const requestBrokerAccountSecurityData = async () => {
-        const brokerAccountSecurities = await getSecuritiesByBrokerAccount(props.brokerAccountId);
-        setState((currentState) => {
-            return {...currentState, brokerAccountSecurities}
-        })
-    };
-
-    const onBrokerAccountSecurityUpdated = async (updateBrokerAccountSecurity: BrokerAccountSecurityEntity) => {
-        if (!updateBrokerAccountSecurity) {
-            return
-        }
-
-        await onReloadBrokerAccountSecurities();
-    };
-
-    const onBrokerAccountSecurityDeleted = async (deletedBrokerAccount: BrokerAccountSecurityEntity) => {
-        if (!deletedBrokerAccount) {
-            return;
-        }
-
-        await onReloadBrokerAccountSecurities();
-    };
-
-    const onReloadBrokerAccountSecurities = async () => {
-        await requestBrokerAccountSecurityData();
-    }
-
-    return (
-        <Fragment>
-            <SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(350px, 3fr))'>
-                {
-                state.brokerAccountSecurities.map((brokerAccountSecurity: BrokerAccountSecurityEntity) => {
-                    return <BrokerAccountSecurity onReloadBrokerAccounts={onReloadBrokerAccountSecurities} 
-                        brokerAccountSecurity={brokerAccountSecurity} onEditCallback={onBrokerAccountSecurityUpdated} 
-                        onDeleteCallback={onBrokerAccountSecurityDeleted} key={brokerAccountSecurity.id}/>
-                })
-                }
-            </SimpleGrid>
-        </Fragment>
-    );
+	return (
+		<Fragment>
+			<SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(350px, 3fr))'>
+				{
+					brokerAccountSecurities.map((brokerAccountSecurity: BrokerAccountSecurityEntity) => 
+						<BrokerAccountSecurity onReloadBrokerAccounts={reloadBrokerAccountSecurities} 
+							brokerAccountSecurity={brokerAccountSecurity} onEditCallback={updateBrokerAccountSecurityEntity} 
+							onDeleteCallback={deleteBrokerAccountSecurityEntity} key={brokerAccountSecurity.id}/>)
+				}
+			</SimpleGrid>
+		</Fragment>
+	);
 });
 
 export default BrokerAccountSecuritiesList;

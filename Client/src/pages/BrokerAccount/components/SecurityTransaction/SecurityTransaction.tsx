@@ -31,24 +31,6 @@ const SecurityTransaction = (props: Props) => {
         confirmModalRef.current?.openModal()
     };
 
-    const onSecurityTransactionUpdated = async (updatedSecurityTransaction: SecurityTransactionEntity) => {
-        const securityTransactionUpdated = await updateSecurityTransaction(updatedSecurityTransaction);
-        if (!securityTransactionUpdated) {
-            return;
-        }
-
-        props.onEditCallback(updatedSecurityTransaction);
-    }
-
-    const onDeletionConfirmed = async () => {
-        const securityTransactionDeleted = await deleteSecurityTransaction(props.securityTransaction.id);
-        if (!securityTransactionDeleted) {
-            return;
-        }
-
-        props.onDeleteCallback(props.securityTransaction);
-    }
-
     const { t, i18n } = useTranslation();
 
     return <Card.Root borderColor="border_primary" color="text_primary" backgroundColor="background_primary" 
@@ -78,12 +60,12 @@ const SecurityTransaction = (props: Props) => {
                 </Flex>
             </Flex>
         </CardBody>	
-        <ConfirmModal onConfirmed={onDeletionConfirmed}
+        <ConfirmModal onConfirmed={() => props.onDeleteCallback(props.securityTransaction)}
             title={t("entity_securities_transaction_delete_title")}
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
             ref={confirmModalRef}/>
-        <SecurityTransactionModal securityTransaction={props.securityTransaction}  modalRef={editModalRef} onSaved={onSecurityTransactionUpdated}/>
+        <SecurityTransactionModal securityTransaction={props.securityTransaction}  modalRef={editModalRef} onSaved={props.onEditCallback}/>
     </Card.Root>
 };
 

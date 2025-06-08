@@ -83,12 +83,13 @@
     "entity_currency_name": "Название",
     "entity_currency_active": "Активна",
 
-    "deposits_page_no_deposits": "There is no deposits in selected range",
-    "deposits_chart_type_earnings": "Total earnings by month",
-    "deposits_chart_type_stacked": "Deposits earnings by month",
-    "earnings_chart_data_title": "Deposits earnings",
+    "deposits_page_no_deposits": "В выбранном диапазоне нет депозитов",
+    "deposits_chart_type_earnings": "Итоговые доходны за месяц",
+    "deposits_chart_type_stacked": "Доходы депозитов за месяц",
+    "earnings_chart_data_title": "Доходы депозитов",
 
-    "deposits_list_only_active": "Only active",
+    "deposits_list_only_active": "Активные",
+    "deposits_list_add_button": "Добавить депозит",
 
     "entity_broker_name_form_title": "Брокерский счёт",
     "broker_account_delete_title": "Удалить брокерский счёт",

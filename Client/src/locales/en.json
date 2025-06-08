@@ -89,6 +89,7 @@
     "earnings_chart_data_title": "Deposits earnings",
 
     "deposits_list_only_active": "Only active",
+    "deposits_list_add_button": "Add deposit",
 
     "entity_broker_name_form_title": "Broker account",
     "broker_account_delete_title": "Delete broker account",

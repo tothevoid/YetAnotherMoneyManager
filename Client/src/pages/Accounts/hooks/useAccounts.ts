@@ -61,7 +61,6 @@ export const useAccounts = (queryParameters: AccountsQuery) => {
 
 		setAccounts(accounts.filter((account: AccountEntity) => account.id !== deletedAccount.id));
 	}
-	
 
 	return {
 		accounts,

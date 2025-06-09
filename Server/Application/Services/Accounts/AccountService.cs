@@ -120,7 +120,7 @@ namespace MoneyManager.Application.Services.Accounts
         public async Task<AccountCurrencySummaryDTO[]> GetSummary()
         {
             //TODO: Group on db level
-            var accounts = await _accountRepo.GetAll(account => account.Active);
+            var accounts = await _accountRepo.GetAll(account => account.Active, GetFullHierarchyColumns);
             var groups = accounts.GroupBy(account => account.CurrencyId)
                 .Select(group => new AccountCurrencySummaryDTO()
                 {

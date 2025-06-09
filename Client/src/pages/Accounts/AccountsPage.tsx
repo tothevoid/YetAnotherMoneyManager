@@ -31,7 +31,7 @@ const AccountsPage: React.FC<Props> = () => {
 		{
 			state.accountCurrencySummaries.length > 0 ?
 				<Flex justifyContent="space-between" alignItems="center" pt={5} pb={5}>
-					<Text fontSize='3xl'>{t("accounts_page_summary_title")}: {state.accountCurrencySummaries.map(currency => 
+					<Text color={"text_primary"} fontSize='3xl'>{t("accounts_page_summary_title")}: {state.accountCurrencySummaries.map(currency => 
 						formatMoneyByCurrencyCulture(currency.summary, currency.name)).join(" | ") }
 					</Text>
 				</Flex>:

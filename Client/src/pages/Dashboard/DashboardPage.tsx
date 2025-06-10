@@ -55,7 +55,7 @@ const DashboardPage: React.FC<Props> = () => {
 	]
 
 	const formatDistributionCard = (title: string, total: number, distribution: DistributionModel[]) => {
-		if (distribution.length > 0) {
+		if (!distribution.length) {
 			return <Fragment/>
 		}
 
@@ -68,8 +68,7 @@ const DashboardPage: React.FC<Props> = () => {
 			</Card.Body>
 		</Card.Root>
 	}
-		
-	
+
 	const assetsCharts = [
 		formatDistributionCard(t("dashboard_cash"), dashboard.accountStats.totalCash, dashboard.accountStats.cashDistribution),
 		formatDistributionCard(t("dashboard_securities"), dashboard.brokerAccountStats.total, dashboard.brokerAccountStats.distribution),

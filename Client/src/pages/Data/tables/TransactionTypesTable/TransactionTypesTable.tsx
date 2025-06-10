@@ -180,7 +180,7 @@ const TransactionTypesTable: React.FC<Props> = () => {
                             </Table.Cell>
                         </Table.Row>
                     })
-                }modalRef
+                }
             </Table.Body>
         </Table.Root>
         <TransactionTypeModal transactionType={updatedTransactionType} modalRef={modalRef} onSaved={onTransactionTypeSaved}/>

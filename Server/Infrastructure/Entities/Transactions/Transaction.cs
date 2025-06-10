@@ -1,6 +1,8 @@
 ﻿using MoneyManager.Infrastructure.Entities.Accounts;
 using MoneyManager.Shared.Entities;
 using System;
+using System.Collections.Generic;
+using MoneyManager.Infrastructure.Entities.Debts;
 
 namespace MoneyManager.Infrastructure.Entities.Transactions
 {
@@ -23,5 +25,7 @@ namespace MoneyManager.Infrastructure.Entities.Transactions
         public decimal Cashback { get; set; }
 
         public bool IsSystem { get; set; }
+
+        public ICollection<DebtPayment> DebtPayments { get; set; }
     }
 }

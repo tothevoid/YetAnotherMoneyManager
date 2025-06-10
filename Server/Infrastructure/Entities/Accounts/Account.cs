@@ -1,6 +1,11 @@
-﻿using MoneyManager.Infrastructure.Entities.Currencies;
+﻿using MoneyManager.Infrastructure.Entities.Brokers;
+using MoneyManager.Infrastructure.Entities.Currencies;
 using MoneyManager.Shared.Entities;
 using System;
+using System.Collections.Generic;
+using MoneyManager.Infrastructure.Entities.Debts;
+using MoneyManager.Infrastructure.Entities.Deposits;
+using MoneyManager.Infrastructure.Entities.Transactions;
 
 namespace MoneyManager.Infrastructure.Entities.Accounts
 {
@@ -22,11 +27,10 @@ namespace MoneyManager.Infrastructure.Entities.Accounts
 
         public bool Active { get; set; }
 
-        public Account AssignReferences(Currency currency, AccountType accountType)
-        {
-            Currency = currency;
-            AccountType = accountType;
-            return this;
-        }
+        public ICollection<DebtPayment> DebtPayments { get; set; }
+
+        public ICollection<Deposit> Deposits { get; set; }
+
+        public ICollection<Transaction> Transactions { get; set; }
     }
 }

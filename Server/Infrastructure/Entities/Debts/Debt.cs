@@ -1,4 +1,6 @@
 ﻿using System;
+using MoneyManager.Infrastructure.Entities.Brokers;
+using System.Collections.Generic;
 using MoneyManager.Infrastructure.Entities.Currencies;
 using MoneyManager.Shared.Entities;
 
@@ -18,5 +20,6 @@ namespace MoneyManager.Infrastructure.Entities.Debts
 
         public DateOnly PaidOn { get; set; }
 
+        public ICollection<DebtPayment> DebtPayments { get; set; }
     }
 }

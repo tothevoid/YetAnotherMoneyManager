@@ -9,7 +9,11 @@ namespace MoneyManager.Infrastructure.Configurations.Debts
     {
         public void Configure(EntityTypeBuilder<Debt> debtConfiguration)
         {
-            debtConfiguration.HasOne(x => x.Currency);
+            debtConfiguration
+                .HasOne(debt => debt.Currency)
+                .WithMany(currency => currency.Debts)
+                .HasForeignKey(debt => debt.CurrencyId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

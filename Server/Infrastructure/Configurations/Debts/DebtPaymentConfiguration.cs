@@ -8,8 +8,23 @@ namespace MoneyManager.Infrastructure.Configurations.Debts
     {
         public void Configure(EntityTypeBuilder<DebtPayment> debtPaymentConfiguration)
         {
-            debtPaymentConfiguration.HasOne(x => x.Debt);
-            debtPaymentConfiguration.HasOne(x => x.TargetAccount);
+            debtPaymentConfiguration
+                .HasOne(debtPayment => debtPayment.Debt)
+                .WithMany(debt => debt.DebtPayments)
+                .HasForeignKey(debtPayment => debtPayment.DebtId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            debtPaymentConfiguration
+                .HasOne(debtPayment => debtPayment.TargetAccount)
+                .WithMany(account => account.DebtPayments)
+                .HasForeignKey(debtPayment => debtPayment.TargetAccountId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            debtPaymentConfiguration
+                .HasOne(debtPayment => debtPayment.Transaction)
+                .WithMany(account => account.DebtPayments)
+                .HasForeignKey(debtPayment => debtPayment.TransactionId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using MoneyManager.Shared.Entities;
+using System.Collections.Generic;
 
 namespace MoneyManager.Infrastructure.Entities.Transactions
 {
@@ -9,5 +10,7 @@ namespace MoneyManager.Infrastructure.Entities.Transactions
         public bool Active { get; set; }
 
         public string IconKey { get; set; }
+
+        public ICollection<Transaction> Transactions { get; set; }
     }
 }

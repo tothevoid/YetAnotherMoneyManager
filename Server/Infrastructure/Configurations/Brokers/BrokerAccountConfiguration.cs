@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using MoneyManager.Infrastructure.Entities.Accounts;
 using MoneyManager.Infrastructure.Entities.Brokers;
 
 namespace MoneyManager.Infrastructure.Configurations.Brokers
@@ -9,9 +8,23 @@ namespace MoneyManager.Infrastructure.Configurations.Brokers
     {
         public void Configure(EntityTypeBuilder<BrokerAccount> accountConfiguration)
         {
-            accountConfiguration.HasOne(x => x.Type);
-            accountConfiguration.HasOne(x => x.Currency);
-            accountConfiguration.HasOne(x => x.Broker);
+            accountConfiguration
+                .HasOne(brokerAccount => brokerAccount.Type)
+                .WithMany(accountType => accountType.BrokerAccounts)
+                .HasForeignKey(brokerAccount => brokerAccount.TypeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            accountConfiguration
+                .HasOne(brokerAccount => brokerAccount.Currency)
+                .WithMany(currency => currency.BrokerAccounts)
+                .HasForeignKey(brokerAccount => brokerAccount.CurrencyId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            accountConfiguration
+                .HasOne(brokerAccount => brokerAccount.Broker)
+                .WithMany(broker => broker.BrokerAccounts)
+                .HasForeignKey(brokerAccount => brokerAccount.BrokerId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

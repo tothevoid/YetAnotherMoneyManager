@@ -6,9 +6,13 @@ namespace MoneyManager.Infrastructure.Configurations.User
 {
     public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
     {
-        public void Configure(EntityTypeBuilder<UserProfile> accountConfiguration)
+        public void Configure(EntityTypeBuilder<UserProfile> userProfileConfiguration)
         {
-            accountConfiguration.HasOne(x => x.Currency);
+            userProfileConfiguration
+                .HasOne(userProfile => userProfile.Currency)
+                .WithMany(currency => currency.UserProfiles)
+                .HasForeignKey(userProfile => userProfile.CurrencyId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

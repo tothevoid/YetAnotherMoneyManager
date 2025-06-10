@@ -8,7 +8,11 @@ namespace MoneyManager.Infrastructure.Configurations.Securities
     {
         public void Configure(EntityTypeBuilder<Dividend> dividendConfiguration)
         {
-            dividendConfiguration.HasOne(x => x.Security);
+            dividendConfiguration
+                .HasOne(dividend => dividend.Security)
+                .WithMany(security => security.Dividends)
+                .HasForeignKey(dividend => dividend.SecurityId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using MoneyManager.Infrastructure.Entities.Currencies;
+using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Shared.Entities;
 
 namespace MoneyManager.Infrastructure.Entities.Brokers
@@ -19,5 +21,9 @@ namespace MoneyManager.Infrastructure.Entities.Brokers
         public Broker Broker { get; set; }
 
         public Guid BrokerId { get; set; }
+
+        public ICollection<BrokerAccountSecurity> BrokerAccountSecurities { get; set; }
+
+        public ICollection<SecurityTransaction> SecurityTransactions { get; set; }
     }
 }

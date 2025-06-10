@@ -1,15 +1,14 @@
 export interface DepositMonthSummary {
-    deposits: string[],
-    payments: PeriodPayment[]
+	payments: PeriodPayment[]
 }
 
-export interface PeriodPayment
-{
-    period: string,
-    payments: DepositPayment[]
+export interface PeriodPayment {
+	period: string,
+	payments: DepositPayment[]
 }
 
 export interface DepositPayment {
-    name: string,
-    value: number
+	depositId: string
+	name: string,
+	value: number
 }

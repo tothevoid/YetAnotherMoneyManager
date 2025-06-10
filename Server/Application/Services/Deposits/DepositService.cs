@@ -98,13 +98,12 @@ namespace MoneyManager.Application.Services.Deposits
             //TODO: sort in db
             var deposits = (await GetDeposits(monthsFrom, monthsTo, onlyActive))
                 .OrderBy(deposit => deposit.From).ToList();
-            var dates = new Dictionary<DateOnly, List<(string name, decimal value)>>();
+            var dates = new Dictionary<DateOnly, List<Payment>>();
 
             if (!deposits.Any())
             {
                 return new DepositMonthSummaryDTO()
                 {
-                    Deposits = Enumerable.Empty<string>(),
                     Payments = Enumerable.Empty<PeriodPaymentDTO>(),
                 };
             }
@@ -124,13 +123,13 @@ namespace MoneyManager.Application.Services.Deposits
                     var date = new DateOnly(periodStartDate.Year, periodStartDate.Month, 1);
                     if (dates.ContainsKey(date))
                     {
-                        dates[date].Add((deposit.Name, profit));
+                        dates[date].Add(new Payment() { DepositId = deposit.Id, Name = deposit.Name, Value = profit});
                     }
                     else
                     {
-                        dates[date] = new List<(string name, decimal value)>()
+                        dates[date] = new List<Payment>()
                         {
-                            (deposit.Name, profit)
+                            new Payment(){DepositId = deposit.Id, Name = deposit.Name, Value = profit}
                         };
                     }
 
@@ -141,7 +140,6 @@ namespace MoneyManager.Application.Services.Deposits
 
             return new DepositMonthSummaryDTO()
             {
-                Deposits = deposits.Select(deposit => deposit.Name).ToList(),
                 Payments = dates.Select(date =>
                     new PeriodPaymentDTO
                     {
@@ -149,8 +147,9 @@ namespace MoneyManager.Application.Services.Deposits
                         Payments = date.Value.Select(payment =>
                             new DepositPaymentDTO
                             {
-                                Name = payment.name, 
-                                Value =  Math.Round(payment.value, 2)
+                                DepositId = payment.DepositId,
+                                Name = payment.Name, 
+                                Value =  Math.Round(payment.Value, 2)
                             })
                     })
             };
@@ -223,6 +222,15 @@ namespace MoneyManager.Application.Services.Deposits
             return depositQuery
                 .Include(deposit => deposit.Account.AccountType)
                 .Include(deposit => deposit.Account.Currency);
+        }
+
+        private class Payment
+        {
+            public Guid DepositId { get; set; }
+
+            public string Name { get; set; }
+
+            public decimal Value { get; set; }
         }
     }
 }

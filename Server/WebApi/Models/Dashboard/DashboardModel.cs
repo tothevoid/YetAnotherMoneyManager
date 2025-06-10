@@ -15,7 +15,7 @@ namespace MoneyManager.WebApi.Models.Dashboard
 
         public DebtStatsModel DebtStats { get; set; }
 
-        public DepositsIncomesModel DepositsIncomes { get; set; }
+        public DepositStats DepositStats { get; set; }
     }
 
     public class TransactionStatsModel
@@ -43,11 +43,17 @@ namespace MoneyManager.WebApi.Models.Dashboard
         public IEnumerable<DistributionModel> Distribution { get; set; }
     }
 
-    public class DepositsIncomesModel
+    public class DepositStatsModel
     {
         public decimal Total { get; set; }
 
-        public IEnumerable<DistributionDto> Distribution { get; set; }
+        public decimal TotalStartedAmount { get; set; }
+
+        public decimal TotalEarned { get; set; }
+
+        public IEnumerable<DistributionModel> StartedAmountDistribution { get; set; }
+
+        public IEnumerable<DistributionModel> EarningsDistribution { get; set; }
     }
 
     public class AccountStatsModel

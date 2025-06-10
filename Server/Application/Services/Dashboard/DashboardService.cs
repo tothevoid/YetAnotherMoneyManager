@@ -49,16 +49,16 @@ namespace MoneyManager.Application.Services.Dashboard
             var accountStats = await GetAccountData();
             var brokerAccountStats = await GetBrokerAccountData();
             var debtsStats = await GetDebtsData();
-            var depositsIncomes = await GetDepositsIncomesData();
+            var depositStats = await GetDepositStats();
 
             return new DashboardDto()
             {
                 //TODO: make it via setters
-                Total = accountStats.Total + brokerAccountStats.Total + debtsStats.Total + depositsIncomes.Total,
+                Total = accountStats.Total + brokerAccountStats.Total + debtsStats.Total + depositStats.Total,
                 AccountStats = accountStats,
                 BrokerAccountStats = brokerAccountStats,
                 DebtStats = debtsStats,
-                DepositsIncomes = depositsIncomes,
+                DepositStats = depositStats,
                 TransactionStats = await GetTransactionDate()
             };
         }
@@ -243,35 +243,55 @@ namespace MoneyManager.Application.Services.Dashboard
             };
         }
 
-        private async Task<DepositsIncomesDto> GetDepositsIncomesData()
+        private async Task<DepositStats> GetDepositStats()
         {
             var deposits = await _depositService.GetAllActive();
 
-            var debtsDistribution = new List<DistributionDto>();
-            decimal debtsSummary = 0;
+            var startedAmountDistribution = new List<DistributionDto>();
+            var earningsDistribution = new List<DistributionDto>();
 
+            decimal totalStartedAmount = 0;
+            decimal totalEarned = 0;
+            
             foreach (var deposit in deposits)
             {
                 var key = deposit.Name;
                 var totalDays = deposit.To.DayNumber - deposit.From.DayNumber;
                 var daysPassed = DateOnly.FromDateTime(DateTime.Now).DayNumber - deposit.From.DayNumber;
                 var amount = deposit.EstimatedEarn / totalDays * daysPassed;
-                var convertedAmount = amount * deposit.Currency.Rate;
-                debtsSummary += convertedAmount;
 
-                debtsDistribution.Add(new DistributionDto()
+                var startedAmount = deposit.InitialAmount * deposit.Currency.Rate;
+                var earned = amount * deposit.Currency.Rate;
+
+                totalStartedAmount += startedAmount;
+                totalEarned += earned;
+
+                startedAmountDistribution.Add(new DistributionDto()
                 {
                     Name = key,
                     Currency = deposit.Currency.Name,
                     Amount = amount,
-                    ConvertedAmount = convertedAmount
+                    ConvertedAmount = totalEarned
+                });
+
+                earningsDistribution.Add(new DistributionDto()
+                {
+                    Name = key,
+                    Currency = deposit.Currency.Name,
+                    Amount = deposit.InitialAmount,
+                    ConvertedAmount = earned
                 });
             }
 
-            return new DepositsIncomesDto()
+            return new DepositStats()
             {
-                Total = debtsSummary,
-                Distribution = debtsDistribution
+                Total = totalStartedAmount + totalEarned,
+
+                TotalStartedAmount = totalStartedAmount,
+                StartedAmountDistribution = startedAmountDistribution,
+
+                TotalEarned = totalEarned,
+                EarningsDistribution = earningsDistribution
             };
 
         }

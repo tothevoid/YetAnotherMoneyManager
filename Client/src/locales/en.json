@@ -77,6 +77,7 @@
 
     "data_title": "Data",
     "currencies_data_add": "Add currency",
+    "currencies_data_sync_rates": "Sync rates",
     "currencies_delete_title": "Delete currency",
 
     "entity_currency_name_form_title": "Currency",

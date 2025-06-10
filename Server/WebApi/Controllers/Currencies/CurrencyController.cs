@@ -6,6 +6,9 @@ using System;
 using MoneyManager.Application.DTO.Currencies;
 using MoneyManager.Application.Interfaces.Currencies;
 using MoneyManager.WebApi.Models.Currencies;
+using MoneyManager.Application.DTO;
+using MoneyManager.Application.Interfaces.User;
+using MoneyManager.Application.Services.User;
 
 namespace MoneyManager.WebApi.Controllers.Currencies
 {
@@ -16,10 +19,20 @@ namespace MoneyManager.WebApi.Controllers.Currencies
     {
         private readonly ICurrencyService _currencyService;
         private readonly IMapper _mapper;
-        public CurrencyController(ICurrencyService currencyService, IMapper mapper)
+        private readonly IUserProfileService _userProfileService;
+
+        public CurrencyController(ICurrencyService currencyService, IMapper mapper, IUserProfileService userProfileService)
         {
             _mapper = mapper;
             _currencyService = currencyService;
+            _userProfileService = userProfileService;
+        }
+
+        [HttpGet("SyncRates")]
+        public async Task SyncRates()
+        {
+            var profile = await _userProfileService.Get();
+            await _currencyService.SyncRates(profile.Currency);
         }
 
         [HttpGet]

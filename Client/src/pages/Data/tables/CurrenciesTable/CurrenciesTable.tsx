@@ -1,12 +1,13 @@
-import { Box, Button, Checkbox, Icon, Input, Table } from "@chakra-ui/react";
+import { Box, Button, Checkbox, Icon, Input, Stack, Table } from "@chakra-ui/react";
 import { CurrencyEntity } from "../../../../models/currencies/CurrencyEntity";
 import { useEffect, useRef, useState } from "react";
-import { MdAdd, MdDelete } from "react-icons/md";
+import { MdAdd, MdDelete, MdRefresh } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { ConfirmModal } from "../../../../shared/modals/ConfirmModal/ConfirmModal";
-import { getCurrencies, updateCurrency, createCurrency, deleteCurrency } from "../../../../api/currencies/currencyApi";
+import { getCurrencies, updateCurrency, createCurrency, deleteCurrency, syncRates } from "../../../../api/currencies/currencyApi";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import CurrencyModal from "../../modals/CurrencyModal/CurrencyModal";
+import "./CurrenciesTables.scss"
 
 interface Props {}
 
@@ -20,19 +21,21 @@ const CurrenciesTable: React.FC<Props> = () => {
     const [state, setState] = useState<State>({currencies: [], hasChanges: false, currentCurrencyId: null});
     const { t } = useTranslation();
 
+    const [isSyncing, setSyncing] = useState(false);
+
     const modalRef = useRef<BaseModalRef>(null);
     const confirmModalRef = useRef<BaseModalRef>(null);
 
     useEffect(() => {
-        const initData = async () => { 
-            const currencies = await getCurrencies();
-            setState((currentState) => {
-                return {...currentState, currencies}
-            })
-        }
-
-        initData();
+        fetchCurrencies();
     }, []);
+
+     const fetchCurrencies = async () => { 
+        const currencies = await getCurrencies();
+        setState((currentState) => {
+            return {...currentState, currencies}
+        })
+    }
 
     const onCellChanged = (currencyId: string, propertyName: string, newValue: any) => {
         let hasChanges = false;
@@ -121,6 +124,13 @@ const CurrenciesTable: React.FC<Props> = () => {
         })
     }
 
+    const onSyncRates = async () => {
+        setSyncing(true);
+        await syncRates();
+        await fetchCurrencies();
+        setSyncing(false);
+    }
+
     return <Box color="text_primary">
         <Table.Root>
             <Table.Header>
@@ -162,14 +172,23 @@ const CurrenciesTable: React.FC<Props> = () => {
                 }
             </Table.Body>
         </Table.Root>
-        <Box padding={4}>
+        <Stack direction={"row"} padding={4} gapX={4}>
             <Button background="purple.600" onClick={onAdd}>
                 <Icon size='md'>
                     <MdAdd/>
                 </Icon>
                 {t("currencies_data_add")}
             </Button>
-        </Box>
+            <Button disabled={isSyncing} background="purple.600" onClick={onSyncRates}>
+                <Icon 
+                    transition="transform 0.3s ease"
+                    animation={isSyncing ? 'loading-spin 1.5s linear infinite' : 'none'}
+                    size='md'>
+                    <MdRefresh/>
+                </Icon>
+                 {t("currencies_data_sync_rates")}
+            </Button>
+        </Stack>
         <CurrencyModal modalRef={modalRef} onSaved={onCurrencyAdded}/>
         <ConfirmModal onConfirmed={onDeleteConfirmed}
             title={t("currencies_delete_title")}

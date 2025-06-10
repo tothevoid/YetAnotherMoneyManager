@@ -22,7 +22,7 @@ namespace MoneyManager.Infrastructure.Configurations.Debts
 
             debtPaymentConfiguration
                 .HasOne(debtPayment => debtPayment.Transaction)
-                .WithMany(account => account.DebtPayments)
+                .WithMany(transaction => transaction.DebtPayments)
                 .HasForeignKey(debtPayment => debtPayment.TransactionId)
                 .OnDelete(DeleteBehavior.Restrict);
         }

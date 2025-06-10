@@ -25,3 +25,9 @@ export const formatNumericDate = (date: Date, format: i18n, showYear: boolean = 
 		day: "numeric"
 	}).format(date);
 };
+
+export const formatMonth = (month: number, format: i18n): string => {
+	const date = new Date();
+	date.setMonth(month - 1);
+	return date.toLocaleString(format.language, { month: 'long' });
+}

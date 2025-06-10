@@ -23,5 +23,7 @@ namespace MoneyManager.WebApi.Models.Brokers
         public decimal InitialValue { get; set; }
 
          public decimal CurrentValue { get; set; }
+
+         public decimal MainCurrencyAmount { get; set; }
     }
 }

@@ -37,6 +37,7 @@ const prepareServerBrokerAccount = (brokerAccount: BrokerAccountEntity): ServerB
         currencyId: brokerAccount.currency.id,
         brokerId: brokerAccount.broker.id,
         initialValue: brokerAccount.initialValue,
-        currentValue: brokerAccount.currentValue
+        currentValue: brokerAccount.currentValue,
+        mainCurrencyAmount: brokerAccount.mainCurrencyAmount
     };
 }

@@ -22,6 +22,8 @@ namespace MoneyManager.Infrastructure.Entities.Brokers
 
         public Guid BrokerId { get; set; }
 
+        public decimal MainCurrencyAmount { get; set; }
+
         public ICollection<BrokerAccountSecurity> BrokerAccountSecurities { get; set; }
 
         public ICollection<SecurityTransaction> SecurityTransactions { get; set; }

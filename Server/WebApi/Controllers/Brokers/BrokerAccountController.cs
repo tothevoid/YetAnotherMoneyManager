@@ -44,7 +44,7 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         }
 
         [HttpPatch]
-        public async Task Update(BrokerAccountTypeModel brokerAccount)
+        public async Task Update(BrokerAccountModel brokerAccount)
         {
             var brokerAccountDto = _mapper.Map<BrokerAccountDTO>(brokerAccount);
             await _brokerAccountService.Update(brokerAccountDto);

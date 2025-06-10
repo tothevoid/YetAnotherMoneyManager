@@ -46,7 +46,6 @@ const BrokerAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
         })
     };
 
-
     const { register, handleSubmit, control, formState: { errors }} = useForm<BrokerAccountFormInput>({
         resolver: zodResolver(BrokerAccountValidationSchema),
         mode: "onBlur",
@@ -58,6 +57,7 @@ const BrokerAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
             broker: props.brokerAccount?.broker,
             initialValue: props.brokerAccount?.initialValue,
             currentValue: props.brokerAccount?.currentValue,
+            mainCurrencyAmount: props.brokerAccount?.mainCurrencyAmount ?? 0
         }
     });
 
@@ -89,6 +89,11 @@ const BrokerAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
                 labelSelector={(currency => currency.name)} 
                 valueSelector={(currency => currency.id)}/>
             <Field.ErrorText>{errors.currency?.message}</Field.ErrorText>
+        </Field.Root>
+        <Field.Root mt={4} invalid={!!errors.mainCurrencyAmount}>
+            <Field.Label>{t("entity_broker_account_main_currency_amount")}</Field.Label>
+            <Input {...register("mainCurrencyAmount", { valueAsNumber: true })} type='number' step="0.01" placeholder='10' />
+            <Field.ErrorText>{errors.mainCurrencyAmount?.message}</Field.ErrorText>
         </Field.Root>
         <Field.Root mt={4} invalid={!!errors.broker}>
             <Field.Label>{t("entity_broker_account_broker")}</Field.Label>

@@ -82,6 +82,7 @@
     
     "entity_currency_name_form_title": "Валюта",
     "entity_currency_name": "Название",
+    "entity_currency_rate": "Курс",
     "entity_currency_active": "Активна",
 
     "deposits_page_no_deposits": "В выбранном диапазоне нет депозитов",

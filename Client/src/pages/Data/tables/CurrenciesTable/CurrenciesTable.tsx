@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, Icon, Input, Stack, Table } from "@chakra-ui/react";
+import { Box, Button, Checkbox, Icon, Input, Stack, Table, Text } from "@chakra-ui/react";
 import { CurrencyEntity } from "../../../../models/currencies/CurrencyEntity";
 import { useEffect, useRef, useState } from "react";
 import { MdAdd, MdDelete, MdRefresh } from "react-icons/md";
@@ -8,6 +8,8 @@ import { getCurrencies, updateCurrency, createCurrency, deleteCurrency, syncRate
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import CurrencyModal from "../../modals/CurrencyModal/CurrencyModal";
 import "./CurrenciesTables.scss"
+import { useUserProfile } from "../../../../../features/UserProfileSettingsModal/hooks/UserProfileContext";
+import { formatMoneyByCurrencyCulture } from "../../../../shared/utilities/formatters/moneyFormatter";
 
 interface Props {}
 
@@ -20,6 +22,8 @@ interface State {
 const CurrenciesTable: React.FC<Props> = () => {
     const [state, setState] = useState<State>({currencies: [], hasChanges: false, currentCurrencyId: null});
     const { t } = useTranslation();
+    
+    const { user } = useUserProfile()
 
     const [isSyncing, setSyncing] = useState(false);
 
@@ -135,10 +139,10 @@ const CurrenciesTable: React.FC<Props> = () => {
         <Table.Root>
             <Table.Header>
                 <Table.Row border="none" bg="none" color="text_primary">
-                    <Table.ColumnHeader color="text_primary">Name</Table.ColumnHeader>
-                    <Table.ColumnHeader color="text_primary">Rate</Table.ColumnHeader>
-                    <Table.ColumnHeader color="text_primary">Active</Table.ColumnHeader>
-                    <Table.ColumnHeader color="text_primary">Delete</Table.ColumnHeader>
+                    <Table.ColumnHeader color="text_primary">{t("entity_currency_name")}</Table.ColumnHeader>
+                    <Table.ColumnHeader color="text_primary">{t("entity_currency_rate")}</Table.ColumnHeader>
+                    <Table.ColumnHeader color="text_primary">{t("entity_currency_active")}</Table.ColumnHeader>
+                    <Table.ColumnHeader color="text_primary"></Table.ColumnHeader>
                 </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -146,12 +150,10 @@ const CurrenciesTable: React.FC<Props> = () => {
                     state.currencies.map((currency: CurrencyEntity) => {
                         return <Table.Row border="none" bg="none" color="text_primary" key={currency.id}>
                             <Table.Cell>
-                                <Input onBlur={() => onCellBlur(currency.id)} type="text" value={currency.name}
-                                    onChange={(handler) => onCellChanged(currency.id, "name", handler.target.value)}>
-                                </Input>
+                                <Text>{currency.name}</Text>
                             </Table.Cell>
                             <Table.Cell>
-                                <Input disabled value={currency.rate}></Input>
+                                <Text>{formatMoneyByCurrencyCulture(currency.rate, user?.currency.name)}</Text>
                             </Table.Cell>
                             <Table.Cell width={10}>
                                 <Checkbox.Root onBlur={() => onCellBlur(currency.id)} checked={currency.active} variant="subtle"
@@ -172,7 +174,7 @@ const CurrenciesTable: React.FC<Props> = () => {
                 }
             </Table.Body>
         </Table.Root>
-        <Stack direction={"row"} padding={4} gapX={4}>
+        <Stack direction={"row"} padding={4} gapX={2}>
             <Button background="purple.600" onClick={onAdd}>
                 <Icon size='md'>
                     <MdAdd/>

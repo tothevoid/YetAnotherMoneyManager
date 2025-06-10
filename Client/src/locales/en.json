@@ -82,6 +82,7 @@
 
     "entity_currency_name_form_title": "Currency",
     "entity_currency_name": "Name",
+    "entity_currency_rate": "Rate",
     "entity_currency_active": "Active",
 
     "deposits_page_no_deposits": "No deposits in current range",

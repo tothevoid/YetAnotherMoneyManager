@@ -2,20 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MoneyManager.Model.Deposits;
 using MoneyManager.Application.DTO.Deposits;
 
 namespace MoneyManager.Application.Interfaces.Deposits
 {
     public interface IDepositService
     {
-        Task<IEnumerable<ServerDepositDTO>> GetAll(int monthsFrom, int monthsTo, bool onlyActive);
+        Task<IEnumerable<DepositDTO>> GetAll(int monthsFrom, int monthsTo, bool onlyActive);
 
-        Task<IEnumerable<ServerDepositDTO>> GetAllActive();
+        Task<IEnumerable<DepositDTO>> GetAllActive();
 
-        Task<Guid> Add(ClientDepositDTO deposit);
+        Task<Guid> Add(DepositDTO deposit);
 
-        Task Update(ClientDepositDTO modifiedDeposit);
+        Task Update(DepositDTO modifiedDeposit);
 
         Task Delete(Guid id);
 

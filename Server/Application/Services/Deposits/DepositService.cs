@@ -1,20 +1,14 @@
 ﻿using AutoMapper;
-using MoneyManager.Application.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
-using MoneyManager.Model.Deposits;
+using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Deposits;
 using MoneyManager.Application.Interfaces.Deposits;
 using MoneyManager.Infrastructure.Interfaces.Database;
-using MoneyManager.Infrastructure.Interfaces.Repositories;
 using MoneyManager.Infrastructure.Entities.Deposits;
-using MoneyManager.Infrastructure.Constants;
-using MoneyManager.Infrastructure.Entities.Accounts;
-using MoneyManager.Infrastructure.Database;
-using Microsoft.EntityFrameworkCore;
 
 namespace MoneyManager.Application.Services.Deposits
 {
@@ -22,7 +16,6 @@ namespace MoneyManager.Application.Services.Deposits
     {
         private readonly IUnitOfWork _db;
         private readonly IRepository<Deposit> _depositRepo;
-        private readonly IRepository<Account> _accountRepo;
 
         private readonly IMapper _mapper;
         public DepositService(IUnitOfWork uow, IMapper mapper)
@@ -30,36 +23,31 @@ namespace MoneyManager.Application.Services.Deposits
             _db = uow;
             _mapper = mapper;
             _depositRepo = uow.CreateRepository<Deposit>();
-            _accountRepo = uow.CreateRepository<Account>();
         }
 
-        public async Task<IEnumerable<ServerDepositDTO>> GetAll(int monthsFrom, int monthsTo, bool onlyActive)
+        public async Task<IEnumerable<DepositDTO>> GetAll(int monthsFrom, int monthsTo, bool onlyActive)
         {
             var deposits = await GetDeposits(monthsFrom, monthsTo, onlyActive);
-            return _mapper.Map<IEnumerable<ServerDepositDTO>>(deposits.OrderByDescending(x => x.From));
+            return _mapper.Map<IEnumerable<DepositDTO>>(deposits.OrderByDescending(x => x.From));
         }
 
-        public async Task<IEnumerable<ServerDepositDTO>> GetAllActive()
+        public async Task<IEnumerable<DepositDTO>> GetAllActive()
         {
             var deposits = await _depositRepo.GetAll(deposit => deposit.To > DateOnly.FromDateTime(DateTime.Now), 
                 include: GetFullHierarchyColumns);
-            return _mapper.Map<IEnumerable<ServerDepositDTO>>(deposits.OrderByDescending(x => x.From));
+            return _mapper.Map<IEnumerable<DepositDTO>>(deposits.OrderByDescending(x => x.From));
         }
 
-        public async Task<Guid> Add(ClientDepositDTO deposit)
+        public async Task<Guid> Add(DepositDTO deposit)
         {
             var mappedDeposit = _mapper.Map<Deposit>(deposit);
             mappedDeposit.Id = Guid.NewGuid();
-            var accountId = await LinkToAccount(deposit);
-            mappedDeposit.AccountId = accountId;
             await _depositRepo.Add(mappedDeposit);
-
-
             await _db.Commit();
             return mappedDeposit.Id;
         }
 
-        public async Task Update(ClientDepositDTO modifiedDeposit)
+        public async Task Update(DepositDTO modifiedDeposit)
         {
             var currentDeposit = await _depositRepo.GetById(modifiedDeposit.Id, GetFullHierarchyColumns);
 
@@ -69,19 +57,6 @@ namespace MoneyManager.Application.Services.Deposits
             }
 
             var deposit = _mapper.Map<Deposit>(modifiedDeposit);
-
-            if (currentDeposit.AccountId == Guid.Empty)
-            {
-                var accountId = await LinkToAccount(modifiedDeposit);
-                deposit.AccountId = accountId;
-            }
-            else if (currentDeposit.Account.CurrencyId != modifiedDeposit.CurrencyId)
-            {
-                var account = await _accountRepo.GetById(currentDeposit.AccountId);
-                account.CurrencyId = modifiedDeposit.CurrencyId;
-                _accountRepo.Update(account);
-            }
-
             _depositRepo.Update(deposit);
             await _db.Commit();
         }
@@ -199,29 +174,10 @@ namespace MoneyManager.Application.Services.Deposits
             return estimatedEarn / totalDays * days;
         }
 
-        private async Task<Guid> LinkToAccount(ClientDepositDTO deposit)
-        {
-            var accountId = Guid.NewGuid();
-            
-            await _accountRepo.Add(new Account
-            {
-                Id = accountId,
-                Name = deposit.Name,
-                AccountTypeId = AccountTypeConstants.DepositAccount,
-                CreatedOn = DateOnly.FromDateTime(DateTime.UtcNow),
-                Balance = deposit.InitialAmount,
-                Active = true,
-                CurrencyId = deposit.CurrencyId
-            });
-
-            return accountId;
-        }
-
         private IQueryable<Deposit> GetFullHierarchyColumns(IQueryable<Deposit> depositQuery)
-        { 
+        {
             return depositQuery
-                .Include(deposit => deposit.Account.AccountType)
-                .Include(deposit => deposit.Account.Currency);
+                .Include(deposit => deposit.Currency);
         }
 
         private class Payment

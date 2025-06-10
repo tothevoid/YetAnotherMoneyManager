@@ -3,6 +3,7 @@ using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Shared.Entities;
 using System.Collections.Generic;
 using MoneyManager.Infrastructure.Entities.Debts;
+using MoneyManager.Infrastructure.Entities.Deposits;
 using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Infrastructure.Entities.User;
 
@@ -25,5 +26,7 @@ namespace MoneyManager.Infrastructure.Entities.Currencies
         public ICollection<Security> Securities { get; set; }
 
         public ICollection<UserProfile> UserProfiles { get; set; }
+
+        public ICollection<Deposit> Deposits { get; set; }
     }
 }

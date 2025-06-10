@@ -56,8 +56,6 @@ namespace MoneyManager.Application.DTO.Dashboard
 
         public IEnumerable<DistributionDto> CashDistribution { get; set; }
 
-        public IEnumerable<DistributionDto> DepositsDistribution { get; set; }
-
         public IEnumerable<DistributionDto> BankAccountsDistribution { get; set; }
 
     }

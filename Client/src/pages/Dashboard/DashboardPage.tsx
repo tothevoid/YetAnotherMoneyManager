@@ -84,14 +84,14 @@ const DashboardPage: React.FC<Props> = () => {
                         </Stack>
                     </Card.Body>
                 </Card.Root>
-                <Card.Root backgroundColor="background_primary" borderColor="border_primary">
+                {/* <Card.Root backgroundColor="background_primary" borderColor="border_primary">
                     <Card.Body color="text_primary">
                         <Stack gapY={2}>
                             <Text fontWeight={700} fontSize={"xl"}>{t("dashboard_deposits")}: {formatMoneyByCurrencyCulture(dashboard.accountStats.totalDeposit, currency)}</Text>
                             <DistributionChart data={dashboard.accountStats.depositsDistribution} mainCurrency={user.currency.name}/>
                         </Stack>
                     </Card.Body>
-                </Card.Root>
+                </Card.Root> */}
                 <Card.Root backgroundColor="background_primary" borderColor="border_primary">
                     <Card.Body color="text_primary">
                         <Stack gapY={2}>

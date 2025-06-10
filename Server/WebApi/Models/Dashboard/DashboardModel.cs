@@ -62,8 +62,6 @@ namespace MoneyManager.WebApi.Models.Dashboard
 
         public IEnumerable<DistributionModel> CashDistribution { get; set; }
 
-        public IEnumerable<DistributionModel> DepositsDistribution { get; set; }
-
         public IEnumerable<DistributionModel> BankAccountsDistribution { get; set; }
     }
 

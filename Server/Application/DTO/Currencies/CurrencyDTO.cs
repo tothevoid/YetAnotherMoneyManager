@@ -1,4 +1,5 @@
-﻿using MoneyManager.Shared.Entities;
+﻿using System;
+using MoneyManager.Shared.Entities;
 
 namespace MoneyManager.Application.DTO.Currencies
 {

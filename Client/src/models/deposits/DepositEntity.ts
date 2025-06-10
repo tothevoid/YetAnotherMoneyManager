@@ -1,4 +1,4 @@
-import { AccountEntity } from "../accounts/AccountEntity"
+import { CurrencyEntity } from "../currencies/CurrencyEntity"
 
 interface CommonDepositEntity {
     id: string,
@@ -11,11 +11,11 @@ interface CommonDepositEntity {
 export interface ServerDepositEntity extends CommonDepositEntity {
     from: string,
     to: string,
-    accountId?: string | null
+    currencyId: string
 }
 
 export interface DepositEntity extends CommonDepositEntity {
     from: Date,
     to: Date,
-    account?: AccountEntity | null
+    currency: CurrencyEntity
 }

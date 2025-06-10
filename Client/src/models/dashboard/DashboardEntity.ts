@@ -25,7 +25,6 @@ export interface AccountStats {
     totalDeposit: number,
     totalBankAccount: number,
     cashDistribution: DistributionModel[],
-    depositsDistribution: DistributionModel[],
     bankAccountsDistribution: DistributionModel[],
 }
 

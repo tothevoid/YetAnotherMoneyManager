@@ -29,8 +29,6 @@ namespace MoneyManager.Infrastructure.Entities.Accounts
 
         public ICollection<DebtPayment> DebtPayments { get; set; }
 
-        public ICollection<Deposit> Deposits { get; set; }
-
         public ICollection<Transaction> Transactions { get; set; }
     }
 }

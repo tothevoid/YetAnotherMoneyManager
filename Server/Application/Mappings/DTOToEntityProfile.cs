@@ -13,7 +13,6 @@ using MoneyManager.Infrastructure.Entities.Deposits;
 using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Infrastructure.Entities.Transactions;
 using MoneyManager.Infrastructure.Entities.User;
-using MoneyManager.Model.Deposits;
 using MoneyManager.Application.DTO.Debts;
 using MoneyManager.Infrastructure.Entities.Debts;
 
@@ -30,8 +29,7 @@ namespace MoneyManager.Application.Mappings
             CreateMap<CurrencyDTO, Currency>().ReverseMap();
             CreateMap<AccountTypeDTO, AccountType>().ReverseMap();
 
-            CreateMap<Deposit, ServerDepositDTO>().ReverseMap();
-            CreateMap<ClientDepositDTO, Deposit>().ReverseMap();
+            CreateMap<DepositDTO, Deposit>().ReverseMap();
 
             CreateMap<SecurityDTO, Security>().ReverseMap();
             CreateMap<SecurityTypeDTO, SecurityType>().ReverseMap();

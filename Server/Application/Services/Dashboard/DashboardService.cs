@@ -136,11 +136,9 @@ namespace MoneyManager.Application.Services.Dashboard
             var accounts = await _accountService.GetAll(true);
 
             var cashValuesDistribution = new List<DistributionDto>();
-            var depositsDistribution = new List<DistributionDto>();
             var bankAccountsDistribution = new List<DistributionDto>();
 
             decimal cashSummary = 0;
-            decimal depositSummary = 0;
             decimal bankAccountSummary = 0;
 
             foreach (var account in accounts)
@@ -151,12 +149,8 @@ namespace MoneyManager.Application.Services.Dashboard
                 {
                     cashSummary += HandleCard(account, cashValuesDistribution);
                 }
-                else if (account.AccountTypeId == AccountTypeConstants.DepositAccount)
-                {
-                    depositSummary += HandleCard(account, depositsDistribution);
-                }
                 else if (account.AccountTypeId == AccountTypeConstants.DebitCard ||
-                    account.AccountTypeId == AccountTypeConstants.CreditCard)
+                         account.AccountTypeId == AccountTypeConstants.CreditCard)
                 {
                     bankAccountSummary += HandleCard(account, bankAccountsDistribution);
                 }
@@ -164,14 +158,12 @@ namespace MoneyManager.Application.Services.Dashboard
 
             return new AccountStatsDto()
             {
-                Total = cashSummary + depositSummary + bankAccountSummary,
+                Total = cashSummary + bankAccountSummary,
 
                 TotalCash = cashSummary,
-                TotalDeposit = depositSummary,
                 TotalBankAccount = bankAccountSummary,
 
                 CashDistribution = cashValuesDistribution,
-                DepositsDistribution = depositsDistribution,
                 BankAccountsDistribution = bankAccountsDistribution
             };
         }
@@ -261,17 +253,16 @@ namespace MoneyManager.Application.Services.Dashboard
             foreach (var deposit in deposits)
             {
                 var key = deposit.Name;
-                var currency = deposit.Account.Currency;
                 var totalDays = deposit.To.DayNumber - deposit.From.DayNumber;
                 var daysPassed = DateOnly.FromDateTime(DateTime.Now).DayNumber - deposit.From.DayNumber;
                 var amount = deposit.EstimatedEarn / totalDays * daysPassed;
-                var convertedAmount = amount * currency.Rate;
+                var convertedAmount = amount * deposit.Currency.Rate;
                 debtsSummary += convertedAmount;
 
                 debtsDistribution.Add(new DistributionDto()
                 {
                     Name = key,
-                    Currency = currency.Name,
+                    Currency = deposit.Currency.Name,
                     Amount = amount,
                     ConvertedAmount = convertedAmount
                 });

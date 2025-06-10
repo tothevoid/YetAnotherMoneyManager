@@ -7,6 +7,7 @@ using MoneyManager.Application.DTO;
 using MoneyManager.Application.Interfaces.Deposits;
 using MoneyManager.WebApi.Models.Deposits;
 using MoneyManager.WebApi.Models.Deposits.Charts;
+using MoneyManager.Application.DTO.Deposits;
 
 namespace MoneyManager.WebApi.Controllers.Deposits
 {
@@ -24,11 +25,11 @@ namespace MoneyManager.WebApi.Controllers.Deposits
         }
 
         [HttpPost(nameof(GetAll))]
-        public async Task<IEnumerable<ServerDepositModel>> GetAll(DepositFiltrationModel filtration)
+        public async Task<IEnumerable<DepositModel>> GetAll(DepositFiltrationModel filtration)
         {
             var deposits = await _depositService.GetAll(filtration.MonthsFrom, 
                 filtration.MonthsTo, filtration.OnlyActive);
-            return _mapper.Map<IEnumerable<ServerDepositModel>>(deposits);
+            return _mapper.Map<IEnumerable<DepositModel>>(deposits);
         }
 
         [HttpPost(nameof(GetDepositsSummary))]
@@ -39,16 +40,16 @@ namespace MoneyManager.WebApi.Controllers.Deposits
         }
 
         [HttpPut]
-        public async Task<Guid> Add(ClientDepositModel deposit)
+        public async Task<Guid> Add(DepositModel deposit)
         {
-            var depositDto = _mapper.Map<ClientDepositDTO>(deposit);
+            var depositDto = _mapper.Map<DepositDTO>(deposit);
             return await _depositService.Add(depositDto);
         }
 
         [HttpPatch]
-        public async Task Update(ClientDepositModel modifiedDeposit)
+        public async Task Update(DepositModel modifiedDeposit)
         {
-            var deposit = _mapper.Map<ClientDepositDTO>(modifiedDeposit);
+            var deposit = _mapper.Map<DepositDTO>(modifiedDeposit);
             await _depositService.Update(deposit);
         }
 

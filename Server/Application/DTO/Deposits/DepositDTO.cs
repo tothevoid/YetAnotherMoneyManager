@@ -1,5 +1,6 @@
 ﻿using MoneyManager.Shared.Entities;
 using System;
+using MoneyManager.Application.DTO.Currencies;
 
 namespace MoneyManager.Application.DTO.Deposits
 {
@@ -16,5 +17,9 @@ namespace MoneyManager.Application.DTO.Deposits
         public decimal InitialAmount { get; set; }
 
         public decimal EstimatedEarn { get; set; }
+
+        public CurrencyDTO Currency { get; set; }
+
+        public Guid CurrencyId { get; set; }
     }
 }

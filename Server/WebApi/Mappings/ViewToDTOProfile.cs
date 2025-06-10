@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MoneyManager.Application.DTO;
-using MoneyManager.Model.Deposits;
 using MoneyManager.Application.DTO.Transactions;
 using MoneyManager.Application.DTO.Deposits;
 using MoneyManager.Application.DTO.Accounts;
@@ -42,8 +41,7 @@ namespace MoneyManager.WebApi.Mappings
             CreateMap<AccountTransferModel, AccountTransferDTO>();
             CreateMap<AccountCurrencySummaryDTO, AccountCurrencySummaryModel>();
 
-            CreateMap<ClientDepositModel, ClientDepositDTO>();
-            CreateMap<ServerDepositDTO, ServerDepositModel>();
+            CreateMap<DepositModel, DepositDTO>();
 
             CreateMap<SecurityModel, SecurityDTO>().ReverseMap();
             CreateMap<DividendModel, DividendDto>().ReverseMap();
@@ -66,7 +64,6 @@ namespace MoneyManager.WebApi.Mappings
             CreateMap<DebtStatsDto, DebtStatsModel>().ReverseMap();
             CreateMap<DepositsIncomesDto, DepositsIncomesModel>().ReverseMap();
             
-
             CreateMap<DebtDto, DebtModel>().ReverseMap();
             CreateMap<DebtPayment, DebtPaymentModel>().ReverseMap();
         }

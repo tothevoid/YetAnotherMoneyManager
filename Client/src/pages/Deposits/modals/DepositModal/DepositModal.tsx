@@ -51,7 +51,7 @@ const DepositModal: React.FC<ModalProps> = (props: ModalProps) => {
 			percentage: props.deposit?.percentage ?? 0,
 			initialAmount: props.deposit?.initialAmount ?? 0,
 			estimatedEarn: props.deposit?.estimatedEarn ?? 0,
-			currency: props.deposit?.account?.currency
+			currency: props.deposit?.currency
 		}
 	});
 

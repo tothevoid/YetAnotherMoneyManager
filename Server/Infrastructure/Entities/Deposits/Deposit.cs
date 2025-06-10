@@ -1,6 +1,6 @@
-﻿using MoneyManager.Infrastructure.Entities.Accounts;
-using MoneyManager.Shared.Entities;
+﻿using MoneyManager.Shared.Entities;
 using System;
+using MoneyManager.Infrastructure.Entities.Currencies;
 
 namespace MoneyManager.Infrastructure.Entities.Deposits
 {
@@ -18,8 +18,8 @@ namespace MoneyManager.Infrastructure.Entities.Deposits
 
         public decimal EstimatedEarn { get; set; }
 
-        public Guid AccountId { get; set; }
+        public Guid CurrencyId { get; set; }
 
-        public Account Account { get; set; }
+        public Currency Currency { get; set; }
     }
 }

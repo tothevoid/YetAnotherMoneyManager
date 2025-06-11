@@ -4,13 +4,9 @@ using System.Collections.Generic;
 using System;
 using System.Text.Json;
 using AutoMapper;
-using Minio;
 using MoneyManager.Application.DTO.Securities;
-using MoneyManager.Application.Interfaces.Integrations.Stock;
 using MoneyManager.Application.Interfaces.Securities;
 using MoneyManager.WebApi.Models.Securities;
-using MoneyManager.WebApi.Models.Brokers;
-using Minio.DataModel.Args;
 using Microsoft.AspNetCore.Http;
 
 namespace MoneyManager.WebApi.Controllers.Securities
@@ -21,14 +17,13 @@ namespace MoneyManager.WebApi.Controllers.Securities
     public class SecurityController : ControllerBase
     {
         private readonly ISecurityService _securityService;
-        private readonly IMapper _mapper;
-        private readonly IMinioClient _minioClient;
 
-        public SecurityController(ISecurityService securityService, IMapper mapper, IMinioClient minioClient)
+        private readonly IMapper _mapper;
+
+        public SecurityController(ISecurityService securityService, IMapper mapper)
         {
             _mapper = mapper;
             _securityService = securityService;
-            _minioClient = minioClient;
         }
 
         [HttpGet]
@@ -43,6 +38,13 @@ namespace MoneyManager.WebApi.Controllers.Securities
         {
             var brokerAccount = await _securityService.GetById(id);
             return _mapper.Map<SecurityModel>(brokerAccount);
+        }
+
+        [HttpGet("icon")]
+        public async Task<IActionResult> GetSecurityIcon(string iconKey)
+        {
+            var url = await _securityService.GetIconUrl(iconKey);
+            return Redirect(url);
         }
 
         [HttpGet(nameof(GetTickerHistory))]
@@ -71,12 +73,5 @@ namespace MoneyManager.WebApi.Controllers.Securities
         [HttpDelete]
         public async Task Delete(Guid id) =>
             await _securityService.Delete(id);
-
-        [HttpGet("icon")]
-        public async Task<IActionResult> GetSecurityIcon(string iconKey)
-        {
-            var url = await _securityService.GetIconUrl(iconKey);
-            return Redirect(url);
-        }
     }
 }

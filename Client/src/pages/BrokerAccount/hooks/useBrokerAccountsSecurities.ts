@@ -16,14 +16,14 @@ export const useBrokerAccountsSecurities = (queryParameters: BrokerAccountSecuri
 	const fetchData = useCallback(async () => {
 		setLoading(true)
 		try {
-			const brokerAccountSecurities = await getSecuritiesByBrokerAccount(queryParameters.brokerAccountId);
-			setBrokerAccountSecurities(brokerAccountSecurities);
+			const securities = await getSecuritiesByBrokerAccount(brokerAccountSecurityQueryParameters.brokerAccountId);
+			setBrokerAccountSecurities(securities);
 		} catch (err: any) {
 			setError(err.message || 'Ошибка загрузки данных')
 		} finally {
 			setLoading(false)
 		}
-	}, [queryParameters])
+	}, [brokerAccountSecurityQueryParameters])
 
 	useEffect(() => {
 		fetchData();

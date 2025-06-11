@@ -89,10 +89,12 @@ namespace MoneyManager.Application.Services.Brokers
             var securities = await _brokerAccountService
                 .GetByBrokerAccount(brokerAccount.Id);
 
+            var mainCurrencyAmount = brokerAccount.MainCurrencyAmount * brokerAccount.Currency.Rate;
+
             brokerAccount.CurrentValue = securities.Sum(accountSecurity => 
-                accountSecurity.Quantity * accountSecurity.Security.ActualPrice);
+                accountSecurity.Quantity * accountSecurity.Security.ActualPrice) + mainCurrencyAmount;
             brokerAccount.InitialValue = securities.Sum(accountSecurity =>
-                accountSecurity.Price);
+                accountSecurity.Price) + mainCurrencyAmount;
         }
 
         private IQueryable<BrokerAccount> GetFullHierarchyColumns(IQueryable<BrokerAccount> brokerAccountQuery)

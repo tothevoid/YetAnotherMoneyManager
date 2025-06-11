@@ -52,7 +52,6 @@ const BrokerAccountPage: React.FC<Props> = () => {
     useEffect(() => {
         initData();
     }, []);
-    
 
     const onDataReloaded = async () => {
         await initData();
@@ -75,6 +74,10 @@ const BrokerAccountPage: React.FC<Props> = () => {
 
     const {profitAndLoss, profitAndLossPercentage, color} = calculateDiff(currentValue, initialValue);
 
+    if (!state.brokerAccount) {
+        return <Fragment/>
+    }
+
     return (<Fragment>
         <Stack alignItems={"end"} gapX={2} direction={"row"} color="text_primary">
             <Text fontSize="3xl" fontWeight={900}> {state.brokerAccount?.name}: </Text>
@@ -90,7 +93,7 @@ const BrokerAccountPage: React.FC<Props> = () => {
                 </Icon>
             </Button>
         </Stack>
-        <BrokerAccountSecuritiesList ref={securitiesRef} brokerAccountId={brokerAccountId}/>
+        <BrokerAccountSecuritiesList ref={securitiesRef} brokerAccount={state.brokerAccount}/>
         <SecurityTransactionsList onDataReloaded={onDataReloaded} brokerAccountId={brokerAccountId}/>
     </Fragment>
     )

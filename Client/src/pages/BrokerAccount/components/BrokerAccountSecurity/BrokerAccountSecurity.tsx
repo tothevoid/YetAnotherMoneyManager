@@ -1,14 +1,10 @@
-import { Button, Card, Flex, Icon, Link, Span, Stack, Text, Image } from '@chakra-ui/react';
-import { MdDelete, MdEdit } from "react-icons/md";
-import { Fragment, useRef } from 'react';
+import { Card, Flex, Link, Span, Stack, Text, Image } from '@chakra-ui/react';
+import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 import { HiOutlineBuildingOffice2 } from 'react-icons/hi2';
 import { getIconUrl } from '../../../../api/securities/securityApi';
 import { BrokerAccountSecurityEntity } from '../../../../models/brokers/BrokerAccountSecurityEntity';
-import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModal';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
-import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
-import BrokerAccountSecurityModal from '../../modals/BrokerAccountSecurityModal/BrokerAccountSecurityModal';
 
 type Props = {
     brokerAccountSecurity: BrokerAccountSecurityEntity,
@@ -20,18 +16,7 @@ type Props = {
 const BrokerAccountSecurity = (props: Props) => {
     const {price, quantity, security, brokerAccount} = props.brokerAccountSecurity;
 
-    const confirmModalRef = useRef<BaseModalRef>(null);
-    const editModalRef = useRef<BaseModalRef>(null);
-
-    const onEditClicked = () => {
-        editModalRef.current?.openModal()
-    };
-
-    const onDeleteClicked = () => {
-        confirmModalRef.current?.openModal()
-    };
-
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
 
     const actualPrice = security.actualPrice * quantity;
     const profitAndLoss = actualPrice - price;
@@ -66,27 +51,9 @@ const BrokerAccountSecurity = (props: Props) => {
                             <Span paddingLeft={1.5} color={color}>{formatMoneyByCurrencyCulture(profitAndLoss, security?.currency?.name)} ({percentage.toFixed(2)}%)</Span>
                         </Text>
                     </Stack>
-                    <Flex gap={1}>
-                        <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={onEditClicked}>
-                            <Icon color="card_action_icon_primary">
-                                <MdEdit/>
-                            </Icon>
-                        </Button>
-                        <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={onDeleteClicked}>
-                            <Icon color="card_action_icon_danger">
-                                <MdDelete/>
-                            </Icon>
-                        </Button>
-                    </Flex>
                 </Flex>
             </Card.Body>
         </Card.Root>
-        <ConfirmModal onConfirmed={() => props.onDeleteCallback(props.brokerAccountSecurity)}
-            title={t("broker_account_securities_delete_title")}
-            message={t("modals_delete_message")}
-            confirmActionName={t("modals_delete_button")}
-            ref={confirmModalRef}/>
-        <BrokerAccountSecurityModal brokerAccountSecurity={props.brokerAccountSecurity} modalRef={editModalRef} onSaved={props.onEditCallback}/>
     </Fragment>
 };
 

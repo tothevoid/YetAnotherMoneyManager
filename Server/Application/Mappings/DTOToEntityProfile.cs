@@ -43,6 +43,8 @@ namespace MoneyManager.Application.Mappings
 
             CreateMap<DebtDto, Debt>().ReverseMap();
             CreateMap<DebtPaymentDto, DebtPayment>().ReverseMap();
+
+            CreateMap<DividendPaymentDto, DividendPayment>().ReverseMap();
         }
     }
 }

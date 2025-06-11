@@ -7,9 +7,9 @@ import { ConfirmModal } from "../../../../shared/modals/ConfirmModal/ConfirmModa
 import { getCurrencies, updateCurrency, createCurrency, deleteCurrency, syncRates } from "../../../../api/currencies/currencyApi";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import CurrencyModal from "../../modals/CurrencyModal/CurrencyModal";
-import "./CurrenciesTables.scss"
 import { useUserProfile } from "../../../../../features/UserProfileSettingsModal/hooks/UserProfileContext";
 import { formatMoneyByCurrencyCulture } from "../../../../shared/utilities/formatters/moneyFormatter";
+import RefreshButton from "../../../../shared/components/RefreshButton/RefreshButton";
 
 interface Props {}
 
@@ -181,15 +181,7 @@ const CurrenciesTable: React.FC<Props> = () => {
                 </Icon>
                 {t("currencies_data_add")}
             </Button>
-            <Button disabled={isSyncing} background="purple.600" onClick={onSyncRates}>
-                <Icon 
-                    transition="transform 0.3s ease"
-                    animation={isSyncing ? 'loading-spin 1.5s linear infinite' : 'none'}
-                    size='md'>
-                    <MdRefresh/>
-                </Icon>
-                 {t("currencies_data_sync_rates")}
-            </Button>
+            <RefreshButton isRefreshing={isSyncing} title={t("currencies_data_sync_rates")} onClick={onSyncRates} />
         </Stack>
         <CurrencyModal modalRef={modalRef} onSaved={onCurrencyAdded}/>
         <ConfirmModal onConfirmed={onDeleteConfirmed}

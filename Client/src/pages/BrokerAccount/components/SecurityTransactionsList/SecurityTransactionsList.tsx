@@ -19,6 +19,7 @@ const SecurityTransactionsList: React.FC<Props> = (props) => {
 
 	const {
 		securityTransactions,
+		isSecurityTransactionsLoading,
 		createSecurityTransactionEntity,
 		updatedSecurityTransactionEntity,
 		deleteSecurityTransactionEntity,

@@ -143,8 +143,6 @@ namespace MoneyManager.Application.Services.Dashboard
 
             foreach (var account in accounts)
             {
-                switch (account.AccountTypeId) { }
-
                 if (account.AccountTypeId == AccountTypeConstants.Cash)
                 {
                     cashSummary += HandleCard(account, cashValuesDistribution);

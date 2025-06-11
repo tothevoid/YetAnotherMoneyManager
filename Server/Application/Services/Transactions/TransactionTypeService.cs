@@ -42,7 +42,7 @@ namespace MoneyManager.Application.Services.Transactions
             return await _fileStorageService.GetFileUrl(_iconsBucket, iconKey);
         }
 
-        public async Task<TransactionTypeDTO> Add(TransactionTypeDTO transactionTypeDto, IFormFile? transactionTypeIcon)
+        public async Task<TransactionTypeDTO> Add(TransactionTypeDTO transactionTypeDto, IFormFile transactionTypeIcon)
         {
             var transactionType = _mapper.Map<TransactionType>(transactionTypeDto);
             transactionType.Id = Guid.NewGuid();
@@ -60,7 +60,7 @@ namespace MoneyManager.Application.Services.Transactions
             return _mapper.Map<TransactionTypeDTO>(transactionType);
         }
 
-        public async Task<TransactionTypeDTO> Update(TransactionTypeDTO transactionTypeDto, IFormFile? transactionTypeIcon)
+        public async Task<TransactionTypeDTO> Update(TransactionTypeDTO transactionTypeDto, IFormFile transactionTypeIcon)
         {
             var transactionType = _mapper.Map<TransactionType>(transactionTypeDto);
 

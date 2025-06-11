@@ -10,9 +10,9 @@ namespace MoneyManager.Application.Interfaces.Transactions
     {
         Task<IEnumerable<TransactionTypeDTO>> GetAll(bool onlyActive);
 
-        Task<TransactionTypeDTO> Add(TransactionTypeDTO transactionTypeDto, IFormFile? transactionTypeIcon);
+        Task<TransactionTypeDTO> Add(TransactionTypeDTO transactionTypeDto, IFormFile transactionTypeIcon);
 
-        Task<TransactionTypeDTO> Update(TransactionTypeDTO transactionTypeDto, IFormFile? transactionTypeIcon);
+        Task<TransactionTypeDTO> Update(TransactionTypeDTO transactionTypeDto, IFormFile transactionTypeIcon);
 
         Task Delete(Guid id);
 

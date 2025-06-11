@@ -32,7 +32,7 @@ namespace MoneyManager.WebApi.Controllers.Transactions
         }
 
         [HttpPut]
-        public async Task<TransactionTypeModel> Add([FromForm] string transactionTypeJson, [FromForm] IFormFile? transactionTypeIcon)
+        public async Task<TransactionTypeModel> Add([FromForm] string transactionTypeJson, [FromForm] IFormFile transactionTypeIcon)
         {
             var transactionType = JsonSerializer.Deserialize<TransactionTypeModel>(transactionTypeJson);
             var transactionTypeDto = _mapper.Map<TransactionTypeDTO>(transactionType);
@@ -42,7 +42,7 @@ namespace MoneyManager.WebApi.Controllers.Transactions
         }
 
         [HttpPatch]
-        public async Task<TransactionTypeModel> Update([FromForm] string transactionTypeJson, [FromForm] IFormFile? transactionTypeIcon)
+        public async Task<TransactionTypeModel> Update([FromForm] string transactionTypeJson, [FromForm] IFormFile transactionTypeIcon = null)
         {
             var transactionType = JsonSerializer.Deserialize<TransactionTypeModel>(transactionTypeJson);
             var transactionTypeDto = _mapper.Map<TransactionTypeDTO>(transactionType);

@@ -22,6 +22,7 @@ namespace MoneyManager.Application.Services.Securities
 
         private readonly IRepository<SecurityTransaction> _securityTransactionRepo;
         private readonly IRepository<BrokerAccountSecurity> _brokerAccountSecurityRepo;
+        private readonly IRepository<BrokerAccount> _brokerAccountRepo;
         private readonly IMapper _mapper;
 
         public SecurityTransactionService(IUnitOfWork uow, IMapper mapper)
@@ -30,6 +31,7 @@ namespace MoneyManager.Application.Services.Securities
             _mapper = mapper;
             _securityTransactionRepo = uow.CreateRepository<SecurityTransaction>();
             _brokerAccountSecurityRepo = uow.CreateRepository<BrokerAccountSecurity>();
+            _brokerAccountRepo = uow.CreateRepository<BrokerAccount>();
         }
 
         public async Task<IEnumerable<SecurityTransactionDTO>> GetAll(Guid brokerAccountId,
@@ -116,15 +118,18 @@ namespace MoneyManager.Application.Services.Securities
 
         private async Task GenerateBrokerAccountSecurity(SecurityTransactionDTO securityTransaction)
         {
+            var price = securityTransaction.Price * securityTransaction.Quantity;
             var brokerAccountSecurity = new BrokerAccountSecurity()
             {
                 SecurityId = securityTransaction.SecurityId,
                 BrokerAccountId = securityTransaction.BrokerAccountId,
-                Price = securityTransaction.Price * securityTransaction.Quantity,
+                Price = price,
                 Quantity = securityTransaction.Quantity
             };
 
             await _brokerAccountSecurityRepo.Add(brokerAccountSecurity);
+            await ActualizeBrokerAccountCurrencyValue(brokerAccountSecurity.BrokerAccountId, -1 * price);
+
             await _db.Commit();
         }
 
@@ -133,9 +138,12 @@ namespace MoneyManager.Application.Services.Securities
             var brokerAccountSecurity = await FindExistingBrokerAccountSecurity(securityTransaction);
             if (brokerAccountSecurity != null)
             {
+                var price = securityTransaction.Quantity * securityTransaction.Price;
                 brokerAccountSecurity.Quantity += securityTransaction.Quantity;
                 brokerAccountSecurity.Price += securityTransaction.Quantity * securityTransaction.Price;
                 _brokerAccountSecurityRepo.Update(brokerAccountSecurity);
+
+                await ActualizeBrokerAccountCurrencyValue(brokerAccountSecurity.BrokerAccountId, -1 * price);
                 await _db.Commit();
             }
             else
@@ -180,7 +188,16 @@ namespace MoneyManager.Application.Services.Securities
             brokerAccountSecurity.Price += priceDiff;
 
             _brokerAccountSecurityRepo.Update(brokerAccountSecurity);
+            await ActualizeBrokerAccountCurrencyValue(brokerAccountSecurity.BrokerAccountId, priceDiff * -1);
+
             await _db.Commit();
+        }
+
+        private async Task ActualizeBrokerAccountCurrencyValue(Guid brokerAccountId, decimal currencyDiff)
+        {
+            var brokerAccount = await _brokerAccountRepo.GetById(brokerAccountId, disableTracking: false);
+            brokerAccount.MainCurrencyAmount += currencyDiff;
+            _brokerAccountRepo.Update(brokerAccount);
         }
 
         private async Task SubtractDeletedTransaction(Guid transactionId)
@@ -192,11 +209,14 @@ namespace MoneyManager.Application.Services.Securities
             if (brokerAccountSecurity == null)
             {
                 return;
-            }    
+            }
 
+            var price = securityTransaction.Quantity * securityTransaction.Price;
             brokerAccountSecurity.Quantity -= securityTransaction.Quantity;
-            brokerAccountSecurity.Price -= securityTransaction.Quantity * securityTransaction.Price;
+            brokerAccountSecurity.Price -= price;
             _brokerAccountSecurityRepo.Update(brokerAccountSecurity);
+            await ActualizeBrokerAccountCurrencyValue(brokerAccountSecurity.BrokerAccountId, price);
+
             await _db.Commit();
         }
         private IQueryable<SecurityTransaction> GetFullHierarchyColumns(

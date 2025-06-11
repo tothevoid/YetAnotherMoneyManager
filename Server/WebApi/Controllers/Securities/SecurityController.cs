@@ -55,7 +55,7 @@ namespace MoneyManager.WebApi.Controllers.Securities
         }
 
         [HttpPut]
-        public async Task<Guid> Add([FromForm] string securityJson, [FromForm] IFormFile? securityIcon)
+        public async Task<Guid> Add([FromForm] string securityJson, [FromForm] IFormFile securityIcon)
         {
             var security = JsonSerializer.Deserialize<SecurityModel>(securityJson);
             var securityDto = _mapper.Map<SecurityDTO>(security);
@@ -63,7 +63,7 @@ namespace MoneyManager.WebApi.Controllers.Securities
         }
 
         [HttpPatch]
-        public async Task Update([FromForm] string securityJson, [FromForm] IFormFile? securityIcon)
+        public async Task Update([FromForm] string securityJson, [FromForm] IFormFile securityIcon)
         {
             var security = JsonSerializer.Deserialize<SecurityModel>(securityJson);
             var securityDto = _mapper.Map<SecurityDTO>(security);

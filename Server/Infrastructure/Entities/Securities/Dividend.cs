@@ -1,4 +1,5 @@
-﻿using MoneyManager.Shared.Entities;
+﻿using MoneyManager.Infrastructure.Entities.Brokers;
+using MoneyManager.Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,5 +21,7 @@ namespace MoneyManager.Infrastructure.Entities.Securities
         public DateOnly PaymentDate { get; set; }
 
         public decimal Amount { get; set; }
+
+        public ICollection<DividendPayment> DividendPayments { get; set; }
     }
 }

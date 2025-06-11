@@ -54,6 +54,7 @@ namespace MoneyManager.Infrastructure.Database
             modelBuilder.ApplyConfiguration(new UserProfileConfiguration());
             modelBuilder.ApplyConfiguration(new DebtConfiguration());
             modelBuilder.ApplyConfiguration(new DebtPaymentConfiguration());
+            modelBuilder.ApplyConfiguration(new DividendPaymentConfiguration());
 
             InitializeDefaultData(modelBuilder);
 

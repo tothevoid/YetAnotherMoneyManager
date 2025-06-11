@@ -93,6 +93,7 @@ builder.Services.AddTransient<IUserProfileService, UserProfileService>();
 builder.Services.AddTransient<IDashboardService, DashboardService>();
 builder.Services.AddTransient<IDebtService, DebtService>();
 builder.Services.AddTransient<IDebtPaymentService, DebtPaymentService>();
+builder.Services.AddTransient<IDividendPaymentService, DividendPaymentService>();
 
 builder.Services.AddScoped<IServerNotifier, ServerNotifier>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();

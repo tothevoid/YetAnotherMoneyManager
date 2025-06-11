@@ -1,4 +1,4 @@
-import React, { Fragment, useRef } from 'react';
+import React, { Fragment, useEffect, useRef } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { SecurityTransactionEntity } from '../../../../models/securities/SecurityTransactionEntity';
@@ -26,6 +26,10 @@ const SecurityTransactionsList: React.FC<Props> = (props) => {
 		setSecurityTransactionsQueryParameters,
 		reloadSecurityTransactions
 	} = useSecurityTransactions({currentPage: 1, pageSize: -1, brokerAccountId: props.brokerAccountId });
+
+	useEffect(() => {
+		props.onDataReloaded();
+	}, [securityTransactions])
 
 	const onReloadSecurityTransactions = async () => {
 		await reloadSecurityTransactions();

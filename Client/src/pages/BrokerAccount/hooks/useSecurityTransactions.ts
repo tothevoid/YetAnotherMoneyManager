@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { AccountEntity } from "../../../models/accounts/AccountEntity";
-import { createAccount, getAccounts } from "../../../api/accounts/accountApi";
 import { createSecurityTransaction, deleteSecurityTransaction, getSecurityTransactions, updateSecurityTransaction } from "../../../api/securities/securityTransactionApi";
 import { SecurityTransactionEntity } from "../../../models/securities/SecurityTransactionEntity";
-import { TransactionEntity } from "../../../models/transactions/TransactionEntity";
 
 export interface SecurityTransactionsQuery {
 	currentPage: number,

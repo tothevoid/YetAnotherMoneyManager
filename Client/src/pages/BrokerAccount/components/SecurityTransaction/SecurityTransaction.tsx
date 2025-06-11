@@ -4,7 +4,6 @@ import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModal';
 import { SecurityTransactionEntity } from '../../../../models/securities/SecurityTransactionEntity';
-import { deleteSecurityTransaction, updateSecurityTransaction } from '../../../../api/securities/securityTransactionApi';
 import { formatDateTime } from '../../../../shared/utilities/formatters/dateFormatter';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';

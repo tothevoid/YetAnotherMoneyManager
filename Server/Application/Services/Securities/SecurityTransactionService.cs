@@ -212,9 +212,18 @@ namespace MoneyManager.Application.Services.Securities
             }
 
             var price = securityTransaction.Quantity * securityTransaction.Price;
-            brokerAccountSecurity.Quantity -= securityTransaction.Quantity;
-            brokerAccountSecurity.Price -= price;
-            _brokerAccountSecurityRepo.Update(brokerAccountSecurity);
+
+            if (brokerAccountSecurity.Quantity == securityTransaction.Quantity)
+            {
+                await _brokerAccountSecurityRepo.Delete(brokerAccountSecurity.Id);
+            }
+            else
+            {
+                brokerAccountSecurity.Quantity -= securityTransaction.Quantity;
+                brokerAccountSecurity.Price -= price;
+                _brokerAccountSecurityRepo.Update(brokerAccountSecurity);
+            }
+           
             await ActualizeBrokerAccountCurrencyValue(brokerAccountSecurity.BrokerAccountId, price);
 
             await _db.Commit();

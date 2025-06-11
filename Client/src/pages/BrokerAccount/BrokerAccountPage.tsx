@@ -13,6 +13,7 @@ import SecurityTransactionsList from "./components/SecurityTransactionsList/Secu
 import RefreshButton from "../../shared/components/RefreshButton/RefreshButton";
 import { GrTransaction } from "react-icons/gr";
 import { PiCoinsLight } from "react-icons/pi";
+import DividendPaymentsList from "./components/DividendPaymentsList/DividendPaymentsList";
 
 interface Props {}
 
@@ -101,6 +102,9 @@ const BrokerAccountPage: React.FC<Props> = () => {
             </Tabs.List>
             <Tabs.Content value="transactions">
                 <SecurityTransactionsList onDataReloaded={onDataReloaded} brokerAccountId={brokerAccountId}/>
+            </Tabs.Content>
+            <Tabs.Content value="dividends">
+                <DividendPaymentsList onDataReloaded={onDataReloaded} brokerAccountId={brokerAccountId}/>
             </Tabs.Content>
         </Tabs.Root>
        

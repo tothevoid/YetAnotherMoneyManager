@@ -17,5 +17,7 @@ namespace MoneyManager.Infrastructure.Entities.Brokers
         public int SecuritiesQuantity { get; set; }
 
         public decimal Tax { get; set; }
+
+        public DateOnly ReceivedAt { get; set; }
     }
 }

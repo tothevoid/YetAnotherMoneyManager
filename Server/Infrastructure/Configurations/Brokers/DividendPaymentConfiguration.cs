@@ -17,7 +17,7 @@ namespace MoneyManager.Infrastructure.Configurations.Brokers
             dividendPaymentConfiguration
                 .HasOne(dividendPayment => dividendPayment.Dividend)
                 .WithMany(dividend => dividend.DividendPayments)
-                .HasForeignKey(dividendPayment => dividendPayment.BrokerAccountId)
+                .HasForeignKey(dividendPayment => dividendPayment.DividendId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

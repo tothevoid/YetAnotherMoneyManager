@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { BrokerAccountEntity } from "../../models/brokers/BrokerAccountEntity";
 import { getBrokerAccountById } from "../../api/brokers/brokerAccountApi";
-import { Span, Stack, Text } from "@chakra-ui/react";
+import { Span, Stack, Tabs, Text } from "@chakra-ui/react";
 import { formatMoneyByCurrencyCulture } from "../../shared/utilities/formatters/moneyFormatter";
 import { calculateDiff } from "../../shared/utilities/numericDiffsUtilities";
 import { pullBrokerAccountQuotations } from "../../api/brokers/brokerAccountSecurityApi";
@@ -11,6 +11,8 @@ import BrokerAccountSecuritiesList, { BrokerAccountSecuritiesListRef } from "./c
 import { useSignalR } from "../../shared/hooks/SignalRHook";
 import SecurityTransactionsList from "./components/SecurityTransactionsList/SecurityTransactionsList";
 import RefreshButton from "../../shared/components/RefreshButton/RefreshButton";
+import { GrTransaction } from "react-icons/gr";
+import { PiCoinsLight } from "react-icons/pi";
 
 interface Props {}
 
@@ -86,7 +88,22 @@ const BrokerAccountPage: React.FC<Props> = () => {
             <RefreshButton transparent isRefreshing={state.isReloading} onClick={pullQuotations}/>
         </Stack>
         <BrokerAccountSecuritiesList ref={securitiesRef} brokerAccount={state.brokerAccount}/>
-        <SecurityTransactionsList onDataReloaded={onDataReloaded} brokerAccountId={brokerAccountId}/>
+        <Tabs.Root variant="enclosed" defaultValue="transactions">
+            <Tabs.List background={"background_primary"}>
+                <Tabs.Trigger color="text_primary" value="transactions">
+                    <GrTransaction />
+                    Transactions
+                </Tabs.Trigger>
+                <Tabs.Trigger color="text_primary" value="dividends">
+                    <PiCoinsLight />
+                    Dividends
+                </Tabs.Trigger>
+            </Tabs.List>
+            <Tabs.Content value="transactions">
+                <SecurityTransactionsList onDataReloaded={onDataReloaded} brokerAccountId={brokerAccountId}/>
+            </Tabs.Content>
+        </Tabs.Root>
+       
     </Fragment>
 }
 

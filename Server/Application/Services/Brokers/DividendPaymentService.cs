@@ -58,8 +58,8 @@ namespace MoneyManager.Application.Services.Brokers
             var dividendPayment = _mapper.Map<DividendPayment>(dividendPaymentDto);
 
             var existingDividend = await _dividendPaymentRepo.GetById(dividendPaymentDto.Id, GetFullHierarchyColumns);
-            var existingDividendAmount = CalculateDividendPaymentAmount(dividendPayment.Dividend, dividendPayment.SecuritiesQuantity,
-                dividendPayment.Tax);
+            var existingDividendAmount = CalculateDividendPaymentAmount(existingDividend.Dividend, existingDividend.SecuritiesQuantity,
+                existingDividend.Tax);
 
             var actualDividend = dividendPaymentDto.DividendId != existingDividend.DividendId ? 
                 await _dividendRepo.GetById(dividendPaymentDto.DividendId) : 

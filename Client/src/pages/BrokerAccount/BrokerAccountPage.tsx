@@ -40,7 +40,7 @@ const BrokerAccountPage: React.FC<Props> = () => {
 
     useSignalR(onQuotesRecalculated);
 
-    const initData = async () => {
+    const fetchBrokerAccount = async () => {
         const brokerAccount = await getBrokerAccountById(brokerAccountId);
         if (!brokerAccount) {
             return;
@@ -52,11 +52,11 @@ const BrokerAccountPage: React.FC<Props> = () => {
     }
 
     useEffect(() => {
-        initData();
+        fetchBrokerAccount();
     }, []);
 
     const onDataReloaded = async () => {
-        await initData();
+        await fetchBrokerAccount();
         await securitiesRef.current?.reloadData();
     }
 
@@ -104,7 +104,7 @@ const BrokerAccountPage: React.FC<Props> = () => {
                 <SecurityTransactionsList onDataReloaded={onDataReloaded} brokerAccountId={brokerAccountId}/>
             </Tabs.Content>
             <Tabs.Content value="dividends">
-                <DividendPaymentsList onDataReloaded={onDataReloaded} brokerAccountId={brokerAccountId}/>
+                <DividendPaymentsList onDividendsChanged={fetchBrokerAccount} brokerAccountId={brokerAccountId}/>
             </Tabs.Content>
         </Tabs.Root>
        

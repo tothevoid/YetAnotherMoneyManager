@@ -29,7 +29,7 @@ const DividendPaymentModal: React.FC<ModalProps> = (props: ModalProps) => {
 	const [availableDividends, setAvailableDividends] = useState<DividendEntity[]>([]);
 	const [dividendsBySecurity, setDividendsBySecurity] = useState<DividendEntity[]>([]);
 
-	const [selectedSecurity, setSelectedSecurity] = useState<SecurityEntity | null>(null);
+	const [selectedSecurity, setSelectedSecurity] = useState<SecurityEntity | null>(props.dividendPayment?.dividend?.security);
 	const [payment, setPayment] = useState<number>(0);
 	
 	useEffect(() => {
@@ -123,10 +123,12 @@ const DividendPaymentModal: React.FC<ModalProps> = (props: ModalProps) => {
 			<DateSelect name="receivedAt" control={control}/>
 			<Field.ErrorText>{errors.receivedAt?.message}</Field.ErrorText>
 		</Field.Root>
-		<Field.Root hidden={!payment} mt={4}>
-			<Field.Label>{t("dividend_payment_form_payment")}</Field.Label>
-			<Input disabled value={formatMoneyByCurrencyCulture(payment, selectedSecurity?.currency.name)}/>
-		</Field.Root>
+		{
+			payment > 0 && <Field.Root mt={4}>
+				<Field.Label>{t("dividend_payment_form_payment")}</Field.Label>
+				<Input disabled value={selectedSecurity ? formatMoneyByCurrencyCulture(payment, selectedSecurity?.currency.name): ""}/>
+			</Field.Root>
+		}
 	</BaseFormModal>
 }
 

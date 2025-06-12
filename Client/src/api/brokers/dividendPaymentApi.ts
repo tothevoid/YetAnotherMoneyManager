@@ -19,13 +19,12 @@ export const getDividendPaymentsByBrokerAccount = async (brokerAccountId: string
         [] as ClientDividendPaymentEntity[];
 };
 
-export const createDividendPayment = async (modifiedDividendPayment: ClientDividendPaymentEntity): Promise<ClientDividendPaymentEntity | void> => {
-    return await createEntity<ServerDividendPaymentEntity>(basicUrl, prepareServerDividendPayment(modifiedDividendPayment))
-        .then(prepareClientDividendPayment);
+export const createDividendPayment = async (modifiedDividendPayment: ClientDividendPaymentEntity): Promise<void> => {
+    await createEntity<ServerDividendPaymentEntity>(basicUrl, prepareServerDividendPayment(modifiedDividendPayment))
 }
 
-export const updateDividendPayment = async (modifiedDividendPayment: ClientDividendPaymentEntity): Promise<boolean> => {
-    return await updateEntity<ServerDividendPaymentEntity>(basicUrl, 
+export const updateDividendPayment = async (modifiedDividendPayment: ClientDividendPaymentEntity): Promise<void>=> {
+    await updateEntity<ServerDividendPaymentEntity>(basicUrl, 
         prepareServerDividendPayment(modifiedDividendPayment));
 }
 

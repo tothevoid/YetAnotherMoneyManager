@@ -11,8 +11,7 @@ import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 type Props = {
 	dividendPayment: ClientDividendPaymentEntity,
 	onDeleteCallback: (dividendPayment: ClientDividendPaymentEntity) => void,
-	onEditCallback: (dividendPayment: ClientDividendPaymentEntity) => void,
-	onReloadBrokerAccounts: () => void
+	onEditCallback: (dividendPayment: ClientDividendPaymentEntity) => void
 }
 
 const DividendPayment = (props: Props) => {

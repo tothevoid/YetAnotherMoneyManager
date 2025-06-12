@@ -80,6 +80,8 @@ const BrokerAccountPage: React.FC<Props> = () => {
         return <Fragment/>
     }
 
+    //TODO: tabs style is duplicated
+
     return <Fragment>
         <Stack alignItems={"end"} gapX={2} direction={"row"} color="text_primary">
             <Text fontSize="3xl" fontWeight={900}> {state.brokerAccount?.name}: </Text>
@@ -91,13 +93,13 @@ const BrokerAccountPage: React.FC<Props> = () => {
         <BrokerAccountSecuritiesList ref={securitiesRef} brokerAccount={state.brokerAccount}/>
         <Tabs.Root variant="enclosed" defaultValue="transactions">
             <Tabs.List background={"background_primary"}>
-                <Tabs.Trigger color="text_primary" value="transactions">
+                <Tabs.Trigger _selected={{bg: "purple.600"}} color="text_primary" value="transactions">
                     <GrTransaction />
-                    Transactions
+                    {t("broker_account_page_transactions_tab")}
                 </Tabs.Trigger>
-                <Tabs.Trigger color="text_primary" value="dividends">
+                <Tabs.Trigger _selected={{bg: "purple.600"}} color="text_primary" value="dividends">
                     <PiCoinsLight />
-                    Dividends
+                     {t("broker_account_page_dividends_tab")}
                 </Tabs.Trigger>
             </Tabs.List>
             <Tabs.Content value="transactions">
@@ -107,9 +109,7 @@ const BrokerAccountPage: React.FC<Props> = () => {
                 <DividendPaymentsList onDividendsChanged={fetchBrokerAccount} brokerAccountId={brokerAccountId}/>
             </Tabs.Content>
         </Tabs.Root>
-       
     </Fragment>
 }
-
 
 export default BrokerAccountPage;

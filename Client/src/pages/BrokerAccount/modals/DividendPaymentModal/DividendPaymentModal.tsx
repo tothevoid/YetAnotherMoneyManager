@@ -32,24 +32,25 @@ const DividendPaymentModal: React.FC<ModalProps> = (props: ModalProps) => {
 	const [selectedSecurity, setSelectedSecurity] = useState<SecurityEntity | null>(props.dividendPayment?.dividend?.security);
 	const [payment, setPayment] = useState<number>(0);
 	
+	const fetchAvailableDividends = async () => {
+		const dividends = await getAvailableDividends(props.dividendPayment?.brokerAccount?.id);
+		setAvailableDividends(dividends);
+
+		const securities = new Map<string, SecurityEntity>();
+		dividends.forEach((dividend) => {
+			const securityId = dividend.security.id;
+			if (securities.has(securityId)) {
+				return;
+			}
+
+			securities.set(securityId, dividend.security);
+		});
+		
+		setAvailableSecurities([...securities.values()])
+	}
+
 	useEffect(() => {
-		const initData = async () => {
-			const dividends = await getAvailableDividends(props.dividendPayment?.brokerAccount?.id);
-			setAvailableDividends(dividends);
-
-			const securities = new Map<string, SecurityEntity>();
-			dividends.forEach((dividend) => {
-				const securityId = dividend.security.id;
-				if (securities.has(securityId)) {
-					return;
-				}
-
-				securities.set(securityId, dividend.security);
-			});
-			
-			setAvailableSecurities([...securities.values()])
-		}
-		initData();
+		fetchAvailableDividends();
 	}, []);
 
 	useEffect(() => {
@@ -61,7 +62,7 @@ const DividendPaymentModal: React.FC<ModalProps> = (props: ModalProps) => {
 		setDividendsBySecurity(availableDividends.filter((dividend) => dividend.security.id === selectedSecurity.id))
 	}, [selectedSecurity, availableDividends])
 
-	const { register, handleSubmit, watch, control, formState: { errors }} = useForm<DividendPaymentFormInput>({
+	const { register, reset, handleSubmit, watch, control, formState: { errors }} = useForm<DividendPaymentFormInput>({
 		resolver: zodResolver(DividendPaymentValidationSchema),
 		mode: "onBlur",
 		defaultValues: {
@@ -90,9 +91,21 @@ const DividendPaymentModal: React.FC<ModalProps> = (props: ModalProps) => {
 		props.onSaved(dividendPayment as ClientDividendPaymentEntity);
 		props.modalRef?.current?.closeModal();
 	}
+
+	const onModalVisibilityChanged = async (open: boolean) => {
+		if (!open) {
+			return;
+		}
+
+		reset();
+		setSelectedSecurity(null);
+		setPayment(0);
+		await fetchAvailableDividends();
+	}
   
-	return <BaseFormModal ref={props.modalRef} title={t("entity_dividend_payment_form_title")} submitHandler={handleSubmit(onSubmit)}>
-		 <Field.Root mt={4}>
+	return <BaseFormModal ref={props.modalRef} title={t("entity_dividend_payment_form_title")} 
+		submitHandler={handleSubmit(onSubmit)} visibilityChanged={onModalVisibilityChanged}>
+		<Field.Root mt={4}>
 			<Field.Label>{t("dividend_payment_form_security")}</Field.Label>
 			<Select value={selectedSecurity} onChange={setSelectedSecurity} 
 				getOptionLabel={(security: SecurityEntity) => `${security.name} (${security.ticker})`}

@@ -29,6 +29,13 @@ namespace MoneyManager.WebApi.Controllers.Securities
             return _mapper.Map<IEnumerable<DividendModel>>(securities);
         }
 
+        [HttpGet(nameof(GetAvailable))]
+        public async Task<IEnumerable<DividendModel>> GetAvailable(Guid brokerAccountId)
+        {
+            var securities = await _dividendService.GetAvailable(brokerAccountId);
+            return _mapper.Map<IEnumerable<DividendModel>>(securities);
+        }
+
         [HttpPut]
         public async Task<Guid> Add(DividendModel security)
         {

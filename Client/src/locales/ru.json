@@ -185,5 +185,15 @@
 
     "security_page_tabs_history": "История котировок",
     "security_page_tabs_transactions": "Транзакции",
-    "security_page_tabs_dividends": "Дивиденды"
+    "security_page_tabs_dividends": "Дивиденды",
+
+    "entity_dividend_payment_form_title": "Выплата дивидендов",
+    "entity_dividend_payment_broker_account": "Брокерский счёт",
+    "entity_dividend_payment_dividend": "Дивиденд",
+    "entity_dividend_payment_securities_quantity": "Количество ценных бумаг",
+    "entity_dividend_payment_tax": "Налог",
+    "entity_dividend_received_at": "Дата выплаты",
+
+    "dividend_payment_form_security": "Ценная бумага",
+    "dividend_payment_form_payment": "Выплата"
 }

@@ -33,6 +33,17 @@ namespace MoneyManager.Application.Services.Securities
                     include: GetFullHierarchyColumns);
             return _mapper.Map<IEnumerable<DividendDto>>(securities);
         }
+
+        public async Task<IEnumerable<DividendDto>> GetAvailable(Guid brokerAccountId)
+        {
+            var securities = await _dividendRepo
+                .GetAll((dividend) => dividend.DividendPayments.All(payment => 
+                        payment.BrokerAccountId == brokerAccountId && 
+                        payment.BrokerAccount.BrokerAccountSecurities.Any(security => security.Id == dividend.SecurityId)),
+                    include: GetFullHierarchyColumns);
+            return _mapper.Map<IEnumerable<DividendDto>>(securities);
+        }
+
         public async Task Update(DividendDto securityTypeDto)
         {
             var dividend = _mapper.Map<Dividend>(securityTypeDto);

@@ -84,7 +84,7 @@ namespace MoneyManager.Application.Services.Brokers
             var dividendPayment = await _dividendPaymentRepo.GetById(id, GetFullHierarchyColumns);
             var diff = CalculateDividendPaymentAmount(dividendPayment.Dividend, dividendPayment.SecuritiesQuantity, 
                 dividendPayment.Tax);
-            await ActualizeBrokerAccountBalance(dividendPayment.BrokerAccountId, diff);
+            await ActualizeBrokerAccountBalance(dividendPayment.BrokerAccountId, -1 * diff);
 
             await _db.Commit();
         }

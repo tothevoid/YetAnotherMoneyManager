@@ -5,6 +5,8 @@ import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 import { useDividendPayments } from '../../hooks/useDividendPayments';
 import { ClientDividendPaymentEntity } from '../../../../models/brokers/DividendPaymentEntity';
 import DividendPayment from '../DividendPayment/DividendPayment';
+import ShowModalButton from '../../../../shared/components/ShowModalButton/ShowModalButton';
+import DividendPaymentModal from '../../modals/DividendPaymentModal/DividendPaymentModal';
 
 interface Props {
 	brokerAccountId: string,
@@ -23,26 +25,27 @@ const DividendPaymentsList: React.FC<Props> = (props) => {
 
 	const modalRef = useRef<BaseModalRef>(null);
 	
-	// const onAdd = () => {
-	//	 modalRef.current?.openModal()
-	// };
+	const onAdd = () => {
+		 modalRef.current?.openModal()
+	};
 
-	// const securityTransaction: SecurityTransactionEntity = {
-	//	 brokerAccount: {id: props.brokerAccountId}
-	// }
+	const dividendPayment: ClientDividendPaymentEntity = {
+		brokerAccount: {id: props.brokerAccountId}
+	}
 
 	return <Box>
 		<Flex alignItems="center" gapX={5}>
-			{/* <ShowModalButton buttonTitle={t("entity_securities_transaction_page_summary_add")} onClick={onAdd}>
-				<SecurityTransactionModal securityTransaction={securityTransaction} modalRef={modalRef} onSaved={createSecurityTransactionEntity}/>
-			</ShowModalButton> */}
+			<ShowModalButton buttonTitle={t("entity_securities_transaction_page_summary_add")} onClick={onAdd}>
+				<DividendPaymentModal dividendPayment={dividendPayment} modalRef={modalRef} onSaved={createDividendPaymentEntity}/>
+			</ShowModalButton>
 		</Flex>
 		<Box>
 		{
 			dividendPayments.map((dividendPayment: ClientDividendPaymentEntity) => 
 				<DividendPayment key={dividendPayment.id} dividendPayment={dividendPayment} 
 					onEditCallback={updateDividendPaymentEntity} 
-					onDeleteCallback={deleteDividendPaymentEntity}/>)
+					onDeleteCallback={deleteDividendPaymentEntity} 
+					onReloadBrokerAccounts={props.onDataReloaded}/>)
 		}
 		</Box>
 	</Box>

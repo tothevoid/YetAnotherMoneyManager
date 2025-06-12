@@ -26,7 +26,7 @@ const BaseFormModal = forwardRef<BaseModalRef, BaseFormModalProps>((props: BaseF
             <Dialog.Positioner>
                 <Dialog.Content as="form" onSubmit={props.submitHandler}>
                     <Dialog.Header>
-                        <Dialog.Title>{t("entity_security_from_title")}</Dialog.Title>
+                        <Dialog.Title>{props.title}</Dialog.Title>
                     </Dialog.Header>
                     <Dialog.Body pb={6}>
                         {props.children}

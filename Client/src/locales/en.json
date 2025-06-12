@@ -185,5 +185,15 @@
 
     "security_page_tabs_history": "Quote history",
     "security_page_tabs_transactions": "Transactions",
-    "security_page_tabs_dividends": "Dividends"
+    "security_page_tabs_dividends": "Dividends",
+
+    "entity_dividend_payment_form_title": "Dividend payment",
+    "entity_dividend_payment_broker_account": "Broker account",
+    "entity_dividend_payment_dividend": "Dividend",
+    "entity_dividend_payment_securities_quantity": "Securities quantity",
+    "entity_dividend_payment_tax": "Tax",
+    "entity_dividend_received_at": "Received at",
+
+    "dividend_payment_form_security": "Security",
+    "dividend_payment_form_payment": "Payment"
 }

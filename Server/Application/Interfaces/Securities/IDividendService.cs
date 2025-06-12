@@ -7,12 +7,14 @@ namespace MoneyManager.Application.Interfaces.Securities
 {
     public interface IDividendService
     {
-        public Task<IEnumerable<DividendDto>> GetAll(Guid securityId);
+        Task<IEnumerable<DividendDto>> GetAll(Guid securityId);
 
-        public Task Update(DividendDto securityTypeDto);
+        Task<IEnumerable<DividendDto>> GetAvailable(Guid brokerAccountId);
 
-        public Task<Guid> Add(DividendDto securityDto);
+        Task Update(DividendDto securityTypeDto);
 
-        public Task Delete(Guid id);
+        Task<Guid> Add(DividendDto securityDto);
+
+        Task Delete(Guid id);
     }
 }

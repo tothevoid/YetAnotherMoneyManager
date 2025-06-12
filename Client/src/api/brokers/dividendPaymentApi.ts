@@ -3,6 +3,7 @@ import { ClientDividendPaymentEntity, ServerDividendPaymentEntity } from '../../
 import { convertToDateOnly } from '../../shared/utilities/dateUtils';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { createEntity, deleteEntity, updateEntity } from '../basicApi';
+import { prepareClientDividend } from '../securities/dividendApi';
 
 const basicUrl = `${config.api.URL}/DividendPayment`;
 
@@ -33,10 +34,14 @@ export const deleteDividendPayment = async (brokerAccountSecurityId: string): Pr
 }
 
 const prepareClientDividendPayment = (dividendPayment: ServerDividendPaymentEntity): ClientDividendPaymentEntity => {
-    return {
+    const convertedDividendPayment: ClientDividendPaymentEntity = {
         ...dividendPayment,
         receivedAt: new Date(dividendPayment.receivedAt)
-    };
+    }
+
+    convertedDividendPayment.dividend = prepareClientDividend(convertedDividendPayment.dividend);
+
+    return convertedDividendPayment;
 }
 
 const prepareServerDividendPayment = (dividendPayment: ClientDividendPaymentEntity): ServerDividendPaymentEntity => {

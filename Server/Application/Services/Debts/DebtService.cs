@@ -11,6 +11,8 @@ using MoneyManager.Application.Interfaces.Debts;
 using MoneyManager.Infrastructure.Entities.Debts;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Infrastructure.Entities.Securities;
+using Minio.DataModel.Notification;
+using MoneyManager.Infrastructure.Queries;
 
 namespace MoneyManager.Application.Services.Debts
 {
@@ -27,9 +29,19 @@ namespace MoneyManager.Application.Services.Debts
             _debtRepo = uow.CreateRepository<Debt>();
         }
 
-        public async Task<IEnumerable<DebtDto>> GetAll()
+        public async Task<IEnumerable<DebtDto>> GetAll(bool onlyActive)
         {
-            var debts = await _debtRepo.GetAll(include: GetFullHierarchyColumns);
+            var builder = new ComplexQueryBuilder<Debt>();
+
+            if (onlyActive)
+            {
+                builder.AddFilter(debt => debt.Amount > 0);
+            }
+
+            builder.AddJoins(GetFullHierarchyColumns)
+                .AddOrder((debt) => debt.Date, true);
+
+            var debts = await _debtRepo.GetAll(builder.GetQuery());
             return _mapper.Map<IEnumerable<DebtDto>>(debts);
         }
 

@@ -201,6 +201,7 @@
     "broker_account_page_dividends_tab": "Дивиденды",
     "broker_account_page_add_dividend_payment_button": "Добавить выплату",
 
+    "debts_page_only_active": "Только активные",
     "debts_page_add_debt": "Добавить долг",
     "debts_page_add_payment": "Добавить выплату",
     "debt_payment_title": "Выплата \"{{amount}}\" по \"{{debt}}\" на \"{{account}}\"",

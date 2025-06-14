@@ -2,23 +2,32 @@ import { useCallback, useEffect, useState } from "react";
 import { ClientDebtEntity } from "../../../models/debts/DebtEntity";
 import { createDebt, deleteDebt, getDebts, updateDebt } from "../../../api/debts/debtApi";
 
-export const useDebts = () => {
+interface DebtPaymentsQueryParameters {
+	onlyActive: boolean
+}
+
+export const useDebts = (queryParameters: DebtPaymentsQueryParameters) => {
 	const [debts, setDebts] = useState<ClientDebtEntity[]>([]);
 	const [isDebtsLoading, setLoading] = useState(false);
 
+	const [debtQueryParameters, setDebtQueryParameters] = useState<DebtPaymentsQueryParameters>(queryParameters);
 	const [error, setError] = useState<string | null>(null);
 
 	const fetchData = useCallback(async () => {
+		if (!debtQueryParameters) {
+			return;
+		}
+
 		setLoading(true)
 		try {
-			const debts = await getDebts();
+			const debts = await getDebts(debtQueryParameters.onlyActive);
 			setDebts(debts);
 		} catch (err: any) {
 			setError(err.message || 'Ошибка загрузки данных')
 		} finally {
 			setLoading(false)
 		}
-	}, [])
+	}, [debtQueryParameters])
 
 	useEffect(() => {
 		fetchData();
@@ -64,6 +73,8 @@ export const useDebts = () => {
 		error,
 		createDebtEntity,
 		updateDebtEntity,
-		deleteDebtEntity
+		deleteDebtEntity,
+		debtQueryParameters,
+		setDebtQueryParameters
 	}
 }

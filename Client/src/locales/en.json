@@ -201,6 +201,7 @@
     "broker_account_page_dividends_tab": "Dividends",
     "broker_account_page_add_dividend_payment_button": "Add payment",
 
+    "debts_page_only_active": "Only active",
     "debts_page_add_debt": "Add debt",
     "debts_page_add_payment": "Add payment",
     "debt_payment_title": "Paid \"{{amount}}\" of \"{{debt}}\" on \"{{account}}\"",

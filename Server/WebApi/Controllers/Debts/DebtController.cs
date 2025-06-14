@@ -22,10 +22,10 @@ namespace MoneyManager.WebApi.Controllers.Debts
             _debtService = debtService;
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<DebtModel>> GetAll()
+        [HttpGet("GetAll")]
+        public async Task<IEnumerable<DebtModel>> GetAll([FromQuery] bool onlyActive)
         {
-            var debts = await _debtService.GetAll();
+            var debts = await _debtService.GetAll(onlyActive);
             return _mapper.Map<IEnumerable<DebtModel>>(debts);
         }
 

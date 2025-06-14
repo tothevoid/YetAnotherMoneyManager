@@ -214,7 +214,7 @@ namespace MoneyManager.Application.Services.Dashboard
 
         private async Task<DebtStatsDto> GetDebtsData()
         {
-            var debts = await _debtService.GetAll();
+            var debts = await _debtService.GetAll(true);
 
             var debtsDistribution = new List<DistributionDto>();
             decimal debtsSummary = 0;

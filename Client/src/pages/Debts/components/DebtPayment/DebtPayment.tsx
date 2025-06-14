@@ -31,6 +31,11 @@ const DebtPayment = (props: Props) => {
 
     const { t, i18n } = useTranslation();
 
+    const title = t("debt_payment_title", {
+        amount: formatMoneyByCurrencyCulture(amount, debt.currency.name),
+        debt: debt.name,
+        account: targetAccount.name
+    }) 
 
     return <Card.Root borderColor="border_primary" color="text_primary" backgroundColor="background_primary" 
             mt={5} mb={5} boxShadow={"sm"} _hover={{ boxShadow: "md" }}>
@@ -38,7 +43,7 @@ const DebtPayment = (props: Props) => {
                 <Flex justifyContent="space-between" alignItems="center">
                     <Stack direction={"row"}>
                         <Text textAlign={'center'} w={150} rounded={10} padding={1} background={'purple.600'}>{formatDate(date, i18n, false)}</Text>
-                        <Text fontWeight={600}>Выплата {formatMoneyByCurrencyCulture(amount, debt.currency.name)} по "{debt.name}" на "{targetAccount.name}"</Text>
+                        <Text fontWeight={600}>{title}</Text>
                     </Stack>
                     <Flex gap={2} justifyContent="space-between" alignItems="center">
                         <Button background={'background_secondary'} size={'sm'} onClick={onEditClicked}>
@@ -55,7 +60,7 @@ const DebtPayment = (props: Props) => {
                 </Flex>
             </CardBody>	
             <ConfirmModal onConfirmed={() => props.onDeleteCallback(props.debtPayment)}
-                title={t("security_delete_title")}
+                title={t("debt_payment_modal_title")}
                 message={t("modals_delete_message")}
                 confirmActionName={t("modals_delete_button")}
                 ref={confirmModalRef}/>

@@ -45,7 +45,7 @@ const DebtsPage: React.FC<Props> = () => {
 
 	return (
 		<Box paddingBlock={10}>
-			<ShowModalButton buttonTitle={t("security_page_summary_add")} onClick={onAdd}>
+			<ShowModalButton buttonTitle={t("debts_page_add_debt")} onClick={onAdd}>
 				<DebtModal modalRef={modalRef} onSaved={createDebtEntity}/>
 			</ShowModalButton>
 			<SimpleGrid pt={5} pb={5} gap={6} templateColumns='repeat(auto-fill, minmax(300px, 4fr))'>
@@ -57,7 +57,7 @@ const DebtsPage: React.FC<Props> = () => {
 					)
 				}
 			</SimpleGrid>
-			<ShowModalButton buttonTitle={t("security_page_summary_add")} onClick={onAddDebtPayment}>
+			<ShowModalButton buttonTitle={t("debts_page_add_payment")} onClick={onAddDebtPayment}>
 				<DebtPaymentModal modalRef={debtPaymentModalRef} onSaved={createDebtPaymentEntity}/>
 			</ShowModalButton>
 			<Box>

@@ -1,38 +1,38 @@
 ﻿using AutoMapper;
-using MoneyManager.Application.DTO.Currencies;
-using MoneyManager.Infrastructure.Entities.Currencies;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using MoneyManager.Application.DTO.Debts;
-using MoneyManager.Application.DTO.Transactions;
 using MoneyManager.Application.Interfaces.Debts;
 using MoneyManager.Application.Interfaces.Transactions;
-using MoneyManager.Infrastructure.Constants;
+using MoneyManager.Infrastructure.Entities.Accounts;
 using MoneyManager.Infrastructure.Entities.Debts;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace MoneyManager.Application.Services.Debts
 {
     public class DebtPaymentService: IDebtPaymentService
     {
         private readonly IUnitOfWork _db;
+        private readonly IRepository<Debt> _debtRepo;
         private readonly IRepository<DebtPayment> _debtPaymentRepo;
+        private readonly IRepository<Account> _accountRepo;
         private readonly IMapper _mapper;
-        private readonly ITransactionsService _transactionService;
 
         public DebtPaymentService(IUnitOfWork uow, IMapper mapper, ITransactionsService transactionService)
         {
             _db = uow;
             _mapper = mapper;
+            _debtRepo = uow.CreateRepository<Debt>();
             _debtPaymentRepo = uow.CreateRepository<DebtPayment>();
-            _transactionService = transactionService;
+            _accountRepo = uow.CreateRepository<Account>();
         }
 
         public async Task<IEnumerable<DebtPaymentDto>> GetAll()
         {
-            var debtPayments = await _debtPaymentRepo.GetAll();
+            var debtPayments = await _debtPaymentRepo.GetAll(include: GetFullHierarchyColumns);
             return _mapper.Map<IEnumerable<DebtPaymentDto>>(debtPayments);
         }
 
@@ -41,33 +41,44 @@ namespace MoneyManager.Application.Services.Debts
             var debtPayment = _mapper.Map<DebtPayment>(debtPaymentDto);
             debtPayment.Id = Guid.NewGuid();
 
-            var transactionId = await CreateTransaction(debtPaymentDto);
-            debtPayment.TransactionId = transactionId;
             await _debtPaymentRepo.Add(debtPayment);
+
+            await UpdateLinkedEntities(debtPayment.DebtId, debtPayment.TargetAccountId, debtPaymentDto.Amount);
             await _db.Commit();
 
             return debtPayment.Id;
         }
 
-        public async Task Update(DebtPaymentDto debtDto)
+        public async Task Update(DebtPaymentDto updatedPaymentDto)
         {
-            var transactionDto = await _transactionService.GetById(debtDto.TransactionId);
+            var currentDebtPayment = await _debtPaymentRepo.GetById(updatedPaymentDto.DebtId);
+            var updatedDebtPayment = _mapper.Map<DebtPayment>(updatedPaymentDto);
+            _debtPaymentRepo.Update(updatedDebtPayment);
 
-            if (transactionDto != null)
+            var amountChanged = currentDebtPayment.Amount != updatedDebtPayment.Amount;
+
+            // debt changed
+            if (currentDebtPayment.DebtId != updatedDebtPayment.DebtId)
             {
-                transactionDto.AccountId = debtDto.TargetAccountId;
-                transactionDto.Date = debtDto.Date;
-                transactionDto.Amount = debtDto.Amount;
-
-                await _transactionService.Update(transactionDto);
+                await UpdateLinkedDebt(currentDebtPayment.DebtId, currentDebtPayment.Amount);
+                await UpdateLinkedDebt(updatedDebtPayment.DebtId, -1  * updatedDebtPayment.Amount);
             }
-            else
+            else if (amountChanged)
             {
-                await CreateTransaction(debtDto);
+                await UpdateLinkedDebt(updatedDebtPayment.DebtId, currentDebtPayment.Amount - updatedDebtPayment.Amount);
             }
 
-            var debtPayment = _mapper.Map<DebtPayment>(debtDto);
-            _debtPaymentRepo.Update(debtPayment);
+            // account changed
+            if (currentDebtPayment.TargetAccountId != updatedDebtPayment.TargetAccountId)
+            {
+                await UpdateLinkedAccount(currentDebtPayment.TargetAccountId, currentDebtPayment.Amount * -1);
+                await UpdateLinkedAccount(updatedDebtPayment.TargetAccountId, updatedDebtPayment.Amount);
+            }
+            else if (amountChanged)
+            {
+                await UpdateLinkedDebt(updatedDebtPayment.DebtId, updatedDebtPayment.Amount - currentDebtPayment.Amount);
+            }
+
             await _db.Commit();
         }
 
@@ -75,31 +86,48 @@ namespace MoneyManager.Application.Services.Debts
         {
             var debtPayment = await _debtPaymentRepo.GetById(id);
 
-            if (debtPayment != null)
+            if (debtPayment == null)
             {
-                await _transactionService.Delete(debtPayment.TransactionId);
+               return;
             }
 
             await _debtPaymentRepo.Delete(id);
+
+            await UpdateLinkedEntities(debtPayment.DebtId, debtPayment.TargetAccountId, debtPayment.Amount * -1);
+
             await _db.Commit();
         }
 
-        private async Task<Guid> CreateTransaction(DebtPaymentDto debtPaymentDto)
+        private async Task UpdateLinkedEntities(Guid debtId, Guid accountId, decimal diff)
         {
-            var transactionId = Guid.NewGuid();
-            await _transactionService.Add(new TransactionDTO()
-            {
-                Id = transactionId,
-                AccountId = debtPaymentDto.TargetAccountId,
-                Date = debtPaymentDto.Date,
-                Amount = debtPaymentDto.Amount,
-                IsSystem = true,
-                //TODO: add special name and type
-                Name = "Debt",
-                TransactionTypeId = TransactionTypeConstants.System
-            });
+            await UpdateLinkedDebt(debtId, -1 * diff);
+            await UpdateLinkedAccount(accountId, diff);
+        }
 
-            return transactionId;
+        private async Task UpdateLinkedDebt(Guid debtId, decimal diff)
+        {
+            var debt = await _debtRepo.GetById(debtId, disableTracking: false);
+
+            debt.Amount += diff;
+
+            _debtRepo.Update(debt);
+        }
+
+        private async Task UpdateLinkedAccount(Guid accountId, decimal diff)
+        {
+            var account = await _accountRepo.GetById(accountId, disableTracking: false);
+
+            account.Balance += diff;
+
+            _accountRepo.Update(account);
+        }
+
+        private IQueryable<DebtPayment> GetFullHierarchyColumns(IQueryable<DebtPayment> debtPaymentQuery)
+        {
+            return debtPaymentQuery
+                .Include(debtPayment => debtPayment.Debt.Currency)
+                .Include(debtPayment => debtPayment.TargetAccount.AccountType)
+                .Include(debtPayment => debtPayment.TargetAccount.Currency);
         }
     }
 }

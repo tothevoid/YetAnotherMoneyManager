@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { ClientDebtPaymentEntity } from "../../../models/debts/DebtPaymentEntity";
-import { createDebtPayment, getDebtPayments, updateDebtPayment } from "../../../api/debts/debtPaymentApi";
+import { createDebtPayment, deleteDebtPayment, getDebtPayments, updateDebtPayment } from "../../../api/debts/debtPaymentApi";
 
 export const useDebtPayments = () => {
 	const [debtPayments, setDebtPayments] = useState<ClientDebtPaymentEntity[]>([]);
@@ -51,6 +51,12 @@ export const useDebtPayments = () => {
 	}
 
 	const deleteDebtPaymentEntity = async (deletedDebt: ClientDebtPaymentEntity) => {
+		const deleted = await deleteDebtPayment(deletedDebt.id);
+
+		if (!deleted) {
+			return;
+		}
+
 		const updatedDebtsPayments = debtPayments
 			.filter(debtPayment => debtPayment.id !== deletedDebt.id);
 

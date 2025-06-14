@@ -25,7 +25,5 @@ namespace MoneyManager.Infrastructure.Entities.Transactions
         public decimal Cashback { get; set; }
 
         public bool IsSystem { get; set; }
-
-        public ICollection<DebtPayment> DebtPayments { get; set; }
     }
 }

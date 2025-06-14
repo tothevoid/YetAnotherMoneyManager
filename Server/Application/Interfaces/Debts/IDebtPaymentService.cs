@@ -10,7 +10,7 @@ namespace MoneyManager.Application.Interfaces.Debts
     {
         Task<IEnumerable<DebtPaymentDto>> GetAll();
         Task<Guid> Add(DebtPaymentDto debtPayment);
-        Task Update(DebtPaymentDto debtPayment);
+        Task Update(DebtPaymentDto updatedPaymentDto);
         Task Delete(Guid id);
     }
 }

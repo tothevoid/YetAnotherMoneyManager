@@ -60,7 +60,7 @@ const DebtsPage: React.FC<Props> = () => {
 			<ShowModalButton buttonTitle={t("security_page_summary_add")} onClick={onAddDebtPayment}>
 				<DebtPaymentModal modalRef={debtPaymentModalRef} onSaved={createDebtPaymentEntity}/>
 			</ShowModalButton>
-			<SimpleGrid pt={5} pb={5} gap={6} templateColumns='repeat(auto-fill, minmax(300px, 4fr))'>
+			<Box>
 				{
 					debtPayments.map((payment: ClientDebtPaymentEntity) => 
 						<DebtPayment key={payment.id} debtPayment={payment}
@@ -68,7 +68,7 @@ const DebtsPage: React.FC<Props> = () => {
 							onDeleteCallback={deleteDebtPaymentEntity}/>
 					)
 				}
-			</SimpleGrid>
+			</Box>
 		</Box>
 	)
 	

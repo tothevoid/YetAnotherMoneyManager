@@ -19,12 +19,6 @@ namespace MoneyManager.Infrastructure.Configurations.Debts
                 .WithMany(account => account.DebtPayments)
                 .HasForeignKey(debtPayment => debtPayment.TargetAccountId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            debtPaymentConfiguration
-                .HasOne(debtPayment => debtPayment.Transaction)
-                .WithMany(transaction => transaction.DebtPayments)
-                .HasForeignKey(debtPayment => debtPayment.TransactionId)
-                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

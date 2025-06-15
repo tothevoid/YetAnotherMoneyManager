@@ -26,11 +26,13 @@ using MoneyManager.Infrastructure.Interfaces.Messages;
 using MoneyManager.Infrastructure.Messages;
 using Minio;
 using MoneyManager.Application.Integrations.Currency;
+using MoneyManager.Application.Interfaces.Crypto;
 using MoneyManager.Application.Interfaces.Debts;
 using MoneyManager.Application.Services.FileStorage;
 using MoneyManager.Application.Interfaces.FileStorage;
 using MoneyManager.Application.Interfaces.Integrations.Currency;
 using MoneyManager.Application.Interfaces.User;
+using MoneyManager.Application.Services.Crypto;
 using MoneyManager.Application.Services.User;
 using MoneyManager.Application.Services.Dashboard;
 using MoneyManager.Application.Services.Debts;
@@ -94,6 +96,11 @@ builder.Services.AddTransient<IDashboardService, DashboardService>();
 builder.Services.AddTransient<IDebtService, DebtService>();
 builder.Services.AddTransient<IDebtPaymentService, DebtPaymentService>();
 builder.Services.AddTransient<IDividendPaymentService, DividendPaymentService>();
+
+builder.Services.AddTransient<ICryptoAccountService, CryptoAccountService>();
+builder.Services.AddTransient<ICryptoAccountCryptocurrencyService, CryptoAccountCryptocurrencyService>();
+builder.Services.AddTransient<ICryptocurrencyService, CryptocurrencyService>();
+builder.Services.AddTransient<ICryptoProviderService, CryptoProviderService>();
 
 builder.Services.AddScoped<IServerNotifier, ServerNotifier>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();

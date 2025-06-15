@@ -17,8 +17,9 @@ using MoneyManager.WebApi.Models.User;
 using MoneyManager.WebApi.Models.Dashboard;
 using MoneyManager.Application.DTO.Dashboard;
 using MoneyManager.Application.DTO.Debts;
-using MoneyManager.Infrastructure.Entities.Debts;
 using MoneyManager.WebApi.Models.Debts;
+using MoneyManager.Infrastructure.Entities.Crypto;
+using MoneyManager.WebApi.Models.Crypto;
 
 namespace MoneyManager.WebApi.Mappings
 {
@@ -69,6 +70,11 @@ namespace MoneyManager.WebApi.Mappings
 
             CreateMap<DividendPaymentDto, DividendPaymentModel>().ReverseMap();
             CreateMap<SecurityStatsDto, SecurityStatsModel>().ReverseMap();
+
+            CreateMap<CryptoAccountCryptocurrencyDto, CryptoAccountCryptocurrencyModel>().ReverseMap();
+            CreateMap<CryptoAccountDto, CryptoAccountModel>().ReverseMap();
+            CreateMap<CryptocurrencyDto, CryptocurrencyModel>().ReverseMap();
+            CreateMap<CryptoProviderDto, CryptoProviderModel>().ReverseMap();
         }
     }
 }

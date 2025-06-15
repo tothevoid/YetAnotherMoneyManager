@@ -5,7 +5,7 @@
     "header_data": "Данные",
     "header_broker_account": "Брокерские счета",
     "header_securities": "Ценные бумаги",
-    "header_debts": "Долги",
+    "header_debts": "Должники",
     
     "accounts_page_summary_title": "На счетах",
     "accounts_page_summary_add": "Добавить счёт",
@@ -161,7 +161,7 @@
     "dashboard_deposits": "Депозиты",
     "dashboard_deposit_incomes": "Заблокированные доходы депозитов",
     "dashboard_bank_accounts": "Банковские счета",
-    "dashboard_debts": "Долги",
+    "dashboard_debts": "Должники",
 
     "user_profile_settings_title": "Конфигурация приложения",
     "user_profile_settings_currency": "Отображать в валюте",

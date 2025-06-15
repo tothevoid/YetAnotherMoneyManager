@@ -40,6 +40,13 @@ namespace MoneyManager.WebApi.Controllers.Securities
             return _mapper.Map<SecurityModel>(brokerAccount);
         }
 
+        [HttpGet(nameof(GetStats))]
+        public async Task<SecurityStatsModel> GetStats([FromQuery] Guid securityId)
+        {
+            var stats = await _securityService.GetStats(securityId);
+            return _mapper.Map<SecurityStatsModel>(stats);
+        }
+
         [HttpGet("icon")]
         public async Task<IActionResult> GetSecurityIcon(string iconKey)
         {

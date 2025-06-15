@@ -186,6 +186,11 @@
     "security_page_tabs_history": "Quote history",
     "security_page_tabs_transactions": "Transactions",
     "security_page_tabs_dividends": "Dividends",
+    "security_page_stats_securities": "Purchased: {{securities}}",
+    "security_page_stats_transactions_min": "Minimal transactions: {{min}}",
+    "security_page_stats_transactions_max": "Maximal transactions: {{max}}",
+    "security_page_stats_transactions_avg": "Average transactions: {{avg}}",
+    "security_page_stats_dividends_income": "Dividends income: {{income}}",
 
     "entity_dividend_payment_form_title": "Dividend payment",
     "entity_dividend_payment_broker_account": "Broker account",

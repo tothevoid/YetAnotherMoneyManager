@@ -68,6 +68,7 @@ namespace MoneyManager.WebApi.Mappings
             CreateMap<DebtPaymentDto, DebtPaymentModel>().ReverseMap();
 
             CreateMap<DividendPaymentDto, DividendPaymentModel>().ReverseMap();
+            CreateMap<SecurityStatsDto, SecurityStatsModel>().ReverseMap();
         }
     }
 }

@@ -186,6 +186,11 @@
     "security_page_tabs_history": "История котировок",
     "security_page_tabs_transactions": "Транзакции",
     "security_page_tabs_dividends": "Дивиденды",
+    "security_page_stats_securities": "Приобретено: {{securities}}",
+    "security_page_stats_transactions_min": "Минимальная транзакция: {{min}}",
+    "security_page_stats_transactions_max": "Максимальная транзакция: {{max}}",
+    "security_page_stats_transactions_avg": "Среднее по транзакциям: {{avg}}",
+    "security_page_stats_dividends_income": "Доход с дивидендов: {{income}}",
 
     "entity_dividend_payment_form_title": "Выплата дивидендов",
     "entity_dividend_payment_broker_account": "Брокерский счёт",

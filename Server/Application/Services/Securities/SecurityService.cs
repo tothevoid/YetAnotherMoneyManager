@@ -5,12 +5,11 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.FileStorage;
 using MoneyManager.Application.Interfaces.Integrations.Stock;
 using MoneyManager.Application.Interfaces.Securities;
-using MoneyManager.Infrastructure.Entities.Deposits;
+using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Infrastructure.Interfaces.Database;
 
@@ -21,6 +20,10 @@ namespace MoneyManager.Application.Services.Securities
         private readonly IUnitOfWork _db;
 
         private readonly IRepository<Security> _securityRepo;
+        private readonly IRepository<BrokerAccountSecurity> _brokerAccountSecurityRepo;
+        private readonly IRepository<SecurityTransaction> _securityTransactionsRepo;
+        private readonly IRepository<DividendPayment> _dividendPaymentRepo;
+
         private readonly IStockConnector _stockConnector;
         private readonly IMapper _mapper;
         private readonly IFileStorageService _fileStorageService;
@@ -32,6 +35,10 @@ namespace MoneyManager.Application.Services.Securities
             _db = uow;
             _mapper = mapper;
             _securityRepo = uow.CreateRepository<Security>();
+            _securityTransactionsRepo = uow.CreateRepository<SecurityTransaction>();
+            _brokerAccountSecurityRepo = uow.CreateRepository<BrokerAccountSecurity>();
+            _dividendPaymentRepo = uow.CreateRepository<DividendPayment>();
+
             _stockConnector = stockConnector;
             _fileStorageService = fileStorageService;
         }
@@ -40,6 +47,53 @@ namespace MoneyManager.Application.Services.Securities
         {
             var securities = await _securityRepo.GetAll(include: GetFullHierarchyColumns);
             return _mapper.Map<IEnumerable<SecurityDTO>>(securities);
+        }
+
+        public async Task<SecurityStatsDto> GetStats(Guid securityId)
+        {
+            // TODO: compare performance between db calls and linq calls
+            var securityTransactionsPrices = (await _securityTransactionsRepo.GetAll(transaction => transaction.SecurityId == securityId))
+                .Select(transaction => transaction.Price).ToArray();
+
+            if (securityTransactionsPrices.Length == 0)
+            {
+                return new SecurityStatsDto();
+            }
+
+            decimal min = securityTransactionsPrices[0];
+            decimal max = securityTransactionsPrices[0];
+            decimal sum = 0;
+
+            foreach (var transactionPrice in securityTransactionsPrices)
+            {
+                if (transactionPrice < min)
+                {
+                    min = transactionPrice;
+                }
+
+                if (transactionPrice > max)
+                {
+                    max = transactionPrice;
+                }
+
+                sum += transactionPrice;
+            }
+
+            var hasOnBrokerAccounts = await _brokerAccountSecurityRepo.GetSum(brokerAccountSecurity => brokerAccountSecurity.Quantity,
+                brokerAccountSecurity => brokerAccountSecurity.SecurityId == securityId);
+
+            var dividendsIncome = await _dividendPaymentRepo.GetSum(dividendPayment => dividendPayment.SecuritiesQuantity * dividendPayment.Dividend.Amount - dividendPayment.Tax, 
+                dividendPayment => dividendPayment.Dividend.SecurityId == securityId);
+
+            return new SecurityStatsDto
+            {
+                TransactionsMin = min,
+                TransactionsMax = max,
+                HasOnBrokerAccounts = (int) hasOnBrokerAccounts,
+                //TODO: also calculate weighed mean
+                TransactionsAvg = sum / securityTransactionsPrices.Length,
+                DividendsIncome = dividendsIncome
+            };
         }
 
         public async Task<SecurityDTO> GetById(Guid id)

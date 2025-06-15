@@ -6,6 +6,7 @@ import { SecurityHistoryValue } from '../../models/securities/SecurityHistoryVal
 import { convertToDateOnly } from '../../shared/utilities/dateUtils';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { deleteEntity, getAllEntities } from '../basicApi';
+import { SecurityStats } from '../../models/securities/SecurityStats';
 
 const basicUrl = `${config.api.URL}/Security`;
 
@@ -16,6 +17,14 @@ export const getSecurities = async (): Promise<SecurityEntity[]> => {
 
 export const getSecurityById = async (id: string): Promise<SecurityEntity | void> => {
     const brokerAccount: SecurityEntity | void = await fetch(`${basicUrl}/GetById?id=${id}`, { method: "GET"})
+        .then(checkPromiseStatus)
+        .then((response: Response) => response.json())
+        .catch(logPromiseError);
+    return brokerAccount;
+}
+
+export const getSecurityStats = async (securityId: string): Promise<SecurityStats | void> => {
+    const brokerAccount: SecurityStats | void = await fetch(`${basicUrl}/GetStats?securityId=${securityId}`, { method: "GET"})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
         .catch(logPromiseError);

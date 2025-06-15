@@ -79,11 +79,12 @@ namespace MoneyManager.Infrastructure.Database
                 query = query.Where(complexQuery.Filter);
             }
 
-            if (complexQuery.OrderBy != null)
+            while (complexQuery.OrderByExpressions.Count > 0)
             {
-                query = complexQuery.IsDescending
-                    ? query.OrderByDescending(complexQuery.OrderBy)
-                    : query.OrderBy(complexQuery.OrderBy);
+                var orderBy = complexQuery.OrderByExpressions.Dequeue();
+                query = orderBy.IsDescending ? 
+                    query.OrderByDescending(orderBy.Expression): 
+                    query.OrderBy(orderBy.Expression);
             }
 
             if (complexQuery.RecordsOffset > 0)

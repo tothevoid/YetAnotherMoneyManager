@@ -29,8 +29,8 @@ namespace MoneyManager.Infrastructure.Queries
         public ComplexQueryBuilder<TEntity> AddOrder(Expression<Func<TEntity, object>> orderBy,
             bool isDescending = false)
         {
-            _complexQuery.OrderBy = orderBy;
-            _complexQuery.IsDescending = isDescending;
+            _complexQuery.OrderByExpressions
+                .Enqueue(new OrderByConfig<TEntity>() { Expression = orderBy, IsDescending = isDescending });
 
             return this;
         }

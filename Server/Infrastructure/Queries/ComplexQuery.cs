@@ -15,14 +15,19 @@ namespace MoneyManager.Infrastructure.Queries
 
         public Func<IQueryable<TEntity>, IQueryable<TEntity>> Joins { get; set; }
 
-        public Expression<Func<TEntity, object>> OrderBy { get; set; }
-
-        public bool IsDescending { get; set; }
+        public Queue<OrderByConfig<TEntity>> OrderByExpressions { get; set; } = new Queue<OrderByConfig<TEntity>>();
 
         public int RecordsLimit { get; set; } = -1;
 
         public int RecordsOffset { get; set; } = -1;
 
         public bool TrackingDisabled { get; set; }
+    }
+
+    public class OrderByConfig<TEntity>
+    {
+        public bool IsDescending { get; set; }
+
+        public Expression<Func<TEntity, object>> Expression { get; set; }
     }
 }

@@ -1,8 +1,4 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using MoneyManager.Infrastructure.Configurations.Accounts;
 using MoneyManager.Infrastructure.Configurations.Brokers;
 using MoneyManager.Infrastructure.Configurations.Currencies;
@@ -17,7 +13,6 @@ using MoneyManager.Infrastructure.Entities.Currencies;
 using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Infrastructure.Entities.Transactions;
 using MoneyManager.Infrastructure.Entities.User;
-using MoneyManager.Shared.Entities;
 using AccountConfiguration = MoneyManager.Infrastructure.Configurations.Accounts.AccountConfiguration;
 
 namespace MoneyManager.Infrastructure.Database
@@ -55,6 +50,11 @@ namespace MoneyManager.Infrastructure.Database
             modelBuilder.ApplyConfiguration(new DebtConfiguration());
             modelBuilder.ApplyConfiguration(new DebtPaymentConfiguration());
             modelBuilder.ApplyConfiguration(new DividendPaymentConfiguration());
+
+            modelBuilder.ApplyConfiguration(new CryptoAccountConfiguration());
+            modelBuilder.ApplyConfiguration(new CryptoAccountCryptocurrencyConfiguration());
+            modelBuilder.ApplyConfiguration(new CryptocurrencyConfiguration());
+            modelBuilder.ApplyConfiguration(new CryptoProviderConfiguration());
 
             InitializeDefaultData(modelBuilder);
 

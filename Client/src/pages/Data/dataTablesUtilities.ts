@@ -14,6 +14,7 @@ export const getDataTablesConfig = (): DataTable[] => {
         { id: "currencies", href: `/${basicPath}/currencies`, label: "Валюты" },
         { id: "banks", href: `/${basicPath}/banks`, label: "Банки" },
         { id: "broker_account_types", href: `/${basicPath}/broker_account_types`, label: "Типы брокерских счетов" },
-        { id: "brokers", href: `/${basicPath}/brokers`, label: "Брокеры" }
+        { id: "brokers", href: `/${basicPath}/brokers`, label: "Брокеры" },
+        { id: "crypto_providers", href: `/${basicPath}/crypto_providers`, label: "Крипто провайдеры" }
     ]
 }

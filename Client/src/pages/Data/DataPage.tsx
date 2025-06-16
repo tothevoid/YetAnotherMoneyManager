@@ -6,15 +6,17 @@ import CurrenciesTable from "./tables/CurrenciesTable/CurrenciesTable";
 import TransactionTypesTable from "./tables/TransactionTypesTable/TransactionTypesTable";
 import { FC, Fragment } from "react";
 import DataLayout from "./components/DataLayout/DataLayout";
+import CryptoProvidersTable from "./tables/CryptoProvidersTable/CryptoProvidersTable";
 
 const DataPage = () => {
     const tabs = new Map<string, FC>(
         [
-            ["transaction_types",  TransactionTypesTable],
+            ["transaction_types", TransactionTypesTable],
             ["currencies", CurrenciesTable],
             ["banks", BanksTable],
             ["broker_account_types", BrokerAccountTypesTable],
-            ["brokers", BrokersTable]
+            ["brokers", BrokersTable],
+            ["crypto_providers", CryptoProvidersTable]
         ]
     );
 

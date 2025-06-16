@@ -6,6 +6,8 @@
     "header_broker_account": "Broker accounts",
     "header_securities": "Securities",
     "header_debts": "Debtors",
+    "header_cryptocurrencies": "Cryptocurrencies",
+    "header_cryptoaccounts": "Crypto accounts",
 
     "accounts_page_summary_title": "Current balance",
     "accounts_page_summary_add": "Add account",

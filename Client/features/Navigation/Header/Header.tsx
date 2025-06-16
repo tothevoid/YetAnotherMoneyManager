@@ -23,6 +23,8 @@ const Header = () => {
         { path: "broker_accounts", title: t("header_broker_account")},
         { path: "securities", title: t("header_securities")},
         { path: "debts", title: t("header_debts")},
+        { path: "cryptocurrencies", title: t("header_cryptocurrencies")},
+        { path: "cryptoaccounts", title: t("header_cryptoaccounts")},
         { path: "data", title: t("header_data")}
     ]
 
@@ -33,7 +35,7 @@ const Header = () => {
                     <Link href='/'>
                         <Image marginInline={"10px"} width="30px" src="src/assets/icon.svg"></Image>
                     </Link>
-                    <Flex flex="1">
+                      <Flex flex="1">
                         {
                             tabs.map(tab => 
                                 <NavLink to={tab.path} className={({ isActive }) => isActive ? 'active' : ''}>
@@ -43,7 +45,7 @@ const Header = () => {
                         }
                     </Flex>
                 </Flex>
-                <Flex flex="1" justify="flex-end" direction="row">
+                <Flex width="50px" justify="flex-end" direction="row">
                     <Button borderColor="background_secondary" background="button_background_secondary" size={'md'} onClick={onOpenSettingsClick}>
                         <Icon color="card_action_icon_primary">
                             <MdOutlineSettings/>

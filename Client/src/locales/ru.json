@@ -6,6 +6,8 @@
     "header_broker_account": "Брокерские счета",
     "header_securities": "Ценные бумаги",
     "header_debts": "Должники",
+    "header_cryptocurrencies": "Криптовалюты",
+    "header_cryptoaccounts": "Криптосчета",
     
     "accounts_page_summary_title": "На счетах",
     "accounts_page_summary_add": "Добавить счёт",

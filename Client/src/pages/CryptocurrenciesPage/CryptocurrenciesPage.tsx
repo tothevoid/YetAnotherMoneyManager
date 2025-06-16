@@ -1,14 +1,56 @@
-import { Fragment } from "react";
+import { Fragment, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import BrokerAccountsList from "../BrokerAccounts/components/BrokerAccountsList/BrokerAccountsList";
+import { Flex, SimpleGrid } from "@chakra-ui/react";
+import { SecurityEntity } from "../../models/securities/SecurityEntity";
+import ShowModalButton from "../../shared/components/ShowModalButton/ShowModalButton";
+import { BaseModalRef } from "../../shared/utilities/modalUtilities";
+import Security from "../SecuritiesPage/components/Security/Security";
+import { useSecurities } from "../SecuritiesPage/hooks/useSecurities";
+import SecurityModal from "../SecuritiesPage/modals/SecurityModal/SecurityModal";
+import { useCryptocurrencies } from "./hooks/useCryptocurrencies";
+import { CryptocurrencyEntity } from "../../models/crypto/CryptocurrencyEntity";
+import Cryptocurrency from "./components/Cryptocurrency/Cryptocurrency";
+import CryptocurrencyModal from "./modals/CryptocurrencyModal";
 
 interface Props {}
 
 const CryptocurrenciesPage: React.FC<Props> = () => {
-    const { t } = useTranslation();
+    const { t } = useTranslation()
+    
+    const {
+        cryptocurrencies,
+        createCryptocurrencyEntity,
+        updateCryptocurrencyEntity,
+        deleteCryptocurrencyEntity,
+        reloadCryptocurrencies
+    } = useCryptocurrencies();
+
+    const onReloadCryptocurrencies = async () => {
+        await reloadCryptocurrencies();
+    }
+
+    const modalRef = useRef<BaseModalRef>(null);
+    
+    const onAdd = () => {
+        modalRef.current?.openModal()
+    };
 
     return <Fragment>
-        <BrokerAccountsList/>
+        <Flex justifyContent="space-between" alignItems="center" pt={5} pb={5}>
+            <ShowModalButton buttonTitle={t("security_page_summary_add")} onClick={onAdd}>
+                <CryptocurrencyModal modalRef={modalRef} onSaved={createCryptocurrencyEntity}/>
+            </ShowModalButton>
+        </Flex>
+        <SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(300px, 3fr))'>
+            {
+                cryptocurrencies.map((cryptocurrency: CryptocurrencyEntity) => 
+                    <Cryptocurrency key={cryptocurrency.id} cryptocurrency={cryptocurrency} 
+                        onEditCallback={updateCryptocurrencyEntity} 
+                        onDeleteCallback={deleteCryptocurrencyEntity}
+                        onReloadSecurities={onReloadCryptocurrencies}/>)
+            }
+        </SimpleGrid>
     </Fragment>
 }
 

@@ -15,7 +15,7 @@ namespace MoneyManager.WebApi.Controllers.Crypto
     [Produces("application/json")]
     [Route("[controller]")]
     [ApiController]
-    public class CryptoAccountController
+    public class CryptoAccountController: ControllerBase
     {
         private readonly ICryptoAccountService _cryptoAccountService;
         private readonly IMapper _mapper;

@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
-using MoneyManager.Application.DTO.Currencies;
-using MoneyManager.Infrastructure.Entities.Currencies;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.Interfaces.Crypto;
-using MoneyManager.Application.Interfaces.Integrations.Currency;
 using MoneyManager.Infrastructure.Entities.Crypto;
 
 namespace MoneyManager.Application.Services.Crypto
@@ -26,7 +25,7 @@ namespace MoneyManager.Application.Services.Crypto
 
         public async Task<IEnumerable<CryptoAccountCryptocurrencyDto>> GetAll()
         {
-            var cryptoAccountCryptocurrencies = await _cryptoAccountCryptocurrencyRepo.GetAll();
+            var cryptoAccountCryptocurrencies = await _cryptoAccountCryptocurrencyRepo.GetAll(include: GetFullHierarchyColumns);
             return _mapper.Map<IEnumerable<CryptoAccountCryptocurrencyDto>>(cryptoAccountCryptocurrencies);
         }
 
@@ -50,6 +49,14 @@ namespace MoneyManager.Application.Services.Crypto
         {
             await _cryptoAccountCryptocurrencyRepo.Delete(id);
             await _db.Commit();
+        }
+
+        private IQueryable<CryptoAccountCryptocurrency> GetFullHierarchyColumns(
+            IQueryable<CryptoAccountCryptocurrency> cryptoAccountCryptocurrencyQuery)
+        {
+            return cryptoAccountCryptocurrencyQuery
+                .Include(cryptoAccountCryptocurrency => cryptoAccountCryptocurrency.CryptoAccount.CryptoProvider)
+                .Include(cryptoAccountCryptocurrency => cryptoAccountCryptocurrency.Cryptocurrency);
         }
     }
 }

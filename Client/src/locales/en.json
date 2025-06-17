@@ -212,5 +212,11 @@
     "debts_page_add_debt": "Add debt",
     "debts_page_add_payment": "Add payment",
     "debt_payment_title": "Paid \"{{amount}}\" of \"{{debt}}\" on \"{{account}}\"",
-    "debt_payment_modal_title": "Debt payment"
+    "debt_payment_modal_title": "Debt payment",
+
+    "entity_crypto_account_form_title": "Crypto account",
+    "entity_crypto_account_crypto_name": "Name",
+    "entity_crypto_account_crypto_provider": "Provider",
+
+    "crypto_accounts_page_add": "Add account"
 }

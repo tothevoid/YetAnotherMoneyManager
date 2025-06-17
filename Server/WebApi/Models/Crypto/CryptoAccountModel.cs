@@ -11,7 +11,5 @@ namespace MoneyManager.WebApi.Models.Crypto
         public Guid CryptoProviderId { get; set; }
 
         public CryptoProviderModel CryptoProvider { get; set; }
-
-        public ICollection<CryptoAccountCryptocurrencyModel> CryptoAccountCryptocurrencies { get; set; }
     }
 }

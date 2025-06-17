@@ -21,7 +21,5 @@ namespace MoneyManager.WebApi.Models.Crypto
 
         [JsonPropertyName("iconKey")]
         public string IconKey { get; set; }
-
-        public ICollection<CryptoAccountCryptocurrencyModel> CryptoAccountCryptocurrencies { get; set; }
     }
 }

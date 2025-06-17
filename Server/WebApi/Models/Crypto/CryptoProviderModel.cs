@@ -11,7 +11,5 @@ namespace MoneyManager.WebApi.Models.Crypto
     public class CryptoProviderModel: BaseEntity
     {
         public string Name { get; set; }
-
-        public ICollection<CryptoAccountModel> CryptoAccounts { get; set; }
     }
 }

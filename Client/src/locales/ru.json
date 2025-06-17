@@ -212,5 +212,11 @@
     "debts_page_add_debt": "Добавить долг",
     "debts_page_add_payment": "Добавить выплату",
     "debt_payment_title": "Выплата \"{{amount}}\" по \"{{debt}}\" на \"{{account}}\"",
-    "debt_payment_modal_title": "Выплата долга"
+    "debt_payment_modal_title": "Выплата долга",
+
+    "entity_crypto_account_form_title": "Криптовалютный счёт",
+    "entity_crypto_account_crypto_name": "Название",
+    "entity_crypto_account_crypto_provider": "Провайдер",
+
+    "crypto_accounts_page_add": "Добавить счёт"
 }

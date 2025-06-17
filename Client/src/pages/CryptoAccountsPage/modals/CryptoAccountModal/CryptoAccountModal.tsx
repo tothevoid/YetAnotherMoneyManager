@@ -1,0 +1,78 @@
+import { Field, Input} from "@chakra-ui/react"
+import React, { RefObject, useEffect, useRef, useState } from "react"
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
+import CollectionSelect from "../../../../shared/components/CollectionSelect/CollectionSelect";
+import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
+import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
+import { getCryptoProviders } from "../../../../api/crypto/cryptoProviderApi";
+import { CryptoProviderEntity } from "../../../../models/crypto/CryptoProviderEntity";
+import { CryptoAccountFormInput, CryptoAccountValidationSchema } from "./CryptoAccountValidationSchema";
+import { ClientCryptoAccountEntity } from "../../../../models/crypto/CryptoAccountEntity";
+
+interface ModalProps {
+    modalRef: RefObject<BaseModalRef | null>,
+    cryptoAccount?: ClientCryptoAccountEntity | null,
+    onSaved: (security: ClientCryptoAccountEntity) => void;
+};
+
+interface State {
+    cryptoProviders: CryptoProviderEntity[]
+}
+
+const CryptoAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
+    const inputRef = useRef<HTMLInputElement | null>(null);
+
+    const [state, setState] = useState<State>({cryptoProviders: []})
+
+    useEffect(() => {
+        const initData = async () => {
+            await requestData();
+        }
+        initData();
+    }, []);
+
+    const requestData = async () => {
+        const cryptoProviders = await getCryptoProviders();
+
+        setState((currentState) => {
+            return {...currentState, cryptoProviders }
+        })
+    };
+
+    const { register, handleSubmit, control, formState: { errors }} = useForm<CryptoAccountFormInput>({
+        resolver: zodResolver(CryptoAccountValidationSchema),
+        mode: "onBlur",
+        defaultValues: {
+            id: props.cryptoAccount?.id ?? crypto.randomUUID(),
+            name: props.cryptoAccount?.name ?? "",
+            cryptoProvider: props.cryptoAccount?.cryptoProvider
+        }
+    });
+
+    const onSubmit = (cryptoAccount: CryptoAccountFormInput) => {
+        props.onSaved(cryptoAccount as ClientCryptoAccountEntity);
+        props.modalRef?.current?.closeModal();
+    }
+
+    const {t} = useTranslation();
+
+    return <BaseFormModal ref={props.modalRef} title={t("entity_crypto_account_form_title")} submitHandler={handleSubmit(onSubmit)}>
+        <Field.Root invalid={!!errors.name}>
+            <Field.Label>{t("entity_crypto_account_crypto_name")}</Field.Label>
+            <Input {...register("name")} autoComplete="off" placeholder='Debit card' />
+            <Field.ErrorText>{errors.name?.message}</Field.ErrorText>
+        </Field.Root>
+        <Field.Root mt={4} invalid={!!errors.cryptoProvider}>
+            <Field.Label>{t("entity_crypto_account_crypto_provider")}</Field.Label>
+            <CollectionSelect name="cryptoProvider" control={control} placeholder="Select currency"
+                collection={state.cryptoProviders} 
+                labelSelector={(cryptoProvider => cryptoProvider.name)} 
+                valueSelector={(cryptoProvider => cryptoProvider.id)}/>
+            <Field.ErrorText>{errors.cryptoProvider?.message}</Field.ErrorText>
+        </Field.Root>
+    </BaseFormModal>
+}
+
+export default CryptoAccountModal;

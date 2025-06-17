@@ -1,6 +1,6 @@
 import config from '../../config' 
 import { ClientCryptoAccountEntity, ServerCryptoAccountEntity } from '../../models/crypto/CryptoAccountEntity';
-import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
+import { createEntity, deleteEntity, getAllEntities, getEntityById, updateEntity } from '../basicApi';
 
 const basicUrl = `${config.api.URL}/CryptoAccount`;
 
@@ -8,6 +8,11 @@ export const getCryptoAccounts = async (): Promise<ClientCryptoAccountEntity[]> 
    return await getAllEntities<ServerCryptoAccountEntity>(basicUrl)
         .then(cryptoAccounts => cryptoAccounts.map(prepareClientCryptoAccount));
 };
+
+export const getCryptoAccountById = async (id: string) => {
+    return await getEntityById<ServerCryptoAccountEntity>(basicUrl, id)
+        .then(prepareClientCryptoAccount);
+}
 
 export const createCryptoAccount = async (addedCryptoAccount: ClientCryptoAccountEntity): Promise<ClientCryptoAccountEntity | void> => {
     return await createEntity<ServerCryptoAccountEntity>(basicUrl, prepareServerCryptoAccount(addedCryptoAccount))

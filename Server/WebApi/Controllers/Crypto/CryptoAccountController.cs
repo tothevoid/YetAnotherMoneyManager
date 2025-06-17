@@ -9,6 +9,7 @@ using System;
 using MoneyManager.Application.Interfaces.Crypto;
 using MoneyManager.WebApi.Models.Crypto;
 using MoneyManager.Infrastructure.Entities.Crypto;
+using MoneyManager.WebApi.Models.Securities;
 
 namespace MoneyManager.WebApi.Controllers.Crypto
 {
@@ -23,6 +24,13 @@ namespace MoneyManager.WebApi.Controllers.Crypto
         {
             _mapper = mapper;
             _cryptoAccountService = cryptoAccountService;
+        }
+
+        [HttpGet(nameof(GetById))]
+        public async Task<CryptoAccountModel> GetById([FromQuery] Guid id)
+        {
+            var brokerAccount = await _cryptoAccountService.GetById(id);
+            return _mapper.Map<CryptoAccountModel>(brokerAccount);
         }
 
         [HttpGet]

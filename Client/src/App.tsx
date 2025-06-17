@@ -14,6 +14,7 @@ import DashboardPage from './pages/Dashboard/DashboardPage';
 import DebtsPage from './pages/Debts/DebtsPage';
 import CryptocurrenciesPage from './pages/CryptocurrenciesPage/CryptocurrenciesPage';
 import CryptoAccountsPage from './pages/CryptoAccountsPage/CryptoAccountsPage';
+import CryptoAccountPage from './pages/CryptoAccountPage/CryptoAccountPage';
 
 const App = () => {
   return (
@@ -33,6 +34,7 @@ const App = () => {
                 <Route path="/debts" element={<DebtsPage />} />
                 <Route path="/cryptocurrencies" element={<CryptocurrenciesPage />} />
                 <Route path="/crypto_accounts" element={<CryptoAccountsPage />} />
+                <Route path="/crypto_account/:cryptoAccountId" element={<CryptoAccountPage />} />
                 <Route path="/data" element={<DataPage />} />
                 <Route path="/data/:tab" element={<DataPage />} />
                 <Route path="/broker_account/:brokerAccountId" element={<BrokerAccountPage />} />

@@ -58,6 +58,14 @@ export const deleteEntity = async (basicUrl: string, recordId: string): Promise<
     return result?.ok ?? false;
 }
 
+export const getEntityById = async <T> (basicUrl: string, id: string): Promise<T | void> => {
+    const entity: T | void = await fetch(`${basicUrl}/GetById?id=${id}`, { method: "GET"})
+        .then(checkPromiseStatus)
+        .then((response: Response) => response.json())
+        .catch(logPromiseError);
+    return entity;
+}
+
 export const convertRecordToJson = <T>(record: T): string => {
     return JSON.stringify(record);
 }

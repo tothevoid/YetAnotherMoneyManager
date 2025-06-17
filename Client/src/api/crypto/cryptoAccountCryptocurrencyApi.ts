@@ -1,5 +1,6 @@
 import config from '../../config' 
 import { ClientCryptoAccountCryptocurrencyEntity, ServerCryptoAccountCryptocurrencyEntity } from '../../models/crypto/CryptoAccountCryptocurrencyEntity';
+import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
 
 const basicUrl = `${config.api.URL}/CryptoAccountCryptocurrency`;
@@ -7,6 +8,17 @@ const basicUrl = `${config.api.URL}/CryptoAccountCryptocurrency`;
 export const getCryptoAccountCryptocurrencies = async (): Promise<ClientCryptoAccountCryptocurrencyEntity[]> => {
    return await getAllEntities<ServerCryptoAccountCryptocurrencyEntity>(basicUrl)
         .then(cryptoAccounts => cryptoAccounts.map(prepareClientCryptoAccountCryptocurrency));
+};
+
+export const getCryptocurrenciesByCryptoAccount = async (cryptoAccountId: string): Promise<ClientCryptoAccountCryptocurrencyEntity[]> => {
+    const entities = await fetch(`${basicUrl}/GetByCryptoAccount?cryptoAccountId=${cryptoAccountId}`, {method: "GET"})
+        .then(checkPromiseStatus)
+        .then((response: Response) => response.json())
+        .catch(logPromiseError);
+     
+    return entities ?
+        entities: 
+        [] as ClientCryptoAccountCryptocurrencyEntity[];
 };
 
 export const createCryptoAccountCryptocurrency = async (addedCryptoAccountCryptocurrency: ClientCryptoAccountCryptocurrencyEntity): Promise<ClientCryptoAccountCryptocurrencyEntity | void> => {

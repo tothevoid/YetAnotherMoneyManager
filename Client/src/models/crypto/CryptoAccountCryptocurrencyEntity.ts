@@ -3,7 +3,6 @@ import { CryptocurrencyEntity } from "./CryptocurrencyEntity";
 
 interface CommonCryptoAccountCryptocurrencyEntity {
     id: string,
-    name: string,
     quantity: number
 }
 

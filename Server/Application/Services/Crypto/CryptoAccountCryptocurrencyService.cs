@@ -23,6 +23,15 @@ namespace MoneyManager.Application.Services.Crypto
             _cryptoAccountCryptocurrencyRepo = uow.CreateRepository<CryptoAccountCryptocurrency>();
         }
 
+        public async Task<IEnumerable<CryptoAccountCryptocurrencyDto>> GetByCryptoAccount(Guid cryptoAccountId)
+        {
+            var cryptoAccountCryptocurrencies = await _cryptoAccountCryptocurrencyRepo.GetAll(
+                (cryptoAccountCryptocurrency) => cryptoAccountCryptocurrency.CryptoAccountId == cryptoAccountId,
+                include: GetFullHierarchyColumns);
+            
+            return _mapper.Map<IEnumerable<CryptoAccountCryptocurrencyDto>>(cryptoAccountCryptocurrencies);
+        }
+
         public async Task<IEnumerable<CryptoAccountCryptocurrencyDto>> GetAll()
         {
             var cryptoAccountCryptocurrencies = await _cryptoAccountCryptocurrencyRepo.GetAll(include: GetFullHierarchyColumns);

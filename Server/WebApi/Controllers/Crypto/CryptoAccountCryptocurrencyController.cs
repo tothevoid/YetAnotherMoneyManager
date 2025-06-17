@@ -26,6 +26,13 @@ namespace MoneyManager.WebApi.Controllers.Crypto
             _cryptoAccountCryptocurrencyService = cryptoAccountCryptocurrencyService;
         }
 
+        [HttpGet(nameof(GetByCryptoAccount))]
+        public async Task<IEnumerable<CryptoAccountCryptocurrencyModel>> GetByCryptoAccount(Guid cryptoAccountId)
+        {
+            var cryptoAccountCryptocurrencies = await _cryptoAccountCryptocurrencyService.GetByCryptoAccount(cryptoAccountId);
+            return _mapper.Map<IEnumerable<CryptoAccountCryptocurrencyModel>>(cryptoAccountCryptocurrencies);
+        }
+
         [HttpGet]
         public async Task<IEnumerable<CryptoAccountCryptocurrencyModel>> GetAll()
         {

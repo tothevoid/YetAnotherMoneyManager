@@ -8,6 +8,8 @@ namespace MoneyManager.Application.Interfaces.Crypto
 {
     public interface ICryptoAccountCryptocurrencyService
     {
+        
+        Task<IEnumerable<CryptoAccountCryptocurrencyDto>> GetByCryptoAccount(Guid cryptoAccountId);
         Task<IEnumerable<CryptoAccountCryptocurrencyDto>> GetAll();
         Task<Guid> Add(CryptoAccountCryptocurrencyDto cryptoAccountCryptocurrency);
         Task Update(CryptoAccountCryptocurrencyDto cryptoAccountCryptocurrency);

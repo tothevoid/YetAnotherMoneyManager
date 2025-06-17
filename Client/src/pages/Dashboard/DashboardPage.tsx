@@ -51,7 +51,8 @@ const DashboardPage: React.FC<Props> = () => {
 		{ name: t("dashboard_deposits"), convertedAmount: dashboard.depositStats.totalStartedAmount, currency, amount: dashboard.depositStats.totalStartedAmount},
 		{ name: t("dashboard_deposit_incomes"), convertedAmount: dashboard.depositStats.totalEarned, currency, amount: dashboard.depositStats.totalEarned },
 		{ name: t("dashboard_bank_accounts"), convertedAmount: dashboard.accountStats.totalBankAccount, currency, amount: dashboard.accountStats.totalBankAccount },
-		{ name: t("dashboard_debts"), convertedAmount: dashboard.debtStats.total, currency, amount: dashboard.debtStats.total }
+		{ name: t("dashboard_debts"), convertedAmount: dashboard.debtStats.total, currency, amount: dashboard.debtStats.total },
+		{ name: t("dashboard_crypto_account"), convertedAmount: dashboard.cryptoAccountStats.total, currency, amount: dashboard.cryptoAccountStats.total }
 	]
 
 	const formatDistributionCard = (title: string, total: number, distribution: DistributionModel[]) => {
@@ -75,7 +76,8 @@ const DashboardPage: React.FC<Props> = () => {
 		formatDistributionCard(t("dashboard_deposits"), dashboard.depositStats.totalStartedAmount, dashboard.depositStats.startedAmountDistribution),
 		formatDistributionCard(t("dashboard_deposit_incomes"), dashboard.depositStats.totalEarned, dashboard.depositStats.earningsDistribution),
 		formatDistributionCard(t("dashboard_bank_accounts"), dashboard.accountStats.totalBankAccount, dashboard.accountStats.bankAccountsDistribution),
-		formatDistributionCard(t("dashboard_debts"), dashboard.debtStats.total, dashboard.debtStats.distribution)
+		formatDistributionCard(t("dashboard_debts"), dashboard.debtStats.total, dashboard.debtStats.distribution),
+		formatDistributionCard(t("dashboard_crypto_account"), dashboard.cryptoAccountStats.total, dashboard.cryptoAccountStats.distribution)
 	];
 
 	const transactionsStats = [

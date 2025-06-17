@@ -16,6 +16,8 @@ namespace MoneyManager.WebApi.Models.Dashboard
         public DebtStatsModel DebtStats { get; set; }
 
         public DepositStats DepositStats { get; set; }
+
+        public CryptoAccountStatsModel CryptoAccountStats { get; set; }
     }
 
     public class TransactionStatsModel
@@ -80,5 +82,12 @@ namespace MoneyManager.WebApi.Models.Dashboard
         public decimal Amount { get; set; }
 
         public decimal ConvertedAmount { get; set; }
+    }
+
+    public class CryptoAccountStatsModel
+    {
+        public decimal Total { get; set; }
+
+        public IEnumerable<DistributionModel> Distribution { get; set; }
     }
 }

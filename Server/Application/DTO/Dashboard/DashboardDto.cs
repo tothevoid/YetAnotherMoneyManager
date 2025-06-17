@@ -10,6 +10,7 @@ namespace MoneyManager.Application.DTO.Dashboard
         public AccountStatsDto AccountStats { get; set; } = new AccountStatsDto();
         public DebtStatsDto DebtStats { get; set; } = new DebtStatsDto();
         public DepositStats DepositStats { get; set; } = new DepositStats();
+        public CryptoAccountStatsDto CryptoAccountStats { get; set; } = new CryptoAccountStatsDto();
     }
 
     public class TransactionStatsDto
@@ -75,5 +76,12 @@ namespace MoneyManager.Application.DTO.Dashboard
         public decimal Amount { get; set; }
         
         public decimal ConvertedAmount { get; set; }
+    }
+
+    public class CryptoAccountStatsDto
+    {
+        public decimal Total { get; set; }
+
+        public IEnumerable<DistributionDto> Distribution { get; set; }
     }
 }

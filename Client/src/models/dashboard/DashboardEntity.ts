@@ -3,7 +3,8 @@ export interface Dashboard {
 	brokerAccountStats: BrokerAccountStats,
 	accountStats: AccountStats,
 	debtStats: DebtStats,
-	depositStats: DepositStats
+	depositStats: DepositStats,
+	cryptoAccountStats: CryptoAccountStats,
 	total: number
 }
 
@@ -15,6 +16,11 @@ export interface TransactionStats {
 }
 
 export interface BrokerAccountStats {
+	total: number,
+	distribution: DistributionModel[],
+}
+
+export interface CryptoAccountStats {
 	total: number,
 	distribution: DistributionModel[],
 }

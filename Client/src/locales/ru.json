@@ -164,6 +164,7 @@
     "dashboard_deposit_incomes": "Заблокированные доходы депозитов",
     "dashboard_bank_accounts": "Банковские счета",
     "dashboard_debts": "Должники",
+    "dashboard_crypto_account": "Криптовалютные счета",
 
     "user_profile_settings_title": "Конфигурация приложения",
     "user_profile_settings_currency": "Отображать в валюте",

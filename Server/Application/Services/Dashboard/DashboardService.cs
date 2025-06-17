@@ -13,8 +13,10 @@ using System;
 using System.Linq;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Application.DTO.Transactions;
+using MoneyManager.Application.Interfaces.Crypto;
 using MoneyManager.Application.Interfaces.Debts;
 using MoneyManager.Application.Interfaces.User;
+using MoneyManager.Application.Services.Currencies;
 
 namespace MoneyManager.Application.Services.Dashboard
 {
@@ -28,11 +30,15 @@ namespace MoneyManager.Application.Services.Dashboard
         private readonly IBrokerAccountService _brokerAccountService;
         private readonly IDebtService _debtService;
         private readonly IUserProfileService _userProfile;
+        private readonly ICryptoAccountService _cryptoAccountService;
+        private readonly ICurrencyService _currencyService;
+        private readonly ICryptoAccountCryptocurrencyService _cryptoAccountCryptocurrencyService;
 
         public DashboardService(IUnitOfWork uow, IMapper mapper, IAccountService accountService, 
             IDepositService depositService, ITransactionsService transactionsService,
             IBrokerAccountService brokerAccountService, IDebtService debtService, 
-            IUserProfileService userProfile)
+            IUserProfileService userProfile, ICryptoAccountService cryptoAccountService, 
+            ICurrencyService currencyService, ICryptoAccountCryptocurrencyService cryptoAccountCryptocurrencyService)
         {
             _db = uow;
             _mapper = mapper;
@@ -42,6 +48,9 @@ namespace MoneyManager.Application.Services.Dashboard
             _brokerAccountService = brokerAccountService;
             _debtService = debtService;
             _userProfile = userProfile;
+            _cryptoAccountService = cryptoAccountService;
+            _currencyService = currencyService;
+            _cryptoAccountCryptocurrencyService = cryptoAccountCryptocurrencyService;
         }
 
         public async Task<DashboardDto> GetDashboard()
@@ -50,16 +59,18 @@ namespace MoneyManager.Application.Services.Dashboard
             var brokerAccountStats = await GetBrokerAccountData();
             var debtsStats = await GetDebtsData();
             var depositStats = await GetDepositStats();
+            var cryptoAccountStats = await GetCryptoAccountStats();
 
             return new DashboardDto()
             {
                 //TODO: make it via setters
-                Total = accountStats.Total + brokerAccountStats.Total + debtsStats.Total + depositStats.Total,
+                Total = accountStats.Total + brokerAccountStats.Total + debtsStats.Total + depositStats.Total + cryptoAccountStats.Total,
                 AccountStats = accountStats,
                 BrokerAccountStats = brokerAccountStats,
                 DebtStats = debtsStats,
                 DepositStats = depositStats,
-                TransactionStats = await GetTransactionDate()
+                TransactionStats = await GetTransactionDate(),
+                CryptoAccountStats = cryptoAccountStats
             };
         }
 
@@ -292,6 +303,45 @@ namespace MoneyManager.Application.Services.Dashboard
                 EarningsDistribution = earningsDistribution
             };
 
+        }
+
+        private async Task<CryptoAccountStatsDto> GetCryptoAccountStats()
+        {
+            var cryptoAccounts = await _cryptoAccountService.GetAll();
+
+            // TODO: Rework
+            var currencies = await _currencyService.GetAll();
+            var usdCurrency = currencies.FirstOrDefault(currency => currency.Id == CurrencyConstants.USD);
+
+            var cryptoAccountsValues = new List<DistributionDto>();
+            decimal brokerAccountsSummary = 0;
+
+            foreach (var cryptoAccount in cryptoAccounts)
+            {
+                var cryptocurrencies = await _cryptoAccountCryptocurrencyService
+                    .GetByCryptoAccount(cryptoAccount.Id);
+
+                var amount = cryptocurrencies.Sum(cryptocurrency =>
+                    cryptocurrency.Quantity * cryptocurrency.Cryptocurrency.Price);
+
+                var key = cryptoAccount.Name;
+                var convertedAmmount = amount * usdCurrency.Rate;
+                brokerAccountsSummary += convertedAmmount;
+
+                cryptoAccountsValues.Add(new DistributionDto()
+                {
+                    Name = cryptoAccount.Name,
+                    Currency = usdCurrency.Name,
+                    Amount = amount,
+                    ConvertedAmount = convertedAmmount
+                });
+            }
+
+            return new CryptoAccountStatsDto()
+            {
+                Total = brokerAccountsSummary,
+                Distribution = cryptoAccountsValues
+            };
         }
     }
 }

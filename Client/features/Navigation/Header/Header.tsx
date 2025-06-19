@@ -7,6 +7,8 @@ import UserProfileSettingsModal from '../../UserProfileSettingsModal/UserProfile
 import { NavLink } from 'react-router-dom';
 import { BaseModalRef } from '../../../src/shared/utilities/modalUtilities';
 
+import appIcon from './AppIcon.svg';
+
 const Header = () => {
     const { t } = useTranslation();
     const userProfileSettingsRef = useRef<BaseModalRef>(null);
@@ -33,7 +35,7 @@ const Header = () => {
             <Flex minH={50} alignItems="center" padding={1} direction={'row'} backgroundColor="header_bg" color="text_primary">
                 <Flex flex={{ base: 1 }} justify="center" align={"center"}>
                     <Link href='/'>
-                        <Image marginInline={"10px"} width="30px" src="src/assets/icon.svg"></Image>
+                        <Image marginInline={"10px"} width="30px" src={appIcon}></Image>
                     </Link>
                       <Flex flex="1">
                         {

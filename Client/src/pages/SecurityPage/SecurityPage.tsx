@@ -3,22 +3,19 @@ import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { getSecurityById, getSecurityStats } from "../../api/securities/securityApi";
 import { SecurityEntity } from "../../models/securities/SecurityEntity";
-import { Box, Card, HStack, RadioCard, SimpleGrid, Stack, Text} from "@chakra-ui/react";
+import { Card, SimpleGrid, Stack, Tabs, Text} from "@chakra-ui/react";
 import { formatMoneyByCurrencyCulture } from "../../shared/utilities/formatters/moneyFormatter";
 import DividendList from "./components/DividendsList/DividendList";
 import SecurityHistory from "./components/SecurityHistory/SecurityHistory";
 import SecurityTransactionsChart from "./components/SecurityTransactionsChart/SecurityTransactionsChart";
 import { SecurityStats } from "../../models/securities/SecurityStats";
+import { GrTransaction } from "react-icons/gr";
+import { MdHistory } from "react-icons/md";
+import { PiCoinsLight } from "react-icons/pi";
 
 interface State {
 	security: SecurityEntity,
 	securityStats: SecurityStats
-}
-
-enum DataSource {
-	History="History",
-	Transactions="Transactions",
-	Dividends="Dividends"
 }
 
 const SecurityPage: React.FC = () => {
@@ -27,7 +24,6 @@ const SecurityPage: React.FC = () => {
 	const { securityId } = useParams();
 
 	const [state, setState] = useState<State>({ security: null!, securityStats: null! })
-	const [tab, setTab] = useState(DataSource.History);
 
 	useEffect(() => {
 		initData();
@@ -53,27 +49,8 @@ const SecurityPage: React.FC = () => {
 		return <Fragment/>
 	}
 
-	const tabs = [
-		{ value: DataSource.History, title: t("security_page_tabs_history")},
-		{ value: DataSource.Transactions, title: t("security_page_tabs_transactions") },
-		{ value: DataSource.Dividends, title: t("security_page_tabs_dividends") },
-	]	
-
 	const { ticker, name, type, actualPrice, currency} = state.security;
  	
-	const renderActiveTab = () => {
-		switch (tab) {
-			case DataSource.History:
-				return <SecurityHistory ticker={ticker}/>
-			case DataSource.Transactions:
-				return <SecurityTransactionsChart securityId={securityId}/>
-			case DataSource.Dividends:
-				return <DividendList securityId={securityId}/>
-			default:
-				<Fragment/>
-		}
-	}
-
 	const formatStatsCard = (value: string) => {
 		return <Card.Root backgroundColor="background_primary" borderColor="border_primary" color="text_primary">
 			<Card.Body>
@@ -96,26 +73,32 @@ const SecurityPage: React.FC = () => {
 			{formatStatsCard(t("security_page_stats_transactions_avg", {avg: formatMoneyByCurrencyCulture(state.securityStats.transactionsAvg, currency.name)}))}
 			{formatStatsCard(t("security_page_stats_dividends_income", {income: formatMoneyByCurrencyCulture(state.securityStats.dividendsIncome, currency.name)}))}
 		</SimpleGrid>
-		<RadioCard.Root
-			orientation="horizontal"
-			align="center"
-			justify="center"
-			maxW="xl"
-			defaultValue={DataSource.History}
-			value={tab} onValueChange={(e) => setTab(e.value as DataSource)}>
-			<HStack align="stretch">
-				{tabs.map((item) => (
-					<RadioCard.Item borderWidth={"2px"} borderColor={item.value === tab ? "border_primary": "transparent"} 
-						background={"background_primary"} key={item.value} value={item.value}>
-						<RadioCard.ItemHiddenInput />
-						<RadioCard.ItemControl>
-							<RadioCard.ItemText>{item.title}</RadioCard.ItemText>
-						</RadioCard.ItemControl>
-					</RadioCard.Item>
-				))}
-			</HStack>
-		</RadioCard.Root>
-		{renderActiveTab()}
+
+  		<Tabs.Root variant="enclosed" defaultValue="transactions">
+			<Tabs.List background={"background_primary"}>
+				<Tabs.Trigger _selected={{bg: "purple.600"}} color="text_primary" value="history">
+					<MdHistory/>
+					{t("security_page_tabs_history")}
+				</Tabs.Trigger>
+				<Tabs.Trigger _selected={{bg: "purple.600"}} color="text_primary" value="transactions">
+					<GrTransaction />
+					 {t("security_page_tabs_transactions")}
+				</Tabs.Trigger>
+				<Tabs.Trigger _selected={{bg: "purple.600"}} color="text_primary" value="dividends">
+					<PiCoinsLight />
+					 {t("security_page_tabs_dividends")}
+				</Tabs.Trigger>
+			</Tabs.List>
+			<Tabs.Content value="history">
+				<SecurityHistory ticker={ticker}/>
+			</Tabs.Content>
+			<Tabs.Content value="transactions">
+				<SecurityTransactionsChart securityId={securityId}/>
+			</Tabs.Content>
+			<Tabs.Content value="dividends">
+				<DividendList securityId={securityId}/>
+			</Tabs.Content>
+		</Tabs.Root>
 	</Stack>
 }
 

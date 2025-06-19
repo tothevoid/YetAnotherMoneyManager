@@ -88,22 +88,24 @@ const DashboardPage: React.FC<Props> = () => {
 	return (
 		<Stack color="text_primary">
 			<Text fontWeight={900} fontSize={"3xl"}>{t("dashboard_title")}</Text>
-			<Card.Root backgroundColor="background_primary" borderColor="border_primary" marginY={5}>
-				<Card.Body color="text_primary">
-					<Grid templateColumns="repeat(3, 1fr)">
-						<Box>
-							<Text fontWeight={700} fontSize={"xl"}>{t("dashboard_total")}: {formatMoneyByCurrencyCulture(dashboard?.total ?? 0, currency)}</Text>
-						</Box>
-						<DistributionChart data={totalsData} mainCurrency={user.currency.name}/>
-					</Grid>
-				</Card.Body>
-			</Card.Root>
-			<Grid gap={10} templateColumns="repeat(2, 1fr)" marginY={5}>
-				{assetsCharts}
-			</Grid>
-			<Grid gap={10} templateColumns="repeat(2, 1fr)" marginY={5}>
-				{transactionsStats}
-			</Grid>
+			<Stack gap={5}>
+				<Card.Root backgroundColor="background_primary" borderColor="border_primary">
+					<Card.Body color="text_primary">
+						<Grid templateColumns="repeat(3, 1fr)">
+							<Box>
+								<Text fontWeight={700} fontSize={"xl"}>{t("dashboard_total")}: {formatMoneyByCurrencyCulture(dashboard?.total ?? 0, currency)}</Text>
+							</Box>
+							<DistributionChart data={totalsData} mainCurrency={user.currency.name}/>
+						</Grid>
+					</Card.Body>
+				</Card.Root>
+				<Grid gap={5} templateColumns="repeat(2, 1fr)">
+					{assetsCharts}
+				</Grid>
+				<Grid gap={5} templateColumns="repeat(2, 1fr)">
+					{transactionsStats}
+				</Grid>
+			</Stack>
 		</Stack>
 	)
 }

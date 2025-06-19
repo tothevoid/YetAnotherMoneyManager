@@ -153,7 +153,7 @@ const CurrenciesTable: React.FC<Props> = () => {
                                 <Text>{currency.name}</Text>
                             </Table.Cell>
                             <Table.Cell>
-                                <Text>{formatMoneyByCurrencyCulture(currency.rate, user?.currency.name)}</Text>
+                                <Text>{formatMoneyByCurrencyCulture(1, currency.name)} = {formatMoneyByCurrencyCulture(currency.rate, user?.currency.name, 3)}</Text>
                             </Table.Cell>
                             <Table.Cell width={10}>
                                 <Checkbox.Root onBlur={() => onCellBlur(currency.id)} checked={currency.active} variant="subtle"

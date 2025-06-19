@@ -19,10 +19,10 @@ export const formatMoney = (value: number, currency: Currency = Currency.RUB) =>
   };
 
 
-export const formatMoneyByCurrencyCulture = (value: number, currency: string) => {
+export const formatMoneyByCurrencyCulture = (value: number, currency: string, digits: number = 2) => {
     return new Intl.NumberFormat("ru-RU", {
       style: "currency",
       currency: currency,
-      minimumFractionDigits: 2,
+      minimumFractionDigits: digits,
     }).format(value);
   };

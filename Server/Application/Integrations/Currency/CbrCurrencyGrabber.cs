@@ -39,7 +39,7 @@ namespace MoneyManager.Application.Integrations.Currency
                 .Rates.Where(rate => requestedCurrencies.Contains(rate.Key))
                 .ToDictionary(rate => rate.Key, rate => 
                     rate.Value / mainCurrencyRate.Value);
-            rates[CbrBaseCurrency] = 1 / mainCurrencyRate.Value;
+            rates[CbrBaseCurrency] = mainCurrencyRate.Value;
             return rates;
         }
     }

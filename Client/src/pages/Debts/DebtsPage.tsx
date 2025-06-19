@@ -51,7 +51,7 @@ const DebtsPage: React.FC<Props> = () => {
 	}
 
 	return (
-		<Box paddingBlock={10}>
+		<Box>
 			<Flex justifyContent="space-between">
 				<SwitchButton active={debtQueryParameters.onlyActive} title={t("debts_page_only_active")} onSwitch={onOnlyActiveSwitched}/>
 				<ShowModalButton buttonTitle={t("debts_page_add_debt")} onClick={onAdd}>

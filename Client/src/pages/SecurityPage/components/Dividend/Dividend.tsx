@@ -17,7 +17,7 @@ type Props = {
 }
 
 const Dividend = (props: Props) => {
-    const {id, amount, security, declarationDate, paymentDate, snapshotDate} = props.dividend;
+    const {id, amount, security, declarationDate, snapshotDate} = props.dividend;
 
     const confirmModalRef = useRef<BaseModalRef>(null);
     const editModalRef = useRef<BaseModalRef>(null);
@@ -38,7 +38,6 @@ const Dividend = (props: Props) => {
                 <Stack direction={'row'} alignItems="center">
                     <Stack ml={5}>
                         <Text>{t("entity_dividend_declaration_date")}: {formatDate(declarationDate, i18n)}</Text>
-                        <Text>{t("entity_dividend_snapshot_date")}: {formatDate(paymentDate, i18n)}</Text>
                         <Text>{t("entity_dividend_payment_date")}: {formatDate(snapshotDate, i18n)}</Text>
                     </Stack>
                 </Stack>

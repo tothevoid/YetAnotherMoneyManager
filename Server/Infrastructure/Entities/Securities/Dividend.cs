@@ -18,8 +18,6 @@ namespace MoneyManager.Infrastructure.Entities.Securities
 
         public DateOnly SnapshotDate { get; set; }
 
-        public DateOnly PaymentDate { get; set; }
-
         public decimal Amount { get; set; }
 
         public ICollection<DividendPayment> DividendPayments { get; set; }

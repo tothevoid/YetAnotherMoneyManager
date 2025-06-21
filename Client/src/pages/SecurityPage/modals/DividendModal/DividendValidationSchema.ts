@@ -9,6 +9,5 @@ export const DividendValidationSchema = z.object({
   }),
   declarationDate: z.date(),
   snapshotDate: z.date(),
-  paymentDate: z.date(),
   amount: z.number()
 })

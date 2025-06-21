@@ -27,7 +27,6 @@ const DividendModal: React.FC<ModalProps> = (props: ModalProps) => {
 			security: props.dividend?.security,
 			amount: props.dividend?.amount ?? 0,
 			declarationDate: props.dividend?.declarationDate ?? new Date(),
-			paymentDate: props.dividend?.paymentDate ?? new Date(),
 			snapshotDate: props.dividend?.snapshotDate ?? new Date()
 		}
 	});
@@ -52,11 +51,6 @@ const DividendModal: React.FC<ModalProps> = (props: ModalProps) => {
 			<Field.Label>{t("entity_dividend_snapshot_date")}</Field.Label>
 			<DateSelect name="snapshotDate" control={control}/>
 			<Field.ErrorText>{errors.snapshotDate?.message}</Field.ErrorText>
-		</Field.Root>
-		<Field.Root invalid={!!errors.paymentDate} mt={4}>
-			<Field.Label>{t("entity_dividend_payment_date")}</Field.Label>
-			<DateSelect name="paymentDate" control={control}/>
-			<Field.ErrorText>{errors.paymentDate?.message}</Field.ErrorText>
 		</Field.Root>
 	</BaseFormModal>
 }

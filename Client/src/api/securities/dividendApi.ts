@@ -47,7 +47,6 @@ export const prepareClientDividend = (dividend: DividendEntity): DividendEntity 
     return {
         ...dividend,
         declarationDate: new Date(dividend.declarationDate),
-        paymentDate: new Date(dividend.paymentDate),
         snapshotDate: new Date(dividend.snapshotDate)
     };
 }
@@ -56,7 +55,6 @@ const prepareServerDividend = (dividend: DividendEntity): ServerDividendEntity =
     return {
         id: dividend.id,
         declarationDate: convertToDateOnly(dividend.declarationDate),
-        paymentDate: convertToDateOnly(dividend.paymentDate),
         snapshotDate: convertToDateOnly(dividend.snapshotDate),
         securityId: dividend.security.id,
         amount: dividend.amount

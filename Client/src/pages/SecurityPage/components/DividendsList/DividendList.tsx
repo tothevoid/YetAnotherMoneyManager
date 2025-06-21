@@ -36,12 +36,9 @@ const DividendList: React.FC<Props> = (props) => {
 
 	return (
 		<Fragment>
-			<Text fontSize="2xl">{t("dividends_list_title")}</Text>
-			<Flex direction={'column-reverse'} justifyContent="space-between" pt={5} pb={5}>
-				<ShowModalButton buttonTitle={t("security_page_summary_add")} onClick={onAdd}>
-					<DividendModal dividend={dividend} modalRef={modalRef} onSaved={createDividendEntity}/>
-				</ShowModalButton>
-			</Flex>
+			<ShowModalButton buttonTitle={t("security_page_summary_add")} onClick={onAdd}>
+				<DividendModal dividend={dividend} modalRef={modalRef} onSaved={createDividendEntity}/>
+			</ShowModalButton>
 			<Box>
 				{
 					dividends.map((security: DividendEntity) => 

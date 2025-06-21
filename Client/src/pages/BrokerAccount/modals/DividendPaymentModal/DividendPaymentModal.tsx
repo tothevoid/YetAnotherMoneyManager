@@ -117,7 +117,7 @@ const DividendPaymentModal: React.FC<ModalProps> = (props: ModalProps) => {
 			<CollectionSelect name="dividend" control={control} placeholder="Select security"
 				collection={dividendsBySecurity} 
 				labelSelector={(dividend: DividendEntity) => 
-					`${formatDate(dividend.paymentDate, i18n)} (${formatMoneyByCurrencyCulture(dividend.amount, dividend.security.currency.name)})`} 
+					`${formatDate(dividend.snapshotDate, i18n)} (${formatMoneyByCurrencyCulture(dividend.amount, dividend.security.currency.name)})`} 
 				valueSelector={(dividend => dividend.id)}/>
 			<Field.ErrorText>{errors.dividend?.message}</Field.ErrorText>
 		</Field.Root>

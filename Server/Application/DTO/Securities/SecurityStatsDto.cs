@@ -14,6 +14,8 @@ namespace MoneyManager.Application.DTO.Securities
 
         public decimal TransactionsAvg { get; set; }
 
+        public decimal TransactionsSum { get; set; }
+
         public int HasOnBrokerAccounts { get; set; }
 
         public decimal DividendsIncome { get; set; }

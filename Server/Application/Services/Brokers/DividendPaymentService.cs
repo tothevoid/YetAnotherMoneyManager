@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Brokers;
+using MoneyManager.Application.Queries.Brokers;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Infrastructure.Interfaces.Database;
@@ -33,8 +34,8 @@ namespace MoneyManager.Application.Services.Brokers
         public async Task<IEnumerable<DividendPaymentDto>> GetAll(Guid brokerAccountId)
         {
             var dividends = await _dividendPaymentRepo
-                .GetAll(dividendPayment => dividendPayment.BrokerAccountId == brokerAccountId, 
-                    GetFullHierarchyColumns);
+                .GetAll(dividendPayment => dividendPayment.BrokerAccountId == brokerAccountId,
+                    DividendPaymentQuery.GetFullHierarchyColumns);
             
             return _mapper.Map<IEnumerable<DividendPaymentDto>>(dividends);
         }
@@ -57,7 +58,7 @@ namespace MoneyManager.Application.Services.Brokers
         {
             var dividendPayment = _mapper.Map<DividendPayment>(dividendPaymentDto);
 
-            var existingDividend = await _dividendPaymentRepo.GetById(dividendPaymentDto.Id, GetFullHierarchyColumns);
+            var existingDividend = await _dividendPaymentRepo.GetById(dividendPaymentDto.Id, DividendPaymentQuery.GetFullHierarchyColumns);
             var existingDividendAmount = CalculateDividendPaymentAmount(existingDividend.Dividend, existingDividend.SecuritiesQuantity,
                 existingDividend.Tax);
 
@@ -81,7 +82,7 @@ namespace MoneyManager.Application.Services.Brokers
         {
             await _dividendPaymentRepo.Delete(id);
 
-            var dividendPayment = await _dividendPaymentRepo.GetById(id, GetFullHierarchyColumns);
+            var dividendPayment = await _dividendPaymentRepo.GetById(id, DividendPaymentQuery.GetFullHierarchyColumns);
             var diff = CalculateDividendPaymentAmount(dividendPayment.Dividend, dividendPayment.SecuritiesQuantity, 
                 dividendPayment.Tax);
             await ActualizeBrokerAccountBalance(dividendPayment.BrokerAccountId, -1 * diff);
@@ -99,17 +100,6 @@ namespace MoneyManager.Application.Services.Brokers
         private decimal CalculateDividendPaymentAmount(Dividend dividend, int securitiesQuantity, decimal tax)
         {
             return dividend.Amount * securitiesQuantity - tax;
-        }
-
-        private IQueryable<DividendPayment> GetFullHierarchyColumns(IQueryable<DividendPayment> dividendPaymentQuery)
-        {
-            return dividendPaymentQuery
-                .Include(dividendPayment => dividendPayment.Dividend.Security.Currency)
-                .Include(dividendPayment => dividendPayment.Dividend.Security.Type)
-                .Include(dividendPayment => dividendPayment.BrokerAccount.Type)
-                .Include(dividendPayment => dividendPayment.BrokerAccount.Currency)
-                .Include(dividendPayment => dividendPayment.BrokerAccount.Broker);
-
         }
     }
 }

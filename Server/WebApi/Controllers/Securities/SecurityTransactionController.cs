@@ -39,12 +39,12 @@ namespace MoneyManager.WebApi.Controllers.Securities
             return _mapper.Map<SecurityTransactionPaginationModel>(pagination);
         }
 
-        [HttpGet(nameof(GetTransactionsBySecurity))]
-        public async Task<IEnumerable<SecurityTransactionModel>> GetTransactionsBySecurity([FromQuery] Guid securityId)
+        [HttpGet(nameof(GetTransactionsHistory))]
+        public async Task<IEnumerable<SecurityTransactionsHistoryModel>> GetTransactionsHistory([FromQuery] Guid securityId)
         {
             var transactions = await _securityTransactionService
-                .GetTransactionsBySecurity(securityId);
-            return _mapper.Map<IEnumerable<SecurityTransactionModel>>(transactions);
+                .GetTransactionsHistory(securityId);
+            return _mapper.Map<IEnumerable<SecurityTransactionsHistoryModel>>(transactions);
         }
 
         [HttpPut]

@@ -9,10 +9,12 @@ using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Integrations.Stock;
 using MoneyManager.Application.Interfaces.Integrations.Stock;
 using MoneyManager.Application.Interfaces.Securities;
+using MoneyManager.Application.Queries.Brokers;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using MoneyManager.Infrastructure.Queries;
+using MoneyManager.Shared.Extensions;
 
 namespace MoneyManager.Application.Services.Securities
 {
@@ -23,6 +25,7 @@ namespace MoneyManager.Application.Services.Securities
         private readonly IRepository<SecurityTransaction> _securityTransactionRepo;
         private readonly IRepository<BrokerAccountSecurity> _brokerAccountSecurityRepo;
         private readonly IRepository<BrokerAccount> _brokerAccountRepo;
+        private readonly IRepository<DividendPayment> _dividendPaymentRepo;
         private readonly IMapper _mapper;
 
         public SecurityTransactionService(IUnitOfWork uow, IMapper mapper)
@@ -32,6 +35,7 @@ namespace MoneyManager.Application.Services.Securities
             _securityTransactionRepo = uow.CreateRepository<SecurityTransaction>();
             _brokerAccountSecurityRepo = uow.CreateRepository<BrokerAccountSecurity>();
             _brokerAccountRepo = uow.CreateRepository<BrokerAccount>();
+            _dividendPaymentRepo = uow.CreateRepository<DividendPayment>();
         }
 
         public async Task<IEnumerable<SecurityTransactionDTO>> GetAll(Guid brokerAccountId,
@@ -50,7 +54,7 @@ namespace MoneyManager.Application.Services.Securities
             return _mapper.Map<IEnumerable<SecurityTransactionDTO>>(brokerAccountSecurities);
         }
 
-        public async Task<IEnumerable<SecurityTransactionDTO>> GetTransactionsBySecurity(Guid securityId)
+        public async Task<IEnumerable<SecurityTransactionsHistoryDto>> GetTransactionsHistory(Guid securityId)
         {
             var complexQuery = new ComplexQueryBuilder<SecurityTransaction>()
                 .AddFilter(securityTransaction => securityTransaction.SecurityId == securityId)
@@ -62,7 +66,31 @@ namespace MoneyManager.Application.Services.Securities
             var transactions = await _securityTransactionRepo
                 .GetAll(complexQuery);
 
-            return _mapper.Map<IEnumerable<SecurityTransactionDTO>>(transactions);
+            var dividendsPayments = (await _dividendPaymentRepo
+                .GetAll(dividendPayment => dividendPayment.Dividend.SecurityId == securityId, DividendPaymentQuery.GetFullHierarchyColumns))
+                .OrderBy(dividendPayment => dividendPayment.ReceivedAt)
+                .ToArray();
+
+            var convertedTransactions = new List<SecurityTransactionsHistoryDto>();
+
+            //TODO: include sold securities
+            foreach (var transaction in transactions)
+            {
+                var date = DateOnly.FromDateTime(transaction.Date);
+
+                var paymentsSum = dividendsPayments
+                    .Where(payment => payment.Dividend.SnapshotDate > date)
+                    .Sum(payment => payment.Dividend.Amount - payment.Tax / payment.SecuritiesQuantity);
+
+                convertedTransactions.Add(new SecurityTransactionsHistoryDto()
+                {
+                    Date = transaction.Date,
+                    ValueWithPayments = transaction.Price - paymentsSum,
+                    ValueWithoutPayments = transaction.Price
+                });
+            }
+
+            return convertedTransactions;
         }
 
         public async Task<SecurityTransactionPaginationDto> GetPagination(Guid brokerAccountId)

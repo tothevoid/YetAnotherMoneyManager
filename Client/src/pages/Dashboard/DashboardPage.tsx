@@ -13,7 +13,6 @@ interface Props {}
 interface State {
 	dashboard: Dashboard | null
 }
-   
 
 const DashboardPage: React.FC<Props> = () => {
 	const { t } = useTranslation();
@@ -22,20 +21,25 @@ const DashboardPage: React.FC<Props> = () => {
 
 	const [state, setState] = useState<State>({dashboard: null});
 
-	useEffect(() => {
-		const initData = async () => {
-			const dashboard = await getDashboard();
+	const initDashboardData = async () => {
+		const dashboard = await getDashboard();
 
-			if (!dashboard) {
-				return;
-			}
-
-			setState((currentState) => {
-				return {...currentState, dashboard};
-			});
+		if (!dashboard) {
+			return;
 		}
-		initData();
+
+		setState((currentState) => {
+			return {...currentState, dashboard};
+		});
+	}
+
+	useEffect(() => {
+		initDashboardData();
 	}, []);
+
+	useEffect(() => {
+		initDashboardData();
+	}, [user?.currency]);
 
 	const currency = user?.currency.name ?? "";
 
@@ -81,8 +85,8 @@ const DashboardPage: React.FC<Props> = () => {
 	];
 
 	const transactionsStats = [
-		formatDistributionCard("Spents", dashboard.transactionStats.spentsTotal, dashboard.transactionStats.spentsDistribution),
-		formatDistributionCard("Incomes", dashboard.transactionStats.incomesTotal, dashboard.transactionStats.incomesDistribution)
+		formatDistributionCard(t("dashboard_transactions_spents"), dashboard.transactionStats.spentsTotal, dashboard.transactionStats.spentsDistribution),
+		formatDistributionCard(t("dashboard_transactions_incomes"), dashboard.transactionStats.incomesTotal, dashboard.transactionStats.incomesDistribution)
 	]
 
 	return (

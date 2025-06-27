@@ -51,9 +51,12 @@ const SecurityPage: React.FC = () => {
 
 	const { ticker, name, type, actualPrice, currency} = state.security;
  	
-	const formatStatsCard = (value: string) => {
+	const formatStatsCard = (title: string, value: string) => {
 		return <Card.Root backgroundColor="background_primary" borderColor="border_primary" color="text_primary">
-			<Card.Body>
+			<Card.Header>
+				{title}
+			</Card.Header>
+			<Card.Body fontSize="xl" fontWeight={700}>
 				{value}
 			</Card.Body>
 		</Card.Root>
@@ -65,16 +68,24 @@ const SecurityPage: React.FC = () => {
 			<Text>({name})</Text>
 			<Text paddingX={4} paddingY={1} borderRadius={4} backgroundColor="purple.600">{type.name}</Text>
 		</Stack>
-		<Text>{formatMoneyByCurrencyCulture(actualPrice, currency.name)}</Text>
-		<SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(350px, 3fr))'>
-			{formatStatsCard(t("security_page_stats_securities", {securities: state.securityStats.hasOnBrokerAccounts}))}
-			{formatStatsCard(t("security_page_stats_transactions_min", {min: formatMoneyByCurrencyCulture(state.securityStats.transactionsMin, currency.name)}))}
-			{formatStatsCard(t("security_page_stats_transactions_max", {max: formatMoneyByCurrencyCulture(state.securityStats.transactionsMax, currency.name)}))}
-			{formatStatsCard(t("security_page_stats_transactions_avg", {avg: formatMoneyByCurrencyCulture(state.securityStats.transactionsAvg, currency.name)}))}
-			{formatStatsCard(t("security_page_stats_dividends_income", {income: formatMoneyByCurrencyCulture(state.securityStats.dividendsIncome, currency.name)}))}
-		</SimpleGrid>
+		<Stack marginBlock={4} gap={4} dir="column">
+			<SimpleGrid gap={4} templateColumns='repeat(auto-fill, minmax(450px, 3fr))'>
+				{formatStatsCard(t("security_page_stats_securities"),		 state.securityStats.hasOnBrokerAccounts)}
+				{formatStatsCard(t("security_page_stats_securities"),		 formatMoneyByCurrencyCulture(actualPrice, currency.name))}
+			</SimpleGrid>
+			<SimpleGrid gap={4} templateColumns='repeat(auto-fill, minmax(450px, 3fr))'>
+				{formatStatsCard(t("security_page_stats_transactions_min"),  formatMoneyByCurrencyCulture(state.securityStats.transactionsMin, currency.name))}
+				{formatStatsCard(t("security_page_stats_transactions_max"),  formatMoneyByCurrencyCulture(state.securityStats.transactionsMax, currency.name))}
+				{formatStatsCard(t("security_page_stats_transactions_avg"),  formatMoneyByCurrencyCulture(state.securityStats.transactionsAvg, currency.name))}
+			</SimpleGrid>
+			<SimpleGrid gap={4} templateColumns='repeat(auto-fill, minmax(450px, 3fr))'>
+				{formatStatsCard(t("security_page_stats_transactions_sum"),  formatMoneyByCurrencyCulture(state.securityStats.transactionsSum, currency.name))}
+				{formatStatsCard(t("security_page_stats_dividends_income"),  formatMoneyByCurrencyCulture(state.securityStats.dividendsIncome, currency.name))}
+				{formatStatsCard(t("security_page_stats_current_price"), 	 formatMoneyByCurrencyCulture(state.securityStats.hasOnBrokerAccounts * actualPrice, currency.name))}
+			</SimpleGrid>
+		</Stack>
 
-  		<Tabs.Root variant="enclosed" defaultValue="transactions">
+  		<Tabs.Root variant="enclosed" defaultValue="history">
 			<Tabs.List background={"background_primary"}>
 				<Tabs.Trigger _selected={{bg: "purple.600"}} color="text_primary" value="history">
 					<MdHistory/>
@@ -90,10 +101,10 @@ const SecurityPage: React.FC = () => {
 				</Tabs.Trigger>
 			</Tabs.List>
 			<Tabs.Content value="history">
-				<SecurityHistory ticker={ticker}/>
+				<SecurityHistory ticker={ticker} currencyName={currency.name} />
 			</Tabs.Content>
 			<Tabs.Content value="transactions">
-				<SecurityTransactionsChart securityId={securityId}/>
+				<SecurityTransactionsChart securityId={securityId} currencyName={currency.name}/>
 			</Tabs.Content>
 			<Tabs.Content value="dividends">
 				<DividendList securityId={securityId}/>

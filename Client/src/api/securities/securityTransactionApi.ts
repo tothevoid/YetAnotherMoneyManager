@@ -1,5 +1,6 @@
 import config from '../../config' 
 import { SecurityTransactionEntity, ServerSecurityTransactionEntity } from '../../models/securities/SecurityTransactionEntity';
+import { SecurityTransactionsHistory } from '../../models/securities/SecurityTransactionsHistory';
 import { SecurityTransactionsPagination } from '../../models/securities/SecurityTransactionsPagination';
 import { SecurityTransactionsRequest } from '../../models/securities/SecurityTransactionsRequest';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
@@ -21,14 +22,11 @@ export const gerSecurityTransactionsPagination = async (brokerAccountId: string)
         .catch(logPromiseError);
 };
 
-export const getTransactionsBySecurity = async (securityId: string): Promise<SecurityTransactionEntity[] | void> => {
-    return await fetch(`${basicUrl}/GetTransactionsBySecurity?securityId=${securityId}`, {method: "GET"})
+export const getTransactionsBySecurity = async (securityId: string): Promise<SecurityTransactionsHistory[]> => {
+    return await fetch(`${basicUrl}/GetTransactionsHistory?securityId=${securityId}`, {method: "GET"})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
-        .catch(logPromiseError)
-        .then((securityTransactions: SecurityTransactionEntity[]) => {
-            return securityTransactions.map(prepareClientSecurityTransaction)
-        }) ;
+        .catch(logPromiseError);
 };
 
 export const createSecurityTransaction = async (addedSecurityTransaction: SecurityTransactionEntity): Promise<SecurityTransactionEntity | void> => {

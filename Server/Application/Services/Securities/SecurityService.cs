@@ -53,19 +53,22 @@ namespace MoneyManager.Application.Services.Securities
         {
             // TODO: compare performance between db calls and linq calls
             var securityTransactionsPrices = (await _securityTransactionsRepo.GetAll(transaction => transaction.SecurityId == securityId))
-                .Select(transaction => transaction.Price).ToArray();
+               .ToArray();
 
             if (securityTransactionsPrices.Length == 0)
             {
                 return new SecurityStatsDto();
             }
 
-            decimal min = securityTransactionsPrices[0];
-            decimal max = securityTransactionsPrices[0];
-            decimal sum = 0;
+            decimal min = securityTransactionsPrices[0].Price;
+            decimal max = securityTransactionsPrices[0].Price;
+            decimal pricesSum = 0;
+            decimal totalSum = 0;
 
-            foreach (var transactionPrice in securityTransactionsPrices)
+            foreach (var transaction in securityTransactionsPrices)
             {
+                var transactionPrice = transaction.Price;
+
                 if (transactionPrice < min)
                 {
                     min = transactionPrice;
@@ -76,9 +79,10 @@ namespace MoneyManager.Application.Services.Securities
                     max = transactionPrice;
                 }
 
-                sum += transactionPrice;
+                pricesSum += transactionPrice;
+                totalSum += transactionPrice * transaction.Quantity;
             }
-
+        
             var hasOnBrokerAccounts = await _brokerAccountSecurityRepo.GetSum(brokerAccountSecurity => brokerAccountSecurity.Quantity,
                 brokerAccountSecurity => brokerAccountSecurity.SecurityId == securityId);
 
@@ -89,9 +93,10 @@ namespace MoneyManager.Application.Services.Securities
             {
                 TransactionsMin = min,
                 TransactionsMax = max,
-                HasOnBrokerAccounts = (int) hasOnBrokerAccounts,
+                TransactionsSum = totalSum,
+                HasOnBrokerAccounts = (int)hasOnBrokerAccounts,
                 //TODO: also calculate weighed mean
-                TransactionsAvg = sum / securityTransactionsPrices.Length,
+                TransactionsAvg = pricesSum / securityTransactionsPrices.Length,
                 DividendsIncome = dividendsIncome
             };
         }

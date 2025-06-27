@@ -140,13 +140,15 @@
     "entity_security_transaction_stock_exchange_commission": "Комиссия биржи",
     "entity_security_transaction_tax": "Налог",
 
-    "dividends_list_title": "Дивиденды",
     "entity_dividend_form_title": "Дивиденд",
     "entity_dividend_security": "Акция",
     "entity_dividend_declaration_date": "Дата объявления",
     "entity_dividend_snapshot_date": "Дата фиксации",
     "entity_dividend_payment_date": "Дата выплаты",
     "entity_dividend_security_amount": "Дивиденд",
+
+    "securities_transactions_with_dividends": "С дивидендами",
+    "securities_transactions_without_dividends": "Без дивидендов",
 
     "entity_transaction_type_name_form_title": "Тип транзакции",
     "entity_transaction_type_name": "Название",
@@ -165,6 +167,9 @@
     "dashboard_bank_accounts": "Банковские счета",
     "dashboard_debts": "Должники",
     "dashboard_crypto_account": "Криптовалютные счета",
+
+    "dashboard_transactions_spents": "Расходы",
+    "dashboard_transactions_incomes": "Доходы",
 
     "user_profile_settings_title": "Конфигурация приложения",
     "user_profile_settings_currency": "Отображать в валюте",
@@ -189,11 +194,15 @@
     "security_page_tabs_history": "История котировок",
     "security_page_tabs_transactions": "Транзакции",
     "security_page_tabs_dividends": "Дивиденды",
-    "security_page_stats_securities": "Приобретено: {{securities}}",
-    "security_page_stats_transactions_min": "Минимальная транзакция: {{min}}",
-    "security_page_stats_transactions_max": "Максимальная транзакция: {{max}}",
-    "security_page_stats_transactions_avg": "Среднее по транзакциям: {{avg}}",
-    "security_page_stats_dividends_income": "Доход с дивидендов: {{income}}",
+    "security_page_stats_securities": "Приобретено",
+    "security_page_stats_transactions_min": "Минимальная транзакция",
+    "security_page_stats_transactions_max": "Максимальная транзакция",
+    "security_page_stats_transactions_avg": "Среднее по транзакциям",
+    "security_page_stats_dividends_income": "Доход с дивидендов",
+    "security_page_stats_current_price": "Текущая стоимость",
+    "security_page_stats_transactions_sum": "Сумма транзакций",
+
+    "security_history_chart_value_name": "Цена",
 
     "entity_dividend_payment_form_title": "Выплата дивидендов",
     "entity_dividend_payment_broker_account": "Брокерский счёт",

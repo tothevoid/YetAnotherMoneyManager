@@ -40,7 +40,7 @@ const Header = () => {
                       <Flex flex="1">
                         {
                             tabs.map(tab => 
-                                <NavLink to={tab.path} className={({ isActive }) => isActive ? 'active' : ''}>
+                                <NavLink key={tab.path} to={tab.path} className={({ isActive }) => isActive ? 'active' : ''}>
                                     {({ isActive }) => <HeaderItem title={tab.title} active={isActive} />}
                                 </NavLink>
                             )

@@ -12,6 +12,7 @@
 
   <ItemGroup>
 	  <ProjectReference Include="..\Infrastructure\MoneyManager.Infrastructure.csproj" />
+	  <ProjectReference Include="..\Shared\MoneyManager.Shared.csproj" />
   </ItemGroup>
 
 </Project>

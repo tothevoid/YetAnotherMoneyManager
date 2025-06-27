@@ -140,13 +140,15 @@
     "entity_security_transaction_stock_exchange_commission": "Stock exchange commission",
     "entity_security_transaction_tax": "Tax",
 
-    "dividends_list_title": "Dividends",
     "entity_dividend_form_title": "Dividend",
     "entity_dividend_security": "Stock",
     "entity_dividend_declaration_date": "Declaration date",
     "entity_dividend_snapshot_date": "Snapshot date",
     "entity_dividend_payment_date": "Payment date",
     "entity_dividend_security_amount": "Dividend",
+        
+    "securities_transactions_with_dividends": "with dividends",
+    "securities_transactions_without_dividends": "without dividends",
 
     "entity_transaction_type_name_form_title": "Transaction type",
     "entity_transaction_type_name": "Name",
@@ -165,6 +167,9 @@
     "dashboard_bank_accounts": "Bank accounts",
     "dashboard_debts": "Debtors",
     "dashboard_crypto_account": "Crypto accounts",
+
+    "dashboard_transactions_spents": "Spents",
+    "dashboard_transactions_incomes": "Incomes",
 
     "user_profile_settings_title": "Application configuration",
     "user_profile_settings_currency": "Display in currency",
@@ -189,11 +194,15 @@
     "security_page_tabs_history": "Quote history",
     "security_page_tabs_transactions": "Transactions",
     "security_page_tabs_dividends": "Dividends",
-    "security_page_stats_securities": "Purchased: {{securities}}",
-    "security_page_stats_transactions_min": "Minimal transactions: {{min}}",
-    "security_page_stats_transactions_max": "Maximal transactions: {{max}}",
-    "security_page_stats_transactions_avg": "Average transactions: {{avg}}",
-    "security_page_stats_dividends_income": "Dividends income: {{income}}",
+    "security_page_stats_securities": "Purchased",
+    "security_page_stats_transactions_min": "Minimal transactions",
+    "security_page_stats_transactions_max": "Maximal transactions",
+    "security_page_stats_transactions_avg": "Average transactions",
+    "security_page_stats_dividends_income": "Dividends income",
+    "security_page_stats_current_price": "Current price",
+    "security_page_stats_transactions_sum": "Transactions sum",
+
+    "security_history_chart_value_name": "Price",
 
     "entity_dividend_payment_form_title": "Dividend payment",
     "entity_dividend_payment_broker_account": "Broker account",

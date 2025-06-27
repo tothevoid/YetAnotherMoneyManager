@@ -36,14 +36,14 @@ const DistributionChart = (props: Props) => {
     }
 
     return <Stack>
-        <div style={{ width: '100%', height: 300 }}>
+        <div style={{ width: '100%', height: 400 }}>
             <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                     <Pie data={props.data} cx="50%" cy="50%" outerRadius={100} dataKey="convertedAmount">
                     {
                         props.data.map((_, index) => (
                             <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
-                        ))
+                        )) 
                     }
                     </Pie>
                     <Tooltip contentStyle={getChartLabelConfig()} itemStyle={{ color: "#E0E0E0" }} formatter={formatLabel}/>

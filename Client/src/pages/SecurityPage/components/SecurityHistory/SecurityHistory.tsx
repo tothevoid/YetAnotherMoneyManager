@@ -4,9 +4,12 @@ import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { getTickerHistory } from "../../../../api/securities/securityApi";
 import { SecurityHistoryValue } from "../../../../models/securities/SecurityHistoryValue";
+import { formatMoneyByCurrencyCulture } from "../../../../shared/utilities/formatters/moneyFormatter";
+import { getChartLabelConfig } from "../../../../shared/utilities/chartUtilities";
 
 interface Props {
     ticker: string
+    currencyName: string
 }
 
 interface State {
@@ -14,7 +17,7 @@ interface State {
 }
 
 const SecurityHistory: React.FC<Props> = (props) => {
-    const { i18n } = useTranslation();
+    const { t, i18n } = useTranslation();
 
     const [state, setState] = useState<State>({tickerHistoryValues: []})
 
@@ -43,9 +46,9 @@ const SecurityHistory: React.FC<Props> = (props) => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date"/>
                 <YAxis domain={['dataMin - 10', 'dataMax + 10']}/>
-                <Tooltip />
+                <Tooltip contentStyle={getChartLabelConfig()} formatter={(value: number) => formatMoneyByCurrencyCulture(value, props.currencyName)} />
                 <Legend />
-                <Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} name=""/>
+                <Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} name={t("security_history_chart_value_name")}/>
             </LineChart>
         </ResponsiveContainer>
     </Box>

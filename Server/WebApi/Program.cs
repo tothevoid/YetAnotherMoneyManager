@@ -96,6 +96,7 @@ builder.Services.AddTransient<IDashboardService, DashboardService>();
 builder.Services.AddTransient<IDebtService, DebtService>();
 builder.Services.AddTransient<IDebtPaymentService, DebtPaymentService>();
 builder.Services.AddTransient<IDividendPaymentService, DividendPaymentService>();
+builder.Services.AddTransient<ICurrencyTransactionService, CurrencyTransactionService>();
 
 builder.Services.AddTransient<ICryptoAccountService, CryptoAccountService>();
 builder.Services.AddTransient<ICryptoAccountCryptocurrencyService, CryptoAccountCryptocurrencyService>();

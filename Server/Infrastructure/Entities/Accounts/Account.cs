@@ -30,5 +30,9 @@ namespace MoneyManager.Infrastructure.Entities.Accounts
         public ICollection<DebtPayment> DebtPayments { get; set; }
 
         public ICollection<Transaction> Transactions { get; set; }
+
+        public ICollection<CurrencyTransaction> SourceCurrencyTransactions { get; set; }
+
+        public ICollection<CurrencyTransaction> DestinationCurrencyTransactions { get; set; }
     }
 }

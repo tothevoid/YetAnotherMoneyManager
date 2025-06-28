@@ -55,6 +55,8 @@ namespace MoneyManager.Infrastructure.Database
             modelBuilder.ApplyConfiguration(new CryptoAccountCryptocurrencyConfiguration());
             modelBuilder.ApplyConfiguration(new CryptocurrencyConfiguration());
             modelBuilder.ApplyConfiguration(new CryptoProviderConfiguration());
+            
+            modelBuilder.ApplyConfiguration(new CurrencyTransactionConfiguration());
 
             InitializeDefaultData(modelBuilder);
 

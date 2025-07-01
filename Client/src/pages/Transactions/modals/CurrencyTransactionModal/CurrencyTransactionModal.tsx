@@ -2,20 +2,20 @@ import React, { RefObject, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import BaseFormModal from '../../../../shared/modals/BaseFormModal/BaseFormModal';
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
-import TransactionForm from '../../components/TransactionForm/TransactionForm';
-import { TransactionEntity } from '../../../../models/transactions/TransactionEntity';
+import CurrencyTransactionForm from '../../components/CurrencyTransactionForm/CurrencyTransactionForm';
+import { ClientCurrencyTransactionEntity } from '../../../../models/transactions/CurrencyTransactionEntity';
 
 interface ModalProps {
-	modalRef: RefObject<BaseModalRef | null>,
-	transaction?: TransactionEntity | null,
-	onSaved: (transaction: TransactionEntity) => Promise<void>
+    modalRef: RefObject<BaseModalRef | null>,
+    currencyTransaction: ClientCurrencyTransactionEntity | null,
+    onSaved: (transaction: ClientCurrencyTransactionEntity) => Promise<void>
 }
 
 interface State {
     formHandler?: React.FormEventHandler
 }
 
-const TransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
+const CurrencyTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
     const {t} = useTranslation();
 
     const [state, setState] = useState<State>({});
@@ -36,8 +36,8 @@ const TransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
     }
 
     return <BaseFormModal ref={props.modalRef} title={t("entity_transaction_name_form_title")} submitHandler={onSubmit}>
-        <TransactionForm transaction={props.transaction} setSubmitHandler={setSubmitHandler} onTransactionSaved={props.onSaved} />
+        <CurrencyTransactionForm currencyTransaction={props.currencyTransaction} setSubmitHandler={setSubmitHandler} onCurrencyTransactionSaved={props.onSaved} />
     </BaseFormModal>
 }
 
-export default TransactionModal;
+export default CurrencyTransactionModal;

@@ -17,6 +17,8 @@ import { BaseModalRef } from "../../shared/utilities/modalUtilities";
 import TransactionModal from "./modals/TransactionModal/TransactionModal";
 import { useTransactions } from "./hooks/useTransactions";
 import { groupByKey, sumEntities } from "../../shared/utilities/arrayUtilities";
+import NewTransactionModal from "./modals/NewTransactionModal/NewTransactionModal";
+import { ClientCurrencyTransactionEntity } from "../../models/transactions/CurrencyTransactionEntity";
 
 interface Props {}
 
@@ -78,6 +80,10 @@ const TransactionsPage: React.FC<Props> = () => {
         addTransactionModalRef.current?.openModal()
     }
 
+    const createCurrencyTransaction = async (currencyTransactionEntity: ClientCurrencyTransactionEntity) => {
+        await createCurrencyTransaction(currencyTransactionEntity)
+    }
+
     return (
         <Box color="text_primary" paddingTop={4} paddingBottom={4}>
             <SimpleGrid columns={2} gap={16}>
@@ -85,7 +91,8 @@ const TransactionsPage: React.FC<Props> = () => {
                     <Flex justifyContent={"space-between"}>
                         <Text fontSize="2xl" fontWeight={600}>{t("manager_transactions_title")}</Text>
                         <ShowModalButton buttonTitle={t("manager_transactions_add_transaction")} onClick={onAddTransactionClick}>
-                            <TransactionModal modalRef={addTransactionModalRef} accounts={state.accounts} onSaved={createTransactionEntity}/>
+                            <NewTransactionModal modalRef={addTransactionModalRef} 
+                                onTransactionSaved={createTransactionEntity} onCurrencyTransactionSaved={createCurrencyTransaction}/>
                         </ShowModalButton>
                     </Flex>
                     <Box marginBlock={"10px"}>

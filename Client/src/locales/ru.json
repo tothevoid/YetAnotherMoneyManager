@@ -54,7 +54,7 @@
     "entity_transaction_name": "Название",
     "entity_transaction_date": "Дата",
     "entity_transaction_money_quantity": "Сумма",
-    "entity_transaction_account_source": "Источник",
+    "entity_transaction_account": "Счет",
     "entity_transaction_transaction_type": "Тип",
     "entity_transaction_direction": "Движение средств",
     "entity_transaction_cashback": "Кешбек",

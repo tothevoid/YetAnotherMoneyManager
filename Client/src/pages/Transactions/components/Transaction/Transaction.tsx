@@ -9,11 +9,12 @@ import { deleteTransaction } from '../../../../api/transactions/transactionApi';
 import { useTranslation } from 'react-i18next';
 import { TransactionEntity } from '../../../../models/transactions/TransactionEntity';
 import { getTransactionTypeIconUrl } from '../../../../api/transactions/transactionTypeApi';
+import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 import TransactionModal from '../../modals/TransactionModal/TransactionModal';
 
 interface Props { 
 	onDelete: (transaction: TransactionEntity) => void,
-	onUpdate: (updatedTransaction: TransactionEntity) => void,
+	onUpdate: (updatedTransaction: TransactionEntity) => Prmosie<void>,
 	transaction: TransactionEntity,
 	accounts: AccountEntity[],
 } 
@@ -89,7 +90,6 @@ const Transaction: React.FC<Props> = (props: Props) => {
 			confirmActionName={t("modals_delete_button")}
 			ref={confirmModalRef}/>
 		<TransactionModal
-			accounts={props.accounts} 
 			transaction={props.transaction} 
 			modalRef={editModalRef} 
 			onSaved={props.onUpdate}/>

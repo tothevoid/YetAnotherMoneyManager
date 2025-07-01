@@ -7,7 +7,7 @@ import { ClientCurrencyTransactionEntity } from '../../../../models/transactions
 
 interface ModalProps {
     modalRef: RefObject<BaseModalRef | null>,
-    currencyTransaction: ClientCurrencyTransactionEntity | null,
+    currencyTransaction?: ClientCurrencyTransactionEntity,
     onSaved: (transaction: ClientCurrencyTransactionEntity) => Promise<void>
 }
 

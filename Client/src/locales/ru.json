@@ -29,6 +29,14 @@
     "entity_account_active": "Активен",
     "entity_account_created_on": "Дата создания",
 
+    "entity_broker_account_name": "Название счёта",
+    "entity_broker_account_type": "Тип счёта",
+    "entity_broker_account_currency": "Валюта",
+    "entity_broker_account_main_currency_amount": "Количество основной валюты",
+    "entity_broker_account_broker": "Брокер",
+    "entity_broker_account_last_update_at": "Дата последнего обновления",
+    "entity_broker_account_assets_value": "Стоимость активов",
+
     "account_delete_title": "Удалить счёт",
 
     "account_balance_transfer_modal_title": "Перевести сумму",
@@ -50,6 +58,10 @@
 
     "deposit_delete_title": "Удалить депозит",
 
+    "new_transaction_form_title": "Добавить транзакцию",
+    "new_transaction_account_transaction_title": "Счёт",
+    "new_transaction_account_currency_title": "Валюта",
+
     "entity_transaction_name_form_title": "Транзакция",
     "entity_transaction_name": "Название",
     "entity_transaction_date": "Дата",
@@ -61,13 +73,11 @@
     "entity_transaction_direction_income": "Доход",
     "entity_transaction_direction_outcome": "Расход",
 
-    "entity_broker_account_name": "Название счёта",
-    "entity_broker_account_type": "Тип счёта",
-    "entity_broker_account_currency": "Валюта",
-    "entity_broker_account_main_currency_amount": "Количество основной валюты",
-    "entity_broker_account_broker": "Брокер",
-    "entity_broker_account_last_update_at": "Дата последнего обновления",
-    "entity_broker_account_assets_value": "Стоимость активов",
+    "entity_currency_transaction_source_account": "Со счёта",
+    "entity_currency_transaction_destination_account": "На счёт",
+    "entity_currency_transaction_amount": "Приобретено",
+    "entity_currency_transaction_rate": "Курс покупки",
+    "entity_currency_transaction_date": "Дата",
 
     "transaction_delete_title": "Удалить транзакцию",
 

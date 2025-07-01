@@ -58,6 +58,10 @@
 
     "deposit_delete_title": "Delete deposit",
 
+    "new_transaction_form_title": "Add transaction",
+    "new_transaction_account_transaction_title": "Account transaction",
+    "new_transaction_account_currency_title": "Currency transaction",
+
     "entity_transaction_name_form_title": "Transaction",
     "entity_transaction_name": "Name",
     "entity_transaction_date": "Date",
@@ -68,6 +72,12 @@
     "entity_transaction_cashback": "Cashback",
     "entity_transaction_direction_income": "Income",
     "entity_transaction_direction_outcome": "Outcome",
+
+    "entity_currency_transaction_source_account": "From account",
+    "entity_currency_transaction_destination_account": "To account",
+    "entity_currency_transaction_amount": "Bought",
+    "entity_currency_transaction_rate": "Rate of purchase",
+    "entity_currency_transaction_date": "Date",
 
     "transaction_delete_title": "Delete transaction",
 

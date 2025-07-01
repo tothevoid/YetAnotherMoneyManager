@@ -57,16 +57,16 @@ const NewTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
         props.modalRef?.current?.closeModal();
     }
 
-    return <BaseFormModal ref={props.modalRef} title={t("entity_transaction_name_form_title")} submitHandler={onSubmit}>
+    return <BaseFormModal ref={props.modalRef} title={t("new_transaction_form_title")} submitHandler={onSubmit}>
         <Tabs.Root lazyMount={true} unmountOnExit={true} defaultValue="base" variant={"enclosed"}>
             <Tabs.List>
                 <Tabs.Trigger value="base">
                 <GrTransaction/>
-                Transaction
+                {t("new_transaction_account_transaction_title")}
                 </Tabs.Trigger>
                 <Tabs.Trigger value="currency">
                 <MdCurrencyExchange/>
-                Currency
+                {t("new_transaction_account_currency_title")}
                 </Tabs.Trigger>
             </Tabs.List>
             <Tabs.Content value="base">

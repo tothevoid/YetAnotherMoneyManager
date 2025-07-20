@@ -159,6 +159,7 @@
 
     "securities_transactions_with_dividends": "С дивидендами",
     "securities_transactions_without_dividends": "Без дивидендов",
+    "securities_transactions_current_price": "Сейчас",
 
     "entity_transaction_type_name_form_title": "Тип транзакции",
     "entity_transaction_type_name": "Название",

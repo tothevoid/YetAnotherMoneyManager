@@ -1,4 +1,4 @@
-import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line } from "recharts";
+import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line, ReferenceLine } from "recharts";
 import { Box } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -11,6 +11,7 @@ import { SecurityTransactionsHistory } from "../../../../models/securities/Secur
 interface Props {
     securityId: string
     currencyName: string
+    currentPrice: number
 }
 
 interface State {
@@ -42,6 +43,7 @@ const SecurityTransactionsChart: React.FC<Props> = (props) => {
         initData();
     }, []);
 
+
     return <Box style={{ width: '100%', height: 400 }}>
         <ResponsiveContainer>
             <LineChart data={state.transactions}
@@ -56,6 +58,7 @@ const SecurityTransactionsChart: React.FC<Props> = (props) => {
                 <Legend />
                 <Line type="monotone" dataKey="valueWithPayments" stroke="#16a34a" activeDot={{ r: 8 }} name={t("securities_transactions_with_dividends")}/>
                 <Line type="monotone" dataKey="valueWithoutPayments" stroke="#8884d8" activeDot={{ r: 8 }} name={t("securities_transactions_without_dividends")}/>
+                <ReferenceLine y={props.currentPrice} stroke="red" strokeDasharray="5 5" label={t("securities_transactions_current_price")} />
             </LineChart>
         </ResponsiveContainer>
     </Box>

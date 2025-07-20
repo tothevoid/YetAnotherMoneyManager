@@ -104,7 +104,7 @@ const SecurityPage: React.FC = () => {
 				<SecurityHistory ticker={ticker} currencyName={currency.name} />
 			</Tabs.Content>
 			<Tabs.Content value="transactions">
-				<SecurityTransactionsChart securityId={securityId} currencyName={currency.name}/>
+				<SecurityTransactionsChart currentPrice={actualPrice} securityId={securityId} currencyName={currency.name}/>
 			</Tabs.Content>
 			<Tabs.Content value="dividends">
 				<DividendList securityId={securityId}/>

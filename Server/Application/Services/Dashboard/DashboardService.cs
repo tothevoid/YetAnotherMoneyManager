@@ -279,8 +279,8 @@ namespace MoneyManager.Application.Services.Dashboard
                 {
                     Name = key,
                     Currency = deposit.Currency.Name,
-                    Amount = amount,
-                    ConvertedAmount = totalEarned
+                    Amount = startedAmount,
+                    ConvertedAmount = startedAmount * deposit.Currency.Rate
                 });
 
                 earningsDistribution.Add(new DistributionDto()

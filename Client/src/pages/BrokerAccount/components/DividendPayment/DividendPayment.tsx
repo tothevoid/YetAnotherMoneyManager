@@ -29,7 +29,8 @@ const DividendPayment = (props: Props) => {
 	const onDeleteClicked = () => {
 		confirmModalRef.current?.openModal()
 	};
-	
+
+    const paymentWithoutTax = securitiesQuantity * dividend.amount - tax;
 
 	return <Card.Root borderColor="border_primary" color="text_primary" backgroundColor="background_primary" 
         mt={5} mb={5} boxShadow={"sm"} _hover={{ boxShadow: "md" }}>
@@ -41,9 +42,8 @@ const DividendPayment = (props: Props) => {
                 </Stack>
                 <Flex gap={2} justifyContent="space-between" alignItems="center">
                     <Text>
-                        <Span>{formatMoneyByCurrencyCulture(securitiesQuantity * dividend.amount, dividend.security.currency.name)} </Span>
+                        <Span>{formatMoneyByCurrencyCulture(paymentWithoutTax, dividend.security.currency.name)} </Span>
                         <Span pl={2.5} pr={2.5}>({formatMoneyByCurrencyCulture(dividend.amount, dividend.security.currency.name)} x {securitiesQuantity})</Span>
-						<Span>({tax})</Span>
                     </Text>
                     <Button background={'background_secondary'} size={'sm'} onClick={onEditClicked}>
                         <Icon color="card_action_icon_primary">

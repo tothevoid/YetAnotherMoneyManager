@@ -1,17 +1,8 @@
-import { Fragment } from "react";
-import { useTranslation } from "react-i18next";
 import BrokerAccountsList from "./components/BrokerAccountsList/BrokerAccountsList";
 
-interface Props {}
+const BrokerAccountsPage: React.FC = () => {
 
-
-const BrokerAccountsPage: React.FC<Props> = () => {
-    const { t } = useTranslation();
-
-    return (<Fragment>
-        <BrokerAccountsList/>
-    </Fragment>   
-    )
+    return <BrokerAccountsList/>
 }
 
 export default BrokerAccountsPage;

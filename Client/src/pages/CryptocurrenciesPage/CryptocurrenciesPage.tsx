@@ -1,22 +1,15 @@
 import { Fragment, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import BrokerAccountsList from "../BrokerAccounts/components/BrokerAccountsList/BrokerAccountsList";
 import { Flex, SimpleGrid } from "@chakra-ui/react";
-import { SecurityEntity } from "../../models/securities/SecurityEntity";
 import ShowModalButton from "../../shared/components/ShowModalButton/ShowModalButton";
 import { BaseModalRef } from "../../shared/utilities/modalUtilities";
-import Security from "../SecuritiesPage/components/Security/Security";
-import { useSecurities } from "../SecuritiesPage/hooks/useSecurities";
-import SecurityModal from "../SecuritiesPage/modals/SecurityModal/SecurityModal";
 import { useCryptocurrencies } from "./hooks/useCryptocurrencies";
 import { CryptocurrencyEntity } from "../../models/crypto/CryptocurrencyEntity";
 import Cryptocurrency from "./components/Cryptocurrency/Cryptocurrency";
 import CryptocurrencyModal from "./modals/CryptocurrencyModal";
 
-interface Props {}
-
-const CryptocurrenciesPage: React.FC<Props> = () => {
-    const { t } = useTranslation()
+const CryptocurrenciesPage: React.FC = () => {
+    const { t } = useTranslation();
     
     const {
         cryptocurrencies,

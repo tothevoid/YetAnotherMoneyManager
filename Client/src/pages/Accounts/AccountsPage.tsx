@@ -6,13 +6,11 @@ import { formatMoneyByCurrencyCulture } from "../../shared/utilities/formatters/
 import { useTranslation } from "react-i18next";
 import AccountsList from "./components/AccountsList/AccountsList";
 
-interface Props {}
-
 interface State {
 	accountCurrencySummaries: AccountCurrencySummary[]
 }
 
-const AccountsPage: React.FC<Props> = () => {
+const AccountsPage: React.FC = () => {
 	const [state, setState] = useState<State>({accountCurrencySummaries: []});
 
 	const { t } = useTranslation();

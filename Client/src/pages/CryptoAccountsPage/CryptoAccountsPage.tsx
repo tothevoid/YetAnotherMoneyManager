@@ -8,9 +8,7 @@ import ShowModalButton from "../../shared/components/ShowModalButton/ShowModalBu
 import { BaseModalRef } from "../../shared/utilities/modalUtilities";
 import CryptoAccountModal from "./modals/CryptoAccountModal/CryptoAccountModal";
 
-interface Props {}
-
-const CryptoAccountsPage: React.FC<Props> = () => {
+const CryptoAccountsPage: React.FC = () => {
     const { t } = useTranslation()
     
     const {

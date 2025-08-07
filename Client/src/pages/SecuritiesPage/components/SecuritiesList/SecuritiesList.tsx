@@ -9,9 +9,7 @@ import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 import SecurityModal from '../../modals/SecurityModal/SecurityModal';
 import { useSecurities } from '../../hooks/useSecurities';
 
-interface Props {}
-
-const SecuritiesList: React.FC<Props> = (props) => {
+const SecuritiesList: React.FC = () => {
 	const { t } = useTranslation()
 
 	const {

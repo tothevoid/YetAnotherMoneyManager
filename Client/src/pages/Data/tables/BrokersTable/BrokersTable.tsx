@@ -8,15 +8,13 @@ import { createBroker, deleteBroker, getBrokers, updateBroker } from "../../../.
 import BrokerModal from "../../modals/BrokerModal/BrokerModal";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 
-interface Props {}
-
 interface State {
     brokers: BrokerEntity[],
     hasChanges: boolean,
     currentBrokerId: string | null
 }
 
-const BrokersTable: React.FC<Props> = () => {
+const BrokersTable: React.FC = () => {
     const [state, setState] = useState<State>({brokers: [], hasChanges: false, currentBrokerId: null});
     const { t } = useTranslation();
 

@@ -18,7 +18,7 @@ export const createTransactionType = async (addedSecurity: TransactionTypeEntity
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
         .then(id => {
-            return {...addedSecurity, id} as T;
+            return {...addedSecurity, id};
         })
         .catch(logPromiseError);
 }

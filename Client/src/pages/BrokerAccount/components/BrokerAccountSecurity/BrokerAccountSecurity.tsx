@@ -14,7 +14,7 @@ type Props = {
 }
 
 const BrokerAccountSecurity = (props: Props) => {
-    const {price, quantity, security, brokerAccount} = props.brokerAccountSecurity;
+    const {price, quantity, security } = props.brokerAccountSecurity;
 
     const { t } = useTranslation();
 

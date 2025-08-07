@@ -1,5 +1,5 @@
 import React, { Fragment, useRef } from 'react';
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import Dividend from '../Dividend/Dividend';
 import { useTranslation } from 'react-i18next';
 import { DividendEntity } from '../../../../models/securities/DividendEntity';

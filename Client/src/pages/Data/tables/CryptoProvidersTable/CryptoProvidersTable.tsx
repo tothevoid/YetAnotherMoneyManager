@@ -8,9 +8,7 @@ import { CryptoProviderEntity } from "../../../../models/crypto/CryptoProviderEn
 import CryptoProviderModal from "../../modals/CryptoProviderModal/CryptoProviderModal";
 import { useCryptoProviders } from "../../hooks/useCryptoProviders";
 
-interface Props {}
-
-const CryptoProvidersTable: React.FC<Props> = () => {
+const CryptoProvidersTable: React.FC = () => {
 	const { t } = useTranslation();
 	const modalRef = useRef<BaseModalRef>(null);
 	const confirmModalRef = useRef<BaseModalRef>(null);

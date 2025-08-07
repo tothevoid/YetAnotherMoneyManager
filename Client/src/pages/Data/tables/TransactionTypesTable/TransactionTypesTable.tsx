@@ -8,13 +8,11 @@ import { createTransactionType, deleteTransactionType, getTransactionTypeIconUrl
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import TransactionTypeModal from "../../modals/TransactionTypeModal/TransactionTypeModal";
 
-interface Props {}
-
 interface State {
     transactionTypes: TransactionTypeEntity[]
 }
 
-const TransactionTypesTable: React.FC<Props> = () => {
+const TransactionTypesTable: React.FC = () => {
     const [state, setState] = useState<State>({
         transactionTypes: []});
 

@@ -12,8 +12,6 @@ import CollectionSelect from "../../src/shared/components/CollectionSelect/Colle
 import { BaseModalRef } from "../../src/shared/utilities/modalUtilities";
 import { useUserProfile } from "./hooks/UserProfileContext";
 
-interface Props {}
-
 interface State {
 	currencies: CurrencyEntity[]
 	languages: {key: string, value: string}[]
@@ -34,7 +32,7 @@ const langMapping = new Map<string, string>([
 
 const languages = [...langMapping.entries()].map(([key, value]) => {return {key, value}});
 
-const UserProfileSettingsModal = forwardRef<BaseModalRef, Props>((props: Props, ref)=> {	 
+const UserProfileSettingsModal = forwardRef<BaseModalRef>((_, ref)=> {	 
 	const [state, setState] = useState<State>({currencies: [], languages: languages})
 	const {user, updateUser} = useUserProfile();
 	const { open, onOpen, onClose } = useDisclosure();

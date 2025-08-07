@@ -16,7 +16,7 @@ type Props = {
 }
 
 const Debt = (props: Props) => {
-	const {name, amount, date, currency, paidOn} = props.debt;
+	const { name, amount, date, currency } = props.debt;
 
 	const confirmModalRef = useRef<BaseModalRef>(null);
 	const editModalRef = useRef<BaseModalRef>(null);

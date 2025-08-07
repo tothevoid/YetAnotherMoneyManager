@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { SimpleGrid, Box, Checkbox, Flex} from "@chakra-ui/react";
+import { SimpleGrid, Box, Flex} from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { ClientDebtEntity } from "../../models/debts/DebtEntity";
 import { ClientDebtPaymentEntity } from "../../models/debts/DebtPaymentEntity";
@@ -13,9 +13,7 @@ import { useDebts } from "./hooks/useDebts";
 import { useDebtPayments } from "./hooks/useDebtPayments";
 import SwitchButton from "../../shared/components/SwitchButton/SwitchButton";
 
-interface Props {}
-
-const DebtsPage: React.FC<Props> = () => {
+const DebtsPage: React.FC = () => {
 	const { t } = useTranslation();
 
 	const {

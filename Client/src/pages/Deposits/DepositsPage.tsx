@@ -10,9 +10,7 @@ import { BaseModalRef } from "../../shared/utilities/modalUtilities";
 import DepositModal from "./modals/DepositModal/DepositModal";
 import { useDeposits } from "./hooks/useDeposits";
 
-interface Props {}
-
-const DepositsPage: React.FC<Props> = () => {
+const DepositsPage: React.FC = () => {
 	const { t } = useTranslation();
 
 	const {

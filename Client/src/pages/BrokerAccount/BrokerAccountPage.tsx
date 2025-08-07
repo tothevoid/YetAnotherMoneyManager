@@ -15,32 +15,28 @@ import { GrTransaction } from "react-icons/gr";
 import { PiCoinsLight } from "react-icons/pi";
 import DividendPaymentsList from "./components/DividendPaymentsList/DividendPaymentsList";
 
-interface Props {}
-
 interface State {
     brokerAccount: BrokerAccountEntity | null,
     isReloading: boolean
 }
 
-const BrokerAccountPage: React.FC<Props> = () => {
+const BrokerAccountPage: React.FC = () => {
     const { t } = useTranslation();
     const securitiesRef = useRef<BrokerAccountSecuritiesListRef>(null);
 
     const { brokerAccountId } = useParams(); // Получаем текущий таб из URL
 
-    if (!brokerAccountId) {
-        return <Fragment/>
-    }
-
     const [state, setState] = useState<State>({ brokerAccount: null, isReloading: false })
 
-    const onQuotesRecalculated = async (message: string) => {
+    const onQuotesRecalculated = async () => {
         await onDataReloaded();
     }
 
-    useSignalR(onQuotesRecalculated);
-
     const fetchBrokerAccount = async () => {
+        if (!brokerAccountId) {
+            return;
+        }
+
         const brokerAccount = await getBrokerAccountById(brokerAccountId);
         if (!brokerAccount) {
             return;
@@ -51,9 +47,17 @@ const BrokerAccountPage: React.FC<Props> = () => {
         })
     }
 
+    useSignalR(onQuotesRecalculated);
+
     useEffect(() => {
         fetchBrokerAccount();
     }, []);
+
+    if (!brokerAccountId) {
+        return <Fragment/>
+    }
+
+   
 
     const onDataReloaded = async () => {
         await fetchBrokerAccount();

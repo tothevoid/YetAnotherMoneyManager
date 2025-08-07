@@ -19,7 +19,7 @@ export const groupByKey = <KeyT, ValueT>(records: ValueT[], keySelector: (value:
     return records.reduce((accumulator: Map<KeyT, ValueT[]>, currentValue: ValueT) => {
         const key = keySelector(currentValue);
         if (accumulator.has(key)) {
-            accumulator.get(key).push(currentValue);
+            accumulator.get(key)!.push(currentValue);
         } else {
             accumulator.set(key, [currentValue]);
         }

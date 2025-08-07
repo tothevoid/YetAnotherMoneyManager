@@ -8,13 +8,11 @@ import { Dashboard, DistributionModel } from "../../models/dashboard/DashboardEn
 import { formatMoneyByCurrencyCulture } from "../../shared/utilities/formatters/moneyFormatter";
 import DistributionChart from "./components/DistributionChart";
 
-interface Props {}
-
 interface State {
 	dashboard: Dashboard | null
 }
 
-const DashboardPage: React.FC<Props> = () => {
+const DashboardPage: React.FC = () => {
 	const { t } = useTranslation();
 
 	const { user } = useUserProfile();

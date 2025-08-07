@@ -1,6 +1,6 @@
 import "./TransactionsPage.scss"
 
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Transaction from './components/Transaction/Transaction';
 import { AccountEntity } from '../../models/accounts/AccountEntity';
 import Pagination from './components/Pagination/Pagination';
@@ -14,19 +14,16 @@ import { formatMoneyByCurrencyCulture } from "../../shared/utilities/formatters/
 import { useUserProfile } from "../../../features/UserProfileSettingsModal/hooks/UserProfileContext";
 import ShowModalButton from "../../shared/components/ShowModalButton/ShowModalButton";
 import { BaseModalRef } from "../../shared/utilities/modalUtilities";
-import TransactionModal from "./modals/TransactionModal/TransactionModal";
 import { useTransactions } from "./hooks/useTransactions";
 import { groupByKey, sumEntities } from "../../shared/utilities/arrayUtilities";
 import NewTransactionModal from "./modals/NewTransactionModal/NewTransactionModal";
 import { ClientCurrencyTransactionEntity } from "../../models/transactions/CurrencyTransactionEntity";
 
-interface Props {}
-
 interface State {
     accounts: AccountEntity[]
 }
 
-const TransactionsPage: React.FC<Props> = () => {
+const TransactionsPage: React.FC = () => {
     const { t, i18n } = useTranslation();
     const { user } = useUserProfile();
     const [state, setState] = useState<State>({accounts: [] as AccountEntity[]});

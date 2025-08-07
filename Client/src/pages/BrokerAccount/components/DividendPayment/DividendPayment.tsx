@@ -15,7 +15,7 @@ type Props = {
 }
 
 const DividendPayment = (props: Props) => {
-	const { brokerAccount, dividend, securitiesQuantity, tax} = props.dividendPayment;
+	const { dividend, securitiesQuantity, tax} = props.dividendPayment;
 
 	const { t } = useTranslation();
 

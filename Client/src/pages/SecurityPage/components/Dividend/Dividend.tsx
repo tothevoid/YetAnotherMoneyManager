@@ -17,7 +17,7 @@ type Props = {
 }
 
 const Dividend = (props: Props) => {
-    const {id, amount, security, declarationDate, snapshotDate} = props.dividend;
+    const { amount, security, declarationDate, snapshotDate } = props.dividend;
 
     const confirmModalRef = useRef<BaseModalRef>(null);
     const editModalRef = useRef<BaseModalRef>(null);

@@ -8,15 +8,13 @@ import { createBrokerAccountType, deleteBrokerAccountType, getBrokerAccountTypes
 import { BrokerAccountTypeEntity } from "../../../../models/brokers/BrokerAccountTypeEntity";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 
-interface Props {}
-
 interface State {
     brokerAccountTypes: BrokerAccountTypeEntity[],
     hasChanges: boolean,
     currentBrokerAccountId: string | null
 }
 
-const BrokerAccountTypesTable: React.FC<Props> = () => {
+const BrokerAccountTypesTable: React.FC = () => {
     const [state, setState] = useState<State>({brokerAccountTypes: [], hasChanges: false, currentBrokerAccountId: null});
     const { t } = useTranslation();
 

@@ -1,7 +1,7 @@
-import { Box, Button, Checkbox, Icon, Input, Stack, Table, Text } from "@chakra-ui/react";
+import { Box, Button, Checkbox, Icon, Stack, Table, Text } from "@chakra-ui/react";
 import { CurrencyEntity } from "../../../../models/currencies/CurrencyEntity";
 import { useEffect, useRef, useState } from "react";
-import { MdAdd, MdDelete, MdRefresh } from "react-icons/md";
+import { MdAdd, MdDelete } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { ConfirmModal } from "../../../../shared/modals/ConfirmModal/ConfirmModal";
 import { getCurrencies, updateCurrency, createCurrency, deleteCurrency, syncRates } from "../../../../api/currencies/currencyApi";
@@ -11,15 +11,13 @@ import { useUserProfile } from "../../../../../features/UserProfileSettingsModal
 import { formatMoneyByCurrencyCulture } from "../../../../shared/utilities/formatters/moneyFormatter";
 import RefreshButton from "../../../../shared/components/RefreshButton/RefreshButton";
 
-interface Props {}
-
 interface State {
     currencies: CurrencyEntity[],
     hasChanges: boolean,
     currentCurrencyId: string | null
 }
 
-const CurrenciesTable: React.FC<Props> = () => {
+const CurrenciesTable: React.FC = () => {
     const [state, setState] = useState<State>({currencies: [], hasChanges: false, currentCurrencyId: null});
     const { t } = useTranslation();
     

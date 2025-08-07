@@ -14,13 +14,13 @@ import TransactionModal from '../../modals/TransactionModal/TransactionModal';
 
 interface Props { 
 	onDelete: (transaction: TransactionEntity) => void,
-	onUpdate: (updatedTransaction: TransactionEntity) => Prmosie<void>,
+	onUpdate: (updatedTransaction: TransactionEntity) => Promise<void>,
 	transaction: TransactionEntity,
 	accounts: AccountEntity[],
 } 
 
 const Transaction: React.FC<Props> = (props: Props) => {
-	const {amount, transactionType, name, date, account} = props.transaction;
+	const {amount, transactionType, name, account} = props.transaction;
 
 	const confirmModalRef = useRef<BaseModalRef>(null);
  	const editModalRef = useRef<BaseModalRef>(null);

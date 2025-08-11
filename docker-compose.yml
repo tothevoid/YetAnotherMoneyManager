@@ -44,6 +44,7 @@ services:
   #     - ${CLIENT_PORT}:80
   files_database:
     image: minio/minio
+    restart: always
     ports:
       - "9000:9000"
       - "9001:9001"
@@ -53,7 +54,6 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     command: server /data --console-address ":9001"
-
 networks:
   server-network:
   postgres-network:

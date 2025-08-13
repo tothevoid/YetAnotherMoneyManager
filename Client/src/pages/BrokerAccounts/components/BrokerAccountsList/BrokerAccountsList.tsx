@@ -9,11 +9,7 @@ import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 import BrokerAccountModal from '../../modals/BrokerAccountModal/BrokerAccountModal';
 import { useBrokerAccounts } from '../../hooks/useBrokerAccounts';
 
-interface Props {
-
-}
-
-const BrokerAccountsList: React.FC<Props> = (props) => {
+const BrokerAccountsList: React.FC = () => {
 	const { t } = useTranslation()
 
 	const {

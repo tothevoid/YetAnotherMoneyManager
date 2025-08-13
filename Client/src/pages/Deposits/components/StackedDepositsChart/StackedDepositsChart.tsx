@@ -1,7 +1,7 @@
 import { Stack } from "@chakra-ui/react"
 import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import { CHARTS_COLORS } from "../DepositStats/chartsColors"
-import { DepositMonthSummary, DepositPayment } from "../DepositStats/depositMonthSummary"
+import { DepositMonthSummary } from "../DepositStats/depositMonthSummary"
 import { getChartLabelConfig } from "../../../../shared/utilities/chartUtilities"
 import { formatMoneyByCurrencyCulture } from "../../../../shared/utilities/formatters/moneyFormatter"
 import { formatMonth } from "../../../../shared/utilities/formatters/dateFormatter"
@@ -12,15 +12,24 @@ interface Props {
 	currencyName: string
 }
 
+interface ChartBar {
+	[key: string]: number,
+}
+
+type ChartBarData = ChartBar & {
+    date: string
+}
+
+
 const StackedDepositsChart = (props: Props) => {
 	const { i18n } = useTranslation();
 
 	const deposits = new Map<string, string>();
 
 	const data = props.data.payments.map(payment => {
-		const output: object = { date: payment.period };
-
-		 payment.payments.forEach((payment) => {
+		const output: ChartBarData = { date: payment.period };
+		
+		payment.payments.forEach((payment) => {
 			output[payment.depositId] = payment.value;
 
 			if (!deposits.has(payment.depositId)) {

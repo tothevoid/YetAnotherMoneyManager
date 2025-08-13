@@ -1,4 +1,4 @@
-import { Field, Input, Text} from "@chakra-ui/react"
+import { Field, Input} from "@chakra-ui/react"
 import { Select } from "chakra-react-select";
 import { RefObject, useEffect, useState } from "react"
 import { useForm } from "react-hook-form";

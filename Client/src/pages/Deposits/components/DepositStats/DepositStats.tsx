@@ -1,5 +1,5 @@
 import { ProgressCircle, Flex, Box, Stack, Button } from '@chakra-ui/react'
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { DepositMonthSummary } from './depositMonthSummary';
 import { getDepositsSummary } from '../../../../api/deposits/depositApi';
 import StackedDepositsChart from '../StackedDepositsChart/StackedDepositsChart';
@@ -46,7 +46,7 @@ const DepositStats = (props: Props) => {
 			}
 		}
 		getData();
-	}, [props.selectedMinMonths, props.selectedMaxMonths]);
+	}, [props.selectedMinMonths, props.selectedMaxMonths, props.onlyActive]);
 
 	if (!state.summary) {
 		return <Flex padding={5} justifyContent="center">
@@ -63,6 +63,10 @@ const DepositStats = (props: Props) => {
 		setState(currentState => {
 			return {...currentState, selectedChartType: newType};
 		})
+	}
+
+	if (!user?.currency?.name) {
+		return <Fragment/>
 	}
 
 	return <Box>

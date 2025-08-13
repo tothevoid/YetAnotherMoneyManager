@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
 import { SimpleGrid } from '@chakra-ui/react/grid';
-import { useTranslation } from 'react-i18next';
 import { useCryptoAccountCryptocurrencies } from '../../hooks/useCryptoAccountCryptocurrencies';
 import { ClientCryptoAccountEntity } from '../../../../models/crypto/CryptoAccountEntity';
 import { ClientCryptoAccountCryptocurrencyEntity } from '../../../../models/crypto/CryptoAccountCryptocurrencyEntity';
@@ -11,8 +10,6 @@ interface Props {
 }
 
 const CryptoAccountCryptocurrenciesList: React.FC<Props> = (props: Props)=> {
-	const { t } = useTranslation()
-
 	const { 
         cryptoAccountCryptocurrencies,
         reloadCryptoAccountCryptocurrencies

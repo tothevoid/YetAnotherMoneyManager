@@ -43,7 +43,6 @@ const prepareClientCryptoAccountCryptocurrency = (cryptoAccountCryptocurrency: S
 const prepareServerCryptoAccountCryptocurrency = (cryptoAccountCryptocurrency: ClientCryptoAccountCryptocurrencyEntity): ServerCryptoAccountCryptocurrencyEntity => {
     const convertedSecurity: ServerCryptoAccountCryptocurrencyEntity = {
         id: cryptoAccountCryptocurrency.id,
-        name: cryptoAccountCryptocurrency.name,
         cryptoAccountId: cryptoAccountCryptocurrency.cryptoAccount.id,
         cryptocurrencyId: cryptoAccountCryptocurrency.cryptocurrency.id,
         quantity: cryptoAccountCryptocurrency.quantity

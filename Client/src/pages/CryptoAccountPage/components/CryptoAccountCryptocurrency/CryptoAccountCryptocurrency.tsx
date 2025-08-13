@@ -12,7 +12,7 @@ type Props = {
 }
 
 const CryptoAccountCryptocurrency = (props: Props) => {
-    const { quantity, cryptoAccount, cryptocurrency } = props.cryptoAccountCryptocurrency;
+    const { quantity, cryptocurrency } = props.cryptoAccountCryptocurrency;
 
     const { t } = useTranslation();
 

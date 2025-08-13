@@ -11,7 +11,7 @@ export const useDividendPayments = (queryParameters: DividendPaymentsQuery, onDa
 	const [isSecurityTransactionsLoading, setLoading] = useState(false);
 
 	const [error, setError] = useState<string | null>(null);
-	const [dividendPaymentsQueryParameters, setDividendPaymentsQueryParameters] = useState<DividendPaymentsQuery>(queryParameters);
+	const [dividendPaymentsQueryParameters] = useState<DividendPaymentsQuery>(queryParameters);
 
 	const fetchData = useCallback(async () => {
 		setLoading(true)

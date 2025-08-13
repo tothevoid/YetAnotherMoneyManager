@@ -1,5 +1,5 @@
-import React, { Fragment, useEffect, useRef } from 'react';
-import { Box, Flex, Tabs } from '@chakra-ui/react';
+import React, { useEffect, useRef } from 'react';
+import { Box, Flex } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { SecurityTransactionEntity } from '../../../../models/securities/SecurityTransactionEntity';
 import SecurityTransaction from '../SecurityTransaction/SecurityTransaction';
@@ -20,7 +20,6 @@ const SecurityTransactionsList: React.FC<Props> = (props) => {
 
 	const {
 		securityTransactions,
-		isSecurityTransactionsLoading,
 		createSecurityTransactionEntity,
 		updatedSecurityTransactionEntity,
 		deleteSecurityTransactionEntity,

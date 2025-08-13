@@ -8,7 +8,12 @@ interface State {
     maxMonths: number | null,
     selectedMinMonths: number | null,
     selectedMaxMonths: number | null,
-    marks: {label: string, values: string}[]
+    marks: SliderMark[]
+}
+
+interface SliderMark {
+    value: number;
+    label: React.ReactNode;
 }
 
 interface Props {
@@ -24,7 +29,7 @@ const convertRange = (range: DepositsRange) => {
     const maxMonths = maxDate.getFullYear() * 12 + maxDateMonth;
 
     //TODO: use culture to display date
-    const marks = [
+    const marks: SliderMark[] = [
         { value: minMonths, label: `${minDateMonth}-${minDate.getFullYear()}` },
         { value: maxMonths, label: `${maxDateMonth}-${maxDate.getFullYear()}` },
     ]

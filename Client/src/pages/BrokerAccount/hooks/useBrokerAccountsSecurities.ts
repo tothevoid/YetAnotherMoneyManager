@@ -40,7 +40,7 @@ export const useBrokerAccountsSecurities = (queryParameters: BrokerAccountSecuri
 	}
 
 	const deleteBrokerAccountSecurityEntity = async (deletedBrokerAccountSecurity: BrokerAccountSecurityEntity) => {
-		const brokerAccountSecurityDeleted = await deleteBrokerAccountSecurity(queryParameters.brokerAccountId);
+		const brokerAccountSecurityDeleted = await deleteBrokerAccountSecurity(deletedBrokerAccountSecurity.id);
 		
 		if (!brokerAccountSecurityDeleted) {
 			return;

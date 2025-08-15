@@ -1,5 +1,5 @@
 import { Field, Input} from "@chakra-ui/react"
-import React, { RefObject, useEffect, useRef, useState } from "react"
+import React, { RefObject, useEffect, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
@@ -9,12 +9,12 @@ import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal
 import { getCryptoProviders } from "../../../../api/crypto/cryptoProviderApi";
 import { CryptoProviderEntity } from "../../../../models/crypto/CryptoProviderEntity";
 import { CryptoAccountFormInput, CryptoAccountValidationSchema } from "./CryptoAccountValidationSchema";
-import { ClientCryptoAccountEntity } from "../../../../models/crypto/CryptoAccountEntity";
+import { CryptoAccountEntity } from "../../../../models/crypto/CryptoAccountEntity";
 
 interface ModalProps {
     modalRef: RefObject<BaseModalRef | null>,
-    cryptoAccount?: ClientCryptoAccountEntity | null,
-    onSaved: (security: ClientCryptoAccountEntity) => void;
+    cryptoAccount?: CryptoAccountEntity | null,
+    onSaved: (security: CryptoAccountEntity) => void;
 };
 
 interface State {
@@ -22,8 +22,6 @@ interface State {
 }
 
 const CryptoAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
-    const inputRef = useRef<HTMLInputElement | null>(null);
-
     const [state, setState] = useState<State>({cryptoProviders: []})
 
     useEffect(() => {
@@ -52,7 +50,7 @@ const CryptoAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
     });
 
     const onSubmit = (cryptoAccount: CryptoAccountFormInput) => {
-        props.onSaved(cryptoAccount as ClientCryptoAccountEntity);
+        props.onSaved(cryptoAccount as CryptoAccountEntity);
         props.modalRef?.current?.closeModal();
     }
 

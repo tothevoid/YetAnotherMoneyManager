@@ -18,7 +18,7 @@ type Props = {
 }
 
 const Cryptocurrency = (props: Props) => {
-    const {id, name, symbol, price, iconKey} = props.cryptocurrency;
+    const { name, symbol, price, iconKey } = props.cryptocurrency;
 
     const confirmModalRef = useRef<BaseModalRef>(null);
     const editModalRef = useRef<BaseModalRef>(null);

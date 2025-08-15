@@ -1,5 +1,4 @@
 import { Stack } from '@chakra-ui/react'
-import { useTranslation } from 'react-i18next';
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { DistributionModel } from '../../../models/dashboard/DashboardEntity';
 import { getChartLabelConfig } from '../../../shared/utilities/chartUtilities';
@@ -21,8 +20,6 @@ type Props = {
 }
 
 const DistributionChart = (props: Props) => {
-    const { t } = useTranslation();
-
     const colors = getPossibleColors();
 
     const formatLabel = (value: number, key: string, data) => {

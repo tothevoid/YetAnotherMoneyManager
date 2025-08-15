@@ -35,7 +35,7 @@ const BrokerAccountTypesTable: React.FC = () => {
     const onCellChanged = (brokerAccountTypeId: string, propertyName: string, newValue: any) => {
         let hasChanges = false;
 
-        const updatedbrokerAccountTypes = state.brokerAccountTypes.map((brokerAccountType: BrokerAccountTypeEntity) => {
+        const updatedBrokerAccountTypes = state.brokerAccountTypes.map((brokerAccountType: BrokerAccountTypeEntity) => {
             if (brokerAccountType.id !== brokerAccountTypeId) {
                 return brokerAccountType;
             }
@@ -54,7 +54,7 @@ const BrokerAccountTypesTable: React.FC = () => {
         }
 
         setState((currentState) => {
-            return {...currentState, brokerAccountTypes: updatedbrokerAccountTypes, hasChanges: true}
+            return {...currentState, brokerAccountTypes: updatedBrokerAccountTypes, hasChanges: true}
         })
     }
 

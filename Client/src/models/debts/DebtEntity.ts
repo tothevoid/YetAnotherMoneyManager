@@ -6,14 +6,20 @@ interface CommonDebtEntity {
     amount: number
 }
 
-export interface ClientDebtEntity extends CommonDebtEntity {
+export interface DebtEntityRequest extends CommonDebtEntity {
+    currencyId: string
+    date: string,
+    paidOn: string
+}
+
+export interface DebtEntity extends CommonDebtEntity {
     currency: CurrencyEntity,
     date: Date,
     paidOn: Date
 }
 
-export interface ServerDebtEntity extends CommonDebtEntity {
-    currencyId: string
+export interface DebtEntityResponse extends CommonDebtEntity {
+    currency: CurrencyEntity,
     date: string,
     paidOn: string
 }

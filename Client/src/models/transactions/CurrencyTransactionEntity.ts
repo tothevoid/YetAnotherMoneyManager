@@ -6,14 +6,20 @@ interface CommonCurrencyTransactionEntity {
 	amount: number
 }
 
-export interface ServerCurrencyTransactionEntity extends CommonCurrencyTransactionEntity {
+export interface CurrencyTransactionEntityRequest extends CommonCurrencyTransactionEntity {
 	date: string,
 	sourceAccountId: string,
 	destinationAccountId: string
 }
 
-export interface ClientCurrencyTransactionEntity extends CommonCurrencyTransactionEntity {
+export interface CurrencyTransactionEntity extends CommonCurrencyTransactionEntity {
 	date: Date,
+	sourceAccount: AccountEntity,
+	destinationAccount: AccountEntity
+}
+
+export interface CurrencyTransactionEntityResponse extends CommonCurrencyTransactionEntity {
+	date: string,
 	sourceAccount: AccountEntity,
 	destinationAccount: AccountEntity
 }

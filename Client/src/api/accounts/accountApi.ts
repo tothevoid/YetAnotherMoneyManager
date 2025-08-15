@@ -1,5 +1,5 @@
 import config from "../../config";
-import { AccountEntity, ServerAccountEntity } from "../../models/accounts/AccountEntity";
+import { AccountEntity, AccountEntityRequest, AccountEntityResponse } from "../../models/accounts/AccountEntity";
 import { convertToDateOnly } from "../../shared/utilities/dateUtils";
 import { checkPromiseStatus, logPromiseError } from "../../shared/utilities/webApiUtilities";
 import { AccountCurrencySummary } from "../../models/accounts/accountsSummary";
@@ -9,87 +9,94 @@ import { Transfer } from "../../pages/Accounts/modals/AccountBalanceTransferModa
 const basicUrl = `${config.api.URL}/Account`;
 
 export const getAccounts = async (onlyActive: boolean = false): Promise<AccountEntity[]> =>  {
-    const accounts: ServerAccountEntity[] = await fetch(`${basicUrl}/GetAll`, {
-        method: "POST", 
-        body: JSON.stringify({onlyActive}),
-        headers: {"Content-Type": "application/json"}
-    })
-    .then(checkPromiseStatus)
-    .then((response: Response) => response.json())
-    .catch(logPromiseError);
+	const accounts = await fetch(`${basicUrl}/GetAll`, {
+			method: "POST", 
+			body: JSON.stringify({onlyActive}),
+			headers: {"Content-Type": "application/json"}
+		})
+		.then(checkPromiseStatus)
+		.then((response: Response) => response.json())
+		.then((accountResponses: AccountEntityResponse[]) => accountResponses.map(prepareAccountEntity))
+		.catch(logPromiseError);
 
-    return accounts ? accounts.map(prepareClientAccount) : [] as AccountEntity[];
+	return accounts ?? []
 }
 
 export const getAccountsByTypes = async (typesIds: string[], onlyActive: boolean = false): Promise<AccountEntity[]> =>  {
-    const accounts: ServerAccountEntity[] = await fetch(`${basicUrl}/GetAllByTypes`, {
-        method: "POST", 
-        body: JSON.stringify({onlyActive, typesIds}),
-        headers: {"Content-Type": "application/json"}
-    })
-    .then(checkPromiseStatus)
-    .then((response: Response) => response.json())
-    .catch(logPromiseError);
+	const accounts = await fetch(`${basicUrl}/GetAllByTypes`, {
+			method: "POST", 
+			body: JSON.stringify({onlyActive, typesIds}),
+			headers: {"Content-Type": "application/json"}
+		})
+		.then(checkPromiseStatus)
+		.then((response: Response) => response.json())
+		.then((accountResponses: AccountEntityResponse[]) => accountResponses.map(prepareAccountEntity))
+		.catch(logPromiseError);
 
-    return accounts ? accounts.map(prepareClientAccount) : [] as AccountEntity[];
+	return accounts ?? [];
 }
 
 export const createAccount = async (newAccount: AccountEntity): Promise<string | void> => {
-    const createdEntity = await createEntity(basicUrl, prepareServerAccount(newAccount));
-    return createdEntity?.id;
+	const createdEntity = await createEntity<AccountEntityRequest, AccountEntityResponse>(basicUrl, prepareAccountRequest(newAccount));
+	return createdEntity?.id;
 }
 
 export const updateAccount = async (modifiedAccount: AccountEntity): Promise<boolean> => {
-    return await updateEntity(basicUrl, prepareServerAccount(modifiedAccount));
+	return await updateEntity(basicUrl, prepareAccountRequest(modifiedAccount));
 }
 
 export const deleteAccount = async (accountId: string): Promise<boolean> => {
-    return await deleteEntity(basicUrl, accountId);
+	return await deleteEntity(basicUrl, accountId);
 }
 
 export const transferBalance = async (transfer: Transfer): Promise<boolean> => {
-    if (!transfer) {
-        return false;
-    }
+	if (!transfer) {
+		return false;
+	}
 
-    const requestTransfer = {
-        ...transfer,
-        from: transfer.from.id,
-        to: transfer.to.id,
-    }
+	const requestTransfer = {
+		...transfer,
+		from: transfer.from.id,
+		to: transfer.to.id,
+	}
 
-    const result = await fetch(`${basicUrl}/Transfer`, { method: "POST", body: JSON.stringify(requestTransfer),  
-        headers: {"Content-Type": "application/json"}})
-        .then(checkPromiseStatus)
-        .catch(logPromiseError)
+	const result = await fetch(`${basicUrl}/Transfer`, { method: "POST", body: JSON.stringify(requestTransfer),  
+		headers: {"Content-Type": "application/json"}})
+		.then(checkPromiseStatus)
+		.catch(logPromiseError)
 
-    return result?.ok ?? false;
+	return result?.ok ?? false;
 }
 
 export const getSummary = async (): Promise<AccountCurrencySummary[]> => {
-    const summaries: AccountCurrencySummary[] = await fetch(`${basicUrl}/GetSummary`, { method: "GET"})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
-        .catch(logPromiseError)
+	const summaries: AccountCurrencySummary[] = await fetch(`${basicUrl}/GetSummary`, { method: "GET"})
+		.then(checkPromiseStatus)
+		.then((response: Response) => response.json())
+		.catch(logPromiseError)
 
-    return summaries ? summaries: [] as AccountCurrencySummary[];
+	return summaries ? summaries: [] as AccountCurrencySummary[];
 }
 
-const prepareServerAccount = (account: AccountEntity): ServerAccountEntity => {
-    return {
-        id: account.id,
-        active: account.active,
-        balance: account.balance,
-        name: account.name,
-        createdOn: convertToDateOnly(account.createdOn),
-        accountTypeId: account.accountType.id,
-        currencyId: account.currency.id
-    };
+const prepareAccountRequest = (account: AccountEntity): AccountEntityRequest => {
+	return {
+		id: account.id,
+		active: account.active,
+		balance: account.balance,
+		name: account.name,
+		createdOn: convertToDateOnly(account.createdOn),
+		accountTypeId: account.accountType.id,
+		currencyId: account.currency.id
+	};
 }
 
-const prepareClientAccount = (account: ServerAccountEntity): AccountEntity => {
-    const serverDeposit: AccountEntity = {...account,
-        createdOn: new Date(account.createdOn)
-    };
-    return serverDeposit
+const prepareAccountEntity = (account: AccountEntityResponse): AccountEntity => {
+	return {
+		id: account.id,
+		name: account.name,
+		active: account.active,
+		balance: account.balance,
+		accountType: account.accountType,
+		currency: account.currency,
+		createdOn: new Date(account.createdOn)
+	};
 }

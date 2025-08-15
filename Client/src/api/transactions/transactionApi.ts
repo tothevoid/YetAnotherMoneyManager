@@ -1,9 +1,9 @@
 import config from '../../config' 
-import { ServerTransactionEntity, TransactionEntity } from '../../models/transactions/TransactionEntity';
 import { convertToDateOnly } from '../../shared/utilities/dateUtils';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { AccountToUpdate } from '../../models/accounts/accountToUpdate';
 import { createEntity, deleteEntity, updateEntity } from '../basicApi';
+import { TransactionEntity, TransactionEntityRequest, TransactionEntityResponse } from '../../models/transactions/TransactionEntity';
 
 const basicUrl = `${config.api.URL}/Transaction`;
 
@@ -12,32 +12,40 @@ export const getTransactions = async (month: number, year: number, showSystem: b
     const transactions = await fetch(url, {method: "GET"})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
-        .then((transactions: TransactionEntity[]) => 
-            transactions.map((transaction: TransactionEntity) => {
-                const date = new Date(transaction.date);
-                return {...transaction, date: date} as TransactionEntity;
-            })
-        )
+        .then((transactionsResponses: TransactionEntityResponse[]) => transactionsResponses.map(prepareTransaction))
         .catch(logPromiseError);
   
-    return transactions ?
-        transactions: 
-        [] as TransactionEntity[];
+    return transactions ?? [];
 };
 
 export const createTransaction = async (transaction: TransactionEntity): Promise<TransactionEntity | void> => {
-    return await createEntity(basicUrl, prepareServerTransaction(transaction));
+    return await createEntity<TransactionEntityRequest, TransactionEntityResponse>(basicUrl, prepareTransactionRequest(transaction))
+        .then(transaction => transaction && prepareTransaction(transaction));
 }
 
 export const updateTransaction = async (modifiedTransaction: TransactionEntity): Promise<AccountToUpdate[]> => {
-    return await updateEntity(basicUrl, prepareServerTransaction(modifiedTransaction));
+    // TODO: Fix return type
+    return await updateEntity(basicUrl, prepareTransactionRequest(modifiedTransaction));
 }
 
 export const deleteTransaction = async (transactionId: string): Promise<boolean> => {
     return await deleteEntity(basicUrl, transactionId);
 }
 
-const prepareServerTransaction = (transaction: TransactionEntity): ServerTransactionEntity => {
+const prepareTransaction = (transaction: TransactionEntityResponse): TransactionEntity => {
+    return {
+        id: transaction.id,
+        name: transaction.name,
+        date: new Date(transaction.date),
+        isSystem: transaction.isSystem,
+        cashback: transaction.cashback,
+        amount: transaction.amount,
+        transactionType: transaction.transactionType,
+        account: transaction.account
+    }
+}
+
+const prepareTransactionRequest = (transaction: TransactionEntity): TransactionEntityRequest => {
     return {
         id: transaction.id,
         name: transaction.name,

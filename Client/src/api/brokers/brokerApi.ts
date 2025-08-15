@@ -9,7 +9,7 @@ export const getBrokers = async (): Promise<BrokerEntity[]> => {
 };
 
 export const createBroker = async (addedBroker: BrokerEntity): Promise<BrokerEntity | void> => {
-    return await createEntity<BrokerEntity>(basicUrl, addedBroker);
+    return await createEntity<BrokerEntity, BrokerEntity>(basicUrl, addedBroker);
 }
 
 export const updateBroker = async (modifiedBroker: BrokerEntity): Promise<boolean> => {

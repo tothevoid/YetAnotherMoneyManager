@@ -24,19 +24,19 @@ export const getAllEntitiesByConfig = async <TInput, TOutput> (basicUrl: string,
         [] as TOutput[];
 };
 
-export const createEntity = async<T> (basicUrl: string, addedEntity: T): Promise<T | void> => {
+export const createEntity = async<TRequest, TResponse> (basicUrl: string, addedEntity: TRequest): Promise<TResponse | void> => {
     const newEntity = await fetch(basicUrl, { method: "PUT", body: convertRecordToJson(addedEntity),
         headers: {"Content-Type": "application/json"}})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
         .then(id => {
-            return {...addedEntity, id} as T;
+            return {...addedEntity, id} as TResponse;
         })
         .catch(logPromiseError);
     return newEntity;
 }
 
-export const updateEntity = async<T> (basicUrl: string, modifiedEntity: T): Promise<boolean> => {
+export const updateEntity = async<TRequest> (basicUrl: string, modifiedEntity: TRequest): Promise<boolean> => {
     const updatedEntity = await fetch(basicUrl, { method: "PATCH", body: convertRecordToJson(modifiedEntity),  
         headers: {"Content-Type": "application/json"}})
         .then(checkPromiseStatus)

@@ -16,7 +16,7 @@ export const getCurrencies = async (): Promise<CurrencyEntity[]> =>  {
 }
 
 export const createCurrency = async (newCurrency: CurrencyEntity): Promise<string | void> => {
-	const result = await createEntity<CurrencyEntity>(basicUrl, newCurrency);
+	const result = await createEntity<CurrencyEntity, CurrencyEntity>(basicUrl, newCurrency);
 	return result?.id;
 }
 

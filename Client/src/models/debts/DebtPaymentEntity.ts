@@ -1,19 +1,25 @@
 import { AccountEntity } from "../accounts/AccountEntity";
-import { ClientDebtEntity } from "./DebtEntity";
+import { DebtEntity } from "./DebtEntity";
 
 export interface CommonDebtPaymentEntity {
     id: string,
     amount: number
 }
 
-export interface ClientDebtPaymentEntity extends CommonDebtPaymentEntity {
+export interface DebtPaymentEntityRequest extends CommonDebtPaymentEntity {
+    targetAccountId: string,
+    debtId: string,
+    date: string
+}
+
+export interface DebtPaymentEntity extends CommonDebtPaymentEntity {
     targetAccount: AccountEntity,
-    debt: ClientDebtEntity,
+    debt: DebtEntity,
     date: Date
 }
 
-export interface ServerDebtPaymentEntity extends CommonDebtPaymentEntity {
-    targetAccountId: string,
-    debtId: string,
+export interface DebtPaymentEntityResponse extends CommonDebtPaymentEntity {
+    targetAccount: AccountEntity,
+    debt: DebtEntity,
     date: string
 }

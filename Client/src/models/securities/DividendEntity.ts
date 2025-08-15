@@ -5,10 +5,10 @@ export interface CommonDividendEntity {
     amount: number
 }
 
-export interface ServerDividendEntity extends CommonDividendEntity {
+export interface DividendEntityRequest extends CommonDividendEntity {
     declarationDate: string,
     snapshotDate: string,
-    securityId: string,
+    securityId: string
 }
 
 export interface DividendEntity extends CommonDividendEntity {
@@ -17,3 +17,8 @@ export interface DividendEntity extends CommonDividendEntity {
     security: SecurityEntity
 }
 
+export interface DividendEntityResponse extends CommonDividendEntity {
+    declarationDate: string,
+    snapshotDate: string,
+    security: SecurityEntity
+}

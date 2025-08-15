@@ -9,7 +9,7 @@ export const getSecurityTypes = async (): Promise<SecurityTypeEntity[]> => {
 };
 
 export const createSecurityType = async (addedSecurityType: SecurityTypeEntity): Promise<SecurityTypeEntity | void> => {
-    return await createEntity<SecurityTypeEntity>(basicUrl, addedSecurityType);
+    return await createEntity<SecurityTypeEntity, SecurityTypeEntity>(basicUrl, addedSecurityType);
 }
 
 export const updateSecurityType = async (modifiedSecurityType: SecurityTypeEntity): Promise<boolean> => {

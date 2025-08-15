@@ -9,7 +9,7 @@ export const getCryptoProviders = async (): Promise<CryptoProviderEntity[]> => {
 };
 
 export const createCryptoProvider = async (addedCryptoProvider: CryptoProviderEntity): Promise<CryptoProviderEntity | void> => {
-    return await createEntity<CryptoProviderEntity>(basicUrl, addedCryptoProvider);
+    return await createEntity<CryptoProviderEntity, CryptoProviderEntity>(basicUrl, addedCryptoProvider);
 }
 
 export const updateCryptoProvider = async (modifiedCryptoProvider: CryptoProviderEntity): Promise<boolean> => {

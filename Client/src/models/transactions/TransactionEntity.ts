@@ -9,7 +9,7 @@ interface CommonTransactionEntity {
     isSystem: boolean
 }
 
-export interface ServerTransactionEntity extends CommonTransactionEntity {
+export interface TransactionEntityRequest extends CommonTransactionEntity {
     date: string,
     accountId: string,
     transactionTypeId: string
@@ -17,6 +17,12 @@ export interface ServerTransactionEntity extends CommonTransactionEntity {
 
 export interface TransactionEntity extends CommonTransactionEntity {
     date: Date,
+    account: AccountEntity,
+    transactionType: TransactionTypeEntity,
+}
+
+export interface TransactionEntityResponse extends CommonTransactionEntity {
+    date: string,
     account: AccountEntity,
     transactionType: TransactionTypeEntity,
 }

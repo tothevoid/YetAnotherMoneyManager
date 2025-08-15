@@ -1,4 +1,4 @@
-import { ClientCryptoAccountEntity } from "./CryptoAccountEntity";
+import { CryptoAccountEntity } from "./CryptoAccountEntity";
 import { CryptocurrencyEntity } from "./CryptocurrencyEntity";
 
 interface CommonCryptoAccountCryptocurrencyEntity {
@@ -6,12 +6,17 @@ interface CommonCryptoAccountCryptocurrencyEntity {
     quantity: number
 }
 
-export interface ClientCryptoAccountCryptocurrencyEntity extends CommonCryptoAccountCryptocurrencyEntity {
-    cryptocurrency: CryptocurrencyEntity,
-    cryptoAccount: ClientCryptoAccountEntity,
-}
-
-export interface ServerCryptoAccountCryptocurrencyEntity extends CommonCryptoAccountCryptocurrencyEntity {
+export interface CryptoAccountCryptocurrencyEntityRequest extends CommonCryptoAccountCryptocurrencyEntity {
     cryptocurrencyId: string,
     cryptoAccountId: string,
+}
+
+export interface CryptoAccountCryptocurrencyEntity extends CommonCryptoAccountCryptocurrencyEntity {
+    cryptocurrency: CryptocurrencyEntity,
+    cryptoAccount: CryptoAccountEntity
+}
+
+export interface CryptoAccountCryptocurrencyEntityResponse extends CommonCryptoAccountCryptocurrencyEntity {
+    cryptocurrency: CryptocurrencyEntity,
+    cryptoAccount: CryptoAccountEntity
 }

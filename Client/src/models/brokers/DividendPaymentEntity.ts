@@ -7,15 +7,21 @@ interface CommonDividendPaymentEntity {
 	tax: number
 }
 
-export interface ClientDividendPaymentEntity extends CommonDividendPaymentEntity {
+export interface DividendPaymentEntityRequest extends CommonDividendPaymentEntity {
+	brokerAccountId: string,
+	dividendId: string,
+	receivedAt: string
+}
+
+export interface DividendPaymentEntity extends CommonDividendPaymentEntity {
 	brokerAccount: BrokerAccountEntity,
 	dividend: DividendEntity,
 	receivedAt: Date
 }
 
-export interface ServerDividendPaymentEntity extends CommonDividendPaymentEntity {
-	brokerAccountId: string,
-	dividendId: string,
+export interface DividendPaymentEntityResponse extends CommonDividendPaymentEntity {
+	brokerAccount: BrokerAccountEntity,
+	dividend: DividendEntity,
 	receivedAt: string
 }
 

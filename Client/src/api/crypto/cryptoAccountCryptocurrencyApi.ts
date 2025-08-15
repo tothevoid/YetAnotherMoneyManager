@@ -1,51 +1,52 @@
 import config from '../../config' 
-import { ClientCryptoAccountCryptocurrencyEntity, ServerCryptoAccountCryptocurrencyEntity } from '../../models/crypto/CryptoAccountCryptocurrencyEntity';
+import { CryptoAccountCryptocurrencyEntity, CryptoAccountCryptocurrencyEntityRequest, CryptoAccountCryptocurrencyEntityResponse } from '../../models/crypto/CryptoAccountCryptocurrencyEntity';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
 
 const basicUrl = `${config.api.URL}/CryptoAccountCryptocurrency`;
 
-export const getCryptoAccountCryptocurrencies = async (): Promise<ClientCryptoAccountCryptocurrencyEntity[]> => {
-   return await getAllEntities<ServerCryptoAccountCryptocurrencyEntity>(basicUrl)
-        .then(cryptoAccounts => cryptoAccounts.map(prepareClientCryptoAccountCryptocurrency));
+export const getCryptoAccountCryptocurrencies = async (): Promise<CryptoAccountCryptocurrencyEntity[]> => {
+   return await getAllEntities<CryptoAccountCryptocurrencyEntityResponse>(basicUrl)
+        .then(cryptoAccounts => cryptoAccounts.map(prepareCryptoAccountCryptocurrency));
 };
 
-export const getCryptocurrenciesByCryptoAccount = async (cryptoAccountId: string): Promise<ClientCryptoAccountCryptocurrencyEntity[]> => {
-    const entities = await fetch(`${basicUrl}/GetByCryptoAccount?cryptoAccountId=${cryptoAccountId}`, {method: "GET"})
+export const getCryptocurrenciesByCryptoAccount = async (cryptoAccountId: string): Promise<CryptoAccountCryptocurrencyEntity[]> => {
+    const cryptoAccountCryptocurrencies = await fetch(`${basicUrl}/GetByCryptoAccount?cryptoAccountId=${cryptoAccountId}`, {method: "GET"})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
+        .then((cryptoAccountCryptocurrencies: CryptoAccountCryptocurrencyEntityResponse[]) => cryptoAccountCryptocurrencies.map(prepareCryptoAccountCryptocurrency))
         .catch(logPromiseError);
      
-    return entities ?
-        entities: 
-        [] as ClientCryptoAccountCryptocurrencyEntity[];
+    return cryptoAccountCryptocurrencies ?? [];
 };
 
-export const createCryptoAccountCryptocurrency = async (addedCryptoAccountCryptocurrency: ClientCryptoAccountCryptocurrencyEntity): Promise<ClientCryptoAccountCryptocurrencyEntity | void> => {
-    return await createEntity<ServerCryptoAccountCryptocurrencyEntity>(basicUrl, prepareServerCryptoAccountCryptocurrency(addedCryptoAccountCryptocurrency))
-        .then(prepareClientCryptoAccountCryptocurrency);
+export const createCryptoAccountCryptocurrency = async (addedCryptoAccountCryptocurrency: CryptoAccountCryptocurrencyEntity): Promise<CryptoAccountCryptocurrencyEntity | void> => {
+    return await createEntity<CryptoAccountCryptocurrencyEntityRequest, CryptoAccountCryptocurrencyEntityResponse>(basicUrl, prepareCryptoAccountCryptocurrencyRequest(addedCryptoAccountCryptocurrency))
+        .then((cryptoAccountCryptocurrency) => cryptoAccountCryptocurrency && prepareCryptoAccountCryptocurrency(cryptoAccountCryptocurrency));
 }
 
-export const updateCryptoAccountCryptocurrency = async (modifiedCryptoAccountCryptocurrency: ClientCryptoAccountCryptocurrencyEntity): Promise<boolean> => {
-    return await updateEntity<ServerCryptoAccountCryptocurrencyEntity>(basicUrl, prepareServerCryptoAccountCryptocurrency(modifiedCryptoAccountCryptocurrency));
+export const updateCryptoAccountCryptocurrency = async (modifiedCryptoAccountCryptocurrency: CryptoAccountCryptocurrencyEntity): Promise<boolean> => {
+    return await updateEntity<CryptoAccountCryptocurrencyEntityRequest>(basicUrl, prepareCryptoAccountCryptocurrencyRequest(modifiedCryptoAccountCryptocurrency));
 }
 
 export const deleteCryptoAccountCryptocurrency = async (cryptoAccountCryptocurrencyId: string): Promise<boolean> => {
     return await deleteEntity(basicUrl, cryptoAccountCryptocurrencyId);
 }
 
-const prepareClientCryptoAccountCryptocurrency = (cryptoAccountCryptocurrency: ServerCryptoAccountCryptocurrencyEntity): ClientCryptoAccountCryptocurrencyEntity => {
+const prepareCryptoAccountCryptocurrency = (cryptoAccountCryptocurrency: CryptoAccountCryptocurrencyEntityResponse): CryptoAccountCryptocurrencyEntity => {
     return {
-        ...cryptoAccountCryptocurrency
-    };
+        id: cryptoAccountCryptocurrency.id,
+        quantity: cryptoAccountCryptocurrency.quantity,
+        cryptoAccount: cryptoAccountCryptocurrency.cryptoAccount,
+        cryptocurrency: cryptoAccountCryptocurrency.cryptocurrency 
+    }
 }
 
-const prepareServerCryptoAccountCryptocurrency = (cryptoAccountCryptocurrency: ClientCryptoAccountCryptocurrencyEntity): ServerCryptoAccountCryptocurrencyEntity => {
-    const convertedSecurity: ServerCryptoAccountCryptocurrencyEntity = {
+const prepareCryptoAccountCryptocurrencyRequest = (cryptoAccountCryptocurrency: CryptoAccountCryptocurrencyEntity): CryptoAccountCryptocurrencyEntityRequest => {
+    return {
         id: cryptoAccountCryptocurrency.id,
         cryptoAccountId: cryptoAccountCryptocurrency.cryptoAccount.id,
         cryptocurrencyId: cryptoAccountCryptocurrency.cryptocurrency.id,
         quantity: cryptoAccountCryptocurrency.quantity
     };
-    return convertedSecurity;
 }

@@ -9,7 +9,7 @@ export const getUserProfile = async (): Promise<UserProfileEntity> =>  {
     return await fetch(basicUrl, {method: "GET"})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
-        .catch(logPromiseError);    
+        .catch(logPromiseError);
 }
 
 export const updateUserProfile = async (userProfile: UserProfileEntity): Promise<boolean> => {

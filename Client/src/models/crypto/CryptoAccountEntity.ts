@@ -5,10 +5,14 @@ interface CommonCryptoAccountEntity {
     name: string,
 }
 
-export interface ClientCryptoAccountEntity extends CommonCryptoAccountEntity {
-    cryptoProvider: CryptoProviderEntity,
+export interface CryptoAccountEntityRequest extends CommonCryptoAccountEntity {
+    cryptoProviderId: string
 }
 
-export interface ServerCryptoAccountEntity extends CommonCryptoAccountEntity {
-    cryptoProviderId: string
+export interface CryptoAccountEntity extends CommonCryptoAccountEntity {
+    cryptoProvider: CryptoProviderEntity
+}
+
+export interface CryptoAccountEntityResponse extends CommonCryptoAccountEntity {
+    cryptoProvider: CryptoProviderEntity
 }

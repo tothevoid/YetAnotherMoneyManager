@@ -1,19 +1,18 @@
 import config from '../../config' 
-import { BrokerAccountSecurityEntity, ServerBrokerAccountSecurityEntity } from '../../models/brokers/BrokerAccountSecurityEntity';
+import { BrokerAccountSecurityEntity, BrokerAccountSecurityEntityRequest, BrokerAccountSecurityEntityResponse } from '../../models/brokers/BrokerAccountSecurityEntity';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { deleteEntity, updateEntity } from '../basicApi';
 
 const basicUrl = `${config.api.URL}/BrokerAccountSecurity`;
 
 export const getSecuritiesByBrokerAccount = async (brokerAccountId: string): Promise<BrokerAccountSecurityEntity[]> => {
-    const entities = await fetch(`${basicUrl}/GetByBrokerAccount?brokerAccountId=${brokerAccountId}`, {method: "GET"})
+    const securitiesByBrokerAccount = await fetch(`${basicUrl}/GetByBrokerAccount?brokerAccountId=${brokerAccountId}`, {method: "GET"})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
+        .then((securities: BrokerAccountSecurityEntityResponse[]) => securities.map(prepareBrokerAccountSecurity))
         .catch(logPromiseError);
      
-    return entities ?
-        entities: 
-        [] as BrokerAccountSecurityEntity[];
+    return securitiesByBrokerAccount ?? [];
 };
 
 export const pullBrokerAccountQuotations = async (brokerAccountId: string) => {
@@ -23,20 +22,29 @@ export const pullBrokerAccountQuotations = async (brokerAccountId: string) => {
 }
 
 export const updateBrokerAccountSecurity = async (modifiedBrokerAccountSecurity: BrokerAccountSecurityEntity): Promise<boolean> => {
-    return await updateEntity<ServerBrokerAccountSecurityEntity>(basicUrl, 
-        prepareServerBrokerAccountSecurity(modifiedBrokerAccountSecurity));
+    return await updateEntity(basicUrl, prepareBrokerAccountSecurityResponse(modifiedBrokerAccountSecurity));
 }
 
 export const deleteBrokerAccountSecurity = async (brokerAccountSecurityId: string): Promise<boolean> => {
     return await deleteEntity(basicUrl, brokerAccountSecurityId);
 }
 
-const prepareServerBrokerAccountSecurity = (brokerAccountSecurity: BrokerAccountSecurityEntity): ServerBrokerAccountSecurityEntity => {
+const prepareBrokerAccountSecurityResponse = (brokerAccountSecurity: BrokerAccountSecurityEntity): BrokerAccountSecurityEntityRequest => {
     return {
         id: brokerAccountSecurity.id,
         brokerAccountId: brokerAccountSecurity.brokerAccount.id,
         price: brokerAccountSecurity.price,
         quantity: brokerAccountSecurity.quantity,
         securityId: brokerAccountSecurity.security.id
+    };
+}
+
+const prepareBrokerAccountSecurity = (brokerAccountSecurity: BrokerAccountSecurityEntityResponse): BrokerAccountSecurityEntity => {
+    return {
+        id: brokerAccountSecurity.id,
+        brokerAccount: brokerAccountSecurity.brokerAccount,
+        price: brokerAccountSecurity.price,
+        quantity: brokerAccountSecurity.quantity,
+        security: brokerAccountSecurity.security
     };
 }

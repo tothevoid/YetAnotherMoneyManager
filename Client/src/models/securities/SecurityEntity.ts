@@ -9,13 +9,19 @@ export interface CommonSecurityEntity {
     iconKey: string
 }
 
-export interface ServerSecurityEntity extends CommonSecurityEntity {
+export interface SecurityEntityRequest extends CommonSecurityEntity {
     typeId: string,
     currencyId: string,
     priceFetchedAt: string
 }
 
 export interface SecurityEntity extends CommonSecurityEntity {
+    type: SecurityTypeEntity,
+    currency: CurrencyEntity,
+    priceFetchedAt: Date
+}
+
+export interface SecurityEntityResponse extends CommonSecurityEntity {
     type: SecurityTypeEntity,
     currency: CurrencyEntity,
     priceFetchedAt: Date

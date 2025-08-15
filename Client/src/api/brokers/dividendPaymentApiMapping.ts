@@ -1,16 +1,7 @@
 import { DividendPaymentEntityResponse, DividendPaymentEntity, DividendPaymentEntityRequest } from "../../models/brokers/DividendPaymentEntity";
 import { convertToDateOnly } from "../../shared/utilities/dateUtils";
-
-export const prepareDividendPayment = (dividendPayment: DividendPaymentEntityResponse): DividendPaymentEntity => {
-    return {
-        id: dividendPayment.id,
-        dividend: dividendPayment.dividend,
-        securitiesQuantity: dividendPayment.securitiesQuantity,
-        tax: dividendPayment.tax,
-        brokerAccount: dividendPayment.brokerAccount,
-        receivedAt: new Date(dividendPayment.receivedAt)
-    }
-}
+import { prepareDividend } from "../securities/dividendApiMapping";
+import { prepareBrokerAccount } from "./brokerAccountApiMapping";
 
 export const prepareDividendPaymentRequest = (dividendPayment: DividendPaymentEntity): DividendPaymentEntityRequest => {
     return {
@@ -21,4 +12,15 @@ export const prepareDividendPaymentRequest = (dividendPayment: DividendPaymentEn
         tax: dividendPayment.tax,
         receivedAt: convertToDateOnly(dividendPayment.receivedAt) 
     };
+}
+
+export const prepareDividendPayment = (dividendPayment: DividendPaymentEntityResponse): DividendPaymentEntity => {
+    return {
+        id: dividendPayment.id,
+        dividend: prepareDividend(dividendPayment.dividend),
+        securitiesQuantity: dividendPayment.securitiesQuantity,
+        tax: dividendPayment.tax,
+        brokerAccount: prepareBrokerAccount(dividendPayment.brokerAccount),
+        receivedAt: new Date(dividendPayment.receivedAt)
+    }
 }

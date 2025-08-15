@@ -1,5 +1,6 @@
 import { DividendEntity, DividendEntityRequest, DividendEntityResponse } from "../../models/securities/DividendEntity";
 import { convertToDateOnly } from "../../shared/utilities/dateUtils";
+import { prepareSecurity } from "./securityApiMapping";
 
 export const prepareDividendRequest = (dividend: DividendEntity): DividendEntityRequest => {
     return {
@@ -15,7 +16,7 @@ export const prepareDividend = (dividend: DividendEntityResponse): DividendEntit
     return {
         id: dividend.id,
         amount: dividend.amount,
-        security: dividend.security,
+        security: prepareSecurity(dividend.security),
         declarationDate: new Date(dividend.declarationDate),
         snapshotDate: new Date(dividend.snapshotDate)
     };

@@ -13,7 +13,7 @@ export const prepareAccountRequest = (account: AccountEntity): AccountEntityRequ
 	};
 }
 
-export const prepareAccountEntity = (account: AccountEntityResponse): AccountEntity => {
+export const prepareAccount = (account: AccountEntityResponse): AccountEntity => {
 	return {
 		id: account.id,
 		name: account.name,

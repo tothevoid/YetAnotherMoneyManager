@@ -1,5 +1,7 @@
 import { SecurityTransactionEntity, SecurityTransactionEntityRequest, SecurityTransactionEntityResponse } from "../../models/securities/SecurityTransactionEntity"
 import { convertToDateOnly } from "../../shared/utilities/dateUtils"
+import { prepareBrokerAccount } from "../brokers/brokerAccountApiMapping"
+import { prepareSecurity } from "./securityApiMapping"
 
 export const prepareSecurityTransactionRequest = (securityTransaction: SecurityTransactionEntity): SecurityTransactionEntityRequest => {
     return {
@@ -11,7 +13,7 @@ export const prepareSecurityTransactionRequest = (securityTransaction: SecurityT
         tax: securityTransaction.tax,
         date: convertToDateOnly(securityTransaction.date),
         brokerAccountId: securityTransaction.brokerAccount.id,
-        securityId: securityTransaction.security.id,
+        securityId: securityTransaction.security.id
     }
 }
 
@@ -24,7 +26,7 @@ export const prepareSecurityTransaction = (securityTransaction: SecurityTransact
         quantity: securityTransaction.quantity,
         tax: securityTransaction.tax,
         date: new Date(securityTransaction.date),
-        brokerAccount: securityTransaction.brokerAccount,
-        security: securityTransaction.security,
+        brokerAccount: prepareBrokerAccount(securityTransaction.brokerAccount),
+        security: prepareSecurity(securityTransaction.security)
     }
 }

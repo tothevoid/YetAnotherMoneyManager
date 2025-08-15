@@ -1,6 +1,8 @@
 import { BrokerAccountSecurityEntity, BrokerAccountSecurityEntityRequest, BrokerAccountSecurityEntityResponse } from "../../models/brokers/BrokerAccountSecurityEntity";
+import { prepareSecurity } from "../securities/securityApiMapping";
+import { prepareBrokerAccount } from "./brokerAccountApiMapping";
 
-export const prepareBrokerAccountSecurityResponse = (brokerAccountSecurity: BrokerAccountSecurityEntity): BrokerAccountSecurityEntityRequest => {
+export const prepareBrokerAccountSecurityRequest = (brokerAccountSecurity: BrokerAccountSecurityEntity): BrokerAccountSecurityEntityRequest => {
     return {
         id: brokerAccountSecurity.id,
         brokerAccountId: brokerAccountSecurity.brokerAccount.id,
@@ -13,9 +15,9 @@ export const prepareBrokerAccountSecurityResponse = (brokerAccountSecurity: Brok
 export const prepareBrokerAccountSecurity = (brokerAccountSecurity: BrokerAccountSecurityEntityResponse): BrokerAccountSecurityEntity => {
     return {
         id: brokerAccountSecurity.id,
-        brokerAccount: brokerAccountSecurity.brokerAccount,
+        brokerAccount: prepareBrokerAccount(brokerAccountSecurity.brokerAccount),
         price: brokerAccountSecurity.price,
         quantity: brokerAccountSecurity.quantity,
-        security: brokerAccountSecurity.security
+        security: prepareSecurity(brokerAccountSecurity.security)
     };
 }

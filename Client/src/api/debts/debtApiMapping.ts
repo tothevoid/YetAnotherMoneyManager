@@ -1,17 +1,6 @@
 import { DebtEntityResponse, DebtEntity, DebtEntityRequest } from "../../models/debts/DebtEntity";
 import { convertToDateOnly } from "../../shared/utilities/dateUtils";
 
-export const prepareDebt = (debt: DebtEntityResponse): DebtEntity => {
-    return {
-        id: debt.id,
-        amount: debt.amount,
-        name: debt.name,
-        currency: debt.currency,
-        date: new Date(debt.date),
-        paidOn: new Date(debt.paidOn)
-    };
-}
-
 export const prepareDebtRequest = (debt: DebtEntity): DebtEntityRequest => {
     return {
         id: debt.id,
@@ -20,5 +9,16 @@ export const prepareDebtRequest = (debt: DebtEntity): DebtEntityRequest => {
         currencyId: debt.currency.id,
         date: convertToDateOnly(debt.date),
         paidOn: convertToDateOnly(debt.paidOn)
+    };
+}
+
+export const prepareDebt = (debt: DebtEntityResponse): DebtEntity => {
+    return {
+        id: debt.id,
+        amount: debt.amount,
+        name: debt.name,
+        currency: debt.currency,
+        date: new Date(debt.date),
+        paidOn: new Date(debt.paidOn)
     };
 }

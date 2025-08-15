@@ -4,7 +4,7 @@ import { checkPromiseStatus, logPromiseError } from "../../shared/utilities/webA
 import { AccountCurrencySummary } from "../../models/accounts/accountsSummary";
 import { createEntity, deleteEntity, updateEntity } from "../basicApi";
 import { Transfer } from "../../pages/Accounts/modals/AccountBalanceTransferModal/AccountBalanceTransferModal";
-import { prepareAccountEntity, prepareAccountRequest } from "./accountApiMapping";
+import { prepareAccount, prepareAccountRequest } from "./accountApiMapping";
 
 const basicUrl = `${config.api.URL}/Account`;
 
@@ -16,7 +16,7 @@ export const getAccounts = async (onlyActive: boolean = false): Promise<AccountE
 		})
 		.then(checkPromiseStatus)
 		.then((response: Response) => response.json())
-		.then((accountResponses: AccountEntityResponse[]) => accountResponses.map(prepareAccountEntity))
+		.then((accountResponses: AccountEntityResponse[]) => accountResponses.map(prepareAccount))
 		.catch(logPromiseError);
 
 	return accounts ?? []
@@ -30,7 +30,7 @@ export const getAccountsByTypes = async (typesIds: string[], onlyActive: boolean
 		})
 		.then(checkPromiseStatus)
 		.then((response: Response) => response.json())
-		.then((accountResponses: AccountEntityResponse[]) => accountResponses.map(prepareAccountEntity))
+		.then((accountResponses: AccountEntityResponse[]) => accountResponses.map(prepareAccount))
 		.catch(logPromiseError);
 
 	return accounts ?? [];

@@ -1,13 +1,5 @@
 import { CryptoAccountCryptocurrencyEntityResponse, CryptoAccountCryptocurrencyEntity, CryptoAccountCryptocurrencyEntityRequest } from "../../models/crypto/CryptoAccountCryptocurrencyEntity";
-
-export const prepareCryptoAccountCryptocurrency = (cryptoAccountCryptocurrency: CryptoAccountCryptocurrencyEntityResponse): CryptoAccountCryptocurrencyEntity => {
-    return {
-        id: cryptoAccountCryptocurrency.id,
-        quantity: cryptoAccountCryptocurrency.quantity,
-        cryptoAccount: cryptoAccountCryptocurrency.cryptoAccount,
-        cryptocurrency: cryptoAccountCryptocurrency.cryptocurrency 
-    }
-}
+import { prepareCryptoAccount } from "./cryptoAccountApiMapping";
 
 export const prepareCryptoAccountCryptocurrencyRequest = (cryptoAccountCryptocurrency: CryptoAccountCryptocurrencyEntity): CryptoAccountCryptocurrencyEntityRequest => {
     return {
@@ -16,4 +8,13 @@ export const prepareCryptoAccountCryptocurrencyRequest = (cryptoAccountCryptocur
         cryptocurrencyId: cryptoAccountCryptocurrency.cryptocurrency.id,
         quantity: cryptoAccountCryptocurrency.quantity
     };
+}
+
+export const prepareCryptoAccountCryptocurrency = (cryptoAccountCryptocurrency: CryptoAccountCryptocurrencyEntityResponse): CryptoAccountCryptocurrencyEntity => {
+    return {
+        id: cryptoAccountCryptocurrency.id,
+        quantity: cryptoAccountCryptocurrency.quantity,
+        cryptoAccount: prepareCryptoAccount(cryptoAccountCryptocurrency.cryptoAccount),
+        cryptocurrency: cryptoAccountCryptocurrency.cryptocurrency 
+    }
 }

@@ -1,18 +1,6 @@
 import { TransactionEntityResponse, TransactionEntity, TransactionEntityRequest } from "../../models/transactions/TransactionEntity"
 import { convertToDateOnly } from "../../shared/utilities/dateUtils"
-
-export const prepareTransaction = (transaction: TransactionEntityResponse): TransactionEntity => {
-    return {
-        id: transaction.id,
-        name: transaction.name,
-        date: new Date(transaction.date),
-        isSystem: transaction.isSystem,
-        cashback: transaction.cashback,
-        amount: transaction.amount,
-        transactionType: transaction.transactionType,
-        account: transaction.account
-    }
-}
+import { prepareAccount } from "../accounts/accountApiMapping"
 
 export const prepareTransactionRequest = (transaction: TransactionEntity): TransactionEntityRequest => {
     return {
@@ -24,5 +12,19 @@ export const prepareTransactionRequest = (transaction: TransactionEntity): Trans
         amount: transaction.amount,
         transactionTypeId: transaction.transactionType.id,
         accountId: transaction.account.id
+    }
+}
+
+
+export const prepareTransaction = (transaction: TransactionEntityResponse): TransactionEntity => {
+    return {
+        id: transaction.id,
+        name: transaction.name,
+        date: new Date(transaction.date),
+        isSystem: transaction.isSystem,
+        cashback: transaction.cashback,
+        amount: transaction.amount,
+        transactionType: transaction.transactionType,
+        account: prepareAccount(transaction.account)
     }
 }

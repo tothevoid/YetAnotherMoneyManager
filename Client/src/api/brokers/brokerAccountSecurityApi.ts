@@ -2,7 +2,7 @@ import config from '../../config'
 import { BrokerAccountSecurityEntity, BrokerAccountSecurityEntityResponse } from '../../models/brokers/BrokerAccountSecurityEntity';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { deleteEntity, updateEntity } from '../basicApi';
-import { prepareBrokerAccountSecurity, prepareBrokerAccountSecurityResponse } from './brokerAccountSecurityApiMapping';
+import { prepareBrokerAccountSecurity, prepareBrokerAccountSecurityRequest } from './brokerAccountSecurityApiMapping';
 
 const basicUrl = `${config.api.URL}/BrokerAccountSecurity`;
 
@@ -23,7 +23,7 @@ export const pullBrokerAccountQuotations = async (brokerAccountId: string) => {
 }
 
 export const updateBrokerAccountSecurity = async (modifiedBrokerAccountSecurity: BrokerAccountSecurityEntity): Promise<boolean> => {
-    return await updateEntity(basicUrl, prepareBrokerAccountSecurityResponse(modifiedBrokerAccountSecurity));
+    return await updateEntity(basicUrl, prepareBrokerAccountSecurityRequest(modifiedBrokerAccountSecurity));
 }
 
 export const deleteBrokerAccountSecurity = async (brokerAccountSecurityId: string): Promise<boolean> => {

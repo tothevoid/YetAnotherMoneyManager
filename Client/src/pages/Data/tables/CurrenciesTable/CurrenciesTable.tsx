@@ -39,21 +39,16 @@ const CurrenciesTable: React.FC = () => {
         })
     }
 
-    const onCellChanged = (currencyId: string, propertyName: string, newValue: any) => {
+    const onActiveChanged = (currencyId: string, newValue: boolean) => {
         let hasChanges = false;
 
         const updatedCurrencies = state.currencies.map((currency: CurrencyEntity) => {
-            if (currency.id !== currencyId) {
-                return currency;
-            }
-
-            const currentValue = currency[propertyName];
-            if (currentValue === newValue) {
+            if (currency.id !== currencyId || currency.active === newValue) {
                 return currency;
             }
 
             hasChanges = true;
-            return {...currency, [propertyName]: newValue};
+            return {...currency, active: newValue};
         });
 
         if (!hasChanges) {
@@ -155,7 +150,7 @@ const CurrenciesTable: React.FC = () => {
                             </Table.Cell>
                             <Table.Cell width={10}>
                                 <Checkbox.Root onBlur={() => onCellBlur(currency.id)} checked={currency.active} variant="subtle"
-                                    onCheckedChange={(data) => {onCellChanged(currency.id, "active", data.checked)}}>
+                                    onCheckedChange={(data) => {onActiveChanged(currency.id, !!data.checked)}}>
                                     <Checkbox.HiddenInput />
                                     <Checkbox.Control />
                                 </Checkbox.Root>

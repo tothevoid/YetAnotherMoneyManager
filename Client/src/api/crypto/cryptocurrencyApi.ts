@@ -40,7 +40,7 @@ const generateForm = (cryptocurrency: CryptocurrencyEntity, file: File | null) =
     return formData;
 }
 
-export const getIconUrl = (iconKey: string | null): string => {
+export const getIconUrl = (iconKey: string | null | undefined): string => {
     if (!iconKey) {
         return "";
     }

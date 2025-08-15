@@ -52,7 +52,7 @@ const StackedDepositsChart = (props: Props) => {
 		<BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
 			<XAxis dataKey="date" />
 			<YAxis />
-			<Tooltip labelFormatter={getMonthTitle}  contentStyle={getChartLabelConfig()} formatter={(value, name) => [formatMoneyByCurrencyCulture(value, props.currencyName), getDepositTitle(name)]} />
+			<Tooltip labelFormatter={getMonthTitle}  contentStyle={getChartLabelConfig()} formatter={(value: number, name: string) => [formatMoneyByCurrencyCulture(value, props.currencyName), getDepositTitle(name)]} />
 			<Legend formatter={getDepositTitle} />
 			{
 				[...deposits.keys()].map((deposit: string, index: number) => {

@@ -126,7 +126,7 @@ const TransactionStats = (props: Props) => {
                                     <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />))
                             }
                         </Pie>
-                        <Tooltip itemStyle={{ color: '#FFFFFF' }} contentStyle={getChartLabelConfig()} formatter={(value, name) => [formatMoneyByCurrencyCulture(value, user?.currency.name), name]} />
+                        <Tooltip itemStyle={{ color: '#FFFFFF' }} contentStyle={getChartLabelConfig()} formatter={(value: number, name) => [formatMoneyByCurrencyCulture(value, user?.currency.name), name]} />
                         <Legend/>
                     </PieChart>
                 </ResponsiveContainer>

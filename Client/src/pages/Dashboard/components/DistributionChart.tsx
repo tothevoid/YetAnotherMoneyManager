@@ -45,7 +45,7 @@ const DistributionChart = (props: Props) => {
                     </Pie>
                     <Tooltip contentStyle={getChartLabelConfig()} itemStyle={{ color: "#E0E0E0" }} formatter={formatLabel}/>
                     <Legend
-                        formatter={(value, entry, index) => {
+                        formatter={(value, _, index) => {
                             const total = props.data.reduce((sum, item) => sum + item.convertedAmount, 0);
                             const percent = ((props.data[index].convertedAmount / total) * 100).toFixed(1);
                             return `${value} (${percent}%)`;

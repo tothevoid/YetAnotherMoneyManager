@@ -70,8 +70,8 @@ const SecurityPage: React.FC = () => {
 		</Stack>
 		<Stack marginBlock={4} gap={4} dir="column">
 			<SimpleGrid gap={4} templateColumns='repeat(auto-fill, minmax(450px, 3fr))'>
-				{formatStatsCard(t("security_page_stats_securities"),		 state.securityStats.hasOnBrokerAccounts)}
-				{formatStatsCard(t("security_page_stats_securities"),		 formatMoneyByCurrencyCulture(actualPrice, currency.name))}
+				{formatStatsCard(t("security_page_stats_securities"),	state.securityStats.hasOnBrokerAccounts.toString())}
+				{formatStatsCard(t("security_page_stats_securities"),	formatMoneyByCurrencyCulture(actualPrice, currency.name))}
 			</SimpleGrid>
 			<SimpleGrid gap={4} templateColumns='repeat(auto-fill, minmax(450px, 3fr))'>
 				{formatStatsCard(t("security_page_stats_transactions_min"),  formatMoneyByCurrencyCulture(state.securityStats.transactionsMin, currency.name))}

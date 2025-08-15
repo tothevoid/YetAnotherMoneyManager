@@ -32,7 +32,7 @@ const DepositsEarningsChart = (props: Props) => {
 				<CartesianGrid strokeDasharray="3 3" />
 				<XAxis dataKey="date"/>
 				<YAxis/>
-				<Tooltip contentStyle={getChartLabelConfig()} formatter={(value, name) => [formatMoneyByCurrencyCulture(value, props.currencyName), name]}/>
+				<Tooltip contentStyle={getChartLabelConfig()} formatter={(value: number, name: string) => [formatMoneyByCurrencyCulture(value, props.currencyName), name]}/>
 				<Legend />
 				<Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} name={t("earnings_chart_data_title")}/>
 			</LineChart>

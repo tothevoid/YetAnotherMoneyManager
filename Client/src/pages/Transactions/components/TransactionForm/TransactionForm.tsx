@@ -62,7 +62,7 @@ const TransactionForm: React.FC<ModalProps> = (props: ModalProps) => {
 			direction: direction,
 			cashback: props.transaction?.cashback ?? 0,
 			isSystem: props.transaction?.isSystem ?? false,
-			transactionType: props.transaction?.transactionType ?? ""
+			transactionType: props.transaction?.transactionType
 		}
 	});
 

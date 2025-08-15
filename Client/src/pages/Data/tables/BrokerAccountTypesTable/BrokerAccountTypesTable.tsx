@@ -32,21 +32,16 @@ const BrokerAccountTypesTable: React.FC = () => {
         initData();
     }, []);
 
-    const onCellChanged = (brokerAccountTypeId: string, propertyName: string, newValue: any) => {
+    const onNameChanged = (brokerAccountTypeId: string, newValue: string) => {
         let hasChanges = false;
 
         const updatedBrokerAccountTypes = state.brokerAccountTypes.map((brokerAccountType: BrokerAccountTypeEntity) => {
-            if (brokerAccountType.id !== brokerAccountTypeId) {
-                return brokerAccountType;
-            }
-
-            const currentValue = brokerAccountType[propertyName];
-            if (currentValue === newValue) {
+            if (brokerAccountType.id !== brokerAccountTypeId || brokerAccountType.name === newValue) {
                 return brokerAccountType;
             }
 
             hasChanges = true;
-            return {...brokerAccountType, [propertyName]: newValue};
+            return {...brokerAccountType, name: newValue};
         });
 
         if (!hasChanges) {
@@ -131,7 +126,7 @@ const BrokerAccountTypesTable: React.FC = () => {
                         return <Table.Row border="none" bg="none" color="text_primary" key={brokerAccountType.id}>
                             <Table.Cell>
                                 <Input onBlur={() => onCellBlur(brokerAccountType.id)} type="text" value={brokerAccountType.name}
-                                    onChange={(handler) => onCellChanged(brokerAccountType.id, "name", handler.target.value)}>
+                                    onChange={(handler) => onNameChanged(brokerAccountType.id, handler.target.value)}>
                                 </Input>
                             </Table.Cell>
                             <Table.Cell width={10}>

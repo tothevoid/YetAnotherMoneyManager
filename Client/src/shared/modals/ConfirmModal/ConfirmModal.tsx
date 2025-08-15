@@ -16,6 +16,7 @@ export const ConfirmModal = forwardRef<BaseModalRef, Props>((props: Props, ref) 
     const cancelRef = React.useRef<HTMLButtonElement>(null!);
     useImperativeHandle(ref, () => ({
         openModal: onOpen,
+        closeModal: onClose
     }));
 
     const onConfirmed = () => {

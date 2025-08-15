@@ -5,14 +5,14 @@ import { useTranslation } from 'react-i18next';
 import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModal';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
 import { formatDate } from '../../../../shared/utilities/formatters/dateFormatter';
-import { ClientDebtPaymentEntity } from '../../../../models/debts/DebtPaymentEntity';
+import { DebtPaymentEntity } from '../../../../models/debts/DebtPaymentEntity';
 import DebtPaymentModal from '../../modals/DebtPaymentModal/DebtPaymentModal';
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 
 type Props = {
-    debtPayment: ClientDebtPaymentEntity,
-    onEditCallback: (debt: ClientDebtPaymentEntity) => void,
-    onDeleteCallback: (debt: ClientDebtPaymentEntity) => void,
+    debtPayment: DebtPaymentEntity,
+    onEditCallback: (debt: DebtPaymentEntity) => void,
+    onDeleteCallback: (debt: DebtPaymentEntity) => void,
 }
 
 const DebtPayment = (props: Props) => {

@@ -66,12 +66,12 @@ const UserProfileSettingsModal = forwardRef<BaseModalRef>((_, ref)=> {
 		if (open && user) {
 			reset(convertToSchemaValues(user));
 		}
-	}, [open, user]);
+	}, [open, user, reset]);
 
 	const onSubmit = async (userProfileForm: UserProfileFormInput) => {
 		const userProfile: UserProfileEntity = {
-			 ...userProfileForm,
-			languageCode: userProfileForm.languageCode.value
+			...userProfileForm,
+			languageCode: userProfileForm.languageCode.value,
 		}
 
 		await updateUserProfile(userProfile);

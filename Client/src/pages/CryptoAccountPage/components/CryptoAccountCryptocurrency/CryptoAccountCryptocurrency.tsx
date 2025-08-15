@@ -2,12 +2,12 @@ import { Card, Flex, Stack, Text, Image } from '@chakra-ui/react';
 import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 import { HiOutlineBuildingOffice2 } from 'react-icons/hi2';
-import { ClientCryptoAccountCryptocurrencyEntity } from '../../../../models/crypto/CryptoAccountCryptocurrencyEntity';
+import { CryptoAccountCryptocurrencyEntity } from '../../../../models/crypto/CryptoAccountCryptocurrencyEntity';
 import { getIconUrl } from '../../../../api/crypto/cryptocurrencyApi';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
 
 type Props = {
-    cryptoAccountCryptocurrency: ClientCryptoAccountCryptocurrencyEntity,
+    cryptoAccountCryptocurrency: CryptoAccountCryptocurrencyEntity,
     onReloadCryptoAccountCryptocurrencies: () => void
 }
 

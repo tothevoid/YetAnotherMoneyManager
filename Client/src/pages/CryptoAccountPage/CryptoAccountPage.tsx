@@ -1,13 +1,13 @@
 import { Fragment, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Stack, Text } from "@chakra-ui/react";
-import { ClientCryptoAccountEntity } from "../../models/crypto/CryptoAccountEntity";
+import { CryptoAccountEntity } from "../../models/crypto/CryptoAccountEntity";
 import { getCryptoAccountById } from "../../api/crypto/cryptoAccountApi";
 import CryptoAccountCryptocurrenciesList from "./components/CryptoAccountCryptocurrenciesList/CryptoAccountCryptocurrenciesList";
 
 
 interface State {
-    cryptoAccount: ClientCryptoAccountEntity | null,
+    cryptoAccount: CryptoAccountEntity | null,
     isReloading: boolean
 }
 

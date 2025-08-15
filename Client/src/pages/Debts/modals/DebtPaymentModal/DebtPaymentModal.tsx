@@ -4,10 +4,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import CollectionSelect from "../../../../shared/components/CollectionSelect/CollectionSelect";
-import { ClientDebtEntity } from "../../../../models/debts/DebtEntity";
+import { DebtEntity } from "../../../../models/debts/DebtEntity";
 import DateSelect from "../../../../shared/components/DateSelect/DateSelect";
 import { DebtPaymentFormInput, DebtPaymentValidationSchema } from "./DebtPaymentValidationSchema";
-import { ClientDebtPaymentEntity } from "../../../../models/debts/DebtPaymentEntity";
+import { DebtPaymentEntity } from "../../../../models/debts/DebtPaymentEntity";
 import { AccountEntity } from "../../../../models/accounts/AccountEntity";
 import { getDebts } from "../../../../api/debts/debtApi";
 import { getAccounts } from "../../../../api/accounts/accountApi";
@@ -15,14 +15,14 @@ import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 
 interface Props {
-	debtPayment?: ClientDebtPaymentEntity | null,
-	onSaved: (debt: ClientDebtPaymentEntity) => void;
+	debtPayment?: DebtPaymentEntity | null,
+	onSaved: (debt: DebtPaymentEntity) => void;
 	modalRef: RefObject<BaseModalRef | null>
 };
 	
 interface State {
 	accounts: AccountEntity[],
-	debts: ClientDebtEntity[]
+	debts: DebtEntity[]
 }
 
 const DebtPaymentModal: React.FC<Props> = (props: Props) => {
@@ -57,7 +57,7 @@ const DebtPaymentModal: React.FC<Props> = (props: Props) => {
 	});
 
 	const onSubmit = (debt: DebtPaymentFormInput) => {
-		props.onSaved(debt as ClientDebtPaymentEntity);
+		props.onSaved(debt as DebtPaymentEntity);
 		props.modalRef?.current?.closeModal();
 	}
 

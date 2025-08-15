@@ -17,7 +17,7 @@ import { BaseModalRef } from "../../shared/utilities/modalUtilities";
 import { useTransactions } from "./hooks/useTransactions";
 import { groupByKey, sumEntities } from "../../shared/utilities/arrayUtilities";
 import NewTransactionModal from "./modals/NewTransactionModal/NewTransactionModal";
-import { ClientCurrencyTransactionEntity } from "../../models/transactions/CurrencyTransactionEntity";
+import { CurrencyTransactionEntity } from "../../models/transactions/CurrencyTransactionEntity";
 
 interface State {
     accounts: AccountEntity[]
@@ -77,7 +77,7 @@ const TransactionsPage: React.FC = () => {
         addTransactionModalRef.current?.openModal()
     }
 
-    const createCurrencyTransaction = async (currencyTransactionEntity: ClientCurrencyTransactionEntity) => {
+    const createCurrencyTransaction = async (currencyTransactionEntity: CurrencyTransactionEntity) => {
         await createCurrencyTransaction(currencyTransactionEntity)
     }
 

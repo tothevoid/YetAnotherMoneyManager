@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import { ClientDebtPaymentEntity } from "../../../models/debts/DebtPaymentEntity";
+import { DebtPaymentEntity } from "../../../models/debts/DebtPaymentEntity";
 import { createDebtPayment, deleteDebtPayment, getDebtPayments, updateDebtPayment } from "../../../api/debts/debtPaymentApi";
 
 export const useDebtPayments = () => {
-	const [debtPayments, setDebtPayments] = useState<ClientDebtPaymentEntity[]>([]);
+	const [debtPayments, setDebtPayments] = useState<DebtPaymentEntity[]>([]);
 	const [isDebtPaymentsLoading, setLoading] = useState(false);
 
 	const [error, setError] = useState<string | null>(null);
@@ -24,7 +24,7 @@ export const useDebtPayments = () => {
 		fetchData();
 	}, [fetchData])
 
-	const createDebtPaymentEntity = async (createdDebtPayment: ClientDebtPaymentEntity) => {
+	const createDebtPaymentEntity = async (createdDebtPayment: DebtPaymentEntity) => {
 		const addedDebtPayment = await createDebtPayment(createdDebtPayment);
 		
 		if (!addedDebtPayment) {
@@ -34,7 +34,7 @@ export const useDebtPayments = () => {
 		setDebtPayments([addedDebtPayment, ...debtPayments]);
 	}
 
-	const updateDebtPaymentEntity = async (updatedDebtPayment: ClientDebtPaymentEntity) => {
+	const updateDebtPaymentEntity = async (updatedDebtPayment: DebtPaymentEntity) => {
 		const deptPaymentUpdated = await updateDebtPayment(updatedDebtPayment);
 	
 		if (!deptPaymentUpdated) {
@@ -50,7 +50,7 @@ export const useDebtPayments = () => {
 		setDebtPayments(updatedDebtsPayments);
 	}
 
-	const deleteDebtPaymentEntity = async (deletedDebt: ClientDebtPaymentEntity) => {
+	const deleteDebtPaymentEntity = async (deletedDebt: DebtPaymentEntity) => {
 		const deleted = await deleteDebtPayment(deletedDebt.id);
 
 		if (!deleted) {

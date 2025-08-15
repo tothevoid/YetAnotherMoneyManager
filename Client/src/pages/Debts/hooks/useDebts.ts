@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { ClientDebtEntity } from "../../../models/debts/DebtEntity";
+import { DebtEntity } from "../../../models/debts/DebtEntity";
 import { createDebt, deleteDebt, getDebts, updateDebt } from "../../../api/debts/debtApi";
 
 interface DebtPaymentsQueryParameters {
@@ -7,7 +7,7 @@ interface DebtPaymentsQueryParameters {
 }
 
 export const useDebts = (queryParameters: DebtPaymentsQueryParameters) => {
-	const [debts, setDebts] = useState<ClientDebtEntity[]>([]);
+	const [debts, setDebts] = useState<DebtEntity[]>([]);
 	const [isDebtsLoading, setLoading] = useState(false);
 
 	const [debtQueryParameters, setDebtQueryParameters] = useState<DebtPaymentsQueryParameters>(queryParameters);
@@ -33,7 +33,7 @@ export const useDebts = (queryParameters: DebtPaymentsQueryParameters) => {
 		fetchData();
 	}, [fetchData])
 
-	const createDebtEntity = async (createdDebt: ClientDebtEntity) => {
+	const createDebtEntity = async (createdDebt: DebtEntity) => {
 		const addedDebt = await createDebt(createdDebt);
 		if (!addedDebt) {
 			return;
@@ -42,7 +42,7 @@ export const useDebts = (queryParameters: DebtPaymentsQueryParameters) => {
 		setDebts([addedDebt, ...debts])
 	}
 
-	const updateDebtEntity = async (updatedDebt: ClientDebtEntity) => {
+	const updateDebtEntity = async (updatedDebt: DebtEntity) => {
 		const debtUpdated = await updateDebt(updatedDebt);
 		if (!debtUpdated) {
 			return;
@@ -57,7 +57,7 @@ export const useDebts = (queryParameters: DebtPaymentsQueryParameters) => {
 		setDebts(updatedDebts);
 	}
 
-	const deleteDebtEntity = async (deletedDebt: ClientDebtEntity) => {
+	const deleteDebtEntity = async (deletedDebt: DebtEntity) => {
 		const debtDeleted = await deleteDebt(deletedDebt.id);
 		if (!debtDeleted) {
 			return;

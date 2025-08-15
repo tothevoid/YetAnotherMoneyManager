@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next';
 import BaseFormModal from '../../../../shared/modals/BaseFormModal/BaseFormModal';
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 import CurrencyTransactionForm from '../../components/CurrencyTransactionForm/CurrencyTransactionForm';
-import { ClientCurrencyTransactionEntity } from '../../../../models/transactions/CurrencyTransactionEntity';
+import { CurrencyTransactionEntity } from '../../../../models/transactions/CurrencyTransactionEntity';
 
 interface ModalProps {
     modalRef: RefObject<BaseModalRef | null>,
-    currencyTransaction?: ClientCurrencyTransactionEntity,
-    onSaved: (transaction: ClientCurrencyTransactionEntity) => Promise<void>
+    currencyTransaction?: CurrencyTransactionEntity,
+    onSaved: (transaction: CurrencyTransactionEntity) => Promise<void>
 }
 
 interface State {

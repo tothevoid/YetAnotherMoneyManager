@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import { ClientCryptoAccountEntity } from "../../../models/crypto/CryptoAccountEntity";
+import { CryptoAccountEntity } from "../../../models/crypto/CryptoAccountEntity";
 import { createCryptoAccount, deleteCryptoAccount, getCryptoAccounts, updateCryptoAccount } from "../../../api/crypto/cryptoAccountApi";
 
 export const useCryptoAccounts = () => {
-    const [cryptoAccounts, setCryptoAccounts] = useState<ClientCryptoAccountEntity[]>([]);
+    const [cryptoAccounts, setCryptoAccounts] = useState<CryptoAccountEntity[]>([]);
     const [isCryptoAccountsLoading, setLoading] = useState(false);
 
     const [error, setError] = useState<string | null>(null);
@@ -23,7 +23,7 @@ export const useCryptoAccounts = () => {
         fetchData();
     }, [fetchData])
 
-    const createCryptoAccountEntity = async (createdCryptoAccount: ClientCryptoAccountEntity) => {
+    const createCryptoAccountEntity = async (createdCryptoAccount: CryptoAccountEntity) => {
         const addedCryptoAccount = await createCryptoAccount(createdCryptoAccount);
         if (!addedCryptoAccount) {
             return
@@ -32,13 +32,13 @@ export const useCryptoAccounts = () => {
         setCryptoAccounts([createdCryptoAccount, ...cryptoAccounts]);
     }
 
-    const updateCryptoAccountEntity = async (updatedCryptoAccount: ClientCryptoAccountEntity) => {
+    const updateCryptoAccountEntity = async (updatedCryptoAccount: CryptoAccountEntity) => {
         const cryptoAccountUpdated = await updateCryptoAccount(updatedCryptoAccount);
         if (!cryptoAccountUpdated) {
             return;
         }
 
-        const updatedBrokerAccounts = cryptoAccounts.map((cryptoAccount: ClientCryptoAccountEntity) => 
+        const updatedBrokerAccounts = cryptoAccounts.map((cryptoAccount: CryptoAccountEntity) => 
             cryptoAccount.id === updatedCryptoAccount.id ?
                 {...updatedCryptoAccount}:
                 cryptoAccount
@@ -47,7 +47,7 @@ export const useCryptoAccounts = () => {
         setCryptoAccounts(updatedBrokerAccounts);
     }
 
-    const deleteCryptoAccountEntity = async (deletedCryptoAccount: ClientCryptoAccountEntity) => {
+    const deleteCryptoAccountEntity = async (deletedCryptoAccount: CryptoAccountEntity) => {
         const cryptoAccountDeleted = await deleteCryptoAccount(deletedCryptoAccount.id);
     
         if (!cryptoAccountDeleted) {
@@ -55,7 +55,7 @@ export const useCryptoAccounts = () => {
         }
 
         const updatedCryptoAccounts = cryptoAccounts
-            .filter((cryptoAccount: ClientCryptoAccountEntity) => cryptoAccount.id !== deletedCryptoAccount.id)
+            .filter((cryptoAccount: CryptoAccountEntity) => cryptoAccount.id !== deletedCryptoAccount.id)
         setCryptoAccounts(updatedCryptoAccounts)
     }
 

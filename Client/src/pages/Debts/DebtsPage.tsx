@@ -1,8 +1,8 @@
 import { useRef } from "react";
 import { SimpleGrid, Box, Flex} from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
-import { ClientDebtEntity } from "../../models/debts/DebtEntity";
-import { ClientDebtPaymentEntity } from "../../models/debts/DebtPaymentEntity";
+import { DebtEntity } from "../../models/debts/DebtEntity";
+import { DebtPaymentEntity } from "../../models/debts/DebtPaymentEntity";
 import Debt from "./components/Debt/Debt";
 import DebtPayment from "./components/DebtPayment/DebtPayment";
 import { BaseModalRef } from "../../shared/utilities/modalUtilities";
@@ -58,7 +58,7 @@ const DebtsPage: React.FC = () => {
 			</Flex>
 			<SimpleGrid pt={5} pb={5} gap={6} templateColumns='repeat(auto-fill, minmax(300px, 4fr))'>
 				{
-					debts.map((debt: ClientDebtEntity) => 
+					debts.map((debt: DebtEntity) => 
 						<Debt key={debt.id} debt={debt} 
 							onEditCallback={updateDebtEntity}
 							onDeleteCallback={deleteDebtEntity}/>
@@ -70,7 +70,7 @@ const DebtsPage: React.FC = () => {
 			</ShowModalButton>
 			<Box>
 				{
-					debtPayments.map((payment: ClientDebtPaymentEntity) => 
+					debtPayments.map((payment: DebtPaymentEntity) => 
 						<DebtPayment key={payment.id} debtPayment={payment}
 							onEditCallback={updateDebtPaymentEntity} 
 							onDeleteCallback={deleteDebtPaymentEntity}/>

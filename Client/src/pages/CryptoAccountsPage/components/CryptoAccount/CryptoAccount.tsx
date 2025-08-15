@@ -4,13 +4,13 @@ import { Fragment, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModal';
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
-import { ClientCryptoAccountEntity } from '../../../../models/crypto/CryptoAccountEntity';
+import { CryptoAccountEntity } from '../../../../models/crypto/CryptoAccountEntity';
 import CryptoAccountModal from '../../modals/CryptoAccountModal/CryptoAccountModal';
 
 type Props = {
-    cryptoAccount: ClientCryptoAccountEntity,
-    onDeleteCallback: (cryptoAccount: ClientCryptoAccountEntity) => void,
-    onEditCallback: (cryptoAccount: ClientCryptoAccountEntity) => void,
+    cryptoAccount: CryptoAccountEntity,
+    onDeleteCallback: (cryptoAccount: CryptoAccountEntity) => void,
+    onEditCallback: (cryptoAccount: CryptoAccountEntity) => void,
     onReloadCryptoAccounts: () => void
 }
 

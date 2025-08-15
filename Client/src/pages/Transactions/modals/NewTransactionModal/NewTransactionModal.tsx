@@ -8,14 +8,14 @@ import { getAccounts } from '../../../../api/accounts/accountApi';
 import CurrencyTransactionForm from '../../components/CurrencyTransactionForm/CurrencyTransactionForm';
 import TransactionForm from '../../components/TransactionForm/TransactionForm';
 import { TransactionEntity } from '../../../../models/transactions/TransactionEntity';
-import { ClientCurrencyTransactionEntity } from '../../../../models/transactions/CurrencyTransactionEntity';
+import { CurrencyTransactionEntity } from '../../../../models/transactions/CurrencyTransactionEntity';
 import { MdCurrencyExchange } from 'react-icons/md';
 import { GrTransaction } from 'react-icons/gr';
 
 interface ModalProps {
     modalRef: RefObject<BaseModalRef | null>
     onTransactionSaved: (transaction: TransactionEntity) => Promise<void>
-    onCurrencyTransactionSaved: (currencyTransaction: ClientCurrencyTransactionEntity) => Promise<void>
+    onCurrencyTransactionSaved: (currencyTransaction: CurrencyTransactionEntity) => Promise<void>
 }
 
 interface State {

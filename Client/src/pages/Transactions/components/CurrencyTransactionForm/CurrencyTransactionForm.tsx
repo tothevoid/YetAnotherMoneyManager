@@ -8,12 +8,12 @@ import CollectionSelect from '../../../../shared/components/CollectionSelect/Col
 import DateSelect from '../../../../shared/components/DateSelect/DateSelect';
 import { CurrencyTransactionFormInput, CurrencyTransactionValidationSchema } from './CurrencyTransactionValidationSchema';
 import { getAccounts } from '../../../../api/accounts/accountApi';
-import { ClientCurrencyTransactionEntity } from '../../../../models/transactions/CurrencyTransactionEntity';
+import { CurrencyTransactionEntity } from '../../../../models/transactions/CurrencyTransactionEntity';
 
 interface Props {
-    currencyTransaction?: ClientCurrencyTransactionEntity
+    currencyTransaction?: CurrencyTransactionEntity
     setSubmitHandler: (handler: React.FormEventHandler) => void
-    onCurrencyTransactionSaved: (currencyTransaction: ClientCurrencyTransactionEntity) => Promise<void>
+    onCurrencyTransactionSaved: (currencyTransaction: CurrencyTransactionEntity) => Promise<void>
 }
 
 interface State {
@@ -46,7 +46,7 @@ const CurrencyTransactionForm: React.FC<Props> = (props: Props) => {
     };
     
     const onCurrencyTransactionSaveClick = (currencyTransaction: CurrencyTransactionFormInput) => {
-        const formData = currencyTransaction as ClientCurrencyTransactionEntity;
+        const formData = currencyTransaction as CurrencyTransactionEntity;
         props.onCurrencyTransactionSaved(formData);
     };
 

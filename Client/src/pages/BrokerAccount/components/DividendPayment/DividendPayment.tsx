@@ -2,16 +2,16 @@ import { Card, Flex, Span, Stack, Text, CardBody, Button, Icon } from '@chakra-u
 import { useTranslation } from 'react-i18next';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
 import { MdEdit, MdDelete } from 'react-icons/md';
-import { ClientDividendPaymentEntity } from '../../../../models/brokers/DividendPaymentEntity';
+import { DividendPaymentEntity } from '../../../../models/brokers/DividendPaymentEntity';
 import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModal';
 import DividendPaymentModal from '../../modals/DividendPaymentModal/DividendPaymentModal';
 import { useRef } from 'react';
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 
 type Props = {
-	dividendPayment: ClientDividendPaymentEntity,
-	onDeleteCallback: (dividendPayment: ClientDividendPaymentEntity) => void,
-	onEditCallback: (dividendPayment: ClientDividendPaymentEntity) => void
+	dividendPayment: DividendPaymentEntity,
+	onDeleteCallback: (dividendPayment: DividendPaymentEntity) => void,
+	onEditCallback: (dividendPayment: DividendPaymentEntity) => void
 }
 
 const DividendPayment = (props: Props) => {

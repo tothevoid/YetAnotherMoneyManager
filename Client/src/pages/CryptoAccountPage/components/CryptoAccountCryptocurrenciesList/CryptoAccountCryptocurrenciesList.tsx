@@ -1,12 +1,12 @@
 import React, { Fragment } from 'react';
 import { SimpleGrid } from '@chakra-ui/react/grid';
 import { useCryptoAccountCryptocurrencies } from '../../hooks/useCryptoAccountCryptocurrencies';
-import { ClientCryptoAccountEntity } from '../../../../models/crypto/CryptoAccountEntity';
-import { ClientCryptoAccountCryptocurrencyEntity } from '../../../../models/crypto/CryptoAccountCryptocurrencyEntity';
+import { CryptoAccountEntity } from '../../../../models/crypto/CryptoAccountEntity';
+import { CryptoAccountCryptocurrencyEntity } from '../../../../models/crypto/CryptoAccountCryptocurrencyEntity';
 import CryptoAccountCryptocurrency from '../CryptoAccountCryptocurrency/CryptoAccountCryptocurrency';
 
 interface Props {
-	cryptoAccount: ClientCryptoAccountEntity
+	cryptoAccount: CryptoAccountEntity
 }
 
 const CryptoAccountCryptocurrenciesList: React.FC<Props> = (props: Props)=> {
@@ -19,7 +19,7 @@ const CryptoAccountCryptocurrenciesList: React.FC<Props> = (props: Props)=> {
 		<Fragment>
 			<SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(350px, 3fr))'>
 				{
-					cryptoAccountCryptocurrencies.map((cryptoAccountCryptocurrency: ClientCryptoAccountCryptocurrencyEntity) => 
+					cryptoAccountCryptocurrencies.map((cryptoAccountCryptocurrency: CryptoAccountCryptocurrencyEntity) => 
 						<CryptoAccountCryptocurrency onReloadCryptoAccountCryptocurrencies={reloadCryptoAccountCryptocurrencies} 
 							cryptoAccountCryptocurrency={cryptoAccountCryptocurrency}
 							key={cryptoAccountCryptocurrency.id}/>)

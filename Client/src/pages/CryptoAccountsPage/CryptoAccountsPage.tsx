@@ -1,7 +1,7 @@
 import { Fragment, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useCryptoAccounts } from "./hooks/useCryptoAccounts";
-import { ClientCryptoAccountEntity } from "../../models/crypto/CryptoAccountEntity";
+import { CryptoAccountEntity } from "../../models/crypto/CryptoAccountEntity";
 import CryptoAccount from "./components/CryptoAccount/CryptoAccount";
 import { Flex, SimpleGrid } from "@chakra-ui/react";
 import ShowModalButton from "../../shared/components/ShowModalButton/ShowModalButton";
@@ -34,7 +34,7 @@ const CryptoAccountsPage: React.FC = () => {
             </Flex>
             <SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(400px, 3fr))'>
                 {
-                    cryptoAccounts.map((cryptoAccount: ClientCryptoAccountEntity) => 
+                    cryptoAccounts.map((cryptoAccount: CryptoAccountEntity) => 
                         <CryptoAccount onReloadCryptoAccounts={reloadCryptoAccounts} cryptoAccount={cryptoAccount} onEditCallback={updateCryptoAccountEntity} 
                             onDeleteCallback={deleteCryptoAccountEntity} key={cryptoAccount.id}/>)
                 }

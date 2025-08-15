@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { createDividendPayment, deleteDividendPayment, getDividendPaymentsByBrokerAccount, updateDividendPayment } from "../../../api/brokers/dividendPaymentApi";
-import { ClientDividendPaymentEntity } from "../../../models/brokers/DividendPaymentEntity";
+import { DividendPaymentEntity } from "../../../models/brokers/DividendPaymentEntity";
 
 export interface DividendPaymentsQuery {
 	brokerAccountId: string
 }
 
 export const useDividendPayments = (queryParameters: DividendPaymentsQuery, onDataChanged: () => void) => {
-	const [dividendPayments, setDividendPayments] = useState<ClientDividendPaymentEntity[]>([]);
+	const [dividendPayments, setDividendPayments] = useState<DividendPaymentEntity[]>([]);
 	const [isSecurityTransactionsLoading, setLoading] = useState(false);
 
 	const [error, setError] = useState<string | null>(null);
@@ -29,21 +29,21 @@ export const useDividendPayments = (queryParameters: DividendPaymentsQuery, onDa
 		fetchData();
 	}, [fetchData])
 
-	const createDividendPaymentEntity = async (createdDividendPayment: ClientDividendPaymentEntity) => {
+	const createDividendPaymentEntity = async (createdDividendPayment: DividendPaymentEntity) => {
 		await createDividendPayment(createdDividendPayment);
 
 		await fetchData();
 		onDataChanged();
 	}
 
-	const updateDividendPaymentEntity = async (updatedDividendPayment: ClientDividendPaymentEntity) => {
+	const updateDividendPaymentEntity = async (updatedDividendPayment: DividendPaymentEntity) => {
 		await updateDividendPayment(updatedDividendPayment);
 		
 		await fetchData();
 		onDataChanged();
 	}
 
-	const deleteDividendPaymentEntity = async (deletedDividendPayment: ClientDividendPaymentEntity) => {
+	const deleteDividendPaymentEntity = async (deletedDividendPayment: DividendPaymentEntity) => {
 		const securityTransactionDeleted = await deleteDividendPayment(deletedDividendPayment.id);
 		if (!securityTransactionDeleted) {
 			return;

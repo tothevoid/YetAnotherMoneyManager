@@ -3,7 +3,7 @@ import { Box, Flex } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 import { useDividendPayments } from '../../hooks/useDividendPayments';
-import { ClientDividendPaymentEntity } from '../../../../models/brokers/DividendPaymentEntity';
+import { DividendPaymentEntity } from '../../../../models/brokers/DividendPaymentEntity';
 import DividendPayment from '../DividendPayment/DividendPayment';
 import ShowModalButton from '../../../../shared/components/ShowModalButton/ShowModalButton';
 import DividendPaymentModal from '../../modals/DividendPaymentModal/DividendPaymentModal';
@@ -29,7 +29,7 @@ const DividendPaymentsList: React.FC<Props> = (props) => {
 		 modalRef.current?.openModal()
 	};
 
-	const dividendPayment: ClientDividendPaymentEntity = {
+	const dividendPayment: DividendPaymentEntity = {
 		brokerAccount: {id: props.brokerAccountId}
 	}
 
@@ -41,7 +41,7 @@ const DividendPaymentsList: React.FC<Props> = (props) => {
 		</Flex>
 		<Box>
 		{
-			dividendPayments.map((dividendPayment: ClientDividendPaymentEntity) => 
+			dividendPayments.map((dividendPayment: DividendPaymentEntity) => 
 				<DividendPayment key={dividendPayment.id} dividendPayment={dividendPayment} 
 					onEditCallback={updateDividendPaymentEntity} 
 					onDeleteCallback={deleteDividendPaymentEntity}/>)

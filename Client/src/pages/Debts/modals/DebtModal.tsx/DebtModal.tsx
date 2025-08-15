@@ -7,15 +7,15 @@ import CollectionSelect from "../../../../shared/components/CollectionSelect/Col
 import { getCurrencies } from "../../../../api/currencies/currencyApi";
 import { CurrencyEntity } from "../../../../models/currencies/CurrencyEntity";
 import { DebtFormInput, DebtValidationSchema } from "./DebtValidationSchema";
-import { ClientDebtEntity } from "../../../../models/debts/DebtEntity";
+import { DebtEntity } from "../../../../models/debts/DebtEntity";
 import DateSelect from "../../../../shared/components/DateSelect/DateSelect";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
 
 interface Props {
-	debt?: ClientDebtEntity | null,
+	debt?: DebtEntity | null,
 	modalRef: RefObject<BaseModalRef | null>,
-	onSaved: (debt: ClientDebtEntity) => void
+	onSaved: (debt: DebtEntity) => void
 };
 
 interface State {
@@ -53,7 +53,7 @@ const DebtModal: React.FC<Props> = (props: Props) => {
 	});
 
 	const onSubmit = (debt: DebtFormInput) => {
-		props.onSaved(debt as ClientDebtEntity);
+		props.onSaved(debt as DebtEntity);
 		props.modalRef.current?.closeModal();
 	}
 

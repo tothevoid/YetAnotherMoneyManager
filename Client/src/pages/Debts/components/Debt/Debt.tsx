@@ -4,15 +4,15 @@ import { Fragment, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModal';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
-import { ClientDebtEntity } from '../../../../models/debts/DebtEntity';
+import { DebtEntity } from '../../../../models/debts/DebtEntity';
 import DebtModal from '../../modals/DebtModal.tsx/DebtModal';
 import { formatDate } from '../../../../shared/utilities/formatters/dateFormatter';
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 
 type Props = {
-	debt: ClientDebtEntity,
-	onEditCallback: (debt: ClientDebtEntity) => void,
-	onDeleteCallback: (debt: ClientDebtEntity) => void,
+	debt: DebtEntity,
+	onEditCallback: (debt: DebtEntity) => void,
+	onDeleteCallback: (debt: DebtEntity) => void,
 }
 
 const Debt = (props: Props) => {

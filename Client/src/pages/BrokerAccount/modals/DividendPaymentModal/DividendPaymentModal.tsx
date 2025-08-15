@@ -9,7 +9,7 @@ import DateSelect from "../../../../shared/components/DateSelect/DateSelect";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
 import { DividendPaymentFormInput, DividendPaymentValidationSchema } from "./DividendPaymentValidationSchema";
-import { ClientDividendPaymentEntity } from "../../../../models/brokers/DividendPaymentEntity";
+import { DividendPaymentEntity } from "../../../../models/brokers/DividendPaymentEntity";
 import { getAvailableDividends } from "../../../../api/securities/dividendApi";
 import { DividendEntity } from "../../../../models/securities/DividendEntity";
 import { formatDate } from "../../../../shared/utilities/formatters/dateFormatter";
@@ -18,8 +18,8 @@ import { SecurityEntity } from "../../../../models/securities/SecurityEntity";
 
 interface ModalProps {
 	modalRef: RefObject<BaseModalRef | null>,
-	dividendPayment: ClientDividendPaymentEntity,
-	onSaved: (account: ClientDividendPaymentEntity) => void;
+	dividendPayment: DividendPaymentEntity,
+	onSaved: (account: DividendPaymentEntity) => void;
 };
 
 const DividendPaymentModal: React.FC<ModalProps> = (props: ModalProps) => {
@@ -88,7 +88,7 @@ const DividendPaymentModal: React.FC<ModalProps> = (props: ModalProps) => {
 	}, [securitiesQuantity, dividend, tax])
 
 	const onSubmit = (dividendPayment: DividendPaymentFormInput) => {
-		props.onSaved(dividendPayment as ClientDividendPaymentEntity);
+		props.onSaved(dividendPayment as DividendPaymentEntity);
 		props.modalRef?.current?.closeModal();
 	}
 

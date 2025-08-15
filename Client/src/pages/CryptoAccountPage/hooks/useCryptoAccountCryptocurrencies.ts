@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { ClientCryptoAccountCryptocurrencyEntity } from "../../../models/crypto/CryptoAccountCryptocurrencyEntity";
+import { CryptoAccountCryptocurrencyEntity } from "../../../models/crypto/CryptoAccountCryptocurrencyEntity";
 import { getCryptocurrenciesByCryptoAccount } from "../../../api/crypto/cryptoAccountCryptocurrencyApi";
 
 export interface CryptoAccountCryptocurrenciesQuery {
@@ -7,7 +7,7 @@ export interface CryptoAccountCryptocurrenciesQuery {
 }
 
 export const useCryptoAccountCryptocurrencies = (queryParameters: CryptoAccountCryptocurrenciesQuery) => {
-    const [cryptoAccountCryptocurrencies, setCryptoAccountCryptocurrencies] = useState<ClientCryptoAccountCryptocurrencyEntity[]>([]);
+    const [cryptoAccountCryptocurrencies, setCryptoAccountCryptocurrencies] = useState<CryptoAccountCryptocurrencyEntity[]>([]);
     const [isBrokerAccountSecuritiesLoading, setLoading] = useState(false);
 
     const [error, setError] = useState<string | null>(null);

@@ -1,5 +1,4 @@
 import config from '../../config' 
-import { convertToDateOnly } from '../../shared/utilities/dateUtils';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { AccountToUpdate } from '../../models/accounts/accountToUpdate';
 import { createEntity, deleteEntity, updateEntity } from '../basicApi';

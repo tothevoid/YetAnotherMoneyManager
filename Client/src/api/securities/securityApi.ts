@@ -2,7 +2,6 @@ import { i18n } from 'i18next';
 import config from '../../config' 
 import { formatDate } from '../../shared/utilities/formatters/dateFormatter';
 import { SecurityHistoryValue } from '../../models/securities/SecurityHistoryValue';
-import { convertToDateOnly } from '../../shared/utilities/dateUtils';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { deleteEntity, getAllEntities } from '../basicApi';
 import { SecurityStats } from '../../models/securities/SecurityStats';

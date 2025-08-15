@@ -3,7 +3,6 @@ import { SecurityTransactionEntity, SecurityTransactionEntityRequest, SecurityTr
 import { SecurityTransactionsHistory } from '../../models/securities/SecurityTransactionsHistory';
 import { SecurityTransactionsPagination } from '../../models/securities/SecurityTransactionsPagination';
 import { SecurityTransactionsRequest } from '../../models/securities/SecurityTransactionsRequest';
-import { convertToDateOnly } from '../../shared/utilities/dateUtils';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { createEntity, deleteEntity, getAllEntitiesByConfig, updateEntity } from '../basicApi';
 import { prepareSecurityTransaction, prepareSecurityTransactionRequest } from './securityTransactionApiMapping';

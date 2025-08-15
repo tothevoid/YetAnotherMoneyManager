@@ -1,6 +1,5 @@
 import config from '../../config' 
 import { CurrencyTransactionEntity, CurrencyTransactionEntityRequest, CurrencyTransactionEntityResponse } from '../../models/transactions/CurrencyTransactionEntity';
-import { convertToDateOnly } from '../../shared/utilities/dateUtils';
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
 import { prepareCurrencyTransaction, prepareCurrencyTransactionRequest } from './currencyTransactionApiMapping';
 

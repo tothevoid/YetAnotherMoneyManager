@@ -1,6 +1,5 @@
 import config from "../../config";
 import { DebtPaymentEntity, DebtPaymentEntityRequest, DebtPaymentEntityResponse } from "../../models/debts/DebtPaymentEntity";
-import { convertToDateOnly } from "../../shared/utilities/dateUtils";
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from "../basicApi";
 import { prepareDebtPayment, prepareDebtPaymentRequest } from "./debtPaymentApiMapping";
 

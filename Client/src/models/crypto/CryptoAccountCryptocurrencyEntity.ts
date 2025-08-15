@@ -1,4 +1,4 @@
-import { CryptoAccountEntity } from "./CryptoAccountEntity";
+import { CryptoAccountEntity, CryptoAccountEntityResponse } from "./CryptoAccountEntity";
 import { CryptocurrencyEntity } from "./CryptocurrencyEntity";
 
 interface CommonCryptoAccountCryptocurrencyEntity {
@@ -18,5 +18,5 @@ export interface CryptoAccountCryptocurrencyEntity extends CommonCryptoAccountCr
 
 export interface CryptoAccountCryptocurrencyEntityResponse extends CommonCryptoAccountCryptocurrencyEntity {
     cryptocurrency: CryptocurrencyEntity,
-    cryptoAccount: CryptoAccountEntity
+    cryptoAccount: CryptoAccountEntityResponse
 }

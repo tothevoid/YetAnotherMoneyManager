@@ -1,5 +1,5 @@
-import { AccountEntity } from "../accounts/AccountEntity";
-import { DebtEntity } from "./DebtEntity";
+import { AccountEntity, AccountEntityResponse } from "../accounts/AccountEntity";
+import { DebtEntity, DebtEntityResponse } from "./DebtEntity";
 
 export interface CommonDebtPaymentEntity {
     id: string,
@@ -19,7 +19,7 @@ export interface DebtPaymentEntity extends CommonDebtPaymentEntity {
 }
 
 export interface DebtPaymentEntityResponse extends CommonDebtPaymentEntity {
-    targetAccount: AccountEntity,
-    debt: DebtEntity,
+    targetAccount: AccountEntityResponse,
+    debt: DebtEntityResponse,
     date: string
 }

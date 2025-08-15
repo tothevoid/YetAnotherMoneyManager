@@ -2,6 +2,7 @@ import config from "../../config";
 import { DebtPaymentEntity, DebtPaymentEntityRequest, DebtPaymentEntityResponse } from "../../models/debts/DebtPaymentEntity";
 import { convertToDateOnly } from "../../shared/utilities/dateUtils";
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from "../basicApi";
+import { prepareDebtPayment, prepareDebtPaymentRequest } from "./debtPaymentApiMapping";
 
 const basicUrl = `${config.api.URL}/DebtPayment`;
 
@@ -21,24 +22,4 @@ export const updateDebtPayment = async (updatedDebtPayment: DebtPaymentEntity): 
 
 export const deleteDebtPayment = async (debtPaymentId: string): Promise<boolean> => {
     return await deleteEntity(basicUrl, debtPaymentId);
-}
-
-const prepareDebtPayment = (debtPayment: DebtPaymentEntityResponse): DebtPaymentEntity => {
-    return {
-        id: debtPayment.id,
-        amount: debtPayment.amount,
-        debt: debtPayment.debt,
-        targetAccount: debtPayment.targetAccount,
-        date: new Date(debtPayment.date)
-    };
-}
-
-const prepareDebtPaymentRequest = (debtPayment: DebtPaymentEntity): DebtPaymentEntityRequest => {
-    return {
-        id: debtPayment.id,
-        amount: debtPayment.amount,
-        debtId: debtPayment.debt.id,
-        targetAccountId: debtPayment.targetAccount.id,
-        date: convertToDateOnly(debtPayment.date)
-    };
 }

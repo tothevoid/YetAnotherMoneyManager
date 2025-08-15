@@ -1,10 +1,10 @@
 import config from "../../config";
 import { AccountEntity, AccountEntityRequest, AccountEntityResponse } from "../../models/accounts/AccountEntity";
-import { convertToDateOnly } from "../../shared/utilities/dateUtils";
 import { checkPromiseStatus, logPromiseError } from "../../shared/utilities/webApiUtilities";
 import { AccountCurrencySummary } from "../../models/accounts/accountsSummary";
 import { createEntity, deleteEntity, updateEntity } from "../basicApi";
 import { Transfer } from "../../pages/Accounts/modals/AccountBalanceTransferModal/AccountBalanceTransferModal";
+import { prepareAccountEntity, prepareAccountRequest } from "./accountApiMapping";
 
 const basicUrl = `${config.api.URL}/Account`;
 
@@ -75,28 +75,4 @@ export const getSummary = async (): Promise<AccountCurrencySummary[]> => {
 		.catch(logPromiseError)
 
 	return summaries ? summaries: [] as AccountCurrencySummary[];
-}
-
-const prepareAccountRequest = (account: AccountEntity): AccountEntityRequest => {
-	return {
-		id: account.id,
-		active: account.active,
-		balance: account.balance,
-		name: account.name,
-		createdOn: convertToDateOnly(account.createdOn),
-		accountTypeId: account.accountType.id,
-		currencyId: account.currency.id
-	};
-}
-
-const prepareAccountEntity = (account: AccountEntityResponse): AccountEntity => {
-	return {
-		id: account.id,
-		name: account.name,
-		active: account.active,
-		balance: account.balance,
-		accountType: account.accountType,
-		currency: account.currency,
-		createdOn: new Date(account.createdOn)
-	};
 }

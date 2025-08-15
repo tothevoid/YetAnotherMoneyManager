@@ -7,6 +7,7 @@ import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webA
 import { deleteEntity, getAllEntities } from '../basicApi';
 import { SecurityStats } from '../../models/securities/SecurityStats';
 import { SecurityEntity, SecurityEntityRequest, SecurityEntityResponse } from '../../models/securities/SecurityEntity';
+import { prepareSecurity, prepareSecurityEntityRequest } from './securityApiMapping';
 
 const basicUrl = `${config.api.URL}/Security`;
 
@@ -72,32 +73,6 @@ export const getIconUrl = (iconKey: string | null): string => {
     }
 
     return `${basicUrl}/icon?iconKey=${iconKey}`;
-}
-
-const prepareSecurity = (security: SecurityEntityResponse): SecurityEntity => {
-    return {
-        id: security.id,
-        name: security.name,
-        ticker: security.ticker,
-        type: security.type,
-        actualPrice: security.actualPrice,
-        iconKey: security.iconKey,
-        currency: security.currency,
-        priceFetchedAt: new Date(security.priceFetchedAt)
-    };
-}
-
-const prepareSecurityEntityRequest = (security: SecurityEntity): SecurityEntityRequest => {
-    return {
-        id: security.id,
-        name: security.name,
-        ticker: security.ticker,
-        typeId: security.type.id,
-        actualPrice: security.actualPrice,
-        iconKey: security.iconKey,
-        currencyId: security.currency.id,
-        priceFetchedAt: convertToDateOnly(security.priceFetchedAt)
-    };
 }
 
 const generateForm = (security: SecurityEntityRequest, file: File | null) => {

@@ -1,7 +1,8 @@
 import config from '../../config' 
-import { BrokerAccountSecurityEntity, BrokerAccountSecurityEntityRequest, BrokerAccountSecurityEntityResponse } from '../../models/brokers/BrokerAccountSecurityEntity';
+import { BrokerAccountSecurityEntity, BrokerAccountSecurityEntityResponse } from '../../models/brokers/BrokerAccountSecurityEntity';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { deleteEntity, updateEntity } from '../basicApi';
+import { prepareBrokerAccountSecurity, prepareBrokerAccountSecurityResponse } from './brokerAccountSecurityApiMapping';
 
 const basicUrl = `${config.api.URL}/BrokerAccountSecurity`;
 
@@ -27,24 +28,4 @@ export const updateBrokerAccountSecurity = async (modifiedBrokerAccountSecurity:
 
 export const deleteBrokerAccountSecurity = async (brokerAccountSecurityId: string): Promise<boolean> => {
     return await deleteEntity(basicUrl, brokerAccountSecurityId);
-}
-
-const prepareBrokerAccountSecurityResponse = (brokerAccountSecurity: BrokerAccountSecurityEntity): BrokerAccountSecurityEntityRequest => {
-    return {
-        id: brokerAccountSecurity.id,
-        brokerAccountId: brokerAccountSecurity.brokerAccount.id,
-        price: brokerAccountSecurity.price,
-        quantity: brokerAccountSecurity.quantity,
-        securityId: brokerAccountSecurity.security.id
-    };
-}
-
-const prepareBrokerAccountSecurity = (brokerAccountSecurity: BrokerAccountSecurityEntityResponse): BrokerAccountSecurityEntity => {
-    return {
-        id: brokerAccountSecurity.id,
-        brokerAccount: brokerAccountSecurity.brokerAccount,
-        price: brokerAccountSecurity.price,
-        quantity: brokerAccountSecurity.quantity,
-        security: brokerAccountSecurity.security
-    };
 }

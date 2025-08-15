@@ -1,4 +1,4 @@
-import { AccountEntity } from "../accounts/AccountEntity";
+import { AccountEntity, AccountEntityResponse } from "../accounts/AccountEntity";
 import { TransactionTypeEntity } from "./TransactionTypeEntity";
 
 interface CommonTransactionEntity {
@@ -23,6 +23,6 @@ export interface TransactionEntity extends CommonTransactionEntity {
 
 export interface TransactionEntityResponse extends CommonTransactionEntity {
     date: string,
-    account: AccountEntity,
+    account: AccountEntityResponse,
     transactionType: TransactionTypeEntity,
 }

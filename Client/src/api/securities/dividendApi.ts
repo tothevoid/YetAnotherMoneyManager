@@ -3,6 +3,7 @@ import { DividendEntity, DividendEntityRequest, DividendEntityResponse } from '.
 import { convertToDateOnly } from '../../shared/utilities/dateUtils';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { createEntity, deleteEntity, updateEntity } from '../basicApi';
+import { prepareDividend, prepareDividendRequest } from './dividendApiMapping';
 
 const basicUrl = `${config.api.URL}/Dividend`;
 
@@ -37,24 +38,4 @@ export const updateDividend = async (dividend: DividendEntity): Promise<boolean>
 
 export const deleteDividend = async (dividendId: string): Promise<boolean> => {
     return await deleteEntity(basicUrl, dividendId);
-}
-
-const prepareDividendRequest = (dividend: DividendEntity): DividendEntityRequest => {
-    return {
-        id: dividend.id,
-        declarationDate: convertToDateOnly(dividend.declarationDate),
-        snapshotDate: convertToDateOnly(dividend.snapshotDate),
-        securityId: dividend.security.id,
-        amount: dividend.amount
-    };
-}
-
-const prepareDividend = (dividend: DividendEntityResponse): DividendEntity => {
-    return {
-        id: dividend.id,
-        amount: dividend.amount,
-        security: dividend.security,
-        declarationDate: new Date(dividend.declarationDate),
-        snapshotDate: new Date(dividend.snapshotDate)
-    };
 }

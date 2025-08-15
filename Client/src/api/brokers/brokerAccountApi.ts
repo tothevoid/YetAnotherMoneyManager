@@ -2,6 +2,7 @@ import config from '../../config'
 import { BrokerAccountEntity, BrokerAccountEntityRequest, BrokerAccountEntityResponse } from '../../models/brokers/BrokerAccountEntity';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
+import { prepareBrokerAccount, prepareBrokerAccountRequest } from './brokerAccountApiMapping';
 
 const basicUrl = `${config.api.URL}/BrokerAccount`;
 
@@ -29,30 +30,4 @@ export const updateBrokerAccount = async (modifiedBroker: BrokerAccountEntity): 
 
 export const deleteBrokerAccount = async (deleteBrokerAccountId: string): Promise<boolean> => {
     return await deleteEntity(basicUrl, deleteBrokerAccountId);
-}
-
-const prepareBrokerAccountRequest = (brokerAccount: BrokerAccountEntity): BrokerAccountEntityRequest => {
-    return {
-        id: brokerAccount.id,
-        name: brokerAccount.name,
-        typeId: brokerAccount.type.id,
-        currencyId: brokerAccount.currency.id,
-        brokerId: brokerAccount.broker.id,
-        initialValue: brokerAccount.initialValue,
-        currentValue: brokerAccount.currentValue,
-        mainCurrencyAmount: brokerAccount.mainCurrencyAmount
-    };
-}
-
-const prepareBrokerAccount = (brokerAccount: BrokerAccountEntityResponse): BrokerAccountEntity => {
-    return {
-        id: brokerAccount.id,
-        name: brokerAccount.name,
-        type: brokerAccount.type,
-        currency: brokerAccount.currency,
-        broker: brokerAccount.broker,
-        initialValue: brokerAccount.initialValue,
-        currentValue: brokerAccount.currentValue,
-        mainCurrencyAmount: brokerAccount.mainCurrencyAmount
-    };
 }

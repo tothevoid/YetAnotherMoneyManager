@@ -2,6 +2,7 @@ import config from '../../config'
 import { CryptoAccountCryptocurrencyEntity, CryptoAccountCryptocurrencyEntityRequest, CryptoAccountCryptocurrencyEntityResponse } from '../../models/crypto/CryptoAccountCryptocurrencyEntity';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
+import { prepareCryptoAccountCryptocurrency, prepareCryptoAccountCryptocurrencyRequest } from './cryptoAccountCryptocurrencyApiMapping';
 
 const basicUrl = `${config.api.URL}/CryptoAccountCryptocurrency`;
 
@@ -31,22 +32,4 @@ export const updateCryptoAccountCryptocurrency = async (modifiedCryptoAccountCry
 
 export const deleteCryptoAccountCryptocurrency = async (cryptoAccountCryptocurrencyId: string): Promise<boolean> => {
     return await deleteEntity(basicUrl, cryptoAccountCryptocurrencyId);
-}
-
-const prepareCryptoAccountCryptocurrency = (cryptoAccountCryptocurrency: CryptoAccountCryptocurrencyEntityResponse): CryptoAccountCryptocurrencyEntity => {
-    return {
-        id: cryptoAccountCryptocurrency.id,
-        quantity: cryptoAccountCryptocurrency.quantity,
-        cryptoAccount: cryptoAccountCryptocurrency.cryptoAccount,
-        cryptocurrency: cryptoAccountCryptocurrency.cryptocurrency 
-    }
-}
-
-const prepareCryptoAccountCryptocurrencyRequest = (cryptoAccountCryptocurrency: CryptoAccountCryptocurrencyEntity): CryptoAccountCryptocurrencyEntityRequest => {
-    return {
-        id: cryptoAccountCryptocurrency.id,
-        cryptoAccountId: cryptoAccountCryptocurrency.cryptoAccount.id,
-        cryptocurrencyId: cryptoAccountCryptocurrency.cryptocurrency.id,
-        quantity: cryptoAccountCryptocurrency.quantity
-    };
 }

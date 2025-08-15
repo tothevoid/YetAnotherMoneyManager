@@ -3,6 +3,7 @@ import { DividendPaymentEntity, DividendPaymentEntityRequest, DividendPaymentEnt
 import { convertToDateOnly } from '../../shared/utilities/dateUtils';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { createEntity, deleteEntity, updateEntity } from '../basicApi';
+import { prepareDividendPayment, prepareDividendPaymentRequest } from './dividendPaymentApiMapping';
 
 const basicUrl = `${config.api.URL}/DividendPayment`;
 
@@ -26,26 +27,4 @@ export const updateDividendPayment = async (modifiedDividendPayment: DividendPay
 
 export const deleteDividendPayment = async (brokerAccountSecurityId: string): Promise<boolean> => {
     return await deleteEntity(basicUrl, brokerAccountSecurityId);
-}
-
-const prepareDividendPayment = (dividendPayment: DividendPaymentEntityResponse): DividendPaymentEntity => {
-    return {
-        id: dividendPayment.id,
-        dividend: dividendPayment.dividend,
-        securitiesQuantity: dividendPayment.securitiesQuantity,
-        tax: dividendPayment.tax,
-        brokerAccount: dividendPayment.brokerAccount,
-        receivedAt: new Date(dividendPayment.receivedAt)
-    }
-}
-
-const prepareDividendPaymentRequest = (dividendPayment: DividendPaymentEntity): DividendPaymentEntityRequest => {
-    return {
-        id: dividendPayment.id,
-        brokerAccountId: dividendPayment.brokerAccount.id,
-        dividendId: dividendPayment.dividend.id,
-        securitiesQuantity: dividendPayment.securitiesQuantity,
-        tax: dividendPayment.tax,
-        receivedAt: convertToDateOnly(dividendPayment.receivedAt) 
-    };
 }

@@ -5,6 +5,7 @@ import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webA
 import { DepositsRange } from '../../models/deposits/depositsRange';
 import { createEntity, deleteEntity, updateEntity } from '../basicApi';
 import { DepositEntity, DepositEntityRequest, DepositEntityResponse } from '../../models/deposits/DepositEntity';
+import { prepareDepositEntity, prepareDepositEntityRequest } from './depositApiMapping';
 
 const basicUrl = `${config.api.URL}/Deposit`;
 
@@ -55,32 +56,6 @@ export const getDepositsSummary = async (monthsFrom: number, monthsTo: number, o
   
     return summary;
 };
-
-const prepareDepositEntity = (deposit: DepositEntityResponse): DepositEntity => {
-    return {
-        id: deposit.id,
-        initialAmount: deposit.initialAmount,
-        name: deposit.name,
-        percentage: deposit.percentage,
-        currency: deposit.currency,
-        estimatedEarn: deposit.estimatedEarn,
-        from: new Date(deposit.from),
-        to: new Date(deposit.to),
-    }
-}
-
-const prepareDepositEntityRequest = (deposit: DepositEntity): DepositEntityRequest => {
-    return {
-        id: deposit.id,
-        initialAmount: deposit.initialAmount,
-        name: deposit.name,
-        percentage: deposit.percentage,
-        estimatedEarn: deposit.estimatedEarn,
-        currencyId: deposit.currency?.id,
-        from: convertToDateOnly(deposit.from),
-        to: convertToDateOnly(deposit.to),
-    }
-}
 
 const getQueryDepositsQueryParameters = (monthsFrom: number, monthsTo: number, onlyActive: boolean) => {
     return JSON.stringify({monthsFrom, monthsTo, onlyActive});

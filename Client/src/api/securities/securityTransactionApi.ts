@@ -6,6 +6,7 @@ import { SecurityTransactionsRequest } from '../../models/securities/SecurityTra
 import { convertToDateOnly } from '../../shared/utilities/dateUtils';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { createEntity, deleteEntity, getAllEntitiesByConfig, updateEntity } from '../basicApi';
+import { prepareSecurityTransaction, prepareSecurityTransactionRequest } from './securityTransactionApiMapping';
 
 const basicUrl = `${config.api.URL}/SecurityTransaction`;
 
@@ -42,32 +43,4 @@ export const updateSecurityTransaction = async (modifiedSecurityTransaction: Sec
 
 export const deleteSecurityTransaction = async (securityTransactionId: string): Promise<boolean> => {
     return await deleteEntity(basicUrl, securityTransactionId);
-}
-
-const prepareSecurityTransactionRequest = (securityTransaction: SecurityTransactionEntity): SecurityTransactionEntityRequest => {
-    return {
-        id: securityTransaction.id,
-        brokerCommission: securityTransaction.brokerCommission,
-        stockExchangeCommission: securityTransaction.stockExchangeCommission,
-        price: securityTransaction.price,
-        quantity: securityTransaction.quantity,
-        tax: securityTransaction.tax,
-        date: convertToDateOnly(securityTransaction.date),
-        brokerAccountId: securityTransaction.brokerAccount.id,
-        securityId: securityTransaction.security.id,
-    }
-}
-
-const prepareSecurityTransaction = (securityTransaction: SecurityTransactionEntityResponse): SecurityTransactionEntity => {
-    return {
-        id: securityTransaction.id,
-        brokerCommission: securityTransaction.brokerCommission,
-        stockExchangeCommission: securityTransaction.stockExchangeCommission,
-        price: securityTransaction.price,
-        quantity: securityTransaction.quantity,
-        tax: securityTransaction.tax,
-        date: new Date(securityTransaction.date),
-        brokerAccount: securityTransaction.brokerAccount,
-        security: securityTransaction.security,
-    }
 }

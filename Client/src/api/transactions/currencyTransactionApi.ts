@@ -2,6 +2,7 @@ import config from '../../config'
 import { CurrencyTransactionEntity, CurrencyTransactionEntityRequest, CurrencyTransactionEntityResponse } from '../../models/transactions/CurrencyTransactionEntity';
 import { convertToDateOnly } from '../../shared/utilities/dateUtils';
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
+import { prepareCurrencyTransaction, prepareCurrencyTransactionRequest } from './currencyTransactionApiMapping';
 
 const basicUrl = `${config.api.URL}/CurrencyTransaction`;
 
@@ -24,26 +25,4 @@ export const updateCurrencyTransaction = async (modifiedSecurityTransaction: Cur
 
 export const deleteCurrencyTransaction = async (securityTransactionId: string): Promise<boolean> => {
 	return await deleteEntity(basicUrl, securityTransactionId);
-}
-
-const prepareCurrencyTransaction = (currencyTransaction: CurrencyTransactionEntityResponse): CurrencyTransactionEntity => {
-	return {
-		id: currencyTransaction.id,
-		amount: currencyTransaction.amount,
-		rate: currencyTransaction.rate,
-		destinationAccount: currencyTransaction.destinationAccount,
-		sourceAccount: currencyTransaction.sourceAccount,
-		date: new Date(currencyTransaction.date)
-	}
-}
-
-const prepareCurrencyTransactionRequest = (currencyTransaction: CurrencyTransactionEntity): CurrencyTransactionEntityRequest => {
-	return {
-		id: currencyTransaction.id,
-		amount: currencyTransaction.amount,
-		rate: currencyTransaction.rate,
-		destinationAccountId: currencyTransaction.destinationAccount.id,
-		sourceAccountId: currencyTransaction.sourceAccount.id,
-		date: convertToDateOnly(currencyTransaction.date)
-	}
 }

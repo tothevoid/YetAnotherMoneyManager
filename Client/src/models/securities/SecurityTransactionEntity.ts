@@ -1,5 +1,5 @@
-import { BrokerAccountEntity } from "../brokers/BrokerAccountEntity";
-import { SecurityEntity } from "./SecurityEntity";
+import { BrokerAccountEntity, BrokerAccountEntityResponse } from "../brokers/BrokerAccountEntity";
+import { SecurityEntity, SecurityEntityResponse } from "./SecurityEntity";
 
 interface CommonSecurityTransactionEntity {
     id: string,
@@ -23,7 +23,7 @@ export interface SecurityTransactionEntity extends CommonSecurityTransactionEnti
 }
 
 export interface SecurityTransactionEntityResponse extends CommonSecurityTransactionEntity {
-    security: SecurityEntity,
-    brokerAccount: BrokerAccountEntity,
+    security: SecurityEntityResponse,
+    brokerAccount: BrokerAccountEntityResponse,
     date: string
 }

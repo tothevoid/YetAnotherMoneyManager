@@ -1,6 +1,7 @@
 import config from '../../config' 
 import { CryptoAccountEntity, CryptoAccountEntityRequest, CryptoAccountEntityResponse } from '../../models/crypto/CryptoAccountEntity';
 import { createEntity, deleteEntity, getAllEntities, getEntityById, updateEntity } from '../basicApi';
+import { prepareCryptoAccountEntity, prepareCryptoAccountEntityRequest } from './cryptoAccountApiMapping';
 
 const basicUrl = `${config.api.URL}/CryptoAccount`;
 
@@ -27,18 +28,3 @@ export const deleteCryptoAccount = async (cryptoAccountId: string): Promise<bool
     return await deleteEntity(basicUrl, cryptoAccountId);
 }
 
-const prepareCryptoAccountEntity = (cryptoAccount: CryptoAccountEntityResponse): CryptoAccountEntity => {
-    return {
-        id: cryptoAccount.id,
-        name: cryptoAccount.name,
-        cryptoProvider: cryptoAccount.cryptoProvider
-    };
-}
-
-const prepareCryptoAccountEntityRequest = (cryptoAccount: CryptoAccountEntity): CryptoAccountEntityRequest => {
-    return {
-        id: cryptoAccount.id,
-        name: cryptoAccount.name,
-        cryptoProviderId: cryptoAccount.cryptoProvider.id
-    };
-}

@@ -1,5 +1,5 @@
-import { DividendEntity } from "../securities/DividendEntity";
-import { BrokerAccountEntity } from "./BrokerAccountEntity";
+import { DividendEntity, DividendEntityResponse } from "../securities/DividendEntity";
+import { BrokerAccountEntity, BrokerAccountEntityResponse } from "./BrokerAccountEntity";
 
 interface CommonDividendPaymentEntity {
 	id: string,
@@ -20,8 +20,8 @@ export interface DividendPaymentEntity extends CommonDividendPaymentEntity {
 }
 
 export interface DividendPaymentEntityResponse extends CommonDividendPaymentEntity {
-	brokerAccount: BrokerAccountEntity,
-	dividend: DividendEntity,
+	brokerAccount: BrokerAccountEntityResponse,
+	dividend: DividendEntityResponse,
 	receivedAt: string
 }
 

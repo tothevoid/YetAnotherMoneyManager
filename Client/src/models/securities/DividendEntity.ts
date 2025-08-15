@@ -1,4 +1,4 @@
-import { SecurityEntity } from "./SecurityEntity";
+import { SecurityEntity, SecurityEntityResponse } from "./SecurityEntity";
 
 export interface CommonDividendEntity {
     id: string,
@@ -20,5 +20,5 @@ export interface DividendEntity extends CommonDividendEntity {
 export interface DividendEntityResponse extends CommonDividendEntity {
     declarationDate: string,
     snapshotDate: string,
-    security: SecurityEntity
+    security: SecurityEntityResponse
 }

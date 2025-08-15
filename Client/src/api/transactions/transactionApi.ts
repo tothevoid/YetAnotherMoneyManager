@@ -4,6 +4,7 @@ import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webA
 import { AccountToUpdate } from '../../models/accounts/accountToUpdate';
 import { createEntity, deleteEntity, updateEntity } from '../basicApi';
 import { TransactionEntity, TransactionEntityRequest, TransactionEntityResponse } from '../../models/transactions/TransactionEntity';
+import { prepareTransaction, prepareTransactionRequest } from './transactionApiMapping';
 
 const basicUrl = `${config.api.URL}/Transaction`;
 
@@ -30,30 +31,4 @@ export const updateTransaction = async (modifiedTransaction: TransactionEntity):
 
 export const deleteTransaction = async (transactionId: string): Promise<boolean> => {
     return await deleteEntity(basicUrl, transactionId);
-}
-
-const prepareTransaction = (transaction: TransactionEntityResponse): TransactionEntity => {
-    return {
-        id: transaction.id,
-        name: transaction.name,
-        date: new Date(transaction.date),
-        isSystem: transaction.isSystem,
-        cashback: transaction.cashback,
-        amount: transaction.amount,
-        transactionType: transaction.transactionType,
-        account: transaction.account
-    }
-}
-
-const prepareTransactionRequest = (transaction: TransactionEntity): TransactionEntityRequest => {
-    return {
-        id: transaction.id,
-        name: transaction.name,
-        date: convertToDateOnly(transaction.date),
-        isSystem: transaction.isSystem,
-        cashback: transaction.cashback,
-        amount: transaction.amount,
-        transactionTypeId: transaction.transactionType.id,
-        accountId: transaction.account.id
-    }
 }

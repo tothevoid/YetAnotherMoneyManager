@@ -13,14 +13,14 @@ Development:
 * install at least .NET 9
 * install [postgres](https://www.postgresql.org/download/)
 * install [Node.js](https://nodejs.org/en/)
-* navigate to `./Server/MoneyManager`
+* navigate to `./server/MoneyManager`
 * execute `dotnet run`
-* navigate to the directory `./Client`
+* navigate to the directory `./client`
 * execute `npm run dev`
 
 Migrations:
 
-* navigate to `./Server`
+* navigate to `./server`
 * execute `dotnet ef database update --project Infrastructure --startup-project WebApi`
 
 Start with Docker:

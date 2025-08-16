@@ -7,14 +7,17 @@ RUN npm install --frozen-lockfile
 
 #env
 ARG SERVER_API_URL
+ARG CLIENT_HOST
+
 ENV VITE_SERVER_API_URL=$SERVER_API_URL
+ENV CLIENT_HOST=$CLIENT_HOST
 
 COPY . .
 RUN npm run build
 
 FROM nginx:alpine
 
-COPY --from=builder /app/nginx/default.conf /etc/nginx/conf.d
+COPY --from=builder /app/nginx/conf.template /etc/nginx/templates/default.conf.template
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 EXPOSE 80

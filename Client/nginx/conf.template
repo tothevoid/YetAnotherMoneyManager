@@ -1,6 +1,6 @@
 server {
     listen 80;
-    server_name localhost;
+    server_name ${CLIENT_HOST};
 
     root /usr/share/nginx/html;
     index index.html;

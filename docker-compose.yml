@@ -40,6 +40,7 @@ services:
       context: ./client
       args:
         SERVER_API_URL: "${SERVER_HOST}:${SERVER_PORT}"
+        CLIENT_HOST: ${CLIENT_HOST}
     ports:
       - ${CLIENT_PORT}:80
   files_database:

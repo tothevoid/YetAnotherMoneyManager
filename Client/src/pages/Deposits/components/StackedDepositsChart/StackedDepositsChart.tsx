@@ -12,12 +12,9 @@ interface Props {
 	currencyName: string
 }
 
-interface ChartBar {
-	date: string
-}
-
-type ChartBarData = ChartBar & {
-    [key: string]: number
+interface ChartBarData {
+	date: string;
+	[key: string]: number | string;
 }
 
 

@@ -16,9 +16,17 @@ import { formatDate } from "../../../../shared/utilities/formatters/dateFormatte
 import { formatMoneyByCurrencyCulture } from "../../../../shared/utilities/formatters/moneyFormatter";
 import { SecurityEntity } from "../../../../models/securities/SecurityEntity";
 
+export interface CreateDividendPaymentContext {
+	brokerAccountId: string
+}
+
+export interface EditDividendPaymentContext {
+	dividendPayment: DividendPaymentEntity
+}
+
 interface ModalProps {
 	modalRef: RefObject<BaseModalRef | null>,
-	dividendPayment: DividendPaymentEntity,
+	context: CreateDividendPaymentContext | EditDividendPaymentContext,
 	onSaved: (account: DividendPaymentEntity) => void;
 };
 
@@ -29,11 +37,19 @@ const DividendPaymentModal: React.FC<ModalProps> = (props: ModalProps) => {
 	const [availableDividends, setAvailableDividends] = useState<DividendEntity[]>([]);
 	const [dividendsBySecurity, setDividendsBySecurity] = useState<DividendEntity[]>([]);
 
-	const [selectedSecurity, setSelectedSecurity] = useState<SecurityEntity | null>(props.dividendPayment?.dividend?.security);
+	const defaultSecurity = "dividendPayment" in props.context ?
+		props.context.dividendPayment?.dividend?.security:
+		null;
+
+	const [selectedSecurity, setSelectedSecurity] = useState<SecurityEntity | null>(defaultSecurity);
 	const [payment, setPayment] = useState<number>(0);
 	
 	const fetchAvailableDividends = async () => {
-		const dividends = await getAvailableDividends(props.dividendPayment?.brokerAccount?.id);
+		const brokerAccountId = "dividendPayment" in props.context ?
+			props.context.dividendPayment.brokerAccount.id:
+			props.context.brokerAccountId;
+
+		const dividends = await getAvailableDividends(brokerAccountId);
 		setAvailableDividends(dividends);
 
 		const securities = new Map<string, SecurityEntity>();
@@ -62,16 +78,18 @@ const DividendPaymentModal: React.FC<ModalProps> = (props: ModalProps) => {
 		setDividendsBySecurity(availableDividends.filter((dividend) => dividend.security.id === selectedSecurity.id))
 	}, [selectedSecurity, availableDividends])
 
+	const dividendPayment = "dividendPayment" in props.context ? props.context.dividendPayment: null;
+
 	const { register, reset, handleSubmit, watch, control, formState: { errors }} = useForm<DividendPaymentFormInput>({
 		resolver: zodResolver(DividendPaymentValidationSchema),
 		mode: "onBlur",
 		defaultValues: {
-			id: props.dividendPayment?.id ?? crypto.randomUUID(),
-			brokerAccount: props.dividendPayment.brokerAccount,
-			dividend: props.dividendPayment.dividend,
-			securitiesQuantity: props.dividendPayment.securitiesQuantity ?? 0,
-			tax: props.dividendPayment?.tax ?? 0,
-			receivedAt: props.dividendPayment?.receivedAt ?? new Date(),
+			id: dividendPayment?.id ?? crypto.randomUUID(),
+			brokerAccount: dividendPayment?.brokerAccount,
+			dividend: dividendPayment?.dividend,
+			securitiesQuantity: dividendPayment?.securitiesQuantity ?? 0,
+			tax: dividendPayment?.tax ?? 0,
+			receivedAt: dividendPayment?.receivedAt ?? new Date(),
 		}
 	});
 

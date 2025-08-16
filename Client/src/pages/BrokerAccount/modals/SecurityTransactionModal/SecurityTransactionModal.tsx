@@ -14,17 +14,24 @@ import { SecurityTransactionEntity } from "../../../../models/securities/Securit
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
 
+export interface CreateSecurityTransactionContext {
+	brokerAccountId: string
+}
+
+export interface EditSecurityTransactionContext {
+	securityTransaction: SecurityTransactionEntity
+}
+
 interface ModalProps {
 	modalRef: RefObject<BaseModalRef | null>,
-	securityTransaction?: SecurityTransactionEntity | null,
 	onSaved: (account: SecurityTransactionEntity) => void;
+	context: CreateSecurityTransactionContext | EditSecurityTransactionContext,
 };
 
 interface State {
 	brokerAccounts: BrokerAccountEntity[]
 	securities: SecurityEntity[]
 }
-
 
 const SecurityTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
 	const [state, setState] = useState<State>({ brokerAccounts: [], securities: []});
@@ -45,19 +52,21 @@ const SecurityTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
 		})
 	};
 
+	const securityTransaction = "securityTransaction" in props.context ? props.context.securityTransaction: null;
+
 	const { register, handleSubmit, control, formState: { errors }} = useForm<SecurityTransactionFormInput>({
 		resolver: zodResolver(SecurityTransactionValidationSchema),
 		mode: "onBlur",
 		defaultValues: {
-			id: props.securityTransaction?.id ?? crypto.randomUUID(),
-			brokerAccount: props.securityTransaction?.brokerAccount,
-			security: props.securityTransaction?.security,
-			brokerCommission: props.securityTransaction?.brokerCommission ?? 0,
-			stockExchangeCommission: props.securityTransaction?.stockExchangeCommission ?? 0,
-			date: props.securityTransaction?.date ?? new Date(),
-			price: props.securityTransaction?.price ?? 0,
-			tax: props.securityTransaction?.tax ?? 0,
-			quantity: props.securityTransaction?.quantity ?? 0
+			id: securityTransaction?.id ?? crypto.randomUUID(),
+			brokerAccount: securityTransaction?.brokerAccount,
+			security: securityTransaction?.security,
+			brokerCommission: securityTransaction?.brokerCommission ?? 0,
+			stockExchangeCommission: securityTransaction?.stockExchangeCommission ?? 0,
+			date: securityTransaction?.date ?? new Date(),
+			price: securityTransaction?.price ?? 0,
+			tax: securityTransaction?.tax ?? 0,
+			quantity: securityTransaction?.quantity ?? 0
 		}
 	});
 

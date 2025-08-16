@@ -7,7 +7,7 @@ import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModa
 import { formatDate } from '../../../../shared/utilities/formatters/dateFormatter';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
-import DividendModal from '../../modals/DividendModal/DividendModal';
+import DividendModal, { EditDividendContext } from '../../modals/DividendModal/DividendModal';
 
 type Props = {
     dividend: DividendEntity,
@@ -29,6 +29,10 @@ const Dividend = (props: Props) => {
     const onDeleteClicked = () => {
         confirmModalRef.current?.openModal()
     };
+
+    const context: EditDividendContext = {
+        dividend: props.dividend
+    }
 
     const { t, i18n } = useTranslation();
     return <Card.Root borderColor="border_primary" color="text_primary" backgroundColor="background_primary" 
@@ -61,7 +65,7 @@ const Dividend = (props: Props) => {
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
             ref={confirmModalRef}/>
-        <DividendModal dividend={props.dividend} modalRef={editModalRef} onSaved={props.onEditCallback}/>
+        <DividendModal context={context} modalRef={editModalRef} onSaved={props.onEditCallback}/>
     </Card.Root>
 };
 

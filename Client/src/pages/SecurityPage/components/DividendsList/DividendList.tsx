@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { DividendEntity } from '../../../../models/securities/DividendEntity';
 import ShowModalButton from '../../../../shared/components/ShowModalButton/ShowModalButton';
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
-import DividendModal from '../../modals/DividendModal/DividendModal';
+import DividendModal, { CreateDividendContext } from '../../modals/DividendModal/DividendModal';
 import { useDividends } from '../../hooks/useDividends';
 
 interface Props {
@@ -32,12 +32,14 @@ const DividendList: React.FC<Props> = (props) => {
 	};
 
 	const { t } = useTranslation();
-	const dividend: DividendEntity = { security: {id: props.securityId} };
+	const dividend: CreateDividendContext = { 
+		securityId: props.securityId
+	};
 
 	return (
 		<Fragment>
 			<ShowModalButton buttonTitle={t("security_page_summary_add")} onClick={onAdd}>
-				<DividendModal dividend={dividend} modalRef={modalRef} onSaved={createDividendEntity}/>
+				<DividendModal context={dividend} modalRef={modalRef} onSaved={createDividendEntity}/>
 			</ShowModalButton>
 			<Box>
 				{

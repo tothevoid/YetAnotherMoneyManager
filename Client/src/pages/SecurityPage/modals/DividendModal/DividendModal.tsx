@@ -9,25 +9,34 @@ import { DividendFormInput, DividendValidationSchema } from './DividendValidatio
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 import BaseFormModal from '../../../../shared/modals/BaseFormModal/BaseFormModal';
 
+export interface CreateDividendContext {
+	securityId: string
+}
+
+export interface EditDividendContext {
+	dividend: DividendEntity
+}
+
 interface ModalProps {
-	modalRef: RefObject<BaseModalRef | null>, 
-	dividend?: DividendEntity | null,
-	onSaved: (dividend: DividendEntity) => void
+	modalRef: RefObject<BaseModalRef | null>,
+	onSaved: (dividend: DividendEntity) => void,
+	context: CreateDividendContext | EditDividendContext
 }
 
 const DividendModal: React.FC<ModalProps> = (props: ModalProps) => {
-
 	const {t} = useTranslation();
+
+	const dividend = "dividend" in props.context ? props.context.dividend : null;
 
 	const { register, control, handleSubmit, formState: { errors }} = useForm<DividendFormInput>({
 		resolver: zodResolver(DividendValidationSchema),
 		mode: "onBlur",
 		defaultValues: {
-			id: props.dividend?.id ?? crypto.randomUUID(),
-			security: props.dividend?.security,
-			amount: props.dividend?.amount ?? 0,
-			declarationDate: props.dividend?.declarationDate ?? new Date(),
-			snapshotDate: props.dividend?.snapshotDate ?? new Date()
+			id: dividend?.id ?? crypto.randomUUID(),
+			security: dividend?.security,
+			amount: dividend?.amount ?? 0,
+			declarationDate: dividend?.declarationDate ?? new Date(),
+			snapshotDate: dividend?.snapshotDate ?? new Date()
 		}
 	});
 

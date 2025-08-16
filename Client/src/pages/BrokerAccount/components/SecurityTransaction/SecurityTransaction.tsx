@@ -7,7 +7,7 @@ import { SecurityTransactionEntity } from '../../../../models/securities/Securit
 import { formatDateTime } from '../../../../shared/utilities/formatters/dateFormatter';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
-import SecurityTransactionModal from '../../modals/SecurityTransactionModal/SecurityTransactionModal';
+import SecurityTransactionModal, { EditSecurityTransactionContext } from '../../modals/SecurityTransactionModal/SecurityTransactionModal';
 
 type Props = {
     securityTransaction: SecurityTransactionEntity,
@@ -31,6 +31,10 @@ const SecurityTransaction = (props: Props) => {
     };
 
     const { t, i18n } = useTranslation();
+
+    const context: EditSecurityTransactionContext = {
+        securityTransaction: props.securityTransaction
+    }
 
     return <Card.Root borderColor="border_primary" color="text_primary" backgroundColor="background_primary" 
         mt={5} mb={5} boxShadow={"sm"} _hover={{ boxShadow: "md" }}>
@@ -64,7 +68,7 @@ const SecurityTransaction = (props: Props) => {
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
             ref={confirmModalRef}/>
-        <SecurityTransactionModal securityTransaction={props.securityTransaction}  modalRef={editModalRef} onSaved={props.onEditCallback}/>
+        <SecurityTransactionModal context={context}  modalRef={editModalRef} onSaved={props.onEditCallback}/>
     </Card.Root>
 };
 

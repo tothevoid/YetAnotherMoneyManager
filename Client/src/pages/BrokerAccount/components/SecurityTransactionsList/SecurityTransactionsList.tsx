@@ -6,7 +6,7 @@ import SecurityTransaction from '../SecurityTransaction/SecurityTransaction';
 import ShowModalButton from '../../../../shared/components/ShowModalButton/ShowModalButton';
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 import SecurityTransactionsPagination from '../SecurityTransactionsPagination/SecurityTransactionsPagination';
-import SecurityTransactionModal from '../../modals/SecurityTransactionModal/SecurityTransactionModal';
+import SecurityTransactionModal, { CreateSecurityTransactionContext } from '../../modals/SecurityTransactionModal/SecurityTransactionModal';
 import { useSecurityTransactions } from '../../hooks/useSecurityTransactions';
 
 
@@ -47,13 +47,14 @@ const SecurityTransactionsList: React.FC<Props> = (props) => {
 		modalRef.current?.openModal()
 	};
 
-	const securityTransaction: SecurityTransactionEntity = {
-		brokerAccount: {id: props.brokerAccountId}
+	const securityTransaction: CreateSecurityTransactionContext = {
+		brokerAccountId: props.brokerAccountId
 	}
+
 	return <Box>
 		<Flex alignItems="center" gapX={5}>
 			<ShowModalButton buttonTitle={t("entity_securities_transaction_page_summary_add")} onClick={onAdd}>
-				<SecurityTransactionModal securityTransaction={securityTransaction} modalRef={modalRef} onSaved={createSecurityTransactionEntity}/>
+				<SecurityTransactionModal context={securityTransaction} modalRef={modalRef} onSaved={createSecurityTransactionEntity}/>
 			</ShowModalButton>
 		</Flex>
 		<Box>

@@ -80,9 +80,18 @@ const TransactionForm: React.FC<ModalProps> = (props: ModalProps) => {
 			1:
 			-1;
 
-		const formData = transaction as TransactionEntity;
-		formData.amount = multiplier * formData.amount;
-		props.onTransactionSaved(formData);
+		const transactionEntity: TransactionEntity = {
+			id: transaction.id!, 
+			name: transaction.name,
+			amount: multiplier * transaction.amount,
+			account: state.accounts.find(account => account.id === transaction.account.id)!,
+			isSystem: transaction.isSystem,
+			date: transaction.date,
+			cashback: transaction.cashback,
+			transactionType: state.transactionTypes.find(transactionType => transactionType.id === transaction.transactionType.id)!,
+		}
+
+		props.onTransactionSaved(transactionEntity);
 	};
 	
 	useEffect(() => {

@@ -4,7 +4,7 @@ import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/forma
 import { MdEdit, MdDelete } from 'react-icons/md';
 import { DividendPaymentEntity } from '../../../../models/brokers/DividendPaymentEntity';
 import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModal';
-import DividendPaymentModal from '../../modals/DividendPaymentModal/DividendPaymentModal';
+import DividendPaymentModal, { EditDividendPaymentContext } from '../../modals/DividendPaymentModal/DividendPaymentModal';
 import { useRef } from 'react';
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 
@@ -31,6 +31,10 @@ const DividendPayment = (props: Props) => {
 	};
 
     const paymentWithoutTax = securitiesQuantity * dividend.amount - tax;
+
+    const context: EditDividendPaymentContext = {
+        dividendPayment: props.dividendPayment
+    }
 
 	return <Card.Root borderColor="border_primary" color="text_primary" backgroundColor="background_primary" 
         mt={5} mb={5} boxShadow={"sm"} _hover={{ boxShadow: "md" }}>
@@ -63,7 +67,7 @@ const DividendPayment = (props: Props) => {
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
             ref={confirmModalRef}/>
-        <DividendPaymentModal dividendPayment={props.dividendPayment} modalRef={editModalRef} onSaved={props.onEditCallback}/>
+        <DividendPaymentModal context={context} modalRef={editModalRef} onSaved={props.onEditCallback}/>
     </Card.Root>
 };
 

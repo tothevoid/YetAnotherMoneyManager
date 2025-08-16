@@ -2,6 +2,8 @@
 .vscode/
 bin/
 obj/
+**/bin/
+**/obj/
 **/*.user
 **/*.suo
 **/*.bak

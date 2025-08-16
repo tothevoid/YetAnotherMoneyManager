@@ -16,15 +16,12 @@ services:
   server:
     build: ./server
     container_name: money_manager_server
-    networks:
-      - server-network
     ports:
       - ${SERVER_PORT}:5000
     environment:
       - ASPNETCORE_URLS=http://+:5000
       - DOTNET_ENVIRONMENT=Release
-      - DB__ConnectionString="Host=postgres_db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
-      - DB__DatabaseName=${POSTGRES_DB}
+      - DB__ConnectionString=Host=postgres_db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
       - FileStorage__Host=files_database
       - FileStorage__User=${MINIO_ROOT_USER}
       - FileStorage__Password=${MINIO_ROOT_PASSWORD}
@@ -32,6 +29,9 @@ services:
     depends_on:
       - postgres_db
     restart: always
+    networks:
+      - server-network
+      - postgres-network
   client:
     container_name: money_manager_client
     networks:

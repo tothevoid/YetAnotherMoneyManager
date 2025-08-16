@@ -3,12 +3,9 @@ WORKDIR /app
 
 COPY . ./
 RUN dotnet restore
-
-COPY MoneyManager/. ./MoneyManager/
-WORKDIR /app/MoneyManager
-RUN dotnet publish -c Release -o out
+RUN dotnet publish -c Release -o build
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 WORKDIR /app
-COPY --from=build /app/MoneyManager/out ./
-ENTRYPOINT ["dotnet", "MoneyManager.dll"]
+COPY --from=build /app/build ./
+ENTRYPOINT ["dotnet", "MoneyManager.WebApi.dll"]

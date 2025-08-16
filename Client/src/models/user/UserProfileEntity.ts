@@ -1,8 +1,18 @@
 import { CurrencyEntity } from "../currencies/CurrencyEntity"
 
-export interface UserProfileEntity{
+export interface CommonUserProfileEntity {
     id: string,
-    currencyId: string,
-    currency: CurrencyEntity,
     languageCode: string
+}
+
+export interface UserProfileEntityRequest extends CommonUserProfileEntity {
+    currencyId: string,
+}
+
+export interface UserProfileEntity extends CommonUserProfileEntity {
+    currency: CurrencyEntity,
+}
+
+export interface UserProfileEntityResponse extends CommonUserProfileEntity {
+    currency: CurrencyEntity,
 }

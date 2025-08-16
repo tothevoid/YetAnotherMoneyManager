@@ -3,6 +3,7 @@ import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recha
 import { DistributionModel } from '../../../models/dashboard/DashboardEntity';
 import { getChartLabelConfig } from '../../../shared/utilities/chartUtilities';
 import { formatMoneyByCurrencyCulture } from '../../../shared/utilities/formatters/moneyFormatter';
+import { Payload } from 'recharts/types/component/DefaultTooltipContent';
 
 const getPossibleColors = () => {
     return [
@@ -22,7 +23,7 @@ type Props = {
 const DistributionChart = (props: Props) => {
     const colors = getPossibleColors();
 
-    const formatLabel = (value: number, key: string, data) => {
+    const formatLabel = (_value: number, _key: string, data: Payload<number, string>) => {
         const {currency, amount, convertedAmount} = data.payload as DistributionModel;
 
         const convertedValue = formatMoneyByCurrencyCulture(convertedAmount, props.mainCurrency);

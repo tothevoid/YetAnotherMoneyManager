@@ -32,21 +32,16 @@ const BrokersTable: React.FC = () => {
         initData();
     }, []);
 
-    const onCellChanged = (brokerId: string, propertyName: string, newValue: any) => {
+    const onNameChanged = (brokerId: string, newValue: string) => {
         let hasChanges = false;
 
         const updatedBrokers = state.brokers.map((broker: BrokerEntity) => {
-            if (broker.id !== brokerId) {
-                return broker;
-            }
-
-            const currentValue = broker[propertyName];
-            if (currentValue === newValue) {
+            if (broker.id !== brokerId || broker.name === newValue) {
                 return broker;
             }
 
             hasChanges = true;
-            return {...broker, [propertyName]: newValue};
+            return {...broker, name: newValue};
         });
 
         if (!hasChanges) {
@@ -131,7 +126,7 @@ const BrokersTable: React.FC = () => {
                         return <Table.Row border="none" bg="none" color="text_primary" key={broker.id}>
                             <Table.Cell>
                                 <Input onBlur={() => onCellBlur(broker.id)} type="text" value={broker.name}
-                                    onChange={(handler) => onCellChanged(broker.id, "name", handler.target.value)}>
+                                    onChange={(handler) => onNameChanged(broker.id, handler.target.value)}>
                                 </Input>
                             </Table.Cell>
                             <Table.Cell width={10}>

@@ -17,7 +17,7 @@ interface State {
 	languages: {key: string, value: string}[]
 }
 
-const convertToSchemaValues = (userProfile: UserProfileEntity | null): UserProfileFormInput => {
+const convertToSchemaValues = (userProfile: UserProfileEntity | null) => {
 	return {
 		id: userProfile?.id,
 		languageCode: languages.find((lang) => lang.value === userProfile?.languageCode) ?? languages[0],
@@ -34,7 +34,7 @@ const languages = [...langMapping.entries()].map(([key, value]) => {return {key,
 
 const UserProfileSettingsModal = forwardRef<BaseModalRef>((_, ref)=> {	 
 	const [state, setState] = useState<State>({currencies: [], languages: languages})
-	const {user, updateUser} = useUserProfile();
+	const { user, updateUser } = useUserProfile();
 	const { open, onOpen, onClose } = useDisclosure();
 
 	useImperativeHandle(ref, () => ({
@@ -70,7 +70,8 @@ const UserProfileSettingsModal = forwardRef<BaseModalRef>((_, ref)=> {
 
 	const onSubmit = async (userProfileForm: UserProfileFormInput) => {
 		const userProfile: UserProfileEntity = {
-			...userProfileForm,
+			id: userProfileForm.id,
+			currency: state.currencies.find(currency => userProfileForm.currency.id === currency.id)!,
 			languageCode: userProfileForm.languageCode.value,
 		}
 

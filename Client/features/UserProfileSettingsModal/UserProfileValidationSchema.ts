@@ -3,7 +3,7 @@ import { string, z } from 'zod';
 export type UserProfileFormInput = z.infer<typeof UserProfileValidationSchema>;
 
 export const UserProfileValidationSchema = z.object({
-	id: string().optional(),
+	id: string(),
 	languageCode: z.object({
 		key: string().nonempty({message: "Language is not selected"}),
 		value: string().nonempty({message: "Language is not selected"})

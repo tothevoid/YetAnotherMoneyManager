@@ -34,7 +34,7 @@ export const deleteTransactionType = async (transactionTypeId: string): Promise<
     return await deleteEntity(basicUrl, transactionTypeId);
 }
 
-export const getTransactionTypeIconUrl = (iconKey: string | null): string => {
+export const getTransactionTypeIconUrl = (iconKey: string | null | undefined): string => {
     if (!iconKey) {
         return "";
     }

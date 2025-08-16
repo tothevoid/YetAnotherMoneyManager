@@ -48,8 +48,8 @@ const AccountBalanceTransferModal: React.FC<ModalProps> = (props: ModalProps) =>
 		resolver: zodResolver(AccountBalanceTransferModalValidationSchema),
 		mode: "onBlur",
 		defaultValues: {
-			from: props.from,
-			to: null,
+			from: props.from!,
+			to: null!,
 			balance: 0,
 			fee: 0
 		}

@@ -13,11 +13,11 @@ interface Props {
 }
 
 interface ChartBar {
-	[key: string]: number,
+	date: string
 }
 
 type ChartBarData = ChartBar & {
-    date: string
+    [key: string]: number
 }
 
 

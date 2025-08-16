@@ -13,6 +13,7 @@ import DateSelect from "../../../../shared/components/DateSelect/DateSelect";
 import { SecurityTransactionEntity } from "../../../../models/securities/SecurityTransactionEntity";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
+import { generateGuid } from "../../../../shared/utilities/idUtilities";
 
 export interface CreateSecurityTransactionContext {
 	brokerAccountId: string
@@ -58,7 +59,7 @@ const SecurityTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
 		resolver: zodResolver(SecurityTransactionValidationSchema),
 		mode: "onBlur",
 		defaultValues: {
-			id: securityTransaction?.id ?? crypto.randomUUID(),
+			id: securityTransaction?.id ?? generateGuid(),
 			brokerAccount: securityTransaction?.brokerAccount,
 			security: securityTransaction?.security,
 			brokerCommission: securityTransaction?.brokerCommission ?? 0,

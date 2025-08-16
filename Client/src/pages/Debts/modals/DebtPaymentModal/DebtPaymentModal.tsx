@@ -13,6 +13,7 @@ import { getDebts } from "../../../../api/debts/debtApi";
 import { getAccounts } from "../../../../api/accounts/accountApi";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
+import { generateGuid } from "../../../../shared/utilities/idUtilities";
 
 interface Props {
 	debtPayment?: DebtPaymentEntity | null,
@@ -48,7 +49,7 @@ const DebtPaymentModal: React.FC<Props> = (props: Props) => {
 		resolver: zodResolver(DebtPaymentValidationSchema),
 		mode: "onBlur",
 		defaultValues: {
-			id: props.debtPayment?.id ?? crypto.randomUUID(),
+			id: props.debtPayment?.id ?? generateGuid(),
 			amount: props.debtPayment?.amount ?? 0,
 			date: props.debtPayment?.date ?? new Date(),
 			debt: props.debtPayment?.debt,

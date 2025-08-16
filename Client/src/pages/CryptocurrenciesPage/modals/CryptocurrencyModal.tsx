@@ -9,6 +9,7 @@ import BaseFormModal from "../../../shared/modals/BaseFormModal/BaseFormModal";
 import { BaseModalRef } from "../../../shared/utilities/modalUtilities";
 import { CryptocurrencyEntity } from "../../../models/crypto/CryptocurrencyEntity";
 import { getIconUrl } from "../../../api/crypto/cryptocurrencyApi";
+import { generateGuid } from "../../../shared/utilities/idUtilities";
 
 interface ModalProps {
     modalRef: RefObject<BaseModalRef | null>,
@@ -28,7 +29,7 @@ const CryptocurrencyModal: React.FC<ModalProps> = (props: ModalProps) => {
         resolver: zodResolver(CryptocurrencyValidationSchema),
         mode: "onBlur",
         defaultValues: {
-            id: props.cryptocurrency?.id ?? crypto.randomUUID(),
+            id: props.cryptocurrency?.id ?? generateGuid(),
             name: props.cryptocurrency?.name ?? "",
             symbol: props.cryptocurrency?.symbol ?? "",
             price: props.cryptocurrency?.price ?? 0

@@ -15,6 +15,7 @@ import { DividendEntity } from "../../../../models/securities/DividendEntity";
 import { formatDate } from "../../../../shared/utilities/formatters/dateFormatter";
 import { formatMoneyByCurrencyCulture } from "../../../../shared/utilities/formatters/moneyFormatter";
 import { SecurityEntity } from "../../../../models/securities/SecurityEntity";
+import { generateGuid } from "../../../../shared/utilities/idUtilities";
 
 export interface CreateDividendPaymentContext {
 	brokerAccountId: string
@@ -84,7 +85,7 @@ const DividendPaymentModal: React.FC<ModalProps> = (props: ModalProps) => {
 		resolver: zodResolver(DividendPaymentValidationSchema),
 		mode: "onBlur",
 		defaultValues: {
-			id: dividendPayment?.id ?? crypto.randomUUID(),
+			id: dividendPayment?.id ?? generateGuid(),
 			brokerAccount: dividendPayment?.brokerAccount,
 			dividend: dividendPayment?.dividend,
 			securitiesQuantity: dividendPayment?.securitiesQuantity ?? 0,

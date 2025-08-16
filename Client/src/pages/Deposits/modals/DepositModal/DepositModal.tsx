@@ -11,6 +11,7 @@ import CollectionSelect from '../../../../shared/components/CollectionSelect/Col
 import DateSelect from '../../../../shared/components/DateSelect/DateSelect';
 import BaseFormModal from '../../../../shared/modals/BaseFormModal/BaseFormModal';
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
+import { generateGuid } from '../../../../shared/utilities/idUtilities';
 
 interface ModalProps {
 	modalRef: RefObject<BaseModalRef | null>,
@@ -44,7 +45,7 @@ const DepositModal: React.FC<ModalProps> = (props: ModalProps) => {
 		resolver: zodResolver(DepositValidationSchema),
 		mode: "onBlur",
 		defaultValues: {
-			id: props.deposit?.id ?? crypto.randomUUID(),
+			id: props.deposit?.id ?? generateGuid(),
 			name: props.deposit?.name ?? "",
 			from: props.deposit?.from ?? new Date(),
 			to: props.deposit?.to ?? new Date(),

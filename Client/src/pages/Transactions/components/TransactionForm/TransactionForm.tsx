@@ -11,6 +11,7 @@ import { TransactionTypeEntity } from '../../../../models/transactions/Transacti
 import CollectionSelect from '../../../../shared/components/CollectionSelect/CollectionSelect';
 import DateSelect from '../../../../shared/components/DateSelect/DateSelect';
 import { getAccounts } from '../../../../api/accounts/accountApi';
+import { generateGuid } from '../../../../shared/utilities/idUtilities';
 
 interface ModalProps {
 	setSubmitHandler: (handler: React.FormEventHandler) => void,
@@ -54,7 +55,7 @@ const TransactionForm: React.FC<ModalProps> = (props: ModalProps) => {
 		resolver: zodResolver(TransactionValidationSchema),
 		mode: "onBlur",
 		defaultValues: {
-			id: props.transaction?.id ?? crypto.randomUUID(),
+			id: props.transaction?.id ?? generateGuid(),
 			name: props.transaction?.name ?? "",
 			date: props.transaction?.date ?? new Date(),
 			amount,

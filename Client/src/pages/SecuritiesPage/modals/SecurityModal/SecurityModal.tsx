@@ -14,6 +14,7 @@ import { CurrencyEntity } from "../../../../models/currencies/CurrencyEntity";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import { SecurityTypeEntity } from "../../../../models/securities/SecurityTypeEntity";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
+import { generateGuid } from "../../../../shared/utilities/idUtilities";
 
 interface ModalProps {
     modalRef: RefObject<BaseModalRef | null>,
@@ -55,7 +56,7 @@ const SecurityModal: React.FC<ModalProps> = (props: ModalProps) => {
         resolver: zodResolver(SecurityValidationSchema),
         mode: "onBlur",
         defaultValues: {
-            id: props.security?.id ?? crypto.randomUUID(),
+            id: props.security?.id ?? generateGuid(),
             name: props.security?.name ?? "",
             ticker: props.security?.ticker ?? "",
             type: props.security?.type,

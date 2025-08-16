@@ -7,6 +7,7 @@ import { BrokerAccountTypeFormInput, BrokerAccountTypeValidationSchema } from ".
 import { BrokerAccountTypeEntity } from "../../../../models/brokers/BrokerAccountTypeEntity";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
+import { generateGuid } from "../../../../shared/utilities/idUtilities";
 
 interface ModalProps {
 	modalRef: RefObject<BaseModalRef | null>,
@@ -19,7 +20,7 @@ const BrokerAccountTypeTypeModal: React.FC<ModalProps> = (props: ModalProps) => 
 		resolver: zodResolver(BrokerAccountTypeValidationSchema),
 		mode: "onBlur",
 		defaultValues: {
-			id: props.brokerAccountType?.id ?? crypto.randomUUID(),
+			id: props.brokerAccountType?.id ?? generateGuid(),
 			name: props.brokerAccountType?.name ?? ""
 		}
 	});

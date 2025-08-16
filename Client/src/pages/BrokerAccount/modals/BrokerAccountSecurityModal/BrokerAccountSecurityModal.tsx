@@ -12,6 +12,8 @@ import { SecurityEntity } from "../../../../models/securities/SecurityEntity";
 import { BrokerAccountSecurityFormInput, BrokerAccountSecurityValidationSchema } from "./BrokerAccountSecurityValidationSchema";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
+import { generateGuid } from "../../../../shared/utilities/idUtilities";
+
 
 interface ModalProps {
     modalRef: RefObject<BaseModalRef | null>,
@@ -47,7 +49,7 @@ const BrokerAccountSecurityModal: React.FC<ModalProps> = (props: ModalProps) => 
         resolver: zodResolver(BrokerAccountSecurityValidationSchema),
         mode: "onBlur",
         defaultValues: {
-            id: props.brokerAccountSecurity?.id ?? crypto.randomUUID(),
+            id: props.brokerAccountSecurity?.id ?? generateGuid(),
             brokerAccount: props.brokerAccountSecurity?.brokerAccount,
             security: props.brokerAccountSecurity?.security,
             price:  props.brokerAccountSecurity?.price ?? 0,

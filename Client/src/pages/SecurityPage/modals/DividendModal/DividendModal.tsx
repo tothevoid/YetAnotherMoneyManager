@@ -8,6 +8,7 @@ import { DividendEntity } from '../../../../models/securities/DividendEntity';
 import { DividendFormInput, DividendValidationSchema } from './DividendValidationSchema';
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 import BaseFormModal from '../../../../shared/modals/BaseFormModal/BaseFormModal';
+import { generateGuid } from '../../../../shared/utilities/idUtilities';
 
 export interface CreateDividendContext {
 	securityId: string
@@ -32,7 +33,7 @@ const DividendModal: React.FC<ModalProps> = (props: ModalProps) => {
 		resolver: zodResolver(DividendValidationSchema),
 		mode: "onBlur",
 		defaultValues: {
-			id: dividend?.id ?? crypto.randomUUID(),
+			id: dividend?.id ?? generateGuid(),
 			security: dividend?.security,
 			amount: dividend?.amount ?? 0,
 			declarationDate: dividend?.declarationDate ?? new Date(),

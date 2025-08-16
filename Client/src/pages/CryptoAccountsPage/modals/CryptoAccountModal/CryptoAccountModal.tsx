@@ -10,6 +10,7 @@ import { getCryptoProviders } from "../../../../api/crypto/cryptoProviderApi";
 import { CryptoProviderEntity } from "../../../../models/crypto/CryptoProviderEntity";
 import { CryptoAccountFormInput, CryptoAccountValidationSchema } from "./CryptoAccountValidationSchema";
 import { CryptoAccountEntity } from "../../../../models/crypto/CryptoAccountEntity";
+import { generateGuid } from "../../../../shared/utilities/idUtilities";
 
 interface ModalProps {
     modalRef: RefObject<BaseModalRef | null>,
@@ -43,7 +44,7 @@ const CryptoAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
         resolver: zodResolver(CryptoAccountValidationSchema),
         mode: "onBlur",
         defaultValues: {
-            id: props.cryptoAccount?.id ?? crypto.randomUUID(),
+            id: props.cryptoAccount?.id ?? generateGuid(),
             name: props.cryptoAccount?.name ?? "",
             cryptoProvider: props.cryptoAccount?.cryptoProvider
         }

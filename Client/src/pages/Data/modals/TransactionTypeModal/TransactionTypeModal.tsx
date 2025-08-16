@@ -10,6 +10,7 @@ import { TransactionTypeEntity } from "../../../../models/transactions/Transacti
 import CheckboxInput from "../../../../shared/components/CheckboxInput/CheckboxInput";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
+import { generateGuid } from "../../../../shared/utilities/idUtilities";
 
 interface ModalProps {
 	modalRef: RefObject<BaseModalRef | null>,
@@ -25,7 +26,7 @@ const TransactionTypeModal: React.FC<ModalProps> = (props: ModalProps) => {
 		resolver: zodResolver(TransactionTypeValidationSchema),
 		mode: "onBlur",
 		defaultValues: {
-			id: props.transactionType?.id ?? crypto.randomUUID(),
+			id: props.transactionType?.id ?? generateGuid(),
 			name: props.transactionType?.name ?? "",
 			active: props.transactionType?.active ?? true
 		}

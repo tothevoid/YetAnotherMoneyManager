@@ -7,6 +7,7 @@ import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
 import { CryptoProviderEntity } from "../../../../models/crypto/CryptoProviderEntity";
 import { CryptoProviderFormInput, CryptoProviderValidationSchema } from "./CryptoProviderValidationSchema";
+import { generateGuid } from "../../../../shared/utilities/idUtilities";
 
 interface ModalProps {
     modalRef: RefObject<BaseModalRef | null>,
@@ -19,7 +20,7 @@ const CryptoProviderModal: React.FC<ModalProps> = (props: ModalProps) => {
         resolver: zodResolver(CryptoProviderValidationSchema),
         mode: "onBlur",
         defaultValues: {
-            id: props.cryptoProvider?.id ?? crypto.randomUUID(),
+            id: props.cryptoProvider?.id ?? generateGuid(),
             name: props.cryptoProvider?.name ?? ""
         }
     });

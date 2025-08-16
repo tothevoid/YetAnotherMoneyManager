@@ -14,6 +14,8 @@ import CollectionSelect from "../../../../shared/components/CollectionSelect/Col
 import DateSelect from "../../../../shared/components/DateSelect/DateSelect";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
+import { generateGuid } from "../../../../shared/utilities/idUtilities";
+
 
 interface ModalProps {
 	modalRef: RefObject<BaseModalRef | null>,
@@ -55,7 +57,7 @@ const AccountModal: React.FC<ModalProps> = (props: ModalProps) => {
 		resolver: zodResolver(AccountValidationSchema),
 		mode: "onBlur",
 		defaultValues: {
-			id: props.account?.id ?? crypto.randomUUID(),
+			id: props.account?.id ?? generateGuid(),
 			name: props.account?.name ?? "",
 			balance: props.account?.balance ?? 0,
 			currency: props.account?.currency,

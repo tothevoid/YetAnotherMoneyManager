@@ -8,6 +8,7 @@ import { CurrencyEntity } from "../../../../models/currencies/CurrencyEntity";
 import CheckboxInput from "../../../../shared/components/CheckboxInput/CheckboxInput";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
+import { generateGuid } from "../../../../shared/utilities/idUtilities";
 
 interface ModalProps {
 	modalRef: RefObject<BaseModalRef | null>,
@@ -20,7 +21,7 @@ const CurrencyModal: React.FC<ModalProps> = (props: ModalProps) => {
 		resolver: zodResolver(CurrencyValidationSchema),
 		mode: "onBlur",
 		defaultValues: {
-			id: props.currency?.id ?? crypto.randomUUID(),
+			id: props.currency?.id ?? generateGuid(),
 			name: props.currency?.name ?? "",
 			active: props.currency?.active ?? true,
 		}

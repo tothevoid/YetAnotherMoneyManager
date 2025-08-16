@@ -9,6 +9,7 @@ import DateSelect from '../../../../shared/components/DateSelect/DateSelect';
 import { CurrencyTransactionFormInput, CurrencyTransactionValidationSchema } from './CurrencyTransactionValidationSchema';
 import { getAccounts } from '../../../../api/accounts/accountApi';
 import { CurrencyTransactionEntity } from '../../../../models/transactions/CurrencyTransactionEntity';
+import { generateGuid } from '../../../../shared/utilities/idUtilities';
 
 interface Props {
     currencyTransaction?: CurrencyTransactionEntity
@@ -27,7 +28,7 @@ const CurrencyTransactionForm: React.FC<Props> = (props: Props) => {
         resolver: zodResolver(CurrencyTransactionValidationSchema),
         mode: "onBlur",
         defaultValues: {
-            id: props.currencyTransaction?.id ?? crypto.randomUUID(),
+            id: props.currencyTransaction?.id ?? generateGuid(),
             date: props.currencyTransaction?.date ?? new Date(),
             amount: props.currencyTransaction?.amount ?? 0,
             rate: props.currencyTransaction?.rate ?? 0,

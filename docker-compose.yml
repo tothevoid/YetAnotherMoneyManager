@@ -13,35 +13,35 @@ services:
       - "${POSTGRES_PORT}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-  # server:
-  #   build: ./server
-  #   container_name: money_manager_server
-  #   networks:
-  #     - server-network
-  #   ports:
-  #     - ${SERVER_PORT}:5000
-  #   environment:
-  #     - ASPNETCORE_URLS=http://+:5000
-  #     - DOTNET_ENVIRONMENT=Release
-  #     - DB__ConnectionString="Host=postgres_db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
-  #     - DB__DatabaseName=${POSTGRES_DB}
-  #     - FileStorage__Host=files_database
-  #     - FileStorage__User=${MINIO_ROOT_USER}
-  #     - FileStorage__Password=${MINIO_ROOT_PASSWORD}
-  #     - Client__Url=${CLIENT_HOST}:${CLIENT_PORT}
-  #   depends_on:
-  #     - postgres_db
-  #   restart: always
-  # client:
-  #   container_name: money_manager_client
-  #   networks:
-  #     - server-network
-  #   build: 
-  #     context: ./client
-  #     args:
-  #       SERVER_API_URL: "${SERVER_HOST}:${SERVER_PORT}"
-  #   ports:
-  #     - ${CLIENT_PORT}:80
+  server:
+    build: ./server
+    container_name: money_manager_server
+    networks:
+      - server-network
+    ports:
+      - ${SERVER_PORT}:5000
+    environment:
+      - ASPNETCORE_URLS=http://+:5000
+      - DOTNET_ENVIRONMENT=Release
+      - DB__ConnectionString="Host=postgres_db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
+      - DB__DatabaseName=${POSTGRES_DB}
+      - FileStorage__Host=files_database
+      - FileStorage__User=${MINIO_ROOT_USER}
+      - FileStorage__Password=${MINIO_ROOT_PASSWORD}
+      - Client__Url=${CLIENT_HOST}:${CLIENT_PORT}
+    depends_on:
+      - postgres_db
+    restart: always
+  client:
+    container_name: money_manager_client
+    networks:
+      - server-network
+    build: 
+      context: ./client
+      args:
+        SERVER_API_URL: "${SERVER_HOST}:${SERVER_PORT}"
+    ports:
+      - ${CLIENT_PORT}:80
   files_database:
     image: minio/minio
     restart: always

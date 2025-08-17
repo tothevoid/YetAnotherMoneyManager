@@ -10,6 +10,8 @@ using MoneyManager.Infrastructure.Entities.Accounts;
 using MoneyManager.Infrastructure.Entities.Debts;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using MoneyManager.Infrastructure.Entities.Brokers;
+using MoneyManager.Infrastructure.Queries;
 
 namespace MoneyManager.Application.Services.Debts
 {
@@ -32,7 +34,12 @@ namespace MoneyManager.Application.Services.Debts
 
         public async Task<IEnumerable<DebtPaymentDto>> GetAll()
         {
-            var debtPayments = await _debtPaymentRepo.GetAll(include: GetFullHierarchyColumns);
+            var query = new ComplexQueryBuilder<DebtPayment>()
+                .AddOrder(debtPayment => debtPayment.Date, true)
+                .AddJoins(GetFullHierarchyColumns)
+                .GetQuery();
+
+            var debtPayments = await _debtPaymentRepo.GetAll(query);
             return _mapper.Map<IEnumerable<DebtPaymentDto>>(debtPayments);
         }
 
@@ -51,7 +58,7 @@ namespace MoneyManager.Application.Services.Debts
 
         public async Task Update(DebtPaymentDto updatedPaymentDto)
         {
-            var currentDebtPayment = await _debtPaymentRepo.GetById(updatedPaymentDto.DebtId);
+            var currentDebtPayment = await _debtPaymentRepo.GetById(updatedPaymentDto.Id);
             var updatedDebtPayment = _mapper.Map<DebtPayment>(updatedPaymentDto);
             _debtPaymentRepo.Update(updatedDebtPayment);
 

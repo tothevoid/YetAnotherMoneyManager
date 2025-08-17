@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { DebtPaymentEntity } from "../../../models/debts/DebtPaymentEntity";
 import { createDebtPayment, deleteDebtPayment, getDebtPayments, updateDebtPayment } from "../../../api/debts/debtPaymentApi";
+import { debug } from "console";
 
 export const useDebtPayments = () => {
 	const [debtPayments, setDebtPayments] = useState<DebtPaymentEntity[]>([]);
@@ -25,13 +26,12 @@ export const useDebtPayments = () => {
 	}, [fetchData])
 
 	const createDebtPaymentEntity = async (createdDebtPayment: DebtPaymentEntity) => {
-		const addedDebtPayment = await createDebtPayment(createdDebtPayment);
-		
-		if (!addedDebtPayment) {
+		const debtPayment = await createDebtPayment(createdDebtPayment);
+		if (!debtPayment) {
 			return;
 		}
 
-		setDebtPayments([addedDebtPayment, ...debtPayments]);
+		await fetchData();
 	}
 
 	const updateDebtPaymentEntity = async (updatedDebtPayment: DebtPaymentEntity) => {
@@ -41,13 +41,7 @@ export const useDebtPayments = () => {
 			return;
 		}
 
-		const updatedDebtsPayments = debtPayments.map(existingDebtPayment => 
-			updatedDebtPayment.id === existingDebtPayment.id ?
-				{...updatedDebtPayment}:
-				existingDebtPayment
-		);
-
-		setDebtPayments(updatedDebtsPayments);
+		await fetchData();
 	}
 
 	const deleteDebtPaymentEntity = async (deletedDebt: DebtPaymentEntity) => {

@@ -10,9 +10,9 @@ export const getDebtPayments = async (): Promise<DebtPaymentEntity[]> =>  {
         .then(debtPayments => debtPayments.map(prepareDebtPayment))
 }
 
-export const createDebtPayment = async (newDebtPayment: DebtPaymentEntity): Promise<DebtPaymentEntity | void> => {
-    return await createEntity<DebtPaymentEntityRequest, DebtPaymentEntityResponse>(basicUrl, prepareDebtPaymentRequest(newDebtPayment))
-        .then((debtPayment) => debtPayment && prepareDebtPayment(debtPayment));
+export const createDebtPayment = async (newDebtPayment: DebtPaymentEntity): Promise<boolean | void> => {
+    const addedEntity = await createEntity<DebtPaymentEntityRequest, DebtPaymentEntityResponse>(basicUrl, prepareDebtPaymentRequest(newDebtPayment));
+    return !!addedEntity;
 }
 
 export const updateDebtPayment = async (updatedDebtPayment: DebtPaymentEntity): Promise<boolean> => {

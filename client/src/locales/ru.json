@@ -244,5 +244,8 @@
     "entity_crypto_account_crypto_name": "Название",
     "entity_crypto_account_crypto_provider": "Провайдер",
 
-    "crypto_accounts_page_add": "Добавить счёт"
+    "crypto_accounts_page_add": "Добавить счёт",
+    "crypto_accounts_page_no_crypto_accounts": "Не криптосчетов",
+
+    "cryptocurrencies_page_no_cryptocurrencies": "Нет криптовалют"
 }

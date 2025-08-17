@@ -55,10 +55,12 @@ const CurrencyTransactionForm: React.FC<Props> = (props: Props) => {
         const initData = async () => {
             await initAccounts();
         }
-
-        props.setSubmitHandler(handleSubmit(onCurrencyTransactionSaveClick));
         initData();
     }, []);
+
+   useEffect(() => {
+        props.setSubmitHandler(handleSubmit(onCurrencyTransactionSaveClick));
+    }, [state]);
 
     return <Fragment>
         <Field.Root mt={4} invalid={!!errors.sourceAccount}>

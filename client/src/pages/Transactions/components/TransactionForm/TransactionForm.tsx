@@ -67,7 +67,7 @@ const TransactionForm: React.FC<ModalProps> = (props: ModalProps) => {
 		}
 	});
 
-	const initTransactionTypes = async () => {
+	const initCollections = async () => {
 		const transactionTypes = await getTransactionTypes(true);
 		const accounts = await getAccounts(true);
 
@@ -97,13 +97,15 @@ const TransactionForm: React.FC<ModalProps> = (props: ModalProps) => {
 	
 	useEffect(() => {
 		const initData = async () => {
-			await initTransactionTypes();
+			await initCollections();
 		}
 
-		const handler = handleSubmit(onTransactionSaveClick)
-		props.setSubmitHandler(handler);
 		initData();
 	}, []);
+
+	useEffect(() => {
+		props.setSubmitHandler(handleSubmit(onTransactionSaveClick));
+	}, [state]);
 
 	const selectedDirection = watch("direction");
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import Account from '../Account/Account';
 import { SimpleGrid } from '@chakra-ui/react/grid';
-import { Box, Checkbox, Flex, Text } from '@chakra-ui/react';
+import { Box, Checkbox, Flex } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { AccountEntity } from '../../../../models/accounts/AccountEntity';
 import ShowModalButton from '../../../../shared/components/ShowModalButton/ShowModalButton';

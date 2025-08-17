@@ -7,8 +7,7 @@ export const prepareDebtRequest = (debt: DebtEntity): DebtEntityRequest => {
         name: debt.name,
         amount: debt.amount,
         currencyId: debt.currency.id,
-        date: convertToDateOnly(debt.date),
-        paidOn: convertToDateOnly(debt.paidOn)
+        date: convertToDateOnly(debt.date)
     };
 }
 
@@ -18,7 +17,6 @@ export const prepareDebt = (debt: DebtEntityResponse): DebtEntity => {
         amount: debt.amount,
         name: debt.name,
         currency: debt.currency,
-        date: new Date(debt.date),
-        paidOn: new Date(debt.paidOn)
+        date: new Date(debt.date)
     };
 }

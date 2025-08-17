@@ -15,8 +15,5 @@ namespace MoneyManager.WebApi.Models.Debts
         public decimal Amount { get; set; }
 
         public DateOnly Date { get; set; }
-
-        public DateOnly PaidOn { get; set; }
-
     }
 }

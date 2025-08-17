@@ -19,8 +19,5 @@ namespace MoneyManager.Application.DTO.Debts
         public decimal Amount { get; set; }
 
         public DateOnly Date { get; set; }
-
-        public DateOnly PaidOn { get; set; }
-
     }
 }

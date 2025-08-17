@@ -8,18 +8,15 @@ interface CommonDebtEntity {
 
 export interface DebtEntityRequest extends CommonDebtEntity {
     currencyId: string
-    date: string,
-    paidOn: string
+    date: string
 }
 
 export interface DebtEntity extends CommonDebtEntity {
     currency: CurrencyEntity,
-    date: Date,
-    paidOn: Date
+    date: Date
 }
 
 export interface DebtEntityResponse extends CommonDebtEntity {
     currency: CurrencyEntity,
-    date: string,
-    paidOn: string
+    date: string
 }

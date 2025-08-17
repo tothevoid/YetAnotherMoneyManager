@@ -1,6 +1,6 @@
 import { Fragment, useRef } from "react";
 import { DepositEntity } from "../../models/deposits/DepositEntity";
-import { Button, Text, Flex, SimpleGrid, Checkbox, Box} from "@chakra-ui/react";
+import { Button, Flex, SimpleGrid, Checkbox, Box} from "@chakra-ui/react";
 import DepositStats from "./components/DepositStats/DepositStats";
 import Deposit from "./components/Deposit/Deposit";
 import { MdAdd } from "react-icons/md";

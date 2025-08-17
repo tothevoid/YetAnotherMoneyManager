@@ -18,8 +18,6 @@ namespace MoneyManager.Infrastructure.Entities.Debts
 
         public DateOnly Date { get; set; }
 
-        public DateOnly PaidOn { get; set; }
-
         public ICollection<DebtPayment> DebtPayments { get; set; }
     }
 }

@@ -65,10 +65,10 @@ var fileStorageSection = builder.Configuration.GetSection("FileStorage");
 var host = fileStorageSection.GetSection("Host").Value;
 var user = fileStorageSection.GetSection("User").Value;
 var password = fileStorageSection.GetSection("Password").Value;
-
+var port = int.Parse(fileStorageSection.GetSection("Port").Value);
 
 builder.Services.AddMinio(configureClient => configureClient
-    .WithEndpoint(host, 9000)
+    .WithEndpoint(host, port)
     .WithSSL(false)
     .WithCredentials(user, password)
     .Build());

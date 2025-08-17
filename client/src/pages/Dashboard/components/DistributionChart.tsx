@@ -48,7 +48,13 @@ const DistributionChart = (props: Props) => {
                     <Legend
                         formatter={(value, _, index) => {
                             const total = props.data.reduce((sum, item) => sum + item.convertedAmount, 0);
-                            const percent = ((props.data[index].convertedAmount / total) * 100).toFixed(1);
+                            const currentValue = props.data[index].convertedAmount;
+
+                            if (!currentValue || !total) {
+                                return value;
+                            }
+
+                            const percent = ((currentValue / total) * 100).toFixed(1);
                             return `${value} (${percent}%)`;
                         }}
                     />

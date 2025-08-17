@@ -173,6 +173,7 @@
     "header_dashboard": "Dashboard",
     "dashboard_title": "Summaries",
     "dashboard_total": "Total",
+    "dashboard_empty": "No data",
     "dashboard_cash": "Cash",
     "dashboard_securities": "Securities",
     "dashboard_total_accounts": "Accounts",

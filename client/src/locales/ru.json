@@ -174,6 +174,7 @@
     "header_dashboard": "Итоги",
     "dashboard_title": "Итоги",
     "dashboard_total": "Всего",
+    "dashboard_empty": "Нет итогов",
     "dashboard_cash": "Наличные",
     "dashboard_securities": "Ценные бумаги",
     "dashboard_total_accounts": "Счета",
@@ -245,7 +246,7 @@
     "entity_crypto_account_crypto_provider": "Провайдер",
 
     "crypto_accounts_page_add": "Добавить счёт",
-    "crypto_accounts_page_no_crypto_accounts": "Не криптосчетов",
+    "crypto_accounts_page_no_crypto_accounts": "Нет криптосчетов",
 
     "cryptocurrencies_page_no_cryptocurrencies": "Нет криптовалют"
 }

@@ -1,4 +1,4 @@
-import './App.css';
+import './App.scss';
 import Header from '../features/Navigation/Header/Header';
 import TransactionsPage from './pages/Transactions/TransactionsPage'
 import DepositsPage from './pages/Deposits/DepositsPage';

@@ -7,6 +7,7 @@ import { getDashboard } from "../../api/dashboard/dashobardApi";
 import { Dashboard, DistributionModel } from "../../models/dashboard/DashboardEntity";
 import { formatMoneyByCurrencyCulture } from "../../shared/utilities/formatters/moneyFormatter";
 import DistributionChart from "./components/DistributionChart";
+import Placeholder from "../../shared/components/Placeholder/Placeholder";
 
 interface State {
 	dashboard: Dashboard | null
@@ -55,7 +56,7 @@ const DashboardPage: React.FC = () => {
 		{ name: t("dashboard_bank_accounts"), convertedAmount: dashboard.accountStats.totalBankAccount, currency, amount: dashboard.accountStats.totalBankAccount },
 		{ name: t("dashboard_debts"), convertedAmount: dashboard.debtStats.total, currency, amount: dashboard.debtStats.total },
 		{ name: t("dashboard_crypto_account"), convertedAmount: dashboard.cryptoAccountStats.total, currency, amount: dashboard.cryptoAccountStats.total }
-	]
+	].filter(({amount}) => amount)
 
 	const formatDistributionCard = (title: string, total: number, distribution: DistributionModel[]) => {
 		if (!distribution.length) {
@@ -72,7 +73,7 @@ const DashboardPage: React.FC = () => {
 		</Card.Root>
 	}
 
-	const assetsCharts = [
+	const assetsSubCharts = [
 		formatDistributionCard(t("dashboard_cash"), dashboard.accountStats.totalCash, dashboard.accountStats.cashDistribution),
 		formatDistributionCard(t("dashboard_securities"), dashboard.brokerAccountStats.total, dashboard.brokerAccountStats.distribution),
 		formatDistributionCard(t("dashboard_deposits"), dashboard.depositStats.totalStartedAmount, dashboard.depositStats.startedAmountDistribution),
@@ -87,22 +88,30 @@ const DashboardPage: React.FC = () => {
 		formatDistributionCard(t("dashboard_transactions_incomes"), dashboard.transactionStats.incomesTotal, dashboard.transactionStats.incomesDistribution)
 	]
 
+	const getChart = () => {
+		return totalsData.length > 0 && <Card.Root backgroundColor="background_primary" borderColor="border_primary">
+			<Card.Body color="text_primary">
+				<Grid templateColumns="repeat(3, 1fr)">
+					<Box>
+						<Text fontWeight={700} fontSize={"xl"}>{t("dashboard_total")}: {formatMoneyByCurrencyCulture(dashboard?.total ?? 0, currency)}</Text>
+					</Box>
+					<DistributionChart data={totalsData} mainCurrency={user.currency.name}/>
+				</Grid>
+			</Card.Body>
+		</Card.Root>
+	}
+
+	if (!totalsData.length) {
+		return <Placeholder text={t("dashboard_empty")}/>
+	}
+
 	return (
 		<Stack color="text_primary">
 			<Text fontWeight={900} fontSize={"3xl"}>{t("dashboard_title")}</Text>
 			<Stack gap={5}>
-				<Card.Root backgroundColor="background_primary" borderColor="border_primary">
-					<Card.Body color="text_primary">
-						<Grid templateColumns="repeat(3, 1fr)">
-							<Box>
-								<Text fontWeight={700} fontSize={"xl"}>{t("dashboard_total")}: {formatMoneyByCurrencyCulture(dashboard?.total ?? 0, currency)}</Text>
-							</Box>
-							<DistributionChart data={totalsData} mainCurrency={user.currency.name}/>
-						</Grid>
-					</Card.Body>
-				</Card.Root>
+				{getChart()}
 				<Grid gap={5} templateColumns="repeat(2, 1fr)">
-					{assetsCharts}
+					{assetsSubCharts}
 				</Grid>
 				<Grid gap={5} templateColumns="repeat(2, 1fr)">
 					{transactionsStats}

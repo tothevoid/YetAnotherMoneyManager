@@ -8,6 +8,7 @@ import ShowModalButton from '../../../../shared/components/ShowModalButton/ShowM
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 import BrokerAccountModal from '../../modals/BrokerAccountModal/BrokerAccountModal';
 import { useBrokerAccounts } from '../../hooks/useBrokerAccounts';
+import Placeholder from '../../../../shared/components/Placeholder/Placeholder';
 
 const BrokerAccountsList: React.FC = () => {
 	const { t } = useTranslation()
@@ -26,12 +27,22 @@ const BrokerAccountsList: React.FC = () => {
 		modalRef.current?.openModal()
 	};
 
+	const getAddButton = () => {
+		return <ShowModalButton buttonTitle={t("broker_accounts_page_summary_add")} onClick={onAdd}>
+			<BrokerAccountModal modalRef={modalRef} onSaved={createBrokerAccountEntity}/>
+		</ShowModalButton>
+	}
+
+	if (!brokerAccounts.length) {
+		return <Placeholder text={t("broker_accounts_page_no_accounts")}>
+			{getAddButton()}
+		</Placeholder>
+	}
+
 	return (
 		<Fragment>
 			<Flex justifyContent="space-between" alignItems="center" pt={5} pb={5}>
-				<ShowModalButton buttonTitle={t("broker_accounts_page_summary_add")} onClick={onAdd}>
-					<BrokerAccountModal modalRef={modalRef} onSaved={createBrokerAccountEntity}/>
-				</ShowModalButton>
+				{getAddButton()}
 			</Flex>
 			<SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(400px, 3fr))'>
 				{

@@ -111,6 +111,7 @@
     "entity_broker_name_form_title": "Брокерский счёт",
     "broker_account_delete_title": "Удалить брокерский счёт",
     "broker_accounts_page_summary_add": "Добавить счёт",
+    "broker_accounts_page_no_accounts": "Нет счетов",
 
     "entity_broker_account_type_from_title": "Тип брокерского счёта",
     "entity_broker_account_type_name": "Название",
@@ -121,6 +122,7 @@
     "entity_broker_add": "Добавить брокера",
 
     "security_page_summary_add": "Добавить",
+    "security_page_summary_no_securities": "Нет ценных бумаг",
     "security_delete_title": "Удалить ценную бумагу",
     "entity_security_from_title": "Ценная бумага",
     "entity_security_name": "Название",
@@ -233,6 +235,7 @@
 
     "debts_page_only_active": "Только активные",
     "debts_page_add_debt": "Добавить долг",
+    "debts_page_no_debts": "Нет долгов",
     "debts_page_add_payment": "Добавить выплату",
     "debt_payment_title": "Выплата \"{{amount}}\" по \"{{debt}}\" на \"{{account}}\"",
     "debt_payment_modal_title": "Выплата долга",

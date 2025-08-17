@@ -110,6 +110,7 @@
     "entity_broker_name_form_title": "Broker account",
     "broker_account_delete_title": "Delete broker account",
     "broker_accounts_page_summary_add": "Add account",
+    "broker_accounts_page_no_accounts": "No accounts",
 
     "entity_broker_account_type_from_title": "Broker account type",
     "entity_broker_account_type_name": "Name",
@@ -120,6 +121,7 @@
     "entity_broker_add": "Add broker",
 
     "security_page_summary_add": "Add security",
+    "security_page_summary_no_securities": "No securities",
     "security_delete_title": "Delete security",
     "entity_security_from_title": "Security",
     "entity_security_name": "Name",
@@ -232,6 +234,7 @@
 
     "debts_page_only_active": "Only active",
     "debts_page_add_debt": "Add debt",
+    "debts_page_no_debts": "No debts",
     "debts_page_add_payment": "Add payment",
     "debt_payment_title": "Paid \"{{amount}}\" of \"{{debt}}\" on \"{{account}}\"",
     "debt_payment_modal_title": "Debt payment",

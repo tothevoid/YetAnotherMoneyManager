@@ -8,6 +8,7 @@ import ShowModalButton from '../../../../shared/components/ShowModalButton/ShowM
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 import SecurityModal from '../../modals/SecurityModal/SecurityModal';
 import { useSecurities } from '../../hooks/useSecurities';
+import Placeholder from '../../../../shared/components/Placeholder/Placeholder';
 
 const SecuritiesList: React.FC = () => {
 	const { t } = useTranslation()
@@ -30,12 +31,22 @@ const SecuritiesList: React.FC = () => {
 		modalRef.current?.openModal()
 	};
 
+	const getAddButton = () => {
+		return <ShowModalButton buttonTitle={t("security_page_summary_add")} onClick={onAdd}>
+			<SecurityModal modalRef={modalRef} onSaved={createSecurityEntity}/>
+		</ShowModalButton>
+	}
+
+	if (!securities.length) {
+		return <Placeholder text={t("security_page_summary_no_securities")}>
+			{getAddButton()}
+		</Placeholder>
+	}
+
 	return (
 		<Fragment>
 			<Flex justifyContent="space-between" alignItems="center" pt={5} pb={5}>
-				<ShowModalButton buttonTitle={t("security_page_summary_add")} onClick={onAdd}>
-					<SecurityModal modalRef={modalRef} onSaved={createSecurityEntity}/>
-				</ShowModalButton>
+				{getAddButton()}
 			</Flex>
 			<SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(300px, 3fr))'>
 				{

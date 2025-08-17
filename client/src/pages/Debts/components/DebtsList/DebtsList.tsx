@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { SimpleGrid, Box, Flex} from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { DebtEntity } from "../../../../models/debts/DebtEntity";
@@ -10,7 +10,11 @@ import DebtModal from "../../modals/DebtModal.tsx/DebtModal";
 import Debt from "../Debt/Debt";
 import Placeholder from "../../../../shared/components/Placeholder/Placeholder";
 
-const DebtsList: React.FC = () => {
+interface Props {
+    onDebtsChanged: (debts: number) => void
+}
+
+const DebtsList: React.FC<Props> = ({onDebtsChanged}) => {
     const { t } = useTranslation();
 
     const {
@@ -23,7 +27,11 @@ const DebtsList: React.FC = () => {
     } = useDebts({onlyActive: true});
 
     const modalRef = useRef<BaseModalRef>(null);
-        
+
+    useEffect(()=> {
+        onDebtsChanged(debts.length);
+    }, [debts, onDebtsChanged])
+
     const onAdd = () => {
         modalRef.current?.openModal()
     };
@@ -33,7 +41,7 @@ const DebtsList: React.FC = () => {
     }
 
     const getAddButton = () => {
-        return <ShowModalButton buttonTitle={t("debts_page_no_debts")} onClick={onAdd}>
+        return <ShowModalButton buttonTitle={t("debts_page_add_debt")} onClick={onAdd}>
             <DebtModal modalRef={modalRef} onSaved={createDebtEntity}/>
         </ShowModalButton>
     }

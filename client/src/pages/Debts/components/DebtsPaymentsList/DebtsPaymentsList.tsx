@@ -25,10 +25,6 @@ const DebtsPaymentsList: React.FC = () => {
         debtPaymentModalRef.current?.openModal()
     };
 
-    if (!debtPayments.length) {
-        return <Fragment/>
-    }
-
     return <Fragment>
         <ShowModalButton buttonTitle={t("debts_page_add_payment")} onClick={onAddDebtPayment}>
             <DebtPaymentModal modalRef={debtPaymentModalRef} onSaved={createDebtPaymentEntity}/>

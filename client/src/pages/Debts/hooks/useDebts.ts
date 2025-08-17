@@ -33,13 +33,13 @@ export const useDebts = (queryParameters: DebtPaymentsQueryParameters) => {
 		fetchData();
 	}, [fetchData])
 
-	const createDebtEntity = async (createdDebt: DebtEntity) => {
-		const addedDebt = await createDebt(createdDebt);
-		if (!addedDebt) {
+	const createDebtEntity = async (debt: DebtEntity) => {
+		const added = await createDebt(debt);
+		if (!added) {
 			return;
 		}
 
-		setDebts([addedDebt, ...debts])
+		setDebts([debt, ...debts])
 	}
 
 	const updateDebtEntity = async (updatedDebt: DebtEntity) => {

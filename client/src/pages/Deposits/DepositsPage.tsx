@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import { BaseModalRef } from "../../shared/utilities/modalUtilities";
 import DepositModal from "./modals/DepositModal/DepositModal";
 import { useDeposits } from "./hooks/useDeposits";
+import Placeholder from "../../shared/components/Placeholder/Placeholder";
 
 const DepositsPage: React.FC = () => {
 	const { t } = useTranslation();
@@ -40,10 +41,9 @@ const DepositsPage: React.FC = () => {
 	}
 
 	const getAddButtonWithoutDeposits = () => {
-		return <Flex gap={4} direction="column" alignItems="center" justifyContent="center" height="100vh" width="100%">
-			<Text color={"text_primary"} fontSize="2xl">{t("deposits_page_no_deposits")}</Text>
+		return <Placeholder text={t("deposits_page_no_deposits")}>
 			{getAddButton()}
-		</Flex>
+		</Placeholder>
 	}
 
 	const onDepositsRangeChanged = async (fromMonths: number, toMonths: number) => {

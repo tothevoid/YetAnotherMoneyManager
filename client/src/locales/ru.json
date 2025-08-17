@@ -87,6 +87,8 @@
     "modals_save_button": "Сохранить",
 
     "accounts_list_only_active": "Только активные",
+    "accounts_list_no_accounts": "Нет счетов",
+
 
     "data_title": "Данные",
     "currencies_data_add": "Добавить валюту",

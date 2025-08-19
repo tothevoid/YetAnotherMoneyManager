@@ -30,7 +30,7 @@ export const useBrokerAccounts = () => {
 			return
 		}
 
-		setBrokerAccounts([addedBrokerAccount, ...brokerAccounts]);
+		await fetchData();
 	}
 
 	const updateBrokerAccountEntity = async (updatedBrokerAccount: BrokerAccountEntity) => {
@@ -38,14 +38,8 @@ export const useBrokerAccounts = () => {
 		if (!brokerAccountUpdated) {
 			return;
 		}
-
-		const updatedBrokerAccounts = brokerAccounts.map((brokerAccount: BrokerAccountEntity) => 
-			brokerAccount.id === updatedBrokerAccount.id ?
-				{...updatedBrokerAccount}:
-				brokerAccount
-		);
-
-		setBrokerAccounts(updatedBrokerAccounts);
+		
+		await fetchData();
 	}
 
 	const deleteBrokerAccountEntity = async (deletedBrokerAccount: BrokerAccountEntity) => {

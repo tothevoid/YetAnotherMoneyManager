@@ -7,6 +7,7 @@ import { createEntityWithIcon, deleteEntity, getAllEntities, updateEntityWithIco
 import { SecurityStats } from '../../models/securities/SecurityStats';
 import { SecurityEntity, SecurityEntityRequest, SecurityEntityResponse } from '../../models/securities/SecurityEntity';
 import { prepareSecurity, prepareSecurityEntityRequest } from './securityApiMapping';
+import { Nullable } from '../../shared/utilities/nullable';
 
 const basicUrl = `${config.api.URL}/Security`;
 const FIELD_NAME = "securityJson"
@@ -65,7 +66,7 @@ export const deleteSecurity = async (securityId: string): Promise<boolean> => {
     return await deleteEntity(basicUrl, securityId);
 }
 
-export const getIconUrl = (iconKey: string | null | undefined): string => {
+export const getIconUrl = (iconKey: Nullable<string>): string => {
     if (!iconKey) {
         return "";
     }

@@ -1,5 +1,6 @@
 import config from '../../config' 
 import { CryptocurrencyEntity } from '../../models/crypto/CryptocurrencyEntity';
+import { Nullable } from '../../shared/utilities/nullable';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { deleteEntity, getAllEntities } from '../basicApi';
 
@@ -40,7 +41,7 @@ const generateForm = (cryptocurrency: CryptocurrencyEntity, file: File | null) =
     return formData;
 }
 
-export const getIconUrl = (iconKey: string | null | undefined): string => {
+export const getIconUrl = (iconKey: Nullable<string>): string => {
     if (!iconKey) {
         return "";
     }

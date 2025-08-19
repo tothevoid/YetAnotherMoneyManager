@@ -1,5 +1,6 @@
 import config from "../../config";
 import { TransactionTypeEntity } from "../../models/transactions/TransactionTypeEntity";
+import { Nullable } from "../../shared/utilities/nullable";
 import { checkPromiseStatus, logPromiseError } from "../../shared/utilities/webApiUtilities";
 import { deleteEntity, getAllEntities } from "../basicApi";
 
@@ -34,7 +35,7 @@ export const deleteTransactionType = async (transactionTypeId: string): Promise<
     return await deleteEntity(basicUrl, transactionTypeId);
 }
 
-export const getTransactionTypeIconUrl = (iconKey: string | null | undefined): string => {
+export const getTransactionTypeIconUrl = (iconKey: Nullable<string>): string => {
     if (!iconKey) {
         return "";
     }

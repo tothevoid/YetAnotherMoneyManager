@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { DebtPaymentEntity } from "../../../models/debts/DebtPaymentEntity";
 import { createDebtPayment, deleteDebtPayment, getDebtPayments, updateDebtPayment } from "../../../api/debts/debtPaymentApi";
-import { debug } from "console";
 
 export const useDebtPayments = () => {
 	const [debtPayments, setDebtPayments] = useState<DebtPaymentEntity[]>([]);

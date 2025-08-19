@@ -1,3 +1,5 @@
+import { Nullable } from "../nullable";
+
 export enum Currency {
 	RUB = 0,
 	USD = 1,
@@ -19,7 +21,7 @@ export const formatMoney = (value: number, currency: Currency = Currency.RUB) =>
   };
 
 
-export const formatMoneyByCurrencyCulture = (value: number, currency: string | null | undefined, digits: number = 2) => {
+export const formatMoneyByCurrencyCulture = (value: number, currency: Nullable<string>, digits: number = 2) => {
 	if (!currency) {
 		return value.toString();
 	}

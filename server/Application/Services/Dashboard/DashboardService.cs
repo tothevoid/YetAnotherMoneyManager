@@ -324,16 +324,21 @@ namespace MoneyManager.Application.Services.Dashboard
                 var amount = cryptocurrencies.Sum(cryptocurrency =>
                     cryptocurrency.Quantity * cryptocurrency.Cryptocurrency.Price);
 
+                if (amount <= 0)
+                {
+                    continue;
+                }
+
                 var key = cryptoAccount.Name;
-                var convertedAmmount = amount * usdCurrency.Rate;
-                brokerAccountsSummary += convertedAmmount;
+                var convertedAmount = amount * usdCurrency.Rate;
+                brokerAccountsSummary += convertedAmount;
 
                 cryptoAccountsValues.Add(new DistributionDto()
                 {
                     Name = cryptoAccount.Name,
                     Currency = usdCurrency.Name,
                     Amount = amount,
-                    ConvertedAmount = convertedAmmount
+                    ConvertedAmount = convertedAmount
                 });
             }
 

@@ -10,7 +10,7 @@ export const prepareSecurity = (security: SecurityEntityResponse): SecurityEntit
         actualPrice: security.actualPrice,
         iconKey: security.iconKey,
         currency: security.currency,
-        priceFetchedAt: new Date(security.priceFetchedAt)
+        priceFetchedAt: security.priceFetchedAt && new Date(security.priceFetchedAt)
     };
 }
 
@@ -23,6 +23,6 @@ export const prepareSecurityEntityRequest = (security: SecurityEntity): Security
         actualPrice: security.actualPrice,
         iconKey: security.iconKey,
         currencyId: security.currency.id,
-        priceFetchedAt: convertToDateOnly(security.priceFetchedAt)
+        priceFetchedAt: security.priceFetchedAt && convertToDateOnly(security.priceFetchedAt)
     };
 }

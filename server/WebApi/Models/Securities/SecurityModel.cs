@@ -27,7 +27,7 @@ namespace MoneyManager.WebApi.Models.Securities
         public decimal ActualPrice { get; set; }
 
         [JsonPropertyName("priceFetchedAt")]
-        public DateTime PriceFetchedAt { get; set; }
+        public DateTime? PriceFetchedAt { get; set; }
 
         [JsonPropertyName("iconKey")]
         public string IconKey { get; set; }

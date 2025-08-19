@@ -17,7 +17,7 @@ namespace MoneyManager.Application.DTO.Securities
 
         public decimal ActualPrice { get; set; }
 
-        public DateTime PriceFetchedAt { get; set; }
+        public DateTime? PriceFetchedAt { get; set; }
 
         public string IconKey { get; set; }
 

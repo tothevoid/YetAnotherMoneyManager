@@ -79,7 +79,6 @@ const SecurityModal: React.FC<ModalProps> = (props: ModalProps) => {
             };
             reader.readAsDataURL(selectedFile);
         }
-       
     };
 
     const {t} = useTranslation()

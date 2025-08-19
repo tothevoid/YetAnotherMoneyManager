@@ -36,6 +36,16 @@ export const createEntity = async<TRequest, TResponse> (basicUrl: string, addedE
     return newEntity;
 }
 
+export const createEntityWithIcon = async<TRequest, TResponse>(basicUrl: string, addedEntity: TRequest, fieldName: string, file: File | null): Promise<TResponse | void> => {
+    return await fetch(basicUrl, { method: "PUT", body: generateForm(addedEntity, fieldName, file)})
+        .then(checkPromiseStatus)
+        .then((response: Response) => response.json())
+        .then(id => {
+            return {...addedEntity, id} as TResponse;
+        })
+        .catch(logPromiseError);
+}
+
 export const updateEntity = async<TRequest> (basicUrl: string, modifiedEntity: TRequest): Promise<boolean> => {
     const updatedEntity = await fetch(basicUrl, { method: "PATCH", body: convertRecordToJson(modifiedEntity),  
         headers: {"Content-Type": "application/json"}})
@@ -43,6 +53,14 @@ export const updateEntity = async<TRequest> (basicUrl: string, modifiedEntity: T
         .catch(logPromiseError)
 
     return updatedEntity?.ok ?? false;
+}
+
+export const updateEntityWithIcon = async<TRequest> (basicUrl: string, modifiedEntity: TRequest, fieldName: string, file: File | null): Promise<boolean> => {
+    const securityResponse = await fetch(basicUrl, { method: "PATCH", body: generateForm(modifiedEntity, fieldName, file )})
+        .then(checkPromiseStatus)
+        .catch(logPromiseError)
+
+    return securityResponse?.ok ?? false;
 }
 
 export const deleteEntity = async (basicUrl: string, recordId: string): Promise<boolean> => {
@@ -68,4 +86,13 @@ export const getEntityById = async <T> (basicUrl: string, id: string): Promise<T
 
 export const convertRecordToJson = <T>(record: T): string => {
     return JSON.stringify(record);
+}
+
+const generateForm = <T>(entity: T, fieldName: string, file: File | null) => {
+    const formData = new FormData();
+    formData.append(fieldName, JSON.stringify(entity));
+    if (file) {
+        formData.append(fieldName, file);
+    }
+    return formData;
 }

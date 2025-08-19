@@ -3,12 +3,13 @@ import config from '../../config'
 import { formatDate } from '../../shared/utilities/formatters/dateFormatter';
 import { SecurityHistoryValue } from '../../models/securities/SecurityHistoryValue';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
-import { deleteEntity, getAllEntities } from '../basicApi';
+import { createEntityWithIcon, deleteEntity, getAllEntities, updateEntityWithIcon } from '../basicApi';
 import { SecurityStats } from '../../models/securities/SecurityStats';
 import { SecurityEntity, SecurityEntityRequest, SecurityEntityResponse } from '../../models/securities/SecurityEntity';
 import { prepareSecurity, prepareSecurityEntityRequest } from './securityApiMapping';
 
 const basicUrl = `${config.api.URL}/Security`;
+const FIELD_NAME = "securityJson"
 
 export const getSecurities = async (): Promise<SecurityEntity[]> => {
     return await getAllEntities<SecurityEntityResponse>(basicUrl)
@@ -47,19 +48,17 @@ export const getTickerHistory = async (ticker: string, format: i18n): Promise<Se
 }
 
 export const createSecurity = async (addedSecurity: SecurityEntity, file: File | null): Promise<SecurityEntity | void> => {
-    return await fetch(basicUrl, { method: "PUT", body: generateForm(prepareSecurityEntityRequest(addedSecurity), file)})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
-        .then((response: SecurityEntityResponse) => prepareSecurity(response))
-        .catch(logPromiseError);
+    const createdEntity = await createEntityWithIcon<SecurityEntityRequest, SecurityEntityRequest>(basicUrl, prepareSecurityEntityRequest(addedSecurity), FIELD_NAME, file);
+
+    if (!createdEntity) {
+        return;
+    }
+
+    return {...addedSecurity, id: createdEntity.id}
 }
 
 export const updateSecurity = async (modifiedSecurity: SecurityEntity, file: File | null): Promise<boolean> => {
-    const securityResponse = await fetch(basicUrl, { method: "PATCH", body: generateForm(prepareSecurityEntityRequest(modifiedSecurity), file)})
-        .then(checkPromiseStatus)
-        .catch(logPromiseError)
-
-    return securityResponse?.ok ?? false;
+    return await updateEntityWithIcon(basicUrl, prepareSecurityEntityRequest(modifiedSecurity), FIELD_NAME, file);;
 }
 
 export const deleteSecurity = async (securityId: string): Promise<boolean> => {
@@ -72,13 +71,4 @@ export const getIconUrl = (iconKey: string | null | undefined): string => {
     }
 
     return `${basicUrl}/icon?iconKey=${iconKey}`;
-}
-
-const generateForm = (security: SecurityEntityRequest, file: File | null) => {
-    const formData = new FormData();
-    formData.append("securityJson", JSON.stringify(security));
-    if (file) {
-        formData.append("securityIcon", file);
-    }
-    return formData;
 }

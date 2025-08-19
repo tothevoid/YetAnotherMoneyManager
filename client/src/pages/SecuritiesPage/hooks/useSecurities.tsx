@@ -30,7 +30,7 @@ export const useSecurities = () => {
 			return;
 		}
 
-		setSecurities([addedSecurity, ...securities]);
+		await fetchData();
 	}
 
 	const updateSecurityEntity = async (updatedSecurity: SecurityEntity, icon: File | null) => {

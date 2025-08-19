@@ -36,8 +36,9 @@ export const createEntity = async<TRequest, TResponse> (basicUrl: string, addedE
     return newEntity;
 }
 
-export const createEntityWithIcon = async<TRequest, TResponse>(basicUrl: string, addedEntity: TRequest, fieldName: string, file: File | null): Promise<TResponse | void> => {
-    return await fetch(basicUrl, { method: "PUT", body: generateForm(addedEntity, fieldName, file)})
+export const createEntityWithIcon = async<TRequest, TResponse>(basicUrl: string, addedEntity: TRequest, 
+        entityFieldName: string, iconFieldName: string, file: File | null): Promise<TResponse | void> => {
+    return await fetch(basicUrl, { method: "PUT", body: generateForm(addedEntity, entityFieldName, iconFieldName, file)})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
         .then(id => {
@@ -55,8 +56,9 @@ export const updateEntity = async<TRequest> (basicUrl: string, modifiedEntity: T
     return updatedEntity?.ok ?? false;
 }
 
-export const updateEntityWithIcon = async<TRequest> (basicUrl: string, modifiedEntity: TRequest, fieldName: string, file: File | null): Promise<boolean> => {
-    const securityResponse = await fetch(basicUrl, { method: "PATCH", body: generateForm(modifiedEntity, fieldName, file )})
+export const updateEntityWithIcon = async<TRequest> (basicUrl: string, modifiedEntity: TRequest, 
+    entityFieldName: string, iconFieldName: string, file: File | null): Promise<boolean> => {
+    const securityResponse = await fetch(basicUrl, { method: "PATCH", body: generateForm(modifiedEntity, entityFieldName, iconFieldName, file )})
         .then(checkPromiseStatus)
         .catch(logPromiseError)
 
@@ -88,11 +90,15 @@ export const convertRecordToJson = <T>(record: T): string => {
     return JSON.stringify(record);
 }
 
-const generateForm = <T>(entity: T, fieldName: string, file: File | null) => {
+const generateForm = <T>(entity: T, entityField: string, iconField: string, file: File | null) => {
+    if (entityField === iconField) {
+        throw new Error(`Entity field (${entityField}) same as icon field (${iconField})`)
+    }
+
     const formData = new FormData();
-    formData.append(fieldName, JSON.stringify(entity));
+    formData.append(entityField, JSON.stringify(entity));
     if (file) {
-        formData.append(fieldName, file);
+        formData.append(iconField, file);
     }
     return formData;
 }

@@ -10,7 +10,8 @@ import { prepareSecurity, prepareSecurityEntityRequest } from './securityApiMapp
 import { Nullable } from '../../shared/utilities/nullable';
 
 const basicUrl = `${config.api.URL}/Security`;
-const FIELD_NAME = "securityJson"
+const ENTITY_NAME = "securityJson"
+const ICON_NAME = "securityIcon"
 
 export const getSecurities = async (): Promise<SecurityEntity[]> => {
     return await getAllEntities<SecurityEntityResponse>(basicUrl)
@@ -49,7 +50,8 @@ export const getTickerHistory = async (ticker: string, format: i18n): Promise<Se
 }
 
 export const createSecurity = async (addedSecurity: SecurityEntity, file: File | null): Promise<SecurityEntity | void> => {
-    const createdEntity = await createEntityWithIcon<SecurityEntityRequest, SecurityEntityRequest>(basicUrl, prepareSecurityEntityRequest(addedSecurity), FIELD_NAME, file);
+    const createdEntity = await createEntityWithIcon<SecurityEntityRequest, SecurityEntityRequest>(basicUrl, 
+        prepareSecurityEntityRequest(addedSecurity), ENTITY_NAME, ICON_NAME, file);
 
     if (!createdEntity) {
         return;
@@ -59,7 +61,7 @@ export const createSecurity = async (addedSecurity: SecurityEntity, file: File |
 }
 
 export const updateSecurity = async (modifiedSecurity: SecurityEntity, file: File | null): Promise<boolean> => {
-    return await updateEntityWithIcon(basicUrl, prepareSecurityEntityRequest(modifiedSecurity), FIELD_NAME, file);;
+    return await updateEntityWithIcon(basicUrl, prepareSecurityEntityRequest(modifiedSecurity), ENTITY_NAME, ICON_NAME, file);;
 }
 
 export const deleteSecurity = async (securityId: string): Promise<boolean> => {

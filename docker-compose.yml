@@ -16,6 +16,7 @@ services:
   server:
     build: ./server
     container_name: ${PROJECT_NAME}_server
+    restart: always
     ports:
       - ${SERVER_PORT}:5000
     environment:
@@ -30,12 +31,12 @@ services:
     depends_on:
       - database
       - files_database
-    restart: always
     networks:
       - server-network
       - postgres-network
   client:
     container_name: ${PROJECT_NAME}_client
+    restart: always
     networks:
       - server-network
     build: 

@@ -57,8 +57,6 @@ const BrokerAccountPage: React.FC = () => {
         return <Fragment/>
     }
 
-   
-
     const onDataReloaded = async () => {
         await fetchBrokerAccount();
         await securitiesRef.current?.reloadData();

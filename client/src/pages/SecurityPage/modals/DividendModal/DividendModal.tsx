@@ -28,13 +28,14 @@ const DividendModal: React.FC<ModalProps> = (props: ModalProps) => {
 	const {t} = useTranslation();
 
 	const dividend = "dividend" in props.context ? props.context.dividend : null;
+	const security = "securityId" in props.context ? { id: props.context.securityId }: { id: undefined};
 
 	const { register, control, handleSubmit, formState: { errors }} = useForm<DividendFormInput>({
 		resolver: zodResolver(DividendValidationSchema),
 		mode: "onBlur",
 		defaultValues: {
 			id: dividend?.id ?? generateGuid(),
-			security: dividend?.security,
+			security: dividend?.security ?? security,
 			amount: dividend?.amount ?? 0,
 			declarationDate: dividend?.declarationDate ?? new Date(),
 			snapshotDate: dividend?.snapshotDate ?? new Date()

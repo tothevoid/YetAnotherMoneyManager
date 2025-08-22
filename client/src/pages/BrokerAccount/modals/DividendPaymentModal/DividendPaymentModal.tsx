@@ -80,13 +80,14 @@ const DividendPaymentModal: React.FC<ModalProps> = (props: ModalProps) => {
 	}, [selectedSecurity, availableDividends])
 
 	const dividendPayment = "dividendPayment" in props.context ? props.context.dividendPayment: null;
+	const brokerAccount = "brokerAccountId" in props.context ? { id: props.context.brokerAccountId }: { id: undefined };
 
 	const { register, reset, handleSubmit, watch, control, formState: { errors }} = useForm<DividendPaymentFormInput>({
 		resolver: zodResolver(DividendPaymentValidationSchema),
 		mode: "onBlur",
 		defaultValues: {
 			id: dividendPayment?.id ?? generateGuid(),
-			brokerAccount: dividendPayment?.brokerAccount,
+			brokerAccount: dividendPayment?.brokerAccount ?? brokerAccount,
 			dividend: dividendPayment?.dividend,
 			securitiesQuantity: dividendPayment?.securitiesQuantity ?? 0,
 			tax: dividendPayment?.tax ?? 0,

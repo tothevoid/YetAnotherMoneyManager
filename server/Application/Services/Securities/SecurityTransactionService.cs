@@ -6,15 +6,12 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Securities;
-using MoneyManager.Application.Integrations.Stock;
-using MoneyManager.Application.Interfaces.Integrations.Stock;
 using MoneyManager.Application.Interfaces.Securities;
 using MoneyManager.Application.Queries.Brokers;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using MoneyManager.Infrastructure.Queries;
-using MoneyManager.Shared.Extensions;
 
 namespace MoneyManager.Application.Services.Securities
 {
@@ -157,8 +154,6 @@ namespace MoneyManager.Application.Services.Securities
 
             await _brokerAccountSecurityRepo.Add(brokerAccountSecurity);
             await ActualizeBrokerAccountCurrencyValue(brokerAccountSecurity.BrokerAccountId, -1 * price);
-
-            await _db.Commit();
         }
 
         private async Task ApplyAddedTransaction(SecurityTransactionDTO securityTransaction)
@@ -172,7 +167,6 @@ namespace MoneyManager.Application.Services.Securities
                 _brokerAccountSecurityRepo.Update(brokerAccountSecurity);
 
                 await ActualizeBrokerAccountCurrencyValue(brokerAccountSecurity.BrokerAccountId, -1 * price);
-                await _db.Commit();
             }
             else
             {
@@ -217,8 +211,6 @@ namespace MoneyManager.Application.Services.Securities
 
             _brokerAccountSecurityRepo.Update(brokerAccountSecurity);
             await ActualizeBrokerAccountCurrencyValue(brokerAccountSecurity.BrokerAccountId, priceDiff * -1);
-
-            await _db.Commit();
         }
 
         private async Task ActualizeBrokerAccountCurrencyValue(Guid brokerAccountId, decimal currencyDiff)
@@ -253,8 +245,6 @@ namespace MoneyManager.Application.Services.Securities
             }
            
             await ActualizeBrokerAccountCurrencyValue(brokerAccountSecurity.BrokerAccountId, price);
-
-            await _db.Commit();
         }
         private IQueryable<SecurityTransaction> GetFullHierarchyColumns(
             IQueryable<SecurityTransaction> securityTransactionQuery)

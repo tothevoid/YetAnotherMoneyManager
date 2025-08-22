@@ -30,10 +30,11 @@ export const getTransactionsBySecurity = async (securityId: string): Promise<Sec
         .catch(logPromiseError);
 };
 
-export const createSecurityTransaction = async (addedSecurityTransaction: SecurityTransactionEntity): Promise<SecurityTransactionEntity | void> => {
-    return await createEntity<SecurityTransactionEntityRequest, SecurityTransactionEntityResponse>(basicUrl, 
-        prepareSecurityTransactionRequest(addedSecurityTransaction))
-        .then(securityTransaction => securityTransaction && prepareSecurityTransaction(securityTransaction));
+export const createSecurityTransaction = async (addedSecurityTransaction: SecurityTransactionEntity): Promise<boolean | void> => {
+    const createdSecurityTransaction = await createEntity<SecurityTransactionEntityRequest, SecurityTransactionEntityResponse>(basicUrl, 
+        prepareSecurityTransactionRequest(addedSecurityTransaction));
+
+    return !!createdSecurityTransaction;
 }
 
 export const updateSecurityTransaction = async (modifiedSecurityTransaction: SecurityTransactionEntity): Promise<boolean> => {

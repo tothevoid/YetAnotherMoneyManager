@@ -13,7 +13,7 @@ export interface CommonSecurityEntity {
 export interface SecurityEntityRequest extends CommonSecurityEntity {
     typeId: string,
     currencyId: string,
-    priceFetchedAt: Nullable<string>
+    priceFetchedAt: Nullable<Date>
 }
 
 export interface SecurityEntity extends CommonSecurityEntity {

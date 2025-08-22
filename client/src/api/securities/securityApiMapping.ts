@@ -1,5 +1,4 @@
 import { SecurityEntityResponse, SecurityEntity, SecurityEntityRequest } from "../../models/securities/SecurityEntity";
-import { convertToDateOnly } from "../../shared/utilities/dateUtils";
 
 export const prepareSecurity = (security: SecurityEntityResponse): SecurityEntity => {
     return {
@@ -23,6 +22,6 @@ export const prepareSecurityEntityRequest = (security: SecurityEntity): Security
         actualPrice: security.actualPrice,
         iconKey: security.iconKey,
         currencyId: security.currency.id,
-        priceFetchedAt: security.priceFetchedAt && convertToDateOnly(security.priceFetchedAt)
+        priceFetchedAt: security.priceFetchedAt
     };
 }

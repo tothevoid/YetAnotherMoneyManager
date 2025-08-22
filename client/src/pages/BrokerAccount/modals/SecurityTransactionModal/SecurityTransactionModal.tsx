@@ -54,13 +54,14 @@ const SecurityTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
 	};
 
 	const securityTransaction = "securityTransaction" in props.context ? props.context.securityTransaction: null;
+	const brokerAccount = "brokerAccountId" in props.context ? { id: props.context.brokerAccountId }: { id: undefined};
 
 	const { register, handleSubmit, control, formState: { errors }} = useForm<SecurityTransactionFormInput>({
 		resolver: zodResolver(SecurityTransactionValidationSchema),
 		mode: "onBlur",
 		defaultValues: {
 			id: securityTransaction?.id ?? generateGuid(),
-			brokerAccount: securityTransaction?.brokerAccount,
+			brokerAccount: securityTransaction?.brokerAccount ?? brokerAccount,
 			security: securityTransaction?.security,
 			brokerCommission: securityTransaction?.brokerCommission ?? 0,
 			stockExchangeCommission: securityTransaction?.stockExchangeCommission ?? 0,

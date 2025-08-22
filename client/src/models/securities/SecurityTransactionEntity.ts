@@ -13,7 +13,7 @@ interface CommonSecurityTransactionEntity {
 export interface SecurityTransactionEntityRequest extends CommonSecurityTransactionEntity {
     securityId: string,
     brokerAccountId: string,
-    date: string
+    date: Date
 }
 
 export interface SecurityTransactionEntity extends CommonSecurityTransactionEntity {

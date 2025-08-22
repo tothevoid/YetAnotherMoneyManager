@@ -39,7 +39,7 @@ const BrokerAccountSecurity = (props: Props) => {
             <Card.Body color="text_primary" boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
                 <Flex justifyContent="space-between" alignItems="center">
                     <Stack>
-                        <Stack justifyContent={"center"} direction={"row"}>
+                        <Stack justifyContent={"start"} direction={"row"}>
                             {icon}
                             <Link color="text_primary" href={securityLink} fontSize="xl" fontWeight={900}>{security?.name} ({security?.ticker})</Link>
                         </Stack>

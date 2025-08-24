@@ -30,8 +30,8 @@ const convertRange = (range: DepositsRange) => {
 
     //TODO: use culture to display date
     const marks: SliderMark[] = [
-        { value: minMonths, label: `${minDateMonth}-${minDate.getFullYear()}` },
-        { value: maxMonths, label: `${maxDateMonth}-${maxDate.getFullYear()}` },
+        { value: minMonths, label: `${minDateMonth.toString().padStart(2, "0")}-${minDate.getFullYear()}` },
+        { value: maxMonths, label: `${maxDateMonth.toString().padStart(2, "0")}-${maxDate.getFullYear()}` },
     ]
     return {minMonths, maxMonths, marks, selectedMinMonths: minMonths, selectedMaxMonths: maxMonths};
 }
@@ -79,7 +79,7 @@ const DepositsRangeSlider = (props: Props) => {
             <Slider.Range background={"purple.600"} />
         </Slider.Track>
         <Slider.Thumbs />
-        <Slider.Marks marks={state.marks}/>
+        <Slider.Marks whiteSpace="nowrap" marks={state.marks}/>
         </Slider.Control>
     </Slider.Root>
     

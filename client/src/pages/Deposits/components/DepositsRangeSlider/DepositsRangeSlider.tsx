@@ -2,6 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import { getDepositsRange } from "../../../../api/deposits/depositApi";
 import { Slider } from "@chakra-ui/react";
 import { DepositsRange } from "../../../../models/deposits/depositsRange";
+import { formatMonthYear } from "../../../../shared/utilities/formatters/dateFormatter";
 
 interface State {
     minMonths: number | null,
@@ -30,8 +31,9 @@ const convertRange = (range: DepositsRange) => {
 
     //TODO: use culture to display date
     const marks: SliderMark[] = [
-        { value: minMonths, label: `${minDateMonth.toString().padStart(2, "0")}-${minDate.getFullYear()}` },
-        { value: maxMonths, label: `${maxDateMonth.toString().padStart(2, "0")}-${maxDate.getFullYear()}` },
+
+        { value: minMonths, label: formatMonthYear(minDateMonth, minDate.getFullYear()) },
+        { value: maxMonths, label: formatMonthYear(maxDateMonth, maxDate.getFullYear()) },
     ]
     return {minMonths, maxMonths, marks, selectedMinMonths: minMonths, selectedMaxMonths: maxMonths};
 }

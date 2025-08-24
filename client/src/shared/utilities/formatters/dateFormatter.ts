@@ -26,6 +26,10 @@ export const formatNumericDate = (date: Date, format: i18n, showYear: boolean = 
 	}).format(date);
 };
 
+export const formatMonthYear = (month: number, year: number) => {
+	return `${month.toString().padStart(2, "0")}-${year}`
+}
+
 export const formatMonth = (month: number, format: i18n): string => {
 	const date = new Date();
 	date.setMonth(month - 1);

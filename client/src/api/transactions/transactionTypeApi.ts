@@ -18,8 +18,8 @@ export const createTransactionType = async (addedSecurity: TransactionTypeEntity
     return await fetch(basicUrl, { method: "PUT", body: generateForm(addedSecurity, file)})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
-        .then(id => {
-            return {...addedSecurity, id};
+        .then(addedSecurity => {
+            return {...addedSecurity};
         })
         .catch(logPromiseError);
 }

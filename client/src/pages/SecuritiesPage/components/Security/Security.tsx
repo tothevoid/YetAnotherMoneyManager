@@ -1,53 +1,31 @@
 import { Button, Card, Flex, Icon, Link, Stack, Text, Image } from '@chakra-ui/react';
 import { MdDelete, MdEdit } from "react-icons/md";
-import { Fragment, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Fragment, useEffect, useState } from 'react';
 import { HiOutlineBuildingOffice2 } from 'react-icons/hi2';
 import { getIconUrl } from '../../../../api/securities/securityApi';
 import { SecurityEntity } from '../../../../models/securities/SecurityEntity';
-import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModal';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
-import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
-import SecurityModal from '../../modals/SecurityModal/SecurityModal';
 
 type Props = {
     security: SecurityEntity,
-    onDeleteCallback: (security: SecurityEntity) => void,
-    onEditCallback: (security: SecurityEntity, file: File | null) => void,
-    onReloadSecurities: () => void
+    onEditClicked: (security: SecurityEntity) => void,
+    onDeleteClicked: (security: SecurityEntity) => void
 }
 
 const Security = (props: Props) => {
     const {id, name, ticker, type, actualPrice, currency, iconKey} = props.security;
 
-    const confirmModalRef = useRef<BaseModalRef>(null);
-    const editModalRef = useRef<BaseModalRef>(null);
-
     const [iconDate, setIconDate] = useState(new Date());
 
-    const onEditClicked = () => {
-        editModalRef.current?.openModal()
-    };
-
-    const onDeleteClicked = () => {
-        confirmModalRef.current?.openModal()
-    };
-
-    const { t } = useTranslation();
+    useEffect(() => {
+        setIconDate(new Date())
+    }, [props.security])
 
     const securityLink = `../security/${id}`;
 
     const icon = iconKey ?
         <Image h={8} w={8} rounded={16} src={`${getIconUrl(iconKey, iconDate)}`}/>:
         <HiOutlineBuildingOffice2 size={32} color="#aaa" />
-
-    const onSaved = (security: SecurityEntity, file: File | null) => {
-        props.onEditCallback(security, file);
-        
-        if (file) {
-            setIconDate(new Date());
-        }
-    }
 
     return <Fragment>
         <Card.Root backgroundColor="background_primary" borderColor="border_primary" >
@@ -63,12 +41,12 @@ const Security = (props: Props) => {
                         <Text fontWeight={600}>{formatMoneyByCurrencyCulture(actualPrice, currency.name)}</Text>
                     </Stack>
                     <Flex gap={1}>
-                        <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={onEditClicked}>
+                        <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={() => props.onEditClicked(props.security)}>
                             <Icon color="card_action_icon_primary">
                                 <MdEdit/>
                             </Icon>
                         </Button>
-                        <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={onDeleteClicked}>
+                        <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={() => props.onDeleteClicked(props.security)}>
                             <Icon color="card_action_icon_danger">
                                 <MdDelete/>
                             </Icon>
@@ -77,12 +55,6 @@ const Security = (props: Props) => {
                 </Flex>
             </Card.Body>
         </Card.Root>
-        <ConfirmModal onConfirmed={() => props.onDeleteCallback(props.security)}
-            title={t("security_delete_title")}
-            message={t("modals_delete_message")}
-            confirmActionName={t("modals_delete_button")}
-            ref={confirmModalRef}/>
-        <SecurityModal security={props.security} modalRef={editModalRef} onSaved={onSaved}/>
     </Fragment>
 };
 

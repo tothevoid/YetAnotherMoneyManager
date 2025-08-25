@@ -52,7 +52,7 @@ const SecurityModal: React.FC<ModalProps> = (props: ModalProps) => {
         })
     };
 
-    const { register, handleSubmit, control, formState: { errors }} = useForm<SecurityFormInput>({
+    const { register, handleSubmit, control, formState: { errors }, reset} = useForm<SecurityFormInput>({
         resolver: zodResolver(SecurityValidationSchema),
         mode: "onBlur",
         defaultValues: {
@@ -63,6 +63,13 @@ const SecurityModal: React.FC<ModalProps> = (props: ModalProps) => {
             currency: props.security?.currency
         }
     });
+
+    useEffect(() => {
+        if (props.security) {
+            reset(props.security);
+        }
+    }, [props.security, reset])
+
 
     const onSubmit = (security: SecurityFormInput) => {
         props.onSaved(security as SecurityEntity, icon);

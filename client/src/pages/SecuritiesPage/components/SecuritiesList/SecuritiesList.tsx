@@ -1,40 +1,40 @@
-import React, { Fragment, useRef } from 'react';
+import React, { Fragment } from 'react';
 import { SimpleGrid } from '@chakra-ui/react/grid';
 import { Flex } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import Security from '../Security/Security';
 import { SecurityEntity } from '../../../../models/securities/SecurityEntity';
-import ShowModalButton from '../../../../shared/components/ShowModalButton/ShowModalButton';
-import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 import SecurityModal from '../../modals/SecurityModal/SecurityModal';
 import { useSecurities } from '../../hooks/useSecurities';
 import Placeholder from '../../../../shared/components/Placeholder/Placeholder';
+import AddButton from '../../../../shared/components/AddButton/AddButton';
+import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModal';
+import { ActiveEntityMode } from '../../../../shared/enums/activeEntityMode';
+import { useEntityModal } from '../../../../shared/hooks/useEntityModal';
 
 const SecuritiesList: React.FC = () => {
 	const { t } = useTranslation()
+
+	const { 
+		activeEntity,
+		modalRef,
+		confirmModalRef,
+		onAddClicked,
+		onEditClicked,
+		onDeleteClicked,
+		mode,
+		onActionEnded
+	} = useEntityModal<SecurityEntity>();
 
 	const {
 		securities,
 		createSecurityEntity,
 		updateSecurityEntity,
-		deleteSecurityEntity,
-		reloadSecurities
+		deleteSecurityEntity	
 	} = useSecurities();
-
-	const onReloadSecurities = async () => {
-		await reloadSecurities();
-	}
-
-	const modalRef = useRef<BaseModalRef>(null);
 	
-	const onAdd = () => {
-		modalRef.current?.openModal()
-	};
-
 	const getAddButton = () => {
-		return <ShowModalButton buttonTitle={t("security_page_summary_add")} onClick={onAdd}>
-			<SecurityModal modalRef={modalRef} onSaved={createSecurityEntity}/>
-		</ShowModalButton>
+		return <AddButton buttonTitle={t("security_page_summary_add")} onClick={onAddClicked}/>
 	}
 
 	if (!securities.length) {
@@ -42,6 +42,25 @@ const SecuritiesList: React.FC = () => {
 			{getAddButton()}
 		</Placeholder>
 	}
+
+	const onSecuritySaved = async (security: SecurityEntity, file: File | null) => {
+		if (mode === ActiveEntityMode.Add) {
+            await createSecurityEntity(security, file);
+        } else {
+            await updateSecurityEntity(security, file);
+        }
+
+		onActionEnded();
+	}
+
+	const onDeleteConfirmed = async () => {
+		if (!activeEntity) {
+            throw new Error("Deleted entity is not set")
+        }
+
+        await deleteSecurityEntity(activeEntity);
+		onActionEnded();
+    }
 
 	return (
 		<Fragment>
@@ -52,11 +71,16 @@ const SecuritiesList: React.FC = () => {
 				{
 					securities.map((security: SecurityEntity) => 
 						<Security key={security.id} security={security} 
-							onEditCallback={updateSecurityEntity} 
-							onDeleteCallback={deleteSecurityEntity}
-							onReloadSecurities={onReloadSecurities}/>)
+							onEditClicked={onEditClicked} 
+							onDeleteClicked={onDeleteClicked}/>)
 				}
 			</SimpleGrid>
+			<ConfirmModal onConfirmed={onDeleteConfirmed}
+				title={t("security_delete_title")}
+				message={t("modals_delete_message")}
+				confirmActionName={t("modals_delete_button")}
+				ref={confirmModalRef}/>
+			<SecurityModal security={activeEntity} modalRef={modalRef} onSaved={onSecuritySaved}/>
 		</Fragment>
 	);
 }

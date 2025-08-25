@@ -1,14 +1,16 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { SimpleGrid, Box, Flex} from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { DebtEntity } from "../../../../models/debts/DebtEntity";
-import ShowModalButton from "../../../../shared/components/ShowModalButton/ShowModalButton";
 import SwitchButton from "../../../../shared/components/SwitchButton/SwitchButton";
-import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import { useDebts } from "../../hooks/useDebts";
 import DebtModal from "../../modals/DebtModal.tsx/DebtModal";
 import Debt from "../Debt/Debt";
 import Placeholder from "../../../../shared/components/Placeholder/Placeholder";
+import { ConfirmModal } from "../../../../shared/modals/ConfirmModal/ConfirmModal";
+import { useEntityModal } from "../../../../shared/hooks/useEntityModal";
+import AddButton from "../../../../shared/components/AddButton/AddButton";
+import { ActiveEntityMode } from "../../../../shared/enums/activeEntityMode";
 
 interface Props {
     onDebtsChanged: (debts: number) => void
@@ -16,6 +18,17 @@ interface Props {
 
 const DebtsList: React.FC<Props> = ({onDebtsChanged}) => {
     const { t } = useTranslation();
+
+    const { 
+        activeEntity,
+        modalRef,
+        confirmModalRef,
+        onAddClicked,
+        onEditClicked,
+        onDeleteClicked,
+        mode,
+        onActionEnded
+    } = useEntityModal<DebtEntity>();
 
     const {
         debts,
@@ -26,33 +39,37 @@ const DebtsList: React.FC<Props> = ({onDebtsChanged}) => {
         setDebtQueryParameters
     } = useDebts({onlyActive: true});
 
-    const modalRef = useRef<BaseModalRef>(null);
-
     useEffect(()=> {
         onDebtsChanged(debts.length);
     }, [debts, onDebtsChanged])
-
-    const onAdd = () => {
-        modalRef.current?.openModal()
-    };
 
     const onOnlyActiveSwitched = (onlyActive: boolean) => {
         setDebtQueryParameters({onlyActive});
     }
 
     const getAddButton = () => {
-        return <ShowModalButton buttonTitle={t("debts_page_add_debt")} onClick={onAdd}>
-            <DebtModal modalRef={modalRef} onSaved={createDebtEntity}/>
-        </ShowModalButton>
+        return <AddButton buttonTitle={t("debts_page_add_debt")} onClick={onAddClicked}/>
     }
 
-    if (!debts.length) {
-        return <Placeholder text={t("debts_page_no_debts")}>
-            {getAddButton()}
-        </Placeholder>
+    const onDebtSaved = async (debt: DebtEntity) => {
+        if (mode === ActiveEntityMode.Add) {
+            await createDebtEntity(debt);
+        } else if (mode === ActiveEntityMode.Edit) {
+            await updateDebtEntity(debt);
+        }
+        onActionEnded();
+    }
+    
+	const onDeleteConfirmed = async () => {
+		if (!activeEntity) {
+            throw new Error("Deleted entity is not set")
+        }
+
+        await deleteDebtEntity(activeEntity);
+		onActionEnded();
     }
 
-    return (
+    return debts.length > 0 ?
         <Box>
             <Flex justifyContent="space-between">
                 <SwitchButton active={debtQueryParameters.onlyActive} title={t("debts_page_only_active")} onSwitch={onOnlyActiveSwitched}/>
@@ -62,13 +79,19 @@ const DebtsList: React.FC<Props> = ({onDebtsChanged}) => {
             {
                 debts.map((debt: DebtEntity) => 
                     <Debt key={debt.id} debt={debt} 
-                        onEditCallback={updateDebtEntity}
-                        onDeleteCallback={deleteDebtEntity}/>
+                        onEditClicked={onEditClicked}
+                        onDeleteClicked={onDeleteClicked}/>
                 )
             }
             </SimpleGrid>
-        </Box>
-    )
+            <ConfirmModal onConfirmed={onDeleteConfirmed}
+                title={t("security_delete_title")}
+                message={t("modals_delete_message")}
+                confirmActionName={t("modals_delete_button")}
+                ref={confirmModalRef}/>
+            <DebtModal debt={activeEntity} modalRef={modalRef} onSaved={onDebtSaved}/>
+        </Box>:
+        <Placeholder text={t("debts_page_no_debts")}>{getAddButton()}</Placeholder>
 }
 
 export default DebtsList;

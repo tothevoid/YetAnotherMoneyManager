@@ -39,7 +39,7 @@ export const useDebts = (queryParameters: DebtPaymentsQueryParameters) => {
 			return;
 		}
 
-		setDebts([debt, ...debts])
+		await fetchData();
 	}
 
 	const updateDebtEntity = async (updatedDebt: DebtEntity) => {

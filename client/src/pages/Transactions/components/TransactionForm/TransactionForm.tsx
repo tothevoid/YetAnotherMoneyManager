@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import { Field, Input} from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TransactionFormInput, TransactionValidationSchema } from './TransactionValidationSchema';
@@ -12,10 +12,11 @@ import CollectionSelect from '../../../../shared/components/CollectionSelect/Col
 import DateSelect from '../../../../shared/components/DateSelect/DateSelect';
 import { getAccounts } from '../../../../api/accounts/accountApi';
 import { generateGuid } from '../../../../shared/utilities/idUtilities';
+import { Nullable } from '../../../../shared/utilities/nullable';
 
 interface ModalProps {
 	setSubmitHandler: (handler: React.FormEventHandler) => void,
-	transaction?: TransactionEntity,
+	transaction?: Nullable<TransactionEntity>,
 	onTransactionSaved: (transaction: TransactionEntity) => Promise<void>
 }
 
@@ -51,10 +52,8 @@ const TransactionForm: React.FC<ModalProps> = (props: ModalProps) => {
 		state.accounts[0] :
 		{id: ""} as AccountEntity;
 
-	const { register, handleSubmit, watch, control, formState: { errors }} = useForm<TransactionFormInput>({
-		resolver: zodResolver(TransactionValidationSchema),
-		mode: "onBlur",
-		defaultValues: {
+	const getDefaultTransactionFormValues = useCallback(() => {
+		return {
 			id: props.transaction?.id ?? generateGuid(),
 			name: props.transaction?.name ?? "",
 			date: props.transaction?.date ?? new Date(),
@@ -65,7 +64,17 @@ const TransactionForm: React.FC<ModalProps> = (props: ModalProps) => {
 			isSystem: props.transaction?.isSystem ?? false,
 			transactionType: props.transaction?.transactionType
 		}
+	}, [props.transaction]);
+
+	const { register, handleSubmit, watch, control, formState: { errors }, reset} = useForm<TransactionFormInput>({
+		resolver: zodResolver(TransactionValidationSchema),
+		mode: "onBlur",
+		defaultValues: getDefaultTransactionFormValues()
 	});
+
+	useEffect(() => {
+		reset(getDefaultTransactionFormValues())
+	}, [props.transaction, reset, getDefaultTransactionFormValues]);
 
 	const initCollections = async () => {
 		const transactionTypes = await getTransactionTypes(true);

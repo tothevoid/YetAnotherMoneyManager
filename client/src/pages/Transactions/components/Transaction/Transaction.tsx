@@ -1,46 +1,21 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { AccountEntity } from '../../../../models/accounts/AccountEntity';
 import { MdOutlineArrowDownward, MdOutlineArrowUpward, MdEdit, MdOutlinePayment } from 'react-icons/md';
 import { MdDelete } from "react-icons/md";
 import { Flex, Stack, Card, CardBody, Text, Button, Icon, Image } from '@chakra-ui/react';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
-import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModal';
-import { deleteTransaction } from '../../../../api/transactions/transactionApi';
-import { useTranslation } from 'react-i18next';
 import { TransactionEntity } from '../../../../models/transactions/TransactionEntity';
 import { getTransactionTypeIconUrl } from '../../../../api/transactions/transactionTypeApi';
-import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
-import TransactionModal from '../../modals/TransactionModal/TransactionModal';
 
 interface Props { 
-	onDelete: (transaction: TransactionEntity) => void,
-	onUpdate: (updatedTransaction: TransactionEntity) => Promise<void>,
-	transaction: TransactionEntity,
-	accounts: AccountEntity[],
+	transaction: TransactionEntity
+	accounts: AccountEntity[]
+	onUpdateClicked: (updatedTransaction: TransactionEntity) => void
+	onDeleteClicked: (transaction: TransactionEntity) => void
 } 
 
 const Transaction: React.FC<Props> = (props: Props) => {
 	const {amount, transactionType, name, account} = props.transaction;
-
-	const confirmModalRef = useRef<BaseModalRef>(null);
- 	const editModalRef = useRef<BaseModalRef>(null);
-
-	const onEditClicked = () => {
-		editModalRef.current?.openModal()
-	};
-
-	const onDeleteClicked = () => {
-		confirmModalRef.current?.openModal();
-	}
-
-	const onDeletionConfirmed = async () => {
-		const isDeleted = await deleteTransaction(props.transaction?.id);
-		if (!isDeleted) {
-			return;
-		}
-		props.onDelete(props.transaction);
-	}
-
 	const getTransactionDirectionIcon = () => {
 		return props.transaction.amount > 0 ?
 			<Icon rounded={16} size={"lg"} fontSize="32" background={'green.100'} color={'green.600'}>
@@ -50,8 +25,6 @@ const Transaction: React.FC<Props> = (props: Props) => {
 				<MdOutlineArrowDownward/>
 			</Icon>
 	}
-
-	const { t } = useTranslation()
 
 	const icon = transactionType.iconKey ?
 		<Image title={transactionType.name} h={8} w={8} src={getTransactionTypeIconUrl(transactionType.iconKey)}/>:
@@ -71,28 +44,19 @@ const Transaction: React.FC<Props> = (props: Props) => {
 				<Flex gap={2} justifyContent="space-between" alignItems="center">
 					{getTransactionDirectionIcon()}
 					<Text width={150}>{formatMoneyByCurrencyCulture(amount, account.currency.name)}</Text>
-					<Button background={'background_secondary'} size={'sm'} onClick={onEditClicked}>
+					<Button background={'background_secondary'} size={'sm'} onClick={() => props.onUpdateClicked(props.transaction)}>
 						<Icon color="card_action_icon_primary">
 							<MdEdit/>
 						</Icon>
 					</Button>
-					<Button background={'background_secondary'} size={'sm'} onClick={onDeleteClicked}>
+					<Button background={'background_secondary'} size={'sm'} onClick={() => props.onDeleteClicked(props.transaction)}>
 						<Icon color="card_action_icon_danger">
 							<MdDelete/>
 						</Icon>
 					</Button>
 				</Flex>
 			</Flex>
-		</CardBody>	
-		<ConfirmModal onConfirmed={onDeletionConfirmed}
-			title={t("transaction_delete_title")}
-			message={t("modals_delete_message")}
-			confirmActionName={t("modals_delete_button")}
-			ref={confirmModalRef}/>
-		<TransactionModal
-			transaction={props.transaction} 
-			modalRef={editModalRef} 
-			onSaved={props.onUpdate}/>
+		</CardBody>
 	</Card.Root>
 }
 

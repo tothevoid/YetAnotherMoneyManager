@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import { Field, Input} from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -24,10 +24,8 @@ interface State {
 const CurrencyTransactionForm: React.FC<Props> = (props: Props) => {
     const {t} = useTranslation();
 
-    const { register, handleSubmit, control, formState: { errors }} = useForm<CurrencyTransactionFormInput>({
-        resolver: zodResolver(CurrencyTransactionValidationSchema),
-        mode: "onBlur",
-        defaultValues: {
+    const getDefaultTransactionFormState = useCallback(() => {
+        return {
             id: props.currencyTransaction?.id ?? generateGuid(),
             date: props.currencyTransaction?.date ?? new Date(),
             amount: props.currencyTransaction?.amount ?? 0,
@@ -35,7 +33,17 @@ const CurrencyTransactionForm: React.FC<Props> = (props: Props) => {
             sourceAccount: props.currencyTransaction?.sourceAccount,
             destinationAccount: props.currencyTransaction?.destinationAccount,
         }
+    }, [props.currencyTransaction]);
+
+    const { register, handleSubmit, control, formState: { errors }, reset} = useForm<CurrencyTransactionFormInput>({
+        resolver: zodResolver(CurrencyTransactionValidationSchema),
+        mode: "onBlur",
+        defaultValues: getDefaultTransactionFormState()
     });
+
+    useEffect(() => {
+        reset(getDefaultTransactionFormState());
+    }, [props.currencyTransaction, reset, getDefaultTransactionFormState])
 
     const [state, setState] = useState<State>({accounts: []});
 

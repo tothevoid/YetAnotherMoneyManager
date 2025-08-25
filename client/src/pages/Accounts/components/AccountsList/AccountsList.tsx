@@ -4,11 +4,15 @@ import { SimpleGrid } from '@chakra-ui/react/grid';
 import { Box, Checkbox, Flex } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { AccountEntity } from '../../../../models/accounts/AccountEntity';
-import ShowModalButton from '../../../../shared/components/ShowModalButton/ShowModalButton';
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 import AccountModal from '../../modals/AccountModal/AccountModal';
 import { useAccounts } from '../../hooks/useAccounts';
 import Placeholder from '../../../../shared/components/Placeholder/Placeholder';
+import { useEntityModal } from '../../../../shared/hooks/useEntityModal';
+import AddButton from '../../../../shared/components/AddButton/AddButton';
+import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModal';
+import AccountBalanceTransferModal from '../../modals/AccountBalanceTransferModal/AccountBalanceTransferModal';
+import { ActiveEntityMode } from '../../../../shared/enums/activeEntityMode';
 
 interface Props {
 	onAccountsChanged: () => void
@@ -16,6 +20,20 @@ interface Props {
 
 const AccountsList: React.FC<Props> = ({onAccountsChanged}) => {
 	const { t } = useTranslation();
+
+	const transferModalRef = useRef<BaseModalRef>(null);
+	
+	const { 
+		activeEntity,
+		modalRef,
+		confirmModalRef,
+		onAddClicked,
+		onEditClicked,
+		onDeleteClicked,
+		mode,
+		onActionEnded,
+		setActiveEntity
+	} = useEntityModal<AccountEntity>();
 
 	const { 
 		accounts, 
@@ -35,16 +53,37 @@ const AccountsList: React.FC<Props> = ({onAccountsChanged}) => {
 		setAccountQueryParameters({onlyActive: !!checkboxChange.checked})
 	}
 
-	const modalRef = useRef<BaseModalRef>(null);
-	
-	const onAdd = () => {
-		modalRef.current?.openModal()
-	};
+	const getAddButton = () => {
+		return <AddButton buttonTitle={t("accounts_page_summary_add")} onClick={onAddClicked}/>
+	}
 
-	const addButton = () => {
-		return <ShowModalButton buttonTitle={t("accounts_page_summary_add")} onClick={onAdd}>
-			<AccountModal modalRef={modalRef} onSaved={createAccountEntity}/>
-		</ShowModalButton>
+  	const onAccountSaved = async (account: AccountEntity) => {
+		if (mode === ActiveEntityMode.Add) {
+			await createAccountEntity(account);
+		} else {
+			await updateAccountEntity(account)
+		}
+
+		onActionEnded();
+	}
+
+	const onDeleteConfirmed = async () => {
+		if (!activeEntity) {
+            throw new Error("Deleted entity is not set")
+        }
+
+        await deleteAccountEntity(activeEntity);
+		onActionEnded();
+    }
+
+	const onTransferClicked = (account: AccountEntity) => {
+		setActiveEntity(account);
+		transferModalRef.current?.openModal()
+	}
+	
+	const onTransferred = () => {
+		reloadAccounts();
+		onActionEnded();
 	}
 
 	return <Box>
@@ -56,22 +95,31 @@ const AccountsList: React.FC<Props> = ({onAccountsChanged}) => {
 					<Checkbox.Label color="text_primary">{t("accounts_list_only_active")}</Checkbox.Label>
 				</Checkbox.Root>
 			</Box>
-			{accounts.length > 0 && addButton()}
+			{accounts.length > 0 && getAddButton()}
 		</Flex>
 		{
 			accounts.length > 0 ?
 				<SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(350px, 3fr))'>
 				{
 					accounts.map((account: AccountEntity) => {
-						return <Account key={account.id} onReloadAccounts={reloadAccounts} account={account} onEditCallback={updateAccountEntity} 
-							onDeleteCallback={deleteAccountEntity}/>
+						return <Account key={account.id} account={account} 
+							onEditClicked={onEditClicked}
+							onDeleteClicked={onDeleteClicked}
+							onTransferClicked={onTransferClicked}/>
 					})
 				}
 				</SimpleGrid>:
 				<Placeholder text={t("accounts_list_no_accounts")}>
-					{addButton()}
+					{getAddButton()}
 				</Placeholder>
 		}
+		<ConfirmModal onConfirmed={onDeleteConfirmed}
+            title={t("account_delete_title")}
+            message={t("modals_delete_message")}
+            confirmActionName={t("modals_delete_button")}
+            ref={confirmModalRef}/>
+        <AccountBalanceTransferModal from={activeEntity} modalRef={transferModalRef} onTransferred={onTransferred}/>
+        <AccountModal account={activeEntity} modalRef={modalRef} onSaved={onAccountSaved}/>
 	</Box>
 }
 

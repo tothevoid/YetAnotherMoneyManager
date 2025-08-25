@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useCallback, useState } from "react";
 import { getSummary } from "../../api/accounts/accountApi";
 import { AccountCurrencySummary } from "../../models/accounts/accountsSummary";
 import { Box, Flex, Text } from "@chakra-ui/react";
@@ -21,9 +21,9 @@ const AccountsPage: React.FC = () => {
 		})
 	};
 
-	const onAccountsChanged = async () => {
+	const onAccountsChanged = useCallback(async () => {
 		await requestAccountsData();
-	}
+	}, []);
 
 	return <Box>
 		{

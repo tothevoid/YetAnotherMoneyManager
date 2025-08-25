@@ -1,5 +1,5 @@
 import { Field, Input} from "@chakra-ui/react"
-import React, { RefObject, useEffect, useState } from "react"
+import React, { RefObject, useCallback, useEffect, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AccountFormInput, AccountValidationSchema } from "./AccountValidationSchema";
@@ -53,10 +53,8 @@ const AccountModal: React.FC<ModalProps> = (props: ModalProps) => {
 		})
 	}
 
-	const { register, handleSubmit, control, formState: { errors }} = useForm<AccountFormInput>({
-		resolver: zodResolver(AccountValidationSchema),
-		mode: "onBlur",
-		defaultValues: {
+	const getFormDefaultValues = useCallback(() => {
+		return {
 			id: props.account?.id ?? generateGuid(),
 			name: props.account?.name ?? "",
 			balance: props.account?.balance ?? 0,
@@ -65,7 +63,17 @@ const AccountModal: React.FC<ModalProps> = (props: ModalProps) => {
 			active: props.account?.active ?? true,
 			createdOn: props.account?.createdOn ?? new Date()
 		}
+	}, [props.account]);
+
+	const { register, handleSubmit, control, formState: { errors }, reset} = useForm<AccountFormInput>({
+		resolver: zodResolver(AccountValidationSchema),
+		mode: "onBlur",
+		defaultValues: getFormDefaultValues()
 	});
+
+	useEffect(() => {
+		reset(getFormDefaultValues());
+	}, [reset, getFormDefaultValues, props.account])
 
 	const onSubmit = (account: AccountFormInput) => {
 		props.onSaved(account as AccountEntity);

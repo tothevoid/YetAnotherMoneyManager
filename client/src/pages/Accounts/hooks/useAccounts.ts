@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { AccountEntity } from "../../../models/accounts/AccountEntity";
-import { createAccount, getAccounts } from "../../../api/accounts/accountApi";
+import { createAccount, getAccounts, updateAccount, deleteAccount } from "../../../api/accounts/accountApi";
 
 export interface AccountsQuery {
 	onlyActive: boolean
@@ -44,6 +44,11 @@ export const useAccounts = (queryParameters: AccountsQuery) => {
 			return;
 		}
 
+		const updated = await updateAccount(updatedAccount);
+		if (!updated) {
+			return;
+		}
+
 		const updatedAccounts = accounts.map((account: AccountEntity) => {
 			if (account.id === updatedAccount.id) {
 				return {...updatedAccount}
@@ -59,6 +64,10 @@ export const useAccounts = (queryParameters: AccountsQuery) => {
 			return;
 		}
 
+		const deleted = await deleteAccount(deletedAccount.id);
+		if (!deleted) {
+			return;
+		}
 		setAccounts(accounts.filter((account: AccountEntity) => account.id !== deletedAccount.id));
 	}
 

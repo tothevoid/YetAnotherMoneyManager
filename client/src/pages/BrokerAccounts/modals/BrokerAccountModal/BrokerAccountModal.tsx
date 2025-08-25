@@ -1,5 +1,5 @@
 import { Field, Input} from "@chakra-ui/react"
-import { RefObject, useEffect, useState } from "react"
+import { RefObject, useCallback, useEffect, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
@@ -47,10 +47,8 @@ const BrokerAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
         })
     };
 
-    const { register, handleSubmit, control, formState: { errors }} = useForm<BrokerAccountFormInput>({
-        resolver: zodResolver(BrokerAccountValidationSchema),
-        mode: "onBlur",
-        defaultValues: {
+    const getFormDefaultValues = useCallback(() => {
+        return  {
             id: props.brokerAccount?.id ?? generateGuid(),
             name: props.brokerAccount?.name ?? "",
             type: props.brokerAccount?.type,
@@ -60,12 +58,22 @@ const BrokerAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
             currentValue: props.brokerAccount?.currentValue,
             mainCurrencyAmount: props.brokerAccount?.mainCurrencyAmount ?? 0
         }
+    }, [props.brokerAccount]);
+
+    const { register, handleSubmit, control, formState: { errors }, reset} = useForm<BrokerAccountFormInput>({
+        resolver: zodResolver(BrokerAccountValidationSchema),
+        mode: "onBlur",
+        defaultValues: getFormDefaultValues()
     });
 
     const onSubmit = (brokerAccount: BrokerAccountFormInput) => {
         props.onSaved(brokerAccount as BrokerAccountEntity);
         props.modalRef?.current?.closeModal();
     }
+
+    useEffect(() => {
+        reset(getFormDefaultValues());
+    }, [reset, getFormDefaultValues, props.brokerAccount]);
 
     const {t} = useTranslation()
 

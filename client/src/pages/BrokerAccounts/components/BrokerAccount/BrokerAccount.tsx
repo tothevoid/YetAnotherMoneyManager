@@ -1,36 +1,18 @@
 import { Button, Card, Flex, Icon, Link, Span, Stack, Text } from '@chakra-ui/react';
 import { MdDelete, MdEdit } from "react-icons/md";
-import { Fragment, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Fragment } from 'react';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
-import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModal';
 import { BrokerAccountEntity } from '../../../../models/brokers/BrokerAccountEntity';
 import { calculateDiff } from '../../../../shared/utilities/numericDiffsUtilities';
-import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
-import BrokerAccountModal from '../../modals/BrokerAccountModal/BrokerAccountModal';
 
-type Props = {
-	brokerAccount: BrokerAccountEntity,
-	onDeleteCallback: (account: BrokerAccountEntity) => void,
-	onEditCallback: (account: BrokerAccountEntity) => void,
-	onReloadBrokerAccounts: () => void
+interface Props {
+	brokerAccount: BrokerAccountEntity
+	onEditClick: (account: BrokerAccountEntity) => void
+	onDeleteClick: (account: BrokerAccountEntity) => void
 }
 
 const BrokerAccount = (props: Props) => {
-	const {id, name, broker, currency, type, initialValue, currentValue} = props.brokerAccount;
-
-	const confirmModalRef = useRef<BaseModalRef>(null);
-	const editModalRef = useRef<BaseModalRef>(null);
-
-	const onEditClicked = () => {
-		editModalRef.current?.openModal()
-	};
-
-	const onDeleteClicked = () => {
-		confirmModalRef.current?.openModal()
-	};
-
-	const { t } = useTranslation();
+	const { id, name, broker, currency, type, initialValue, currentValue } = props.brokerAccount;
 
 	const accountLink = `../broker_account/${id}`;
 
@@ -50,12 +32,12 @@ const BrokerAccount = (props: Props) => {
 						</Stack>
 					</Stack>
 					<Flex gap={1}>
-						<Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={onEditClicked}>
+						<Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={() => props.onEditClick(props.brokerAccount)}>
 							<Icon color="card_action_icon_primary">
 								<MdEdit/>
 							</Icon>
 						</Button>
-						<Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={onDeleteClicked}>
+						<Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={() => props.onDeleteClick(props.brokerAccount)}>
 							<Icon color="card_action_icon_danger">
 								<MdDelete/>
 							</Icon>
@@ -64,12 +46,6 @@ const BrokerAccount = (props: Props) => {
 				</Flex>
 			</Card.Body>
 		</Card.Root>
-		<ConfirmModal onConfirmed={() => props.onDeleteCallback(props.brokerAccount)}
-			title={t("broker_account_delete_title")}
-			message={t("modals_delete_message")}
-			confirmActionName={t("modals_delete_button")}
-			ref={confirmModalRef}/>
-		<BrokerAccountModal brokerAccount={props.brokerAccount} modalRef={editModalRef} onSaved={props.onEditCallback}/>
 	</Fragment>
 };
 

@@ -119,6 +119,7 @@ namespace MoneyManager.Infrastructure.Database
 
         public void Update(TEntity entity)
         {
+            //TODO: if entity is not exists update can insert entity. Fix it
             _entities.Update(entity);
         }
 

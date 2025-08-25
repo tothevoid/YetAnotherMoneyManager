@@ -8,8 +8,11 @@ using System.Threading.Tasks;
 
 namespace MoneyManager.WebApi.Models.Crypto
 {
-    public class CryptocurrencyModel: BaseEntity
+    public class CryptocurrencyModel
     {
+        [JsonPropertyName("id")]
+        public Guid Id { get; set; }
+
         [JsonPropertyName("name")]
         public string Name { get; set; }
 

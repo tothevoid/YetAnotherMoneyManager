@@ -1,6 +1,6 @@
 import { Button, Card, Flex, Icon, Stack, Text, Image } from '@chakra-ui/react';
 import { MdDelete, MdEdit } from "react-icons/md";
-import { Fragment, useRef } from 'react';
+import { Fragment, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModal';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
@@ -20,6 +20,8 @@ type Props = {
 const Cryptocurrency = (props: Props) => {
     const { name, symbol, price, iconKey } = props.cryptocurrency;
 
+    const [iconDate, setIconDate] = useState(new Date());
+
     const confirmModalRef = useRef<BaseModalRef>(null);
     const editModalRef = useRef<BaseModalRef>(null);
 
@@ -34,8 +36,16 @@ const Cryptocurrency = (props: Props) => {
     const { t } = useTranslation();
 
     const icon = iconKey ?
-        <Image h={8} w={8} rounded={16} src={getIconUrl(iconKey)}/>:
+        <Image h={8} w={8} rounded={16} src={getIconUrl(iconKey, iconDate)}/>:
         <FaBitcoin size={32} color="#aaa" />
+
+    const onEdit = (cryptocurrency: CryptocurrencyEntity, file: File | null) => {
+        props.onEditCallback(cryptocurrency, file);
+
+        if (file) {
+            setIconDate(new Date());
+        }
+    }
 
     return <Fragment>
         <Card.Root backgroundColor="background_primary" borderColor="border_primary" >
@@ -69,7 +79,7 @@ const Cryptocurrency = (props: Props) => {
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
             ref={confirmModalRef}/>
-        <CryptocurrencyModal cryptocurrency={props.cryptocurrency} modalRef={editModalRef} onSaved={props.onEditCallback}/>
+        <CryptocurrencyModal cryptocurrency={props.cryptocurrency} modalRef={editModalRef} onSaved={onEdit}/>
     </Fragment>
 };
 

@@ -41,10 +41,14 @@ const generateForm = (cryptocurrency: CryptocurrencyEntity, file: File | null) =
     return formData;
 }
 
-export const getIconUrl = (iconKey: Nullable<string>): string => {
+export const getIconUrl = (iconKey: Nullable<string>, date: Nullable<Date> = null): string => {
     if (!iconKey) {
         return "";
     }
 
-    return `${basicUrl}/icon?iconKey=${iconKey}`;
+    const baseIconUrl = `${basicUrl}/icon?iconKey=${iconKey}`;
+
+    return date ?
+        `${baseIconUrl}&date=${date}`:
+        baseIconUrl;
 }

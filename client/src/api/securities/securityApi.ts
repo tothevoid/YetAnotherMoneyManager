@@ -68,10 +68,13 @@ export const deleteSecurity = async (securityId: string): Promise<boolean> => {
     return await deleteEntity(basicUrl, securityId);
 }
 
-export const getIconUrl = (iconKey: Nullable<string>): string => {
+export const getIconUrl = (iconKey: Nullable<string>, date: Nullable<Date> = null): string => {
     if (!iconKey) {
         return "";
     }
 
-    return `${basicUrl}/icon?iconKey=${iconKey}`;
+    const basicIconUrl = `${basicUrl}/icon?iconKey=${iconKey}`;
+    return date ?
+        `${basicIconUrl}&date=${date}`:
+        basicIconUrl;
 }

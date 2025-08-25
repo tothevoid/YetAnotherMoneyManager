@@ -1,6 +1,6 @@
 import { Button, Card, Flex, Icon, Link, Stack, Text, Image } from '@chakra-ui/react';
 import { MdDelete, MdEdit } from "react-icons/md";
-import { Fragment, useRef } from 'react';
+import { Fragment, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { HiOutlineBuildingOffice2 } from 'react-icons/hi2';
 import { getIconUrl } from '../../../../api/securities/securityApi';
@@ -23,6 +23,8 @@ const Security = (props: Props) => {
     const confirmModalRef = useRef<BaseModalRef>(null);
     const editModalRef = useRef<BaseModalRef>(null);
 
+    const [iconDate, setIconDate] = useState(new Date());
+
     const onEditClicked = () => {
         editModalRef.current?.openModal()
     };
@@ -36,8 +38,16 @@ const Security = (props: Props) => {
     const securityLink = `../security/${id}`;
 
     const icon = iconKey ?
-        <Image h={8} w={8} rounded={16} src={getIconUrl(iconKey)}/>:
+        <Image h={8} w={8} rounded={16} src={`${getIconUrl(iconKey, iconDate)}`}/>:
         <HiOutlineBuildingOffice2 size={32} color="#aaa" />
+
+    const onSaved = (security: SecurityEntity, file: File | null) => {
+        props.onEditCallback(security, file);
+        
+        if (file) {
+            setIconDate(new Date());
+        }
+    }
 
     return <Fragment>
         <Card.Root backgroundColor="background_primary" borderColor="border_primary" >
@@ -72,7 +82,7 @@ const Security = (props: Props) => {
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
             ref={confirmModalRef}/>
-        <SecurityModal security={props.security} modalRef={editModalRef} onSaved={props.onEditCallback}/>
+        <SecurityModal security={props.security} modalRef={editModalRef} onSaved={onSaved}/>
     </Fragment>
 };
 

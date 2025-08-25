@@ -30,13 +30,13 @@ export const useDividends = (query: DividendsQuery) => {
 	}, [fetchData])
 
 	const createDividendEntity = async (createdDividend: DividendEntity) => {
-		const addedDividend = await createDividend(createdDividend);
-		if (!addedDividend) {
+		const added = await createDividend(createdDividend);
+		if (!added) {
 			return;
 		}
 
 		// TODO: add by order
-		setDividends([addedDividend, ...dividends])
+		await fetchData();
 	}
 
 	const updateDividendEntity = async (updatedDividend: DividendEntity) => {

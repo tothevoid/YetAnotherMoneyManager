@@ -1,4 +1,4 @@
-import React, { RefObject } from 'react'
+import React, { RefObject, useCallback, useEffect } from 'react'
 import { Field, Input} from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from "react-hook-form";
@@ -27,20 +27,28 @@ interface ModalProps {
 const DividendModal: React.FC<ModalProps> = (props: ModalProps) => {
 	const {t} = useTranslation();
 
-	const dividend = "dividend" in props.context ? props.context.dividend : null;
-	const security = "securityId" in props.context ? { id: props.context.securityId }: { id: undefined};
+	const getDefaultFormValues = useCallback(() => {
+		const dividend = "dividend" in props.context ? props.context.dividend : null;
+		const security = "securityId" in props.context ? { id: props.context.securityId }: { id: undefined};
 
-	const { register, control, handleSubmit, formState: { errors }} = useForm<DividendFormInput>({
-		resolver: zodResolver(DividendValidationSchema),
-		mode: "onBlur",
-		defaultValues: {
+		return {
 			id: dividend?.id ?? generateGuid(),
 			security: dividend?.security ?? security,
 			amount: dividend?.amount ?? 0,
 			declarationDate: dividend?.declarationDate ?? new Date(),
 			snapshotDate: dividend?.snapshotDate ?? new Date()
 		}
+	}, [props.context])
+
+	const { register, control, handleSubmit, formState: { errors }, reset} = useForm<DividendFormInput>({
+		resolver: zodResolver(DividendValidationSchema),
+		mode: "onBlur",
+		defaultValues: getDefaultFormValues()
 	});
+
+	useEffect(() => {
+		reset(getDefaultFormValues());
+	}, [reset, getDefaultFormValues, props.context]);
 
 	const onSubmit = (dividend: DividendFormInput) => {
 		props.onSaved(dividend as DividendEntity);

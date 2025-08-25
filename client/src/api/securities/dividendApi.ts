@@ -26,9 +26,9 @@ export const getAvailableDividends = async (brokerAccountId: string): Promise<Di
     return dividends ?? [];
 };
 
-export const createDividend = async (dividend: DividendEntity): Promise<DividendEntity | void> => {
-    return await createEntity<DividendEntityRequest, DividendEntityResponse>(basicUrl, prepareDividendRequest(dividend))
-        .then((dividendResponse) =>  dividendResponse && prepareDividend(dividendResponse));
+export const createDividend = async (dividend: DividendEntity): Promise<boolean> => {
+    const result = await createEntity<DividendEntityRequest, DividendEntityResponse>(basicUrl, prepareDividendRequest(dividend));
+    return !!result;
 }
 
 export const updateDividend = async (dividend: DividendEntity): Promise<boolean> => {

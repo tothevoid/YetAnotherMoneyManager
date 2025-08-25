@@ -85,7 +85,7 @@ const DividendPaymentsList: React.FC<Props> = (props) => {
 			message={t("modals_delete_message")}
 			confirmActionName={t("modals_delete_button")}
 			ref={confirmModalRef}/>
-		{context && <DividendPaymentModal context={context!} modalRef={modalRef} onSaved={dividendPaymentSaved}/>}
+		{context && <DividendPaymentModal context={context} modalRef={modalRef} onSaved={dividendPaymentSaved}/>}
 	</Box>
 }
 

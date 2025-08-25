@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { BrokerAccountEntity } from "../../models/brokers/BrokerAccountEntity";
@@ -53,13 +53,13 @@ const BrokerAccountPage: React.FC = () => {
         fetchBrokerAccount();
     }, []);
 
-    if (!brokerAccountId) {
-        return <Fragment/>
-    }
-
-    const onDataReloaded = async () => {
+    const onDataReloaded = useCallback(async () => {
         await fetchBrokerAccount();
         await securitiesRef.current?.reloadData();
+    }, []);
+
+    if (!brokerAccountId) {
+        return <Fragment/>
     }
 
     const pullQuotations = async () => {

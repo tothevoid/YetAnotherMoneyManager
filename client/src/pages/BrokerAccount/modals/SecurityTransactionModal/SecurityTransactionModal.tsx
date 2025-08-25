@@ -1,5 +1,5 @@
 import { Field, Input} from "@chakra-ui/react"
-import { RefObject, useEffect, useState } from "react"
+import { RefObject, useCallback, useEffect, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
@@ -36,7 +36,7 @@ interface State {
 
 const SecurityTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
 	const [state, setState] = useState<State>({ brokerAccounts: [], securities: []});
-	const {t} = useTranslation()
+	const { t } = useTranslation()
 	
 	useEffect(() => {
 		const initData = async () => {
@@ -53,13 +53,11 @@ const SecurityTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
 		})
 	};
 
-	const securityTransaction = "securityTransaction" in props.context ? props.context.securityTransaction: null;
-	const brokerAccount = "brokerAccountId" in props.context ? { id: props.context.brokerAccountId }: { id: undefined};
-
-	const { register, handleSubmit, control, formState: { errors }} = useForm<SecurityTransactionFormInput>({
-		resolver: zodResolver(SecurityTransactionValidationSchema),
-		mode: "onBlur",
-		defaultValues: {
+	const getFormDefaultValues = useCallback(() => {
+		const securityTransaction = "securityTransaction" in props.context ? props.context.securityTransaction: null;
+		const brokerAccount = "brokerAccountId" in props.context ? { id: props.context.brokerAccountId }: { id: undefined};
+		
+		return {
 			id: securityTransaction?.id ?? generateGuid(),
 			brokerAccount: securityTransaction?.brokerAccount ?? brokerAccount,
 			security: securityTransaction?.security,
@@ -70,7 +68,17 @@ const SecurityTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
 			tax: securityTransaction?.tax ?? 0,
 			quantity: securityTransaction?.quantity ?? 0
 		}
+	}, [props.context])
+
+	const { register, handleSubmit, control, formState: { errors }, reset} = useForm<SecurityTransactionFormInput>({
+		resolver: zodResolver(SecurityTransactionValidationSchema),
+		mode: "onBlur",
+		defaultValues: getFormDefaultValues()
 	});
+
+	useEffect(() => {
+		reset(getFormDefaultValues());
+	}, [reset, getFormDefaultValues, props.context]);
 
 	const onSubmit = (securityTransaction: SecurityTransactionFormInput) => {
 		props.onSaved(securityTransaction as SecurityTransactionEntity);

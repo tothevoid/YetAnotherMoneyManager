@@ -1,6 +1,6 @@
 import { Field, Input} from "@chakra-ui/react"
 import { Select } from "chakra-react-select";
-import { RefObject, useEffect, useState } from "react"
+import { RefObject, useCallback, useEffect, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
@@ -37,12 +37,7 @@ const DividendPaymentModal: React.FC<ModalProps> = (props: ModalProps) => {
 	const [availableSecurities, setAvailableSecurities] = useState<SecurityEntity[]>([]);
 	const [availableDividends, setAvailableDividends] = useState<DividendEntity[]>([]);
 	const [dividendsBySecurity, setDividendsBySecurity] = useState<DividendEntity[]>([]);
-
-	const defaultSecurity = "dividendPayment" in props.context ?
-		props.context.dividendPayment?.dividend?.security:
-		null;
-
-	const [selectedSecurity, setSelectedSecurity] = useState<SecurityEntity | null>(defaultSecurity);
+	const [selectedSecurity, setSelectedSecurity] = useState<SecurityEntity | null>(null);
 	const [payment, setPayment] = useState<number>(0);
 	
 	const fetchAvailableDividends = async () => {
@@ -67,6 +62,13 @@ const DividendPaymentModal: React.FC<ModalProps> = (props: ModalProps) => {
 	}
 
 	useEffect(() => {
+		const security = "dividendPayment" in props.context ?
+			props.context.dividendPayment?.dividend?.security:
+			null;
+		setSelectedSecurity(security);
+	}, [props.context]);
+
+	useEffect(() => {
 		fetchAvailableDividends();
 	}, []);
 
@@ -79,13 +81,11 @@ const DividendPaymentModal: React.FC<ModalProps> = (props: ModalProps) => {
 		setDividendsBySecurity(availableDividends.filter((dividend) => dividend.security.id === selectedSecurity.id))
 	}, [selectedSecurity, availableDividends])
 
-	const dividendPayment = "dividendPayment" in props.context ? props.context.dividendPayment: null;
-	const brokerAccount = "brokerAccountId" in props.context ? { id: props.context.brokerAccountId }: { id: undefined };
+	const getFormDefaultValues = useCallback(() => {
+		const dividendPayment = "dividendPayment" in props.context ? props.context.dividendPayment: null;
+		const brokerAccount = "brokerAccountId" in props.context ? { id: props.context.brokerAccountId }: { id: undefined };
 
-	const { register, reset, handleSubmit, watch, control, formState: { errors }} = useForm<DividendPaymentFormInput>({
-		resolver: zodResolver(DividendPaymentValidationSchema),
-		mode: "onBlur",
-		defaultValues: {
+		return {
 			id: dividendPayment?.id ?? generateGuid(),
 			brokerAccount: dividendPayment?.brokerAccount ?? brokerAccount,
 			dividend: dividendPayment?.dividend,
@@ -93,7 +93,17 @@ const DividendPaymentModal: React.FC<ModalProps> = (props: ModalProps) => {
 			tax: dividendPayment?.tax ?? 0,
 			receivedAt: dividendPayment?.receivedAt ?? new Date(),
 		}
+	}, [props.context]);
+
+	const { register, reset, handleSubmit, watch, control, formState: { errors }} = useForm<DividendPaymentFormInput>({
+		resolver: zodResolver(DividendPaymentValidationSchema),
+		mode: "onBlur",
+		defaultValues: getFormDefaultValues()
 	});
+
+	useEffect(() => {
+		reset(getFormDefaultValues());
+	}, [reset, getFormDefaultValues, props.context]);
 
 	const securitiesQuantity = watch('securitiesQuantity');
 	const dividend = watch('dividend');
@@ -117,8 +127,7 @@ const DividendPaymentModal: React.FC<ModalProps> = (props: ModalProps) => {
 			return;
 		}
 
-		reset();
-		setSelectedSecurity(null);
+		reset(getFormDefaultValues());
 		setPayment(0);
 		await fetchAvailableDividends();
 	}

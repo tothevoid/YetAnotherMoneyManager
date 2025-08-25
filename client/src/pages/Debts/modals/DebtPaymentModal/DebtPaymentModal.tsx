@@ -1,5 +1,5 @@
 import { Field, Input} from "@chakra-ui/react"
-import React, { RefObject, useEffect, useState } from "react"
+import React, { RefObject, useCallback, useEffect, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
@@ -45,17 +45,25 @@ const DebtPaymentModal: React.FC<Props> = (props: Props) => {
 		})
 	};
 
-	const { register, handleSubmit, control, formState: { errors }} = useForm<DebtPaymentFormInput>({
-		resolver: zodResolver(DebtPaymentValidationSchema),
-		mode: "onBlur",
-		defaultValues: {
+	const getDefaultFormState = useCallback(() => {
+		return {
 			id: props.debtPayment?.id ?? generateGuid(),
 			amount: props.debtPayment?.amount ?? 0,
 			date: props.debtPayment?.date ?? new Date(),
 			debt: props.debtPayment?.debt,
 			targetAccount: props.debtPayment?.targetAccount
 		}
+	}, [props.debtPayment]);
+
+	const { register, handleSubmit, control, formState: { errors }, reset} = useForm<DebtPaymentFormInput>({
+		resolver: zodResolver(DebtPaymentValidationSchema),
+		mode: "onBlur",
+		defaultValues: getDefaultFormState()
 	});
+
+	useEffect(() => {
+		reset(getDefaultFormState());
+	}, [reset, getDefaultFormState, props.debtPayment]);
 
 	const onSubmit = (debt: DebtPaymentFormInput) => {
 		props.onSaved(debt as DebtPaymentEntity);

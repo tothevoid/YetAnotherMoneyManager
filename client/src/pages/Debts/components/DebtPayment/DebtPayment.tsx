@@ -1,33 +1,18 @@
 import { Button, Card, CardBody, Flex, Icon, Stack, Text } from '@chakra-ui/react';
 import { MdDelete, MdEdit } from "react-icons/md";
-import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModal';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
 import { formatDate } from '../../../../shared/utilities/formatters/dateFormatter';
 import { DebtPaymentEntity } from '../../../../models/debts/DebtPaymentEntity';
-import DebtPaymentModal from '../../modals/DebtPaymentModal/DebtPaymentModal';
-import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 
 type Props = {
     debtPayment: DebtPaymentEntity,
-    onEditCallback: (debt: DebtPaymentEntity) => void,
-    onDeleteCallback: (debt: DebtPaymentEntity) => void,
+    onEditClicked: (debt: DebtPaymentEntity) => void,
+    onDeleteClicked: (debt: DebtPaymentEntity) => void,
 }
 
 const DebtPayment = (props: Props) => {
     const { debt, date, amount, targetAccount } = props.debtPayment;
-
-    const confirmModalRef = useRef<BaseModalRef>(null);
-    const editModalRef = useRef<BaseModalRef>(null);
-
-    const onEditClicked = () => {
-        editModalRef.current?.openModal()
-    };
-
-    const onDeleteClicked = () => {
-        confirmModalRef.current?.openModal()
-    };
 
     const { t, i18n } = useTranslation();
 
@@ -46,25 +31,19 @@ const DebtPayment = (props: Props) => {
                         <Text fontWeight={600}>{title}</Text>
                     </Stack>
                     <Flex gap={2} justifyContent="space-between" alignItems="center">
-                        <Button background={'background_secondary'} size={'sm'} onClick={onEditClicked}>
+                        <Button background={'background_secondary'} size={'sm'} onClick={() => props.onEditClicked(props.debtPayment)}>
                             <Icon color="card_action_icon_primary">
                                 <MdEdit/>
                             </Icon>
                         </Button>
-                        <Button background={'background_secondary'} size={'sm'} onClick={onDeleteClicked}>
+                        <Button background={'background_secondary'} size={'sm'} onClick={() => props.onDeleteClicked(props.debtPayment)}>
                             <Icon color="card_action_icon_danger">
                                 <MdDelete/>
                             </Icon>
                         </Button>
                     </Flex>
                 </Flex>
-            </CardBody>	
-            <ConfirmModal onConfirmed={() => props.onDeleteCallback(props.debtPayment)}
-                title={t("debt_payment_modal_title")}
-                message={t("modals_delete_message")}
-                confirmActionName={t("modals_delete_button")}
-                ref={confirmModalRef}/>
-            <DebtPaymentModal debtPayment={props.debtPayment} modalRef={editModalRef} onSaved={props.onEditCallback}/>
+            </CardBody>
         </Card.Root>
 };
 

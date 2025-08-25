@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useState } from 'react'
+import { RefObject, useCallback, useEffect, useState } from 'react'
 import { Field, Input, Flex} from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from "react-hook-form";
@@ -24,7 +24,6 @@ interface State {
 }
 
 const DepositModal: React.FC<ModalProps> = (props: ModalProps) => {
-
 	const [state, setState] = useState<State>({ currencies: [] });
 
 	const initCurrencies = async () => {
@@ -41,10 +40,8 @@ const DepositModal: React.FC<ModalProps> = (props: ModalProps) => {
 		initData();
 	}, []);
 
-	const { register, control, handleSubmit, formState: { errors }} = useForm<DepositFormInput>({
-		resolver: zodResolver(DepositValidationSchema),
-		mode: "onBlur",
-		defaultValues: {
+	const getDefaultFormState = useCallback(() => {
+		return {
 			id: props.deposit?.id ?? generateGuid(),
 			name: props.deposit?.name ?? "",
 			from: props.deposit?.from ?? new Date(),
@@ -54,14 +51,24 @@ const DepositModal: React.FC<ModalProps> = (props: ModalProps) => {
 			estimatedEarn: props.deposit?.estimatedEarn ?? 0,
 			currency: props.deposit?.currency
 		}
+	}, [props.deposit])
+
+	const { register, control, handleSubmit, formState: { errors }, reset} = useForm<DepositFormInput>({
+		resolver: zodResolver(DepositValidationSchema),
+		mode: "onBlur",
+		defaultValues: getDefaultFormState()
 	});
+
+	useEffect(() => {
+		reset(getDefaultFormState())
+	}, [reset, getDefaultFormState, props.deposit])
 
 	const onSubmit = (deposit: DepositFormInput) => {
 		props.onSaved(deposit as DepositEntity);
 		props.modalRef?.current?.closeModal();
 	}
 
-	const {t} = useTranslation()
+	const {t} = useTranslation();
 
 	return <BaseFormModal ref={props.modalRef} title={t("entity_deposit_name_form_title")} submitHandler={handleSubmit(onSubmit)}>
 		<Field.Root invalid={!!errors.name}>

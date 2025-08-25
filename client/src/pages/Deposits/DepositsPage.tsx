@@ -1,18 +1,31 @@
-import { Fragment, useRef } from "react";
+import { Fragment } from "react";
 import { DepositEntity } from "../../models/deposits/DepositEntity";
-import { Button, Flex, SimpleGrid, Checkbox, Box} from "@chakra-ui/react";
+import { Flex, SimpleGrid, Checkbox, Box} from "@chakra-ui/react";
 import DepositStats from "./components/DepositStats/DepositStats";
 import Deposit from "./components/Deposit/Deposit";
-import { MdAdd } from "react-icons/md";
 import DepositsRangeSlider from "./components/DepositsRangeSlider/DepositsRangeSlider";
 import { useTranslation } from "react-i18next";
-import { BaseModalRef } from "../../shared/utilities/modalUtilities";
 import DepositModal from "./modals/DepositModal/DepositModal";
 import { useDeposits } from "./hooks/useDeposits";
 import Placeholder from "../../shared/components/Placeholder/Placeholder";
+import { useEntityModal } from "../../shared/hooks/useEntityModal";
+import { ConfirmModal } from "../../shared/modals/ConfirmModal/ConfirmModal";
+import AddButton from "../../shared/components/AddButton/AddButton";
+import { ActiveEntityMode } from "../../shared/enums/activeEntityMode";
 
 const DepositsPage: React.FC = () => {
 	const { t } = useTranslation();
+
+	const { 
+		activeEntity,
+		modalRef,
+		confirmModalRef,
+		onAddClicked,
+		onEditClicked,
+		onDeleteClicked,
+		mode,
+		onActionEnded
+	} = useEntityModal<DepositEntity>();
 
 	const {
 		deposits,
@@ -23,17 +36,8 @@ const DepositsPage: React.FC = () => {
 		setDepositsQueryParameters
 	} = useDeposits({selectedMinMonths: 0, selectedMaxMonths: 0, onlyActive: true});
 
-	const modalRef = useRef<BaseModalRef>(null);
-
-	const showDepositModal = () => {
-		modalRef.current?.openModal()
-	};
-
 	const getAddButton = () => {
-		return <Button onClick={showDepositModal} background='purple.600' size='md'>
-			<MdAdd/>
-			{t("deposits_list_add_button")}
-		</Button>
+		return <AddButton onClick={onAddClicked} buttonTitle={t("deposits_list_add_button")}></AddButton>
 	}
 
 	const getAddButtonWithDeposits = () => {
@@ -55,6 +59,28 @@ const DepositsPage: React.FC = () => {
 	}
 
 	const { selectedMinMonths, selectedMaxMonths, onlyActive } = depositsQueryParameters;
+
+	const onDepositSaved = async (deposit: DepositEntity) => {
+		if (mode === ActiveEntityMode.Add) {
+			await createDepositEntity(deposit)
+		} else if (mode === ActiveEntityMode.Edit) {
+			await updateDepositEntity(deposit)
+		}
+		onActionEnded();
+	}
+
+	const onDeleteConfirmed = async () => {
+		if (!activeEntity) {
+            throw new Error("Deleted entity is not set")
+        }
+
+        await deleteDepositEntity(activeEntity);
+		onActionEnded();
+    }
+
+	const onCloneClicked = async (deposit: DepositEntity) => {
+        await createDepositEntity(deposit);
+    }
 
 	return <Box paddingTop={5}>
 		{
@@ -80,12 +106,18 @@ const DepositsPage: React.FC = () => {
 			{
 				deposits.map((deposit: DepositEntity) => 
 					<Deposit key={deposit.id} deposit={deposit} 
-						onUpdated={updateDepositEntity} 
-						onCloned={createDepositEntity} 
-						onDeleted={deleteDepositEntity}/>
+						onEditClicked={onEditClicked} 
+						onCloneClicked={onCloneClicked} 
+						onDeleteClicked={onDeleteClicked}/>
 				)
 			}
 		</SimpleGrid>
+		<ConfirmModal onConfirmed={onDeleteConfirmed}
+            title={t("deposit_delete_title")}
+            message={t("modals_delete_message")}
+            confirmActionName={t("modals_delete_button")}
+            ref={confirmModalRef}/>
+        <DepositModal deposit={activeEntity} modalRef={modalRef} onSaved={onDepositSaved}/>
 	</Box>
 }
 

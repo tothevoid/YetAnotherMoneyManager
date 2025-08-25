@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { DepositEntity } from "../../../models/deposits/DepositEntity";
-import { createDeposit, getDeposits } from "../../../api/deposits/depositApi";
+import { createDeposit, deleteDeposit, getDeposits, updateDeposit } from "../../../api/deposits/depositApi";
 
 export interface DepositsQuery {
 	selectedMinMonths: number,
@@ -45,22 +45,27 @@ export const useDeposits = (queryParameters: DepositsQuery) => {
 			return;
 		}
 
-		setDeposits([addedDeposit, ...deposits]);
+		await fetchData();
 	}
 
 	const updateDepositEntity = async (updatedDeposit: DepositEntity) => {
-		const updatedDeposits = deposits.map(deposit => 
-			deposit.id === updatedDeposit.id ?
-				{...updatedDeposit}:
-				deposit
-		);
+		const updated = await updateDeposit(updatedDeposit);
 
-		setDeposits(updatedDeposits);
+		if (!updated) {
+			return;
+		}
+
+		await fetchData();
 	}
 
 	const deleteDepositEntity = async (deletedDeposit: DepositEntity) => {
-		const updatedDeposits = deposits.filter(deposit => deposit.id !== deletedDeposit.id);
+		const deleted = await deleteDeposit(deletedDeposit.id);
 		
+		if (!deleted) {
+			return;
+		}
+
+		const updatedDeposits = deposits.filter(deposit => deposit.id !== deletedDeposit.id);
 		setDeposits(updatedDeposits);
 	}
 

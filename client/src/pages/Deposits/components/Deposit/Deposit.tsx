@@ -3,53 +3,16 @@ import { Card, Flex, Stack, Button, Text, Container, Icon } from "@chakra-ui/rea
 import {  formatNumericDate } from "../../../../shared/utilities/formatters/dateFormatter";
 import { formatMoney } from "../../../../shared/utilities/formatters/moneyFormatter";
 import { DepositEntity } from "../../../../models/deposits/DepositEntity";
-import { useRef } from "react";
-import { ConfirmModal } from "../../../../shared/modals/ConfirmModal/ConfirmModal";
-import { deleteDeposit, updateDeposit } from "../../../../api/deposits/depositApi";
 import { useTranslation } from "react-i18next";
-import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
-import DepositModal from "../../modals/DepositModal/DepositModal";
 
 interface Props {
     deposit: DepositEntity
-    onUpdated: (deposit: DepositEntity) => void,
-    onCloned: (deposit: DepositEntity) => void,
-    onDeleted: (deposit: DepositEntity) => void
+    onEditClicked: (deposit: DepositEntity) => void,
+    onCloneClicked: (deposit: DepositEntity) => void,
+    onDeleteClicked: (deposit: DepositEntity) => void
 }
 
-const Deposit: React.FC<Props> = ({deposit, onUpdated, onCloned, onDeleted}) => {
-    const confirmDeleteModalRef = useRef<BaseModalRef>(null);
-    const editModalRef = useRef<BaseModalRef>(null);
-
-    const showEditDepositModal = () => {
-        editModalRef.current?.openModal()
-    };
-
-    const onDepositSaved = async (updatedDeposit: DepositEntity) => {
-        const isUpdated = await updateDeposit(updatedDeposit);
-        if (!isUpdated) {
-            return;
-        }
-
-        onUpdated(updatedDeposit);
-    }
-
-    const onDeleteClicked = () => {
-        confirmDeleteModalRef.current?.openModal()
-    }
-
-    const onDeletionConfirmed = async () => {
-        const isDeleted = await deleteDeposit(deposit?.id);
-        if (!isDeleted) {
-            return;
-        }
-        onDeleted(deposit);
-    }
-
-    const onCloneClick = async () => {
-        onCloned(deposit);
-    }
-
+const Deposit: React.FC<Props> = ({deposit, onEditClicked, onCloneClicked, onDeleteClicked}) => {
     const { i18n, t } = useTranslation();
 
     const estimatedEarnTitle = deposit.to > new Date() ?
@@ -78,17 +41,17 @@ const Deposit: React.FC<Props> = ({deposit, onUpdated, onCloned, onDeleted}) => 
                         <Text color={"green.500"}>+{formatMoney(deposit?.estimatedEarn ?? 0)}</Text>
                     </Flex>
                     <Flex gap={2} paddingTop={4} justifyContent="end">
-                        <Button background={'background_secondary'} onClick={showEditDepositModal} size={'sm'}>
+                        <Button background={'background_secondary'} onClick={() => onEditClicked(deposit)} size={'sm'}>
                             <Icon color="card_action_icon_primary">
                                 <MdEdit/>
                             </Icon>
                         </Button>
-                        <Button background={'background_secondary'} onClick={onCloneClick} size={'sm'}>
+                        <Button background={'background_secondary'} onClick={() => onCloneClicked(deposit)} size={'sm'}>
                             <Icon color="card_action_icon_primary">
                                 <MdContentCopy/>
                             </Icon>
                         </Button>
-                        <Button background={'background_secondary'} onClick={onDeleteClicked} size={'sm'}>
+                        <Button background={'background_secondary'} onClick={() => onDeleteClicked(deposit)} size={'sm'}>
                             <Icon color="card_action_icon_danger">
                                 <MdDelete/>
                             </Icon>
@@ -97,12 +60,6 @@ const Deposit: React.FC<Props> = ({deposit, onUpdated, onCloned, onDeleted}) => 
                 </Container>
             </Stack>
         </Card.Body>
-        <ConfirmModal onConfirmed={onDeletionConfirmed}
-            title={t("deposit_delete_title")}
-            message={t("modals_delete_message")}
-            confirmActionName={t("modals_delete_button")}
-            ref={confirmDeleteModalRef}/>
-        <DepositModal deposit={deposit} modalRef={editModalRef} onSaved={onDepositSaved}/>
     </Card.Root>
 }
 

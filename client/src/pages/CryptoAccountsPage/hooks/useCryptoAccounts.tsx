@@ -55,7 +55,7 @@ export const useCryptoAccounts = () => {
         }
 
         const updatedCryptoAccounts = cryptoAccounts
-            .filter((cryptoAccount: CryptoAccountEntity) => cryptoAccount.id !== deletedCryptoAccount.id)
+            .filter((cryptoAccount: CryptoAccountEntity) => cryptoAccount.id !== deletedCryptoAccount.id);
         setCryptoAccounts(updatedCryptoAccounts)
     }
 

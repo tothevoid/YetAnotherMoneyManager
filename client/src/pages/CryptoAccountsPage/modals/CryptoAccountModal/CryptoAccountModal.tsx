@@ -1,5 +1,5 @@
 import { Field, Input} from "@chakra-ui/react"
-import React, { RefObject, useEffect, useState } from "react"
+import React, { RefObject, useCallback, useEffect, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
@@ -40,15 +40,23 @@ const CryptoAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
         })
     };
 
-    const { register, handleSubmit, control, formState: { errors }} = useForm<CryptoAccountFormInput>({
-        resolver: zodResolver(CryptoAccountValidationSchema),
-        mode: "onBlur",
-        defaultValues: {
+    const getFormDefaultValues = useCallback(() => {
+        return {
             id: props.cryptoAccount?.id ?? generateGuid(),
             name: props.cryptoAccount?.name ?? "",
             cryptoProvider: props.cryptoAccount?.cryptoProvider
         }
+    }, [props.cryptoAccount]);
+
+    const { register, handleSubmit, control, formState: { errors }, reset} = useForm<CryptoAccountFormInput>({
+        resolver: zodResolver(CryptoAccountValidationSchema),
+        mode: "onBlur",
+        defaultValues: getFormDefaultValues()
     });
+
+    useEffect(() => {
+        reset(getFormDefaultValues());
+    }, [reset, props.cryptoAccount, getFormDefaultValues]);
 
     const onSubmit = (cryptoAccount: CryptoAccountFormInput) => {
         props.onSaved(cryptoAccount as CryptoAccountEntity);

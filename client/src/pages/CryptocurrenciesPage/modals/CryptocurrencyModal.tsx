@@ -1,5 +1,5 @@
 import { Button, Field, Input, Image, Stack, Box} from "@chakra-ui/react"
-import React, { ChangeEvent, Fragment, RefObject, useRef, useState } from "react"
+import React, { ChangeEvent, Fragment, RefObject, useEffect, useRef, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
@@ -25,7 +25,7 @@ const CryptocurrencyModal: React.FC<ModalProps> = (props: ModalProps) => {
     const [icon, setIcon] = useState<File | null>(null);
     const [iconUrl, setIconUrl] = useState<string | null>(defaultIconUrl);
 
-    const { register, handleSubmit, formState: { errors }} = useForm<CryptocurrencyFormInput>({
+    const { register, handleSubmit, formState: { errors }, reset} = useForm<CryptocurrencyFormInput>({
         resolver: zodResolver(CryptocurrencyValidationSchema),
         mode: "onBlur",
         defaultValues: {
@@ -35,6 +35,12 @@ const CryptocurrencyModal: React.FC<ModalProps> = (props: ModalProps) => {
             price: props.cryptocurrency?.price ?? 0
         }
     });
+
+    useEffect(() => {
+        if (props.cryptocurrency) {
+            reset(props.cryptocurrency);
+        }
+    }, [props.cryptocurrency, reset]);
 
     const onSubmit = (cryptocurrency: CryptocurrencyFormInput) => {
         props.onSaved(cryptocurrency as CryptocurrencyEntity, icon);

@@ -1,51 +1,28 @@
 import { Button, Card, Flex, Icon, Stack, Text, Image } from '@chakra-ui/react';
 import { MdDelete, MdEdit } from "react-icons/md";
-import { Fragment, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModal';
+import { Fragment, useEffect, useState } from 'react';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
-import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 import { CryptocurrencyEntity } from '../../../../models/crypto/CryptocurrencyEntity';
 import { FaBitcoin } from "react-icons/fa";
-import CryptocurrencyModal from '../../modals/CryptocurrencyModal';
 import { getIconUrl } from '../../../../api/crypto/cryptocurrencyApi';
 
-type Props = {
+interface Props {
     cryptocurrency: CryptocurrencyEntity,
-    onDeleteCallback: (cryptocurrency: CryptocurrencyEntity) => void,
-    onEditCallback: (cryptocurrency: CryptocurrencyEntity, file: File | null) => void,
-    onReloadSecurities: () => void
+    onEditClicked: (cryptocurrency: CryptocurrencyEntity) => void,
+    onDeletedClicked: (cryptocurrency: CryptocurrencyEntity) => void
 }
 
 const Cryptocurrency = (props: Props) => {
     const { name, symbol, price, iconKey } = props.cryptocurrency;
-
     const [iconDate, setIconDate] = useState(new Date());
 
-    const confirmModalRef = useRef<BaseModalRef>(null);
-    const editModalRef = useRef<BaseModalRef>(null);
-
-    const onEditClicked = () => {
-        editModalRef.current?.openModal()
-    };
-
-    const onDeleteClicked = () => {
-        confirmModalRef.current?.openModal()
-    };
-
-    const { t } = useTranslation();
+    useEffect(() => {
+        setIconDate(new Date());
+    }, [props.cryptocurrency])
 
     const icon = iconKey ?
         <Image h={8} w={8} rounded={16} src={getIconUrl(iconKey, iconDate)}/>:
         <FaBitcoin size={32} color="#aaa" />
-
-    const onEdit = (cryptocurrency: CryptocurrencyEntity, file: File | null) => {
-        props.onEditCallback(cryptocurrency, file);
-
-        if (file) {
-            setIconDate(new Date());
-        }
-    }
 
     return <Fragment>
         <Card.Root backgroundColor="background_primary" borderColor="border_primary" >
@@ -60,12 +37,12 @@ const Cryptocurrency = (props: Props) => {
                         <Text fontWeight={600}>{formatMoneyByCurrencyCulture(price, "USD")}</Text>
                     </Stack>
                     <Flex gap={1}>
-                        <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={onEditClicked}>
+                        <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={() => props.onEditClicked(props.cryptocurrency)}>
                             <Icon color="card_action_icon_primary">
                                 <MdEdit/>
                             </Icon>
                         </Button>
-                        <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={onDeleteClicked}>
+                        <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={() => props.onDeletedClicked(props.cryptocurrency)}>
                             <Icon color="card_action_icon_danger">
                                 <MdDelete/>
                             </Icon>
@@ -74,12 +51,6 @@ const Cryptocurrency = (props: Props) => {
                 </Flex>
             </Card.Body>
         </Card.Root>
-        <ConfirmModal onConfirmed={() => props.onDeleteCallback(props.cryptocurrency)}
-            title={t("security_delete_title")}
-            message={t("modals_delete_message")}
-            confirmActionName={t("modals_delete_button")}
-            ref={confirmModalRef}/>
-        <CryptocurrencyModal cryptocurrency={props.cryptocurrency} modalRef={editModalRef} onSaved={onEdit}/>
     </Fragment>
 };
 

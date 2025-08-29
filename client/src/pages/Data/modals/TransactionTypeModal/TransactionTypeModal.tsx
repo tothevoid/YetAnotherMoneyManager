@@ -38,17 +38,19 @@ const TransactionTypeModal: React.FC<ModalProps> = (props: ModalProps) => {
 		}
 	}, [props.transactionType]);
 
-
 	const onSubmit = (transactionType: TransactionTypeFormInput) => {
-		props.onSaved(transactionType as TransactionTypeEntity, icon);
+		props.onSaved({...transactionType, iconKey: props.transactionType?.iconKey } as TransactionTypeEntity, icon);
 		props.modalRef?.current?.closeModal();
 	}
 
-	const defaultIconUrl = getTransactionTypeIconUrl(props.transactionType?.iconKey);
-
 	const inputRef = useRef<HTMLInputElement | null>(null);
 	const [icon, setIcon] = useState<File | null>(null);
-	const [iconUrl, setIconUrl] = useState<string | null>(defaultIconUrl);
+	const [iconUrl, setIconUrl] = useState<string | null>(null);
+
+	useEffect(() => {
+		const url = getTransactionTypeIconUrl(props.transactionType?.iconKey);
+		setIconUrl(url);
+	}, [props.transactionType]);
 
 	const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
 		const selectedFile = e.target.files?.[0] || null;

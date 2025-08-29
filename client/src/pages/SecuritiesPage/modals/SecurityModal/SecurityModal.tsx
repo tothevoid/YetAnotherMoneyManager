@@ -30,10 +30,8 @@ interface State {
 const SecurityModal: React.FC<ModalProps> = (props: ModalProps) => {
     const inputRef = useRef<HTMLInputElement | null>(null);
 
-    const defaultIconUrl = getIconUrl(props.security?.iconKey);
-
     const [icon, setIcon] = useState<File | null>(null);
-    const [iconUrl, setIconUrl] = useState<string | null>(defaultIconUrl);
+    const [iconUrl, setIconUrl] = useState<string | null>(null);
     const [state, setState] = useState<State>({securityTypes: [], currencies: []})
 
     useEffect(() => {
@@ -42,6 +40,11 @@ const SecurityModal: React.FC<ModalProps> = (props: ModalProps) => {
         }
         initData();
     }, []);
+
+    useEffect(() => {
+        const url = getIconUrl(props.security?.iconKey);
+        setIconUrl(url);
+    }, [props.security]);
 
     const requestData = async () => {
         const securityTypes = await getSecurityTypes();

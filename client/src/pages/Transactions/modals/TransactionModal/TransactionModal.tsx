@@ -5,6 +5,8 @@ import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 import TransactionForm from '../../components/TransactionForm/TransactionForm';
 import { TransactionEntity } from '../../../../models/transactions/TransactionEntity';
 import { Nullable } from '../../../../shared/utilities/nullable';
+import { SetSubmitHandler } from '../NewTransactionModal/NewTransactionModal';
+import { FieldValues, UseFormHandleSubmit } from 'react-hook-form';
 
 interface ModalProps {
 	modalRef: RefObject<BaseModalRef | null>,
@@ -21,19 +23,25 @@ const TransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
 
     const [state, setState] = useState<State>({});
 
-    const setSubmitHandler = (handler: React.FormEventHandler) => {
+    const setSubmitHandler: SetSubmitHandler = async <T extends FieldValues>(submit: UseFormHandleSubmit<T>, handler: (data: T) => Promise<void>) => {
+        const wrappedHandler = async (data: T) => {
+            await handler(data);
+            props.modalRef?.current?.closeModal();
+        }
+
+
         setState((currentState) => {
-            return {...currentState, formHandler: handler}
+            return {...currentState, formHandler: submit(wrappedHandler)}
         })
     }
 
     const onSubmit = (event: React.FormEvent) => {
+        debugger;
         if (!state.formHandler) {
             return;
         }
 
         state.formHandler(event);
-        props.modalRef?.current?.closeModal();
     }
 
     return <BaseFormModal ref={props.modalRef} title={t("entity_transaction_name_form_title")} submitHandler={onSubmit}>

@@ -10,10 +10,11 @@ import { CurrencyTransactionFormInput, CurrencyTransactionValidationSchema } fro
 import { getAccounts } from '../../../../api/accounts/accountApi';
 import { CurrencyTransactionEntity } from '../../../../models/transactions/CurrencyTransactionEntity';
 import { generateGuid } from '../../../../shared/utilities/idUtilities';
+import { SetSubmitHandler } from '../../modals/NewTransactionModal/NewTransactionModal';
 
 interface Props {
     currencyTransaction?: CurrencyTransactionEntity
-    setSubmitHandler: (handler: React.FormEventHandler) => void
+    setSubmitHandler: SetSubmitHandler,
     onCurrencyTransactionSaved: (currencyTransaction: CurrencyTransactionEntity) => Promise<void>
 }
 
@@ -54,9 +55,9 @@ const CurrencyTransactionForm: React.FC<Props> = (props: Props) => {
         })
     };
     
-    const onCurrencyTransactionSaveClick = (currencyTransaction: CurrencyTransactionFormInput) => {
+    const onCurrencyTransactionSaveClick = async (currencyTransaction: CurrencyTransactionFormInput) => {
         const formData = currencyTransaction as CurrencyTransactionEntity;
-        props.onCurrencyTransactionSaved(formData);
+        await props.onCurrencyTransactionSaved(formData);
     };
 
     useEffect(() => {
@@ -67,7 +68,7 @@ const CurrencyTransactionForm: React.FC<Props> = (props: Props) => {
     }, []);
 
    useEffect(() => {
-        props.setSubmitHandler(handleSubmit(onCurrencyTransactionSaveClick));
+        props.setSubmitHandler(handleSubmit, onCurrencyTransactionSaveClick);
     }, [state]);
 
     return <Fragment>

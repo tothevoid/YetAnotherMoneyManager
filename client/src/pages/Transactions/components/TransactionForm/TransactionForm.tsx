@@ -2,7 +2,7 @@ import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import { Field, Input} from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TransactionFormInput, TransactionValidationSchema } from './TransactionValidationSchema';
-import { useForm } from 'react-hook-form';
+import { useForm, } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { getTransactionTypes } from '../../../../api/transactions/transactionTypeApi';
 import { AccountEntity } from '../../../../models/accounts/AccountEntity';
@@ -13,9 +13,10 @@ import DateSelect from '../../../../shared/components/DateSelect/DateSelect';
 import { getAccounts } from '../../../../api/accounts/accountApi';
 import { generateGuid } from '../../../../shared/utilities/idUtilities';
 import { Nullable } from '../../../../shared/utilities/nullable';
+import { SetSubmitHandler } from '../../modals/NewTransactionModal/NewTransactionModal';
 
 interface ModalProps {
-	setSubmitHandler: (handler: React.FormEventHandler) => void,
+	setSubmitHandler: SetSubmitHandler,
 	transaction?: Nullable<TransactionEntity>,
 	onTransactionSaved: (transaction: TransactionEntity) => Promise<void>
 }
@@ -85,7 +86,7 @@ const TransactionForm: React.FC<ModalProps> = (props: ModalProps) => {
 		})
 	};
 
-	const onTransactionSaveClick = (transaction: TransactionFormInput) => {
+	const onTransactionSaveClick = async (transaction: TransactionFormInput) => {
 		const multiplier = transaction.direction.value == TransactionDirection.Income ?
 			1:
 			-1;
@@ -101,7 +102,7 @@ const TransactionForm: React.FC<ModalProps> = (props: ModalProps) => {
 			transactionType: state.transactionTypes.find(transactionType => transactionType.id === transaction.transactionType.id)!,
 		}
 
-		props.onTransactionSaved(transactionEntity);
+		await props.onTransactionSaved(transactionEntity);
 	};
 	
 	useEffect(() => {
@@ -113,7 +114,7 @@ const TransactionForm: React.FC<ModalProps> = (props: ModalProps) => {
 	}, []);
 
 	useEffect(() => {
-		props.setSubmitHandler(handleSubmit(onTransactionSaveClick));
+		props.setSubmitHandler(handleSubmit, onTransactionSaveClick);
 	}, [state]);
 
 	const selectedDirection = watch("direction");

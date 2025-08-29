@@ -11,6 +11,9 @@ import { TransactionEntity } from '../../../../models/transactions/TransactionEn
 import { CurrencyTransactionEntity } from '../../../../models/transactions/CurrencyTransactionEntity';
 import { MdCurrencyExchange } from 'react-icons/md';
 import { GrTransaction } from 'react-icons/gr';
+import { FieldValues, UseFormHandleSubmit } from 'react-hook-form';
+
+export type SetSubmitHandler = <T extends FieldValues>(submit: UseFormHandleSubmit<T>, handler: (data: T) => Promise<void>) => Promise<void>;
 
 interface ModalProps {
     modalRef: RefObject<BaseModalRef | null>
@@ -35,9 +38,15 @@ const NewTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
         })
     };
 
-    const setSubmitHandler = (handler: React.FormEventHandler) => {
+    const setSubmitHandler: SetSubmitHandler = async <T extends FieldValues>(submit: UseFormHandleSubmit<T>, handler: (data: T) => Promise<void>) => {
+        const wrappedHandler = async (data: T) => {
+            await handler(data);
+            props.modalRef?.current?.closeModal();
+        }
+
+
         setState((currentState) => {
-            return {...currentState, activeFormHandler: handler}
+            return {...currentState, activeFormHandler: submit(wrappedHandler)}
         })
     }
     
@@ -48,13 +57,12 @@ const NewTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
         initData();
     }, []);
 
-    const onSubmit = (event: React.FormEvent) => {
+    const onSubmit = async (event: React.FormEvent) => {
         if (!state.activeFormHandler) {
             return;
         }
 
-        state.activeFormHandler(event);
-        props.modalRef?.current?.closeModal();
+        await state.activeFormHandler(event);
     }
 
     return <BaseFormModal ref={props.modalRef} title={t("new_transaction_form_title")} submitHandler={onSubmit}>

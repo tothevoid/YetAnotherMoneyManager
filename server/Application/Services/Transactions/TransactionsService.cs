@@ -64,71 +64,61 @@ namespace MoneyManager.Application.Services.Transactions
             return transaction.Id;
         }
 
-        public async Task<List<UpdateAccountDTO>> Update(TransactionDTO updateTransactionModel)
+        public async Task Update(TransactionDTO transactionToUpdate)
         {
-            var transaction = _mapper.Map<Transaction>(updateTransactionModel);
-            var sourceId = updateTransactionModel?.Account?.Id ?? default;
+            var transaction = _mapper.Map<Transaction>(transactionToUpdate);
+            var sourceId = transactionToUpdate?.Account?.Id ?? default;
             if (sourceId != default)
             {
-                transaction.AccountId = updateTransactionModel.Account.Id;
+                transaction.AccountId = transactionToUpdate.Account.Id;
             }
 
-            //TODO: Fix duplication and make it automatic
-            //var transactionTypeId = transaction?.TransactionType?.Id ?? default;
-            //if (transactionTypeId != default)
-            //{
-            //    transaction.TransactionTypeId = transactionTypeId;
-            //}
-
+            var lastTransaction = await _transactionsRepo.GetById(transactionToUpdate.Id);
+            var lastTransactionDto = _mapper.Map<TransactionDTO>(lastTransaction);
             _transactionsRepo.Update(transaction);
-            var lastTransaction = await _transactionsRepo.GetById(updateTransactionModel.Id);
-            var lastTransactionDTO = _mapper.Map<TransactionDTO>(lastTransaction);
 
-            var accountsToUpdate = await RecalculateAccount(lastTransactionDTO, updateTransactionModel);
+            await RecalculateAccount(lastTransactionDto, transactionToUpdate);
             await _db.Commit();
-            return accountsToUpdate;
         }
 
-        private async Task<List<UpdateAccountDTO>> RecalculateAccount( 
-            TransactionDTO lastTransaction, TransactionDTO updateAccountModel)
+        private async Task RecalculateAccount(TransactionDTO currentTransaction, TransactionDTO updatedTransaction)
         {
-            var accountsToUpdate = new List<UpdateAccountDTO>();
-            var tasks = new List<Task>() { };
-            var lastTransactionId = lastTransaction?.Account?.Id ?? default;
-            var updateAccountModelId = updateAccountModel?.Account?.Id ?? default;
+            var accountsToUpdate = new List<(Guid accountId, decimal delta)>();
+            var lastTransactionId = currentTransaction?.Account?.Id ?? default;
+            var updateAccountModelId = updatedTransaction?.Account?.Id ?? default;
+
             //account deleted from transaction
             if (lastTransactionId != default && updateAccountModelId == default)
             {
-                var difference = lastTransaction.Amount * -1;
-                accountsToUpdate.Add(new UpdateAccountDTO() { AccountId = lastTransactionId, Delta = difference });
+                var difference = currentTransaction.Amount * -1;
+                accountsToUpdate.Add((lastTransactionId, difference));
             }
             //account added to transaction
             else if (lastTransactionId == default && updateAccountModelId != default)
             {
-                accountsToUpdate.Add(new UpdateAccountDTO() { AccountId = updateAccountModelId, Delta = updateAccountModel.Amount });
+                accountsToUpdate.Add((updateAccountModelId,updatedTransaction.Amount));
             }
             //changed account from transaction
             else if (lastTransactionId != default && updateAccountModelId != default &&
-                lastTransaction.Account.Id != updateAccountModel.Account.Id)
+                currentTransaction.Account.Id != updatedTransaction.Account.Id)
             {
-                accountsToUpdate.Add(new UpdateAccountDTO() { AccountId = lastTransactionId, Delta = lastTransaction.Amount * -1 });
-                accountsToUpdate.Add(new UpdateAccountDTO() { AccountId = updateAccountModelId, Delta = updateAccountModel.Amount });
+                accountsToUpdate.Add((lastTransactionId, currentTransaction.Amount * -1));
+                accountsToUpdate.Add((updateAccountModelId, updatedTransaction.Amount));
             }
             //changed money quantity of the same account
             else if (lastTransactionId != default && updateAccountModelId != default &&
-                lastTransaction.Amount != updateAccountModel.Amount)
+                currentTransaction.Amount != updatedTransaction.Amount)
             {
-                var difference = updateAccountModel.Amount - lastTransaction.Amount;
-                accountsToUpdate.Add(new UpdateAccountDTO() { AccountId = updateAccountModelId, Delta = difference });
+                var difference = updatedTransaction.Amount - currentTransaction.Amount;
+                accountsToUpdate.Add((updateAccountModelId, difference));
             }
+
             foreach (var account in accountsToUpdate)
             {
-                var accountEntity = await _accountRepo.GetById(account.AccountId);
-                accountEntity.Balance += account.Delta;
+                var accountEntity = await _accountRepo.GetById(account.accountId);
+                accountEntity.Balance += account.delta;
                 _accountRepo.Update(accountEntity);
             }
-            await Task.WhenAll(tasks);
-            return accountsToUpdate;
         }
 
         public async Task Delete(Guid id)

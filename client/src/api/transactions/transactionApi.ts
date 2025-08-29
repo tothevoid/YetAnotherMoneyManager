@@ -1,6 +1,5 @@
 import config from '../../config' 
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
-import { AccountToUpdate } from '../../models/accounts/accountToUpdate';
 import { createEntity, deleteEntity } from '../basicApi';
 import { TransactionEntity, TransactionEntityRequest, TransactionEntityResponse } from '../../models/transactions/TransactionEntity';
 import { prepareTransaction, prepareTransactionRequest } from './transactionApiMapping';
@@ -22,14 +21,13 @@ export const createTransaction = async (transaction: TransactionEntity): Promise
 		.then(transaction => transaction && prepareTransaction(transaction));
 }
 
-export const updateTransaction = async (modifiedTransaction: TransactionEntity): Promise<AccountToUpdate[]> => {
-	const accountsToUpdate = await fetch(basicUrl, { method: "PATCH", body: JSON.stringify(prepareTransactionRequest(modifiedTransaction)),  
+export const updateTransaction = async (modifiedTransaction: TransactionEntity): Promise<boolean> => {
+	const success = await fetch(basicUrl, { method: "PATCH", body: JSON.stringify(prepareTransactionRequest(modifiedTransaction)),  
 			headers: {"Content-Type": "application/json"}})
 		.then(checkPromiseStatus)
-		.then(result => result.json())
-		.then(result => result as AccountToUpdate[])
+		.then(result => result.status === 200)
 		.catch(logPromiseError)
-	return accountsToUpdate ?? [];
+	return success ?? false;
 }
 
 export const deleteTransaction = async (transactionId: string): Promise<boolean> => {

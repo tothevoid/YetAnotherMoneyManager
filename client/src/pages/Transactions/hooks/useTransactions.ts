@@ -45,9 +45,8 @@ export const useTransactions = (initialParams: TransactionsQuery) => {
 	}
 
 	const updateTransactionEntity = async (updatedTransaction: TransactionEntity) => {
-		const affectedAccounts = await updateTransaction(updatedTransaction);
-	
-		if (!affectedAccounts.length) {
+		const updated = await updateTransaction(updatedTransaction);
+		if (!updated) {
 			return;
 		}
 

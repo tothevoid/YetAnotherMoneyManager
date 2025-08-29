@@ -11,6 +11,6 @@ namespace MoneyManager.Application.Interfaces.Transactions
         Task<IEnumerable<TransactionDTO>> GetAll(int month, int year, bool showSystem);
         Task<Guid> Add(TransactionDTO transaction);
         Task Delete(Guid id);
-        Task<List<UpdateAccountDTO>> Update(TransactionDTO updateAccountModel);
+        Task Update(TransactionDTO transactionToUpdate);
     }
 }

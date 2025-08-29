@@ -45,12 +45,12 @@ const CryptoProvidersTable: React.FC = () => {
 		confirmModalRef.current?.openModal()
 	}
 
-	const onCryptoProviderDeleteConfirmed = () => {
+	const onCryptoProviderDeleteConfirmed = async () => {
 		if (!selectedCryptoProvider) {
 			return;
 		}
 
-		deleteCryptoProviderEntity(selectedCryptoProvider);
+		await deleteCryptoProviderEntity(selectedCryptoProvider);
 		setSelectedCryptoProvider(null);
 	}
 

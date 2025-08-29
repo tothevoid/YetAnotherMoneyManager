@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { BaseModalRef } from "../../utilities/modalUtilities";
 
 interface Props {
-    onConfirmed: () => void
+    onConfirmed: () => Promise<void>
     title: string,
     message: string,
     confirmActionName: string

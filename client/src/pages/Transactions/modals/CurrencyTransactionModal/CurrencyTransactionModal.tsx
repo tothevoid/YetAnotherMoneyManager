@@ -4,6 +4,8 @@ import BaseFormModal from '../../../../shared/modals/BaseFormModal/BaseFormModal
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 import CurrencyTransactionForm from '../../components/CurrencyTransactionForm/CurrencyTransactionForm';
 import { CurrencyTransactionEntity } from '../../../../models/transactions/CurrencyTransactionEntity';
+import { FieldValues, UseFormHandleSubmit } from 'react-hook-form';
+import { SetSubmitHandler } from '../NewTransactionModal/NewTransactionModal';
 
 interface ModalProps {
     modalRef: RefObject<BaseModalRef | null>,
@@ -20,12 +22,18 @@ const CurrencyTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
 
     const [state, setState] = useState<State>({});
 
-    const setSubmitHandler = (handler: React.FormEventHandler) => {
+    const setSubmitHandler: SetSubmitHandler = async <T extends FieldValues>(submit: UseFormHandleSubmit<T>, handler: (data: T) => Promise<void>) => {
+        const wrappedHandler = async (data: T) => {
+            await handler(data);
+            props.modalRef?.current?.closeModal();
+        }
+
+
         setState((currentState) => {
-            return {...currentState, formHandler: handler}
+            return {...currentState, formHandler: submit(wrappedHandler)}
         })
     }
-
+    
     const onSubmit = (event: React.FormEvent) => {
         if (!state.formHandler) {
             return;

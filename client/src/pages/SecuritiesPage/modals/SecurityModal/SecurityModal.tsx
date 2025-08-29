@@ -74,7 +74,11 @@ const SecurityModal: React.FC<ModalProps> = (props: ModalProps) => {
     }, [props.security, reset])
 
     const onSubmit = (security: SecurityFormInput) => {
-        props.onSaved({ ...security, iconKey: props.security?.iconKey } as SecurityEntity, icon);
+        props.onSaved({ ...security, 
+            // TODO: Remove system fields
+            iconKey: props.security?.iconKey, 
+            priceFetchedAt: props.security?.priceFetchedAt, 
+            actualPrice: props.security?.actualPrice } as SecurityEntity, icon);
         props.modalRef?.current?.closeModal();
     }
 

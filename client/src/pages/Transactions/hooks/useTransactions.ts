@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { TransactionEntity } from "../../../models/transactions/TransactionEntity";
-import { createTransaction, getTransactions, updateTransaction } from "../../../api/transactions/transactionApi";
+import { createTransaction, getTransactions, updateTransaction, deleteTransaction } from "../../../api/transactions/transactionApi";
 import { insertByPredicate, reorderByPredicate } from "../../../shared/utilities/arrayUtilities";
 
 export interface TransactionsQuery {
@@ -73,6 +73,8 @@ export const useTransactions = (initialParams: TransactionsQuery) => {
 		if (!deletedTransaction) {
 			return;
 		}
+		
+		await deleteTransaction(deletedTransaction.id);
 
 		deleteTransactionFromCollection(deletedTransaction);
 	}

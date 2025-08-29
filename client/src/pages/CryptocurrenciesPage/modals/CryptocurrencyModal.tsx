@@ -20,10 +20,8 @@ interface ModalProps {
 const CryptocurrencyModal: React.FC<ModalProps> = (props: ModalProps) => {
     const inputRef = useRef<HTMLInputElement | null>(null);
 
-    const defaultIconUrl = getIconUrl(props.cryptocurrency?.iconKey);
-
     const [icon, setIcon] = useState<File | null>(null);
-    const [iconUrl, setIconUrl] = useState<string | null>(defaultIconUrl);
+    const [iconUrl, setIconUrl] = useState<string | null>(null);
 
     const { register, handleSubmit, formState: { errors }, reset} = useForm<CryptocurrencyFormInput>({
         resolver: zodResolver(CryptocurrencyValidationSchema),
@@ -42,8 +40,13 @@ const CryptocurrencyModal: React.FC<ModalProps> = (props: ModalProps) => {
         }
     }, [props.cryptocurrency, reset]);
 
+    useEffect(() => {
+       const url = getIconUrl(props.cryptocurrency?.iconKey);
+       setIconUrl(url);
+    }, [props.cryptocurrency]);
+
     const onSubmit = (cryptocurrency: CryptocurrencyFormInput) => {
-        props.onSaved(cryptocurrency as CryptocurrencyEntity, icon);
+        props.onSaved({ ...cryptocurrency, iconKey: props.cryptocurrency?.iconKey } as CryptocurrencyEntity, icon);
         props.modalRef?.current?.closeModal();
     }
 

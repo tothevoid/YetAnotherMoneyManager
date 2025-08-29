@@ -1,6 +1,6 @@
 import config from '../../config' 
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
-import { createEntity, deleteEntity } from '../basicApi';
+import { createAndGetFullEntity, deleteEntity } from '../basicApi';
 import { TransactionEntity, TransactionEntityRequest, TransactionEntityResponse } from '../../models/transactions/TransactionEntity';
 import { prepareTransaction, prepareTransactionRequest } from './transactionApiMapping';
 
@@ -17,8 +17,8 @@ export const getTransactions = async (month: number, year: number, showSystem: b
 };
 
 export const createTransaction = async (transaction: TransactionEntity): Promise<TransactionEntity | void> => {
-	return await createEntity<TransactionEntityRequest, TransactionEntityResponse>(basicUrl, prepareTransactionRequest(transaction))
-		.then(transaction => transaction && prepareTransaction(transaction));
+	return await createAndGetFullEntity<TransactionEntityRequest, TransactionEntityResponse>(basicUrl, prepareTransactionRequest(transaction))
+		.then(createdTransaction => createdTransaction && prepareTransaction(createdTransaction));
 }
 
 export const updateTransaction = async (modifiedTransaction: TransactionEntity): Promise<boolean> => {

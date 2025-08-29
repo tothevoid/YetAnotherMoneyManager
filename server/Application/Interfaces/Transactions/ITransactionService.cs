@@ -9,7 +9,7 @@ namespace MoneyManager.Application.Interfaces.Transactions
     {
         Task<TransactionDTO> GetById(Guid id);
         Task<IEnumerable<TransactionDTO>> GetAll(int month, int year, bool showSystem);
-        Task<Guid> Add(TransactionDTO transaction);
+        Task<TransactionDTO> Add(TransactionDTO transaction);
         Task Delete(Guid id);
         Task Update(TransactionDTO transactionToUpdate);
     }

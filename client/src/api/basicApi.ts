@@ -25,15 +25,11 @@ export const getAllEntitiesByConfig = async <TInput, TOutput> (basicUrl: string,
 };
 
 export const createEntity = async<TRequest, TResponse> (basicUrl: string, addedEntity: TRequest): Promise<TResponse | void> => {
-    const newEntity = await fetch(basicUrl, { method: "PUT", body: convertRecordToJson(addedEntity),
-        headers: {"Content-Type": "application/json"}})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
-        .then(id => {
-            return {...addedEntity, id} as TResponse;
-        })
-        .catch(logPromiseError);
-    return newEntity;
+    return sendCreateRequest(basicUrl, addedEntity, (id) => {return {...addedEntity, id} as TResponse})
+}
+
+export const createAndGetFullEntity = async<TRequest, TResponse> (basicUrl: string, addedEntity: TRequest): Promise<TResponse | void> => {
+    return sendCreateRequest(basicUrl, addedEntity, (createdEntity) => {return {...createdEntity} as TResponse})
 }
 
 export const createEntityWithIcon = async<TRequest, TResponse>(basicUrl: string, addedEntity: TRequest, 
@@ -101,4 +97,15 @@ const generateForm = <T>(entity: T, entityField: string, iconField: string, file
         formData.append(iconField, file);
     }
     return formData;
+}
+
+export const sendCreateRequest = async<TRequest, TResponse> (basicUrl: string, addedEntity: TRequest, 
+    responseHandler: (response: TResponse) => TResponse): Promise<TResponse | void> => {
+    const newEntity = await fetch(basicUrl, { method: "PUT", body: convertRecordToJson(addedEntity),
+        headers: {"Content-Type": "application/json"}})
+        .then(checkPromiseStatus)
+        .then((response: Response) => response.json())
+        .then(responseHandler)
+        .catch(logPromiseError);
+    return newEntity;
 }

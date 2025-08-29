@@ -43,7 +43,7 @@ namespace MoneyManager.Application.Services.Transactions
             return _mapper.Map<IEnumerable<TransactionDTO>>(transactions.OrderByDescending(x => x.Date));
         }
 
-        public async Task<Guid> Add(TransactionDTO transactionDTO)
+        public async Task<TransactionDTO> Add(TransactionDTO transactionDTO)
         {
             var transaction = _mapper.Map<Transaction>(transactionDTO);
             transaction.Id = Guid.NewGuid();
@@ -61,7 +61,9 @@ namespace MoneyManager.Application.Services.Transactions
             tasks.Add(_transactionsRepo.Add(transaction));
             await Task.WhenAll(tasks);
             await _db.Commit();
-            return transaction.Id;
+
+            var newTransaction = await _transactionsRepo.GetById(transaction.Id, GetFullHierarchyColumns, true);
+            return _mapper.Map<TransactionDTO>(newTransaction);
         }
 
         public async Task Update(TransactionDTO transactionToUpdate)

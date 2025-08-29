@@ -39,7 +39,7 @@ export const useTransactions = (initialParams: TransactionsQuery) => {
 			return;
 		}
 
-		const newTransactions = insertByPredicate(transactions, createdTransaction, 
+		const newTransactions = insertByPredicate([...transactions], createdTransaction, 
 			(transactionElm: TransactionEntity) => (transactionElm.date <= createdTransaction.date));
 		setTransactions(newTransactions);
 	}

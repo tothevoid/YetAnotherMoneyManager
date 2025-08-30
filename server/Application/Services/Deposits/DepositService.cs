@@ -9,6 +9,7 @@ using MoneyManager.Application.DTO.Deposits;
 using MoneyManager.Application.Interfaces.Deposits;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using MoneyManager.Infrastructure.Entities.Deposits;
+using MoneyManager.Infrastructure.Queries;
 
 namespace MoneyManager.Application.Services.Deposits
 {
@@ -27,8 +28,8 @@ namespace MoneyManager.Application.Services.Deposits
 
         public async Task<IEnumerable<DepositDTO>> GetAll(int monthsFrom, int monthsTo, bool onlyActive)
         {
-            var deposits = await GetDeposits(monthsFrom, monthsTo, onlyActive);
-            return _mapper.Map<IEnumerable<DepositDTO>>(deposits.OrderByDescending(x => x.From));
+            var deposits = await GetDeposits(monthsFrom, monthsTo, onlyActive, x => x.From, true);
+            return _mapper.Map<IEnumerable<DepositDTO>>(deposits);
         }
 
         public async Task<IEnumerable<DepositDTO>> GetAllActive()
@@ -69,10 +70,7 @@ namespace MoneyManager.Application.Services.Deposits
 
         public async Task<DepositMonthSummaryDTO> GetSummary(int monthsFrom, int monthsTo, bool onlyActive)
         {
-            //TODO: IEnumerable order => IQueryable order
-            //TODO: sort in db
-            var deposits = (await GetDeposits(monthsFrom, monthsTo, onlyActive))
-                .OrderBy(deposit => deposit.From).ToList();
+            var deposits = (await GetDeposits(monthsFrom, monthsTo, onlyActive, deposit => deposit.From)).ToList();
             var dates = new Dictionary<DateOnly, List<Payment>>();
 
             if (!deposits.Any())
@@ -148,7 +146,8 @@ namespace MoneyManager.Application.Services.Deposits
             return new DepositsRangeDTO() { From = rangeStart, To = rangeEnd };
         }
 
-        private async Task<IEnumerable<Deposit>> GetDeposits(int monthsFrom, int monthsTo, bool onlyActive)
+        private async Task<IEnumerable<Deposit>> GetDeposits(int monthsFrom, int monthsTo, bool onlyActive, 
+            Expression<Func<Deposit, object>> orderBy, bool isDescending = false)
         {
             int minYear = (monthsFrom - 1) / 12;
             int minMonth = (monthsFrom - 1) % 12 + 1;
@@ -165,7 +164,13 @@ namespace MoneyManager.Application.Services.Deposits
                 (deposit) => deposit.To >= rangeMin && deposit.From <= rangeMax && deposit.To >= currentDate:
                 (deposit) => deposit.To >= rangeMin && deposit.From <= rangeMax;
 
-            return await _depositRepo.GetAll(filter, GetFullHierarchyColumns);
+            var complexQuery = new ComplexQueryBuilder<Deposit>()
+                .AddFilter(filter)
+                .AddJoins(GetFullHierarchyColumns)
+                .AddOrder(orderBy, isDescending)
+                .DisableTracking();
+
+            return await _depositRepo.GetAll(complexQuery.GetQuery());
         }
 
         private decimal CalculateProfitInRange(DateOnly from, DateOnly to, int totalDays, decimal estimatedEarn)

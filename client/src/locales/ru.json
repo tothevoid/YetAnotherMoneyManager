@@ -211,6 +211,7 @@
     "security_page_tabs_transactions": "Транзакции",
     "security_page_tabs_dividends": "Дивиденды",
     "security_page_stats_securities": "Приобретено",
+    "security_page_stats_actual_price": "Текущая цена",
     "security_page_stats_transactions_min": "Минимальная транзакция",
     "security_page_stats_transactions_max": "Максимальная транзакция",
     "security_page_stats_transactions_avg": "Среднее по транзакциям",
@@ -250,6 +251,11 @@
 
     "crypto_accounts_page_add": "Добавить счёт",
     "crypto_accounts_page_no_crypto_accounts": "Нет криптосчетов",
+
+    "cryptocurrency_form_title": "Криптовалюты",
+    "cryptocurrency_form_symbol": "Тикер",
+    "cryptocurrency_form_name": "Название",
+    "cryptocurrency_form_price": "Цена",
 
     "cryptocurrencies_page_no_cryptocurrencies": "Нет криптовалют"
 }

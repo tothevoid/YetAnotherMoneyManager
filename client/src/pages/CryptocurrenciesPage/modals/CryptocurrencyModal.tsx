@@ -64,7 +64,7 @@ const CryptocurrencyModal: React.FC<ModalProps> = (props: ModalProps) => {
 
     const {t} = useTranslation()
 
-    return <BaseFormModal ref={props.modalRef} title={t("entity_security_from_title")} submitHandler={handleSubmit(onSubmit)}>
+    return <BaseFormModal ref={props.modalRef} title={t("cryptocurrency_form_title")} submitHandler={handleSubmit(onSubmit)}>
         <Stack marginBlock={2} gapX={4} alignItems={"center"} direction={"row"}>
             <Box justifyContent={"center"} role="group" position="relative" boxSize="50px">
                 <Input type="file" accept="image/*" onChange={handleFileChange} ref={inputRef} display="none" />
@@ -95,18 +95,18 @@ const CryptocurrencyModal: React.FC<ModalProps> = (props: ModalProps) => {
                 </Button>
             </Box>
             <Field.Root invalid={!!errors.symbol}>
-                <Field.Label>{t("entity_security_ticker")}</Field.Label>
+                <Field.Label>{t("cryptocurrency_form_symbol")}</Field.Label>
                 <Input {...register("symbol")} autoComplete="off" placeholder='BTC' />
                 <Field.ErrorText>{errors.symbol?.message}</Field.ErrorText>
             </Field.Root>
         </Stack>
         <Field.Root invalid={!!errors.name}>
-            <Field.Label>{t("entity_security_name")}</Field.Label>
+            <Field.Label>{t("cryptocurrency_form_name")}</Field.Label>
             <Input {...register("name")} autoComplete="off" placeholder='Bitcoin' />
             <Field.ErrorText>{errors.name?.message}</Field.ErrorText>
         </Field.Root>
         <Field.Root invalid={!!errors.price} mt={4}>
-            <Field.Label>{t("entity_deposit_percentage")}</Field.Label>
+            <Field.Label>{t("cryptocurrency_form_price")}</Field.Label>
             <Input {...register("price", { valueAsNumber: true })} type="number" step="0.01" placeholder='10' />
             <Field.ErrorText>{errors.price?.message}</Field.ErrorText>
         </Field.Root>

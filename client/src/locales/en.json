@@ -210,6 +210,7 @@
     "security_page_tabs_transactions": "Transactions",
     "security_page_tabs_dividends": "Dividends",
     "security_page_stats_securities": "Purchased",
+    "security_page_stats_actual_price": "Actual price",
     "security_page_stats_transactions_min": "Minimal transactions",
     "security_page_stats_transactions_max": "Maximal transactions",
     "security_page_stats_transactions_avg": "Average transactions",
@@ -249,6 +250,11 @@
 
     "crypto_accounts_page_add": "Add account",
     "crypto_accounts_page_no_crypto_accounts": "No crypto accounts",
+
+    "cryptocurrency_form_title": "Cryptocurrency",
+    "cryptocurrency_form_symbol": "Symbol",
+    "cryptocurrency_form_name": "Name",
+    "cryptocurrency_form_price": "Price",
 
     "cryptocurrencies_page_no_cryptocurrencies": "No cryptocurrencies"
 }

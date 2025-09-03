@@ -9,6 +9,8 @@ namespace MoneyManager.Application.Interfaces.Brokers
     {
         Task<IEnumerable<DividendPaymentDto>> GetAll(Guid brokerAccountId);
 
+        Task<decimal> GetEarningsByBrokerAccount(Guid brokerAccountId);
+
         Task<Guid> Add(DividendPaymentDto dividendPaymentDto);
 
         Task Update(DividendPaymentDto dividendPaymentDto);

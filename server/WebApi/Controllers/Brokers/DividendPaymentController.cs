@@ -30,6 +30,12 @@ namespace MoneyManager.WebApi.Controllers.Brokers
             return _mapper.Map<IEnumerable<DividendPaymentModel>>(dividendPayments);
         }
 
+        [HttpGet(nameof(GetEarningsByBrokerAccount))]
+        public async Task<decimal> GetEarningsByBrokerAccount([FromQuery] Guid brokerAccountId)
+        {
+            return await _dividendPaymentService.GetEarningsByBrokerAccount(brokerAccountId);
+        }
+
         [HttpPut]
         public async Task<Guid> Add(DividendPaymentModel dividendPayment)
         {

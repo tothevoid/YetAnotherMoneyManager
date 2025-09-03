@@ -233,6 +233,10 @@
     "broker_account_page_transactions_tab": "Транзакции",
     "broker_account_page_dividends_tab": "Дивиденды",
     "broker_account_page_add_dividend_payment_button": "Добавить выплату",
+    "broker_account_page_total_profit_and_loss": "Общий P&L",
+    "broker_account_page_dividends_earnings": "Доходы дивидендов",
+    "broker_account_page_securities_profit_and_loss": "P&L по ценным бумагам",
+
 
     "debts_page_only_active": "Только активные",
     "debts_page_add_debt": "Добавить долг",

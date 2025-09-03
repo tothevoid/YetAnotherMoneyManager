@@ -1,4 +1,7 @@
-export const calculateDiff = (currentValue: number, initialValue: number) => {
+import { formatMoneyByCurrencyCulture } from "./formatters/moneyFormatter";
+import { Nullable } from "./nullable";
+
+export const calculateDiff = (currentValue: number, initialValue: number, currency: Nullable<string> = null) => {
     const profitAndLoss = currentValue - initialValue;
     const profitAndLossPercentage = initialValue ? 
         profitAndLoss / initialValue * 100:
@@ -8,5 +11,9 @@ export const calculateDiff = (currentValue: number, initialValue: number) => {
         "green.600":
         "red.600";
 
-    return {profitAndLoss, profitAndLossPercentage, color}
+    const formattedProfitAndLoss = currency ?
+        formatMoneyByCurrencyCulture(profitAndLoss, currency):
+        profitAndLoss.toFixed(2)
+
+    return {profitAndLoss: formattedProfitAndLoss, profitAndLossPercentage: profitAndLossPercentage.toFixed(2), color}
 }

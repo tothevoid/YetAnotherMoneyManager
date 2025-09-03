@@ -40,6 +40,13 @@ namespace MoneyManager.Application.Services.Brokers
             return _mapper.Map<IEnumerable<DividendPaymentDto>>(dividends);
         }
 
+        public async Task<decimal> GetEarningsByBrokerAccount(Guid brokerAccountId)
+        {
+            return await _dividendPaymentRepo
+                .GetSum(dividendPayment => dividendPayment.SecuritiesQuantity * dividendPayment.Dividend.Amount - dividendPayment.Tax,
+                    dividendPayment => dividendPayment.BrokerAccountId == brokerAccountId);
+        }
+
         public async Task<Guid> Add(DividendPaymentDto dividendPaymentDto)
         {
             var dividendPayment = _mapper.Map<DividendPayment>(dividendPaymentDto);

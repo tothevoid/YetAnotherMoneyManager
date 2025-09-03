@@ -16,6 +16,13 @@ export const getDividendPaymentsByBrokerAccount = async (brokerAccountId: string
     return dividendPayments ?? [];
 };
 
+export const getEarningsByBrokerAccount = async (brokerAccountId: string): Promise<number> => {
+    return await fetch(`${basicUrl}/GetEarningsByBrokerAccount?brokerAccountId=${brokerAccountId}`, {method: "GET"})
+        .then(checkPromiseStatus)
+        .then((response: Response) => response.json())
+        .catch(logPromiseError);
+};
+
 export const createDividendPayment = async (modifiedDividendPayment: DividendPaymentEntity): Promise<void> => {
     await createEntity<DividendPaymentEntityRequest, DividendPaymentEntityResponse>(basicUrl, prepareDividendPaymentRequest(modifiedDividendPayment))
 }

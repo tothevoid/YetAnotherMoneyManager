@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { BrokerAccountEntity } from "../../models/brokers/BrokerAccountEntity";
 import { getBrokerAccountById } from "../../api/brokers/brokerAccountApi";
-import { Span, Stack, Tabs, Text } from "@chakra-ui/react";
+import { Stack, Tabs, Text } from "@chakra-ui/react";
 import { formatMoneyByCurrencyCulture } from "../../shared/utilities/formatters/moneyFormatter";
 import { calculateDiff } from "../../shared/utilities/numericDiffsUtilities";
 import { pullBrokerAccountQuotations } from "../../api/brokers/brokerAccountSecurityApi";
@@ -14,6 +14,7 @@ import RefreshButton from "../../shared/components/RefreshButton/RefreshButton";
 import { GrTransaction } from "react-icons/gr";
 import { PiCoinsLight } from "react-icons/pi";
 import DividendPaymentsList from "./components/DividendPaymentsList/DividendPaymentsList";
+import { getEarningsByBrokerAccount } from "../../api/brokers/dividendPaymentApi";
 
 interface State {
     brokerAccount: BrokerAccountEntity | null,
@@ -26,7 +27,9 @@ const BrokerAccountPage: React.FC = () => {
 
     const { brokerAccountId } = useParams(); // Получаем текущий таб из URL
 
-    const [state, setState] = useState<State>({ brokerAccount: null, isReloading: false })
+    const [state, setState] = useState<State>({ brokerAccount: null, isReloading: false });
+
+    const [incomes, setIncomes] = useState<number>(0);
 
     const onQuotesRecalculated = async () => {
         await onDataReloaded();
@@ -50,8 +53,27 @@ const BrokerAccountPage: React.FC = () => {
     useSignalR(onQuotesRecalculated);
 
     useEffect(() => {
-        fetchBrokerAccount();
+        const getData = async () => {
+            await fetchBrokerAccount();
+        }
+
+        getData();
     }, []);
+
+    useEffect(() => {
+        if (!state.brokerAccount) {
+            return;
+        }
+
+        const account = state.brokerAccount;
+
+        const getData = async () => {
+            const brokerAccountIncomes = await getEarningsByBrokerAccount(account.id);
+            setIncomes(brokerAccountIncomes);
+        }
+
+        getData();
+    }, [state.brokerAccount]);
 
     const onDataReloaded = useCallback(async () => {
         await fetchBrokerAccount();
@@ -76,7 +98,12 @@ const BrokerAccountPage: React.FC = () => {
         formatMoneyByCurrencyCulture(currentValue, state.brokerAccount?.currency.name):
         "";
 
-    const {profitAndLoss, profitAndLossPercentage, color} = calculateDiff(currentValue, initialValue);
+    const dividendsLabel = incomes ?
+        formatMoneyByCurrencyCulture(incomes, state.brokerAccount?.currency.name):
+        "";
+
+    const {profitAndLoss, profitAndLossPercentage, color} = calculateDiff(currentValue, initialValue, state.brokerAccount?.currency.name);
+    const profitAndLossWithDividends = calculateDiff(currentValue + incomes, initialValue, state.brokerAccount?.currency.name);
 
     if (!state.brokerAccount) {
         return <Fragment/>
@@ -87,10 +114,13 @@ const BrokerAccountPage: React.FC = () => {
     return <Fragment>
         <Stack alignItems={"end"} gapX={2} direction={"row"} color="text_primary">
             <Text fontSize="3xl" fontWeight={900}> {state.brokerAccount?.name}: </Text>
-            <Text fontSize="3xl" fontWeight={900}>
-                {currentValueLabel} (<Span color={color}>{profitAndLoss.toFixed(2)} | {profitAndLossPercentage.toFixed(2)}%</Span>)
-            </Text>
+            <Text fontSize="3xl" fontWeight={900}> {currentValueLabel}</Text>
             <RefreshButton transparent isRefreshing={state.isReloading} onClick={pullQuotations}/>
+        </Stack>
+        <Stack direction={"row"} color="text_primary">
+            <Text backgroundColor="background_primary" borderColor="border_primary" color={color} textAlign={'center'} minW={150} rounded={10} padding={2} background={'black.600'}>{t("broker_account_page_securities_profit_and_loss")}: {profitAndLoss} | {profitAndLossPercentage}%</Text>
+            <Text backgroundColor="background_primary" borderColor="border_primary" textAlign={'center'} minW={150} rounded={10} padding={2}>{t("broker_account_page_dividends_earnings")}: {dividendsLabel}</Text>
+            <Text backgroundColor="background_primary" borderColor="border_primary" color={profitAndLossWithDividends.color} textAlign={'center'} minW={150} rounded={10} padding={2}>{t("broker_account_page_total_profit_and_loss")}: {profitAndLossWithDividends.profitAndLoss}  | {profitAndLossWithDividends.profitAndLossPercentage}%</Text>
         </Stack>
         <BrokerAccountSecuritiesList ref={securitiesRef} brokerAccount={state.brokerAccount}/>
         <Tabs.Root variant="enclosed" defaultValue="transactions">

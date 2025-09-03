@@ -30,6 +30,10 @@ export const formatMonthYear = (month: number, year: number) => {
 	return `${month.toString().padStart(2, "0")}-${year}`
 }
 
+export const formatMonthYearByDate = (date: Date) => {
+	return formatMonthYear(date.getMonth() + 1, date.getFullYear())
+}
+
 export const formatMonth = (month: number, format: i18n): string => {
 	const date = new Date();
 	date.setMonth(month - 1);

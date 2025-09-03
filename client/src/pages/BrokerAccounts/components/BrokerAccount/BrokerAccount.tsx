@@ -16,7 +16,7 @@ const BrokerAccount = (props: Props) => {
 
 	const accountLink = `../broker_account/${id}`;
 
-	const { profitAndLoss, profitAndLossPercentage, color } = calculateDiff(currentValue, initialValue);
+	const { profitAndLoss, profitAndLossPercentage, color } = calculateDiff(currentValue, initialValue, currency.name);
 
 	return <Fragment>
 		<Card.Root backgroundColor="background_primary" borderColor="border_primary" >
@@ -28,7 +28,7 @@ const BrokerAccount = (props: Props) => {
 						<Text fontWeight={600}>{type.name}</Text>
 						<Stack gapX={1} direction="row">
 							<Span>{formatMoneyByCurrencyCulture(currentValue, currency.name)}</Span>
-							<Span color={color}>({profitAndLoss.toFixed(2)} | {profitAndLossPercentage.toFixed(2)})</Span>
+							<Span color={color}>({profitAndLoss} | {profitAndLossPercentage})</Span>
 						</Stack>
 					</Stack>
 					<Flex gap={1}>

@@ -143,7 +143,7 @@ namespace MoneyManager.Application.Services.Securities
 
         private async Task GenerateBrokerAccountSecurity(SecurityTransactionDTO securityTransaction)
         {
-            var price = securityTransaction.Price * securityTransaction.Quantity;
+            var price = securityTransaction.GetTotalPrice;
             var brokerAccountSecurity = new BrokerAccountSecurity()
             {
                 SecurityId = securityTransaction.SecurityId,
@@ -161,12 +161,12 @@ namespace MoneyManager.Application.Services.Securities
             var brokerAccountSecurity = await FindExistingBrokerAccountSecurity(securityTransaction);
             if (brokerAccountSecurity != null)
             {
-                var price = securityTransaction.Quantity * securityTransaction.Price;
+                var totalPrice = securityTransaction.GetTotalPrice;
                 brokerAccountSecurity.Quantity += securityTransaction.Quantity;
-                brokerAccountSecurity.Price += securityTransaction.Quantity * securityTransaction.Price;
+                brokerAccountSecurity.Price += totalPrice;
                 _brokerAccountSecurityRepo.Update(brokerAccountSecurity);
 
-                await ActualizeBrokerAccountCurrencyValue(brokerAccountSecurity.BrokerAccountId, -1 * price);
+                await ActualizeBrokerAccountCurrencyValue(brokerAccountSecurity.BrokerAccountId, -1 * totalPrice);
             }
             else
             {
@@ -191,21 +191,24 @@ namespace MoneyManager.Application.Services.Securities
             SecurityTransactionDTO modifiedSecurityTransaction)
         {
             var committedSecurityTransaction = await _securityTransactionRepo.GetById(modifiedSecurityTransaction.Id);
+            var committedSecurityTransactionDto = _mapper.Map<SecurityTransactionDTO>(committedSecurityTransaction);
+
             var quantityDiff = modifiedSecurityTransaction.Quantity - committedSecurityTransaction.Quantity;
 
-            if (quantityDiff == 0 &&
-                committedSecurityTransaction.Price == modifiedSecurityTransaction.Quantity)
+            var totalCommittedPrice = committedSecurityTransactionDto.GetTotalPrice;
+            var totalModifiedPrice = modifiedSecurityTransaction.GetTotalPrice;
+
+            if (quantityDiff == 0 && totalCommittedPrice == totalModifiedPrice)
             {
                 return;
             }
 
             if (quantityDiff != 0)
             {
-                brokerAccountSecurity.Quantity += modifiedSecurityTransaction.Quantity - committedSecurityTransaction.Quantity;
+                brokerAccountSecurity.Quantity += modifiedSecurityTransaction.Quantity - committedSecurityTransactionDto.Quantity;
             }
 
-            var priceDiff = modifiedSecurityTransaction.Quantity * modifiedSecurityTransaction.Price -
-                                   committedSecurityTransaction.Quantity * committedSecurityTransaction.Price;
+            var priceDiff = totalModifiedPrice - totalCommittedPrice;
 
             brokerAccountSecurity.Price += priceDiff;
 
@@ -231,7 +234,7 @@ namespace MoneyManager.Application.Services.Securities
                 return;
             }
 
-            var price = securityTransaction.Quantity * securityTransaction.Price;
+            var price = securityTransactionDto.GetTotalPrice;
 
             if (brokerAccountSecurity.Quantity == securityTransaction.Quantity)
             {

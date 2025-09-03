@@ -17,6 +17,5 @@ namespace MoneyManager.Infrastructure.Entities.Brokers
         public decimal Price { get; set; }
 
         public int Quantity { get; set; }
-
     }
 }

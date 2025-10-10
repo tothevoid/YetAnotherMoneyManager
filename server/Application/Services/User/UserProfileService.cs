@@ -7,6 +7,7 @@ using MoneyManager.Application.Interfaces.User;
 using MoneyManager.Infrastructure.Entities.User;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.Interfaces.Currencies;
+using MoneyManager.Application.Services.Currencies;
 
 namespace MoneyManager.Application.Services.User
 {
@@ -43,7 +44,8 @@ namespace MoneyManager.Application.Services.User
 
             if (currencyChanged)
             {
-                await _currencyService.SyncRates(userProfileDto.Currency);
+                var currency = await _currencyService.GetById(userProfileDto.CurrencyId);
+                await _currencyService.SyncRates(currency);
             }
         }
 

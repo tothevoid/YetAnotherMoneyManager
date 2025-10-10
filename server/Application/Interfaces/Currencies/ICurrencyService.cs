@@ -9,6 +9,7 @@ namespace MoneyManager.Application.Interfaces.Currencies
     {
         Task SyncRates(CurrencyDTO mainCurrency);
         Task<IEnumerable<CurrencyDTO>> GetAll();
+        Task<CurrencyDTO> GetById(Guid id);
         Task<Guid> Add(CurrencyDTO currency);
         Task Update(CurrencyDTO currency);
         Task Delete(Guid id);

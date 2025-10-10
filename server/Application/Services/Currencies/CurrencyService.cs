@@ -35,6 +35,12 @@ namespace MoneyManager.Application.Services.Currencies
             return _mapper.Map<IEnumerable<CurrencyDTO>>(transactions);
         }
 
+        public async Task<CurrencyDTO> GetById(Guid id)
+        {
+            var transactions = await _currencyRepo.GetById(id);
+            return _mapper.Map<CurrencyDTO>(transactions);
+        }
+
         public async Task SyncRates(CurrencyDTO mainCurrency)
         {
             var currencies = (await _currencyRepo.GetAll(disableTracking: false)).ToList();

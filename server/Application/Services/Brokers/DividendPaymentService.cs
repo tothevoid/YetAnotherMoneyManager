@@ -10,6 +10,7 @@ using MoneyManager.Application.Queries.Brokers;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Infrastructure.Interfaces.Database;
+using MoneyManager.Infrastructure.Queries;
 
 namespace MoneyManager.Application.Services.Brokers
 {
@@ -33,9 +34,14 @@ namespace MoneyManager.Application.Services.Brokers
 
         public async Task<IEnumerable<DividendPaymentDto>> GetAll(Guid brokerAccountId)
         {
+            var complexQuery = new ComplexQueryBuilder<DividendPayment>()
+                .AddFilter(dividendPayment => dividendPayment.BrokerAccountId == brokerAccountId)
+                .AddOrder(dividendPayment => dividendPayment.ReceivedAt, true)
+                .AddJoins(DividendPaymentQuery.GetFullHierarchyColumns)
+                .GetQuery();
+
             var dividends = await _dividendPaymentRepo
-                .GetAll(dividendPayment => dividendPayment.BrokerAccountId == brokerAccountId,
-                    DividendPaymentQuery.GetFullHierarchyColumns);
+                .GetAll(complexQuery);
             
             return _mapper.Map<IEnumerable<DividendPaymentDto>>(dividends);
         }

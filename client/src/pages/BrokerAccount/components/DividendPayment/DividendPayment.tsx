@@ -2,6 +2,8 @@ import { Card, Flex, Span, Stack, Text, CardBody, Button, Icon } from '@chakra-u
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
 import { MdEdit, MdDelete } from 'react-icons/md';
 import { DividendPaymentEntity } from '../../../../models/brokers/DividendPaymentEntity';
+import { formatDate } from '../../../../shared/utilities/formatters/dateFormatter';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
 	dividendPayment: DividendPaymentEntity
@@ -13,12 +15,14 @@ const DividendPayment = (props: Props) => {
 	const { dividend, securitiesQuantity, tax} = props.dividendPayment;
     const paymentWithoutTax = securitiesQuantity * dividend.amount - tax;
 
+    const { i18n } = useTranslation();
+
 	return <Card.Root borderColor="border_primary" color="text_primary" backgroundColor="background_primary" 
         mt={5} mb={5} boxShadow={"sm"} _hover={{ boxShadow: "md" }}>
         <CardBody>
             <Flex justifyContent="space-between" alignItems="center">
                 <Stack direction={'row'} alignItems="center">
-                    {/* <Text textAlign={'center'} w={150} rounded={10} padding={1} background={'purple.600'}>{formatDateTime(date, i18n, false)}</Text> */}
+                    <Text textAlign={'center'} w={150} rounded={10} padding={1} background={'purple.600'}>{formatDate(props.dividendPayment.receivedAt, i18n, true)}</Text>
                     <Text fontWeight={700}>{dividend.security?.name} ({dividend.security?.ticker})</Text>
                 </Stack>
                 <Flex gap={2} justifyContent="space-between" alignItems="center">

@@ -103,8 +103,11 @@ namespace MoneyManager.Application.Services.Brokers
         private IQueryable<BrokerAccountFundsTransfer> GetFullHierarchyColumns(IQueryable<BrokerAccountFundsTransfer> query)
         {
             return query
-                .Include(x => x.Account)
-                .Include(x => x.BrokerAccount);
+                .Include(x => x.Account.Currency)
+                .Include(x => x.Account.AccountType)
+                .Include(x => x.BrokerAccount.Type)
+                .Include(x => x.BrokerAccount.Currency)
+                .Include(x => x.BrokerAccount.Broker);
         }
     }
 }

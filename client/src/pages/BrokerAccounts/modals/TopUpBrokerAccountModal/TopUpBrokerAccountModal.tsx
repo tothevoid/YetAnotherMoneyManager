@@ -18,7 +18,7 @@ import { Nullable } from "../../../../shared/utilities/nullable";
 
 interface ModalProps {
     brokerAccount: Nullable<BrokerAccountEntity>
-    modalRef: Nullable<RefObject<BaseModalRef>>
+    modalRef: RefObject<BaseModalRef | null>;
     onDeposited: () => void;
 }
 

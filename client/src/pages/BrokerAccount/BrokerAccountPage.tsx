@@ -15,6 +15,8 @@ import { GrTransaction } from "react-icons/gr";
 import { PiCoinsLight } from "react-icons/pi";
 import DividendPaymentsList from "./components/DividendPaymentsList/DividendPaymentsList";
 import { getEarningsByBrokerAccount } from "../../api/brokers/dividendPaymentApi";
+import { MdAttachMoney } from "react-icons/md";
+import BrokerAccountFundTransfersList from "./components/BrokerAccountFundTransfersList/BrokerAccountFundTransfersList";
 
 interface State {
     brokerAccount: BrokerAccountEntity | null,
@@ -80,6 +82,10 @@ const BrokerAccountPage: React.FC = () => {
         await securitiesRef.current?.reloadData();
     }, []);
 
+    const onBrokerAccountFundTransfersChanged = useCallback(async () => {
+        await fetchBrokerAccount();
+    }, []);
+
     if (!brokerAccountId) {
         return <Fragment/>
     }
@@ -133,12 +139,19 @@ const BrokerAccountPage: React.FC = () => {
                     <PiCoinsLight />
                      {t("broker_account_page_dividends_tab")}
                 </Tabs.Trigger>
+                <Tabs.Trigger _selected={{bg: "purple.600"}} color="text_primary" value="transfers">
+                    <MdAttachMoney />
+                     {t("broker_account_page_transfers_tab")}
+                </Tabs.Trigger>
             </Tabs.List>
             <Tabs.Content value="transactions">
                 <SecurityTransactionsList onDataReloaded={onDataReloaded} brokerAccountId={brokerAccountId}/>
             </Tabs.Content>
             <Tabs.Content value="dividends">
                 <DividendPaymentsList onDividendsChanged={fetchBrokerAccount} brokerAccountId={brokerAccountId}/>
+            </Tabs.Content>
+            <Tabs.Content value="transfers">
+                <BrokerAccountFundTransfersList onDataChanged={onBrokerAccountFundTransfersChanged} brokerAccountId={brokerAccountId}/>
             </Tabs.Content>
         </Tabs.Root>
     </Fragment>

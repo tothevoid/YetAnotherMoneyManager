@@ -233,6 +233,7 @@
 
     "broker_account_page_transactions_tab": "Транзакции",
     "broker_account_page_dividends_tab": "Дивиденды",
+    "broker_account_page_transfers_tab": "Переводы",
     "broker_account_page_add_dividend_payment_button": "Добавить выплату",
     "broker_account_page_total_profit_and_loss": "Общий P&L",
     "broker_account_page_dividends_earnings": "Доходы дивидендов",
@@ -259,6 +260,7 @@
 
     "cryptocurrencies_page_no_cryptocurrencies": "Нет криптовалют",
 
+    "entity_broker_account_fund_transfer_delete_title": "Удалить перевод средств",
     "top_up_broker_account_modal_title": "Пополнить брокерский счёт",
     "top_up_broker_account_modal_account": "Со счёта",
     "top_up_broker_account_modal_amount": "Сумма",

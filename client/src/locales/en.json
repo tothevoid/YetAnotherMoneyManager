@@ -232,6 +232,7 @@
 
     "broker_account_page_transactions_tab": "Transactions",
     "broker_account_page_dividends_tab": "Dividends",
+    "broker_account_page_transfers_tab": "Transfers",
     "broker_account_page_add_dividend_payment_button": "Add payment",
     "broker_account_page_total_profit_and_loss": "Total P&L",
     "broker_account_page_dividends_earnings": "Dividends earnings",
@@ -258,6 +259,7 @@
 
     "cryptocurrencies_page_no_cryptocurrencies": "No cryptocurrencies",
 
+    "entity_broker_account_fund_transfer_delete_title": "Delete fund transfer",
     "top_up_broker_account_modal_title": "Top up broker account",
     "top_up_broker_account_modal_account": "From account",
     "top_up_broker_account_modal_amount": "Amount",

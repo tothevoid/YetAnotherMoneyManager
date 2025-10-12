@@ -1,4 +1,4 @@
-import React, { Fragment, } from 'react';
+import React, { Fragment, useRef, } from 'react';
 import { SimpleGrid } from '@chakra-ui/react/grid';
 import { Flex } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
@@ -11,6 +11,8 @@ import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModa
 import { useEntityModal } from '../../../../shared/hooks/useEntityModal';
 import AddButton from '../../../../shared/components/AddButton/AddButton';
 import { ActiveEntityMode } from '../../../../shared/enums/activeEntityMode';
+import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
+import TopUpBrokerAccountModal from '../../modals/TopUpBrokerAccountModal/TopUpBrokerAccountModal';
 
 const BrokerAccountsList: React.FC = () => {
 	const { t } = useTranslation()
@@ -23,14 +25,23 @@ const BrokerAccountsList: React.FC = () => {
 		onEditClicked,
 		onDeleteClicked,
 		mode,
-		onActionEnded
+		onActionEnded,
+		setActiveEntity
 	} = useEntityModal<BrokerAccountEntity>();
+
+	const topUpModalRef = useRef<BaseModalRef>(null);
+	
+	const onTopUpClicked = (brokerAccount: BrokerAccountEntity) => {
+		setActiveEntity(brokerAccount);
+		topUpModalRef.current?.openModal();
+	};
 
 	const {
 		brokerAccounts,
 		createBrokerAccountEntity,
 		updateBrokerAccountEntity,
-		deleteBrokerAccountEntity
+		deleteBrokerAccountEntity,
+		reloadBrokerAccounts
 	} = useBrokerAccounts();
 
 	const getAddButton = () => {
@@ -54,6 +65,11 @@ const BrokerAccountsList: React.FC = () => {
 		await deleteBrokerAccountEntity(activeEntity);
 		onActionEnded();
 	}
+	
+	const onDeposited = async () => {
+		await reloadBrokerAccounts();
+		onActionEnded();
+	}
 
 	if (!brokerAccounts.length) {
 		return <Placeholder text={t("broker_accounts_page_no_accounts")}>
@@ -69,7 +85,8 @@ const BrokerAccountsList: React.FC = () => {
 			<SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(400px, 3fr))'>
 				{
 					brokerAccounts.map((brokerAccount: BrokerAccountEntity) => 
-						<BrokerAccount brokerAccount={brokerAccount} 
+						<BrokerAccount brokerAccount={brokerAccount}
+							onTopUpClick={onTopUpClicked}
 							onEditClick={onEditClicked} 
 							onDeleteClick={onDeleteClicked} 
 							key={brokerAccount.id}/>)
@@ -81,6 +98,7 @@ const BrokerAccountsList: React.FC = () => {
 				confirmActionName={t("modals_delete_button")}
 				ref={confirmModalRef}/>
 			<BrokerAccountModal brokerAccount={activeEntity} modalRef={modalRef} onSaved={onBrokerAccountSaved}/>
+			{activeEntity && <TopUpBrokerAccountModal onDeposited={onDeposited} modalRef={topUpModalRef} brokerAccount={activeEntity} />}
 		</Fragment>
 	);
 }

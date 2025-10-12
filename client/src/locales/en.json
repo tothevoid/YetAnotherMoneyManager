@@ -256,5 +256,11 @@
     "cryptocurrency_form_name": "Name",
     "cryptocurrency_form_price": "Price",
 
-    "cryptocurrencies_page_no_cryptocurrencies": "No cryptocurrencies"
+    "cryptocurrencies_page_no_cryptocurrencies": "No cryptocurrencies",
+
+    "top_up_broker_account_modal_title": "Top up broker account",
+    "top_up_broker_account_modal_account": "From account",
+    "top_up_broker_account_modal_amount": "Amount",
+    "top_up_broker_account_modal_date": "Date",
+    "top_up_broker_account_modal_top_up_button": "Top up"
 }

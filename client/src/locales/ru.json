@@ -257,5 +257,11 @@
     "cryptocurrency_form_name": "Название",
     "cryptocurrency_form_price": "Цена",
 
-    "cryptocurrencies_page_no_cryptocurrencies": "Нет криптовалют"
+    "cryptocurrencies_page_no_cryptocurrencies": "Нет криптовалют",
+
+    "top_up_broker_account_modal_title": "Пополнить брокерский счёт",
+    "top_up_broker_account_modal_account": "Со счёта",
+    "top_up_broker_account_modal_amount": "Сумма",
+    "top_up_broker_account_modal_date": "Дата",
+    "top_up_broker_account_modal_top_up_button": "Пополнить"
 }

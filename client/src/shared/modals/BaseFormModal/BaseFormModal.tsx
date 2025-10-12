@@ -8,6 +8,7 @@ interface BaseFormModalProps {
     submitHandler: FormEventHandler,
     children: React.ReactNode,
     visibilityChanged?: (open: boolean) => void
+    saveButtonTitle?: string
 };
 
 const BaseFormModal = forwardRef<BaseModalRef, BaseFormModalProps>((props: BaseFormModalProps, ref) => {
@@ -40,7 +41,7 @@ const BaseFormModal = forwardRef<BaseModalRef, BaseFormModalProps>((props: BaseF
                         {props.children}
                     </Dialog.Body>
                     <Dialog.Footer>
-                        <Button type="submit" background='purple.600' mr={3}>{t("modals_save_button")}</Button>
+                        <Button type="submit" background='purple.600' mr={3}>{props.saveButtonTitle ?? t("modals_save_button")}</Button>
                         <Button onClick={onClose}>{t("modals_cancel_button")}</Button>
                     </Dialog.Footer>
                     <Dialog.CloseTrigger asChild>

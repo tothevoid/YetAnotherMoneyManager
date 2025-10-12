@@ -4,8 +4,7 @@ export const BrokerAccountFundTransferValidationSchema = z.object({
     id: z.string(),
     date: z.date(),
     brokerAccount: z.object({
-        id: z.string().nonempty({message: "Broker account is not selected"}),
-        name: z.string()
+        id: z.string().nonempty({message: "Broker account is not selected"})
     }, {message: "Broker account is not selected"}),
     account: z.object({
         id: z.string().nonempty({message: "Account is not selected"}),

@@ -1,11 +1,16 @@
-import React, { useEffect } from 'react';
-import { Box } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { Box, Flex } from '@chakra-ui/react';
 import { useBrokerAccountFundTransfers } from '../../hooks/useBrokerAccountFundTransfers';
 import BrokerAccountFundTransfer from '../BrokerAccountFundTransfer/BrokerAccountFundTransfer';
 import { BrokerAccountFundTransferEntity } from '../../../../models/brokers/BrokerAccountFundTransfer';
 import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModal';
 import { useEntityModal } from '../../../../shared/hooks/useEntityModal';
 import { useTranslation } from 'react-i18next';
+import BrokerAccountFundTransferModal, { CreateBrokerAccountFundTransferContext, EditBrokerAccountFundTransferContext } from '../../../BrokerAccounts/modals/BrokerAccountFundTransferModal/BrokerAccountFundTransferModal';
+import { Nullable } from '../../../../shared/utilities/nullable';
+import AddButton from '../../../../shared/components/AddButton/AddButton';
+import { createBrokerAccountFundsTransfer, updateBrokerAccountFundsTransfer } from '../../../../api/brokers/BrokerAccountFundsTransferApi';
+import { ActiveEntityMode } from '../../../../shared/enums/activeEntityMode';
 
 interface Props {
     brokerAccountId: string,
@@ -20,10 +25,14 @@ const BrokerAccountFundTransfersList: React.FC<Props> = (props) => {
     } = useBrokerAccountFundTransfers({ brokerAccountId: props.brokerAccountId });
 
     const { 
+        modalRef,
         activeEntity,
         confirmModalRef,
         onDeleteClicked,
-        onActionEnded
+        onAddClicked,
+        onEditClicked,
+        onActionEnded,
+        mode
     } = useEntityModal<BrokerAccountFundTransferEntity>();
 
     const onDeleteConfirmed = async () => {
@@ -32,23 +41,47 @@ const BrokerAccountFundTransfersList: React.FC<Props> = (props) => {
 		}
 
 		await deleteFundTransferEntity(activeEntity);
-        reloadFundTransfers();
+        await reloadFundTransfers();
 		onActionEnded();
     }
+
+    const [context, setContext] = useState<Nullable<CreateBrokerAccountFundTransferContext | EditBrokerAccountFundTransferContext>>(null);
+
+    const onTransferSaved = async (transfer: BrokerAccountFundTransferEntity) => {
+        if (mode === ActiveEntityMode.Add) {
+            await createBrokerAccountFundsTransfer(transfer);
+        } else if (mode === ActiveEntityMode.Edit) {
+            await updateBrokerAccountFundsTransfer(transfer);
+        }
+
+        onActionEnded();
+        await reloadFundTransfers();
+    };
+
+	useEffect(() => {
+		const context = activeEntity ?
+			{ brokerAccountFundTransfer: activeEntity } as EditBrokerAccountFundTransferContext:
+			{ brokerAccountId: props.brokerAccountId } as CreateBrokerAccountFundTransferContext;
+		setContext(context);
+	}, [props.brokerAccountId, activeEntity]);
 
     useEffect(() => {
         if (props?.onDataChanged){
             props.onDataChanged();
         }
-    }, [props, fundTransfers]);
+    }, [props.onDataChanged, fundTransfers]);
 
     const {t} = useTranslation();
 
     return <Box>
+        <Flex alignItems="center" gapX={5}>
+			<AddButton buttonTitle={t("broker_account_page_transfer_button")} onClick={onAddClicked}/>
+		</Flex>
         <Box>
         {
             fundTransfers.map((fundTransfer: BrokerAccountFundTransferEntity) => 
                 <BrokerAccountFundTransfer key={fundTransfer.id}
+                    onEditClicked={onEditClicked}
                     onDeleteClicked={onDeleteClicked}
                     fundTransfer={fundTransfer}
                 />)
@@ -59,6 +92,7 @@ const BrokerAccountFundTransfersList: React.FC<Props> = (props) => {
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
             ref={confirmModalRef}/>
+        {context && <BrokerAccountFundTransferModal modalRef={modalRef} context={context} onSaved={onTransferSaved}  />}
     </Box>
 }
 

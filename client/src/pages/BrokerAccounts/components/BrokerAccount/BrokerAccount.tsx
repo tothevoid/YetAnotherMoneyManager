@@ -1,5 +1,5 @@
 import { Button, Card, Flex, Icon, Link, Span, Stack, Text } from '@chakra-ui/react';
-import { MdDelete, MdEdit, MdAttachMoney } from "react-icons/md";
+import { MdDelete, MdEdit } from "react-icons/md";
 import { Fragment } from 'react';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
 import { BrokerAccountEntity } from '../../../../models/brokers/BrokerAccountEntity';
@@ -7,7 +7,6 @@ import { calculateDiff } from '../../../../shared/utilities/numericDiffsUtilitie
 
 interface Props {
 	brokerAccount: BrokerAccountEntity
-	onTransferClick: (account: BrokerAccountEntity) => void
 	onEditClick: (account: BrokerAccountEntity) => void
 	onDeleteClick: (account: BrokerAccountEntity) => void
 }
@@ -32,11 +31,6 @@ const BrokerAccount = (props: Props) => {
 						</Stack>
 					</Stack>
 					<Flex gap={1}>
-						<Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={() => props.onTransferClick(props.brokerAccount)}>
-							<Icon color="card_action_icon_primary">
-								<MdAttachMoney />
-							</Icon>
-						</Button>
 						<Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={() => props.onEditClick(props.brokerAccount)}>
 							<Icon color="card_action_icon_primary">
 								<MdEdit/>

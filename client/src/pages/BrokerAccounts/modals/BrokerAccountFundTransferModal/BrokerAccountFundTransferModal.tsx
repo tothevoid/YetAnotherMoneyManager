@@ -2,7 +2,6 @@ import { Field, Input } from "@chakra-ui/react";
 import React, { RefObject, useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BrokerAccountEntity } from "../../../../models/brokers/BrokerAccountEntity";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
 import { getAccounts } from "../../../../api/accounts/accountApi";
@@ -10,17 +9,22 @@ import { AccountEntity } from "../../../../models/accounts/AccountEntity";
 import CollectionSelect from "../../../../shared/components/CollectionSelect/CollectionSelect";
 import { useTranslation } from "react-i18next";
 import { BrokerAccountFundTransferEntity } from "../../../../models/brokers/BrokerAccountFundTransfer";
-import { createBrokerAccountFundsTransfer } from "../../../../api/brokers/BrokerAccountFundsTransferApi";
 import { generateGuid } from "../../../../shared/utilities/idUtilities";
 import DateSelect from "../../../../shared/components/DateSelect/DateSelect";
-import { Nullable } from "../../../../shared/utilities/nullable";
 import { BrokerAccountFundTransferFormInput, BrokerAccountFundTransferValidationSchema } from "./BrokerAccountFundTransferValidationSchema";
 
-interface ModalProps {
-    brokerAccount: Nullable<BrokerAccountEntity>
-    modalRef: RefObject<BaseModalRef | null>;
-    onDeposited: () => void;
+export interface CreateBrokerAccountFundTransferContext {
+    brokerAccountId: string
 }
+
+export interface EditBrokerAccountFundTransferContext {
+    brokerAccountFundTransfer: BrokerAccountFundTransferEntity
+}
+
+interface ModalProps {
+    onSaved: (transfer: BrokerAccountFundTransferEntity) => void
+    context: CreateBrokerAccountFundTransferContext | EditBrokerAccountFundTransferContext
+    modalRef: RefObject<BaseModalRef | null>}
 
 interface TransferType {
     label: string;
@@ -34,22 +38,30 @@ const BrokerAccountFundTransferModal: React.FC<ModalProps> = (props: ModalProps)
 
     const transferTypes: TransferType[] = useMemo(
         () => [
-            { label: t("top_up_broker_account_modal_operation_deposit"), value: true },
-            { label: t("top_up_broker_account_modal_operation_withdraw"), value: false }
+            { label: t("broker_account_transfer_modal_operation_deposit"), value: true },
+            { label: t("broker_account_transfer_modal_operation_withdraw"), value: false }
         ],
         [i18n.language, t]
     );
     
-    const setDefaultValues = useCallback(() => {
+    const getDefaultValues = useCallback(() => {
+        const brokerAccountFundTransfer = "brokerAccountFundTransfer" in props.context ? props.context.brokerAccountFundTransfer: null;
+		
+        const brokerAccount = "brokerAccountId" in props.context ? 
+            { id: props.context.brokerAccountId }: 
+            { id: props.context.brokerAccountFundTransfer.brokerAccount.id};
+        
+        const transferType = transferTypes.find(tt => tt.value === brokerAccountFundTransfer?.income) ?? transferTypes[0]
+        
         return {
-            id: generateGuid(),
-            account: {},
-            brokerAccount: props.brokerAccount ?? {},
-            income: transferTypes[0],
-            date: new Date(),
-            amount: 0
+            id: brokerAccountFundTransfer?.id ?? generateGuid(),
+            account: brokerAccountFundTransfer?.account,
+            brokerAccount: brokerAccountFundTransfer?.brokerAccount ?? brokerAccount,
+            income: transferType,
+            date: brokerAccountFundTransfer?.date ?? new Date(),
+            amount: brokerAccountFundTransfer?.amount ?? 0
         }
-    }, [props.brokerAccount, transferTypes]);
+    }, [props.context, transferTypes]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -62,32 +74,40 @@ const BrokerAccountFundTransferModal: React.FC<ModalProps> = (props: ModalProps)
 
     const { register, handleSubmit, control, formState: { errors }, reset, watch } = useForm<BrokerAccountFundTransferFormInput>({
         resolver: zodResolver(BrokerAccountFundTransferValidationSchema),
-        defaultValues: setDefaultValues()
+        defaultValues: getDefaultValues()
     });
 
     const incomeValue = watch("income"); 
     const [accountLabel, setAccountLabel] = useState<string>("");
     useEffect(() => {
-        setAccountLabel(incomeValue.value ? t("top_up_broker_account_modal_account_from") : t("top_up_broker_account_modal_account_to"));
+        setAccountLabel(incomeValue.value ? t("broker_account_transfer_modal_account_from") : t("broker_account_transfer_modal_account_to"));
     }, [t, incomeValue]);
 
     useEffect(() => {
-        reset(setDefaultValues());
-    }, [reset, setDefaultValues]);
+        reset(getDefaultValues());
+    }, [reset, getDefaultValues, props.context]);
 
     const onSubmit = async (formData: BrokerAccountFundTransferFormInput) => {
-        const transfer = {...formData, income: formData.income.value} as BrokerAccountFundTransferEntity
-        await createBrokerAccountFundsTransfer(transfer)
-        props.onDeposited();
+        const transfer = {...formData, income: formData.income.value} as BrokerAccountFundTransferEntity;
+        props.onSaved(transfer);
         props.modalRef.current?.closeModal();
     };
 
+    const onModalVisibilityChanged = async (open: boolean) => {
+        if (!open) {
+            return;
+        }
+
+        reset(getDefaultValues());
+    }
+
     return (
-        <BaseFormModal ref={props.modalRef} title={t("top_up_broker_account_modal_title")} 
+        <BaseFormModal ref={props.modalRef} title={t("broker_account_transfer_modal_title")}
+            visibilityChanged={onModalVisibilityChanged}
             submitHandler={handleSubmit(onSubmit)} 
-            saveButtonTitle={t("top_up_broker_account_modal_transfer_button")}>
+            saveButtonTitle={t("broker_account_transfer_modal_transfer_button")}>
             <Field.Root mt={4} invalid={!!errors.income}>
-                <Field.Label>{t("top_up_broker_account_modal_operation")}</Field.Label>
+                <Field.Label>{t("broker_account_transfer_modal_operation")}</Field.Label>
                 <CollectionSelect name="income" control={control} placeholder="Select type"
                     collection={transferTypes}
                     labelSelector={(transferType => transferType.label)}
@@ -103,12 +123,12 @@ const BrokerAccountFundTransferModal: React.FC<ModalProps> = (props: ModalProps)
                 <Field.ErrorText>{errors.account?.message}</Field.ErrorText>
             </Field.Root>
             <Field.Root invalid={!!errors.date} mt={4}>
-                <Field.Label>{t("top_up_broker_account_modal_date")}</Field.Label>
-                <DateSelect name="date" control={control}/>
+                <Field.Label>{t("broker_account_transfer_modal_date")}</Field.Label>
+                <DateSelect name="date" control={control} isDateTime={true}/>
                 <Field.ErrorText>{errors.date?.message}</Field.ErrorText>
             </Field.Root>
             <Field.Root mt={4} invalid={!!errors.amount}>
-                <Field.Label>{t("top_up_broker_account_modal_amount")} ({props.brokerAccount?.currency.name})</Field.Label>
+                <Field.Label>{t("broker_account_transfer_modal_amount")}</Field.Label>
                 <Input {...register("amount", { valueAsNumber: true })} name="amount" type="number" placeholder="10000" />
                 <Field.ErrorText>{errors.amount?.message}</Field.ErrorText>
             </Field.Root>

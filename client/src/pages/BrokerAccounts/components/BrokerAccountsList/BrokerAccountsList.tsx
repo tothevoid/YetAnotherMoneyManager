@@ -1,4 +1,4 @@
-import React, { Fragment, useRef, } from 'react';
+import React, { Fragment } from 'react';
 import { SimpleGrid } from '@chakra-ui/react/grid';
 import { Flex } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
@@ -11,8 +11,6 @@ import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModa
 import { useEntityModal } from '../../../../shared/hooks/useEntityModal';
 import AddButton from '../../../../shared/components/AddButton/AddButton';
 import { ActiveEntityMode } from '../../../../shared/enums/activeEntityMode';
-import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
-import BrokerAccountFundTransferModal from '../../modals/BrokerAccountFundTransferModal/BrokerAccountFundTransferModal';
 
 const BrokerAccountsList: React.FC = () => {
 	const { t } = useTranslation()
@@ -25,23 +23,14 @@ const BrokerAccountsList: React.FC = () => {
 		onEditClicked,
 		onDeleteClicked,
 		mode,
-		onActionEnded,
-		setActiveEntity
+		onActionEnded
 	} = useEntityModal<BrokerAccountEntity>();
-
-	const transferModalRef = useRef<BaseModalRef>(null);
-	
-	const onTransferClick = (brokerAccount: BrokerAccountEntity) => {
-		setActiveEntity(brokerAccount);
-		transferModalRef.current?.openModal();
-	};
 
 	const {
 		brokerAccounts,
 		createBrokerAccountEntity,
 		updateBrokerAccountEntity,
 		deleteBrokerAccountEntity,
-		reloadBrokerAccounts
 	} = useBrokerAccounts();
 
 	const getAddButton = () => {
@@ -65,11 +54,6 @@ const BrokerAccountsList: React.FC = () => {
 		await deleteBrokerAccountEntity(activeEntity);
 		onActionEnded();
 	}
-	
-	const onDeposited = async () => {
-		await reloadBrokerAccounts();
-		onActionEnded();
-	}
 
 	if (!brokerAccounts.length) {
 		return <Placeholder text={t("broker_accounts_page_no_accounts")}>
@@ -86,7 +70,6 @@ const BrokerAccountsList: React.FC = () => {
 				{
 					brokerAccounts.map((brokerAccount: BrokerAccountEntity) => 
 						<BrokerAccount brokerAccount={brokerAccount}
-							onTransferClick={onTransferClick}
 							onEditClick={onEditClicked} 
 							onDeleteClick={onDeleteClicked} 
 							key={brokerAccount.id}/>)
@@ -98,7 +81,6 @@ const BrokerAccountsList: React.FC = () => {
 				confirmActionName={t("modals_delete_button")}
 				ref={confirmModalRef}/>
 			<BrokerAccountModal brokerAccount={activeEntity} modalRef={modalRef} onSaved={onBrokerAccountSaved}/>
-			<BrokerAccountFundTransferModal onDeposited={onDeposited} modalRef={transferModalRef} brokerAccount={activeEntity}/>
 		</Fragment>
 	);
 }

@@ -9,8 +9,9 @@ using MoneyManager.Application.DTO.Brokers;
 
 namespace MoneyManager.WebApi.Controllers.Brokers
 {
+    [Produces("application/json")]
+    [Route("[controller]")]
     [ApiController]
-    [Route("api/brokers/fundstransfer")]
     public class BrokerAccountFundsTransferController : ControllerBase
     {
         private readonly IBrokerAccountFundsTransferService _brokerAccountFundsTransferService;
@@ -23,9 +24,9 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<BrokerAccountFundsTransferModel>> GetAll(Guid brokerAccountId, bool income)
+        public async Task<IEnumerable<BrokerAccountFundsTransferModel>> GetAll(Guid brokerAccountId)
         {
-            var transfers = await _brokerAccountFundsTransferService.GetAllAsync(brokerAccountId, income);
+            var transfers = await _brokerAccountFundsTransferService.GetAllAsync(brokerAccountId);
             return _mapper.Map<IEnumerable<BrokerAccountFundsTransferModel>>(transfers);
         }
 

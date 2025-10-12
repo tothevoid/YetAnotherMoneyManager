@@ -9,7 +9,7 @@ namespace MoneyManager.Application.Interfaces.Accounts
     {
         Task<IEnumerable<AccountDTO>> GetAll(bool onlyActive);
         Task<IEnumerable<AccountDTO>> GetAllByTypes(Guid[] typesIds, bool onlyActive);
-        Task<AccountDTO> GetById(Guid id, bool disableTracking = true);
+        Task<AccountDTO> GetById(Guid id);
         Task<Guid> Add(AccountDTO transaction);
         Task Update(AccountDTO accountDTO);
         Task Delete(Guid id);

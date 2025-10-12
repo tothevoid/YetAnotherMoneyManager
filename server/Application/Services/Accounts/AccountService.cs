@@ -36,9 +36,9 @@ namespace MoneyManager.Application.Services.Accounts
             return _mapper.Map<IEnumerable<AccountDTO>>(transactions);
         }
 
-        public async Task<AccountDTO> GetById(Guid id, bool disableTracking = true)
+        public async Task<AccountDTO> GetById(Guid id)
         {
-            var account = await _accountRepo.GetById(id, GetFullHierarchyColumns, false);
+            var account = await _accountRepo.GetById(id, GetFullHierarchyColumns);
             return _mapper.Map<AccountDTO>(account);
         }
 

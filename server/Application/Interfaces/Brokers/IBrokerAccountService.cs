@@ -8,9 +8,9 @@ namespace MoneyManager.Application.Interfaces.Brokers
     public interface IBrokerAccountService
     {
         Task<IEnumerable<BrokerAccountDTO>> GetAll();
-        Task<BrokerAccountDTO> GetById(Guid id, bool disableTracking = true);
-        Task<Guid> Add(BrokerAccountDTO security);
-        Task Update(BrokerAccountDTO security);
+        Task<BrokerAccountDTO> GetById(Guid id);
+        Task<Guid> Add(BrokerAccountDTO brokerAccount);
+        Task Update(BrokerAccountDTO brokerAccount);
         Task Delete(Guid id);
     }
 }

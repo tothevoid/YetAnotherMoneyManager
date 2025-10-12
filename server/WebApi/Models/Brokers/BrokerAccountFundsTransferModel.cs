@@ -6,6 +6,8 @@ namespace MoneyManager.WebApi.Models.Brokers
 {
     public class BrokerAccountFundsTransferModel: BaseEntity
     {
+        public DateTime Date { get; set; }
+
         public decimal Amount { get; set; }
 
         public AccountModel Account { get; set; }

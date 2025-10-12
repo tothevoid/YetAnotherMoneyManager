@@ -8,7 +8,7 @@ namespace MoneyManager.Application.Interfaces.Brokers
 {
     public interface IBrokerAccountFundsTransferService
     {
-        Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAllAsync(Guid brokerAccountId, bool income);
+        Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAllAsync(Guid brokerAccountId);
         Task<BrokerAccountFundsTransferDto> Add(BrokerAccountFundsTransferDto transfer);
         Task Update(BrokerAccountFundsTransferDto transfer);
         Task Delete(Guid id);

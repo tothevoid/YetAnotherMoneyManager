@@ -78,7 +78,7 @@ namespace MoneyManager.WebApi.Mappings
             CreateMap<CryptocurrencyDto, CryptocurrencyModel>().ReverseMap();
             CreateMap<CryptoProviderDto, CryptoProviderModel>().ReverseMap();
 
-            CreateMap<BrokerAccountFundsTransferDto, BrokerAccountFundsTransferModel>();
+            CreateMap<BrokerAccountFundsTransferDto, BrokerAccountFundsTransferModel>().ReverseMap();
         }
     }
 }

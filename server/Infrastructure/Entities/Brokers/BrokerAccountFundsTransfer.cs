@@ -10,6 +10,8 @@ namespace MoneyManager.Infrastructure.Entities.Brokers
 {
     public class BrokerAccountFundsTransfer: BaseEntity
     {
+        public DateTime Date { get; set; }
+
         public decimal Amount { get; set; }
 
         public Account Account { get; set; }

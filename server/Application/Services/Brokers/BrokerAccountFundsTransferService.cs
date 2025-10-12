@@ -29,9 +29,10 @@ namespace MoneyManager.Application.Services.Brokers
             _accountService = accountService;
         }
 
-        public async Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAllAsync(Guid brokerAccountId, bool income)
+        public async Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAllAsync(Guid brokerAccountId)
         {
-            var transfers = await _repo.GetAll(null, GetFullHierarchyColumns);
+            var transfers = await _repo.GetAll(transfer => transfer.BrokerAccountId == brokerAccountId,
+                GetFullHierarchyColumns);
             return _mapper.Map<IEnumerable<BrokerAccountFundsTransferDto>>(transfers)
                 .ToList();
         }
@@ -39,15 +40,15 @@ namespace MoneyManager.Application.Services.Brokers
         public async Task<BrokerAccountFundsTransferDto> Add(BrokerAccountFundsTransferDto transferDto)
         {
             var transfer = _mapper.Map<BrokerAccountFundsTransfer>(transferDto);
-
-            transfer.Id = Guid.NewGuid();
             await _repo.Add(transfer);
 
             await UpdateLinkedAccountsBalance(transferDto.AccountId, transferDto.BrokerAccountId, 
                 transferDto.Amount * (transferDto.Income ? 1: -1));
 
             await _db.Commit();
-            return transferDto;
+            
+            var storedRecord = await _repo.GetById(transfer.Id, GetFullHierarchyColumns);
+            return _mapper.Map<BrokerAccountFundsTransferDto>(storedRecord);
         }
 
         public async Task Update(BrokerAccountFundsTransferDto transferDto)
@@ -80,13 +81,13 @@ namespace MoneyManager.Application.Services.Brokers
 
         public async Task UpdateLinkedAccountsBalance(Guid accountId, Guid brokerAccountId, decimal amount)
         {
-            var brokerAccount = await _brokerAccountService.GetById(brokerAccountId, false);
+            var brokerAccount = await _brokerAccountService.GetById(brokerAccountId);
             if (brokerAccount == null)
             {
                 throw new ArgumentException(nameof(brokerAccountId));
             }
 
-            var account = await _accountService.GetById(accountId, false);
+            var account = await _accountService.GetById(accountId);
 
             if (account == null)
             {
@@ -94,7 +95,9 @@ namespace MoneyManager.Application.Services.Brokers
             }
 
             brokerAccount.MainCurrencyAmount += amount;
+            await _brokerAccountService.Update(brokerAccount);
             account.Balance = -1 * amount;
+            await _accountService.Update(account);
         }
 
         private IQueryable<BrokerAccountFundsTransfer> GetFullHierarchyColumns(IQueryable<BrokerAccountFundsTransfer> query)

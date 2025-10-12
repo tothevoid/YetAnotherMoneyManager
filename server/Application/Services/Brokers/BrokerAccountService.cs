@@ -54,7 +54,7 @@ namespace MoneyManager.Application.Services.Brokers
         }
 
 
-        public async Task<BrokerAccountDTO> GetById(Guid id, bool disableTracking = true)
+        public async Task<BrokerAccountDTO> GetById(Guid id)
         {
             var brokerAccount = await _brokerAccountRepo.GetById(id, GetFullHierarchyColumns);
             var brokerAccountDto = _mapper.Map<BrokerAccountDTO>(brokerAccount);

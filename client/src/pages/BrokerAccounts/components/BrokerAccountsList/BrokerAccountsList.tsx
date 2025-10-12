@@ -98,7 +98,7 @@ const BrokerAccountsList: React.FC = () => {
 				confirmActionName={t("modals_delete_button")}
 				ref={confirmModalRef}/>
 			<BrokerAccountModal brokerAccount={activeEntity} modalRef={modalRef} onSaved={onBrokerAccountSaved}/>
-			{activeEntity && <TopUpBrokerAccountModal onDeposited={onDeposited} modalRef={topUpModalRef} brokerAccount={activeEntity} />}
+			<TopUpBrokerAccountModal onDeposited={onDeposited} modalRef={topUpModalRef} brokerAccount={activeEntity}/>
 		</Fragment>
 	);
 }

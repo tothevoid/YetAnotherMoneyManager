@@ -1,11 +1,10 @@
 import { Field, Input } from "@chakra-ui/react";
-import React, { RefObject, useCallback, useEffect, useState } from "react";
+import React, { RefObject, useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BrokerAccountEntity } from "../../../../models/brokers/BrokerAccountEntity";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
-import { TopUpBrokerAccountFormInput, TopUpBrokerAccountValidationSchema } from "./TopUpBrokerAccountValidationSchema";
 import { getAccounts } from "../../../../api/accounts/accountApi";
 import { AccountEntity } from "../../../../models/accounts/AccountEntity";
 import CollectionSelect from "../../../../shared/components/CollectionSelect/CollectionSelect";
@@ -15,6 +14,7 @@ import { createBrokerAccountFundsTransfer } from "../../../../api/brokers/Broker
 import { generateGuid } from "../../../../shared/utilities/idUtilities";
 import DateSelect from "../../../../shared/components/DateSelect/DateSelect";
 import { Nullable } from "../../../../shared/utilities/nullable";
+import { BrokerAccountFundTransferFormInput, BrokerAccountFundTransferValidationSchema } from "./BrokerAccountFundTransferValidationSchema";
 
 interface ModalProps {
     brokerAccount: Nullable<BrokerAccountEntity>
@@ -22,19 +22,34 @@ interface ModalProps {
     onDeposited: () => void;
 }
 
-const TopUpBrokerAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
+interface TransferType {
+    label: string;
+    value: boolean;
+}
+
+const BrokerAccountFundTransferModal: React.FC<ModalProps> = (props: ModalProps) => {
+    const [accounts, setAccounts] = useState<AccountEntity[]>([]);
+
+    const { i18n, t } = useTranslation();
+
+    const transferTypes: TransferType[] = useMemo(
+        () => [
+            { label: t("top_up_broker_account_modal_operation_deposit"), value: true },
+            { label: t("top_up_broker_account_modal_operation_withdraw"), value: false }
+        ],
+        [i18n.language, t]
+    );
+    
     const setDefaultValues = useCallback(() => {
         return {
             id: generateGuid(),
             account: {},
             brokerAccount: props.brokerAccount ?? {},
-            income: true,
+            income: transferTypes[0],
             date: new Date(),
             amount: 0
         }
-    }, [props.brokerAccount]);
-
-    const [accounts, setAccounts] = useState<AccountEntity[]>([]);
+    }, [props.brokerAccount, transferTypes]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -42,34 +57,45 @@ const TopUpBrokerAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
             const accounts = await getAccounts(true);
             setAccounts(accounts);
         }
-
         fetchData()
     }, [])
-    
-    
-    const { register, handleSubmit, control, formState: { errors }, reset } = useForm<TopUpBrokerAccountFormInput>({
-        resolver: zodResolver(TopUpBrokerAccountValidationSchema),
+
+    const { register, handleSubmit, control, formState: { errors }, reset, watch } = useForm<BrokerAccountFundTransferFormInput>({
+        resolver: zodResolver(BrokerAccountFundTransferValidationSchema),
         defaultValues: setDefaultValues()
     });
+
+    const incomeValue = watch("income"); 
+    const [accountLabel, setAccountLabel] = useState<string>("");
+    useEffect(() => {
+        setAccountLabel(incomeValue.value ? t("top_up_broker_account_modal_account_from") : t("top_up_broker_account_modal_account_to"));
+    }, [t, incomeValue]);
 
     useEffect(() => {
         reset(setDefaultValues());
     }, [reset, setDefaultValues]);
 
-    const onSubmit = async (data: TopUpBrokerAccountFormInput) => {
-        await createBrokerAccountFundsTransfer(data as BrokerAccountFundTransferEntity)
+    const onSubmit = async (formData: BrokerAccountFundTransferFormInput) => {
+        const transfer = {...formData, income: formData.income.value} as BrokerAccountFundTransferEntity
+        await createBrokerAccountFundsTransfer(transfer)
         props.onDeposited();
         props.modalRef.current?.closeModal();
     };
 
-    const { t } = useTranslation();
-
     return (
         <BaseFormModal ref={props.modalRef} title={t("top_up_broker_account_modal_title")} 
             submitHandler={handleSubmit(onSubmit)} 
-            saveButtonTitle={t("top_up_broker_account_modal_top_up_button")}>
+            saveButtonTitle={t("top_up_broker_account_modal_transfer_button")}>
+            <Field.Root mt={4} invalid={!!errors.income}>
+                <Field.Label>{t("top_up_broker_account_modal_operation")}</Field.Label>
+                <CollectionSelect name="income" control={control} placeholder="Select type"
+                    collection={transferTypes}
+                    labelSelector={(transferType => transferType.label)}
+                    valueSelector={(transferType => transferType.value)} />
+                <Field.ErrorText>{errors.income?.message}</Field.ErrorText>
+            </Field.Root>
             <Field.Root mt={4} invalid={!!errors.account}>
-                <Field.Label>{t("top_up_broker_account_modal_account")}</Field.Label>
+                <Field.Label>{accountLabel}</Field.Label>
                 <CollectionSelect name="account" control={control} placeholder="Select account"
                     collection={accounts}
                     labelSelector={(account => account.name)}
@@ -90,4 +116,4 @@ const TopUpBrokerAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
     );
 };
 
-export default TopUpBrokerAccountModal;
+export default BrokerAccountFundTransferModal;

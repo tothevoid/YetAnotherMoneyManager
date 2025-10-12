@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const TopUpBrokerAccountValidationSchema = z.object({
+export const BrokerAccountFundTransferValidationSchema = z.object({
     id: z.string(),
     date: z.date(),
     brokerAccount: z.object({
@@ -12,7 +12,10 @@ export const TopUpBrokerAccountValidationSchema = z.object({
         name: z.string()
     }, {message: "Account is not selected"}),
     amount: z.number().min(0.01, "Enter amount"),
-    income: z.boolean()
+    income: z.object({
+        label: z.string(),
+        value: z.boolean()
+    }, {message: "Transfer type is not selected"})
 });
 
-export type TopUpBrokerAccountFormInput = z.infer<typeof TopUpBrokerAccountValidationSchema>;
+export type BrokerAccountFundTransferFormInput = z.infer<typeof BrokerAccountFundTransferValidationSchema>;

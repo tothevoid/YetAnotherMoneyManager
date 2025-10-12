@@ -12,7 +12,7 @@ import { useEntityModal } from '../../../../shared/hooks/useEntityModal';
 import AddButton from '../../../../shared/components/AddButton/AddButton';
 import { ActiveEntityMode } from '../../../../shared/enums/activeEntityMode';
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
-import TopUpBrokerAccountModal from '../../modals/TopUpBrokerAccountModal/TopUpBrokerAccountModal';
+import BrokerAccountFundTransferModal from '../../modals/BrokerAccountFundTransferModal/BrokerAccountFundTransferModal';
 
 const BrokerAccountsList: React.FC = () => {
 	const { t } = useTranslation()
@@ -29,11 +29,11 @@ const BrokerAccountsList: React.FC = () => {
 		setActiveEntity
 	} = useEntityModal<BrokerAccountEntity>();
 
-	const topUpModalRef = useRef<BaseModalRef>(null);
+	const transferModalRef = useRef<BaseModalRef>(null);
 	
-	const onTopUpClicked = (brokerAccount: BrokerAccountEntity) => {
+	const onTransferClick = (brokerAccount: BrokerAccountEntity) => {
 		setActiveEntity(brokerAccount);
-		topUpModalRef.current?.openModal();
+		transferModalRef.current?.openModal();
 	};
 
 	const {
@@ -86,7 +86,7 @@ const BrokerAccountsList: React.FC = () => {
 				{
 					brokerAccounts.map((brokerAccount: BrokerAccountEntity) => 
 						<BrokerAccount brokerAccount={brokerAccount}
-							onTopUpClick={onTopUpClicked}
+							onTransferClick={onTransferClick}
 							onEditClick={onEditClicked} 
 							onDeleteClick={onDeleteClicked} 
 							key={brokerAccount.id}/>)
@@ -98,7 +98,7 @@ const BrokerAccountsList: React.FC = () => {
 				confirmActionName={t("modals_delete_button")}
 				ref={confirmModalRef}/>
 			<BrokerAccountModal brokerAccount={activeEntity} modalRef={modalRef} onSaved={onBrokerAccountSaved}/>
-			<TopUpBrokerAccountModal onDeposited={onDeposited} modalRef={topUpModalRef} brokerAccount={activeEntity}/>
+			<BrokerAccountFundTransferModal onDeposited={onDeposited} modalRef={transferModalRef} brokerAccount={activeEntity}/>
 		</Fragment>
 	);
 }

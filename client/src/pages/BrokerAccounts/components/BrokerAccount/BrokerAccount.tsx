@@ -7,7 +7,7 @@ import { calculateDiff } from '../../../../shared/utilities/numericDiffsUtilitie
 
 interface Props {
 	brokerAccount: BrokerAccountEntity
-	onTopUpClick: (account: BrokerAccountEntity) => void
+	onTransferClick: (account: BrokerAccountEntity) => void
 	onEditClick: (account: BrokerAccountEntity) => void
 	onDeleteClick: (account: BrokerAccountEntity) => void
 }
@@ -32,7 +32,7 @@ const BrokerAccount = (props: Props) => {
 						</Stack>
 					</Stack>
 					<Flex gap={1}>
-						<Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={() => props.onTopUpClick(props.brokerAccount)}>
+						<Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={() => props.onTransferClick(props.brokerAccount)}>
 							<Icon color="card_action_icon_primary">
 								<MdAttachMoney />
 							</Icon>

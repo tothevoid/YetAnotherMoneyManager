@@ -261,8 +261,12 @@
 
     "entity_broker_account_fund_transfer_delete_title": "Delete fund transfer",
     "top_up_broker_account_modal_title": "Top up broker account",
-    "top_up_broker_account_modal_account": "From account",
+    "top_up_broker_account_modal_account_from": "From account",
+    "top_up_broker_account_modal_account_to": "To account",
     "top_up_broker_account_modal_amount": "Amount",
     "top_up_broker_account_modal_date": "Date",
-    "top_up_broker_account_modal_top_up_button": "Top up"
+    "top_up_broker_account_modal_transfer_button": "Transfer",
+    "top_up_broker_account_modal_operation": "Operation",
+    "top_up_broker_account_modal_operation_deposit": "Deposit",
+    "top_up_broker_account_modal_operation_withdraw": "Withdraw"
 }

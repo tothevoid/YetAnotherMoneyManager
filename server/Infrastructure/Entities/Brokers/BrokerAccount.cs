@@ -29,5 +29,7 @@ namespace MoneyManager.Infrastructure.Entities.Brokers
         public ICollection<SecurityTransaction> SecurityTransactions { get; set; }
 
         public ICollection<DividendPayment> DividendPayments { get; set; }
+
+        public ICollection<BrokerAccountFundsTransfer> BrokerAccountFundsTransfers { get; set; }
     }
 }

@@ -51,6 +51,8 @@ namespace MoneyManager.Application.Mappings
             CreateMap<CryptoAccountDto, CryptoAccount>().ReverseMap();
             CreateMap<CryptocurrencyDto, Cryptocurrency>().ReverseMap();
             CreateMap<CryptoProviderDto, CryptoProvider>().ReverseMap();
+
+            CreateMap<BrokerAccountFundsTransferDto, BrokerAccountFundsTransfer>();
         }
     }
 }

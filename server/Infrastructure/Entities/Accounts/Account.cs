@@ -34,5 +34,7 @@ namespace MoneyManager.Infrastructure.Entities.Accounts
         public ICollection<CurrencyTransaction> SourceCurrencyTransactions { get; set; }
 
         public ICollection<CurrencyTransaction> DestinationCurrencyTransactions { get; set; }
+
+        public ICollection<BrokerAccountFundsTransfer> BrokerAccountFundsTransfers { get; set; }
     }
 }

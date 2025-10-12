@@ -35,6 +35,7 @@ namespace MoneyManager.Infrastructure.Database
             modelBuilder.ApplyConfiguration(new AccountConfiguration());
             modelBuilder.ApplyConfiguration(new AccountTypeConfiguration());
             modelBuilder.ApplyConfiguration(new BrokerConfiguration());
+            modelBuilder.ApplyConfiguration(new BrokerAccountFundsTransferConfiguration());
             modelBuilder.ApplyConfiguration(new BrokerAccountConfiguration());
             modelBuilder.ApplyConfiguration(new BrokerAccountSecurityConfiguration());
             modelBuilder.ApplyConfiguration(new BrokerAccountTypeConfiguration());

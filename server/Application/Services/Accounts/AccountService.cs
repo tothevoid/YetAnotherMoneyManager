@@ -36,6 +36,12 @@ namespace MoneyManager.Application.Services.Accounts
             return _mapper.Map<IEnumerable<AccountDTO>>(transactions);
         }
 
+        public async Task<AccountDTO> GetById(Guid id, bool disableTracking = true)
+        {
+            var account = await _accountRepo.GetById(id, GetFullHierarchyColumns, false);
+            return _mapper.Map<AccountDTO>(account);
+        }
+
         public async Task<IEnumerable<AccountDTO>> GetAllByTypes(Guid[] typesIds, bool onlyActive = false)
         {
             Expression<Func<Account, bool>> filter = null;

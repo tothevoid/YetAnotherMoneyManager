@@ -6,16 +6,20 @@ using MoneyManager.Infrastructure.Interfaces.Database;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using MoneyManager.Application.DTO.Accounts;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Accounts;
 using MoneyManager.Application.Interfaces.Brokers;
+using MoneyManager.Infrastructure.Entities.Accounts;
 
 namespace MoneyManager.Application.Services.Brokers
 {
     public class BrokerAccountFundsTransferService : IBrokerAccountFundsTransferService
     {
         private readonly IUnitOfWork _db;
-        private readonly IRepository<BrokerAccountFundsTransfer> _repo;
+        private readonly IRepository<BrokerAccountFundsTransfer> _transfersRepo;
+        private readonly IRepository<Account> _accountRepo;
+        private readonly IRepository<BrokerAccount> _brokerAccountRepo;
         private readonly IBrokerAccountService _brokerAccountService;
         private readonly IAccountService _accountService;
         private readonly IMapper _mapper;
@@ -24,14 +28,16 @@ namespace MoneyManager.Application.Services.Brokers
         {
             _db = uow;
             _mapper = mapper;
-            _repo = uow.CreateRepository<BrokerAccountFundsTransfer>();
+            _transfersRepo = uow.CreateRepository<BrokerAccountFundsTransfer>();
+            _accountRepo = uow.CreateRepository<Account>();
+            _brokerAccountRepo = uow.CreateRepository<BrokerAccount>();
             _brokerAccountService = brokerAccountService;
             _accountService = accountService;
         }
 
         public async Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAllAsync(Guid brokerAccountId)
         {
-            var transfers = await _repo.GetAll(transfer => transfer.BrokerAccountId == brokerAccountId,
+            var transfers = await _transfersRepo.GetAll(transfer => transfer.BrokerAccountId == brokerAccountId,
                 GetFullHierarchyColumns);
             return _mapper.Map<IEnumerable<BrokerAccountFundsTransferDto>>(transfers)
                 .ToList();
@@ -40,23 +46,23 @@ namespace MoneyManager.Application.Services.Brokers
         public async Task<BrokerAccountFundsTransferDto> Add(BrokerAccountFundsTransferDto transferDto)
         {
             var transfer = _mapper.Map<BrokerAccountFundsTransfer>(transferDto);
-            await _repo.Add(transfer);
+            await _transfersRepo.Add(transfer);
 
             await UpdateLinkedAccountsBalance(transferDto.AccountId, transferDto.BrokerAccountId, 
                 transferDto.Amount * (transferDto.Income ? 1: -1));
 
             await _db.Commit();
             
-            var storedRecord = await _repo.GetById(transfer.Id, GetFullHierarchyColumns);
+            var storedRecord = await _transfersRepo.GetById(transfer.Id, GetFullHierarchyColumns);
             return _mapper.Map<BrokerAccountFundsTransferDto>(storedRecord);
         }
 
         public async Task Update(BrokerAccountFundsTransferDto transferDto)
         {
-            var storedTransfer = await _repo.GetById(transferDto.Id);
+            var storedTransfer = await _transfersRepo.GetById(transferDto.Id);
 
             var transfer = _mapper.Map<BrokerAccountFundsTransfer>(transferDto);
-            _repo.Update(transfer);
+            _transfersRepo.Update(transfer);
 
             var amountBefore = storedTransfer.Amount * (storedTransfer.Income ? 1 : -1);
             var amountNow = transferDto.Amount * (transferDto.Income ? 1 : -1);
@@ -69,9 +75,9 @@ namespace MoneyManager.Application.Services.Brokers
 
         public async Task Delete(Guid id)
         {
-            var transfer = await _repo.GetById(id);
+            var transfer = await _transfersRepo.GetById(id);
 
-            await _repo.Delete(id);
+            await _transfersRepo.Delete(id);
 
             await UpdateLinkedAccountsBalance(transfer.AccountId, transfer.BrokerAccountId,
                 transfer.Amount * (transfer.Income ? -1 : 1));
@@ -81,13 +87,13 @@ namespace MoneyManager.Application.Services.Brokers
 
         public async Task UpdateLinkedAccountsBalance(Guid accountId, Guid brokerAccountId, decimal amount)
         {
-            var brokerAccount = await _brokerAccountService.GetById(brokerAccountId);
+            var brokerAccount = await _brokerAccountRepo.GetById(brokerAccountId);
             if (brokerAccount == null)
             {
                 throw new ArgumentException(nameof(brokerAccountId));
             }
 
-            var account = await _accountService.GetById(accountId);
+            var account = await _accountRepo.GetById(accountId);
 
             if (account == null)
             {
@@ -95,9 +101,9 @@ namespace MoneyManager.Application.Services.Brokers
             }
 
             brokerAccount.MainCurrencyAmount += amount;
-            await _brokerAccountService.Update(brokerAccount);
+            await _brokerAccountService.Update(_mapper.Map<BrokerAccountDTO>(brokerAccount));
             account.Balance = -1 * amount;
-            await _accountService.Update(account);
+            await _accountService.Update(_mapper.Map<AccountDTO>(account));
         }
 
         private IQueryable<BrokerAccountFundsTransfer> GetFullHierarchyColumns(IQueryable<BrokerAccountFundsTransfer> query)

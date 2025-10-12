@@ -59,10 +59,10 @@ const TopUpBrokerAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
     const onSubmit = async (data: TopUpBrokerAccountFormInput) => {
         await createBrokerAccountFundsTransfer(data as BrokerAccountFundTransferEntity)
         props.onDeposited();
+        props.modalRef.current?.closeModal();
     };
 
     const { t } = useTranslation();
-
 
     return (
         <BaseFormModal ref={props.modalRef} title={t("top_up_broker_account_modal_title")} 

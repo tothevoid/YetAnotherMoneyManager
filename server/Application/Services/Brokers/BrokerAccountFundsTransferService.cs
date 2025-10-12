@@ -11,6 +11,7 @@ using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Accounts;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Infrastructure.Entities.Accounts;
+using MoneyManager.Infrastructure.Queries;
 
 namespace MoneyManager.Application.Services.Brokers
 {
@@ -37,10 +38,15 @@ namespace MoneyManager.Application.Services.Brokers
 
         public async Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAllAsync(Guid brokerAccountId)
         {
-            var transfers = await _transfersRepo.GetAll(transfer => transfer.BrokerAccountId == brokerAccountId,
-                GetFullHierarchyColumns);
-            return _mapper.Map<IEnumerable<BrokerAccountFundsTransferDto>>(transfers)
-                .ToList();
+            var complexQuery = new ComplexQueryBuilder<BrokerAccountFundsTransfer>()
+                .AddFilter(transfer => transfer.BrokerAccountId == brokerAccountId)
+                .AddJoins(GetFullHierarchyColumns)
+                .AddOrder(transfer => transfer.Date, true)
+                .DisableTracking()
+                .GetQuery();
+
+            var transfers = await _transfersRepo.GetAll(complexQuery);
+            return _mapper.Map<IEnumerable<BrokerAccountFundsTransferDto>>(transfers).ToList();
         }
 
         public async Task<BrokerAccountFundsTransferDto> Add(BrokerAccountFundsTransferDto transferDto)

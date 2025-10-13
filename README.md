@@ -26,5 +26,4 @@ Migrations:
 Start with Docker:
 
 * Create `.env` by the `.env.example` reference
-* Execute `docker compose -p moneymanager --build -d`
-
+* Execute `docker compose -p moneymanager up --build -d`

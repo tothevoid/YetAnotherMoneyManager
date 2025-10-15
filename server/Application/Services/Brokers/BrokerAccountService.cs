@@ -104,5 +104,10 @@ namespace MoneyManager.Application.Services.Brokers
                 .Include(brokerAccount => brokerAccount.Currency)
                 .Include(brokerAccount => brokerAccount.Broker);
         }
+
+        public Task<BrokerAccountSummaryDto> GetSummary(Guid brokerAccountId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

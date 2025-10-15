@@ -41,7 +41,7 @@ const BaseFormModal = forwardRef<BaseModalRef, BaseFormModalProps>((props: BaseF
                         {props.children}
                     </Dialog.Body>
                     <Dialog.Footer>
-                        <Button type="submit" background='purple.600' mr={3}>{props.saveButtonTitle ?? t("modals_save_button")}</Button>
+                        <Button type="submit" background='action_primary' mr={3}>{props.saveButtonTitle ?? t("modals_save_button")}</Button>
                         <Button onClick={onClose}>{t("modals_cancel_button")}</Button>
                     </Dialog.Footer>
                     <Dialog.CloseTrigger asChild>

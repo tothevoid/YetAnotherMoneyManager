@@ -142,7 +142,7 @@ const BrokerAccountTypesTable: React.FC = () => {
             </Table.Body>
         </Table.Root>
         <Box padding={4}>
-            <Button background="purple.600" onClick={onAdd}>
+            <Button background="action_primary" onClick={onAdd}>
                 <Icon size='md'>
                     <MdAdd/>
                 </Icon>

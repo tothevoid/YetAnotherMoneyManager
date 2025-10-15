@@ -23,7 +23,7 @@ const BrokerAccountFundTransfer = (props: Props) => {
         <CardBody>
             <Flex justifyContent="space-between" alignItems="center">
                 <Stack direction={'row'} alignItems="center">
-                    <Text textAlign={'center'} w={225} rounded={10} padding={1} background={'purple.600'}>{formatDateTime(date, i18n, true)}</Text>
+                    <Text textAlign={'center'} w={225} rounded={10} padding={1} background={'action_primary'}>{formatDateTime(date, i18n, true)}</Text>
                     <Text fontWeight={700}>{props.fundTransfer.account?.name}</Text>
                 </Stack>
                 <Flex gap={2} justifyContent="space-between" alignItems="center">

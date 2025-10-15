@@ -50,7 +50,7 @@ const DepositStats = (props: Props) => {
 
 	if (!state.summary) {
 		return <Flex padding={5} justifyContent="center">
-			<ProgressCircle.Root color="purple">
+			<ProgressCircle.Root color="spinner_primary">
 				<ProgressCircle.Circle>
 					<ProgressCircle.Track />
 					<ProgressCircle.Range />
@@ -71,11 +71,11 @@ const DepositStats = (props: Props) => {
 
 	return <Box>
 		<Stack direction="row">
-			<Button background='purple.600' disabled={state.selectedChartType === ChartType.Earnings} 
+			<Button background='action_primary' disabled={state.selectedChartType === ChartType.Earnings} 
 				onClick={() => {switchActiveChart(ChartType.Earnings)}}>
 				{t("deposits_chart_type_earnings")}
 			</Button>
-			<Button background='purple.600' disabled={state.selectedChartType === ChartType.Stacked} 
+			<Button background='action_primary' disabled={state.selectedChartType === ChartType.Stacked} 
 				onClick={() => {switchActiveChart(ChartType.Stacked)}}>
 				{t("deposits_chart_type_stacked")}
 			</Button>

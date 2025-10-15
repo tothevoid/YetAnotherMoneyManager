@@ -168,7 +168,7 @@ const CurrenciesTable: React.FC = () => {
             </Table.Body>
         </Table.Root>
         <Stack direction={"row"} padding={4} gapX={2}>
-            <Button background="purple.600" onClick={onAdd}>
+            <Button background="action_primary" onClick={onAdd}>
                 <Icon size='md'>
                     <MdAdd/>
                 </Icon>

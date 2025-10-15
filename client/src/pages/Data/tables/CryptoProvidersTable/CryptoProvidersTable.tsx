@@ -56,7 +56,7 @@ const CryptoProvidersTable: React.FC = () => {
 
 	return <Box color="text_primary">
 		<Box>
-			<Button background="purple.600" onClick={onAdd}>
+			<Button background="action_primary" onClick={onAdd}>
 				<Icon size='md'>
 					<MdAdd/>
 				</Icon>

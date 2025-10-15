@@ -18,9 +18,9 @@ export default function SettingsSidebar() {
 				</Text>
 				{dataTablesConfig.map((menuItem) => (
 					<Link key={menuItem.id} href={menuItem.href} p={2} borderRadius="md"
-						bg={tab === menuItem.id ? "purple.500" : "transparent"}
+						bg={tab === menuItem.id ? "button_primary" : "transparent"}
 						color="text_primary"
-						_hover={{bg: "purple.500"}}>
+						_hover={{bg: "button_primary"}}>
 						{menuItem.label}
 					</Link>
 				))}

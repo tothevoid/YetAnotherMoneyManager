@@ -78,7 +78,7 @@ const DepositsRangeSlider = (props: Props) => {
         value={[state.selectedMinMonths!, state.selectedMaxMonths!]} step={1}>
         <Slider.Control>
         <Slider.Track>
-            <Slider.Range background={"purple.600"} />
+            <Slider.Range background={"action_primary"} />
         </Slider.Track>
         <Slider.Thumbs />
         <Slider.Marks whiteSpace="nowrap" marks={state.marks}/>

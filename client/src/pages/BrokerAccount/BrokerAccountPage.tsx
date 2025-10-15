@@ -132,19 +132,19 @@ const BrokerAccountPage: React.FC = () => {
         <BrokerAccountSecuritiesList ref={securitiesRef} brokerAccount={state.brokerAccount}/>
         <Tabs.Root variant="enclosed" defaultValue="stats">
             <Tabs.List background={"background_primary"}>
-                 <Tabs.Trigger _selected={{bg: "purple.600"}} color="text_primary" value="stats">
+                 <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="stats">
                     <MdAttachMoney />
                      {t("broker_account_page_stats_tab")}
                 </Tabs.Trigger>
-                <Tabs.Trigger _selected={{bg: "purple.600"}} color="text_primary" value="transactions">
+                <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="transactions">
                     <GrTransaction />
                     {t("broker_account_page_transactions_tab")}
                 </Tabs.Trigger>
-                <Tabs.Trigger _selected={{bg: "purple.600"}} color="text_primary" value="dividends">
+                <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="dividends">
                     <PiCoinsLight />
                      {t("broker_account_page_dividends_tab")}
                 </Tabs.Trigger>
-                <Tabs.Trigger _selected={{bg: "purple.600"}} color="text_primary" value="transfers">
+                <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="transfers">
                     <MdAttachMoney />
                      {t("broker_account_page_transfers_tab")}
                 </Tabs.Trigger>

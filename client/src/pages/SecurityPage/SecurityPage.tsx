@@ -66,7 +66,7 @@ const SecurityPage: React.FC = () => {
 		<Stack alignItems="center" gap={2} direction="row">
 			<Text fontWeight={900} fontSize="3xl">{ticker}</Text>
 			<Text>({name})</Text>
-			<Text paddingX={4} paddingY={1} borderRadius={4} backgroundColor="purple.600">{type.name}</Text>
+			<Text paddingX={4} paddingY={1} borderRadius={4} backgroundColor="action_primary">{type.name}</Text>
 		</Stack>
 		<Stack marginBlock={4} gap={4} dir="column">
 			<SimpleGrid gap={4} templateColumns='repeat(auto-fill, minmax(450px, 3fr))'>
@@ -87,15 +87,15 @@ const SecurityPage: React.FC = () => {
 
   		<Tabs.Root variant="enclosed" defaultValue="history">
 			<Tabs.List background={"background_primary"}>
-				<Tabs.Trigger _selected={{bg: "purple.600"}} color="text_primary" value="history">
+				<Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="history">
 					<MdHistory/>
 					{t("security_page_tabs_history")}
 				</Tabs.Trigger>
-				<Tabs.Trigger _selected={{bg: "purple.600"}} color="text_primary" value="transactions">
+				<Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="transactions">
 					<GrTransaction />
 					 {t("security_page_tabs_transactions")}
 				</Tabs.Trigger>
-				<Tabs.Trigger _selected={{bg: "purple.600"}} color="text_primary" value="dividends">
+				<Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="dividends">
 					<PiCoinsLight />
 					 {t("security_page_tabs_dividends")}
 				</Tabs.Trigger>

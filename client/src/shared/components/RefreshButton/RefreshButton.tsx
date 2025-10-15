@@ -10,7 +10,7 @@ interface Props {
 }
 
 const RefreshButton: React.FC<Props> = ({title, isRefreshing, transparent, onClick}) => {
-    const background = transparent ? "transparent" : "purple.600"
+    const background = transparent ? "transparent" : "action_primary"
     return <Button disabled={isRefreshing} background={background} onClick={onClick}>
         <Icon 
             transition="transform 0.3s ease"

@@ -79,7 +79,7 @@ const CryptocurrencyModal: React.FC<ModalProps> = (props: ModalProps) => {
                 {/* Fix group hover */}
                 <Button 
                     background={"transparent"} 
-                    color="purple.600" 
+                    color="action_primary" 
                     position="absolute"
                     top="0"
                     left="0"

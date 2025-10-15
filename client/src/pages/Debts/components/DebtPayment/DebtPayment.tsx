@@ -27,7 +27,7 @@ const DebtPayment = (props: Props) => {
             <CardBody>
                 <Flex justifyContent="space-between" alignItems="center">
                     <Stack direction={"row"}>
-                        <Text textAlign={'center'} w={150} rounded={10} padding={1} background={'purple.600'}>{formatDate(date, i18n, false)}</Text>
+                        <Text textAlign={'center'} w={150} rounded={10} padding={1} background={'action_primary'}>{formatDate(date, i18n, false)}</Text>
                         <Text fontWeight={600}>{title}</Text>
                     </Stack>
                     <Flex gap={2} justifyContent="space-between" alignItems="center">

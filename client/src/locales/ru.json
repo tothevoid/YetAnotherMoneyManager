@@ -231,6 +231,7 @@
     "dividend_payment_form_security": "Ценная бумага",
     "dividend_payment_form_payment": "Выплата",
 
+    "broker_account_page_stats_tab": "Статистика",
     "broker_account_page_transactions_tab": "Транзакции",
     "broker_account_page_dividends_tab": "Дивиденды",
     "broker_account_page_transfers_tab": "Переводы",

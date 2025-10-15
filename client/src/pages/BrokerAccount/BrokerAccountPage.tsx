@@ -17,6 +17,7 @@ import DividendPaymentsList from "./components/DividendPaymentsList/DividendPaym
 import { getEarningsByBrokerAccount } from "../../api/brokers/dividendPaymentApi";
 import { MdAttachMoney } from "react-icons/md";
 import BrokerAccountFundTransfersList from "./components/BrokerAccountFundTransfersList/BrokerAccountFundTransfersList";
+import BrokerAccountStats from "./components/BrokerAccountStats/BrokerAccountStats";
 
 interface State {
     brokerAccount: BrokerAccountEntity | null,
@@ -129,8 +130,12 @@ const BrokerAccountPage: React.FC = () => {
             <Text backgroundColor="background_primary" borderColor="border_primary" color={profitAndLossWithDividends.color} textAlign={'center'} minW={150} rounded={10} padding={2}>{t("broker_account_page_total_profit_and_loss")}: {profitAndLossWithDividends.profitAndLoss}  | {profitAndLossWithDividends.profitAndLossPercentage}%</Text>
         </Stack>
         <BrokerAccountSecuritiesList ref={securitiesRef} brokerAccount={state.brokerAccount}/>
-        <Tabs.Root variant="enclosed" defaultValue="transactions">
+        <Tabs.Root variant="enclosed" defaultValue="stats">
             <Tabs.List background={"background_primary"}>
+                 <Tabs.Trigger _selected={{bg: "purple.600"}} color="text_primary" value="stats">
+                    <MdAttachMoney />
+                     {t("broker_account_page_stats_tab")}
+                </Tabs.Trigger>
                 <Tabs.Trigger _selected={{bg: "purple.600"}} color="text_primary" value="transactions">
                     <GrTransaction />
                     {t("broker_account_page_transactions_tab")}
@@ -144,6 +149,9 @@ const BrokerAccountPage: React.FC = () => {
                      {t("broker_account_page_transfers_tab")}
                 </Tabs.Trigger>
             </Tabs.List>
+            <Tabs.Content value="stats">
+               <BrokerAccountStats brokerAccountId={state.brokerAccount.id}/>
+            </Tabs.Content>
             <Tabs.Content value="transactions">
                 <SecurityTransactionsList onDataReloaded={onDataReloaded} brokerAccountId={brokerAccountId}/>
             </Tabs.Content>

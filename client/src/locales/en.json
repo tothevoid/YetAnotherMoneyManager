@@ -230,6 +230,7 @@
     "dividend_payment_form_security": "Security",
     "dividend_payment_form_payment": "Payment",
 
+    "broker_account_page_stats_tab": "Stats",
     "broker_account_page_transactions_tab": "Transactions",
     "broker_account_page_dividends_tab": "Dividends",
     "broker_account_page_transfers_tab": "Transfers",

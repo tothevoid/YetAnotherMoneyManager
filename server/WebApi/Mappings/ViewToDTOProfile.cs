@@ -85,6 +85,9 @@ namespace MoneyManager.WebApi.Mappings
             CreateMap<BrokerAccountStatsDto, BrokerAccountStatsModel>().ReverseMap();
             CreateMap<BrokerAccountSecurityStatsDto, BrokerAccountSecurityStatsModel>().ReverseMap();
             CreateMap<BrokerAccountTransfersStatsDto, BrokerAccountTransfersStatsModel>().ReverseMap();
+
+            CreateMap<BrokerAccountMonthTransferDto, BrokerAccountMonthTransferModel>().ReverseMap();
+            CreateMap<BrokerAccountDayTransferDto, BrokerAccountDayTransferModel>().ReverseMap();
         }
     }
 }

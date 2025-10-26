@@ -3,6 +3,7 @@ using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Application.Interfaces.Integrations.Stock;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -39,6 +40,28 @@ namespace MoneyManager.Application.Services.Brokers
                 TransferStats = await GetTransfersStats(brokerAccountId),
                 BrokerAccountStats = await GetBrokerAccountStats(brokerAccountId, from, to)
             };
+        }
+
+        public async Task<IEnumerable<BrokerAccountDayTransferDto>> GetMonthTransfersHistory(Guid brokerAccountId, int month, int year)
+        {
+            //TODO: Add db month and year filter
+
+            var transfers = await _fundsTransferService.GetAllAsync(brokerAccountId);
+
+            return transfers.Where(transfer => transfer.Date.Year == year && transfer.Date.Month == month)
+                .Select(transfer => new BrokerAccountDayTransferDto()
+                    { DayIndex = transfer.Date.Day, Income = transfer.Income });
+        }
+
+        public async Task<IEnumerable<BrokerAccountMonthTransferDto>> GetYearTransfersHistory(Guid brokerAccountId, int year)
+        {
+            //TODO: Add db year filter
+
+            var transfers = await _fundsTransferService.GetAllAsync(brokerAccountId);
+
+            return transfers.Where(transfer => transfer.Date.Year == year)
+                .Select(transfer => new BrokerAccountMonthTransferDto()
+                    { MonthIndex = transfer.Date.Month, Income = transfer.Income });
         }
 
         private async Task<BrokerAccountTransfersStatsDto> GetTransfersStats(Guid brokerAccountId)

@@ -1,4 +1,6 @@
 import config from '../../config' 
+import { BrokerAccountDayTransferEntity } from '../../models/brokers/BrokerAccountDayTransferEntity';
+import { BrokerAccountMonthTransferEntity } from '../../models/brokers/BrokerAccountMonthTransferEntity';
 import { BrokerAccountSummaryEntity } from '../../models/brokers/BrokerAccountSummaryEntity';
 import { checkPromiseStatus } from '../../shared/utilities/webApiUtilities';
 import { prepareBrokerAccountsSecurityStats } from './brokerAccountSummaryApiMapping';
@@ -10,4 +12,16 @@ export const getBrokerAccountStats = async (brokerAccountId: string, from: Date,
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
         .then((data: BrokerAccountSummaryEntity) => prepareBrokerAccountsSecurityStats(data));
+}
+
+export const getMonthTransfersHistory = async (brokerAccountId: string, month: number, year: number): Promise<BrokerAccountDayTransferEntity[]> => {
+    return await fetch(`${basicUrl}/GetMonthTransfersHistory?brokerAccountId=${brokerAccountId}&month=${month}&year=${year}`, { method: "GET"})
+        .then(checkPromiseStatus)
+        .then((response: Response) => response.json()) as BrokerAccountDayTransferEntity[];
+}
+
+export const getYearTransfersHistory = async (brokerAccountId: string, year: number): Promise<BrokerAccountMonthTransferEntity[]> => {
+    return await fetch(`${basicUrl}/GetYearTransfersHistory?brokerAccountId=${brokerAccountId}&year=${year}`, { method: "GET"})
+        .then(checkPromiseStatus)
+        .then((response: Response) => response.json()) as BrokerAccountMonthTransferEntity[];
 }

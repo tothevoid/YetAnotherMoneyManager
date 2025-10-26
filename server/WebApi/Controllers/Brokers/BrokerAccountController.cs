@@ -14,9 +14,12 @@ namespace MoneyManager.WebApi.Controllers.Brokers
     [ApiController]
     public class BrokerAccountController : ControllerBase
     {
+        private readonly IBrokerAccountSummaryService _brokerAccountSummaryService;
         private readonly IBrokerAccountService _brokerAccountService;
+
         private readonly IMapper _mapper;
-        public BrokerAccountController(IBrokerAccountService brokerAccountService, IMapper mapper)
+        public BrokerAccountController(IBrokerAccountService brokerAccountService, 
+            IBrokerAccountSummaryService brokerAccountSummaryService, IMapper mapper)
         {
             _mapper = mapper;
             _brokerAccountService = brokerAccountService;
@@ -30,9 +33,9 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         }
 
         [HttpGet("GetSummary")]
-        public async Task<BrokerAccountSummaryModel> GetSummary(Guid brokerAccountId)
+        public async Task<BrokerAccountSummaryModel> GetSummary(Guid brokerAccountId, DateTime from, DateTime to)
         {
-            var brokerAccount = await _brokerAccountService.GetSummary(brokerAccountId);
+            var brokerAccount = await _brokerAccountSummaryService.GetSummary(brokerAccountId, from, to);
             return _mapper.Map<BrokerAccountSummaryModel>(brokerAccount);
         }
 

@@ -5,6 +5,6 @@ namespace MoneyManager.Application.Interfaces.Currencies
 {
     public interface IDashboardService
     {
-        public Task<DashboardDto> GetDashboard();
+        public Task<GlobalDashboardDto> GetDashboard();
     }
 }

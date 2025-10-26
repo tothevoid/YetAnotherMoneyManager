@@ -1,25 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using MoneyManager.Application.DTO.Securities;
 
 namespace MoneyManager.Application.DTO.Brokers
 {
     public class BrokerAccountSummaryDto
     {
-        public decimal TotalIncome { get; set; }
-        public decimal TotalDeposit { get; set; }
-        public decimal TotalWithdraw { get; set; }
-        public List<DailyStatDto> DailyStats { get; set; }
+        public BrokerAccountTransfersStatsDto TransferStats { get; set; }
+
+        public BrokerAccountStatsDto BrokerAccountStats { get; set; }
     }
 
-    public class DailyStatDto
+    public class BrokerAccountStatsDto
     {
-        public DailyStatDto Security { get; set; }
+        public IEnumerable<BrokerAccountSecurityStatsDto> SecurityStats { get; set; }
+
+        public decimal InvestedValue { get; set; }
+
+        public decimal CurrentValue { get; set; }
+
+        public decimal TotalDividendsValue { get; set; }
+    }
+
+    public class BrokerAccountSecurityStatsDto
+    {
+        public SecurityDTO Security { get; set; }
+
         public decimal FirstPrice { get; set; }
+
         public decimal LastPrice { get; set; }
+
         public decimal MinPrice { get; set; }
+
         public decimal MaxPrice { get; set; }
+    }
+
+    public class BrokerAccountTransfersStatsDto
+    {
+        public decimal TotalDeposited { get; set; }
+
+        public decimal TotalWithdrawn { get; set; }
     }
 }

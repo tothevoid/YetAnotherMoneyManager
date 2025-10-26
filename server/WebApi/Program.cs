@@ -87,6 +87,7 @@ builder.Services.AddTransient<IBrokerAccountSecurityService, BrokerAccountSecuri
 builder.Services.AddTransient<IBrokerAccountService, BrokerAccountService>();
 builder.Services.AddTransient<IBrokerAccountTypeService, BrokerAccountTypeService>();
 builder.Services.AddTransient<IBrokerService, BrokerService>();
+builder.Services.AddTransient<IBrokerAccountSummaryService, BrokerAccountSummaryService>();
 builder.Services.AddTransient<ISecurityService, SecurityService>();
 builder.Services.AddTransient<ISecurityTransactionService, SecurityTransactionService>();
 builder.Services.AddTransient<ISecurityTypeService, SecurityTypeService>();

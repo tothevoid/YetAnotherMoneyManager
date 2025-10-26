@@ -3,24 +3,24 @@ using System.Collections.Generic;
 
 namespace MoneyManager.WebApi.Models.Dashboard
 {
-    public class DashboardModel
+    public class GlobalDashboardModel
     {
         public decimal Total { get; set; }
 
-        public TransactionStatsModel TransactionStats { get; set; }
+        public TransactionsGlobalDashboardModel TransactionsGlobalDashboard { get; set; }
 
-        public BrokerAccountStatsModel BrokerAccountStats { get; set; }
+        public BrokerAccountsGlobalDashboardModel BrokerAccountsGlobalDashboard { get; set; }
 
-        public AccountStatsModel AccountStats { get; set; }
+        public AccountsGlobalDashboardModel AccountsGlobalDashboard { get; set; }
 
-        public DebtStatsModel DebtStats { get; set; }
+        public DebtsGlobalDashboardModel DebtsGlobalDashboard { get; set; }
 
-        public DepositStats DepositStats { get; set; }
+        public DepositsGlobalDashboardDto DepositsGlobalDashboardDto { get; set; }
 
-        public CryptoAccountStatsModel CryptoAccountStats { get; set; }
+        public CryptoAccountsGlobalDashboardModel CryptoAccountsGlobalDashboard { get; set; }
     }
 
-    public class TransactionStatsModel
+    public class TransactionsGlobalDashboardModel
     {
         public decimal SpentsTotal { get; set; }
 
@@ -31,21 +31,21 @@ namespace MoneyManager.WebApi.Models.Dashboard
         public IEnumerable<DistributionModel> IncomesDistribution { get; set; }
     }
 
-    public class BrokerAccountStatsModel
+    public class BrokerAccountsGlobalDashboardModel
     {
         public decimal Total { get; set; }
 
         public IEnumerable<DistributionModel> Distribution { get; set; }
     }
 
-    public class DebtStatsModel
+    public class DebtsGlobalDashboardModel
     {
         public decimal Total { get; set; }
 
         public IEnumerable<DistributionModel> Distribution { get; set; }
     }
 
-    public class DepositStatsModel
+    public class DepositsGlobalDashboardModel
     {
         public decimal Total { get; set; }
 
@@ -58,7 +58,7 @@ namespace MoneyManager.WebApi.Models.Dashboard
         public IEnumerable<DistributionModel> EarningsDistribution { get; set; }
     }
 
-    public class AccountStatsModel
+    public class AccountsGlobalDashboardModel
     {
         public decimal Total { get; set; }
 
@@ -84,7 +84,7 @@ namespace MoneyManager.WebApi.Models.Dashboard
         public decimal ConvertedAmount { get; set; }
     }
 
-    public class CryptoAccountStatsModel
+    public class CryptoAccountsGlobalDashboardModel
     {
         public decimal Total { get; set; }
 

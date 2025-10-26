@@ -53,7 +53,7 @@ namespace MoneyManager.Application.Services.Dashboard
             _cryptoAccountCryptocurrencyService = cryptoAccountCryptocurrencyService;
         }
 
-        public async Task<DashboardDto> GetDashboard()
+        public async Task<GlobalDashboardDto> GetDashboard()
         {
             var accountStats = await GetAccountData();
             var brokerAccountStats = await GetBrokerAccountData();
@@ -61,20 +61,20 @@ namespace MoneyManager.Application.Services.Dashboard
             var depositStats = await GetDepositStats();
             var cryptoAccountStats = await GetCryptoAccountStats();
 
-            return new DashboardDto()
+            return new GlobalDashboardDto()
             {
                 //TODO: make it via setters
                 Total = accountStats.Total + brokerAccountStats.Total + debtsStats.Total + depositStats.Total + cryptoAccountStats.Total,
-                AccountStats = accountStats,
+                AccountsGlobalDashboard = accountStats,
                 BrokerAccountStats = brokerAccountStats,
-                DebtStats = debtsStats,
-                DepositStats = depositStats,
+                DebtsGlobalDashboard = debtsStats,
+                DepositsGlobalDashboardDto = depositStats,
                 TransactionStats = await GetTransactionDate(),
-                CryptoAccountStats = cryptoAccountStats
+                CryptoAccountsGlobalDashboard = cryptoAccountStats
             };
         }
 
-        private async Task<TransactionStatsDto> GetTransactionDate()
+        private async Task<TransactionsGlobalDashboardDto> GetTransactionDate()
         {
             var userProfile = await _userProfile.Get();
 
@@ -102,7 +102,7 @@ namespace MoneyManager.Application.Services.Dashboard
                 }
             }
 
-            return new TransactionStatsDto()
+            return new TransactionsGlobalDashboardDto()
             {
                 SpentsTotal = spentsTotal,
                 IncomesTotal = incomesTotal,
@@ -142,7 +142,7 @@ namespace MoneyManager.Application.Services.Dashboard
             return convertedAmount;
         }
 
-        private async Task<AccountStatsDto> GetAccountData()
+        private async Task<AccountsGlobalDashboardDto> GetAccountData()
         {
             var accounts = await _accountService.GetAll(true);
 
@@ -165,7 +165,7 @@ namespace MoneyManager.Application.Services.Dashboard
                 }
             }
 
-            return new AccountStatsDto()
+            return new AccountsGlobalDashboardDto()
             {
                 Total = cashSummary + bankAccountSummary,
 
@@ -194,7 +194,7 @@ namespace MoneyManager.Application.Services.Dashboard
             return convertedAmount;
         }
 
-        private async Task<BrokerAccountStatsDto> GetBrokerAccountData()
+        private async Task<BrokerAccountsGlobalDashboardDto> GetBrokerAccountData()
         {
             var brokerAccounts = await _brokerAccountService.GetAll();
 
@@ -216,14 +216,14 @@ namespace MoneyManager.Application.Services.Dashboard
                 });
             }
 
-            return new BrokerAccountStatsDto()
+            return new BrokerAccountsGlobalDashboardDto()
             {
                 Total = brokerAccountsSummary,
                 Distribution = brokerAccountsValues
             };
         }
 
-        private async Task<DebtStatsDto> GetDebtsData()
+        private async Task<DebtsGlobalDashboardDto> GetDebtsData()
         {
             var debts = await _debtService.GetAll(true);
 
@@ -245,14 +245,14 @@ namespace MoneyManager.Application.Services.Dashboard
                 });
             }
 
-            return new DebtStatsDto()
+            return new DebtsGlobalDashboardDto()
             {
                 Total = debtsSummary,
                 Distribution = debtsDistribution
             };
         }
 
-        private async Task<DepositStats> GetDepositStats()
+        private async Task<DepositsGlobalDashboardDto> GetDepositStats()
         {
             var deposits = await _depositService.GetAllActive();
 
@@ -292,7 +292,7 @@ namespace MoneyManager.Application.Services.Dashboard
                 });
             }
 
-            return new DepositStats()
+            return new DepositsGlobalDashboardDto()
             {
                 Total = totalStartedAmount + totalEarned,
 
@@ -305,7 +305,7 @@ namespace MoneyManager.Application.Services.Dashboard
 
         }
 
-        private async Task<CryptoAccountStatsDto> GetCryptoAccountStats()
+        private async Task<CryptoAccountsGlobalDashboardDto> GetCryptoAccountStats()
         {
             var cryptoAccounts = await _cryptoAccountService.GetAll();
 
@@ -342,7 +342,7 @@ namespace MoneyManager.Application.Services.Dashboard
                 });
             }
 
-            return new CryptoAccountStatsDto()
+            return new CryptoAccountsGlobalDashboardDto()
             {
                 Total = brokerAccountsSummary,
                 Distribution = cryptoAccountsValues

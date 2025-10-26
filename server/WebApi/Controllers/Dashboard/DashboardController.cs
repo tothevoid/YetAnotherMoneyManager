@@ -26,10 +26,10 @@ namespace MoneyManager.WebApi.Controllers.Dashboard
             _dashboardService = dashboardService;
         }
 
-        public async Task<DashboardModel> Get()
+        public async Task<GlobalDashboardModel> Get()
         {
             var dasboard = await _dashboardService.GetDashboard();
-            return _mapper.Map<DashboardModel>(dasboard);
+            return _mapper.Map<GlobalDashboardModel>(dasboard);
         }
     }
 }

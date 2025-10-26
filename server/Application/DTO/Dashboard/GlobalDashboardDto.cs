@@ -2,18 +2,18 @@
 
 namespace MoneyManager.Application.DTO.Dashboard
 {
-    public class DashboardDto
+    public class GlobalDashboardDto
     {
         public decimal Total { get; set; }
-        public TransactionStatsDto TransactionStats { get; set; } = new TransactionStatsDto();
-        public BrokerAccountStatsDto BrokerAccountStats { get; set; } = new BrokerAccountStatsDto();
-        public AccountStatsDto AccountStats { get; set; } = new AccountStatsDto();
-        public DebtStatsDto DebtStats { get; set; } = new DebtStatsDto();
-        public DepositStats DepositStats { get; set; } = new DepositStats();
-        public CryptoAccountStatsDto CryptoAccountStats { get; set; } = new CryptoAccountStatsDto();
+        public TransactionsGlobalDashboardDto TransactionStats { get; set; } = new TransactionsGlobalDashboardDto();
+        public BrokerAccountsGlobalDashboardDto BrokerAccountStats { get; set; } = new BrokerAccountsGlobalDashboardDto();
+        public AccountsGlobalDashboardDto AccountsGlobalDashboard { get; set; } = new AccountsGlobalDashboardDto();
+        public DebtsGlobalDashboardDto DebtsGlobalDashboard { get; set; } = new DebtsGlobalDashboardDto();
+        public DepositsGlobalDashboardDto DepositsGlobalDashboardDto { get; set; } = new DepositsGlobalDashboardDto();
+        public CryptoAccountsGlobalDashboardDto CryptoAccountsGlobalDashboard { get; set; } = new CryptoAccountsGlobalDashboardDto();
     }
 
-    public class TransactionStatsDto
+    public class TransactionsGlobalDashboardDto
     {
         public decimal SpentsTotal { get; set; }
 
@@ -24,21 +24,21 @@ namespace MoneyManager.Application.DTO.Dashboard
         public IEnumerable<DistributionDto> IncomesDistribution { get; set; }
     }
 
-    public class BrokerAccountStatsDto
+    public class BrokerAccountsGlobalDashboardDto
     {
         public decimal Total { get; set; }
 
         public IEnumerable<DistributionDto> Distribution { get; set; }
     }
 
-    public class DebtStatsDto
+    public class DebtsGlobalDashboardDto
     {
         public decimal Total { get; set; }
 
         public IEnumerable<DistributionDto> Distribution { get; set; }
     }
 
-    public class DepositStats
+    public class DepositsGlobalDashboardDto
     {
         public decimal Total { get; set; }
 
@@ -51,7 +51,7 @@ namespace MoneyManager.Application.DTO.Dashboard
         public IEnumerable<DistributionDto> EarningsDistribution { get; set; }
     }
 
-    public class AccountStatsDto 
+    public class AccountsGlobalDashboardDto 
     {
         public decimal Total { get; set; }
 
@@ -78,7 +78,7 @@ namespace MoneyManager.Application.DTO.Dashboard
         public decimal ConvertedAmount { get; set; }
     }
 
-    public class CryptoAccountStatsDto
+    public class CryptoAccountsGlobalDashboardDto
     {
         public decimal Total { get; set; }
 

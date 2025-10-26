@@ -32,17 +32,17 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         }
 
         [HttpGet("GetMonthTransfersHistory")]
-        public async Task<BrokerAccountDayTransferModel> GetMonthTransfersHistory(Guid brokerAccountId, int month, int year)
+        public async Task<IEnumerable<BrokerAccountDayTransferModel>> GetMonthTransfersHistory(Guid brokerAccountId, int month, int year)
         {
             var brokerAccount = await _brokerAccountSummaryService.GetMonthTransfersHistory(brokerAccountId, month, year);
-            return _mapper.Map<BrokerAccountDayTransferModel>(brokerAccount);
+            return _mapper.Map<IEnumerable<BrokerAccountDayTransferModel>>(brokerAccount);
         }
 
         [HttpGet("GetYearTransfersHistory")]
-        public async Task<BrokerAccountMonthTransferModel> GetYearTransfersHistory(Guid brokerAccountId, int year)
+        public async Task<IEnumerable<BrokerAccountMonthTransferModel>> GetYearTransfersHistory(Guid brokerAccountId, int year)
         {
             var brokerAccount = await _brokerAccountSummaryService.GetYearTransfersHistory(brokerAccountId, year);
-            return _mapper.Map<BrokerAccountMonthTransferModel>(brokerAccount);
+            return _mapper.Map<IEnumerable<BrokerAccountMonthTransferModel>>(brokerAccount);
         }
     }
 }

@@ -50,7 +50,7 @@ namespace MoneyManager.Application.Services.Brokers
 
             return transfers.Where(transfer => transfer.Date.Year == year && transfer.Date.Month == month)
                 .Select(transfer => new BrokerAccountDayTransferDto()
-                    { DayIndex = transfer.Date.Day, Income = transfer.Income });
+                    { DayIndex = transfer.Date.Day, Income = transfer.Income, Value = transfer.Amount});
         }
 
         public async Task<IEnumerable<BrokerAccountMonthTransferDto>> GetYearTransfersHistory(Guid brokerAccountId, int year)
@@ -61,7 +61,7 @@ namespace MoneyManager.Application.Services.Brokers
 
             return transfers.Where(transfer => transfer.Date.Year == year)
                 .Select(transfer => new BrokerAccountMonthTransferDto()
-                    { MonthIndex = transfer.Date.Month, Income = transfer.Income });
+                    { MonthIndex = transfer.Date.Month, Income = transfer.Income, Value = transfer.Amount });
         }
 
         private async Task<BrokerAccountTransfersStatsDto> GetTransfersStats(Guid brokerAccountId)

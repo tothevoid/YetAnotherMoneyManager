@@ -56,14 +56,14 @@ namespace MoneyManager.WebApi.Mappings
 
             CreateMap<UserProfileModel, UserProfileDto>().ReverseMap();
 
-            CreateMap<DashboardDto, DashboardModel>();
-            CreateMap<TransactionStatsDto, TransactionStatsModel>();
-            CreateMap<BrokerAccountStatsDto, BrokerAccountStatsModel>();
-            CreateMap<AccountStatsDto, AccountStatsModel>();
+            CreateMap<GlobalDashboardDto, GlobalDashboardModel>();
+            CreateMap<TransactionsGlobalDashboardDto, TransactionsGlobalDashboardModel>();
+            CreateMap<BrokerAccountsGlobalDashboardDto, BrokerAccountsGlobalDashboardModel>();
+            CreateMap<AccountsGlobalDashboardDto, AccountsGlobalDashboardModel>();
             CreateMap<DistributionDto, DistributionModel>().ReverseMap();
-            CreateMap<DebtStatsDto, DebtStatsModel>().ReverseMap();
-            CreateMap<DepositStatsModel, DepositStats>().ReverseMap();
-            CreateMap<CryptoAccountStatsDto, CryptoAccountStatsModel>().ReverseMap();
+            CreateMap<DebtsGlobalDashboardDto, DebtsGlobalDashboardModel>().ReverseMap();
+            CreateMap<DepositsGlobalDashboardModel, DepositsGlobalDashboardDto>().ReverseMap();
+            CreateMap<CryptoAccountsGlobalDashboardDto, CryptoAccountsGlobalDashboardModel>().ReverseMap();
 
             CreateMap<SecurityTransactionsHistoryDto, SecurityTransactionsHistoryModel>();
 
@@ -81,8 +81,10 @@ namespace MoneyManager.WebApi.Mappings
             CreateMap<BrokerAccountFundsTransferDto, BrokerAccountFundsTransferModel>().ReverseMap();
 
             CreateMap<BrokerAccountSummaryDto, BrokerAccountSummaryModel>().ReverseMap();
-            CreateMap<DailyStatDto, DailyStatModel>().ReverseMap();
-            
+
+            CreateMap<BrokerAccountStatsDto, BrokerAccountStatsModel>().ReverseMap();
+            CreateMap<BrokerAccountSecurityStatsDto, BrokerAccountSecurityStatsModel>().ReverseMap();
+            CreateMap<BrokerAccountTransfersStatsDto, BrokerAccountTransfersStatsModel>().ReverseMap();
         }
     }
 }

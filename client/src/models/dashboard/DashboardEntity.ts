@@ -1,31 +1,31 @@
-export interface Dashboard {
-	transactionStats: TransactionStats,
-	brokerAccountStats: BrokerAccountStats,
-	accountStats: AccountStats,
-	debtStats: DebtStats,
-	depositStats: DepositStats,
-	cryptoAccountStats: CryptoAccountStats,
+export interface GlobalDashboard {
+	transactionsGlobalDashboard: TransactionsGlobalDashboard,
+	brokerAccountsGlobalDashboard: BrokerAccountsGlobalDashboard,
+	accountsGlobalDashboard: AccountsGlobalDashboard,
+	debtsGlobalDashboard: DebtsGlobalDashboard,
+	depositsGlobalDashboard: DepositsGlobalDashboard,
+	cryptoAccountsGlobalDashboard: CryptoAccountsGlobalDashboard,
 	total: number
 }
 
-export interface TransactionStats {
+export interface TransactionsGlobalDashboard {
 	spentsTotal: number,
 	incomesTotal: number,
 	spentsDistribution: DistributionModel[],
 	incomesDistribution: DistributionModel[],
 }
 
-export interface BrokerAccountStats {
+export interface BrokerAccountsGlobalDashboard {
 	total: number,
 	distribution: DistributionModel[],
 }
 
-export interface CryptoAccountStats {
+export interface CryptoAccountsGlobalDashboard {
 	total: number,
 	distribution: DistributionModel[],
 }
 
-export interface AccountStats {
+export interface AccountsGlobalDashboard {
 	total: number,
 	totalCash: number,
 	totalBankAccount: number,
@@ -41,12 +41,12 @@ export interface DistributionModel
 	convertedAmount: number
 }
 
-export interface DebtStats {
+export interface DebtsGlobalDashboard {
 	total: number,
 	distribution: DistributionModel[],
 }
 
-export interface DepositStats {
+export interface DepositsGlobalDashboard {
 	totalStartedAmount: number,
 	totalEarned: number,
 	startedAmountDistribution: DistributionModel[],

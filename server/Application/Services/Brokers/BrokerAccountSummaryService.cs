@@ -16,7 +16,7 @@ namespace MoneyManager.Application.Services.Brokers
         private readonly IDividendPaymentService _dividendPaymentService;
         private readonly IStockConnector _stockConnector;
 
-        public BrokerAccountSummaryService(Mapper mapper,
+        public BrokerAccountSummaryService(
             IBrokerAccountSecurityService brokerAccountSecuritySecurityService,
             IBrokerAccountFundsTransferService fundsTransferService,
             IBrokerAccountService brokerAccountService,

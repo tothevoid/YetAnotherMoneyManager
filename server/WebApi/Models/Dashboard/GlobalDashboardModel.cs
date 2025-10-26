@@ -15,7 +15,7 @@ namespace MoneyManager.WebApi.Models.Dashboard
 
         public DebtsGlobalDashboardModel DebtsGlobalDashboard { get; set; }
 
-        public DepositsGlobalDashboardDto DepositsGlobalDashboardDto { get; set; }
+        public DepositsGlobalDashboardModel DepositsGlobalDashboard { get; set; }
 
         public CryptoAccountsGlobalDashboardModel CryptoAccountsGlobalDashboard { get; set; }
     }

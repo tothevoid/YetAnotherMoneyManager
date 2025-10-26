@@ -4,13 +4,13 @@ import { Text} from "@chakra-ui/react";
 import { useUserProfile } from "../../../features/UserProfileSettingsModal/hooks/UserProfileContext";
 import { Fragment, useEffect, useState } from "react";
 import { getDashboard } from "../../api/dashboard/dashobardApi";
-import { Dashboard, DistributionModel } from "../../models/dashboard/DashboardEntity";
+import { GlobalDashboard, DistributionModel } from "../../models/dashboard/DashboardEntity";
 import { formatMoneyByCurrencyCulture } from "../../shared/utilities/formatters/moneyFormatter";
 import DistributionChart from "./components/DistributionChart";
 import Placeholder from "../../shared/components/Placeholder/Placeholder";
 
 interface State {
-	dashboard: Dashboard | null
+	dashboard: GlobalDashboard | null
 }
 
 const DashboardPage: React.FC = () => {
@@ -49,13 +49,13 @@ const DashboardPage: React.FC = () => {
 	const {dashboard} = state;
 
 	const totalsData: DistributionModel[] = [
-		{ name: t("dashboard_cash"), convertedAmount: dashboard.accountStats.totalCash, currency, amount: dashboard.accountStats.totalCash },
-		{ name: t("dashboard_securities"), convertedAmount: dashboard.brokerAccountStats.total, currency, amount: dashboard.brokerAccountStats.total},
-		{ name: t("dashboard_deposits"), convertedAmount: dashboard.depositStats.totalStartedAmount, currency, amount: dashboard.depositStats.totalStartedAmount},
-		{ name: t("dashboard_deposit_incomes"), convertedAmount: dashboard.depositStats.totalEarned, currency, amount: dashboard.depositStats.totalEarned },
-		{ name: t("dashboard_bank_accounts"), convertedAmount: dashboard.accountStats.totalBankAccount, currency, amount: dashboard.accountStats.totalBankAccount },
-		{ name: t("dashboard_debts"), convertedAmount: dashboard.debtStats.total, currency, amount: dashboard.debtStats.total },
-		{ name: t("dashboard_crypto_account"), convertedAmount: dashboard.cryptoAccountStats.total, currency, amount: dashboard.cryptoAccountStats.total }
+		{ name: t("dashboard_cash"), convertedAmount: dashboard.accountsGlobalDashboard.totalCash, currency, amount: dashboard.accountsGlobalDashboard.totalCash },
+		{ name: t("dashboard_securities"), convertedAmount: dashboard.brokerAccountsGlobalDashboard.total, currency, amount: dashboard.brokerAccountsGlobalDashboard.total},
+		{ name: t("dashboard_deposits"), convertedAmount: dashboard.depositsGlobalDashboard.totalStartedAmount, currency, amount: dashboard.depositsGlobalDashboard.totalStartedAmount},
+		{ name: t("dashboard_deposit_incomes"), convertedAmount: dashboard.depositsGlobalDashboard.totalEarned, currency, amount: dashboard.depositsGlobalDashboard.totalEarned },
+		{ name: t("dashboard_bank_accounts"), convertedAmount: dashboard.accountsGlobalDashboard.totalBankAccount, currency, amount: dashboard.accountsGlobalDashboard.totalBankAccount },
+		{ name: t("dashboard_debts"), convertedAmount: dashboard.debtsGlobalDashboard.total, currency, amount: dashboard.debtsGlobalDashboard.total },
+		{ name: t("dashboard_crypto_account"), convertedAmount: dashboard.cryptoAccountsGlobalDashboard.total, currency, amount: dashboard.cryptoAccountsGlobalDashboard.total }
 	].filter(({amount}) => amount)
 
 	const formatDistributionCard = (title: string, total: number, distribution: DistributionModel[]) => {
@@ -74,18 +74,18 @@ const DashboardPage: React.FC = () => {
 	}
 
 	const assetsSubCharts = [
-		formatDistributionCard(t("dashboard_cash"), dashboard.accountStats.totalCash, dashboard.accountStats.cashDistribution),
-		formatDistributionCard(t("dashboard_securities"), dashboard.brokerAccountStats.total, dashboard.brokerAccountStats.distribution),
-		formatDistributionCard(t("dashboard_deposits"), dashboard.depositStats.totalStartedAmount, dashboard.depositStats.startedAmountDistribution),
-		formatDistributionCard(t("dashboard_deposit_incomes"), dashboard.depositStats.totalEarned, dashboard.depositStats.earningsDistribution),
-		formatDistributionCard(t("dashboard_bank_accounts"), dashboard.accountStats.totalBankAccount, dashboard.accountStats.bankAccountsDistribution),
-		formatDistributionCard(t("dashboard_debts"), dashboard.debtStats.total, dashboard.debtStats.distribution),
-		formatDistributionCard(t("dashboard_crypto_account"), dashboard.cryptoAccountStats.total, dashboard.cryptoAccountStats.distribution)
+		formatDistributionCard(t("dashboard_cash"), dashboard.accountsGlobalDashboard.totalCash, dashboard.accountsGlobalDashboard.cashDistribution),
+		formatDistributionCard(t("dashboard_securities"), dashboard.brokerAccountsGlobalDashboard.total, dashboard.brokerAccountsGlobalDashboard.distribution),
+		formatDistributionCard(t("dashboard_deposits"), dashboard.depositsGlobalDashboard.totalStartedAmount, dashboard.depositsGlobalDashboard.startedAmountDistribution),
+		formatDistributionCard(t("dashboard_deposit_incomes"), dashboard.depositsGlobalDashboard.totalEarned, dashboard.depositsGlobalDashboard.earningsDistribution),
+		formatDistributionCard(t("dashboard_bank_accounts"), dashboard.accountsGlobalDashboard.totalBankAccount, dashboard.accountsGlobalDashboard.bankAccountsDistribution),
+		formatDistributionCard(t("dashboard_debts"), dashboard.debtsGlobalDashboard.total, dashboard.debtsGlobalDashboard.distribution),
+		formatDistributionCard(t("dashboard_crypto_account"), dashboard.cryptoAccountsGlobalDashboard.total, dashboard.cryptoAccountsGlobalDashboard.distribution)
 	];
 
 	const transactionsStats = [
-		formatDistributionCard(t("dashboard_transactions_spents"), dashboard.transactionStats.spentsTotal, dashboard.transactionStats.spentsDistribution),
-		formatDistributionCard(t("dashboard_transactions_incomes"), dashboard.transactionStats.incomesTotal, dashboard.transactionStats.incomesDistribution)
+		formatDistributionCard(t("dashboard_transactions_spents"), dashboard.transactionsGlobalDashboard.spentsTotal, dashboard.transactionsGlobalDashboard.spentsDistribution),
+		formatDistributionCard(t("dashboard_transactions_incomes"), dashboard.transactionsGlobalDashboard.incomesTotal, dashboard.transactionsGlobalDashboard.incomesDistribution)
 	]
 
 	const getChart = () => {

@@ -5,11 +5,11 @@ namespace MoneyManager.Application.DTO.Dashboard
     public class GlobalDashboardDto
     {
         public decimal Total { get; set; }
-        public TransactionsGlobalDashboardDto TransactionStats { get; set; } = new TransactionsGlobalDashboardDto();
-        public BrokerAccountsGlobalDashboardDto BrokerAccountStats { get; set; } = new BrokerAccountsGlobalDashboardDto();
+        public TransactionsGlobalDashboardDto TransactionsGlobalDashboard { get; set; } = new TransactionsGlobalDashboardDto();
+        public BrokerAccountsGlobalDashboardDto BrokerAccountsGlobalDashboard { get; set; } = new BrokerAccountsGlobalDashboardDto();
         public AccountsGlobalDashboardDto AccountsGlobalDashboard { get; set; } = new AccountsGlobalDashboardDto();
         public DebtsGlobalDashboardDto DebtsGlobalDashboard { get; set; } = new DebtsGlobalDashboardDto();
-        public DepositsGlobalDashboardDto DepositsGlobalDashboardDto { get; set; } = new DepositsGlobalDashboardDto();
+        public DepositsGlobalDashboardDto DepositsGlobalDashboard { get; set; } = new DepositsGlobalDashboardDto();
         public CryptoAccountsGlobalDashboardDto CryptoAccountsGlobalDashboard { get; set; } = new CryptoAccountsGlobalDashboardDto();
     }
 

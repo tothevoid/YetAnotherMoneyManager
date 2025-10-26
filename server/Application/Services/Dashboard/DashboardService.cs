@@ -66,10 +66,10 @@ namespace MoneyManager.Application.Services.Dashboard
                 //TODO: make it via setters
                 Total = accountStats.Total + brokerAccountStats.Total + debtsStats.Total + depositStats.Total + cryptoAccountStats.Total,
                 AccountsGlobalDashboard = accountStats,
-                BrokerAccountStats = brokerAccountStats,
+                BrokerAccountsGlobalDashboard = brokerAccountStats,
                 DebtsGlobalDashboard = debtsStats,
-                DepositsGlobalDashboardDto = depositStats,
-                TransactionStats = await GetTransactionDate(),
+                DepositsGlobalDashboard = depositStats,
+                TransactionsGlobalDashboard = await GetTransactionDate(),
                 CryptoAccountsGlobalDashboard = cryptoAccountStats
             };
         }

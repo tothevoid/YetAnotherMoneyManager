@@ -25,5 +25,11 @@ namespace MoneyManager.Application.DTO.Brokers
         public decimal CurrentValue { get; set; }
 
         public decimal MainCurrencyAmount { get; set; }
+
+        public void ApplyPortfolioValues(BrokerAccountPortfolioDto portfolioDto)
+        {
+            InitialValue = portfolioDto.InitialValue;
+            CurrentValue = portfolioDto.CurrentValue;
+        }
     }
 }

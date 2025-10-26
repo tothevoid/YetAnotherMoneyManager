@@ -67,7 +67,14 @@ namespace MoneyManager.Application.Services.Brokers
                 .Select(brokerAccountSecurity => brokerAccountSecurity.Security.Ticker)
                 .ToArray();
 
-            var tickersValues = await _stockConnector.GetValuesByTickers(tickers);
+            var tickersValues = await _stockConnector
+                .GetValuesByTickers(tickers);
+                
+            var filteredValue = tickersValues.ToList()
+                .Where(marketValue => (marketValue.MarketPrice ?? marketValue.LastValue) != null)
+                .OrderByDescending(marketValue => marketValue.Date)
+                .DistinctBy(marketValue => marketValue.Ticker)
+                .ToDictionary((marketValue) => marketValue.Ticker, (marketValue) => marketValue);
 
             //TODO: possible reuse brokerAccountSecurities
             var brokerAccountSecuritiesToUpdated = await _securityRepo
@@ -76,8 +83,8 @@ namespace MoneyManager.Application.Services.Brokers
 
             foreach (var security in brokerAccountSecuritiesToUpdated)
             {
-                var value = tickersValues.GetValueOrDefault(security.Ticker);
-                security.ActualPrice = value;
+                var row = filteredValue.GetValueOrDefault(security.Ticker);
+                security.ActualPrice = row.MarketPrice ?? row.LastValue ?? 0;
                 security.PriceFetchedAt = DateTime.UtcNow;
             }
 
@@ -105,6 +112,18 @@ namespace MoneyManager.Application.Services.Brokers
         {
             await _brokerAccountSecurityRepo.Delete(id);
             await _db.Commit();
+        }
+
+        public async Task<decimal> GetInitialSecuritiesValue(Guid brokerAccountId)
+        {
+            var securities = await GetByBrokerAccount(brokerAccountId);
+            return securities.Sum(accountSecurity => accountSecurity.Price);
+        }
+
+        public async Task<decimal> GetActualSecuritiesValue(Guid brokerAccountId)
+        {
+            var securities = await GetByBrokerAccount(brokerAccountId);
+            return securities.Sum(accountSecurity => accountSecurity.Quantity * accountSecurity.Security.ActualPrice);
         }
 
         private Expression<Func<BrokerAccountSecurity, bool>> GetBaseFilter(Guid brokerAccountId)

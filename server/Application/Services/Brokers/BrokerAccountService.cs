@@ -18,16 +18,16 @@ namespace MoneyManager.Application.Services.Brokers
         private readonly IUnitOfWork _db;
 
         private readonly IRepository<BrokerAccount> _brokerAccountRepo;
-        private readonly IBrokerAccountSecurityService _brokerAccountService;
+        private readonly IBrokerAccountSecurityService _brokerAccountSecurityService;
 
         private readonly IMapper _mapper;
        
         public BrokerAccountService(IUnitOfWork uow, IMapper mapper, 
-            IBrokerAccountSecurityService brokerAccountSecurityService)
+            IBrokerAccountSecurityService brokerAccountSecuritySecurityService)
         {
             _db = uow;
             _mapper = mapper;
-            _brokerAccountService = brokerAccountSecurityService;
+            _brokerAccountSecurityService = brokerAccountSecuritySecurityService;
             _brokerAccountRepo = uow.CreateRepository<BrokerAccount>();
         }
 
@@ -45,20 +45,18 @@ namespace MoneyManager.Application.Services.Brokers
                 .ToList();
 
             // TODO: make it on DB level
-            foreach (var account in brokerAccountsDtos)
+            foreach (var brokerAccount in brokerAccountsDtos)
             {
-                await ApplyAssetsValue(account);
+                brokerAccount.ApplyPortfolioValues(await GetPortfolioValues(brokerAccount));
             }
 
             return brokerAccountsDtos;
         }
-
-
         public async Task<BrokerAccountDTO> GetById(Guid id)
         {
             var brokerAccount = await _brokerAccountRepo.GetById(id, GetFullHierarchyColumns);
             var brokerAccountDto = _mapper.Map<BrokerAccountDTO>(brokerAccount);
-            await ApplyAssetsValue(brokerAccountDto);
+            brokerAccountDto.ApplyPortfolioValues(await GetPortfolioValues(brokerAccountDto));
             return brokerAccountDto;
         }
 
@@ -84,17 +82,29 @@ namespace MoneyManager.Application.Services.Brokers
             await _db.Commit();
         }
 
-        private async Task ApplyAssetsValue(BrokerAccountDTO brokerAccount)
+        public async Task<BrokerAccountPortfolioDto> GetPortfolioValues(Guid brokerAccountId)
         {
-            var securities = await _brokerAccountService
-                .GetByBrokerAccount(brokerAccount.Id);
+            var brokerAccount = await GetById(brokerAccountId);
 
+            return await GetPortfolioValues(brokerAccount);
+        }
+
+        private async Task<BrokerAccountPortfolioDto> GetPortfolioValues(BrokerAccountDTO brokerAccount)
+        {
             var mainCurrencyAmount = brokerAccount.MainCurrencyAmount * brokerAccount.Currency.Rate;
 
-            brokerAccount.CurrentValue = securities.Sum(accountSecurity => 
-                accountSecurity.Quantity * accountSecurity.Security.ActualPrice) + mainCurrencyAmount;
-            brokerAccount.InitialValue = securities.Sum(accountSecurity =>
-                accountSecurity.Price) + mainCurrencyAmount;
+            // TODO: Use single query to get both values
+            var currentSecuritiesValue = await _brokerAccountSecurityService.GetActualSecuritiesValue(brokerAccount.Id);
+            var initialSecuritiesValue = await _brokerAccountSecurityService.GetInitialSecuritiesValue(brokerAccount.Id);
+
+            brokerAccount.CurrentValue = currentSecuritiesValue + mainCurrencyAmount;
+            brokerAccount.InitialValue = initialSecuritiesValue + mainCurrencyAmount;
+
+            return new BrokerAccountPortfolioDto
+            {
+                CurrentValue = currentSecuritiesValue + mainCurrencyAmount,
+                InitialValue = initialSecuritiesValue + mainCurrencyAmount
+            };
         }
 
         private IQueryable<BrokerAccount> GetFullHierarchyColumns(IQueryable<BrokerAccount> brokerAccountQuery)
@@ -105,9 +115,6 @@ namespace MoneyManager.Application.Services.Brokers
                 .Include(brokerAccount => brokerAccount.Broker);
         }
 
-        public Task<BrokerAccountSummaryDto> GetSummary(Guid brokerAccountId)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

@@ -23,6 +23,7 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         {
             _mapper = mapper;
             _brokerAccountService = brokerAccountService;
+            _brokerAccountSummaryService = brokerAccountSummaryService;
         }
 
         [HttpGet]

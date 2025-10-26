@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace MoneyManager.Application.Integrations.Stock.Moex.Model
 {
-    public class MarketData
+    public class DynamicMoexResponseObject
     {
         [JsonPropertyName("columns")]
         public string[] Columns { get; set; }

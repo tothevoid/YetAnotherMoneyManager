@@ -26,6 +26,7 @@ using MoneyManager.Infrastructure.Interfaces.Messages;
 using MoneyManager.Infrastructure.Messages;
 using Minio;
 using MoneyManager.Application.Integrations.Currency;
+using MoneyManager.Application.Integrations.Stock.Moex;
 using MoneyManager.Application.Interfaces.Crypto;
 using MoneyManager.Application.Interfaces.Debts;
 using MoneyManager.Application.Services.FileStorage;

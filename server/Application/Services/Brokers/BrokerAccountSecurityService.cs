@@ -67,10 +67,10 @@ namespace MoneyManager.Application.Services.Brokers
                 .Select(brokerAccountSecurity => brokerAccountSecurity.Security.Ticker)
                 .ToArray();
 
-            var tickersValues = await _stockConnector
-                .GetValuesByTickers(tickers);
+            var tickersValues = (await _stockConnector
+                .GetValuesByTickers(tickers)).ToList();
                 
-            var filteredValue = tickersValues.ToList()
+            var filteredValue = tickersValues
                 .Where(marketValue => (marketValue.MarketPrice ?? marketValue.LastValue) != null)
                 .OrderByDescending(marketValue => marketValue.Date)
                 .DistinctBy(marketValue => marketValue.Ticker)

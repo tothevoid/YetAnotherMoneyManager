@@ -150,7 +150,7 @@ const BrokerAccountPage: React.FC = () => {
                 </Tabs.Trigger>
             </Tabs.List>
             <Tabs.Content value="stats">
-               <BrokerAccountStats brokerAccountId={state.brokerAccount.id}/>
+               <BrokerAccountStats brokerAccount={state.brokerAccount}/>
             </Tabs.Content>
             <Tabs.Content value="transactions">
                 <SecurityTransactionsList onDataReloaded={onDataReloaded} brokerAccountId={brokerAccountId}/>

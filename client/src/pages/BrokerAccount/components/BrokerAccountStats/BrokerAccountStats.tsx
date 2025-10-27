@@ -12,9 +12,7 @@ interface Props {
     brokerAccount: BrokerAccountEntity
 }
 
-const BrokerAccountStats: React.FC<Props> = ({ brokerAccount }) => {
-    const { t } = useTranslation();
-    
+const BrokerAccountStats: React.FC<Props> = ({ brokerAccount }) => {    
     const { user } = useUserProfile();
 
     const [stats, setStats] = useState<BrokerAccountSummaryEntity | null>(null); 

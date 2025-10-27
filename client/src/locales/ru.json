@@ -271,5 +271,8 @@
     "broker_account_transfer_modal_transfer_button": "Перевести",
     "broker_account_transfer_modal_operation": "Операция",
     "broker_account_transfer_modal_operation_deposit": "Пополнить",
-    "broker_account_transfer_modal_operation_withdraw": "Вывести"
+    "broker_account_transfer_modal_operation_withdraw": "Вывести",
+
+    "transfers_history_chart_range_year": "Год",
+    "transfers_history_chart_range_month": "Месяц"
 }

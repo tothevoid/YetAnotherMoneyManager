@@ -270,5 +270,8 @@
     "broker_account_transfer_modal_transfer_button": "Transfer",
     "broker_account_transfer_modal_operation": "Operation",
     "broker_account_transfer_modal_operation_deposit": "Deposit",
-    "broker_account_transfer_modal_operation_withdraw": "Withdraw"
+    "broker_account_transfer_modal_operation_withdraw": "Withdraw",
+
+    "transfers_history_chart_range_year": "Year",
+    "transfers_history_chart_range_month": "Month"
 }

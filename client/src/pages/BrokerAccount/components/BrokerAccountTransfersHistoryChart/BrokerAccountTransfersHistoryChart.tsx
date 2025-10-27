@@ -38,18 +38,18 @@ const BrokerAccountTransfersHistoryChart: React.FC<Props> = ({ brokerAccountId }
 
     const rangeTypes: RangeType[] = useMemo(
         () => [
-            { label: "year", value: YEAR_RANGE },
-            { label: "month", value: MONTH_RANGE }
+            { label: t("transfers_history_chart_range_year"), value: YEAR_RANGE },
+            { label: t("transfers_history_chart_range_month"), value: MONTH_RANGE }
         ],
         [i18n.language, t]
     );
 
     const months: NumericOption[] = useMemo(
         () => Array.from({ length: 12 }, (_, i) => ({
-            label: new Date(0, i).toLocaleString("default", { month: "short" }),
+            label: new Date(0, i).toLocaleString(i18n.language, { month: "short" }),
             value: i + 1
         })),
-        []
+        [i18n.language]
     );
 
     const years: NumericOption[] = useMemo(
@@ -94,7 +94,7 @@ const BrokerAccountTransfersHistoryChart: React.FC<Props> = ({ brokerAccountId }
         } else {
             data = (transfers as BrokerAccountMonthTransferEntity[]).map(tr => ({
                 name: new Date(selectedYear.value, tr.monthIndex - 1, 1)
-                    .toLocaleString("default", { month: "short" }),
+                    .toLocaleString(i18n.language, { month: "short" }),
                 income: tr.totalDeposited,
                 withdraw: tr.totalWithdrawn
             }));

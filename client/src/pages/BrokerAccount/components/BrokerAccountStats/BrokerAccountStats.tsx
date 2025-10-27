@@ -1,5 +1,4 @@
 import { Fragment, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { getBrokerAccountStats } from "../../../../api/brokers/brokerAccountSummaryApi";
 import { BrokerAccountSummaryEntity } from "../../../../models/brokers/BrokerAccountSummaryEntity";
 import { SimpleGrid } from "@chakra-ui/react";

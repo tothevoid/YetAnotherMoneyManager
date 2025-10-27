@@ -15,7 +15,7 @@ import { GrTransaction } from "react-icons/gr";
 import { PiCoinsLight } from "react-icons/pi";
 import DividendPaymentsList from "./components/DividendPaymentsList/DividendPaymentsList";
 import { getEarningsByBrokerAccount } from "../../api/brokers/dividendPaymentApi";
-import { MdAttachMoney } from "react-icons/md";
+import { MdAttachMoney, MdQueryStats } from "react-icons/md";
 import BrokerAccountFundTransfersList from "./components/BrokerAccountFundTransfersList/BrokerAccountFundTransfersList";
 import BrokerAccountStats from "./components/BrokerAccountStats/BrokerAccountStats";
 
@@ -133,7 +133,7 @@ const BrokerAccountPage: React.FC = () => {
         <Tabs.Root variant="enclosed" defaultValue="stats">
             <Tabs.List background={"background_primary"}>
                  <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="stats">
-                    <MdAttachMoney />
+                    <MdQueryStats />
                      {t("broker_account_page_stats_tab")}
                 </Tabs.Trigger>
                 <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="transactions">

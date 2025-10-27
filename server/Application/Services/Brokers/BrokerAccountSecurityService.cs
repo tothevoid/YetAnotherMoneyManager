@@ -71,7 +71,7 @@ namespace MoneyManager.Application.Services.Brokers
                 .GetValuesByTickers(tickers)).ToList();
                 
             var filteredValue = tickersValues
-                .Where(marketValue => (marketValue.MarketPrice ?? marketValue.LastValue) != null)
+                .Where(marketValue => (marketValue.LastValue ?? marketValue.MarketPrice) != null)
                 .OrderByDescending(marketValue => marketValue.Date)
                 .DistinctBy(marketValue => marketValue.Ticker)
                 .ToDictionary((marketValue) => marketValue.Ticker, (marketValue) => marketValue);
@@ -84,7 +84,7 @@ namespace MoneyManager.Application.Services.Brokers
             foreach (var security in brokerAccountSecuritiesToUpdated)
             {
                 var row = filteredValue.GetValueOrDefault(security.Ticker);
-                security.ActualPrice = row.MarketPrice ?? row.LastValue ?? 0;
+                security.ActualPrice = row.LastValue ?? row.MarketPrice ?? 0;
                 security.PriceFetchedAt = DateTime.UtcNow;
             }
 

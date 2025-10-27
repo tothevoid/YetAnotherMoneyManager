@@ -45,12 +45,37 @@ namespace MoneyManager.Application.Services.Brokers
         public async Task<IEnumerable<BrokerAccountDayTransferDto>> GetMonthTransfersHistory(Guid brokerAccountId, int month, int year)
         {
             //TODO: Add db month and year filter
+            //TODO: fix GetMonthTransfersHistory & GetYearTransfersHistory code duplication
 
             var transfers = await _fundsTransferService.GetAllAsync(brokerAccountId);
 
-            return transfers.Where(transfer => transfer.Date.Year == year && transfer.Date.Month == month)
-                .Select(transfer => new BrokerAccountDayTransferDto()
-                    { DayIndex = transfer.Date.Day, Income = transfer.Income, Value = transfer.Amount});
+            var filteredTransfers = transfers
+                .Where(transfer => transfer.Date.Year == year && transfer.Date.Month == month);
+
+            var maxDay = new DateOnly(year, month, 1).AddMonths(1).AddDays(-1).Day;
+
+            var distributions = Enumerable.Range(1, maxDay).ToDictionary(k => k, v => new TransfersHistory());
+
+            foreach (var transfer in filteredTransfers)
+            {
+                var distribution = distributions[transfer.Date.Day];
+
+                if (transfer.Income)
+                {
+                    distribution.TotalDeposited += transfer.Amount;
+                }
+                else
+                {
+                    distribution.TotalWithdrawn += transfer.Amount;
+                }
+            }
+
+            return distributions.Select(distribution => new BrokerAccountDayTransferDto()
+            {
+                DayIndex = distribution.Key,
+                TotalDeposited = distribution.Value.TotalDeposited,
+                TotalWithdrawn = distribution.Value.TotalWithdrawn
+            });
         }
 
         public async Task<IEnumerable<BrokerAccountMonthTransferDto>> GetYearTransfersHistory(Guid brokerAccountId, int year)
@@ -58,10 +83,30 @@ namespace MoneyManager.Application.Services.Brokers
             //TODO: Add db year filter
 
             var transfers = await _fundsTransferService.GetAllAsync(brokerAccountId);
+            var filteredTransfers = transfers.Where(transfer => transfer.Date.Year == year);
 
-            return transfers.Where(transfer => transfer.Date.Year == year)
-                .Select(transfer => new BrokerAccountMonthTransferDto()
-                    { MonthIndex = transfer.Date.Month, Income = transfer.Income, Value = transfer.Amount });
+            var distributions = Enumerable.Range(1, 12).ToDictionary(k => k, v => new TransfersHistory());
+
+            foreach (var transfer in filteredTransfers)
+            {
+                var distribution = distributions[transfer.Date.Month];
+
+                if (transfer.Income)
+                {
+                    distribution.TotalDeposited += transfer.Amount;
+                }
+                else
+                {
+                    distribution.TotalWithdrawn += transfer.Amount;
+                }
+            }
+
+            return distributions.Select(distribution => new BrokerAccountMonthTransferDto()
+            {
+                MonthIndex = distribution.Key,
+                TotalDeposited = distribution.Value.TotalDeposited,
+                TotalWithdrawn = distribution.Value.TotalWithdrawn
+            });
         }
 
         private async Task<BrokerAccountTransfersStatsDto> GetTransfersStats(Guid brokerAccountId)
@@ -150,5 +195,12 @@ namespace MoneyManager.Application.Services.Brokers
 
         //    return dailyStats;
         //}
+
+        private class TransfersHistory
+        {
+            public decimal TotalDeposited { get; set; }
+            public decimal TotalWithdrawn { get; set; }
+        }
+
     }
 }

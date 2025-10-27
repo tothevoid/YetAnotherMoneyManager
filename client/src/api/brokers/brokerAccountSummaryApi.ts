@@ -5,7 +5,7 @@ import { BrokerAccountSummaryEntity } from '../../models/brokers/BrokerAccountSu
 import { checkPromiseStatus } from '../../shared/utilities/webApiUtilities';
 import { prepareBrokerAccountsSecurityStats } from './brokerAccountSummaryApiMapping';
 
-const basicUrl = `${config.api.URL}/BrokerAccount`;
+const basicUrl = `${config.api.URL}/BrokerAccountSummary`;
 
 export const getBrokerAccountStats = async (brokerAccountId: string, from: Date, to: Date): Promise<BrokerAccountSummaryEntity> => {
     return await fetch(`${basicUrl}/GetSummary?brokerAccountId=${brokerAccountId}&from=${from.toISOString()}&to=${to.toISOString()}`, { method: "GET"})

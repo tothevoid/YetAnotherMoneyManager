@@ -4,8 +4,8 @@
     {
         public int MonthIndex { get; set; }
 
-        public bool Income { get; set; }
+        public decimal TotalDeposited { get; set; }
 
-        public decimal Value { get; set; }
+        public decimal TotalWithdrawn { get; set; }
     }
 }

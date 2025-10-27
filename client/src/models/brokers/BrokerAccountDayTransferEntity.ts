@@ -1,5 +1,5 @@
 export interface BrokerAccountDayTransferEntity {
     dayIndex: number
-    income: boolean
-    value: number
+    totalDeposited: number,
+    totalWithdrawn: number
 }

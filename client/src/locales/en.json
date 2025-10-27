@@ -273,5 +273,10 @@
     "broker_account_transfer_modal_operation_withdraw": "Withdraw",
 
     "transfers_history_chart_range_year": "Year",
-    "transfers_history_chart_range_month": "Month"
+    "transfers_history_chart_range_month": "Month",
+
+    "broker_account_stats_invested": "Invested",
+    "broker_account_stats_current_value": "Current value",
+    "broker_account_stats_deposited": "Deposited",
+    "broker_account_stats_withdrawn": "Withdrawn"
 }

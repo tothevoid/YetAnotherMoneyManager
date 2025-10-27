@@ -6,6 +6,7 @@ import { useUserProfile } from "../../../../../features/UserProfileSettingsModal
 import { BrokerAccountEntity } from "../../../../models/brokers/BrokerAccountEntity";
 import MoneyCard from "../../../../shared/components/MoneyCard/MoneyCard";
 import BrokerAccountTransfersHistoryChart from "../BrokerAccountTransfersHistoryChart/BrokerAccountTransfersHistoryChart";
+import { useTranslation } from "react-i18next";
 
 interface Props {
     brokerAccount: BrokerAccountEntity
@@ -13,6 +14,8 @@ interface Props {
 
 const BrokerAccountStats: React.FC<Props> = ({ brokerAccount }) => {    
     const { user } = useUserProfile();
+
+    const {t} = useTranslation();
 
     const [stats, setStats] = useState<BrokerAccountSummaryEntity | null>(null); 
 
@@ -30,15 +33,15 @@ const BrokerAccountStats: React.FC<Props> = ({ brokerAccount }) => {
     const {brokerAccountStats, transferStats} = stats;
 
     const currencyName = user.currency.name;
-
+    
     return <SimpleGrid marginBlock={4} gap={4}>
         <SimpleGrid columns={2} gap={4}>
-            <MoneyCard title="Инвестировано" value={brokerAccountStats.investedValue} currency={currencyName}/>
-            <MoneyCard title="Текущее" value={brokerAccountStats.currentValue} currency={currencyName}/>
+            <MoneyCard title={t("broker_account_stats_invested")} value={brokerAccountStats.investedValue} currency={currencyName}/>
+            <MoneyCard title={t("broker_account_stats_current_value")} value={brokerAccountStats.currentValue} currency={currencyName}/>
         </SimpleGrid>
         <SimpleGrid columns={2} gap={4}>
-            <MoneyCard title="Внесено" value={transferStats.totalDeposited} currency={currencyName}/>
-            <MoneyCard title="Выведено" value={transferStats.totalWithdrawn} currency={currencyName}/>
+            <MoneyCard title={t("broker_account_stats_deposited")} value={transferStats.totalDeposited} currency={currencyName}/>
+            <MoneyCard title={t("broker_account_stats_withdrawn")} value={transferStats.totalWithdrawn} currency={currencyName}/>
         </SimpleGrid>
         <BrokerAccountTransfersHistoryChart brokerAccountId={brokerAccount.id}/>
     </SimpleGrid>

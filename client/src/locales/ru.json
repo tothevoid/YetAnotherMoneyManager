@@ -274,5 +274,10 @@
     "broker_account_transfer_modal_operation_withdraw": "Вывести",
 
     "transfers_history_chart_range_year": "Год",
-    "transfers_history_chart_range_month": "Месяц"
+    "transfers_history_chart_range_month": "Месяц",
+
+    "broker_account_stats_invested": "Инвестировано",
+    "broker_account_stats_current_value": "Текущая стоимость",
+    "broker_account_stats_deposited": "Внесено средств",
+    "broker_account_stats_withdrawn": "Выведено средств"
 }

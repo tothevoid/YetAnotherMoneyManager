@@ -83,7 +83,8 @@ namespace MoneyManager.Application.Services.Securities
                 {
                     Date = transaction.Date,
                     ValueWithPayments = transaction.Price - paymentsSum,
-                    ValueWithoutPayments = transaction.Price
+                    ValueWithoutPayments = transaction.Price,
+                    Volume = transaction.Quantity
                 });
             }
 

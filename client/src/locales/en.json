@@ -162,6 +162,7 @@
         
     "securities_transactions_with_dividends": "with dividends",
     "securities_transactions_without_dividends": "without dividends",
+    "securities_transactions_volume": "Volume",
     "securities_transactions_current_price": "current",
 
     "entity_transaction_type_name_form_title": "Transaction type",

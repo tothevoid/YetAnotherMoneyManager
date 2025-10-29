@@ -10,5 +10,7 @@ namespace MoneyManager.WebApi.Models.Securities
         public decimal ValueWithPayments { get; set; }
 
         public decimal ValueWithoutPayments { get; set; }
+
+        public int Volume { get; set; }
     }
 }

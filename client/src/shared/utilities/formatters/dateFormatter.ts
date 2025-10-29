@@ -18,6 +18,16 @@ export const formatDateTime = (date: Date, format: i18n, showYear: boolean = tru
 	}).format(date);
 };
 
+export const formatShortDateTime = (date: Date, format: i18n, showYear: boolean = true) => {
+	return new Intl.DateTimeFormat(format.language, {
+		year: showYear ? "2-digit" : undefined,
+		month: "2-digit",
+		day: "2-digit",
+		hour: "2-digit",
+		minute: "2-digit"
+	}).format(date);
+};
+
 export const formatNumericDate = (date: Date, format: i18n, showYear: boolean = true) => {
 	return new Intl.DateTimeFormat(format.language, {
 		year: showYear ? "2-digit" : undefined,

@@ -9,9 +9,12 @@ import { Box, Flex } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../../i18n";
 import BaseSelect from "../../../../shared/components/BaseSelect/BaseSelect";
+import { BrokerAccountEntity } from "../../../../models/brokers/BrokerAccountEntity";
+import { formatMoneyByCurrencyCulture } from "../../../../shared/utilities/formatters/moneyFormatter";
+import { getChartLabelConfig } from "../../../../shared/utilities/chartUtilities";
 
 interface Props {
-    brokerAccountId: string;
+    brokerAccount: BrokerAccountEntity;
 }
 
 const YEAR_RANGE = "YEAR_RANGE";
@@ -33,7 +36,7 @@ interface ChartDataItem {
     withdraw: number
 };
 
-const BrokerAccountTransfersHistoryChart: React.FC<Props> = ({ brokerAccountId }) => {
+const BrokerAccountTransfersHistoryChart: React.FC<Props> = ({ brokerAccount }) => {
     const { t } = useTranslation();
 
     const rangeTypes: RangeType[] = useMemo(
@@ -71,17 +74,17 @@ const BrokerAccountTransfersHistoryChart: React.FC<Props> = ({ brokerAccountId }
     useEffect(() => {
         const fetchTransfers = async () => {
             if (selectedRangeType?.value === MONTH_RANGE) {
-                const data = await getMonthTransfersHistory(brokerAccountId,
+                const data = await getMonthTransfersHistory(brokerAccount.id,
                     selectedMonth.value, selectedYear.value);
                 setTransfers(data);
             } else {
-                const data = await getYearTransfersHistory(brokerAccountId, 
+                const data = await getYearTransfersHistory(brokerAccount.id,
                     selectedYear.value);
                 setTransfers(data);
             }
         };
         fetchTransfers();
-    }, [brokerAccountId, selectedMonth, selectedYear, selectedRangeType]);
+    }, [brokerAccount, selectedMonth, selectedYear, selectedRangeType]);
 
     useEffect(() => {
         let data: ChartDataItem[] = [];
@@ -94,7 +97,7 @@ const BrokerAccountTransfersHistoryChart: React.FC<Props> = ({ brokerAccountId }
         } else {
             data = (transfers as BrokerAccountMonthTransferEntity[]).map(tr => ({
                 name: new Date(selectedYear.value, tr.monthIndex - 1, 1)
-                    .toLocaleString(i18n.language, { month: "short" }),
+                    .toLocaleString(i18n.language, { month: "long" }),
                 income: tr.totalDeposited,
                 withdraw: tr.totalWithdrawn
             }));
@@ -135,7 +138,7 @@ const BrokerAccountTransfersHistoryChart: React.FC<Props> = ({ brokerAccountId }
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
                     <YAxis />
-                    <Tooltip />
+                    <Tooltip contentStyle={getChartLabelConfig()} formatter={(value: number, name: string) => [formatMoneyByCurrencyCulture(value, brokerAccount.currency.name), name]} />
                     <Legend />
                     <Bar dataKey="income" fill="#4CAF50" name={t('Ввод средств')} />
                     <Bar dataKey="withdraw" fill="#F44336" name={t('Вывод средств')} />

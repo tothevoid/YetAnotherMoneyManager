@@ -10,7 +10,9 @@ namespace MoneyManager.Application.Interfaces.Brokers
         Task<IEnumerable<BrokerAccountSecurityDTO>> GetAll();
         
         Task<IEnumerable<BrokerAccountSecurityDTO>> GetByBrokerAccount(Guid brokerAccountId);
-        
+
+        Task PullQuotations();
+
         Task PullQuotations(Guid brokerAccountId);
         
         Task<Guid> Add(BrokerAccountSecurityDTO security);

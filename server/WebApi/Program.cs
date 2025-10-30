@@ -1,42 +1,45 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Minio;
+using MoneyManager.Application.Integrations.Currency;
 using MoneyManager.Application.Integrations.Stock;
-using MoneyManager.Application.Mappings;
+using MoneyManager.Application.Integrations.Stock.Moex;
 using MoneyManager.Application.Interfaces.Accounts;
 using MoneyManager.Application.Interfaces.Brokers;
+using MoneyManager.Application.Interfaces.Crypto;
 using MoneyManager.Application.Interfaces.Currencies;
+using MoneyManager.Application.Interfaces.Debts;
 using MoneyManager.Application.Interfaces.Deposits;
+using MoneyManager.Application.Interfaces.FileStorage;
+using MoneyManager.Application.Interfaces.Integrations.Currency;
 using MoneyManager.Application.Interfaces.Integrations.Stock;
 using MoneyManager.Application.Interfaces.Securities;
 using MoneyManager.Application.Interfaces.Transactions;
+using MoneyManager.Application.Interfaces.User;
+using MoneyManager.Application.Mappings;
 using MoneyManager.Application.Services.Accounts;
 using MoneyManager.Application.Services.Brokers;
-using MoneyManager.Application.Services.Currencies;
-using MoneyManager.Application.Services.Deposits;
-using MoneyManager.Application.Services.Securities;
-using MoneyManager.Application.Services.Transactions;
-using MoneyManager.Infrastructure.Database;
-using MoneyManager.Infrastructure.Interfaces.Database;
-using MoneyManager.WebApi.Mappings;
-using Microsoft.Extensions.Configuration;
-using MoneyManager.Infrastructure.Interfaces.Messages;
-using MoneyManager.Infrastructure.Messages;
-using Minio;
-using MoneyManager.Application.Integrations.Currency;
-using MoneyManager.Application.Integrations.Stock.Moex;
-using MoneyManager.Application.Interfaces.Crypto;
-using MoneyManager.Application.Interfaces.Debts;
-using MoneyManager.Application.Services.FileStorage;
-using MoneyManager.Application.Interfaces.FileStorage;
-using MoneyManager.Application.Interfaces.Integrations.Currency;
-using MoneyManager.Application.Interfaces.User;
 using MoneyManager.Application.Services.Crypto;
-using MoneyManager.Application.Services.User;
+using MoneyManager.Application.Services.Currencies;
 using MoneyManager.Application.Services.Dashboard;
 using MoneyManager.Application.Services.Debts;
+using MoneyManager.Application.Services.Deposits;
+using MoneyManager.Application.Services.FileStorage;
+using MoneyManager.Application.Services.Securities;
+using MoneyManager.Application.Services.Transactions;
+using MoneyManager.Application.Services.User;
+using MoneyManager.Infrastructure.Database;
+using MoneyManager.Infrastructure.Interfaces.Database;
+using MoneyManager.Infrastructure.Interfaces.Messages;
+using MoneyManager.Infrastructure.Messages;
+using MoneyManager.WebApi.Mappings;
+using System;
+using TickerQ.DependencyInjection;
+using TickerQ.Utilities.Enums;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,6 +63,7 @@ var dbConnection = builder.Configuration.GetSection("DB").GetSection("Connection
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(dbConnection));
 
+builder.Services.AddTickerQ();
 
 var fileStorageSection = builder.Configuration.GetSection("FileStorage");
 
@@ -145,5 +149,6 @@ app.MapHub<ServerMessagesHub>("/messages");
     
 app.UseRouting();
 app.MapControllers();
+app.UseTickerQ();
 
 app.Run();

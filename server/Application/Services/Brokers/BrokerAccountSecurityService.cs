@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Net.Http;
-using System.Security.Principal;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Brokers;
@@ -15,7 +12,6 @@ using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using MoneyManager.Infrastructure.Interfaces.Messages;
-using MoneyManager.Infrastructure.Messages;
 
 namespace MoneyManager.Application.Services.Brokers
 {
@@ -56,17 +52,30 @@ namespace MoneyManager.Application.Services.Brokers
             return _mapper.Map<IEnumerable<BrokerAccountSecurityDTO>>(brokerAccountSecurities);
         }
 
+        public async Task PullQuotations()
+        {
+            var securties = await _securityRepo.GetAll();
+            var tickers = securties.Select(security => security.Ticker).ToList();
+            await PullQuotations(tickers);
+        }
+
         public async Task PullQuotations(Guid brokerAccountId)
         {
             //TODO: limit data to only ticker
             var brokerAccountSecurities = await _brokerAccountSecurityRepo
                 .GetAll((brokerAccountSecurity) => brokerAccountSecurity.BrokerAccountId == brokerAccountId,
-                (query) => query.Include((brokerAccount) => brokerAccount.Security));
+                    (query) => query.Include((brokerAccount) => brokerAccount.Security));
 
             var tickers = brokerAccountSecurities
                 .Select(brokerAccountSecurity => brokerAccountSecurity.Security.Ticker)
                 .ToArray();
 
+            await PullQuotations(tickers);
+        }
+
+        private async Task PullQuotations(IEnumerable<string> tickers)
+        {
+            
             var tickersValues = (await _stockConnector
                 .GetValuesByTickers(tickers)).ToList();
                 

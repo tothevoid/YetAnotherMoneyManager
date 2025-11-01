@@ -17,7 +17,7 @@ namespace MoneyManager.Application.Jobs
             _brokerAccountSecurityService = brokerAccountSecurityService;
         }
 
-        [TickerFunction(functionName: nameof(Pull), cronExpression: "*/3 * * * *")]
+        [TickerFunction(functionName: nameof(Pull), cronExpression: "*/1 * * * *")]
         public async Task Pull()
         {
             await _brokerAccountSecurityService.PullQuotations();

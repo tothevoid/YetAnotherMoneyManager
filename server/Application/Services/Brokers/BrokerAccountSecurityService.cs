@@ -54,8 +54,14 @@ namespace MoneyManager.Application.Services.Brokers
 
         public async Task PullQuotations()
         {
-            var securties = await _securityRepo.GetAll();
-            var tickers = securties.Select(security => security.Ticker).ToList();
+            var securities = await _securityRepo.GetAll();
+            var tickers = securities.Select(security => security.Ticker).ToList();
+
+            if (!tickers.Any())
+            {
+                return;
+            }
+
             await PullQuotations(tickers);
         }
 

@@ -36,7 +36,6 @@ const TransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
     }
 
     const onSubmit = (event: React.FormEvent) => {
-        debugger;
         if (!state.formHandler) {
             return;
         }

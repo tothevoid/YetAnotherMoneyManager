@@ -5,6 +5,7 @@ using System;
 using AutoMapper;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Brokers;
+using MoneyManager.Application.Interfaces.Securities;
 using MoneyManager.WebApi.Models.Brokers;
 using MoneyManager.WebApi.Models.Securities;
 using MoneyManager.Application.Services.Brokers;
@@ -18,11 +19,15 @@ namespace MoneyManager.WebApi.Controllers.Brokers
     {
         private readonly IBrokerAccountSecurityService _brokerAccountSecurityService;
         private readonly IMapper _mapper;
+        private readonly IPullQuotationsService _pullQuotationsService;
+
         public BrokerAccountSecurityController(IBrokerAccountSecurityService brokerAccountSecurityServiceRepo,
+            IPullQuotationsService pullQuotationsService,
             IMapper mapper)
         {
             _mapper = mapper;
             _brokerAccountSecurityService = brokerAccountSecurityServiceRepo;
+            _pullQuotationsService = pullQuotationsService;
         }
 
         [HttpGet(nameof(GetByBrokerAccount))]
@@ -37,6 +42,12 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         public async Task PullQuotations([FromQuery] Guid brokerAccountId)
         {
             await _brokerAccountSecurityService.PullQuotations(brokerAccountId);
+        }
+
+        [HttpGet(nameof(GetLastPullDate))]
+        public LastPullInfoModel GetLastPullDate()
+        {
+            return new LastPullInfoModel() { LastPullDate = _pullQuotationsService.LastPullDate ?? DateTime.UtcNow};
         }
 
         [HttpPut]

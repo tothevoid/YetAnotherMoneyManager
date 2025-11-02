@@ -1,5 +1,6 @@
 import config from '../../config' 
 import { BrokerAccountSecurityEntity, BrokerAccountSecurityEntityResponse } from '../../models/brokers/BrokerAccountSecurityEntity';
+import { Nullable } from '../../shared/utilities/nullable';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { deleteEntity, updateEntity } from '../basicApi';
 import { prepareBrokerAccountSecurity, prepareBrokerAccountSecurityRequest } from './brokerAccountSecurityApiMapping';
@@ -20,7 +21,15 @@ export const pullBrokerAccountQuotations = async (brokerAccountId: string) => {
     await fetch(`${basicUrl}/PullQuotations?brokerAccountId=${brokerAccountId}`, {method: "GET"})
         .then(checkPromiseStatus)
         .catch(logPromiseError);
-}
+};
+
+export const getLastPullDate = async (): Promise<Nullable<Date>> => {
+    return await fetch(`${basicUrl}/GetLastPullDate`, {method: "GET"})
+        .then(checkPromiseStatus)
+        .then((response: Response) => response.json())
+        .then((pullInfo: { lastPullDate: string }) => new Date(pullInfo.lastPullDate))
+        .catch(logPromiseError) ?? null;
+};
 
 export const updateBrokerAccountSecurity = async (modifiedBrokerAccountSecurity: BrokerAccountSecurityEntity): Promise<boolean> => {
     return await updateEntity(basicUrl, prepareBrokerAccountSecurityRequest(modifiedBrokerAccountSecurity));

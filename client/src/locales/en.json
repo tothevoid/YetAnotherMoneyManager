@@ -240,6 +240,7 @@
     "broker_account_page_total_profit_and_loss": "Total P&L",
     "broker_account_page_dividends_earnings": "Dividends earnings",
     "broker_account_page_securities_profit_and_loss": "Securities P&L",
+    "broker_account_page_last_pull_date": "Last updated: {{date}}",
 
     "debts_page_only_active": "Only active",
     "debts_page_add_debt": "Add debt",

@@ -113,6 +113,9 @@ builder.Services.AddTransient<ICryptoProviderService, CryptoProviderService>();
 builder.Services.AddScoped<IServerNotifier, ServerNotifier>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 
+
+builder.Services.AddSingleton<IPullQuotationsService, PullQuotationsService>();
+
 //TODO: make factory
 //TODO: possible change AddTransient to AddSingleton
 builder.Services.AddTransient<IStockConnector, MoexConnector>();

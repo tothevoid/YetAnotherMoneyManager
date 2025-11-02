@@ -1,17 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Application.Interfaces.Integrations.Stock;
+using MoneyManager.Application.Interfaces.Securities;
+using MoneyManager.Application.Services.Securities;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using MoneyManager.Infrastructure.Interfaces.Messages;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace MoneyManager.Application.Services.Brokers
 {
@@ -23,17 +26,20 @@ namespace MoneyManager.Application.Services.Brokers
         private readonly IRepository<BrokerAccountSecurity> _brokerAccountSecurityRepo;
         private readonly IRepository<Security> _securityRepo;
         private readonly IStockConnector _stockConnector;
+        private readonly IPullQuotationsService _pullQuotationsService;
 
         private IServerNotifier _serverNotifier;
 
         public BrokerAccountSecurityService(IUnitOfWork uow, IMapper mapper, 
-            IStockConnector stockConnector, IServerNotifier serverNotifier)
+            IStockConnector stockConnector, IServerNotifier serverNotifier,
+            IPullQuotationsService pullQuotationsService)
         {
             _db = uow;
             _mapper = mapper;
             _brokerAccountSecurityRepo = uow.CreateRepository<BrokerAccountSecurity>();
             _securityRepo = uow.CreateRepository<Security>();
             _serverNotifier = serverNotifier;
+            _pullQuotationsService = pullQuotationsService;
 
             _stockConnector = stockConnector;
         }
@@ -81,7 +87,7 @@ namespace MoneyManager.Application.Services.Brokers
 
         private async Task PullQuotations(IEnumerable<string> tickers)
         {
-            
+            var date = DateTime.UtcNow;
             var tickersValues = (await _stockConnector
                 .GetValuesByTickers(tickers)).ToList();
                 
@@ -103,8 +109,9 @@ namespace MoneyManager.Application.Services.Brokers
                 security.PriceFetchedAt = DateTime.UtcNow;
             }
 
+            _pullQuotationsService.UpdatePullDate(date);
             await _db.Commit();
-            await _serverNotifier.SendToAll("Updated");
+            await _serverNotifier.SendToAll(JsonSerializer.Serialize(new { date }));
         }
 
         public async Task<Guid> Add(BrokerAccountSecurityDTO brokerAccountSecurityDto)

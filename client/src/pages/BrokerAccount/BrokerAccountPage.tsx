@@ -6,7 +6,7 @@ import { getBrokerAccountById } from "../../api/brokers/brokerAccountApi";
 import { Stack, Tabs, Text } from "@chakra-ui/react";
 import { formatMoneyByCurrencyCulture } from "../../shared/utilities/formatters/moneyFormatter";
 import { calculateDiff } from "../../shared/utilities/numericDiffsUtilities";
-import { pullBrokerAccountQuotations } from "../../api/brokers/brokerAccountSecurityApi";
+import { getLastPullDate, pullBrokerAccountQuotations } from "../../api/brokers/brokerAccountSecurityApi";
 import BrokerAccountSecuritiesList, { BrokerAccountSecuritiesListRef } from "./components/BrokerAccountSecuritiesList/BrokerAccountSecuritiesList";
 import { useSignalR } from "../../shared/hooks/SignalRHook";
 import SecurityTransactionsList from "./components/SecurityTransactionsList/SecurityTransactionsList";
@@ -18,6 +18,7 @@ import { getEarningsByBrokerAccount } from "../../api/brokers/dividendPaymentApi
 import { MdAttachMoney, MdQueryStats } from "react-icons/md";
 import BrokerAccountFundTransfersList from "./components/BrokerAccountFundTransfersList/BrokerAccountFundTransfersList";
 import BrokerAccountStats from "./components/BrokerAccountStats/BrokerAccountStats";
+import { formatShortDateTime } from "../../shared/utilities/formatters/dateFormatter";
 
 interface State {
     brokerAccount: BrokerAccountEntity | null,
@@ -25,7 +26,7 @@ interface State {
 }
 
 const BrokerAccountPage: React.FC = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const securitiesRef = useRef<BrokerAccountSecuritiesListRef>(null);
 
     const { brokerAccountId } = useParams(); // Получаем текущий таб из URL
@@ -34,7 +35,16 @@ const BrokerAccountPage: React.FC = () => {
 
     const [incomes, setIncomes] = useState<number>(0);
 
-    const onQuotesRecalculated = async () => {
+    const [lastPullDate, setLastPullDate] = useState<Date | null>(null);
+
+    const onQuotesRecalculated = async (message: string) => {
+        const data = JSON.parse(message);
+        
+        if (data && data.date) {
+            const newDate = new Date(data.date);
+            setLastPullDate(newDate);
+        }
+
         await onDataReloaded();
     }
 
@@ -53,11 +63,19 @@ const BrokerAccountPage: React.FC = () => {
         })
     }
 
+    const fetchLastPullDate = async () => {
+        const lastPullDate = await getLastPullDate();
+        if (lastPullDate) {
+            setLastPullDate(lastPullDate);
+        }
+    }
+
     useSignalR(onQuotesRecalculated);
 
     useEffect(() => {
         const getData = async () => {
             await fetchBrokerAccount();
+            await fetchLastPullDate();
         }
 
         getData();
@@ -77,6 +95,11 @@ const BrokerAccountPage: React.FC = () => {
 
         getData();
     }, [state.brokerAccount]);
+
+    const formatPullDate = useCallback((date: Date) => {
+        const formattedDate = formatShortDateTime(date, i18n, false);
+        return t("broker_account_page_last_pull_date", { date: formattedDate });
+    }, [i18n]);
 
     const onDataReloaded = useCallback(async () => {
         await fetchBrokerAccount();
@@ -119,9 +142,10 @@ const BrokerAccountPage: React.FC = () => {
     //TODO: tabs style is duplicated
 
     return <Fragment>
-        <Stack alignItems={"end"} gapX={2} direction={"row"} color="text_primary">
+        <Stack mb={4} alignItems={"end"} gapX={2} direction={"row"} color="text_primary">
             <Text fontSize="3xl" fontWeight={900}> {state.brokerAccount?.name}: </Text>
             <Text fontSize="3xl" fontWeight={900}> {currentValueLabel}</Text>
+            { lastPullDate && <Text backgroundColor="background_primary" borderColor="border_primary" textAlign={'center'} minW={150} rounded={10} padding={2} background={'black.600'}>{formatPullDate(lastPullDate)}</Text>}
             <RefreshButton transparent isRefreshing={state.isReloading} onClick={pullQuotations}/>
         </Stack>
         <Stack direction={"row"} color="text_primary">

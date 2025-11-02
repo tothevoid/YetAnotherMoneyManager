@@ -12,6 +12,8 @@ import DateSelect from '../../../../shared/components/DateSelect/DateSelect';
 import BaseFormModal from '../../../../shared/modals/BaseFormModal/BaseFormModal';
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 import { generateGuid } from '../../../../shared/utilities/idUtilities';
+import { BankEntity } from '../../../../models/banks/BankEntity';
+import { getBanks } from '../../../../api/banks/bankApi';
 
 interface ModalProps {
 	modalRef: RefObject<BaseModalRef | null>,
@@ -20,11 +22,12 @@ interface ModalProps {
 }
 
 interface State {
-	currencies: CurrencyEntity[]
+	currencies: CurrencyEntity[],
+	banks: BankEntity[]
 }
 
 const DepositModal: React.FC<ModalProps> = (props: ModalProps) => {
-	const [state, setState] = useState<State>({ currencies: [] });
+	const [state, setState] = useState<State>({ currencies: [], banks: [] });
 
 	const initCurrencies = async () => {
 		const currencies = await getCurrencies();
@@ -32,10 +35,18 @@ const DepositModal: React.FC<ModalProps> = (props: ModalProps) => {
 			return {...currentState, currencies}
 		})
 	};
+
+	const initBanks = async () => {
+		const banks = await getBanks();
+		setState((currentState) => {
+			return {...currentState, banks}
+		})
+	};
 	
 	useEffect(() => {
 		const initData = async () => {
 			await initCurrencies();
+			await initBanks();
 		}
 		initData();
 	}, []);
@@ -75,6 +86,14 @@ const DepositModal: React.FC<ModalProps> = (props: ModalProps) => {
 			<Field.Label>{t("entity_deposit_name")}</Field.Label>
 			<Input {...register("name")} autoComplete="off" placeholder='Deposit name' />
 			<Field.ErrorText>{errors.name?.message}</Field.ErrorText>
+		</Field.Root>
+		<Field.Root mt={4} invalid={!!errors.bank}>
+			<Field.Label>{t("entity_transaction_bank")}</Field.Label>
+			<CollectionSelect name="bank" control={control} placeholder="Select bank"
+				collection={state.banks} 
+				labelSelector={(bank => bank.name)} 
+				valueSelector={(bank => bank.id)}/>
+			<Field.ErrorText>{errors.bank?.message}</Field.ErrorText>
 		</Field.Root>
 		<Field.Root invalid={!!errors.percentage} mt={4}>
 			<Field.Label>{t("entity_deposit_percentage")}</Field.Label>

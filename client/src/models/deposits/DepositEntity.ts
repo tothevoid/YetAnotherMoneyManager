@@ -1,3 +1,4 @@
+import { BankEntity } from "../banks/BankEntity"
 import { CurrencyEntity } from "../currencies/CurrencyEntity"
 
 interface CommonDepositEntity {
@@ -11,17 +12,20 @@ interface CommonDepositEntity {
 export interface DepositEntityRequest extends CommonDepositEntity {
     from: string,
     to: string,
-    currencyId: string
+    currencyId: string,
+    bankId: string
 }
 
 export interface DepositEntity extends CommonDepositEntity {
     from: Date,
     to: Date,
-    currency: CurrencyEntity
+    currency: CurrencyEntity,
+    bank: BankEntity
 }
 
 export interface DepositEntityResponse extends CommonDepositEntity {
     from: string,
     to: string,
-    currency: CurrencyEntity
+    currency: CurrencyEntity,
+    bank: BankEntity
 }

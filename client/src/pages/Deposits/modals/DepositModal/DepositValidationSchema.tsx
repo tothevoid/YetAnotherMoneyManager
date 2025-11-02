@@ -5,6 +5,10 @@ export type DepositFormInput = z.infer<typeof DepositValidationSchema>;
 export const DepositValidationSchema = z.object({
   id: string().optional(),
   name: z.string().min(1),
+  bank: z.object({
+    id: z.string().nonempty({message: "Bank is not selected"}),
+    name: z.string()
+  }, {message: "Bank is not selected"}),
   percentage: z.number()
     .nonnegative()
     .gt(0)

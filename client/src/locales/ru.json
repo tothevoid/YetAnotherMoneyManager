@@ -48,6 +48,7 @@
 
     "entity_deposit_name_form_title": "Депозит",
     "entity_deposit_name": "Название",
+    "entity_transaction_bank": "Банк",
     "entity_deposit_from": "Начало",
     "entity_deposit_to": "Конец",
     "entity_deposit_percentage": "Процент",
@@ -120,6 +121,11 @@
     "entity_broker_from_title": "Брокер",
     "entity_broker_name": "Название",
     "entity_broker_add": "Добавить брокера",
+
+    "entity_bank_from_title": "Банк",
+    "entity_bank_name": "Название",
+    "entity_bank_add": "Добавить банк",
+    "banks_delete_title": "Удалить банк",
 
     "security_page_summary_add": "Добавить",
     "security_page_summary_no_securities": "Нет ценных бумаг",

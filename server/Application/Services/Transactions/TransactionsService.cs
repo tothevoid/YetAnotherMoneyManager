@@ -158,7 +158,8 @@ namespace MoneyManager.Application.Services.Transactions
             return transactionQuery
                 .Include(transaction => transaction.TransactionType)
                 .Include(transaction => transaction.Account.Currency)
-                .Include(transaction => transaction.Account.AccountType);
+                .Include(transaction => transaction.Account.AccountType)
+                .Include(transaction => transaction.Account.Bank);
         }
     }
 }

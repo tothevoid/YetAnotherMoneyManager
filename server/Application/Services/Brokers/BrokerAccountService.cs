@@ -112,7 +112,8 @@ namespace MoneyManager.Application.Services.Brokers
             return brokerAccountQuery
                 .Include(brokerAccount => brokerAccount.Type)
                 .Include(brokerAccount => brokerAccount.Currency)
-                .Include(brokerAccount => brokerAccount.Broker);
+                .Include(brokerAccount => brokerAccount.Broker)
+                .Include(brokerAccount => brokerAccount.Bank);
         }
 
         

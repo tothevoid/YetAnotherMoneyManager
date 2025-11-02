@@ -17,7 +17,8 @@ namespace MoneyManager.Application.Queries.Brokers
                 .Include(dividendPayment => dividendPayment.Dividend.Security.Type)
                 .Include(dividendPayment => dividendPayment.BrokerAccount.Type)
                 .Include(dividendPayment => dividendPayment.BrokerAccount.Currency)
-                .Include(dividendPayment => dividendPayment.BrokerAccount.Broker);
+                .Include(dividendPayment => dividendPayment.BrokerAccount.Broker)
+                .Include(dividendPayment => dividendPayment.BrokerAccount.Bank);
         }
     }
 }

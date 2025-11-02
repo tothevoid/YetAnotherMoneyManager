@@ -155,7 +155,8 @@ namespace MoneyManager.Application.Services.Accounts
         {
             return accountQuery
                 .Include(account => account.Currency)
-                .Include(account => account.AccountType);
+                .Include(account => account.AccountType)
+                .Include(account => account.Bank);
         }
     }
 }

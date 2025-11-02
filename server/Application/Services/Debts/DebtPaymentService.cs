@@ -134,7 +134,8 @@ namespace MoneyManager.Application.Services.Debts
             return debtPaymentQuery
                 .Include(debtPayment => debtPayment.Debt.Currency)
                 .Include(debtPayment => debtPayment.TargetAccount.AccountType)
-                .Include(debtPayment => debtPayment.TargetAccount.Currency);
+                .Include(debtPayment => debtPayment.TargetAccount.Currency)
+                .Include(debtPayment => debtPayment.TargetAccount.Bank);
         }
     }
 }

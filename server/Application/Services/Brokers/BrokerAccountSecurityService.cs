@@ -160,7 +160,8 @@ namespace MoneyManager.Application.Services.Brokers
                 .Include(brokerAccountSecurity => brokerAccountSecurity.Security.Type)
                 .Include(brokerAccountSecurity => brokerAccountSecurity.BrokerAccount.Type)
                 .Include(brokerAccountSecurity => brokerAccountSecurity.BrokerAccount.Currency)
-                .Include(brokerAccountSecurity => brokerAccountSecurity.BrokerAccount.Broker);
+                .Include(brokerAccountSecurity => brokerAccountSecurity.BrokerAccount.Broker)
+                .Include(brokerAccountSecurity => brokerAccountSecurity.BrokerAccount.Bank);
         }
     }
 }

@@ -32,6 +32,7 @@
     "entity_broker_account_name": "Название счёта",
     "entity_broker_account_type": "Тип счёта",
     "entity_broker_account_currency": "Валюта",
+    "entity_broker_account_bank": "Банк",
     "entity_broker_account_main_currency_amount": "Количество основной валюты",
     "entity_broker_account_broker": "Брокер",
     "entity_broker_account_last_update_at": "Дата последнего обновления",

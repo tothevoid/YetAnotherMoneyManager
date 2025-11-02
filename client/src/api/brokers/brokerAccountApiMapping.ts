@@ -9,7 +9,8 @@ export const prepareBrokerAccountRequest = (brokerAccount: BrokerAccountEntity):
         brokerId: brokerAccount.broker.id,
         initialValue: brokerAccount.initialValue,
         currentValue: brokerAccount.currentValue,
-        mainCurrencyAmount: brokerAccount.mainCurrencyAmount
+        mainCurrencyAmount: brokerAccount.mainCurrencyAmount,
+        bankId: brokerAccount.bank?.id
     };
 }
 
@@ -22,6 +23,7 @@ export const prepareBrokerAccount = (brokerAccount: BrokerAccountEntityResponse)
         broker: brokerAccount.broker,
         initialValue: brokerAccount.initialValue,
         currentValue: brokerAccount.currentValue,
-        mainCurrencyAmount: brokerAccount.mainCurrencyAmount
+        mainCurrencyAmount: brokerAccount.mainCurrencyAmount,
+        bank: brokerAccount.bank
     };
 }

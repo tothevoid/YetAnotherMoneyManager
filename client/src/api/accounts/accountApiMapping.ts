@@ -9,7 +9,8 @@ export const prepareAccountRequest = (account: AccountEntity): AccountEntityRequ
 		name: account.name,
 		createdOn: convertToDateOnly(account.createdOn),
 		accountTypeId: account.accountType.id,
-		currencyId: account.currency.id
+		currencyId: account.currency.id,
+		bankId: account.bank?.id
 	};
 }
 
@@ -21,6 +22,7 @@ export const prepareAccount = (account: AccountEntityResponse): AccountEntity =>
 		balance: account.balance,
 		accountType: account.accountType,
 		currency: account.currency,
-		createdOn: new Date(account.createdOn)
+		createdOn: new Date(account.createdOn),
+		bank: account.bank
 	};
 }

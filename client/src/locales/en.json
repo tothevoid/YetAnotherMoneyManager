@@ -32,6 +32,7 @@
     "entity_broker_account_name": "Account name",
     "entity_broker_account_type": "Account type",
     "entity_broker_account_currency": "Currency",
+    "entity_broker_account_bank": "Bank",
     "entity_broker_account_main_currency_amount": "Main currency amount",
     "entity_broker_account_broker": "Broker",
     "entity_broker_account_last_update_at": "Last update at",

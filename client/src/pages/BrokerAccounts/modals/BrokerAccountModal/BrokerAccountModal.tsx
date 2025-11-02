@@ -15,6 +15,8 @@ import { getBrokerAccountTypes } from "../../../../api/brokers/brokerAccountType
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
 import { generateGuid } from "../../../../shared/utilities/idUtilities";
+import { getBanks } from "../../../../api/banks/bankApi";
+import { BankEntity } from "../../../../models/banks/BankEntity";
 
 interface ModalProps {
     modalRef: RefObject<BaseModalRef | null>
@@ -25,12 +27,13 @@ interface ModalProps {
 interface State {
     currencies: CurrencyEntity[]
     accountTypes: BrokerAccountTypeEntity[]
-    brokers: BrokerEntity[]
+    brokers: BrokerEntity[],
+    banks: BankEntity[]
 }
 
 const BrokerAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
-    const [state, setState] = useState<State>({currencies: [], accountTypes: [], brokers: []})
-    
+    const [state, setState] = useState<State>({currencies: [], accountTypes: [], brokers: [], banks: []})
+
     useEffect(() => {
         const initData = async () => {
             await requestData();
@@ -42,8 +45,10 @@ const BrokerAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
         const currencies = await getCurrencies();
         const accountTypes = await getBrokerAccountTypes();
         const brokers = await getBrokers();
+        const banks = await getBanks();
+
         setState((currentState) => {
-            return {...currentState, currencies, accountTypes, brokers}
+            return {...currentState, currencies, accountTypes, brokers, banks}
         })
     };
 
@@ -56,7 +61,8 @@ const BrokerAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
             broker: props.brokerAccount?.broker,
             initialValue: props.brokerAccount?.initialValue,
             currentValue: props.brokerAccount?.currentValue,
-            mainCurrencyAmount: props.brokerAccount?.mainCurrencyAmount ?? 0
+            mainCurrencyAmount: props.brokerAccount?.mainCurrencyAmount ?? 0,
+            bank: props.brokerAccount?.bank
         }
     }, [props.brokerAccount]);
 
@@ -98,6 +104,14 @@ const BrokerAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
                 labelSelector={(currency => currency.name)} 
                 valueSelector={(currency => currency.id)}/>
             <Field.ErrorText>{errors.currency?.message}</Field.ErrorText>
+        </Field.Root>
+        <Field.Root mt={4} invalid={!!errors.bank}>
+            <Field.Label>{t("entity_broker_account_bank")}</Field.Label>
+            <CollectionSelect name="bank" control={control} placeholder="Select bank"
+                collection={state.banks} 
+                labelSelector={(bank => bank.name)} 
+                valueSelector={(bank => bank.id)}/>
+            <Field.ErrorText>{errors.bank?.message}</Field.ErrorText>
         </Field.Root>
         <Field.Root mt={4} invalid={!!errors.mainCurrencyAmount}>
             <Field.Label>{t("entity_broker_account_main_currency_amount")}</Field.Label>

@@ -6,6 +6,10 @@ export type BrokerAccountFormInput = z.infer<typeof BrokerAccountValidationSchem
 export const BrokerAccountValidationSchema = z.object({
     id: z.string().optional(),
     name: z.string().min(1),
+    bank: z.object({
+        id: z.string(),
+        name: z.string()
+    }).optional(),
     type: z.object({
         id: z.string().nonempty({message: "Broker account type is not selected"}),
         name: z.string()

@@ -53,6 +53,9 @@ const BrokerAccountDailyStats: React.FC<Props> = ({ brokerAccount }) => {
 		const currencyName = stat.security.currency.name;
 		const { profitAndLoss, profitAndLossPercentage, color } = calculateDiff(stat.startPrice, stat.currentPrice, currencyName);
 
+		const minDiff = formatMoneyByCurrencyCulture(stat.minPrice - stat.currentPrice, currencyName);
+		const maxDiff = formatMoneyByCurrencyCulture(stat.maxPrice - stat.currentPrice, currencyName);
+
 		return <Table.Row color="text_primary" backgroundColor="background_primary">
 			<Table.Cell>
 				<Link color="text_primary" href={`/security/${stat.security.id}`}>
@@ -62,8 +65,8 @@ const BrokerAccountDailyStats: React.FC<Props> = ({ brokerAccount }) => {
 			</Table.Cell>
 			<Table.Cell>{formatMoneyByCurrencyCulture(stat.startPrice, currencyName)}</Table.Cell>
 			<Table.Cell>{formatMoneyByCurrencyCulture(stat.currentPrice, currencyName)}</Table.Cell>
-			<Table.Cell>{formatMoneyByCurrencyCulture(stat.minPrice, currencyName)}</Table.Cell>
-			<Table.Cell>{formatMoneyByCurrencyCulture(stat.maxPrice, currencyName)}</Table.Cell>
+			<Table.Cell>{formatMoneyByCurrencyCulture(stat.minPrice, currencyName)} ({minDiff})</Table.Cell>
+			<Table.Cell>{formatMoneyByCurrencyCulture(stat.maxPrice, currencyName)} ({maxDiff})</Table.Cell>
 			<Table.Cell color={color}>{profitAndLoss}</Table.Cell>
 			<Table.Cell color={color}>{profitAndLossPercentage}%</Table.Cell>
 		</Table.Row>

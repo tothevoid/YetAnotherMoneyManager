@@ -1,6 +1,7 @@
-﻿using System;
-using MoneyManager.Application.DTO.Currencies;
+﻿using MoneyManager.Application.DTO.Currencies;
 using MoneyManager.Shared.Entities;
+using System;
+using MoneyManager.Application.DTO.Banks;
 
 namespace MoneyManager.Application.DTO.Brokers
 {
@@ -19,6 +20,10 @@ namespace MoneyManager.Application.DTO.Brokers
         public BrokerDTO Broker { get; set; }
 
         public Guid BrokerId { get; set; }
+
+        public BankDto Bank { get; set; }
+
+        public Guid? BankId { get; set; }
 
         public decimal InitialValue { get; set; }
 

@@ -1,6 +1,7 @@
 ﻿using MoneyManager.Application.DTO.Currencies;
 using MoneyManager.Shared.Entities;
 using System;
+using MoneyManager.Application.DTO.Banks;
 
 namespace MoneyManager.Application.DTO.Accounts
 {
@@ -17,6 +18,10 @@ namespace MoneyManager.Application.DTO.Accounts
         public Guid CurrencyId { get; set; }
 
         public Guid AccountTypeId { get; set; }
+
+        public BankDto Bank { get; set; }
+
+        public Guid? BankId { get; set; }
 
         public DateOnly CreatedOn { get; set; }
 

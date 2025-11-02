@@ -1,6 +1,7 @@
 ﻿using MoneyManager.Shared.Entities;
 using MoneyManager.WebApi.Models.Currencies;
 using System;
+using MoneyManager.WebApi.Models.Banks;
 
 namespace MoneyManager.WebApi.Models.Accounts
 {
@@ -17,6 +18,10 @@ namespace MoneyManager.WebApi.Models.Accounts
         public Guid CurrencyId { get; set; }
 
         public Guid AccountTypeId { get; set; }
+
+        public BankModel Bank { get; set; }
+
+        public Guid? BankId { get; set; }
 
         public DateOnly CreatedOn { get; set; }
 

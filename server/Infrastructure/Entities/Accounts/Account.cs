@@ -20,11 +20,11 @@ namespace MoneyManager.Infrastructure.Entities.Accounts
 
         public AccountType AccountType { get; set; }
 
-        public Bank Bank { get; set; }
-
         public Guid CurrencyId { get; set; }
 
         public Guid AccountTypeId { get; set; }
+
+        public Bank Bank { get; set; }
 
         public Guid? BankId { get; set; }
 

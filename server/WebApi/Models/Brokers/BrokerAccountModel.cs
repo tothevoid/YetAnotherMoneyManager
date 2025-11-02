@@ -1,6 +1,7 @@
-﻿using System;
-using MoneyManager.Shared.Entities;
+﻿using MoneyManager.Shared.Entities;
 using MoneyManager.WebApi.Models.Currencies;
+using System;
+using MoneyManager.WebApi.Models.Banks;
 
 namespace MoneyManager.WebApi.Models.Brokers
 {
@@ -19,6 +20,10 @@ namespace MoneyManager.WebApi.Models.Brokers
         public BrokerModel Broker { get; set; }
 
         public Guid BrokerId { get; set; }
+
+        public BankModel Bank { get; set; }
+
+        public Guid? BankId { get; set; }
 
         public decimal InitialValue { get; set; }
 

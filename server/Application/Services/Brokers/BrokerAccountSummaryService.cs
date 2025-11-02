@@ -203,54 +203,6 @@ namespace MoneyManager.Application.Services.Brokers
             };
         }
 
-        //private async Task<IEnumerable<DailyStatDto>> GetDailyStats(Guid brokerAccountId, DateTime from, DateTime to)
-        //{
-        //    var securities = (await _brokerAccountSecurityService
-        //            .GetByBrokerAccount(brokerAccountId))
-        //        .ToList();
-
-
-        //    var tickers = securities.Select(security => security.Security.Ticker);
-        //    var tickersHistory = await _stockConnector
-        //        .GetValuesByTickersInRange(tickers, DateOnly.FromDateTime(from), DateOnly.FromDateTime(to));
-
-        //    var historyByTikcers = tickersHistory.MarketData
-        //        .GroupBy(history => history.Ticker);
-
-
-        //    var dailyStats = new List<DailyStatDto>();
-
-        //    foreach (var security in securities)
-        //    {
-        //        var hasHistory = tickersHistory.ContainsKey(security.Security.Ticker);
-
-        //        if (!hasHistory)
-        //        {
-        //            continue;
-        //        }
-
-        //        var history = tickersHistory[security.Security.Ticker]
-        //            .OrderBy(value => value.Date)
-        //            .ToList();
-
-        //        if (!history.Any())
-        //        {
-        //            continue;
-        //        }
-
-        //        dailyStats.Add(new DailyStatDto()
-        //        {
-        //            Security = security.Security,
-        //            MinPrice = history.Min(value => value.Value),
-        //            MaxPrice = history.Max(value => value.Value),
-        //            FirstPrice = history.First().Value,
-        //            LastPrice = history.Last().Value
-        //        });
-        //    }
-
-        //    return dailyStats;
-        //}
-
         private class TransfersHistory
         {
             public decimal TotalDeposited { get; set; }

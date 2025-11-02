@@ -62,6 +62,8 @@ const BrokerAccountDailyStats: React.FC<Props> = ({ brokerAccount }) => {
 			</Table.Cell>
 			<Table.Cell>{formatMoneyByCurrencyCulture(stat.startPrice, currencyName)}</Table.Cell>
 			<Table.Cell>{formatMoneyByCurrencyCulture(stat.currentPrice, currencyName)}</Table.Cell>
+			<Table.Cell>{formatMoneyByCurrencyCulture(stat.minPrice, currencyName)}</Table.Cell>
+			<Table.Cell>{formatMoneyByCurrencyCulture(stat.maxPrice, currencyName)}</Table.Cell>
 			<Table.Cell color={color}>{profitAndLoss}</Table.Cell>
 			<Table.Cell color={color}>{profitAndLossPercentage}%</Table.Cell>
 		</Table.Row>
@@ -96,6 +98,8 @@ const BrokerAccountDailyStats: React.FC<Props> = ({ brokerAccount }) => {
 								<Table.ColumnHeader color="text_primary">{t("broker_account_daily_stats_security_column")}</Table.ColumnHeader>
 								<Table.ColumnHeader color="text_primary">{t("broker_account_daily_stats_open_value_column")}</Table.ColumnHeader>
 								<Table.ColumnHeader color="text_primary">{t("broker_account_daily_stats_current_value_column")}</Table.ColumnHeader>
+								<Table.ColumnHeader color="text_primary">{t("broker_account_daily_stats_min_value_column")}</Table.ColumnHeader>
+								<Table.ColumnHeader color="text_primary">{t("broker_account_daily_stats_max_value_column")}</Table.ColumnHeader>
 								<Table.ColumnHeader color="text_primary">{t("broker_account_daily_stats_diff_column")}</Table.ColumnHeader>
 								<Table.ColumnHeader color="text_primary">{t("broker_account_daily_stats_percentage_diff_column")}</Table.ColumnHeader>
 							</Table.Row>

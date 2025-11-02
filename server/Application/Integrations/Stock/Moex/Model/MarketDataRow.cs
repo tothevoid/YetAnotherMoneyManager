@@ -15,5 +15,9 @@ namespace MoneyManager.Application.Integrations.Stock.Moex.Model
         public decimal? MarketPrice { get; set; }
 
         public decimal? Open { get; set; }
+
+        public decimal Low { get; set; }
+
+        public decimal High { get; set; }
     }
 }

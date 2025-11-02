@@ -82,7 +82,9 @@ namespace MoneyManager.Application.Services.Brokers
                 {
                     CurrentPrice = currentPrice,
                     Security = brokerAccountSecurity.Security,
-                    StartPrice = startPrice
+                    StartPrice = startPrice,
+                    MinPrice = marketValue.Low,
+                    MaxPrice = marketValue.High
                 });
 
                 handledTickers.Add(marketValue.Ticker);

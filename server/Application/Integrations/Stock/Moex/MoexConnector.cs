@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http.Authentication.Internal;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Integrations.Stock.Moex.Model;
 using MoneyManager.Application.Interfaces.Integrations.Stock;
@@ -73,6 +74,8 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
             var lastValueIndex = columnsIndexes["LAST"];
             var dateIndex = columnsIndexes["SYSTIME"];
             var marketPriceIndex = columnsIndexes["MARKETPRICE"];
+            var lowIndex = columnsIndexes["LOW"];
+            var highIndex = columnsIndexes["HIGH"];
 
             return marketData.Data
                 .Select(row =>
@@ -84,15 +87,25 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
                             ? Convert.ToDecimal(row[lastValueIndex].ToString(), CultureInfo.InvariantCulture)
                             : null,
                         Date = Convert.ToDateTime(row[dateIndex].ToString()),
-                        MarketPrice = row[marketPriceIndex] != null
-                            ? Convert.ToDecimal(row[marketPriceIndex].ToString(), CultureInfo.InvariantCulture)
-                            : null,
-                        Open = row[openIndex] != null ?
-                            Convert.ToDecimal(row[openIndex].ToString(), CultureInfo.InvariantCulture)
-                            : null
+                        MarketPrice = TryGetDecimalValue(row[marketPriceIndex]),
+                        Open = TryGetDecimalValue(row[openIndex]),
+                        Low = TryGetDecimalValue(row[lowIndex], 0),
+                        High = TryGetDecimalValue(row[highIndex], 0)
                     }
                 )
                 .OrderBy(row => GetBoardPriority(row.BoardId));
+        }
+
+        private decimal? TryGetDecimalValue(object value)
+        {
+            return value != null
+                ? Convert.ToDecimal(value.ToString(), CultureInfo.InvariantCulture)
+                : null;
+        }
+
+        private decimal TryGetDecimalValue(object value, decimal defaultValue)
+        {
+            return TryGetDecimalValue(value) ?? defaultValue;
         }
 
         private IEnumerable<SecurityRow> ParseSecuritiesRows(IEnumerable<string> columns, DynamicMoexResponseObject marketData)
@@ -111,9 +124,7 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
                         Ticker = Convert.ToString(row[tickerIndex]),
                         BoardId = Convert.ToString(row[boardIdIndex]),
                         UpdateTime = Convert.ToDateTime(row[updateTimeIndex]),
-                        PrevPrice = row[prevPrice] != null
-                            ? Convert.ToDecimal(row[prevPrice], CultureInfo.InvariantCulture)
-                            : null
+                        PrevPrice = TryGetDecimalValue(row[prevPrice])
                     }
                 )
                 .OrderBy(row => GetBoardPriority(row.BoardId));

@@ -22,5 +22,9 @@ namespace MoneyManager.WebApi.Models.Brokers
         public decimal StartPrice { get; set; }
 
         public decimal CurrentPrice { get; set; }
+
+        public decimal MinPrice { get; set; }
+
+        public decimal MaxPrice { get; set; }
     }
 }

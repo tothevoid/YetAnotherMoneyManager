@@ -291,6 +291,8 @@
     "broker_account_daily_stats_security_column": "Security",
     "broker_account_daily_stats_open_value_column": "Open value",
     "broker_account_daily_stats_current_value_column": "Current value",
+    "broker_account_daily_stats_min_value_column": "Min value",
+    "broker_account_daily_stats_max_value_column": "Max value",
     "broker_account_daily_stats_diff_column": "Diff",
     "broker_account_daily_stats_percentage_diff_column": "Percentage diff"
 }

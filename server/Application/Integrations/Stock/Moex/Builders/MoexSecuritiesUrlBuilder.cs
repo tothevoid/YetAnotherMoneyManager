@@ -12,7 +12,7 @@ namespace MoneyManager.Application.Integrations.Stock.Moex.Builders
         public MoexSecuritiesUrlBuilder IncludeMarket()
         {
             OutputFilters.Add("marketdata");
-            AdditionalParameters.Add("marketdata.columns=BOARDID,OPEN,SECID,LAST,SYSTIME,MARKETPRICE");
+            AdditionalParameters.Add("marketdata.columns=BOARDID,OPEN,SECID,LAST,SYSTIME,MARKETPRICE,LOW,HIGH");
 
             return this;
         }

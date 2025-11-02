@@ -182,7 +182,8 @@ namespace MoneyManager.Application.Services.Deposits
         private IQueryable<Deposit> GetFullHierarchyColumns(IQueryable<Deposit> depositQuery)
         {
             return depositQuery
-                .Include(deposit => deposit.Currency);
+                .Include(deposit => deposit.Currency)
+                .Include(deposit => deposit.Bank);
         }
 
         private class Payment

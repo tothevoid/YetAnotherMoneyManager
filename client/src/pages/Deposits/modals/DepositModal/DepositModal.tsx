@@ -55,12 +55,13 @@ const DepositModal: React.FC<ModalProps> = (props: ModalProps) => {
 		return {
 			id: props.deposit?.id ?? generateGuid(),
 			name: props.deposit?.name ?? "",
+			bank: props.deposit?.bank,
 			from: props.deposit?.from ?? new Date(),
 			to: props.deposit?.to ?? new Date(),
 			percentage: props.deposit?.percentage ?? 0,
 			initialAmount: props.deposit?.initialAmount ?? 0,
 			estimatedEarn: props.deposit?.estimatedEarn ?? 0,
-			currency: props.deposit?.currency
+			currency: props.deposit?.currency,
 		}
 	}, [props.deposit])
 

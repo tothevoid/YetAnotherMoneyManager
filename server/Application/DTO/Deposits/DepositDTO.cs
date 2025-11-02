@@ -1,6 +1,8 @@
-﻿using MoneyManager.Shared.Entities;
+﻿using MoneyManager.Application.DTO.Currencies;
+using MoneyManager.Infrastructure.Entities.Banks;
+using MoneyManager.Shared.Entities;
 using System;
-using MoneyManager.Application.DTO.Currencies;
+using MoneyManager.Application.DTO.Banks;
 
 namespace MoneyManager.Application.DTO.Deposits
 {
@@ -21,5 +23,9 @@ namespace MoneyManager.Application.DTO.Deposits
         public CurrencyDTO Currency { get; set; }
 
         public Guid CurrencyId { get; set; }
+
+        public Guid? BankId { get; set; }
+
+        public BankDto Bank { get; set; }
     }
 }

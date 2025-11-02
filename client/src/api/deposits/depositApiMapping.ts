@@ -6,6 +6,7 @@ export const prepareDepositEntity = (deposit: DepositEntityResponse): DepositEnt
         id: deposit.id,
         initialAmount: deposit.initialAmount,
         name: deposit.name,
+        bank: deposit.bank,
         percentage: deposit.percentage,
         currency: deposit.currency,
         estimatedEarn: deposit.estimatedEarn,
@@ -24,5 +25,6 @@ export const prepareDepositEntityRequest = (deposit: DepositEntity): DepositEnti
         currencyId: deposit.currency?.id,
         from: convertToDateOnly(deposit.from),
         to: convertToDateOnly(deposit.to),
+        bankId: deposit.bank?.id
     }
 }

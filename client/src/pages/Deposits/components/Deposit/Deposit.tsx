@@ -22,7 +22,10 @@ const Deposit: React.FC<Props> = ({deposit, onEditClicked, onCloneClicked, onDel
     return <Card.Root borderColor="border_primary" color="text_primary" backgroundColor="background_primary">
         <Card.Body boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
             <Stack>
-                <Text fontSize={"xl"} fontWeight={600}>{deposit.name}</Text>
+                <Text fontSize={"xl"} fontWeight={600}>
+                    {deposit.name}
+                    {deposit.bank && ` (${deposit.bank?.name})`}
+                </Text>
                 <Container padding={0}>
                     <Flex justifyContent="space-between">
                         <Text color={"gray.500"}>{t("entity_deposit_initial_amount")}:</Text>

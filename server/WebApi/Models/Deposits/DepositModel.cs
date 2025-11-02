@@ -1,6 +1,7 @@
-﻿using System;
-using MoneyManager.Shared.Entities;
+﻿using MoneyManager.Shared.Entities;
 using MoneyManager.WebApi.Models.Currencies;
+using System;
+using MoneyManager.WebApi.Models.Banks;
 
 namespace MoneyManager.WebApi.Models.Deposits
 {
@@ -21,5 +22,9 @@ namespace MoneyManager.WebApi.Models.Deposits
         public CurrencyModel Currency { get; set; }
 
         public Guid CurrencyId { get; set; }
+
+        public Guid? BankId { get; set; }
+
+        public BankModel Bank { get; set; }
     }
 }

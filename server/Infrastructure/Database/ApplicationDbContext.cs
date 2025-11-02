@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Infrastructure.Configurations.Accounts;
+using MoneyManager.Infrastructure.Configurations.Banks;
 using MoneyManager.Infrastructure.Configurations.Brokers;
 using MoneyManager.Infrastructure.Configurations.Currencies;
 using MoneyManager.Infrastructure.Configurations.Debts;
@@ -58,6 +59,8 @@ namespace MoneyManager.Infrastructure.Database
             modelBuilder.ApplyConfiguration(new CryptoProviderConfiguration());
             
             modelBuilder.ApplyConfiguration(new CurrencyTransactionConfiguration());
+
+            modelBuilder.ApplyConfiguration(new BankConfiguration());
 
             InitializeDefaultData(modelBuilder);
 

@@ -3,6 +3,7 @@ using MoneyManager.Infrastructure.Entities.Currencies;
 using MoneyManager.Shared.Entities;
 using System;
 using System.Collections.Generic;
+using MoneyManager.Infrastructure.Entities.Banks;
 using MoneyManager.Infrastructure.Entities.Debts;
 using MoneyManager.Infrastructure.Entities.Deposits;
 using MoneyManager.Infrastructure.Entities.Transactions;
@@ -19,9 +20,13 @@ namespace MoneyManager.Infrastructure.Entities.Accounts
 
         public AccountType AccountType { get; set; }
 
+        public Bank Bank { get; set; }
+
         public Guid CurrencyId { get; set; }
 
         public Guid AccountTypeId { get; set; }
+
+        public Guid? BankId { get; set; }
 
         public DateOnly CreatedOn { get; set; }
 

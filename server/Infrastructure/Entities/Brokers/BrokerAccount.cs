@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MoneyManager.Infrastructure.Entities.Banks;
 using MoneyManager.Infrastructure.Entities.Currencies;
 using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Shared.Entities;
@@ -21,6 +22,10 @@ namespace MoneyManager.Infrastructure.Entities.Brokers
         public Broker Broker { get; set; }
 
         public Guid BrokerId { get; set; }
+
+        public Bank Bank { get; set; }
+
+        public Guid? BankId { get; set; }
 
         public decimal MainCurrencyAmount { get; set; }
 

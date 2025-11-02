@@ -25,6 +25,12 @@ namespace MoneyManager.Infrastructure.Configurations.Brokers
                 .WithMany(broker => broker.BrokerAccounts)
                 .HasForeignKey(brokerAccount => brokerAccount.BrokerId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            accountConfiguration
+                .HasOne(account => account.Bank)
+                .WithMany(bank => bank.BrokerAccounts)
+                .HasForeignKey(brokerAccount => brokerAccount.BankId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

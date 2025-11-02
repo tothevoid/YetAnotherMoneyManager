@@ -1,5 +1,6 @@
 ﻿using MoneyManager.Shared.Entities;
 using System;
+using MoneyManager.Infrastructure.Entities.Banks;
 using MoneyManager.Infrastructure.Entities.Currencies;
 
 namespace MoneyManager.Infrastructure.Entities.Deposits
@@ -21,5 +22,9 @@ namespace MoneyManager.Infrastructure.Entities.Deposits
         public Guid CurrencyId { get; set; }
 
         public Currency Currency { get; set; }
+
+        public Guid? BankId { get; set; }
+
+        public Bank Bank { get; set; }
     }
 }

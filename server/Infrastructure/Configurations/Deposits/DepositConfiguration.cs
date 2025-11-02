@@ -13,6 +13,12 @@ namespace MoneyManager.Infrastructure.Configurations.Deposits
                 .WithMany(currency => currency.Deposits)
                 .HasForeignKey(deposit => deposit.CurrencyId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            depositConfiguration
+                .HasOne(account => account.Bank)
+                .WithMany(bank => bank.Deposits)
+                .HasForeignKey(deposit => deposit.BankId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

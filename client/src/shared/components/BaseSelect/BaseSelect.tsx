@@ -24,6 +24,14 @@ const BaseSelect: CollectionSelectProps = ({placeholder, selectedValue, onSelect
                 ...provided,
                 color: "text_primary",
                 marginLeft: "10px"
+            }),
+            menuList: (provided) => ({
+                ...provided,
+                bg: "background_primary",
+                border: "1px solid white",
+                borderColor: "border_primary",
+                boxShadow: "md",
+                borderRadius: "8px"
             })
         }}
 

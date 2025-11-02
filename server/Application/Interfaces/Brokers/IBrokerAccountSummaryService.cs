@@ -12,6 +12,8 @@ namespace MoneyManager.Application.Interfaces.Brokers
     {
         Task<BrokerAccountSummaryDto> GetSummary(Guid brokerAccountId, DateTime from, DateTime to);
 
+        Task<BrokerAccountDailyStatsDto> GetDailyStats(Guid brokerAccountId);
+
         Task<IEnumerable<BrokerAccountDayTransferDto>> GetMonthTransfersHistory(Guid brokerAccountId, int month, int year);
 
         Task<IEnumerable<BrokerAccountMonthTransferDto>> GetYearTransfersHistory(Guid brokerAccountId, int year);

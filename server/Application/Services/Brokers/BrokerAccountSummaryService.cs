@@ -42,6 +42,61 @@ namespace MoneyManager.Application.Services.Brokers
             };
         }
 
+        public async Task<BrokerAccountDailyStatsDto> GetDailyStats(Guid brokerAccountId)
+        {
+            var securities = await _brokerAccountSecurityService
+                .GetByBrokerAccount(brokerAccountId);
+
+            var tickerMapping = securities
+                .ToDictionary(key => key.Security.Ticker, value => value);
+
+            var tickers = securities.Select(security => security.Security.Ticker);
+            var marketValues = (await _stockConnector
+                .GetValuesByTickers(tickers));
+
+            var brokerAccount = await _brokerAccountService.GetById(brokerAccountId);
+
+            var handledTickers = new HashSet<string>();
+
+            var securityStats = new List<BrokerAccountDailySecurityStatsDto>();
+
+            var startPortfolioValue = brokerAccount.MainCurrencyAmount;
+            var currentPortfolioValue = brokerAccount.MainCurrencyAmount;
+
+            foreach (var marketValue in marketValues)
+            {
+                if (handledTickers.Contains(marketValue.Ticker))
+                {
+                    continue;
+                }
+
+                var currentPrice = marketValue.MarketPrice ?? marketValue.LastValue ?? 0;
+                var startPrice = marketValue.Open ?? 0;
+
+                var brokerAccountSecurity = tickerMapping[marketValue.Ticker];
+
+                startPortfolioValue += startPrice * brokerAccountSecurity.Quantity;
+                currentPortfolioValue += currentPrice * brokerAccountSecurity.Quantity;
+
+                securityStats.Add(new BrokerAccountDailySecurityStatsDto()
+                {
+                    CurrentPrice = currentPrice,
+                    Security = brokerAccountSecurity.Security,
+                    StartPrice = startPrice
+                });
+
+                handledTickers.Add(marketValue.Ticker);
+            }
+
+            return new BrokerAccountDailyStatsDto()
+            {
+                FetchDate = DateTime.UtcNow,
+                BrokerAccountDailySecurityStats = securityStats,
+                CurrentPortfolioValue = currentPortfolioValue,
+                StartPortfolioValue = startPortfolioValue
+            };
+        }
+
         public async Task<IEnumerable<BrokerAccountDayTransferDto>> GetMonthTransfersHistory(Guid brokerAccountId, int month, int year)
         {
             //TODO: Add db month and year filter

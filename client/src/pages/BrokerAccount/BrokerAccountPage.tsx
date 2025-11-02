@@ -19,6 +19,8 @@ import { MdAttachMoney, MdQueryStats } from "react-icons/md";
 import BrokerAccountFundTransfersList from "./components/BrokerAccountFundTransfersList/BrokerAccountFundTransfersList";
 import BrokerAccountStats from "./components/BrokerAccountStats/BrokerAccountStats";
 import { formatShortDateTime } from "../../shared/utilities/formatters/dateFormatter";
+import BrokerAccountDailyStats from "./components/BrokerAccountDailyStats/BrokerAccountDailyStats";
+import { IoMdStats } from "react-icons/io";
 
 interface State {
     brokerAccount: BrokerAccountEntity | null,
@@ -154,11 +156,15 @@ const BrokerAccountPage: React.FC = () => {
             <Text backgroundColor="background_primary" borderColor="border_primary" color={profitAndLossWithDividends.color} textAlign={'center'} minW={150} rounded={10} padding={2}>{t("broker_account_page_total_profit_and_loss")}: {profitAndLossWithDividends.profitAndLoss}  | {profitAndLossWithDividends.profitAndLossPercentage}%</Text>
         </Stack>
         <BrokerAccountSecuritiesList ref={securitiesRef} brokerAccount={state.brokerAccount}/>
-        <Tabs.Root variant="enclosed" defaultValue="stats">
+        <Tabs.Root variant="enclosed" defaultValue="daily_stats">
             <Tabs.List background={"background_primary"}>
-                 <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="stats">
+                <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="daily_stats">
+                    <IoMdStats/>
+                     {t("broker_account_page_daily_stats_tab")}
+                </Tabs.Trigger>
+                <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="stats">
                     <MdQueryStats />
-                     {t("broker_account_page_stats_tab")}
+                     {t("broker_account_page_account_stats_tab")}
                 </Tabs.Trigger>
                 <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="transactions">
                     <GrTransaction />
@@ -173,6 +179,9 @@ const BrokerAccountPage: React.FC = () => {
                      {t("broker_account_page_transfers_tab")}
                 </Tabs.Trigger>
             </Tabs.List>
+            <Tabs.Content value="daily_stats">
+               <BrokerAccountDailyStats brokerAccount={state.brokerAccount}/>
+            </Tabs.Content>
             <Tabs.Content value="stats">
                <BrokerAccountStats brokerAccount={state.brokerAccount}/>
             </Tabs.Content>

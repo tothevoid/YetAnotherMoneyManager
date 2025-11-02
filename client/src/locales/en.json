@@ -231,7 +231,8 @@
     "dividend_payment_form_security": "Security",
     "dividend_payment_form_payment": "Payment",
 
-    "broker_account_page_stats_tab": "Stats",
+    "broker_account_page_daily_stats_tab": "Daily Stats",
+    "broker_account_page_account_stats_tab": "Account stats",
     "broker_account_page_transactions_tab": "Transactions",
     "broker_account_page_dividends_tab": "Dividends",
     "broker_account_page_transfers_tab": "Transfers",
@@ -280,5 +281,16 @@
     "broker_account_stats_invested": "Invested",
     "broker_account_stats_current_value": "Current value",
     "broker_account_stats_deposited": "Deposited",
-    "broker_account_stats_withdrawn": "Withdrawn"
+    "broker_account_stats_withdrawn": "Withdrawn",
+
+    "broker_account_daily_stats_title": "Daily stats for {{date}}",
+    "broker_account_start_portfolio_title": "Day start portfolio value",
+    "broker_account_current_portfolio_title": "Current portfolio value",
+
+    "broker_account_daily_stats_dynamics": "Daily dynamics",
+    "broker_account_daily_stats_security_column": "Security",
+    "broker_account_daily_stats_open_value_column": "Open value",
+    "broker_account_daily_stats_current_value_column": "Current value",
+    "broker_account_daily_stats_diff_column": "Diff",
+    "broker_account_daily_stats_percentage_diff_column": "Percentage diff"
 }

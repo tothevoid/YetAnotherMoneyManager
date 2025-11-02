@@ -15,6 +15,8 @@ import DateSelect from "../../../../shared/components/DateSelect/DateSelect";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import { generateGuid } from "../../../../shared/utilities/idUtilities";
+import { getBanks } from "../../../../api/banks/bankApi";
+import { BankEntity } from "../../../../models/banks/BankEntity";
 
 
 interface ModalProps {
@@ -25,16 +27,18 @@ interface ModalProps {
 
 interface State {
 	currencies: CurrencyEntity[]
-	accountTypes: AccountTypeEntity[]
+	accountTypes: AccountTypeEntity[],
+	banks: BankEntity[]
 }
 
 const AccountModal: React.FC<ModalProps> = (props: ModalProps) => {
-  	const [state, setState] = useState<State>({currencies: [], accountTypes: []})
-	
+  	const [state, setState] = useState<State>({currencies: [], accountTypes: [], banks: []})
+
 	useEffect(() => {
 		const initData = async () => {
 			await initCurrencies();
 			await initAccountTypes();
+			await initBanks();
 		}
 		initData();
 	}, []);
@@ -53,6 +57,13 @@ const AccountModal: React.FC<ModalProps> = (props: ModalProps) => {
 		})
 	}
 
+	const initBanks = async () => {
+		const banks = await getBanks();
+		setState((currentState) => {
+			return {...currentState, banks}
+		})
+	};
+
 	const getFormDefaultValues = useCallback(() => {
 		return {
 			id: props.account?.id ?? generateGuid(),
@@ -61,7 +72,8 @@ const AccountModal: React.FC<ModalProps> = (props: ModalProps) => {
 			currency: props.account?.currency,
 			accountType: props.account?.accountType,
 			active: props.account?.active ?? true,
-			createdOn: props.account?.createdOn ?? new Date()
+			createdOn: props.account?.createdOn ?? new Date(),
+			bank: props.account?.bank
 		}
 	}, [props.account]);
 
@@ -95,6 +107,14 @@ const AccountModal: React.FC<ModalProps> = (props: ModalProps) => {
 				labelSelector={(accountType => accountType.name)} 
 				valueSelector={(accountType => accountType.id)}/>
 			<Field.ErrorText>{errors.accountType?.message}</Field.ErrorText>
+		</Field.Root>
+		<Field.Root mt={4} invalid={!!errors.bank}>
+			<Field.Label>{t("entity_transaction_bank")}</Field.Label>
+			<CollectionSelect name="bank" control={control} placeholder="Select bank"
+				collection={state.banks} 
+				labelSelector={(bank => bank.name)} 
+				valueSelector={(bank => bank.id)}/>
+			<Field.ErrorText>{errors.bank?.message}</Field.ErrorText>
 		</Field.Root>
 		<Field.Root mt={4} invalid={!!errors.currency}>
 			<Field.Label>{t("entity_transaction_currency")}</Field.Label>

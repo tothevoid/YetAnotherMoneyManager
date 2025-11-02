@@ -26,6 +26,7 @@
     "entity_account_balance": "Balance",
     "entity_transaction_currency": "Currency",
     "entity_transaction_type": "Type",
+    "entity_transaction_bank": "Bank",
     "entity_account_active": "Active",
     "entity_account_created_on": "Created on",
 
@@ -49,7 +50,7 @@
 
     "entity_deposit_name_form_title": "Deposit",
     "entity_deposit_name": "Name",
-    "entity_transaction_bank": "Bank",
+    "entity_deposit_bank": "Bank",
     "entity_deposit_from": "From",
     "entity_deposit_to": "To",
     "entity_deposit_percentage": "Percentage",

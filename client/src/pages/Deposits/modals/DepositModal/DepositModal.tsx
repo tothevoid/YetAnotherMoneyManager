@@ -89,7 +89,7 @@ const DepositModal: React.FC<ModalProps> = (props: ModalProps) => {
 			<Field.ErrorText>{errors.name?.message}</Field.ErrorText>
 		</Field.Root>
 		<Field.Root mt={4} invalid={!!errors.bank}>
-			<Field.Label>{t("entity_transaction_bank")}</Field.Label>
+			<Field.Label>{t("entity_deposit_bank")}</Field.Label>
 			<CollectionSelect name="bank" control={control} placeholder="Select bank"
 				collection={state.banks} 
 				labelSelector={(bank => bank.name)} 

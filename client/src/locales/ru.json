@@ -26,6 +26,7 @@
     "entity_account_balance": "Баланс",
     "entity_transaction_currency": "Валюта",
     "entity_transaction_type": "Тип",
+    "entity_transaction_bank": "Банк",
     "entity_account_active": "Активен",
     "entity_account_created_on": "Дата создания",
 
@@ -49,7 +50,7 @@
 
     "entity_deposit_name_form_title": "Депозит",
     "entity_deposit_name": "Название",
-    "entity_transaction_bank": "Банк",
+    "entity_deposit_bank": "Банк",
     "entity_deposit_from": "Начало",
     "entity_deposit_to": "Конец",
     "entity_deposit_percentage": "Процент",

@@ -80,7 +80,7 @@ const BrokerAccountDailyStats: React.FC<Props> = ({ brokerAccount }) => {
 		dailyStats.startPortfolioValue, brokerAccount.currency.name);
 
 	return (
-		<Stack gapY={4} style={{ width: '100%', height: 400, marginBlock: 20 }}>
+		<Stack gapY={4}>
 			<Stack direction="row" justifyContent="start" alignItems="center">
 				<Text fontSize="3xl" fontWeight={900} color={"text_primary"}>{t("broker_account_daily_stats_title", { date: formatTime(new Date(dailyStats.fetchDate), i18n)})}</Text>
 				<RefreshButton isRefreshing={isRefreshing} transparent onClick={() => fetchDailyStats(true)}/>
@@ -115,7 +115,6 @@ const BrokerAccountDailyStats: React.FC<Props> = ({ brokerAccount }) => {
 					</Table.Root>
 				</Card.Body>
 			</Card.Root>
-			
 		</Stack>
 	);
 };

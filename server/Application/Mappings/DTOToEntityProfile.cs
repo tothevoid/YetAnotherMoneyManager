@@ -16,6 +16,8 @@ using MoneyManager.Infrastructure.Entities.User;
 using MoneyManager.Application.DTO.Debts;
 using MoneyManager.Infrastructure.Entities.Debts;
 using MoneyManager.Infrastructure.Entities.Crypto;
+using MoneyManager.Application.DTO.Banks;
+using MoneyManager.Infrastructure.Entities.Banks;
 
 namespace MoneyManager.Application.Mappings
 {
@@ -53,6 +55,7 @@ namespace MoneyManager.Application.Mappings
             CreateMap<CryptoProviderDto, CryptoProvider>().ReverseMap();
 
             CreateMap<BrokerAccountFundsTransferDto, BrokerAccountFundsTransfer>().ReverseMap();
+            CreateMap<BankDto, Bank>().ReverseMap();
         }
     }
 }

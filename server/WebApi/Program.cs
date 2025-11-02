@@ -38,6 +38,8 @@ using MoneyManager.Infrastructure.Interfaces.Messages;
 using MoneyManager.Infrastructure.Messages;
 using MoneyManager.WebApi.Mappings;
 using System;
+using MoneyManager.Application.Interfaces.Banks;
+using MoneyManager.Application.Services.Banks;
 using TickerQ.DependencyInjection;
 using TickerQ.Utilities.Enums;
 
@@ -109,6 +111,8 @@ builder.Services.AddTransient<ICryptoAccountService, CryptoAccountService>();
 builder.Services.AddTransient<ICryptoAccountCryptocurrencyService, CryptoAccountCryptocurrencyService>();
 builder.Services.AddTransient<ICryptocurrencyService, CryptocurrencyService>();
 builder.Services.AddTransient<ICryptoProviderService, CryptoProviderService>();
+
+builder.Services.AddTransient<IBankService, BankService>();
 
 builder.Services.AddScoped<IServerNotifier, ServerNotifier>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();

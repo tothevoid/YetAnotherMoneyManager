@@ -20,6 +20,8 @@ using MoneyManager.Application.DTO.Debts;
 using MoneyManager.WebApi.Models.Debts;
 using MoneyManager.Infrastructure.Entities.Crypto;
 using MoneyManager.WebApi.Models.Crypto;
+using MoneyManager.WebApi.Models.Banks;
+using MoneyManager.Application.DTO.Banks;
 
 namespace MoneyManager.WebApi.Mappings
 {
@@ -90,6 +92,7 @@ namespace MoneyManager.WebApi.Mappings
 
             CreateMap<BrokerAccountDailyStatsDto, BrokerAccountDailyStatsModel>().ReverseMap();
             CreateMap<BrokerAccountDailySecurityStatsDto, BrokerAccountDailySecurityStatsModel>().ReverseMap();
+            CreateMap<BankDto, BankModel>().ReverseMap();
         }
     }
 }

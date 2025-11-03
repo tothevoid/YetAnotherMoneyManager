@@ -1,9 +1,10 @@
 import { MdDelete, MdEdit, MdContentCopy } from "react-icons/md";
-import { Card, Flex, Stack, Button, Text, Container, Icon } from "@chakra-ui/react";
+import { Card, Flex, Stack, Button, Text, Container, Icon, Image } from "@chakra-ui/react";
 import {  formatNumericDate } from "../../../../shared/utilities/formatters/dateFormatter";
 import { formatMoney } from "../../../../shared/utilities/formatters/moneyFormatter";
 import { DepositEntity } from "../../../../models/deposits/DepositEntity";
 import { useTranslation } from "react-i18next";
+import { getBankIconUrl } from "../../../../api/banks/bankApi";
 
 interface Props {
     deposit: DepositEntity
@@ -22,10 +23,13 @@ const Deposit: React.FC<Props> = ({deposit, onEditClicked, onCloneClicked, onDel
     return <Card.Root borderColor="border_primary" color="text_primary" backgroundColor="background_primary">
         <Card.Body boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
             <Stack>
-                <Text fontSize={"xl"} fontWeight={600}>
-                    {deposit.name}
-                    {deposit.bank && ` (${deposit.bank?.name})`}
-                </Text>
+                <Flex gapX={2} alignItems={"center"} justifyContent={"left"} direction={"row"}>
+                    {deposit?.bank?.iconKey && <Image fit={"contain"} h={6} w={6} rounded={4} src={getBankIconUrl(deposit?.bank?.iconKey)}/>}
+                    <Text fontSize={"xl"} fontWeight={600}>
+                        {deposit.name}
+                    </Text>
+                </Flex>
+               
                 <Container padding={0}>
                     <Flex justifyContent="space-between">
                         <Text color={"gray.500"}>{t("entity_deposit_initial_amount")}:</Text>

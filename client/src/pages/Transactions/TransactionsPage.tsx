@@ -22,6 +22,7 @@ import { ConfirmModal } from "../../shared/modals/ConfirmModal/ConfirmModal";
 import TransactionModal from "./modals/TransactionModal/TransactionModal";
 import AddButton from "../../shared/components/AddButton/AddButton";
 import { BaseModalRef } from "../../shared/utilities/modalUtilities";
+import { ACCOUNT_TYPE } from "../../shared/constants/accountType";
 
 interface State {
     accounts: AccountEntity[]
@@ -61,9 +62,9 @@ const TransactionsPage: React.FC = () => {
 
     const initAccounts = async () => {
         const accounts = await getAccountsByTypes([
-            "6ea1867f-c067-412c-b443-8b9bc2467202",	// Credit card
-            "a08f5553-379e-4294-a2e5-75e88219433c",	// Cash
-            "cda2ce07-551e-48cf-988d-270c0d022866"	// Debit card
+            ACCOUNT_TYPE.CASH,
+            ACCOUNT_TYPE.DEBIT_CARD,
+            ACCOUNT_TYPE.CREDIT_CARD
         ], true);
         setState((currentState) => {
             return {...currentState, accounts}

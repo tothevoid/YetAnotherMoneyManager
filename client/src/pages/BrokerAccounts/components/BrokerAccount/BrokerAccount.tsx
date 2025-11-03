@@ -1,9 +1,10 @@
-import { Button, Card, Flex, Icon, Link, Span, Stack, Text } from '@chakra-ui/react';
+import { Button, Card, Flex, Icon, Link, Span, Stack, Text, Image } from '@chakra-ui/react';
 import { MdDelete, MdEdit } from "react-icons/md";
 import { Fragment } from 'react';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
 import { BrokerAccountEntity } from '../../../../models/brokers/BrokerAccountEntity';
 import { calculateDiff } from '../../../../shared/utilities/numericDiffsUtilities';
+import { getBankIconUrl } from '../../../../api/banks/bankApi';
 
 interface Props {
 	brokerAccount: BrokerAccountEntity
@@ -12,7 +13,7 @@ interface Props {
 }
 
 const BrokerAccount = (props: Props) => {
-	const { id, name, broker, currency, type, initialValue, currentValue } = props.brokerAccount;
+	const { id, name, broker, currency, type, initialValue, currentValue, bank } = props.brokerAccount;
 
 	const accountLink = `../broker_account/${id}`;
 	const { profitAndLoss, profitAndLossPercentage, color } = calculateDiff(currentValue, initialValue, currency.name);
@@ -22,7 +23,10 @@ const BrokerAccount = (props: Props) => {
 			<Card.Body color="text_primary" boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
 				<Flex justifyContent="space-between" alignItems="center">
 					<Stack>
-						<Link fontSize="2xl" fontWeight={900} color="text_primary" href={accountLink}>{name}</Link>
+						<Flex gapX={2} alignItems={"center"}>
+							{bank?.iconKey && <Image fit={"contain"} h={6} w={6} rounded={4} src={getBankIconUrl(bank?.iconKey)}/>}
+							<Link fontSize="2xl" fontWeight={900} color="text_primary" href={accountLink}>{name}</Link>
+						</Flex>
 						<Text fontWeight={600}>{broker.name}</Text>
 						<Text fontWeight={600}>{type.name}</Text>
 						<Stack gapX={1} direction="row">

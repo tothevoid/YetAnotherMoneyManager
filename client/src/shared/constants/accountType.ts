@@ -1,0 +1,5 @@
+export const ACCOUNT_TYPE = {
+    CREDIT_CARD: "6ea1867f-c067-412c-b443-8b9bc2467202",
+    CASH: "a08f5553-379e-4294-a2e5-75e88219433c",
+    DEBIT_CARD: "cda2ce07-551e-48cf-988d-270c0d022866"
+};

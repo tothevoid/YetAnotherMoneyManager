@@ -21,7 +21,6 @@ namespace MoneyManager.Application.Jobs
         public async Task Pull()
         {
             await _brokerAccountSecurityService.PullQuotations();
-            Console.WriteLine($"{DateTime.Now} Successfully pulled quotations");
         }
     }
 }

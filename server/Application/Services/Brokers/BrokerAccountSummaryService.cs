@@ -52,7 +52,7 @@ namespace MoneyManager.Application.Services.Brokers
 
             var tickers = securities.Select(security => security.Security.Ticker);
             var marketValues = (await _stockConnector
-                .GetValuesByTickers(tickers));
+                .GetExtendedValuesByTickers(tickers));
 
             var brokerAccount = await _brokerAccountService.GetById(brokerAccountId);
 
@@ -71,7 +71,7 @@ namespace MoneyManager.Application.Services.Brokers
                 }
 
                 var currentPrice = marketValue.MarketPrice ?? marketValue.LastValue ?? 0;
-                var startPrice = marketValue.Open ?? 0;
+                var startPrice = marketValue.PrevPrice ?? marketValue.Open ?? 0;
 
                 var brokerAccountSecurity = tickerMapping[marketValue.Ticker];
 
@@ -82,9 +82,10 @@ namespace MoneyManager.Application.Services.Brokers
                 {
                     CurrentPrice = currentPrice,
                     Security = brokerAccountSecurity.Security,
-                    StartPrice = startPrice,
+                    StartPrice = marketValue.Open ?? 0,
                     MinPrice = marketValue.Low,
-                    MaxPrice = marketValue.High
+                    MaxPrice = marketValue.High,
+                    PreviousDayClosePrice = marketValue.PrevPrice ?? 0
                 });
 
                 handledTickers.Add(marketValue.Ticker);

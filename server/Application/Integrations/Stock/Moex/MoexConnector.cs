@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http.Authentication.Internal;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Integrations.Stock.Moex.Model;
 using MoneyManager.Application.Interfaces.Integrations.Stock;
@@ -30,9 +29,18 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
             return await GetHistory(query, httpClient);
         }
 
-        public Task<FullSecurityData> GetValuesByTickersInRange(IEnumerable<string> tickers, DateOnly from, DateOnly to)
+        public async Task<IEnumerable<MarketDataRow>> GetExtendedValuesByTickers(IEnumerable<string> tickers)
         {
-            throw new NotImplementedException();
+            var httpClient = _httpClientFactory.CreateClient();
+
+            var query = MoexUrlFactory.GetFullSecuritiesQuery(tickers);
+            var result = await httpClient.GetAsync(query);
+
+            var tickersData = await result.Content.ReadFromJsonAsync<MoexResponse>();
+
+            var marketData = ParseMarketDataRows(tickersData.MarketData.Columns, tickersData.MarketData)
+                .ToList();
+            return ParseAndApplySecuritiesRows(marketData, tickersData.Securities.Columns, tickersData.Securities);
         }
 
         public async Task<IEnumerable<MarketDataRow>> GetValuesByTickers(IEnumerable<string> tickers)
@@ -45,23 +53,6 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
             var tickersData = await result.Content.ReadFromJsonAsync<MoexResponse>();
 
             return ParseMarketDataRows(tickersData.MarketData.Columns, tickersData.MarketData);
-        }
-
-        public async Task<FullSecurityData> GetFullValuesByTickersInRange(IEnumerable<string> tickers,
-            DateOnly from, DateOnly to)
-        {
-            var httpClient = _httpClientFactory.CreateClient();
-
-            var query = MoexUrlFactory.GetFullSecuritiesQuery(tickers, from, to);
-            var result = await httpClient.GetAsync(query);
-
-            var tickersData = await result.Content.ReadFromJsonAsync<MoexResponse>();
-
-            return new FullSecurityData()
-            {
-                Security = ParseSecuritiesRows(tickersData.MarketData.Columns, tickersData.MarketData),
-                MarketData = ParseMarketDataRows(tickersData.MarketData.Columns, tickersData.Securities)
-            };
         }
 
         private IEnumerable<MarketDataRow> ParseMarketDataRows(IEnumerable<string> columns, DynamicMoexResponseObject marketData)
@@ -108,26 +99,40 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
             return TryGetDecimalValue(value) ?? defaultValue;
         }
 
-        private IEnumerable<SecurityRow> ParseSecuritiesRows(IEnumerable<string> columns, DynamicMoexResponseObject marketData)
+        private IEnumerable<MarketDataRow> ParseAndApplySecuritiesRows(IEnumerable<MarketDataRow> marketDataRows, 
+            IEnumerable<string> columns,
+            DynamicMoexResponseObject securities)
         {
             var columnsIndexes = GetColumnIndexMapping(columns.ToArray());
 
             var tickerIndex = columnsIndexes["SECID"];
-            var updateTimeIndex = columnsIndexes["UPDATETIME"];
             var boardIdIndex = columnsIndexes["BOARDID"];
             var prevPrice = columnsIndexes["PREVPRICE"];
 
-            return marketData.Data
+            var securityRows =  securities.Data
                 .Select(row =>
                     new SecurityRow()
                     {
                         Ticker = Convert.ToString(row[tickerIndex]),
                         BoardId = Convert.ToString(row[boardIdIndex]),
-                        UpdateTime = Convert.ToDateTime(row[updateTimeIndex]),
                         PrevPrice = TryGetDecimalValue(row[prevPrice])
                     }
                 )
-                .OrderBy(row => GetBoardPriority(row.BoardId));
+                .OrderBy(row => GetBoardPriority(row.BoardId))
+                .ToDictionary(key => key.GetUniqueKey(), value => value);
+
+            foreach (var marketDataRow in marketDataRows)
+            {
+                var key = marketDataRow.GetUniqueKey();
+                if (!securityRows.ContainsKey(key))
+                {
+                    continue;
+                }
+
+                marketDataRow.PrevPrice = securityRows[key].PrevPrice;
+            }
+
+            return marketDataRows;
         }
 
         private int GetBoardPriority(string boardId)

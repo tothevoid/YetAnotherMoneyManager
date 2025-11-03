@@ -19,5 +19,12 @@ namespace MoneyManager.Application.Integrations.Stock.Moex.Model
         public decimal Low { get; set; }
 
         public decimal High { get; set; }
+
+        public decimal? PrevPrice { get; set; }
+
+        public string GetUniqueKey()
+        {
+            return $"{Ticker}_{BoardId}";
+        }
     }
 }

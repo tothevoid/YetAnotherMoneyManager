@@ -156,7 +156,7 @@ const BrokerAccountPage: React.FC = () => {
             <Text backgroundColor="background_primary" borderColor="border_primary" color={profitAndLossWithDividends.color} textAlign={'center'} minW={150} rounded={10} padding={2}>{t("broker_account_page_total_profit_and_loss")}: {profitAndLossWithDividends.profitAndLoss}  | {profitAndLossWithDividends.profitAndLossPercentage}%</Text>
         </Stack>
         <BrokerAccountSecuritiesList ref={securitiesRef} brokerAccount={state.brokerAccount}/>
-        <Tabs.Root variant="enclosed" defaultValue="daily_stats">
+        <Tabs.Root lazyMount={true} unmountOnExit={true} variant="enclosed" defaultValue="daily_stats">
             <Tabs.List background={"background_primary"}>
                 <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="daily_stats">
                     <IoMdStats/>

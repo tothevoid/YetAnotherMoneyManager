@@ -20,7 +20,7 @@ namespace MoneyManager.Application.Integrations.Stock.Moex.Builders
         public MoexSecuritiesUrlBuilder IncludeSecurities()
         {
             OutputFilters.Add("securities");
-            AdditionalParameters.Add("securities.columns=BOARDID,PREVPRICE");
+            AdditionalParameters.Add("securities.columns=SECID,BOARDID,PREVPRICE");
 
             return this;
         }

@@ -15,6 +15,6 @@ namespace MoneyManager.Application.Interfaces.Integrations.Stock
 
         Task<IEnumerable<SecurityHistoryValueDto>> GetTickerHistory(string ticker, DateOnly from, DateOnly to);
 
-        Task<FullSecurityData> GetValuesByTickersInRange(IEnumerable<string> tickers, DateOnly from, DateOnly to);
+        Task<IEnumerable<MarketDataRow>> GetExtendedValuesByTickers(IEnumerable<string> tickers);
     }
 }

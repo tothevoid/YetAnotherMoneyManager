@@ -13,4 +13,5 @@ export interface BrokerAccountDailySecurityStatsEntity {
     currentPrice: number
     minPrice: number
     maxPrice: number
+    previousDayClosePrice: number
 }

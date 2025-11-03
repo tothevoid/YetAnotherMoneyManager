@@ -298,6 +298,7 @@
 
     "broker_account_daily_stats_dynamics": "Daily dynamics",
     "broker_account_daily_stats_security_column": "Security",
+    "broker_account_daily_stats_previous_close_value_column": "Previous close value",
     "broker_account_daily_stats_open_value_column": "Open value",
     "broker_account_daily_stats_current_value_column": "Current value",
     "broker_account_daily_stats_min_value_column": "Min value",

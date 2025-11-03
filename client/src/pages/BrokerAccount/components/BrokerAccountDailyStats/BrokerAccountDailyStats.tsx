@@ -51,12 +51,14 @@ const BrokerAccountDailyStats: React.FC<Props> = ({ brokerAccount }) => {
 
 	const formatStat = useCallback((stat: BrokerAccountDailySecurityStatsEntity) => {
 		const currencyName = stat.security.currency.name;
-		const { profitAndLoss, profitAndLossPercentage, color } = calculateDiff(stat.startPrice, stat.currentPrice, currencyName);
+		const relativeStartPrice = stat.previousDayClosePrice || stat.startPrice;
+		const { profitAndLoss, profitAndLossPercentage, color } = calculateDiff(stat.currentPrice, 
+			relativeStartPrice, currencyName);
 
 		const minDiff = formatMoneyByCurrencyCulture(stat.minPrice - stat.currentPrice, currencyName);
 		const maxDiff = formatMoneyByCurrencyCulture(stat.maxPrice - stat.currentPrice, currencyName);
 
-		return <Table.Row color="text_primary" backgroundColor="background_primary">
+		return <Table.Row key={stat.security.id} color="text_primary" backgroundColor="background_primary">
 			<Table.Cell>
 				<Link color="text_primary" href={`/security/${stat.security.id}`}>
 					<Image h={8} w={8} rounded={16} src={getIconUrl(stat.security.iconKey)}/>
@@ -64,9 +66,10 @@ const BrokerAccountDailyStats: React.FC<Props> = ({ brokerAccount }) => {
 				</Link>
 			</Table.Cell>
 			<Table.Cell>{formatMoneyByCurrencyCulture(stat.startPrice, currencyName)}</Table.Cell>
-			<Table.Cell>{formatMoneyByCurrencyCulture(stat.currentPrice, currencyName)}</Table.Cell>
 			<Table.Cell>{formatMoneyByCurrencyCulture(stat.minPrice, currencyName)} ({minDiff})</Table.Cell>
 			<Table.Cell>{formatMoneyByCurrencyCulture(stat.maxPrice, currencyName)} ({maxDiff})</Table.Cell>
+			<Table.Cell>{formatMoneyByCurrencyCulture(stat.previousDayClosePrice, currencyName)}</Table.Cell>
+			<Table.Cell>{formatMoneyByCurrencyCulture(stat.currentPrice, currencyName)}</Table.Cell>
 			<Table.Cell color={color}>{profitAndLoss}</Table.Cell>
 			<Table.Cell color={color}>{profitAndLossPercentage}%</Table.Cell>
 		</Table.Row>
@@ -100,9 +103,10 @@ const BrokerAccountDailyStats: React.FC<Props> = ({ brokerAccount }) => {
 							<Table.Row backgroundColor="background_primary">
 								<Table.ColumnHeader color="text_primary">{t("broker_account_daily_stats_security_column")}</Table.ColumnHeader>
 								<Table.ColumnHeader color="text_primary">{t("broker_account_daily_stats_open_value_column")}</Table.ColumnHeader>
-								<Table.ColumnHeader color="text_primary">{t("broker_account_daily_stats_current_value_column")}</Table.ColumnHeader>
 								<Table.ColumnHeader color="text_primary">{t("broker_account_daily_stats_min_value_column")}</Table.ColumnHeader>
 								<Table.ColumnHeader color="text_primary">{t("broker_account_daily_stats_max_value_column")}</Table.ColumnHeader>
+								<Table.ColumnHeader color="text_primary">{t("broker_account_daily_stats_previous_close_value_column")}</Table.ColumnHeader>
+								<Table.ColumnHeader color="text_primary">{t("broker_account_daily_stats_current_value_column")}</Table.ColumnHeader>
 								<Table.ColumnHeader color="text_primary">{t("broker_account_daily_stats_diff_column")}</Table.ColumnHeader>
 								<Table.ColumnHeader color="text_primary">{t("broker_account_daily_stats_percentage_diff_column")}</Table.ColumnHeader>
 							</Table.Row>

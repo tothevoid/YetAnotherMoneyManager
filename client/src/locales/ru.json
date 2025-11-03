@@ -299,6 +299,7 @@
 
     "broker_account_daily_stats_dynamics": "Динамика за день",
     "broker_account_daily_stats_security_column": "Ценная бумага",
+    "broker_account_daily_stats_previous_close_value_column": "Предыдущая цена закрытия",
     "broker_account_daily_stats_open_value_column": "Стоимость на открытии",
     "broker_account_daily_stats_current_value_column": "Текущая стоимость",
     "broker_account_daily_stats_min_value_column": "Минимальная цена",

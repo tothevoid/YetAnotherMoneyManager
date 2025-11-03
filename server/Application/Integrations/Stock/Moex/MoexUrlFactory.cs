@@ -13,11 +13,10 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
                 .Build();
         }
 
-        public static string GetFullSecuritiesQuery(IEnumerable<string> tickers, DateOnly from, DateOnly to)
+        public static string GetFullSecuritiesQuery(IEnumerable<string> tickers)
         {
             return GetCommonSecuritiesBuilder(tickers)
                 .IncludeSecurities()
-                .AddRange(from, to)
                 .Build();
         }
 

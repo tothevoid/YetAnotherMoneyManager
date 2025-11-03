@@ -1,11 +1,14 @@
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using MoneyManager.Application.DTO.Banks;
 using MoneyManager.Application.Interfaces.Banks;
 using MoneyManager.WebApi.Models.Banks;
+using MoneyManager.WebApi.Models.Transactions;
+using System;
+using System.Collections.Generic;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace MoneyManager.WebApi.Controllers.Banks
 {
@@ -29,7 +32,7 @@ namespace MoneyManager.WebApi.Controllers.Banks
             return _mapper.Map<IEnumerable<BankModel>>(banks);
         }
 
-        [HttpGet("GetById")]
+        [HttpGet(nameof(GetById))]
         public async Task<BankModel> GetById([FromQuery] Guid id)
         {
             var bank = await _bankService.GetById(id);
@@ -37,18 +40,22 @@ namespace MoneyManager.WebApi.Controllers.Banks
         }
 
         [HttpPut]
-        public async Task<Guid> Add(BankModel bank)
+        public async Task<Guid> Add([FromForm] string bankJson, [FromForm] IFormFile bankIcon = null)
         {
+            var bank = JsonSerializer.Deserialize<TransactionTypeModel>(bankJson);
+
             var bankDto = _mapper.Map<BankDto>(bank);
-            var created = await _bankService.Add(bankDto);
+            var created = await _bankService.Add(bankDto, bankIcon);
             return created.Id;
         }
 
         [HttpPatch]
-        public async Task Update(BankModel bank)
+        public async Task Update([FromForm] string bankJson, [FromForm] IFormFile bankIcon = null)
         {
+            var bank = JsonSerializer.Deserialize<TransactionTypeModel>(bankJson);
+
             var bankDto = _mapper.Map<BankDto>(bank);
-            await _bankService.Update(bankDto);
+            await _bankService.Update(bankDto, bankIcon);
         }
 
         [HttpDelete]

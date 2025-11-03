@@ -6,5 +6,7 @@ namespace MoneyManager.WebApi.Models.Banks
     public class BankModel: BaseEntity
     {
         public string Name { get; set; }
+
+        public string IconKey { get; set; }
     }
 }

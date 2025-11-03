@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using MoneyManager.Application.DTO.Banks;
 using System;
 using System.Collections.Generic;
@@ -9,8 +10,9 @@ namespace MoneyManager.Application.Interfaces.Banks
     {
         Task<IEnumerable<BankDto>> GetAll();
         Task<BankDto> GetById(Guid id);
-        Task<BankDto> Add(BankDto bankDto);
-        Task<BankDto> Update(BankDto bankDto);
+        Task<BankDto> Add(BankDto bankDto, IFormFile bankIcon);
+        Task<BankDto> Update(BankDto bankDto, IFormFile bankIcon);
         Task<bool> Delete(Guid id);
+        Task<string> GetIconUrl(string iconKey);
     }
 }

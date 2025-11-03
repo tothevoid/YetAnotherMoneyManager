@@ -14,6 +14,8 @@ namespace MoneyManager.Infrastructure.Entities.Banks
     {
         public string Name { get; set; }
 
+        public string IconKey { get; set; }
+
         public ICollection<BrokerAccount> BrokerAccounts { get; set; }
 
         public ICollection<Account> Accounts { get; set; }

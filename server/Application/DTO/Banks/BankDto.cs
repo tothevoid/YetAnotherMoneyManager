@@ -6,5 +6,7 @@ namespace MoneyManager.Application.DTO.Banks
     public class BankDto: BaseEntity
     {
         public string Name { get; set; }
+
+        public string IconKey { get; set; }
     }
 }

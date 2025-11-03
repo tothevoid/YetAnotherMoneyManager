@@ -60,7 +60,6 @@ builder.Services.AddCors(options =>
         });
 });
 
-
 var dbConnection = builder.Configuration.GetSection("DB").GetSection("ConnectionString").Value;
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(dbConnection));

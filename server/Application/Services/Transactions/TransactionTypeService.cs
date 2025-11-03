@@ -82,6 +82,5 @@ namespace MoneyManager.Application.Services.Transactions
             await _transactionTypeRepo.Delete(id);
             await _db.Commit();
         }
-
     }
 }

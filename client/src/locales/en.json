@@ -191,6 +191,7 @@
     "dashboard_bank_accounts": "Bank accounts",
     "dashboard_debts": "Debtors",
     "dashboard_crypto_account": "Crypto accounts",
+    "dashboard_banks": "Banks",
 
     "dashboard_transactions_spents": "Spents",
     "dashboard_transactions_incomes": "Incomes",

@@ -1,22 +1,24 @@
 ﻿using AutoMapper;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using MoneyManager.Infrastructure.Interfaces.Database;
-using MoneyManager.Application.DTO.Dashboard;
-using MoneyManager.Application.Interfaces.Currencies;
-using MoneyManager.Infrastructure.Constants;
-using MoneyManager.Application.Interfaces.Accounts;
 using MoneyManager.Application.DTO.Accounts;
+using MoneyManager.Application.DTO.Banks;
+using MoneyManager.Application.DTO.Dashboard;
+using MoneyManager.Application.DTO.Transactions;
+using MoneyManager.Application.Interfaces.Accounts;
+using MoneyManager.Application.Interfaces.Banks;
+using MoneyManager.Application.Interfaces.Brokers;
+using MoneyManager.Application.Interfaces.Crypto;
+using MoneyManager.Application.Interfaces.Currencies;
+using MoneyManager.Application.Interfaces.Debts;
 using MoneyManager.Application.Interfaces.Deposits;
 using MoneyManager.Application.Interfaces.Transactions;
-using System;
-using System.Linq;
-using MoneyManager.Application.Interfaces.Brokers;
-using MoneyManager.Application.DTO.Transactions;
-using MoneyManager.Application.Interfaces.Crypto;
-using MoneyManager.Application.Interfaces.Debts;
 using MoneyManager.Application.Interfaces.User;
-using MoneyManager.Application.Services.Currencies;
+using MoneyManager.Infrastructure.Constants;
+using MoneyManager.Infrastructure.Interfaces.Database;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using MoneyManager.Application.DTO.Deposits;
 
 namespace MoneyManager.Application.Services.Dashboard
 {
@@ -33,12 +35,14 @@ namespace MoneyManager.Application.Services.Dashboard
         private readonly ICryptoAccountService _cryptoAccountService;
         private readonly ICurrencyService _currencyService;
         private readonly ICryptoAccountCryptocurrencyService _cryptoAccountCryptocurrencyService;
+        private readonly IBankService _bankService;
 
         public DashboardService(IUnitOfWork uow, IMapper mapper, IAccountService accountService, 
             IDepositService depositService, ITransactionsService transactionsService,
             IBrokerAccountService brokerAccountService, IDebtService debtService, 
             IUserProfileService userProfile, ICryptoAccountService cryptoAccountService, 
-            ICurrencyService currencyService, ICryptoAccountCryptocurrencyService cryptoAccountCryptocurrencyService)
+            ICurrencyService currencyService, ICryptoAccountCryptocurrencyService cryptoAccountCryptocurrencyService,
+            IBankService bankService)
         {
             _db = uow;
             _mapper = mapper;
@@ -51,14 +55,18 @@ namespace MoneyManager.Application.Services.Dashboard
             _cryptoAccountService = cryptoAccountService;
             _currencyService = currencyService;
             _cryptoAccountCryptocurrencyService = cryptoAccountCryptocurrencyService;
+            _bankService = bankService;
         }
 
         public async Task<GlobalDashboardDto> GetDashboard()
         {
-            var accountStats = await GetAccountData();
-            var brokerAccountStats = await GetBrokerAccountData();
+            var banks = await _bankService.GetAll();
+            var bankDistributionCalculator = new BankDistributionCalculator(banks);
+
+            var accountStats = await GetAccountData(bankDistributionCalculator);
+            var brokerAccountStats = await GetBrokerAccountData(bankDistributionCalculator);
             var debtsStats = await GetDebtsData();
-            var depositStats = await GetDepositStats();
+            var depositStats = await GetDepositStats(bankDistributionCalculator);
             var cryptoAccountStats = await GetCryptoAccountStats();
 
             return new GlobalDashboardDto()
@@ -70,7 +78,8 @@ namespace MoneyManager.Application.Services.Dashboard
                 DebtsGlobalDashboard = debtsStats,
                 DepositsGlobalDashboard = depositStats,
                 TransactionsGlobalDashboard = await GetTransactionDate(),
-                CryptoAccountsGlobalDashboard = cryptoAccountStats
+                CryptoAccountsGlobalDashboard = cryptoAccountStats,
+                BanksGlobalDashboard = new BanksGlobalDashboardDto() {Distribution = bankDistributionCalculator.GetDistribution() }
             };
         }
 
@@ -142,7 +151,7 @@ namespace MoneyManager.Application.Services.Dashboard
             return convertedAmount;
         }
 
-        private async Task<AccountsGlobalDashboardDto> GetAccountData()
+        private async Task<AccountsGlobalDashboardDto> GetAccountData(BankDistributionCalculator bankDistributionCalculator)
         {
             var accounts = await _accountService.GetAll(true);
 
@@ -156,12 +165,12 @@ namespace MoneyManager.Application.Services.Dashboard
             {
                 if (account.AccountTypeId == AccountTypeConstants.Cash)
                 {
-                    cashSummary += HandleCard(account, cashValuesDistribution);
+                    cashSummary += HandleCard(account, cashValuesDistribution, bankDistributionCalculator);
                 }
                 else if (account.AccountTypeId == AccountTypeConstants.DebitCard ||
                          account.AccountTypeId == AccountTypeConstants.CreditCard)
                 {
-                    bankAccountSummary += HandleCard(account, bankAccountsDistribution);
+                    bankAccountSummary += HandleCard(account, bankAccountsDistribution, bankDistributionCalculator);
                 }
             }
 
@@ -177,24 +186,27 @@ namespace MoneyManager.Application.Services.Dashboard
             };
         }
 
-        private decimal HandleCard(AccountDTO account, List<DistributionDto> cardValues)
+        private decimal HandleCard(AccountDTO account, List<DistributionDto> cardValues, 
+            BankDistributionCalculator bankDistributionCalculator)
         {
-            var key = account.Name;
-
+            var currencyName = account.Currency.Name;
+            var amount = account.Balance;
             var convertedAmount = account.Balance * account.Currency.Rate;
 
             cardValues.Add(new DistributionDto()
             {
                 Name = account.Name,
-                Currency = account.Currency.Name,
+                Currency = currencyName,
                 Amount = account.Balance,
                 ConvertedAmount = convertedAmount
             });
 
+            bankDistributionCalculator.Add(account.BankId, currencyName, amount, convertedAmount);
+
             return convertedAmount;
         }
 
-        private async Task<BrokerAccountsGlobalDashboardDto> GetBrokerAccountData()
+        private async Task<BrokerAccountsGlobalDashboardDto> GetBrokerAccountData(BankDistributionCalculator bankDistributionCalculator)
         {
             var brokerAccounts = await _brokerAccountService.GetAll();
 
@@ -203,17 +215,21 @@ namespace MoneyManager.Application.Services.Dashboard
 
             foreach (var brokerAccount in brokerAccounts)
             {
-                var key = brokerAccount.Name;
+                var currencyName = brokerAccount.Currency.Name;
+                var amount = brokerAccount.CurrentValue;
+
                 var convertedAmount = brokerAccount.CurrentValue * brokerAccount.Currency.Rate;
                 brokerAccountsSummary += convertedAmount;
 
                 brokerAccountsValues.Add(new DistributionDto()
                 {
                     Name = brokerAccount.Name,
-                    Currency = brokerAccount.Currency.Name,
+                    Currency = currencyName,
                     Amount = brokerAccount.CurrentValue,
                     ConvertedAmount = convertedAmount
                 });
+
+                bankDistributionCalculator.Add(brokerAccount.BankId, currencyName, amount, convertedAmount);
             }
 
             return new BrokerAccountsGlobalDashboardDto()
@@ -232,14 +248,14 @@ namespace MoneyManager.Application.Services.Dashboard
 
             foreach (var debt in debts)
             {
-                var key = debt.Name;
+                var currencyName = debt.Currency.Name;
                 var convertedAmount = debt.Amount * debt.Currency.Rate;
                 debtsSummary += convertedAmount;
 
                 debtsDistribution.Add(new DistributionDto()
                 {
                     Name = debt.Name,
-                    Currency = debt.Currency.Name,
+                    Currency = currencyName,
                     Amount = debt.Amount,
                     ConvertedAmount = convertedAmount
                 });
@@ -252,7 +268,7 @@ namespace MoneyManager.Application.Services.Dashboard
             };
         }
 
-        private async Task<DepositsGlobalDashboardDto> GetDepositStats()
+        private async Task<DepositsGlobalDashboardDto> GetDepositStats(BankDistributionCalculator bankDistributionCalculator)
         {
             var deposits = await _depositService.GetAllActive();
 
@@ -265,31 +281,37 @@ namespace MoneyManager.Application.Services.Dashboard
             foreach (var deposit in deposits)
             {
                 var key = deposit.Name;
-                var totalDays = deposit.To.DayNumber - deposit.From.DayNumber;
-                var daysPassed = DateOnly.FromDateTime(DateTime.Now).DayNumber - deposit.From.DayNumber;
-                var amount = deposit.EstimatedEarn / totalDays * daysPassed;
 
-                var startedAmount = deposit.InitialAmount * deposit.Currency.Rate;
-                var earned = amount * deposit.Currency.Rate;
+                var currencyName = deposit.Currency.Name;
+
+                var startedAmount = deposit.InitialAmount;
+                var convertedStartedAmount = startedAmount * deposit.Currency.Rate;
+
+                var earnedAmount = CalculateDepositEarnings(deposit);
+                var convertedEarnedAmount = earnedAmount * deposit.Currency.Rate;
 
                 totalStartedAmount += startedAmount;
-                totalEarned += earned;
+                totalEarned += convertedEarnedAmount;
 
                 startedAmountDistribution.Add(new DistributionDto()
                 {
                     Name = key,
-                    Currency = deposit.Currency.Name,
+                    Currency = currencyName,
                     Amount = startedAmount,
-                    ConvertedAmount = startedAmount * deposit.Currency.Rate
+                    ConvertedAmount = convertedStartedAmount
                 });
 
                 earningsDistribution.Add(new DistributionDto()
                 {
                     Name = key,
-                    Currency = deposit.Currency.Name,
-                    Amount = deposit.InitialAmount,
-                    ConvertedAmount = earned
+                    Currency = currencyName,
+                    Amount = earnedAmount,
+                    ConvertedAmount = convertedEarnedAmount
                 });
+
+                bankDistributionCalculator.Add(deposit.BankId, currencyName, 
+                    startedAmount + earnedAmount, 
+                    convertedStartedAmount + convertedEarnedAmount);
             }
 
             return new DepositsGlobalDashboardDto()
@@ -303,6 +325,13 @@ namespace MoneyManager.Application.Services.Dashboard
                 EarningsDistribution = earningsDistribution
             };
 
+        }
+
+        private decimal CalculateDepositEarnings(DepositDTO deposit)
+        {
+            var totalDays = deposit.To.DayNumber - deposit.From.DayNumber;
+            var daysPassed = DateOnly.FromDateTime(DateTime.Now).DayNumber - deposit.From.DayNumber;
+            return deposit.EstimatedEarn / totalDays * daysPassed;
         }
 
         private async Task<CryptoAccountsGlobalDashboardDto> GetCryptoAccountStats()
@@ -347,6 +376,51 @@ namespace MoneyManager.Application.Services.Dashboard
                 Total = brokerAccountsSummary,
                 Distribution = cryptoAccountsValues
             };
+        }
+    }
+
+    class BankDistributionCalculator
+    {
+        private Dictionary<string, DistributionDto> Distributions { get; } = new();
+
+        private Dictionary<Guid, BankDto> Banks { get; }
+
+        public BankDistributionCalculator(IEnumerable<BankDto> banks)
+        {
+            Banks = banks.ToDictionary(key => key.Id, value => value);
+        }
+
+        public void Add(Guid? bankId, string currencyName, decimal amount, decimal convertedAmount)
+        {
+            if (bankId == null || !Banks.ContainsKey((Guid )bankId))
+            {
+                return;
+            }
+
+            var bank = Banks[(Guid) bankId];
+            var key = $"{bank.Name} ({currencyName})";
+
+            if (Distributions.ContainsKey(key))
+            {
+                var distribution = Distributions[key];
+                distribution.Amount += amount;
+                distribution.ConvertedAmount += convertedAmount;
+            }
+            else
+            {
+                Distributions.Add(key, new DistributionDto()
+                {
+                    Name = bank.Name,
+                    Currency = currencyName,
+                    Amount = amount,
+                    ConvertedAmount = convertedAmount
+                });
+            }
+        }
+
+        public IEnumerable<DistributionDto> GetDistribution()
+        {
+            return Distributions.Values;
         }
     }
 }

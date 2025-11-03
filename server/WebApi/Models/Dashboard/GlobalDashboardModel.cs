@@ -18,6 +18,8 @@ namespace MoneyManager.WebApi.Models.Dashboard
         public DepositsGlobalDashboardModel DepositsGlobalDashboard { get; set; }
 
         public CryptoAccountsGlobalDashboardModel CryptoAccountsGlobalDashboard { get; set; }
+
+        public BanksGlobalDashboardModel BanksGlobalDashboard { get; set; }
     }
 
     public class TransactionsGlobalDashboardModel
@@ -88,6 +90,11 @@ namespace MoneyManager.WebApi.Models.Dashboard
     {
         public decimal Total { get; set; }
 
+        public IEnumerable<DistributionModel> Distribution { get; set; }
+    }
+
+    public class BanksGlobalDashboardModel
+    {
         public IEnumerable<DistributionModel> Distribution { get; set; }
     }
 }

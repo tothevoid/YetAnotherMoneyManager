@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MoneyManager.Application.DTO.Dashboard
 {
@@ -11,6 +12,7 @@ namespace MoneyManager.Application.DTO.Dashboard
         public DebtsGlobalDashboardDto DebtsGlobalDashboard { get; set; } = new DebtsGlobalDashboardDto();
         public DepositsGlobalDashboardDto DepositsGlobalDashboard { get; set; } = new DepositsGlobalDashboardDto();
         public CryptoAccountsGlobalDashboardDto CryptoAccountsGlobalDashboard { get; set; } = new CryptoAccountsGlobalDashboardDto();
+        public BanksGlobalDashboardDto BanksGlobalDashboard { get; set; } = new BanksGlobalDashboardDto();
     }
 
     public class TransactionsGlobalDashboardDto
@@ -82,6 +84,11 @@ namespace MoneyManager.Application.DTO.Dashboard
     {
         public decimal Total { get; set; }
 
+        public IEnumerable<DistributionDto> Distribution { get; set; }
+    }
+
+    public class BanksGlobalDashboardDto
+    {
         public IEnumerable<DistributionDto> Distribution { get; set; }
     }
 }

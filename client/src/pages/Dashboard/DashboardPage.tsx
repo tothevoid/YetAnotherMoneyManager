@@ -8,6 +8,7 @@ import { GlobalDashboard, DistributionModel } from "../../models/dashboard/Dashb
 import { formatMoneyByCurrencyCulture } from "../../shared/utilities/formatters/moneyFormatter";
 import DistributionChart from "./components/DistributionChart";
 import Placeholder from "../../shared/components/Placeholder/Placeholder";
+import { Nullable } from "../../shared/utilities/nullable";
 
 interface State {
 	dashboard: GlobalDashboard | null
@@ -58,7 +59,7 @@ const DashboardPage: React.FC = () => {
 		{ name: t("dashboard_crypto_account"), convertedAmount: dashboard.cryptoAccountsGlobalDashboard.total, currency, amount: dashboard.cryptoAccountsGlobalDashboard.total }
 	].filter(({amount}) => amount)
 
-	const formatDistributionCard = (title: string, total: number, distribution: DistributionModel[]) => {
+	const formatDistributionCard = (title: string, total: Nullable<number>, distribution: DistributionModel[]) => {
 		if (!distribution.length) {
 			return <Fragment/>
 		}
@@ -66,7 +67,10 @@ const DashboardPage: React.FC = () => {
 		return <Card.Root backgroundColor="background_primary" borderColor="border_primary">
 			<Card.Body color="text_primary">
 				<Stack gapY={2}>
-					<Text fontWeight={700} fontSize={"xl"}>{title}: {formatMoneyByCurrencyCulture(total, currency)}</Text>
+					<Text fontWeight={700} fontSize={"xl"}>
+						{title}:
+						{total && formatMoneyByCurrencyCulture(total, currency)}
+					</Text>
 					<DistributionChart data={distribution} mainCurrency={user.currency.name}/>
 				</Stack>
 			</Card.Body>
@@ -80,7 +84,8 @@ const DashboardPage: React.FC = () => {
 		formatDistributionCard(t("dashboard_deposit_incomes"), dashboard.depositsGlobalDashboard.totalEarned, dashboard.depositsGlobalDashboard.earningsDistribution),
 		formatDistributionCard(t("dashboard_bank_accounts"), dashboard.accountsGlobalDashboard.totalBankAccount, dashboard.accountsGlobalDashboard.bankAccountsDistribution),
 		formatDistributionCard(t("dashboard_debts"), dashboard.debtsGlobalDashboard.total, dashboard.debtsGlobalDashboard.distribution),
-		formatDistributionCard(t("dashboard_crypto_account"), dashboard.cryptoAccountsGlobalDashboard.total, dashboard.cryptoAccountsGlobalDashboard.distribution)
+		formatDistributionCard(t("dashboard_crypto_account"), dashboard.cryptoAccountsGlobalDashboard.total, dashboard.cryptoAccountsGlobalDashboard.distribution),
+		formatDistributionCard(t("dashboard_banks"), null, dashboard.banksGlobalDashboard.distribution)
 	];
 
 	const transactionsStats = [

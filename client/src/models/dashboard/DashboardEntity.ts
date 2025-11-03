@@ -5,6 +5,7 @@ export interface GlobalDashboard {
 	debtsGlobalDashboard: DebtsGlobalDashboard,
 	depositsGlobalDashboard: DepositsGlobalDashboard,
 	cryptoAccountsGlobalDashboard: CryptoAccountsGlobalDashboard,
+	banksGlobalDashboard: BanksGlobalDashboard,
 	total: number
 }
 
@@ -51,4 +52,8 @@ export interface DepositsGlobalDashboard {
 	totalEarned: number,
 	startedAmountDistribution: DistributionModel[],
 	earningsDistribution: DistributionModel[]
+}
+
+export interface BanksGlobalDashboard { 
+	distribution: DistributionModel[],
 }

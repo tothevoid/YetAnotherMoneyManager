@@ -69,6 +69,7 @@ const DashboardPage: React.FC = () => {
 				<Stack gapY={2}>
 					<Text fontWeight={700} fontSize={"xl"}>
 						{title}:
+						{total && " "}
 						{total && formatMoneyByCurrencyCulture(total, currency)}
 					</Text>
 					<DistributionChart data={distribution} mainCurrency={user.currency.name}/>

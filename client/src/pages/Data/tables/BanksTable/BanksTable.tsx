@@ -1,23 +1,27 @@
-import { Box, Button, Icon, Input, Table } from "@chakra-ui/react";
+import { Box, Button, Icon, Table, Text, Image } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
-import { MdAdd, MdDelete } from "react-icons/md";
+import { MdAdd, MdDelete, MdEdit } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { ConfirmModal } from "../../../../shared/modals/ConfirmModal/ConfirmModal";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
-import { createBank, deleteBank, getBanks, updateBank } from "../../../../api/banks/bankApi";
+import { Nullable } from "../../../../shared/utilities/nullable";
+import { createBank, deleteBank, getBankIconUrl, getBanks, updateBank } from "../../../../api/banks/bankApi";
 import { BankEntity } from "../../../../models/banks/BankEntity";
 import BankModal from "../../modals/BankModal/BankModal";
+import { BsBank } from "react-icons/bs";
 
 interface State {
-    banks: BankEntity[],
-    hasChanges: boolean,
-    currentBankId: string | null
+    banks: BankEntity[]
 }
 
 const BanksTable: React.FC = () => {
-    const [state, setState] = useState<State>({banks: [], hasChanges: false, currentBankId: null});
-    const { t } = useTranslation();
+    const [state, setState] = useState<State>({
+        banks: []});
 
+    const [bankToDeletedId, setBankToDeleteId] = useState<Nullable<string>>();
+    const [updatedBank, setUpdatedBank] = useState<BankEntity | null>();
+
+    const { t } = useTranslation();
     const modalRef = useRef<BaseModalRef>(null);
     const confirmModalRef = useRef<BaseModalRef>(null);
 
@@ -32,92 +36,105 @@ const BanksTable: React.FC = () => {
         initData();
     }, []);
 
-    const onNameChanged = (bankId: string, newValue: string) => {
-        let hasChanges = false;
-
-        const updatedBanks = state.banks.map((bank: BankEntity) => {
-            if (bank.id !== bankId || bank.name === newValue) {
-                return bank;
-            }
-
-            hasChanges = true;
-            return {...bank, name: newValue};
-        });
-
-        if (!hasChanges) {
-            return;
+    useEffect(() => {
+        if (bankToDeletedId) {
+            confirmModalRef.current?.openModal();
         }
+    }, [bankToDeletedId]);
 
-        setState((currentState) => {
-            return {...currentState, banks: updatedBanks, hasChanges: true}
-        })
-    }
-
-    const onCellBlur = async (bankId: string) => {
-        if (!state.hasChanges){
-            return;
+    useEffect(() => {
+        if (updatedBank) {
+            modalRef.current?.openModal(); 
         }
-
-        const bank = state.banks.find((bank: BankEntity) => {
-            return bank.id === bankId;
-        });
-        if (!bank) {
-            return;
-        }
-
-        await updateBank({...bank});
-    }
+    }, [updatedBank]);
     
     const onAdd = () => {
         modalRef.current?.openModal()
     };
 
-    const onBankAdded = async (bank: BankEntity) => {
-        const createdBank = await createBank(bank);
-        if (!createdBank) {
+    const onEditClicked = (bank: BankEntity) => {
+        setUpdatedBank(bank);
+    }
+
+    const onBankSaved = async (savedBank: BankEntity, icon: Nullable<File>) => {
+        const isModified = state.banks
+            .findIndex(transactionType => transactionType.id === savedBank.id) >= 0;
+
+        if (isModified) {
+            await onBankUpdated(savedBank, icon);
+        } else {
+            await onBankAdded(savedBank, icon);
+        }
+    };
+
+    const onBankAdded = async (bank: BankEntity, icon: Nullable<File>) => {
+        const addedBank = await createBank(bank, icon);
+        if (!addedBank) {
             return;
         }
 
         setState((currentState) => {
-            return {...currentState, banks: [...currentState.banks, createdBank]}
+            return {...currentState, banks: [...currentState.banks, addedBank]}
         })
-    };
+    }
+
+    const onBankUpdated = async (bankToUpdate: BankEntity, icon: Nullable<File>) => {
+        const updatedBank = await updateBank(bankToUpdate, icon);
+        if (!updatedBank) {
+            return;
+        }
+
+        setState((currentState) => {
+            return {...currentState, banks: currentState.banks.map(bank => 
+                bankToUpdate.id !== bank.id ?
+                    bank:
+                    bankToUpdate
+            )}
+        })
+        setUpdatedBank(null)
+    }
 
     const onDeleteClicked = async (bank: BankEntity) => {
-        setState((currentState) => {
-            return {...currentState, currentBankId: bank.id}
-        })
-        confirmModalRef.current?.openModal()
+        setBankToDeleteId(bank.id)
     }
 
     const onDeleteConfirmed = async () => {
-        const {currentBankId} = state;
-
-        if (!currentBankId){
+        if (!bankToDeletedId){
             return;
         }
 
-        const isDeleted = await deleteBank(currentBankId);
-
+        const isDeleted = await deleteBank(bankToDeletedId);
+        
         if (!isDeleted) {
             return;
         }
 
         const banks = state.banks.filter((bank: BankEntity) => {
-            return bank.id !== state.currentBankId;
+            return bank.id !== bankToDeletedId;
         });
 
         setState((currentState) => {
-            return {...currentState, banks, currentBankId: null}
+            return {...currentState, banks: banks}
         })
+        setBankToDeleteId(null);
     }
 
     return <Box color="text_primary">
+        <Box>
+            <Button background="action_primary" onClick={onAdd}>
+                <Icon size='md'>
+                    <MdAdd/>
+                </Icon>
+                {t("transaction_type_data_add")}
+            </Button>
+        </Box>
         <Table.Root>
             <Table.Header>
                 <Table.Row border="none" bg="none" color="text_primary">
+                    <Table.ColumnHeader w={"10px"}/>
                     <Table.ColumnHeader color="text_primary">Name</Table.ColumnHeader>
-                    <Table.ColumnHeader color="text_primary">Delete</Table.ColumnHeader>
+                    <Table.ColumnHeader/>
+                    <Table.ColumnHeader/>
                 </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -125,14 +142,33 @@ const BanksTable: React.FC = () => {
                     state.banks.map((bank: BankEntity) => {
                         return <Table.Row border="none" bg="none" color="text_primary" key={bank.id}>
                             <Table.Cell>
-                                <Input onBlur={() => onCellBlur(bank.id)} type="text" value={bank.name}
-                                    onChange={(handler) => onNameChanged(bank.id, handler.target.value)}>
-                                </Input>
+                                {
+                                    bank.iconKey ?
+                                        <Image h={8} w={8} rounded={16} src={getBankIconUrl(bank?.iconKey)}
+                                            objectFit="contain"
+                                            borderColor="gray.200"
+                                            borderRadius="md">
+                                        </Image>:
+                                        <BsBank size={32} color="#aaa"/>
+                                }
+                            </Table.Cell>
+                            <Table.Cell>
+                                <Text>
+                                    {bank.name}
+                                </Text>
                             </Table.Cell>
                             <Table.Cell width={10}>
                                 <Button borderColor="background_secondary" 
-                                    background="button_background_secondary" 
-                                    size={'sm'} 
+                                    background="button_background_secondary" size={'sm'} 
+                                    onClick={() => onEditClicked(bank)}>
+                                    <Icon color="card_action_icon_primary">
+                                        <MdEdit/>
+                                    </Icon>
+                                </Button>
+                            </Table.Cell>
+                            <Table.Cell width={10}>
+                                <Button borderColor="background_secondary" 
+                                    background="button_background_secondary" size={'sm'} 
                                     onClick={() => onDeleteClicked(bank)}>
                                     <Icon color="card_action_icon_danger">
                                         <MdDelete/>
@@ -144,17 +180,9 @@ const BanksTable: React.FC = () => {
                 }
             </Table.Body>
         </Table.Root>
-        <Box padding={4}>
-            <Button background="action_primary" onClick={onAdd}>
-                <Icon size='md'>
-                    <MdAdd/>
-                </Icon>
-                {t("entity_bank_add")}
-            </Button>
-        </Box>
-        <BankModal modalRef={modalRef} onSaved={onBankAdded}/>
+        <BankModal bank={updatedBank} modalRef={modalRef} onSaved={onBankSaved}/>
         <ConfirmModal onConfirmed={onDeleteConfirmed}
-            title={t("banks_delete_title")}
+            title={t("transaction_type_delete_title")}
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
             ref={confirmModalRef}/>

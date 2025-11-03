@@ -42,7 +42,7 @@ namespace MoneyManager.WebApi.Controllers.Banks
         [HttpPut]
         public async Task<Guid> Add([FromForm] string bankJson, [FromForm] IFormFile bankIcon = null)
         {
-            var bank = JsonSerializer.Deserialize<TransactionTypeModel>(bankJson);
+            var bank = JsonSerializer.Deserialize<BankModel>(bankJson);
 
             var bankDto = _mapper.Map<BankDto>(bank);
             var created = await _bankService.Add(bankDto, bankIcon);
@@ -52,7 +52,7 @@ namespace MoneyManager.WebApi.Controllers.Banks
         [HttpPatch]
         public async Task Update([FromForm] string bankJson, [FromForm] IFormFile bankIcon = null)
         {
-            var bank = JsonSerializer.Deserialize<TransactionTypeModel>(bankJson);
+            var bank = JsonSerializer.Deserialize<BankModel>(bankJson);
 
             var bankDto = _mapper.Map<BankDto>(bank);
             await _bankService.Update(bankDto, bankIcon);
@@ -61,5 +61,12 @@ namespace MoneyManager.WebApi.Controllers.Banks
         [HttpDelete]
         public async Task Delete(Guid id) =>
             await _bankService.Delete(id);
+
+        [HttpGet("icon")]
+        public async Task<IActionResult> GetBankIcon(string iconKey)
+        {
+            var url = await _bankService.GetIconUrl(iconKey);
+            return Redirect(url);
+        }
     }
 }

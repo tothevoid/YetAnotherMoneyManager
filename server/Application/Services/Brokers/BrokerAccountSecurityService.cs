@@ -105,7 +105,7 @@ namespace MoneyManager.Application.Services.Brokers
             foreach (var security in brokerAccountSecuritiesToUpdated)
             {
                 var row = filteredValue.GetValueOrDefault(security.Ticker);
-                security.ActualPrice = row.LastValue ?? row.MarketPrice ?? 0;
+                security.ActualPrice = row.GetLastValue();
                 security.PriceFetchedAt = DateTime.UtcNow;
             }
 

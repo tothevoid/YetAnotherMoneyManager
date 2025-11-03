@@ -26,5 +26,11 @@ namespace MoneyManager.Application.Integrations.Stock.Moex.Model
         {
             return $"{Ticker}_{BoardId}";
         }
+
+        public decimal GetLastValue()
+        {
+            // if security has no liquidity, LastValue can be null, then we use MarketPrice
+            return LastValue ?? MarketPrice ?? 0;
+        }
     }
 }

@@ -3,9 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { MdAdd, MdDelete } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { ConfirmModal } from "../../../../shared/modals/ConfirmModal/ConfirmModal";
-import { BrokerEntity } from "../../../../models/brokers/BrokerEntity";
-import { createBroker, deleteBroker, getBrokers, updateBroker } from "../../../../api/brokers/brokerApi";
-import BrokerModal from "../../modals/BrokerModal/BrokerModal";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import { createBank, deleteBank, getBanks, updateBank } from "../../../../api/banks/bankApi";
 import { BankEntity } from "../../../../models/banks/BankEntity";
@@ -133,7 +130,10 @@ const BanksTable: React.FC = () => {
                                 </Input>
                             </Table.Cell>
                             <Table.Cell width={10}>
-                                <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={() => onDeleteClicked(broker)}>
+                                <Button borderColor="background_secondary" 
+                                    background="button_background_secondary" 
+                                    size={'sm'} 
+                                    onClick={() => onDeleteClicked(bank)}>
                                     <Icon color="card_action_icon_danger">
                                         <MdDelete/>
                                     </Icon>

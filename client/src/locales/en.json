@@ -304,5 +304,6 @@
     "broker_account_daily_stats_min_value_column": "Min value",
     "broker_account_daily_stats_max_value_column": "Max value",
     "broker_account_daily_stats_diff_column": "Diff",
-    "broker_account_daily_stats_percentage_diff_column": "Percentage diff"
+    "broker_account_daily_stats_percentage_diff_column": "Percentage diff",
+    "broker_account_daily_stats_total_diff_column" : "Total diff"
 }

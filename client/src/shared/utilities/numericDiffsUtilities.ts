@@ -15,5 +15,9 @@ export const calculateDiff = (currentValue: number, initialValue: number, curren
         formatMoneyByCurrencyCulture(profitAndLoss, currency):
         profitAndLoss.toFixed(2)
 
-    return {profitAndLoss: formattedProfitAndLoss, profitAndLossPercentage: profitAndLossPercentage.toFixed(2), color}
+    return {profitAndLoss: formattedProfitAndLoss, 
+        profitAndLossPercentage: profitAndLossPercentage.toFixed(2),
+        rawProfitAndLoss: profitAndLoss,
+        color
+    }
 }

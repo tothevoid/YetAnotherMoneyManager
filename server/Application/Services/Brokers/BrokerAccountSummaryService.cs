@@ -70,7 +70,7 @@ namespace MoneyManager.Application.Services.Brokers
                     continue;
                 }
 
-                var currentPrice = marketValue.MarketPrice ?? marketValue.LastValue ?? 0;
+                var currentPrice = marketValue.GetLastValue();
                 var startPrice = marketValue.PrevPrice ?? marketValue.Open ?? 0;
 
                 var brokerAccountSecurity = tickerMapping[marketValue.Ticker];
@@ -85,7 +85,8 @@ namespace MoneyManager.Application.Services.Brokers
                     StartPrice = marketValue.Open ?? 0,
                     MinPrice = marketValue.Low,
                     MaxPrice = marketValue.High,
-                    PreviousDayClosePrice = marketValue.PrevPrice ?? 0
+                    PreviousDayClosePrice = marketValue.PrevPrice ?? 0,
+                    Quantity = brokerAccountSecurity.Quantity
                 });
 
                 handledTickers.Add(marketValue.Ticker);

@@ -52,7 +52,7 @@ const BrokerAccountDailyStats: React.FC<Props> = ({ brokerAccount }) => {
 	const formatStat = useCallback((stat: BrokerAccountDailySecurityStatsEntity) => {
 		const currencyName = stat.security.currency.name;
 		const relativeStartPrice = stat.previousDayClosePrice || stat.startPrice;
-		const { profitAndLoss, profitAndLossPercentage, color } = calculateDiff(stat.currentPrice, 
+		const { profitAndLoss, rawProfitAndLoss, profitAndLossPercentage, color } = calculateDiff(stat.currentPrice, 
 			relativeStartPrice, currencyName);
 
 		const minDiff = formatMoneyByCurrencyCulture(stat.minPrice - stat.currentPrice, currencyName);
@@ -72,6 +72,7 @@ const BrokerAccountDailyStats: React.FC<Props> = ({ brokerAccount }) => {
 			<Table.Cell>{formatMoneyByCurrencyCulture(stat.currentPrice, currencyName)}</Table.Cell>
 			<Table.Cell color={color}>{profitAndLoss}</Table.Cell>
 			<Table.Cell color={color}>{profitAndLossPercentage}%</Table.Cell>
+			<Table.Cell color={color}>{formatMoneyByCurrencyCulture(rawProfitAndLoss * stat.quantity, currencyName)}</Table.Cell>
 		</Table.Row>
 	}, []);
 
@@ -109,6 +110,7 @@ const BrokerAccountDailyStats: React.FC<Props> = ({ brokerAccount }) => {
 								<Table.ColumnHeader color="text_primary">{t("broker_account_daily_stats_current_value_column")}</Table.ColumnHeader>
 								<Table.ColumnHeader color="text_primary">{t("broker_account_daily_stats_diff_column")}</Table.ColumnHeader>
 								<Table.ColumnHeader color="text_primary">{t("broker_account_daily_stats_percentage_diff_column")}</Table.ColumnHeader>
+								<Table.ColumnHeader color="text_primary">{t("broker_account_daily_stats_total_diff_column")}</Table.ColumnHeader>
 							</Table.Row>
 						</Table.Header>
 						<Table.Body>

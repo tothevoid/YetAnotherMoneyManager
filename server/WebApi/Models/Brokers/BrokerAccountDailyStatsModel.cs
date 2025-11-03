@@ -28,5 +28,7 @@ namespace MoneyManager.WebApi.Models.Brokers
         public decimal MaxPrice { get; set; }
 
         public decimal PreviousDayClosePrice { get; set; }
+
+        public int Quantity { get; set; }
     }
 }

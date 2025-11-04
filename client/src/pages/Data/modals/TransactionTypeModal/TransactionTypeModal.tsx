@@ -10,7 +10,7 @@ import CheckboxInput from "../../../../shared/components/CheckboxInput/CheckboxI
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import { generateGuid } from "../../../../shared/utilities/idUtilities";
-import InputImage from "../../../../shared/components/Form/InputImage/InputImage";
+import ImageInput from "../../../../shared/components/Form/ImageInput/ImageInput";
 
 interface ModalProps {
 	modalRef: RefObject<BaseModalRef | null>,
@@ -64,7 +64,7 @@ const TransactionTypeModal: React.FC<ModalProps> = (props: ModalProps) => {
 	}
 
 	return <BaseFormModal visibilityChanged={onModalVisibilityChanged} ref={props.modalRef} title={t("entity_transaction_type_name_form_title")} submitHandler={handleSubmit(onSubmit)}>
-		<InputImage imageUrl={iconUrl} onImageSelected={onImageSelected}/>
+		<ImageInput imageUrl={iconUrl} onImageSelected={onImageSelected}/>
 		<Field.Root invalid={!!errors.name}>
 			<Field.Label>{t("entity_transaction_type_name")}</Field.Label>
 			<Input {...register("name")} autoComplete="off" placeholder='grocery' />

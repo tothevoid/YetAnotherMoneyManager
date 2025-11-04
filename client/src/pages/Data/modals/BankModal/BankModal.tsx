@@ -10,7 +10,7 @@ import { BankFormInput, BankValidationSchema } from "./BankValidationSchema";
 import { BankEntity } from "../../../../models/banks/BankEntity";
 import { Nullable } from "../../../../shared/utilities/nullable";
 import { getBankIconUrl } from "../../../../api/banks/bankApi";
-import InputImage from "../../../../shared/components/Form/InputImage/InputImage";
+import ImageInput from "../../../../shared/components/Form/ImageInput/ImageInput";
 
 interface ModalProps {
     modalRef: RefObject<BaseModalRef | null>,
@@ -64,7 +64,7 @@ const BankModal: React.FC<ModalProps> = (props: ModalProps) => {
     const {t} = useTranslation();
 
     return <BaseFormModal visibilityChanged={onModalVisibilityChanged} ref={props.modalRef} title={t("entity_bank_from_title")} submitHandler={handleSubmit(onSubmit)}>
-        <InputImage imageUrl={iconUrl} onImageSelected={onImageSelected}/>
+        <ImageInput imageUrl={iconUrl} onImageSelected={onImageSelected}/>
         <Field.Root invalid={!!errors.name}>
             <Field.Label>{t("entity_bank_name")}</Field.Label>
             <Input {...register("name")} autoComplete="off" placeholder='Sample bank' />

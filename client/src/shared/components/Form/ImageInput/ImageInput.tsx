@@ -1,6 +1,6 @@
 import { Box, Button, Flex, Input, Image} from "@chakra-ui/react"
 import { ChangeEvent, Fragment, useRef } from "react";
-import { Nullable } from "../../../../shared/utilities/nullable";
+import { Nullable } from "../../../utilities/nullable";
 import { MdFileUpload } from "react-icons/md";
 
 interface ModalProps {
@@ -8,7 +8,7 @@ interface ModalProps {
     onImageSelected: (url: string, image: File) => void;
 };
 
-const InputImage: React.FC<ModalProps> = ({imageUrl, onImageSelected}) => {
+const ImageInput: React.FC<ModalProps> = ({imageUrl, onImageSelected}) => {
     const inputRef = useRef<HTMLInputElement | null>(null);
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -56,4 +56,4 @@ const InputImage: React.FC<ModalProps> = ({imageUrl, onImageSelected}) => {
     
 }
 
-export default InputImage;
+export default ImageInput;

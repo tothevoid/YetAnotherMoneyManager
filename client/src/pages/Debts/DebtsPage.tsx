@@ -6,6 +6,8 @@ import { useState } from "react";
 const DebtsPage: React.FC = () => {
 	const [hasDebts, setHasDebts] = useState(false);
 
+	const [version, setVersion] = useState(-1);
+
 	const onDebtsChanged = (quantity: number) => {
 		const nowHasDebts = quantity > 0;
 		
@@ -14,10 +16,14 @@ const DebtsPage: React.FC = () => {
 		}
 	}
 
+	const onDebtPaymentsChanged = () => {
+		setVersion(prev => prev + 1);
+	}
+
 	return (
 		<Box>
-			<DebtsList onDebtsChanged={onDebtsChanged}/>
-			{hasDebts && <DebtsPaymentsList/>}
+			<DebtsList debtsPaymentsVersion={version} onDebtsChanged={onDebtsChanged}/>
+			{hasDebts && <DebtsPaymentsList onDebtPaymentsChanged={onDebtPaymentsChanged}/>}
 		</Box>
 	)
 }

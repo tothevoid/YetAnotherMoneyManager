@@ -10,8 +10,11 @@ import { ConfirmModal } from "../../../../shared/modals/ConfirmModal/ConfirmModa
 import { ActiveEntityMode } from "../../../../shared/enums/activeEntityMode";
 import AddButton from "../../../../shared/components/AddButton/AddButton";
 
+interface Props {
+    onDebtPaymentsChanged: () => void;
+}
 
-const DebtsPaymentsList: React.FC = () => {
+const DebtsPaymentsList: React.FC<Props> = ({ onDebtPaymentsChanged }) => {
     const { t } = useTranslation();
 
     const { 
@@ -38,6 +41,7 @@ const DebtsPaymentsList: React.FC = () => {
         } else if (mode === ActiveEntityMode.Edit) {
             await updateDebtPaymentEntity(createdDebtPayment);
         }
+        onDebtPaymentsChanged();
         onActionEnded();
     }
 
@@ -47,6 +51,7 @@ const DebtsPaymentsList: React.FC = () => {
         }
 
         await deleteDebtPaymentEntity(activeEntity);
+        onDebtPaymentsChanged();
 		onActionEnded();
     }
 

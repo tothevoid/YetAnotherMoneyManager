@@ -75,6 +75,7 @@ export const useDebts = (queryParameters: DebtPaymentsQueryParameters) => {
 		updateDebtEntity,
 		deleteDebtEntity,
 		debtQueryParameters,
-		setDebtQueryParameters
+		setDebtQueryParameters,
+		reloadDebts: fetchData
 	}
 }

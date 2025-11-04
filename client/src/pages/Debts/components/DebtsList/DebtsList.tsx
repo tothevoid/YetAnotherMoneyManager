@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { SimpleGrid, Box, Flex} from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { DebtEntity } from "../../../../models/debts/DebtEntity";
@@ -13,10 +13,11 @@ import AddButton from "../../../../shared/components/AddButton/AddButton";
 import { ActiveEntityMode } from "../../../../shared/enums/activeEntityMode";
 
 interface Props {
+    debtsPaymentsVersion: number,
     onDebtsChanged: (debts: number) => void
 }
 
-const DebtsList: React.FC<Props> = ({onDebtsChanged}) => {
+const DebtsList: React.FC<Props> = ({debtsPaymentsVersion, onDebtsChanged}) => {
     const { t } = useTranslation();
 
     const { 
@@ -36,8 +37,19 @@ const DebtsList: React.FC<Props> = ({onDebtsChanged}) => {
         updateDebtEntity,
         deleteDebtEntity,
         debtQueryParameters,
-        setDebtQueryParameters
+        setDebtQueryParameters,
+        reloadDebts
     } = useDebts({onlyActive: true});
+
+    const reloadData = useCallback(async () => {
+        await reloadDebts();
+    }, [reloadDebts]);
+
+    useEffect(() => {
+        if (debtsPaymentsVersion >= 0){
+            reloadData();
+        }
+    }, [debtsPaymentsVersion, reloadData]);
 
     useEffect(()=> {
         onDebtsChanged(debts.length);

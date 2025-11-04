@@ -1,5 +1,5 @@
-import { Button, Field, Input, Image, Stack, Box} from "@chakra-ui/react"
-import React, { ChangeEvent, Fragment, RefObject, useEffect, useRef, useState } from "react"
+import { Field, Input, Stack} from "@chakra-ui/react"
+import React, { RefObject, useEffect, useRef, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
@@ -7,7 +7,6 @@ import { SecurityFormInput, SecurityValidationSchema } from "./SecurityValidatio
 import { SecurityEntity } from "../../../../models/securities/SecurityEntity";
 import CollectionSelect from "../../../../shared/components/CollectionSelect/CollectionSelect";
 import { getSecurityTypes } from "../../../../api/securities/securityTypeApi";
-import { MdFileUpload } from "react-icons/md";
 import { getIconUrl } from "../../../../api/securities/securityApi";
 import { getCurrencies } from "../../../../api/currencies/currencyApi";
 import { CurrencyEntity } from "../../../../models/currencies/CurrencyEntity";
@@ -15,6 +14,7 @@ import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import { SecurityTypeEntity } from "../../../../models/securities/SecurityTypeEntity";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
 import { generateGuid } from "../../../../shared/utilities/idUtilities";
+import ImageInput from "../../../../shared/components/Form/ImageInput/ImageInput";
 
 interface ModalProps {
     modalRef: RefObject<BaseModalRef | null>,
@@ -82,50 +82,23 @@ const SecurityModal: React.FC<ModalProps> = (props: ModalProps) => {
         props.modalRef?.current?.closeModal();
     }
 
-    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const selectedFile = e.target.files?.[0] || null;
-        if (selectedFile) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setIcon(selectedFile);
-                setIconUrl(reader.result as string);
-            };
-            reader.readAsDataURL(selectedFile);
+    const onImageSelected = (url: string, image: File) => {
+        setIcon(image);
+        setIconUrl(url);
+    }
+    
+    const onVisibilityChanged = (open: boolean) => {
+        if (!open) {
+            setIcon(null);
+            setIconUrl(null);
         }
-    };
+    }
 
     const {t} = useTranslation()
 
-    return <BaseFormModal ref={props.modalRef} title={t("entity_security_from_title")} submitHandler={handleSubmit(onSubmit)}>
+    return <BaseFormModal visibilityChanged={onVisibilityChanged} ref={props.modalRef} title={t("entity_security_from_title")} submitHandler={handleSubmit(onSubmit)}>
         <Stack marginBlock={2} gapX={4} alignItems={"center"} direction={"row"}>
-            <Box justifyContent={"center"} role="group" position="relative" boxSize="50px">
-                <Input type="file" accept="image/*" onChange={handleFileChange} ref={inputRef} display="none" />
-                {
-                    iconUrl ?
-                        <Image src={iconUrl} boxSize="50px"
-                            objectFit="contain"
-                            borderColor="gray.200"
-                            borderRadius="md"></Image>:
-                        <Fragment/>
-                }
-                {/* Fix group hover */}
-                <Button 
-                    background={"transparent"} 
-                    color="action_primary" 
-                    position="absolute"
-                    top="0"
-                    left="0"
-                    boxSize="50px"
-                    borderRadius="md"
-                    bg="whiteAlpha.400"
-                    opacity={iconUrl ? 0: 1}
-                    _groupHover={{ opacity: 1, bg: 'whiteAlpha.900' }}
-                    transition="opacity 0.2s"
-                    boxShadow="sm"
-                    onClick={() => inputRef.current?.click()} size="xl">
-                    <MdFileUpload/>
-                </Button>
-            </Box>
+            <ImageInput imageUrl={iconUrl} onImageSelected={onImageSelected} />
             <Field.Root invalid={!!errors.ticker}>
                 <Field.Label>{t("entity_security_ticker")}</Field.Label>
                 <Input {...register("ticker")} autoComplete="off" placeholder='NVDA' />

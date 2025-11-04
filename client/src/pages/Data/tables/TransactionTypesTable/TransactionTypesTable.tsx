@@ -1,12 +1,13 @@
 import { Box, Button, Checkbox, Icon, Table, Text, Image } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
-import { MdAdd, MdDelete, MdEdit, MdOutlinePayment } from "react-icons/md";
+import { MdDelete, MdEdit, MdOutlinePayment } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { ConfirmModal } from "../../../../shared/modals/ConfirmModal/ConfirmModal";
 import { TransactionTypeEntity } from "../../../../models/transactions/TransactionTypeEntity";
 import { createTransactionType, deleteTransactionType, getTransactionTypeIconUrl, getTransactionTypes, updateTransactionType } from "../../../../api/transactions/transactionTypeApi";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import TransactionTypeModal from "../../modals/TransactionTypeModal/TransactionTypeModal";
+import AddButton from "../../../../shared/components/AddButton/AddButton";
 
 interface State {
     transactionTypes: TransactionTypeEntity[]
@@ -89,7 +90,6 @@ const TransactionTypesTable: React.FC = () => {
                     updatedTransactionType
             )}
         })
-        setUpdatedTransactionType(null)
     }
 
     const onDeleteClicked = async (transactionType: TransactionTypeEntity) => {
@@ -117,14 +117,13 @@ const TransactionTypesTable: React.FC = () => {
         setTransactionTypeToDeleteId(null);
     }
 
+    const onModalClosed = () => {
+        setUpdatedTransactionType(null);
+    }
+
     return <Box color="text_primary">
         <Box>
-            <Button background="action_primary" onClick={onAdd}>
-                <Icon size='md'>
-                    <MdAdd/>
-                </Icon>
-                {t("transaction_type_data_add")}
-            </Button>
+            <AddButton buttonTitle={t("transaction_type_data_add")} onClick={onAdd}/>
         </Box>
         <Table.Root>
             <Table.Header>
@@ -181,7 +180,7 @@ const TransactionTypesTable: React.FC = () => {
                 }
             </Table.Body>
         </Table.Root>
-        <TransactionTypeModal transactionType={updatedTransactionType} modalRef={modalRef} onSaved={onTransactionTypeSaved}/>
+        <TransactionTypeModal onModalClosed={onModalClosed} transactionType={updatedTransactionType} modalRef={modalRef} onSaved={onTransactionTypeSaved}/>
         <ConfirmModal onConfirmed={onDeleteConfirmed}
             title={t("transaction_type_delete_title")}
             message={t("modals_delete_message")}

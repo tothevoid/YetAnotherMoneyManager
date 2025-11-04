@@ -15,7 +15,8 @@ import { generateGuid } from "../../../../shared/utilities/idUtilities";
 interface ModalProps {
 	modalRef: RefObject<BaseModalRef | null>,
 	transactionType?: TransactionTypeEntity | null,
-	onSaved: (account: TransactionTypeEntity, icon: File | null) => void;
+	onSaved: (account: TransactionTypeEntity, icon: File | null) => void,
+	onModalClosed: () => void;
 };
 
 const TransactionTypeModal: React.FC<ModalProps> = (props: ModalProps) => {
@@ -64,7 +65,13 @@ const TransactionTypeModal: React.FC<ModalProps> = (props: ModalProps) => {
 		}
 	};
 
-	return <BaseFormModal ref={props.modalRef} title={t("entity_transaction_type_name_form_title")} submitHandler={handleSubmit(onSubmit)}>
+	const onModalVisibilityChanged = (open: boolean) => {
+		if (!open) {
+			props.onModalClosed();
+		}
+	}
+
+	return <BaseFormModal visibilityChanged={onModalVisibilityChanged} ref={props.modalRef} title={t("entity_transaction_type_name_form_title")} submitHandler={handleSubmit(onSubmit)}>
 		<Flex marginBlock={5} alignItems={"center"} justifyContent={"center"}>
 			<Box justifyContent={"center"} role="group" position="relative" boxSize="50px">
 				<Input type="file" accept="image/*" onChange={handleFileChange} ref={inputRef} display="none" />

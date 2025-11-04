@@ -24,10 +24,11 @@ namespace MoneyManager.WebApi.Controllers.Brokers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<BrokerAccountFundsTransferModel>> GetAll(Guid brokerAccountId)
+        [HttpGet(nameof(GetAll))]
+        public async Task<IEnumerable<BrokerAccountFundsTransferModel>> GetAll(GetAllBrokerAccountFundTransferQuery query)
         {
-            var transfers = await _brokerAccountFundsTransferService.GetAllAsync(brokerAccountId);
+            var transfers = await _brokerAccountFundsTransferService.GetAllAsync(query.BrokerAccountId, 
+                query.PageIndex, query.RecordsQuantity);
             return _mapper.Map<IEnumerable<BrokerAccountFundsTransferModel>>(transfers);
         }
 

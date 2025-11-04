@@ -25,7 +25,7 @@ namespace MoneyManager.WebApi.Controllers.Securities
         }
 
         [HttpPost(nameof(GetAll))]
-        public async Task<IEnumerable<SecurityTransactionModel>> GetAll(SecurityTransactionsRequestModel request)
+        public async Task<IEnumerable<SecurityTransactionModel>> GetAll(GetAllSecuritiesTransactionsQuery request)
         {
             var securityTransactions = await _securityTransactionService
                 .GetAll(request.BrokerAccountId, request.RecordsQuantity, request.PageIndex);

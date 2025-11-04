@@ -25,10 +25,10 @@ namespace MoneyManager.WebApi.Controllers.Brokers
             _dividendPaymentService = dividendPaymentService;
         }
 
-        [HttpGet(nameof(GetByBrokerAccount))]
-        public async Task<IEnumerable<DividendPaymentModel>> GetByBrokerAccount([FromQuery] Guid brokerAccountId)
+        [HttpGet(nameof(GetAll))]
+        public async Task<IEnumerable<DividendPaymentModel>> GetAll(GetAllDividendsPaymentsQuery query)
         {
-            var dividendPayments = await _dividendPaymentService.GetAll(brokerAccountId);
+            var dividendPayments = await _dividendPaymentService.GetAll(query.BrokerAccountId, query.PageIndex, query.RecordsQuantity);
             return _mapper.Map<IEnumerable<DividendPaymentModel>>(dividendPayments);
         }
 

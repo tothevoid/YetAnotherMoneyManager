@@ -3,12 +3,13 @@ using MoneyManager.Application.DTO.Common;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace MoneyManager.Application.Interfaces.Brokers
 {
     public interface IBrokerAccountFundsTransferService
     {
-        Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAllAsync(Guid brokerAccountId);
+        Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAllAsync(Guid brokerAccountId, int pageIndex, int recordsQuantity);
         Task<PaginationConfigDto> GetPagination(Guid brokerAccountId);
         Task<BrokerAccountFundsTransferDto> Add(BrokerAccountFundsTransferDto transfer);
         Task Update(BrokerAccountFundsTransferDto transfer);

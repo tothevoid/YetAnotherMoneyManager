@@ -24,9 +24,9 @@ namespace MoneyManager.WebApi.Controllers.Securities
         }
 
         [HttpGet(nameof(GetAll))]
-        public async Task<IEnumerable<DividendModel>> GetAll(Guid securityId)
+        public async Task<IEnumerable<DividendModel>> GetAll(GetAllDividendsQuery query)
         {
-            var securities = await _dividendService.GetAll(securityId);
+            var securities = await _dividendService.GetAll(query.SecurityId, query.RecordsQuantity, query.PageIndex);
             return _mapper.Map<IEnumerable<DividendModel>>(securities);
         }
 

@@ -4,12 +4,13 @@ using MoneyManager.Application.DTO.Debts;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace MoneyManager.Application.Interfaces.Debts
 {
     public interface IDebtPaymentService
     {
-        Task<IEnumerable<DebtPaymentDto>> GetAll();
+        Task<IEnumerable<DebtPaymentDto>> GetAll(int pageIndex, int recordsQuantity);
         Task<PaginationConfigDto> GetPagination();
 
         Task<Guid> Add(DebtPaymentDto debtPayment);

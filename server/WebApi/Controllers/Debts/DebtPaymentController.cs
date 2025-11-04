@@ -24,9 +24,9 @@ namespace MoneyManager.WebApi.Controllers.Debts
         }
 
         [HttpGet]
-        public async Task<IEnumerable<DebtPaymentModel>> GetAll()
+        public async Task<IEnumerable<DebtPaymentModel>> GetAll(GetAllDebtPaymentsQuery query)
         {
-            var debtPayments = await _debtPaymentService.GetAll();
+            var debtPayments = await _debtPaymentService.GetAll(query.PageIndex, query.RecordsQuantity);
             return _mapper.Map<IEnumerable<DebtPaymentModel>>(debtPayments);
         }
 

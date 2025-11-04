@@ -34,10 +34,11 @@ namespace MoneyManager.Application.Services.Debts
             _accountRepo = uow.CreateRepository<Account>();
         }
 
-        public async Task<IEnumerable<DebtPaymentDto>> GetAll()
+        public async Task<IEnumerable<DebtPaymentDto>> GetAll(int pageIndex, int recordsQuantity)
         {
             var query = new ComplexQueryBuilder<DebtPayment>()
-                .AddOrder(debtPayment => debtPayment.Date, true)
+                .AddPagination(pageIndex, recordsQuantity,
+                    (payment) => payment.Date, true)
                 .AddJoins(GetFullHierarchyColumns)
                 .GetQuery();
 

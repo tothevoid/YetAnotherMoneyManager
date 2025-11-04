@@ -3,7 +3,6 @@ using MoneyManager.Application.DTO.Common;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace MoneyManager.Application.Interfaces.Brokers
 {

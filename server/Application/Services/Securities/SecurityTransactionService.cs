@@ -42,8 +42,9 @@ namespace MoneyManager.Application.Services.Securities
             var complexQuery = new ComplexQueryBuilder<SecurityTransaction>()
                 .AddFilter(GetBaseFilter(brokerAccountId))
                 .AddJoins(GetFullHierarchyColumns)
-                .AddPagination(securityTransaction => securityTransaction.Date, recordsQuantity,
-                    (pageIndex - 1) * recordsQuantity, true)
+                .AddPagination(pageIndex, recordsQuantity,
+                    securityTransaction => securityTransaction.Date,
+                    true)
                 .DisableTracking()
                 .GetQuery();
 

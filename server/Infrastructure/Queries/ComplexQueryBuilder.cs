@@ -35,15 +35,19 @@ namespace MoneyManager.Infrastructure.Queries
             return this;
         }
 
-        public ComplexQueryBuilder<TEntity> AddPagination(Expression<Func<TEntity, object>> orderBy,
-            int recordsLimit,
-            int recordsOffset,
+        public ComplexQueryBuilder<TEntity> AddPagination(
+            int pageIndex,
+            int recordsQuantity,
+            Expression<Func<TEntity, object>> orderBy = null,
             bool isDescending = false)
         {
-            AddOrder(orderBy, isDescending);
+            if (orderBy != null)
+            {
+                AddOrder(orderBy, isDescending);
+            }
 
-            _complexQuery.RecordsLimit = recordsLimit;
-            _complexQuery.RecordsOffset = recordsOffset;
+            _complexQuery.RecordsLimit = recordsQuantity;
+            _complexQuery.RecordsOffset = (pageIndex - 1) * recordsQuantity;
 
             return this;
         }

@@ -34,11 +34,13 @@ namespace MoneyManager.Application.Services.Brokers
             _dividendRepo = uow.CreateRepository<Dividend>();
         }
 
-        public async Task<IEnumerable<DividendPaymentDto>> GetAll(Guid brokerAccountId)
+        public async Task<IEnumerable<DividendPaymentDto>> GetAll(Guid brokerAccountId, int pageIndex, int recordsQuantity)
         {
             var complexQuery = new ComplexQueryBuilder<DividendPayment>()
                 .AddFilter(GetBaseFilter(brokerAccountId))
-                .AddOrder(dividendPayment => dividendPayment.ReceivedAt, true)
+                .AddPagination(pageIndex, recordsQuantity,
+                    dividendPayment => dividendPayment.ReceivedAt, 
+                    true)
                 .AddJoins(DividendPaymentQuery.GetFullHierarchyColumns)
                 .GetQuery();
 

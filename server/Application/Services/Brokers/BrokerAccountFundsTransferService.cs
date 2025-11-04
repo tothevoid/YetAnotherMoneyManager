@@ -38,20 +38,20 @@ namespace MoneyManager.Application.Services.Brokers
             _accountService = accountService;
         }
 
-        public async Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAllAsync(Guid brokerAccountId)
+        public async Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAll(Guid brokerAccountId, int pageIndex, int recordsQuantity)
         {
             var complexQuery = new ComplexQueryBuilder<BrokerAccountFundsTransfer>()
                 .AddFilter(GetBaseFilter(brokerAccountId))
                 .AddJoins(GetFullHierarchyColumns)
-                .AddOrder(transfer => transfer.Date, true)
+                .AddPagination(pageIndex, recordsQuantity,
+                    transfer => transfer.Date,
+                    true)
                 .DisableTracking()
                 .GetQuery();
 
             var transfers = await _transfersRepo.GetAll(complexQuery);
             return _mapper.Map<IEnumerable<BrokerAccountFundsTransferDto>>(transfers).ToList();
         }
-
-
 
         public async Task<BrokerAccountFundsTransferDto> Add(BrokerAccountFundsTransferDto transferDto)
         {

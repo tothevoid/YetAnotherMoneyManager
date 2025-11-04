@@ -27,7 +27,7 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         [HttpGet(nameof(GetAll))]
         public async Task<IEnumerable<BrokerAccountFundsTransferModel>> GetAll(GetAllBrokerAccountFundTransferQuery query)
         {
-            var transfers = await _brokerAccountFundsTransferService.GetAllAsync(query.BrokerAccountId, 
+            var transfers = await _brokerAccountFundsTransferService.GetAll(query.BrokerAccountId, 
                 query.PageIndex, query.RecordsQuantity);
             return _mapper.Map<IEnumerable<BrokerAccountFundsTransferModel>>(transfers);
         }

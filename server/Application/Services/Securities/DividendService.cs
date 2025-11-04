@@ -5,9 +5,11 @@ using MoneyManager.Application.DTO.Common;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Securities;
 using MoneyManager.Infrastructure.Entities.Brokers;
+using MoneyManager.Infrastructure.Entities.Debts;
 using MoneyManager.Infrastructure.Entities.Deposits;
 using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Infrastructure.Interfaces.Database;
+using MoneyManager.Infrastructure.Queries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,12 +31,17 @@ namespace MoneyManager.Application.Services.Securities
             _dividendRepo = uow.CreateRepository<Dividend>();
         }
 
-        public async Task<IEnumerable<DividendDto>> GetAll(Guid securityId)
+        public async Task<IEnumerable<DividendDto>> GetAll(Guid securityId, int pageIndex, int recordsQuantity)
         {
-            var securities = await _dividendRepo
-                .GetAll((dividend) => dividend.SecurityId == securityId,
-                    include: GetFullHierarchyColumns);
-            return _mapper.Map<IEnumerable<DividendDto>>(securities);
+            var query = new ComplexQueryBuilder<Dividend>()
+                .AddPagination(pageIndex, recordsQuantity,
+                    (dividend) => dividend.SnapshotDate, true)
+                .AddFilter((dividend) => dividend.SecurityId == securityId)
+                .AddJoins(GetFullHierarchyColumns)
+                .GetQuery();
+
+            var dividends = await _dividendRepo.GetAll(query);
+            return _mapper.Map<IEnumerable<DividendDto>>(dividends);
         }
 
         public async Task<PaginationConfigDto> GetPagination(Guid securityId)

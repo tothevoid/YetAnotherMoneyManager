@@ -1,16 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Brokers;
+using MoneyManager.Application.DTO.Common;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Application.Queries.Brokers;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using MoneyManager.Infrastructure.Queries;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace MoneyManager.Application.Services.Brokers
 {
@@ -35,7 +37,7 @@ namespace MoneyManager.Application.Services.Brokers
         public async Task<IEnumerable<DividendPaymentDto>> GetAll(Guid brokerAccountId)
         {
             var complexQuery = new ComplexQueryBuilder<DividendPayment>()
-                .AddFilter(dividendPayment => dividendPayment.BrokerAccountId == brokerAccountId)
+                .AddFilter(GetBaseFilter(brokerAccountId))
                 .AddOrder(dividendPayment => dividendPayment.ReceivedAt, true)
                 .AddJoins(DividendPaymentQuery.GetFullHierarchyColumns)
                 .GetQuery();
@@ -44,6 +46,23 @@ namespace MoneyManager.Application.Services.Brokers
                 .GetAll(complexQuery);
             
             return _mapper.Map<IEnumerable<DividendPaymentDto>>(dividends);
+        }
+
+        public async Task<PaginationConfigDto> GetPagination(Guid brokerAccountId)
+        {
+            int pageSize = 20;
+            var recordsQuantity = await _dividendPaymentRepo.GetCount(GetBaseFilter(brokerAccountId));
+
+            return new PaginationConfigDto()
+            {
+                PageSize = pageSize,
+                RecordsQuantity = recordsQuantity
+            };
+        }
+
+        private Expression<Func<DividendPayment, bool>> GetBaseFilter(Guid brokerAccountId)
+        {
+            return brokerAccountSecurity => brokerAccountSecurity.BrokerAccountId == brokerAccountId;
         }
 
         public async Task<decimal> GetEarningsByBrokerAccount(Guid brokerAccountId)

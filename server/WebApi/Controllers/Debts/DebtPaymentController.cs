@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System;
 using MoneyManager.Application.DTO.Debts;
 using MoneyManager.Application.Interfaces.Debts;
+using MoneyManager.WebApi.Models.Common;
 using MoneyManager.WebApi.Models.Debts;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MoneyManager.WebApi.Controllers.Debts
 {
@@ -29,10 +30,17 @@ namespace MoneyManager.WebApi.Controllers.Debts
             return _mapper.Map<IEnumerable<DebtPaymentModel>>(debtPayments);
         }
 
-        [HttpPut]
-        public async Task<Guid> Add(DebtPaymentModel currency)
+        [HttpGet(nameof(GetPagination))]
+        public async Task<PaginationConfigModel> GetPagination()
         {
-            var debtPaymentDto = _mapper.Map<DebtPaymentDto>(currency);
+            var pagination = await _debtPaymentService.GetPagination();
+            return _mapper.Map<PaginationConfigModel>(pagination);
+        }
+
+        [HttpPut]
+        public async Task<Guid> Add(DebtPaymentModel debtPayment)
+        {
+            var debtPaymentDto = _mapper.Map<DebtPaymentDto>(debtPayment);
             return await _debtPaymentService.Add(debtPaymentDto);
         }
 

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MoneyManager.Application.DTO.Common;
 
 namespace MoneyManager.Application.Interfaces.Securities
 {
@@ -9,7 +10,7 @@ namespace MoneyManager.Application.Interfaces.Securities
     {
         Task<IEnumerable<SecurityTransactionDTO>> GetAll(Guid brokerAccountId, int recordsQuantity, int pageIndex);
         Task<IEnumerable<SecurityTransactionsHistoryDto>> GetTransactionsHistory(Guid securityId);
-        Task<SecurityTransactionPaginationDto> GetPagination(Guid brokerAccountId);
+        Task<PaginationConfigDto> GetPagination(Guid brokerAccountId);
         Task<Guid> Add(SecurityTransactionDTO securityTransaction);
         Task Update(SecurityTransactionDTO securityTransaction);
         Task Delete(Guid id);

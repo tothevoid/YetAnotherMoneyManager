@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using MoneyManager.Application.DTO.Common;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Securities;
 using MoneyManager.Application.Queries.Brokers;
@@ -91,12 +92,12 @@ namespace MoneyManager.Application.Services.Securities
             return convertedTransactions;
         }
 
-        public async Task<SecurityTransactionPaginationDto> GetPagination(Guid brokerAccountId)
+        public async Task<PaginationConfigDto> GetPagination(Guid brokerAccountId)
         {
             int pageSize = 20;
             var recordsQuantity = await _securityTransactionRepo.GetCount(GetBaseFilter(brokerAccountId));
 
-            return new SecurityTransactionPaginationDto()
+            return new PaginationConfigDto()
             {
                 PageSize = pageSize,
                 RecordsQuantity = recordsQuantity

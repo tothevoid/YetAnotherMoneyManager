@@ -1,4 +1,5 @@
 ﻿using MoneyManager.Application.DTO.Brokers;
+using MoneyManager.Application.DTO.Common;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,6 +9,8 @@ namespace MoneyManager.Application.Interfaces.Brokers
     public interface IDividendPaymentService
     {
         Task<IEnumerable<DividendPaymentDto>> GetAll(Guid brokerAccountId);
+
+        Task<PaginationConfigDto> GetPagination(Guid brokerAccountId);
 
         Task<decimal> GetEarningsByBrokerAccount(Guid brokerAccountId);
 

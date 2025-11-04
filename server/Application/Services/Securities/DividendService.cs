@@ -1,15 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Brokers;
+using MoneyManager.Application.DTO.Common;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Securities;
+using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Entities.Deposits;
 using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Infrastructure.Interfaces.Database;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace MoneyManager.Application.Services.Securities
 {
@@ -32,6 +35,23 @@ namespace MoneyManager.Application.Services.Securities
                 .GetAll((dividend) => dividend.SecurityId == securityId,
                     include: GetFullHierarchyColumns);
             return _mapper.Map<IEnumerable<DividendDto>>(securities);
+        }
+
+        public async Task<PaginationConfigDto> GetPagination(Guid securityId)
+        {
+            int pageSize = 20;
+            var recordsQuantity = await _dividendRepo.GetCount(GetBaseFilter(securityId));
+
+            return new PaginationConfigDto()
+            {
+                PageSize = pageSize,
+                RecordsQuantity = recordsQuantity
+            };
+        }
+
+        private Expression<Func<Dividend, bool>> GetBaseFilter(Guid securityId)
+        {
+            return brokerAccountSecurity => brokerAccountSecurity.SecurityId == securityId;
         }
 
         public async Task<IEnumerable<DividendDto>> GetAvailable(Guid brokerAccountId)

@@ -1,17 +1,19 @@
 ﻿using AutoMapper;
-using MoneyManager.Infrastructure.Interfaces.Database;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MoneyManager.Application.DTO.Common;
 using MoneyManager.Application.DTO.Debts;
 using MoneyManager.Application.Interfaces.Debts;
 using MoneyManager.Application.Interfaces.Transactions;
 using MoneyManager.Infrastructure.Entities.Accounts;
-using MoneyManager.Infrastructure.Entities.Debts;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using MoneyManager.Infrastructure.Entities.Brokers;
+using MoneyManager.Infrastructure.Entities.Debts;
+using MoneyManager.Infrastructure.Interfaces.Database;
 using MoneyManager.Infrastructure.Queries;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace MoneyManager.Application.Services.Debts
 {
@@ -41,6 +43,18 @@ namespace MoneyManager.Application.Services.Debts
 
             var debtPayments = await _debtPaymentRepo.GetAll(query);
             return _mapper.Map<IEnumerable<DebtPaymentDto>>(debtPayments);
+        }
+
+        public async Task<PaginationConfigDto> GetPagination()
+        {
+            int pageSize = 20;
+            var recordsQuantity = await _debtPaymentRepo.GetCount();
+
+            return new PaginationConfigDto()
+            {
+                PageSize = pageSize,
+                RecordsQuantity = recordsQuantity
+            };
         }
 
         public async Task<Guid> Add(DebtPaymentDto debtPaymentDto)

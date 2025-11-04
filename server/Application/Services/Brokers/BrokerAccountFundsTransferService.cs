@@ -1,17 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using MoneyManager.Infrastructure.Entities.Brokers;
-using MoneyManager.Infrastructure.Interfaces.Database;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using MoneyManager.Application.DTO.Accounts;
 using MoneyManager.Application.DTO.Brokers;
+using MoneyManager.Application.DTO.Common;
 using MoneyManager.Application.Interfaces.Accounts;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Infrastructure.Entities.Accounts;
+using MoneyManager.Infrastructure.Entities.Brokers;
+using MoneyManager.Infrastructure.Interfaces.Database;
 using MoneyManager.Infrastructure.Queries;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace MoneyManager.Application.Services.Brokers
 {
@@ -39,7 +41,7 @@ namespace MoneyManager.Application.Services.Brokers
         public async Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAllAsync(Guid brokerAccountId)
         {
             var complexQuery = new ComplexQueryBuilder<BrokerAccountFundsTransfer>()
-                .AddFilter(transfer => transfer.BrokerAccountId == brokerAccountId)
+                .AddFilter(GetBaseFilter(brokerAccountId))
                 .AddJoins(GetFullHierarchyColumns)
                 .AddOrder(transfer => transfer.Date, true)
                 .DisableTracking()
@@ -48,6 +50,8 @@ namespace MoneyManager.Application.Services.Brokers
             var transfers = await _transfersRepo.GetAll(complexQuery);
             return _mapper.Map<IEnumerable<BrokerAccountFundsTransferDto>>(transfers).ToList();
         }
+
+
 
         public async Task<BrokerAccountFundsTransferDto> Add(BrokerAccountFundsTransferDto transferDto)
         {
@@ -110,6 +114,23 @@ namespace MoneyManager.Application.Services.Brokers
             await _brokerAccountService.Update(_mapper.Map<BrokerAccountDTO>(brokerAccount));
             account.Balance += -1 * amount;
             await _accountService.Update(_mapper.Map<AccountDTO>(account));
+        }
+
+        public async Task<PaginationConfigDto> GetPagination(Guid brokerAccountId)
+        {
+            int pageSize = 20;
+            var recordsQuantity = await _transfersRepo.GetCount(GetBaseFilter(brokerAccountId));
+
+            return new PaginationConfigDto()
+            {
+                PageSize = pageSize,
+                RecordsQuantity = recordsQuantity
+            };
+        }
+
+        private Expression<Func<BrokerAccountFundsTransfer, bool>> GetBaseFilter(Guid brokerAccountId)
+        {
+            return brokerAccountSecurity => brokerAccountSecurity.BrokerAccountId == brokerAccountId;
         }
 
         private IQueryable<BrokerAccountFundsTransfer> GetFullHierarchyColumns(IQueryable<BrokerAccountFundsTransfer> query)

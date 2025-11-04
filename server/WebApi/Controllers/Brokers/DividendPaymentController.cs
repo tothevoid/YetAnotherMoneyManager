@@ -1,11 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System;
-using AutoMapper;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Brokers;
+using MoneyManager.Application.Services.Brokers;
 using MoneyManager.WebApi.Models.Brokers;
+using MoneyManager.WebApi.Models.Common;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MoneyManager.WebApi.Controllers.Brokers
 {
@@ -48,6 +50,14 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         {
             var dividendDto = _mapper.Map<DividendPaymentDto>(dividendPayment);
             await _dividendPaymentService.Update(dividendDto);
+        }
+
+        [HttpGet(nameof(GetPagination))]
+        public async Task<PaginationConfigModel> GetPagination([FromQuery] Guid brokerAccountId)
+        {
+            var pagination = await _dividendPaymentService
+                .GetPagination(brokerAccountId);
+            return _mapper.Map<PaginationConfigModel>(pagination);
         }
 
         [HttpDelete]

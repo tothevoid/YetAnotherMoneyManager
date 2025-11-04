@@ -1,11 +1,12 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Brokers;
+using MoneyManager.WebApi.Models.Brokers;
+using MoneyManager.WebApi.Models.Common;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MoneyManager.WebApi.Models.Brokers;
-using MoneyManager.Application.DTO.Brokers;
 
 namespace MoneyManager.WebApi.Controllers.Brokers
 {
@@ -43,6 +44,14 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         {
             var transferDto = _mapper.Map<BrokerAccountFundsTransferDto>(transferModel);
             await _brokerAccountFundsTransferService.Update(transferDto);
+        }
+
+        [HttpGet(nameof(GetPagination))]
+        public async Task<PaginationConfigModel> GetPagination([FromQuery] Guid brokerAccountId)
+        {
+            var pagination = await _brokerAccountFundsTransferService
+                .GetPagination(brokerAccountId);
+            return _mapper.Map<PaginationConfigModel>(pagination);
         }
 
         [HttpDelete]

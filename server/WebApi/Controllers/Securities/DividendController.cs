@@ -1,11 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System;
-using AutoMapper;
 using MoneyManager.Application.DTO.Securities;
-using MoneyManager.WebApi.Models.Securities;
 using MoneyManager.Application.Interfaces.Securities;
+using MoneyManager.WebApi.Models.Common;
+using MoneyManager.WebApi.Models.Securities;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MoneyManager.WebApi.Controllers.Securities
 {
@@ -36,17 +37,24 @@ namespace MoneyManager.WebApi.Controllers.Securities
             return _mapper.Map<IEnumerable<DividendModel>>(securities);
         }
 
-        [HttpPut]
-        public async Task<Guid> Add(DividendModel security)
+        [HttpGet(nameof(GetPagination))]
+        public async Task<PaginationConfigModel> GetPagination([FromQuery] Guid securityId)
         {
-            var dividendDto = _mapper.Map<DividendDto>(security);
+            var pagination = await _dividendService.GetPagination(securityId);
+            return _mapper.Map<PaginationConfigModel>(pagination);
+        }
+
+        [HttpPut]
+        public async Task<Guid> Add(DividendModel dividend)
+        {
+            var dividendDto = _mapper.Map<DividendDto>(dividend);
             return await _dividendService.Add(dividendDto);
         }
 
         [HttpPatch]
-        public async Task Update(DividendModel security)
+        public async Task Update(DividendModel dividend)
         {
-            var dividendDto = _mapper.Map<DividendDto>(security);
+            var dividendDto = _mapper.Map<DividendDto>(dividend);
             await _dividendService.Update(dividendDto);
         }
 

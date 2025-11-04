@@ -131,7 +131,7 @@ const BanksTable: React.FC = () => {
         <Table.Root>
             <Table.Header>
                 <Table.Row border="none" bg="none" color="text_primary">
-                    <Table.ColumnHeader w={"10px"}/>
+                    <Table.ColumnHeader w={"50px"}/>
                     <Table.ColumnHeader color="text_primary">Name</Table.ColumnHeader>
                     <Table.ColumnHeader/>
                     <Table.ColumnHeader/>

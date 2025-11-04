@@ -23,10 +23,10 @@ namespace MoneyManager.WebApi.Controllers.Securities
             _dividendService = dividendService;
         }
 
-        [HttpGet(nameof(GetAll))]
+        [HttpPost(nameof(GetAll))]
         public async Task<IEnumerable<DividendModel>> GetAll(GetAllDividendsQuery query)
         {
-            var securities = await _dividendService.GetAll(query.SecurityId, query.RecordsQuantity, query.PageIndex);
+            var securities = await _dividendService.GetAll(query.SecurityId, query.PageIndex, query.RecordsQuantity);
             return _mapper.Map<IEnumerable<DividendModel>>(securities);
         }
 

@@ -3,8 +3,8 @@ import { DebtPaymentEntity } from "../../../models/debts/DebtPaymentEntity";
 import { createDebtPayment, deleteDebtPayment, getDebtPayments, updateDebtPayment } from "../../../api/debts/debtPaymentApi";
 
 export interface DebtPaymentsQuery {
-	currentPage: number,
-	pageSize: number
+	pageIndex: number,
+	recordsQuantity: number
 }
 
 export const useDebtPayments = (queryParameters: DebtPaymentsQuery) => {

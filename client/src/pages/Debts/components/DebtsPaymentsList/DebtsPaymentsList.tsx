@@ -36,7 +36,7 @@ const DebtsPaymentsList: React.FC<Props> = ({ onDebtPaymentsChanged }) => {
         updateDebtPaymentEntity,
         deleteDebtPaymentEntity,
         setDebtPaymentsQueryParameters
-    } = useDebtPayments({ currentPage: 1, pageSize: -1 });
+    } = useDebtPayments({ pageIndex: 1, recordsQuantity: -1 });
 
     const onDebtPaymentSaved = async (createdDebtPayment: DebtPaymentEntity) => {
         if (mode === ActiveEntityMode.Add) {
@@ -62,8 +62,8 @@ const DebtsPaymentsList: React.FC<Props> = ({ onDebtPaymentsChanged }) => {
         return getDebtPaymentsPagination();
     }, []);
 
-    const onPageChanged = async (pageSize: number, currentPage: number) => {
-		setDebtPaymentsQueryParameters({pageSize, currentPage});
+    const onPageChanged = async (recordsQuantity: number, pageIndex: number) => {
+		setDebtPaymentsQueryParameters({recordsQuantity, pageIndex});
 	}
 
     return <Fragment>

@@ -39,7 +39,7 @@ const SecurityTransactionsList: React.FC<Props> = (props) => {
 		deleteSecurityTransactionEntity,
 		securityTransactionsQueryParameters, 
 		setSecurityTransactionsQueryParameters
-	} = useSecurityTransactions({currentPage: 1, pageSize: -1, brokerAccountId: props.brokerAccountId });
+	} = useSecurityTransactions({pageIndex: 1, recordsQuantity: -1, brokerAccountId: props.brokerAccountId });
 
 	useEffect(() => {
 		props.onDataReloaded();
@@ -47,8 +47,8 @@ const SecurityTransactionsList: React.FC<Props> = (props) => {
 
 	const [context, setContext] = useState<Nullable<CreateSecurityTransactionContext | EditSecurityTransactionContext>>(null);
 
-	const onPageChanged = async (pageSize: number, currentPage: number) => {
-		setSecurityTransactionsQueryParameters({pageSize, currentPage, brokerAccountId: securityTransactionsQueryParameters.brokerAccountId});
+	const onPageChanged = async (recordsQuantity: number, pageIndex: number) => {
+		setSecurityTransactionsQueryParameters({recordsQuantity, pageIndex, brokerAccountId: securityTransactionsQueryParameters.brokerAccountId});
 	}
 
 	useEffect(() => {

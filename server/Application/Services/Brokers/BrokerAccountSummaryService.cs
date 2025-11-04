@@ -106,7 +106,7 @@ namespace MoneyManager.Application.Services.Brokers
             //TODO: Add db month and year filter
             //TODO: fix GetMonthTransfersHistory & GetYearTransfersHistory code duplication
 
-            var transfers = await _fundsTransferService.GetAllAsync(brokerAccountId);
+            var transfers = await _fundsTransferService.GetAll(brokerAccountId);
 
             var filteredTransfers = transfers
                 .Where(transfer => transfer.Date.Year == year && transfer.Date.Month == month);
@@ -141,7 +141,7 @@ namespace MoneyManager.Application.Services.Brokers
         {
             //TODO: Add db year filter
 
-            var transfers = await _fundsTransferService.GetAllAsync(brokerAccountId);
+            var transfers = await _fundsTransferService.GetAll(brokerAccountId);
             var filteredTransfers = transfers.Where(transfer => transfer.Date.Year == year);
 
             var distributions = Enumerable.Range(1, 12).ToDictionary(k => k, v => new TransfersHistory());
@@ -170,7 +170,7 @@ namespace MoneyManager.Application.Services.Brokers
 
         private async Task<BrokerAccountTransfersStatsDto> GetTransfersStats(Guid brokerAccountId)
         {
-            var transfers = (await _fundsTransferService.GetAllAsync(brokerAccountId)).ToList();
+            var transfers = (await _fundsTransferService.GetAll(brokerAccountId)).ToList();
 
             //bool TransfersFilter(BrokerAccountFundsTransferDto transfer) =>
             //    transfer.Date >= from && transfer.Date <= to;

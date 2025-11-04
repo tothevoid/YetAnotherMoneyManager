@@ -48,7 +48,7 @@ namespace MoneyManager.Application.Services.Debts
 
         public async Task<PaginationConfigDto> GetPagination()
         {
-            int pageSize = 20;
+            int pageSize = 10;
             var recordsQuantity = await _debtPaymentRepo.GetCount();
 
             return new PaginationConfigDto()

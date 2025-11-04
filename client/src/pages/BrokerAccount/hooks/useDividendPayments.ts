@@ -3,8 +3,8 @@ import { createDividendPayment, deleteDividendPayment, getDividendPaymentsByBrok
 import { DividendPaymentEntity } from "../../../models/brokers/DividendPaymentEntity";
 
 export interface DividendPaymentsQuery {
-	currentPage: number,
-	pageSize: number,
+	pageIndex: number,
+	recordsQuantity: number,
 	brokerAccountId: string
 }
 

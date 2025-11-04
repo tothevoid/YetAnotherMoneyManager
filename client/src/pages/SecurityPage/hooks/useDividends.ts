@@ -3,8 +3,8 @@ import { DividendEntity } from "../../../models/securities/DividendEntity";
 import { createDividend, deleteDividend, getDividends, updateDividend } from "../../../api/securities/dividendApi";
 
 export interface DividendsQuery {
-	currentPage: number,
-	pageSize: number,
+	pageIndex: number,
+	recordsQuantity: number,
 	securityId: string
 }
 

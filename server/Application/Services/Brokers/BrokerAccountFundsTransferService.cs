@@ -27,30 +27,43 @@ namespace MoneyManager.Application.Services.Brokers
         private readonly IAccountService _accountService;
         private readonly IMapper _mapper;
 
-        public BrokerAccountFundsTransferService(IUnitOfWork uow, IMapper mapper, IBrokerAccountService brokerAccountService, IAccountService accountService)
+        public BrokerAccountFundsTransferService(IUnitOfWork db, IMapper mapper, IBrokerAccountService brokerAccountService, IAccountService accountService)
         {
-            _db = uow;
+            _db = db;
             _mapper = mapper;
-            _transfersRepo = uow.CreateRepository<BrokerAccountFundsTransfer>();
-            _accountRepo = uow.CreateRepository<Account>();
-            _brokerAccountRepo = uow.CreateRepository<BrokerAccount>();
+            _transfersRepo = db.CreateRepository<BrokerAccountFundsTransfer>();
+            _accountRepo = db.CreateRepository<Account>();
+            _brokerAccountRepo = db.CreateRepository<BrokerAccount>();
             _brokerAccountService = brokerAccountService;
             _accountService = accountService;
         }
 
+        public async Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAll(Guid brokerAccountId)
+        {
+            var complexQuery = GetBaseBuilder(brokerAccountId).GetQuery();
+
+            var transfers = await _transfersRepo.GetAll(complexQuery);
+            return _mapper.Map<IEnumerable<BrokerAccountFundsTransferDto>>(transfers).ToList();
+        }
+
         public async Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAll(Guid brokerAccountId, int pageIndex, int recordsQuantity)
         {
-            var complexQuery = new ComplexQueryBuilder<BrokerAccountFundsTransfer>()
-                .AddFilter(GetBaseFilter(brokerAccountId))
-                .AddJoins(GetFullHierarchyColumns)
+            var complexQuery = GetBaseBuilder(brokerAccountId)
                 .AddPagination(pageIndex, recordsQuantity,
                     transfer => transfer.Date,
                     true)
-                .DisableTracking()
                 .GetQuery();
 
             var transfers = await _transfersRepo.GetAll(complexQuery);
             return _mapper.Map<IEnumerable<BrokerAccountFundsTransferDto>>(transfers).ToList();
+        }
+
+        private ComplexQueryBuilder<BrokerAccountFundsTransfer> GetBaseBuilder(Guid brokerAccountId)
+        {
+            return new ComplexQueryBuilder<BrokerAccountFundsTransfer>()
+                .AddFilter(GetBaseFilter(brokerAccountId))
+                .AddJoins(GetFullHierarchyColumns)
+                .DisableTracking();
         }
 
         public async Task<BrokerAccountFundsTransferDto> Add(BrokerAccountFundsTransferDto transferDto)
@@ -118,7 +131,7 @@ namespace MoneyManager.Application.Services.Brokers
 
         public async Task<PaginationConfigDto> GetPagination(Guid brokerAccountId)
         {
-            int pageSize = 20;
+            int pageSize = 10;
             var recordsQuantity = await _transfersRepo.GetCount(GetBaseFilter(brokerAccountId));
 
             return new PaginationConfigDto()

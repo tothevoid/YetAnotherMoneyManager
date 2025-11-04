@@ -25,7 +25,7 @@ const BrokerAccountFundTransfersList: React.FC<Props> = (props) => {
         reloadFundTransfers,
         fundTransfersQueryParameters,
         setFundTransfersQueryParameters
-    } = useBrokerAccountFundTransfers({ currentPage: 1, pageSize: -1, brokerAccountId: props.brokerAccountId });
+    } = useBrokerAccountFundTransfers({ pageIndex: 1, recordsQuantity: -1, brokerAccountId: props.brokerAccountId });
 
     const { 
         modalRef,
@@ -78,8 +78,8 @@ const BrokerAccountFundTransfersList: React.FC<Props> = (props) => {
         return getBrokerAccountFundsTransferPagination(props.brokerAccountId);
     }, [props.brokerAccountId]);
 
-    const onPageChanged = async (pageSize: number, currentPage: number) => {
-        setFundTransfersQueryParameters({pageSize, currentPage, brokerAccountId: fundTransfersQueryParameters.brokerAccountId});
+    const onPageChanged = async (recordsQuantity: number, pageIndex: number) => {
+        setFundTransfersQueryParameters({recordsQuantity, pageIndex, brokerAccountId: fundTransfersQueryParameters.brokerAccountId});
     }
 
     const {t} = useTranslation();

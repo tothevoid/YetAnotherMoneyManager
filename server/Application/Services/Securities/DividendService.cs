@@ -46,7 +46,7 @@ namespace MoneyManager.Application.Services.Securities
 
         public async Task<PaginationConfigDto> GetPagination(Guid securityId)
         {
-            int pageSize = 20;
+            int pageSize = 10;
             var recordsQuantity = await _dividendRepo.GetCount(GetBaseFilter(securityId));
 
             return new PaginationConfigDto()

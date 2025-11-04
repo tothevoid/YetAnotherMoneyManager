@@ -95,7 +95,7 @@ namespace MoneyManager.Application.Services.Securities
 
         public async Task<PaginationConfigDto> GetPagination(Guid brokerAccountId)
         {
-            int pageSize = 20;
+            int pageSize = 10;
             var recordsQuantity = await _securityTransactionRepo.GetCount(GetBaseFilter(brokerAccountId));
 
             return new PaginationConfigDto()

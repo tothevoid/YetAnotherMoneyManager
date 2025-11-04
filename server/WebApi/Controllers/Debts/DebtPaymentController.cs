@@ -23,7 +23,7 @@ namespace MoneyManager.WebApi.Controllers.Debts
             _debtPaymentService = debtPaymentService;
         }
 
-        [HttpGet]
+        [HttpPost(nameof(GetAll))]
         public async Task<IEnumerable<DebtPaymentModel>> GetAll(GetAllDebtPaymentsQuery query)
         {
             var debtPayments = await _debtPaymentService.GetAll(query.PageIndex, query.RecordsQuantity);

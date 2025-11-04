@@ -3,8 +3,8 @@ import { createSecurityTransaction, deleteSecurityTransaction, getSecurityTransa
 import { SecurityTransactionEntity } from "../../../models/securities/SecurityTransactionEntity";
 
 export interface SecurityTransactionsQuery {
-	currentPage: number,
-	pageSize: number,
+	pageIndex: number,
+	recordsQuantity: number,
 	brokerAccountId: string
 }
 
@@ -18,11 +18,7 @@ export const useSecurityTransactions = (queryParameters: SecurityTransactionsQue
 	const fetchData = useCallback(async () => {
 		setLoading(true)
 		try {
-			const securityTransactions = await getSecurityTransactions({
-				brokerAccountId: securityTransactionsQueryParameters.brokerAccountId,
-				recordsQuantity: securityTransactionsQueryParameters.pageSize,
-				pageIndex: securityTransactionsQueryParameters.currentPage,
-			})
+			const securityTransactions = await getSecurityTransactions(securityTransactionsQueryParameters)
 			setSecurityTransactions(securityTransactions);
 		} catch (err: any) {
 			setError(err.message || 'Ошибка загрузки данных')

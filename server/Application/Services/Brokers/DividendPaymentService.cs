@@ -52,7 +52,7 @@ namespace MoneyManager.Application.Services.Brokers
 
         public async Task<PaginationConfigDto> GetPagination(Guid brokerAccountId)
         {
-            int pageSize = 20;
+            int pageSize = 10;
             var recordsQuantity = await _dividendPaymentRepo.GetCount(GetBaseFilter(brokerAccountId));
 
             return new PaginationConfigDto()

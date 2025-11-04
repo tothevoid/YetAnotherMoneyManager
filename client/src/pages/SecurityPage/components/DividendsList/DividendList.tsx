@@ -36,7 +36,7 @@ const DividendList: React.FC<Props> = (props) => {
 		deleteDividendEntity,
 		dividendsQueryParameters,
 		setDividendsQueryParameters
-	} = useDividends({ currentPage: 1, pageSize: -1, securityId: props.securityId });
+	} = useDividends({ pageIndex: 1, recordsQuantity: -1, securityId: props.securityId });
 
 	const { t } = useTranslation();
 	const [context, setContext] = useState<Nullable<CreateDividendContext | EditDividendContext>>(null);
@@ -72,8 +72,8 @@ const DividendList: React.FC<Props> = (props) => {
 		return getDividendsPagination(props.securityId);
 	}, [props.securityId]);
 
-	const onPageChanged = async (pageSize: number, currentPage: number) => {
-		setDividendsQueryParameters({pageSize, currentPage, securityId: dividendsQueryParameters.securityId});
+	const onPageChanged = async (recordsQuantity: number, pageIndex: number) => {
+		setDividendsQueryParameters({recordsQuantity, pageIndex, securityId: dividendsQueryParameters.securityId});
 	}
 
 	return (

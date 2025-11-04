@@ -4,8 +4,8 @@ import { createBrokerAccountFundsTransfer, deleteBrokerAccountFundsTransfer, get
 import { BrokerAccountFundTransferEntity } from "../../../models/brokers/BrokerAccountFundTransfer";
 
 export interface FundTransfersQuery {
-	currentPage: number,
-	pageSize: number,
+	pageIndex: number,
+	recordsQuantity: number,
 	brokerAccountId: string
 }
 

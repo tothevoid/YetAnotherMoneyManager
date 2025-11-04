@@ -1,4 +1,4 @@
 export interface PaginationConfig {
-	pageSize: number,
+	pageIndex: number,
 	recordsQuantity: number
 }

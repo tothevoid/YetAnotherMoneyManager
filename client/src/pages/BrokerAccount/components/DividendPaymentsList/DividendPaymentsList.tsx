@@ -39,7 +39,7 @@ const DividendPaymentsList: React.FC<Props> = (props) => {
 		deleteDividendPaymentEntity,
 		dividendPaymentsQueryParameters,
 		setDividendPaymentsQueryParameters
-	} = useDividendPayments({ currentPage: 1, pageSize: -1, brokerAccountId: props.brokerAccountId }, props.onDividendsChanged);
+	} = useDividendPayments({ pageIndex: 1, recordsQuantity: -1, brokerAccountId: props.brokerAccountId }, props.onDividendsChanged);
 
 	const [context, setContext] = useState<Nullable<CreateDividendPaymentContext | EditDividendPaymentContext>>(null);
 
@@ -75,8 +75,8 @@ const DividendPaymentsList: React.FC<Props> = (props) => {
 		return getDividendPaymentsPagination(props.brokerAccountId);
 	}, [props.brokerAccountId]);
 
-	const onPageChanged = async (pageSize: number, currentPage: number) => {
-		setDividendPaymentsQueryParameters({pageSize, currentPage, brokerAccountId: dividendPaymentsQueryParameters.brokerAccountId});
+	const onPageChanged = async (recordsQuantity: number, pageIndex: number) => {
+		setDividendPaymentsQueryParameters({recordsQuantity, pageIndex, brokerAccountId: dividendPaymentsQueryParameters.brokerAccountId});
 	}
 
 	return <Box>

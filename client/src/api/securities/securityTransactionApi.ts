@@ -1,8 +1,8 @@
 import config from '../../config' 
 import { SecurityTransactionEntity, SecurityTransactionEntityRequest, SecurityTransactionEntityResponse } from '../../models/securities/SecurityTransactionEntity';
 import { SecurityTransactionsHistory } from '../../models/securities/SecurityTransactionsHistory';
-import { SecurityTransactionsPagination } from '../../models/securities/SecurityTransactionsPagination';
 import { SecurityTransactionsRequest } from '../../models/securities/SecurityTransactionsRequest';
+import { PaginationConfig } from '../../shared/models/PaginationConfig';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { createEntity, deleteEntity, getAllEntitiesByConfig, updateEntity } from '../basicApi';
 import { prepareSecurityTransaction, prepareSecurityTransactionRequest } from './securityTransactionApiMapping';
@@ -16,7 +16,7 @@ export const getSecurityTransactions = async (request: SecurityTransactionsReque
         })
 };
 
-export const gerSecurityTransactionsPagination = async (brokerAccountId: string): Promise<SecurityTransactionsPagination | void> => {
+export const getSecurityTransactionsPagination = async (brokerAccountId: string): Promise<PaginationConfig | void> => {
     return await fetch(`${basicUrl}/GetPagination?brokerAccountId=${brokerAccountId}`, {method: "GET"})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())

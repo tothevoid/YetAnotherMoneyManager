@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { SecurityTransactionEntity } from '../../../../models/securities/SecurityTransactionEntity';
 import SecurityTransaction from '../SecurityTransaction/SecurityTransaction';
-import SecurityTransactionsPagination from '../SecurityTransactionsPagination/SecurityTransactionsPagination';
 import SecurityTransactionModal, { CreateSecurityTransactionContext, EditSecurityTransactionContext } from '../../modals/SecurityTransactionModal/SecurityTransactionModal';
 import { useSecurityTransactions } from '../../hooks/useSecurityTransactions';
 import { useEntityModal } from '../../../../shared/hooks/useEntityModal';
@@ -11,7 +10,8 @@ import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModa
 import { ActiveEntityMode } from '../../../../shared/enums/activeEntityMode';
 import AddButton from '../../../../shared/components/AddButton/AddButton';
 import { Nullable } from '../../../../shared/utilities/nullable';
-
+import CollectionPagination from '../../../../shared/components/CollectionPagination/CollectionPagination';
+import { getSecurityTransactionsPagination } from '../../../../api/securities/securityTransactionApi';
 
 interface Props {
 	brokerAccountId: string,
@@ -76,6 +76,10 @@ const SecurityTransactionsList: React.FC<Props> = (props) => {
 		onActionEnded();
 	}
 
+	const getPagination = useCallback(() => {
+		return getSecurityTransactionsPagination(props.brokerAccountId);
+	}, [props.brokerAccountId]);
+
 	return <Box>
 		<Flex alignItems="center" gapX={5}>
 			<AddButton buttonTitle={t("entity_securities_transaction_page_summary_add")} onClick={onAddClicked}/>
@@ -88,9 +92,7 @@ const SecurityTransactionsList: React.FC<Props> = (props) => {
 					onDeleteClicked={onDeleteClicked}/>)
 		}
 		</Box>
-		<Flex justifyContent={"center"}>
-			<SecurityTransactionsPagination brokerAccountId={props.brokerAccountId} onPageChanged={onPageChanged}/>
-		</Flex>
+		<CollectionPagination getPaginationConfig={getPagination} onPageChanged={onPageChanged}/>
 		<ConfirmModal onConfirmed={onDeleteConfirmed}
             title={t("entity_securities_transaction_delete_title")}
             message={t("modals_delete_message")}

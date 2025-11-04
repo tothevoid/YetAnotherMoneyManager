@@ -5,7 +5,6 @@ using System;
 using AutoMapper;
 using MoneyManager.Application.DTO.Transactions;
 using MoneyManager.Application.Interfaces.Transactions;
-using MoneyManager.WebApi.Models.Accounts;
 using MoneyManager.WebApi.Models.Transactions;
 
 namespace MoneyManager.WebApi.Controllers.Transactions

@@ -6,7 +6,7 @@ using AutoMapper;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Securities;
 using MoneyManager.WebApi.Models.Securities;
-using MoneyManager.WebApi.Models.Brokers;
+using MoneyManager.WebApi.Models.Common;
 
 namespace MoneyManager.WebApi.Controllers.Securities
 {
@@ -17,6 +17,7 @@ namespace MoneyManager.WebApi.Controllers.Securities
     {
         private readonly ISecurityTransactionService _securityTransactionService;
         private readonly IMapper _mapper;
+
         public SecurityTransactionController(ISecurityTransactionService securityTransactionService, IMapper mapper)
         {
             _mapper = mapper;
@@ -32,11 +33,11 @@ namespace MoneyManager.WebApi.Controllers.Securities
         }
 
         [HttpGet(nameof(GetPagination))]
-        public async Task<SecurityTransactionPaginationModel> GetPagination([FromQuery] Guid brokerAccountId)
+        public async Task<PaginationConfigModel> GetPagination([FromQuery] Guid brokerAccountId)
         {
             var pagination = await _securityTransactionService
                 .GetPagination(brokerAccountId);
-            return _mapper.Map<SecurityTransactionPaginationModel>(pagination);
+            return _mapper.Map<PaginationConfigModel>(pagination);
         }
 
         [HttpGet(nameof(GetTransactionsHistory))]

@@ -22,6 +22,8 @@ using MoneyManager.Infrastructure.Entities.Crypto;
 using MoneyManager.WebApi.Models.Crypto;
 using MoneyManager.WebApi.Models.Banks;
 using MoneyManager.Application.DTO.Banks;
+using MoneyManager.Application.DTO.Common;
+using MoneyManager.WebApi.Models.Common;
 
 namespace MoneyManager.WebApi.Mappings
 {
@@ -53,7 +55,6 @@ namespace MoneyManager.WebApi.Mappings
             CreateMap<BrokerAccountSecurityModel, BrokerAccountSecurityDTO>().ReverseMap();
             CreateMap<BrokerAccountTypeModel, BrokerAccountTypeDTO>().ReverseMap();
             CreateMap<SecurityTransactionModel, SecurityTransactionDTO>().ReverseMap();
-            CreateMap<SecurityTransactionPaginationDto, SecurityTransactionPaginationModel>();
             CreateMap<SecurityHistoryValueDto, SecurityHistoryValueModel>().ReverseMap();
 
             CreateMap<UserProfileModel, UserProfileDto>().ReverseMap();
@@ -94,6 +95,8 @@ namespace MoneyManager.WebApi.Mappings
             CreateMap<BrokerAccountDailyStatsDto, BrokerAccountDailyStatsModel>().ReverseMap();
             CreateMap<BrokerAccountDailySecurityStatsDto, BrokerAccountDailySecurityStatsModel>().ReverseMap();
             CreateMap<BankDto, BankModel>().ReverseMap();
+
+            CreateMap<PaginationConfigDto, PaginationConfigModel>();
         }
     }
 }

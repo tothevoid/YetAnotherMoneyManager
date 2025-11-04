@@ -1,6 +1,6 @@
-﻿namespace MoneyManager.WebApi.Models.Securities
+﻿namespace MoneyManager.WebApi.Models.Common
 {
-    public class SecurityTransactionPaginationModel
+    public class PaginationConfigModel
     {
         public int PageSize { get; set; }
 

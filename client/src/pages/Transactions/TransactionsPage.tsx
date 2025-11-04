@@ -130,7 +130,7 @@ const TransactionsPage: React.FC = () => {
                             <Checkbox.Label color="text_primary">{t("manager_transactions_show_system")}</Checkbox.Label>
                         </Checkbox.Root>
                     </Box>
-                    <Pagination year={params.year} month={params.month} onPageSwitched={onPageSwitched}></Pagination>
+                    <Pagination year={params.year} month={params.month} onPageSwitched={onPageSwitched}/>
                     <Box>
                         { isTransactionsLoading && <VStack marginBlock={"50px"}> <Spinner size={"lg"}/> </VStack>}
                         {

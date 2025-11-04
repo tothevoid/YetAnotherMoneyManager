@@ -108,7 +108,7 @@ namespace MoneyManager.Application.Services.Brokers
 
             brokerAccount.MainCurrencyAmount += amount;
             await _brokerAccountService.Update(_mapper.Map<BrokerAccountDTO>(brokerAccount));
-            account.Balance = -1 * amount;
+            account.Balance += -1 * amount;
             await _accountService.Update(_mapper.Map<AccountDTO>(account));
         }
 

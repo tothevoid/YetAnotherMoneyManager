@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
-import { RefObject, useEffect, useState } from "react";
+import { RefObject, useCallback, useEffect, useState } from "react";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
 import { generateGuid } from "../../../../shared/utilities/idUtilities";
 import { BankFormInput, BankValidationSchema } from "./BankValidationSchema";
@@ -12,7 +12,6 @@ import { Nullable } from "../../../../shared/utilities/nullable";
 import { getBankIconUrl } from "../../../../api/banks/bankApi";
 import InputImage from "../../../../shared/components/Form/InputImage/InputImage";
 
-
 interface ModalProps {
     modalRef: RefObject<BaseModalRef | null>,
     bank?: BankEntity | null,
@@ -20,23 +19,30 @@ interface ModalProps {
 };
 
 const BankModal: React.FC<ModalProps> = (props: ModalProps) => {
-    const { register, handleSubmit, formState: { errors }, reset} = useForm<BankFormInput>({
-        resolver: zodResolver(BankValidationSchema),
-        mode: "onBlur",
-        defaultValues: {
+    const setDefaultValues = useCallback(() => {
+        return {
             id: props.bank?.id ?? generateGuid(),
             name: props.bank?.name ?? ""
         }
+    }, [props.bank]);
+
+    const { register, handleSubmit, formState: { errors }, reset} = useForm<BankFormInput>({
+        resolver: zodResolver(BankValidationSchema),
+        mode: "onBlur",
+        defaultValues: setDefaultValues()
     });
+
+    const onModalVisibilityChanged = (open: boolean) => {
+        if (open) {
+            reset(setDefaultValues());
+        } else {
+            setIcon(null);
+            setIconUrl(null);
+        }
+    }
 
     const [icon, setIcon] = useState<File | null>(null);
     const [iconUrl, setIconUrl] = useState<string | null>(null);
-
-    useEffect(() => {
-        if (props.bank) {
-            reset(props.bank);
-        }
-    }, [props.bank]);
 
     useEffect(() => {
         const url = getBankIconUrl(props.bank?.iconKey);
@@ -55,7 +61,7 @@ const BankModal: React.FC<ModalProps> = (props: ModalProps) => {
     
     const {t} = useTranslation();
 
-    return <BaseFormModal ref={props.modalRef} title={t("entity_bank_from_title")} submitHandler={handleSubmit(onSubmit)}>
+    return <BaseFormModal visibilityChanged={onModalVisibilityChanged} ref={props.modalRef} title={t("entity_bank_from_title")} submitHandler={handleSubmit(onSubmit)}>
         <InputImage imageUrl={iconUrl} onImageSelected={onImageSelected}/>
         <Field.Root invalid={!!errors.name}>
             <Field.Label>{t("entity_bank_name")}</Field.Label>

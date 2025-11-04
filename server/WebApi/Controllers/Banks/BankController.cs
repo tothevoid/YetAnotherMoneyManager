@@ -40,22 +40,23 @@ namespace MoneyManager.WebApi.Controllers.Banks
         }
 
         [HttpPut]
-        public async Task<Guid> Add([FromForm] string bankJson, [FromForm] IFormFile bankIcon = null)
+        public async Task<BankModel> Add([FromForm] string bankJson, [FromForm] IFormFile bankIcon = null)
         {
             var bank = JsonSerializer.Deserialize<BankModel>(bankJson);
 
             var bankDto = _mapper.Map<BankDto>(bank);
-            var created = await _bankService.Add(bankDto, bankIcon);
-            return created.Id;
+            var createdBank = await _bankService.Add(bankDto, bankIcon);
+            return _mapper.Map<BankModel>(createdBank);
         }
 
         [HttpPatch]
-        public async Task Update([FromForm] string bankJson, [FromForm] IFormFile bankIcon = null)
+        public async Task<BankModel> Update([FromForm] string bankJson, [FromForm] IFormFile bankIcon = null)
         {
             var bank = JsonSerializer.Deserialize<BankModel>(bankJson);
 
             var bankDto = _mapper.Map<BankDto>(bank);
-            await _bankService.Update(bankDto, bankIcon);
+            var updatedBank = await _bankService.Update(bankDto, bankIcon);
+            return _mapper.Map<BankModel>(updatedBank);
         }
 
         [HttpDelete]

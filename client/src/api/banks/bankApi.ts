@@ -14,16 +14,15 @@ export const createBank = async (addedBank: BankEntity, file: Nullable<File>): P
     return await fetch(basicUrl, { method: "PUT", body: generateForm(addedBank, file)})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
-        .then(addedSecurity => {
-            return {...addedSecurity};
-        })
+        .then((bank: BankEntity) => bank)
         .catch(logPromiseError);
 }
 
-export const updateBank = async (modifiedBank: BankEntity, file: Nullable<File>): Promise<boolean> => {
+export const updateBank = async (modifiedBank: BankEntity, file: Nullable<File>): Promise<BankEntity | void> => {
     return await fetch(basicUrl, { method: "PATCH", body: generateForm(modifiedBank, file)})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
+        .then((bank: BankEntity) => bank)
         .catch(logPromiseError)
 }
 

@@ -25,15 +25,15 @@ const BanksTable: React.FC = () => {
     const modalRef = useRef<BaseModalRef>(null);
     const confirmModalRef = useRef<BaseModalRef>(null);
 
-    useEffect(() => {
-        const initData = async () => { 
-            const banks = await getBanks();
-            setState((currentState) => {
-                return {...currentState, banks}
-            })
-        }
+    const fetchBanks = async () => { 
+        const banks = await getBanks();
+        setState((currentState) => {
+            return {...currentState, banks}
+        })
+    }
 
-        initData();
+    useEffect(() => {
+        fetchBanks();
     }, []);
 
     useEffect(() => {
@@ -88,7 +88,7 @@ const BanksTable: React.FC = () => {
             return {...currentState, banks: currentState.banks.map(bank => 
                 bankToUpdate.id !== bank.id ?
                     bank:
-                    bankToUpdate
+                    updatedBank
             )}
         })
         setUpdatedBank(null)

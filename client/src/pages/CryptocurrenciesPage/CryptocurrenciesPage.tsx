@@ -61,6 +61,10 @@ const CryptocurrenciesPage: React.FC = () => {
         </Placeholder>
     }
 
+    const onModalClosed = () => {
+        onActionEnded();
+    }
+
     return <Fragment>
         <Flex justifyContent="space-between" alignItems="center" pt={5} pb={5}>
            {getAddButton()}
@@ -79,7 +83,7 @@ const CryptocurrenciesPage: React.FC = () => {
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
             ref={confirmModalRef}/>
-        <CryptocurrencyModal cryptocurrency={activeEntity} modalRef={modalRef} onSaved={onCryptocurrencySaved}/>
+        <CryptocurrencyModal onModalClosed={onModalClosed} cryptocurrency={activeEntity} modalRef={modalRef} onSaved={onCryptocurrencySaved}/>
     </Fragment>
 }
 

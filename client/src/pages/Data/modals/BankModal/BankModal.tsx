@@ -16,6 +16,7 @@ interface ModalProps {
     modalRef: RefObject<BaseModalRef | null>,
     bank?: BankEntity | null,
     onSaved: (account: BankEntity, icon: Nullable<File>) => void;
+    onModalClosed: () => void;
 };
 
 const BankModal: React.FC<ModalProps> = (props: ModalProps) => {
@@ -38,6 +39,7 @@ const BankModal: React.FC<ModalProps> = (props: ModalProps) => {
         } else {
             setIcon(null);
             setIconUrl(null);
+            props.onModalClosed();
         }
     }
 

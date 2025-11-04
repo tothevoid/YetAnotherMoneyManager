@@ -56,6 +56,10 @@ const BanksTable: React.FC = () => {
         setUpdatedBank(bank);
     }
 
+    const onModalClosed = () => {
+        setUpdatedBank(null);
+    }
+
     const onBankSaved = async (savedBank: BankEntity, icon: Nullable<File>) => {
         const isModified = state.banks
             .findIndex(transactionType => transactionType.id === savedBank.id) >= 0;
@@ -91,7 +95,6 @@ const BanksTable: React.FC = () => {
                     updatedBank
             )}
         })
-        setUpdatedBank(null)
     }
 
     const onDeleteClicked = async (bank: BankEntity) => {
@@ -180,7 +183,7 @@ const BanksTable: React.FC = () => {
                 }
             </Table.Body>
         </Table.Root>
-        <BankModal bank={updatedBank} modalRef={modalRef} onSaved={onBankSaved}/>
+        <BankModal onModalClosed={onModalClosed} bank={updatedBank} modalRef={modalRef} onSaved={onBankSaved}/>
         <ConfirmModal onConfirmed={onDeleteConfirmed}
             title={t("transaction_type_delete_title")}
             message={t("modals_delete_message")}

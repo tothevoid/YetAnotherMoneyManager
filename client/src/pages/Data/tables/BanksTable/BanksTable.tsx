@@ -1,6 +1,6 @@
 import { Box, Button, Icon, Table, Text, Image } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
-import { MdAdd, MdDelete, MdEdit } from "react-icons/md";
+import { MdDelete, MdEdit } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { ConfirmModal } from "../../../../shared/modals/ConfirmModal/ConfirmModal";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
@@ -9,6 +9,7 @@ import { createBank, deleteBank, getBankIconUrl, getBanks, updateBank } from "..
 import { BankEntity } from "../../../../models/banks/BankEntity";
 import BankModal from "../../modals/BankModal/BankModal";
 import { BsBank } from "react-icons/bs";
+import AddButton from "../../../../shared/components/AddButton/AddButton";
 
 interface State {
     banks: BankEntity[]
@@ -123,14 +124,7 @@ const BanksTable: React.FC = () => {
     }
 
     return <Box color="text_primary">
-        <Box>
-            <Button background="action_primary" onClick={onAdd}>
-                <Icon size='md'>
-                    <MdAdd/>
-                </Icon>
-                {t("transaction_type_data_add")}
-            </Button>
-        </Box>
+        <AddButton buttonTitle={t("entity_bank_add")} onClick={onAdd}/>
         <Table.Root>
             <Table.Header>
                 <Table.Row border="none" bg="none" color="text_primary">

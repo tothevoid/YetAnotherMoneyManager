@@ -1,16 +1,16 @@
-import { Box, Button, Field, Input, Image, Flex } from "@chakra-ui/react"
-import React, { ChangeEvent, Fragment, RefObject, useEffect, useRef, useState } from "react"
+import { Field, Input } from "@chakra-ui/react"
+import React, { RefObject, useEffect, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { TransactionTypeFormInput, TransactionTypeValidationSchema } from "./TransactionTypeValidationSchema";
-import { MdFileUpload } from "react-icons/md";
 import { getTransactionTypeIconUrl } from "../../../../api/transactions/transactionTypeApi";
 import { TransactionTypeEntity } from "../../../../models/transactions/TransactionTypeEntity";
 import CheckboxInput from "../../../../shared/components/CheckboxInput/CheckboxInput";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import { generateGuid } from "../../../../shared/utilities/idUtilities";
+import InputImage from "../../../../shared/components/Form/InputImage/InputImage";
 
 interface ModalProps {
 	modalRef: RefObject<BaseModalRef | null>,
@@ -44,7 +44,6 @@ const TransactionTypeModal: React.FC<ModalProps> = (props: ModalProps) => {
 		props.modalRef?.current?.closeModal();
 	}
 
-	const inputRef = useRef<HTMLInputElement | null>(null);
 	const [icon, setIcon] = useState<File | null>(null);
 	const [iconUrl, setIconUrl] = useState<string | null>(null);
 
@@ -53,17 +52,10 @@ const TransactionTypeModal: React.FC<ModalProps> = (props: ModalProps) => {
 		setIconUrl(url);
 	}, [props.transactionType]);
 
-	const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-		const selectedFile = e.target.files?.[0] || null;
-		if (selectedFile) {
-			const reader = new FileReader();
-			reader.onloadend = () => {
-				setIcon(selectedFile);
-				setIconUrl(reader.result as string);
-			};
-			reader.readAsDataURL(selectedFile);
-		}
-	};
+	const onImageSelected = (url: string, image: File) => {
+        setIcon(image);
+        setIconUrl(url);
+    }
 
 	const onModalVisibilityChanged = (open: boolean) => {
 		if (!open) {
@@ -72,37 +64,7 @@ const TransactionTypeModal: React.FC<ModalProps> = (props: ModalProps) => {
 	}
 
 	return <BaseFormModal visibilityChanged={onModalVisibilityChanged} ref={props.modalRef} title={t("entity_transaction_type_name_form_title")} submitHandler={handleSubmit(onSubmit)}>
-		<Flex marginBlock={5} alignItems={"center"} justifyContent={"center"}>
-			<Box justifyContent={"center"} role="group" position="relative" boxSize="50px">
-				<Input type="file" accept="image/*" onChange={handleFileChange} ref={inputRef} display="none" />
-				{
-					iconUrl ?
-						<Image src={iconUrl} boxSize="50px"
-							backgroundColor="black"
-							objectFit="contain"
-							borderColor="gray.200"
-							borderRadius="md"></Image>:
-						<Fragment/>
-				}
-				{/* Fix group hover */}
-				<Button 
-					background={"transparent"} 
-					color="action_primary" 
-					position="absolute"
-					top="0"
-					left="0"
-					boxSize="50px"
-					borderRadius="md"
-					bg="whiteAlpha.400"
-					opacity={iconUrl ? 0: 1}
-					_groupHover={{ opacity: 1, bg: 'whiteAlpha.900' }}
-					transition="opacity 0.2s"
-					boxShadow="sm"
-					onClick={() => inputRef.current?.click()} size="xl">
-					<MdFileUpload/>
-				</Button>
-			</Box>
-		</Flex>
+		<InputImage imageUrl={iconUrl} onImageSelected={onImageSelected}/>
 		<Field.Root invalid={!!errors.name}>
 			<Field.Label>{t("entity_transaction_type_name")}</Field.Label>
 			<Input {...register("name")} autoComplete="off" placeholder='grocery' />

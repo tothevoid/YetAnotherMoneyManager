@@ -3,8 +3,10 @@ import { useCallback, useEffect, useState } from "react";
 import { createBrokerAccountFundsTransfer, deleteBrokerAccountFundsTransfer, getBrokerAccountFundsTransfers, updateBrokerAccountFundsTransfer } from "../../../api/brokers/BrokerAccountFundsTransferApi";
 import { BrokerAccountFundTransferEntity } from "../../../models/brokers/BrokerAccountFundTransfer";
 
-interface FundTransfersQuery {
-    brokerAccountId: string
+export interface FundTransfersQuery {
+	currentPage: number,
+	pageSize: number,
+	brokerAccountId: string
 }
 
 export const useBrokerAccountFundTransfers = (queryParameters: FundTransfersQuery) => {
@@ -13,12 +15,12 @@ export const useBrokerAccountFundTransfers = (queryParameters: FundTransfersQuer
     const [isFundTransfersLoading, setLoading] = useState(false);
 
     const [error, setError] = useState<string | null>(null);
-    const [fundTransfersQueryParameters] = useState<FundTransfersQuery>(queryParameters);
+    const [fundTransfersQueryParameters, setFundTransfersQueryParameters] = useState<FundTransfersQuery>(queryParameters);
 
     const fetchData = useCallback(async () => {
         setLoading(true)
         try {
-            const transfers = await getBrokerAccountFundsTransfers(fundTransfersQueryParameters.brokerAccountId)
+            const transfers = await getBrokerAccountFundsTransfers(fundTransfersQueryParameters)
             setFundTransfers(transfers);
         } catch (err: any) {
             setError(err.message || 'Ошибка загрузки данных')
@@ -59,6 +61,8 @@ export const useBrokerAccountFundTransfers = (queryParameters: FundTransfersQuer
         createFundTransferEntity,
         updateFundTransferEntity,
         deleteFundTransferEntity,
-        reloadFundTransfers: fetchData
+        reloadFundTransfers: fetchData,
+        fundTransfersQueryParameters,
+        setFundTransfersQueryParameters
     }
 }

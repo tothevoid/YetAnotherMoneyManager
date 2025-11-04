@@ -1,18 +1,21 @@
 import config from "../../config";
 import { DebtPaymentEntity, DebtPaymentEntityRequest, DebtPaymentEntityResponse } from "../../models/debts/DebtPaymentEntity";
+import { DebtPaymentsQuery } from "../../pages/Debts/hooks/useDebtPayments";
 import { PaginationConfig } from "../../shared/models/PaginationConfig";
 import { checkPromiseStatus, logPromiseError } from "../../shared/utilities/webApiUtilities";
-import { createEntity, deleteEntity, getAllEntities, updateEntity } from "../basicApi";
+import { createEntity, deleteEntity, getAllEntitiesByConfig, updateEntity } from "../basicApi";
 import { prepareDebtPayment, prepareDebtPaymentRequest } from "./debtPaymentApiMapping";
 
 const basicUrl = `${config.api.URL}/DebtPayment`;
 
-export const getDebtPayments = async (): Promise<DebtPaymentEntity[]> =>  {
-    return await getAllEntities<DebtPaymentEntityResponse>(basicUrl)
-        .then(debtPayments => debtPayments.map(prepareDebtPayment))
+export const getDebtPayments = async (query: DebtPaymentsQuery): Promise<DebtPaymentEntity[]> =>  {
+    return await getAllEntitiesByConfig<DebtPaymentsQuery, DebtPaymentEntityResponse>(`${basicUrl}/GetAll`, query)
+        .then((debtPayment) => {
+            return debtPayment.map(prepareDebtPayment)
+        });
 }
 
-export const getBrokerAccountFundsTransferPagination = async (): Promise<PaginationConfig | void> => {
+export const getDebtPaymentsPagination = async (): Promise<PaginationConfig | void> => {
     return await fetch(`${basicUrl}/GetPagination`, {method: "GET"})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())

@@ -1,23 +1,21 @@
 import config from '../../config' 
 import { DividendPaymentEntity, DividendPaymentEntityRequest, DividendPaymentEntityResponse } from '../../models/brokers/DividendPaymentEntity';
+import { DividendPaymentsQuery } from '../../pages/BrokerAccount/hooks/useDividendPayments';
 import { PaginationConfig } from '../../shared/models/PaginationConfig';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
-import { createEntity, deleteEntity, updateEntity } from '../basicApi';
+import { createEntity, deleteEntity, getAllEntitiesByConfig, updateEntity } from '../basicApi';
 import { prepareDividendPayment, prepareDividendPaymentRequest } from './dividendPaymentApiMapping';
 
 const basicUrl = `${config.api.URL}/DividendPayment`;
 
-export const getDividendPaymentsByBrokerAccount = async (brokerAccountId: string): Promise<DividendPaymentEntity[]> => {
-    const dividendPayments = await fetch(`${basicUrl}/GetByBrokerAccount?brokerAccountId=${brokerAccountId}`, {method: "GET"})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
-        .then((payments: DividendPaymentEntityResponse[]) => payments.map(prepareDividendPayment))
-        .catch(logPromiseError);
-     
-    return dividendPayments ?? [];
+export const getDividendPaymentsByBrokerAccount = async (query: DividendPaymentsQuery): Promise<DividendPaymentEntity[]> => {
+    return await getAllEntitiesByConfig<DividendPaymentsQuery, DividendPaymentEntityResponse>(`${basicUrl}/GetAll`, query)
+        .then((dividendPayment) => {
+            return dividendPayment.map(prepareDividendPayment)
+        });
 };
 
-export const getBrokerAccountFundsTransferPagination = async (brokerAccountId: string): Promise<PaginationConfig | void> => {
+export const getDividendPaymentsPagination = async (brokerAccountId: string): Promise<PaginationConfig | void> => {
     return await fetch(`${basicUrl}/GetPagination?brokerAccountId=${brokerAccountId}`, {method: "GET"})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())

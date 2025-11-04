@@ -2,16 +2,22 @@ import { useCallback, useEffect, useState } from "react";
 import { DebtPaymentEntity } from "../../../models/debts/DebtPaymentEntity";
 import { createDebtPayment, deleteDebtPayment, getDebtPayments, updateDebtPayment } from "../../../api/debts/debtPaymentApi";
 
-export const useDebtPayments = () => {
+export interface DebtPaymentsQuery {
+	currentPage: number,
+	pageSize: number
+}
+
+export const useDebtPayments = (queryParameters: DebtPaymentsQuery) => {
 	const [debtPayments, setDebtPayments] = useState<DebtPaymentEntity[]>([]);
 	const [isDebtPaymentsLoading, setLoading] = useState(false);
 
+	const [debtPaymentsQueryParameters, setDebtPaymentsQueryParameters] = useState<DebtPaymentsQuery>(queryParameters);
 	const [error, setError] = useState<string | null>(null);
 
 	const fetchData = useCallback(async () => {
 		setLoading(true)
 		try {
-			const debts = await getDebtPayments();
+			const debts = await getDebtPayments(debtPaymentsQueryParameters);
 			setDebtPayments(debts);
 		} catch (err: any) {
 			setError(err.message || 'Ошибка загрузки данных')
@@ -62,6 +68,8 @@ export const useDebtPayments = () => {
 		error,
 		createDebtPaymentEntity,
 		updateDebtPaymentEntity,
-		deleteDebtPaymentEntity
+		deleteDebtPaymentEntity,
+		debtPaymentsQueryParameters,
+		setDebtPaymentsQueryParameters
 	}
 }

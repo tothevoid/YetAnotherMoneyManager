@@ -3,6 +3,8 @@ import { createDividendPayment, deleteDividendPayment, getDividendPaymentsByBrok
 import { DividendPaymentEntity } from "../../../models/brokers/DividendPaymentEntity";
 
 export interface DividendPaymentsQuery {
+	currentPage: number,
+	pageSize: number,
 	brokerAccountId: string
 }
 
@@ -11,12 +13,12 @@ export const useDividendPayments = (queryParameters: DividendPaymentsQuery, onDa
 	const [isSecurityTransactionsLoading, setLoading] = useState(false);
 
 	const [error, setError] = useState<string | null>(null);
-	const [dividendPaymentsQueryParameters] = useState<DividendPaymentsQuery>(queryParameters);
+	const [dividendPaymentsQueryParameters, setDividendPaymentsQueryParameters] = useState<DividendPaymentsQuery>(queryParameters);
 
 	const fetchData = useCallback(async () => {
 		setLoading(true)
 		try {
-			const payments = await getDividendPaymentsByBrokerAccount(dividendPaymentsQueryParameters.brokerAccountId)
+			const payments = await getDividendPaymentsByBrokerAccount(dividendPaymentsQueryParameters)
 			setDividendPayments(payments);
 		} catch (err: any) {
 			setError(err.message || 'Ошибка загрузки данных')
@@ -60,6 +62,8 @@ export const useDividendPayments = (queryParameters: DividendPaymentsQuery, onDa
 		createDividendPaymentEntity,
 		updateDividendPaymentEntity,
 		deleteDividendPaymentEntity,
-		reloadDividendPayments: fetchData
+		reloadDividendPayments: fetchData,
+		dividendPaymentsQueryParameters,
+		setDividendPaymentsQueryParameters
 	}
 }

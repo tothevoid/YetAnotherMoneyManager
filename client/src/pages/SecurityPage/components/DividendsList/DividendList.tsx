@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { Box } from '@chakra-ui/react';
 import Dividend from '../Dividend/Dividend';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +10,8 @@ import { useEntityModal } from '../../../../shared/hooks/useEntityModal';
 import { ActiveEntityMode } from '../../../../shared/enums/activeEntityMode';
 import AddButton from '../../../../shared/components/AddButton/AddButton';
 import { Nullable } from '../../../../shared/utilities/nullable';
+import CollectionPagination from '../../../../shared/components/CollectionPagination/CollectionPagination';
+import { getDividendsPagination } from '../../../../api/securities/dividendApi';
 
 interface Props {
 	securityId: string
@@ -31,8 +33,10 @@ const DividendList: React.FC<Props> = (props) => {
 		dividends,
 		createDividendEntity,
 		updateDividendEntity,
-		deleteDividendEntity
-	} = useDividends({securityId: props.securityId});
+		deleteDividendEntity,
+		dividendsQueryParameters,
+		setDividendsQueryParameters
+	} = useDividends({ currentPage: 1, pageSize: -1, securityId: props.securityId });
 
 	const { t } = useTranslation();
 	const [context, setContext] = useState<Nullable<CreateDividendContext | EditDividendContext>>(null);
@@ -64,6 +68,14 @@ const DividendList: React.FC<Props> = (props) => {
 		onActionEnded();
 	}
 
+	const getPagination = useCallback(() => {
+		return getDividendsPagination(props.securityId);
+	}, [props.securityId]);
+
+	const onPageChanged = async (pageSize: number, currentPage: number) => {
+		setDividendsQueryParameters({pageSize, currentPage, securityId: dividendsQueryParameters.securityId});
+	}
+
 	return (
 		<Fragment>
 			<AddButton buttonTitle={t("security_page_summary_add")} onClick={onAddClicked}/>
@@ -75,6 +87,7 @@ const DividendList: React.FC<Props> = (props) => {
 							onDeleteClicked={onDeleteClicked}/>)
 				}
 			</Box>
+			<CollectionPagination getPaginationConfig={getPagination} onPageChanged={onPageChanged}/>
 			<ConfirmModal onConfirmed={onDeleteConfirmed}
 				title={t("transaction_delete_title")}
 				message={t("modals_delete_message")}

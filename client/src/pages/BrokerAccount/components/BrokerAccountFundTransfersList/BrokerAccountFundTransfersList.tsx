@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 import { useBrokerAccountFundTransfers } from '../../hooks/useBrokerAccountFundTransfers';
 import BrokerAccountFundTransfer from '../BrokerAccountFundTransfer/BrokerAccountFundTransfer';
@@ -9,8 +9,9 @@ import { useTranslation } from 'react-i18next';
 import BrokerAccountFundTransferModal, { CreateBrokerAccountFundTransferContext, EditBrokerAccountFundTransferContext } from '../../../BrokerAccounts/modals/BrokerAccountFundTransferModal/BrokerAccountFundTransferModal';
 import { Nullable } from '../../../../shared/utilities/nullable';
 import AddButton from '../../../../shared/components/AddButton/AddButton';
-import { createBrokerAccountFundsTransfer, updateBrokerAccountFundsTransfer } from '../../../../api/brokers/BrokerAccountFundsTransferApi';
+import { createBrokerAccountFundsTransfer, getBrokerAccountFundsTransferPagination, updateBrokerAccountFundsTransfer } from '../../../../api/brokers/BrokerAccountFundsTransferApi';
 import { ActiveEntityMode } from '../../../../shared/enums/activeEntityMode';
+import CollectionPagination from '../../../../shared/components/CollectionPagination/CollectionPagination';
 
 interface Props {
     brokerAccountId: string,
@@ -21,8 +22,10 @@ const BrokerAccountFundTransfersList: React.FC<Props> = (props) => {
     const {
         fundTransfers,
         deleteFundTransferEntity,
-        reloadFundTransfers
-    } = useBrokerAccountFundTransfers({ brokerAccountId: props.brokerAccountId });
+        reloadFundTransfers,
+        fundTransfersQueryParameters,
+        setFundTransfersQueryParameters
+    } = useBrokerAccountFundTransfers({ currentPage: 1, pageSize: -1, brokerAccountId: props.brokerAccountId });
 
     const { 
         modalRef,
@@ -32,7 +35,7 @@ const BrokerAccountFundTransfersList: React.FC<Props> = (props) => {
         onAddClicked,
         onEditClicked,
         onActionEnded,
-        mode
+        mode,
     } = useEntityModal<BrokerAccountFundTransferEntity>();
 
     const onDeleteConfirmed = async () => {
@@ -71,6 +74,14 @@ const BrokerAccountFundTransfersList: React.FC<Props> = (props) => {
         }
     }, [props.onDataChanged, fundTransfers]);
 
+    const getPagination = useCallback(() => {
+        return getBrokerAccountFundsTransferPagination(props.brokerAccountId);
+    }, [props.brokerAccountId]);
+
+    const onPageChanged = async (pageSize: number, currentPage: number) => {
+        setFundTransfersQueryParameters({pageSize, currentPage, brokerAccountId: fundTransfersQueryParameters.brokerAccountId});
+    }
+
     const {t} = useTranslation();
 
     return <Box>
@@ -87,6 +98,7 @@ const BrokerAccountFundTransfersList: React.FC<Props> = (props) => {
                 />)
         }
         </Box>
+        <CollectionPagination getPaginationConfig={getPagination} onPageChanged={onPageChanged}/>
         <ConfirmModal onConfirmed={onDeleteConfirmed}
             title={t("entity_broker_account_fund_transfer_delete_title")}
             message={t("modals_delete_message")}

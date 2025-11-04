@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { useDividendPayments } from '../../hooks/useDividendPayments';
@@ -10,6 +10,8 @@ import { useEntityModal } from '../../../../shared/hooks/useEntityModal';
 import AddButton from '../../../../shared/components/AddButton/AddButton';
 import { ActiveEntityMode } from '../../../../shared/enums/activeEntityMode';
 import { Nullable } from '../../../../shared/utilities/nullable';
+import CollectionPagination from '../../../../shared/components/CollectionPagination/CollectionPagination';
+import { getDividendPaymentsPagination } from '../../../../api/brokers/dividendPaymentApi';
 
 interface Props {
 	brokerAccountId: string,
@@ -34,8 +36,10 @@ const DividendPaymentsList: React.FC<Props> = (props) => {
 		dividendPayments,
 		createDividendPaymentEntity,
 		updateDividendPaymentEntity,
-		deleteDividendPaymentEntity
-	} = useDividendPayments({ brokerAccountId: props.brokerAccountId }, props.onDividendsChanged);
+		deleteDividendPaymentEntity,
+		dividendPaymentsQueryParameters,
+		setDividendPaymentsQueryParameters
+	} = useDividendPayments({ currentPage: 1, pageSize: -1, brokerAccountId: props.brokerAccountId }, props.onDividendsChanged);
 
 	const [context, setContext] = useState<Nullable<CreateDividendPaymentContext | EditDividendPaymentContext>>(null);
 
@@ -67,6 +71,14 @@ const DividendPaymentsList: React.FC<Props> = (props) => {
 		onActionEnded();
 	}
 
+	const getPagination = useCallback(() => {
+		return getDividendPaymentsPagination(props.brokerAccountId);
+	}, [props.brokerAccountId]);
+
+	const onPageChanged = async (pageSize: number, currentPage: number) => {
+		setDividendPaymentsQueryParameters({pageSize, currentPage, brokerAccountId: dividendPaymentsQueryParameters.brokerAccountId});
+	}
+
 	return <Box>
 		<Flex alignItems="center" gapX={5}>
 			<AddButton buttonTitle={t("broker_account_page_add_dividend_payment_button")} onClick={onAddClicked}/>
@@ -80,6 +92,7 @@ const DividendPaymentsList: React.FC<Props> = (props) => {
 					onDeleteClicked={onDeleteClicked}/>)
 		}
 		</Box>
+		<CollectionPagination getPaginationConfig={getPagination} onPageChanged={onPageChanged}/>
 		<ConfirmModal onConfirmed={onDeleteConfirmed}
 			title={t("entity_securities_transaction_delete_title")}
 			message={t("modals_delete_message")}

@@ -3,6 +3,8 @@ import { DividendEntity } from "../../../models/securities/DividendEntity";
 import { createDividend, deleteDividend, getDividends, updateDividend } from "../../../api/securities/dividendApi";
 
 export interface DividendsQuery {
+	currentPage: number,
+	pageSize: number,
 	securityId: string
 }
 
@@ -16,7 +18,7 @@ export const useDividends = (query: DividendsQuery) => {
 	const fetchData = useCallback(async () => {
 		setLoading(true)
 		try {
-			const dividends = await getDividends(dividendsQueryParameters.securityId);
+			const dividends = await getDividends(dividendsQueryParameters);
 			setDividends(dividends);
 		} catch (err: any) {
 			setError(err.message || 'Ошибка загрузки данных')

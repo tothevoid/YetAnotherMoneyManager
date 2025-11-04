@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useCallback } from "react";
 import { Box} from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { DebtPaymentEntity } from "../../../../models/debts/DebtPaymentEntity";
@@ -9,6 +9,8 @@ import { useEntityModal } from "../../../../shared/hooks/useEntityModal";
 import { ConfirmModal } from "../../../../shared/modals/ConfirmModal/ConfirmModal";
 import { ActiveEntityMode } from "../../../../shared/enums/activeEntityMode";
 import AddButton from "../../../../shared/components/AddButton/AddButton";
+import CollectionPagination from "../../../../shared/components/CollectionPagination/CollectionPagination";
+import { getDebtPaymentsPagination } from "../../../../api/debts/debtPaymentApi";
 
 interface Props {
     onDebtPaymentsChanged: () => void;
@@ -33,7 +35,8 @@ const DebtsPaymentsList: React.FC<Props> = ({ onDebtPaymentsChanged }) => {
         createDebtPaymentEntity,
         updateDebtPaymentEntity,
         deleteDebtPaymentEntity,
-    } = useDebtPayments();
+        setDebtPaymentsQueryParameters
+    } = useDebtPayments({ currentPage: 1, pageSize: -1 });
 
     const onDebtPaymentSaved = async (createdDebtPayment: DebtPaymentEntity) => {
         if (mode === ActiveEntityMode.Add) {
@@ -55,6 +58,14 @@ const DebtsPaymentsList: React.FC<Props> = ({ onDebtPaymentsChanged }) => {
 		onActionEnded();
     }
 
+    const getPagination = useCallback(() => {
+        return getDebtPaymentsPagination();
+    }, []);
+
+    const onPageChanged = async (pageSize: number, currentPage: number) => {
+		setDebtPaymentsQueryParameters({pageSize, currentPage});
+	}
+
     return <Fragment>
         <AddButton buttonTitle={t("debts_page_add_payment")} onClick={onAddClicked}/>
         <Box>
@@ -66,6 +77,7 @@ const DebtsPaymentsList: React.FC<Props> = ({ onDebtPaymentsChanged }) => {
                 )
             }
         </Box>
+        <CollectionPagination getPaginationConfig={getPagination} onPageChanged={onPageChanged}/>
         <ConfirmModal onConfirmed={onDeleteConfirmed}
             title={t("debt_payment_modal_title")}
             message={t("modals_delete_message")}

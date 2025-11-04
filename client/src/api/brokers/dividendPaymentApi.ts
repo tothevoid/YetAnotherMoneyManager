@@ -1,5 +1,6 @@
 import config from '../../config' 
 import { DividendPaymentEntity, DividendPaymentEntityRequest, DividendPaymentEntityResponse } from '../../models/brokers/DividendPaymentEntity';
+import { PaginationConfig } from '../../shared/models/PaginationConfig';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { createEntity, deleteEntity, updateEntity } from '../basicApi';
 import { prepareDividendPayment, prepareDividendPaymentRequest } from './dividendPaymentApiMapping';
@@ -14,6 +15,13 @@ export const getDividendPaymentsByBrokerAccount = async (brokerAccountId: string
         .catch(logPromiseError);
      
     return dividendPayments ?? [];
+};
+
+export const getBrokerAccountFundsTransferPagination = async (brokerAccountId: string): Promise<PaginationConfig | void> => {
+    return await fetch(`${basicUrl}/GetPagination?brokerAccountId=${brokerAccountId}`, {method: "GET"})
+        .then(checkPromiseStatus)
+        .then((response: Response) => response.json())
+        .catch(logPromiseError);
 };
 
 export const getEarningsByBrokerAccount = async (brokerAccountId: string): Promise<number> => {

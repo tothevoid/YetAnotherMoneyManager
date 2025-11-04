@@ -1,5 +1,6 @@
 import config from '../../config' 
 import { DividendEntity, DividendEntityRequest, DividendEntityResponse } from '../../models/securities/DividendEntity';
+import { PaginationConfig } from '../../shared/models/PaginationConfig';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { createEntity, deleteEntity, updateEntity } from '../basicApi';
 import { prepareDividend, prepareDividendRequest } from './dividendApiMapping';
@@ -14,6 +15,13 @@ export const getDividends = async (securityId: string): Promise<DividendEntity[]
         .catch(logPromiseError);
     
     return dividends ?? [];
+};
+
+export const getBrokerAccountFundsTransferPagination = async (securityId: string): Promise<PaginationConfig | void> => {
+    return await fetch(`${basicUrl}/GetPagination?securityId=${securityId}`, {method: "GET"})
+        .then(checkPromiseStatus)
+        .then((response: Response) => response.json())
+        .catch(logPromiseError);
 };
 
 export const getAvailableDividends = async (brokerAccountId: string): Promise<DividendEntity[]> => {

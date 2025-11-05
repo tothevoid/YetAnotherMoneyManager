@@ -95,7 +95,7 @@ namespace MoneyManager.Application.Services.Brokers
             return new BrokerAccountDailyStatsDto()
             {
                 FetchDate = DateTime.UtcNow,
-                BrokerAccountDailySecurityStats = securityStats,
+                BrokerAccountDailySecurityStats = securityStats.OrderBy(stat => stat.CurrentPrice - stat.PreviousDayClosePrice),
                 CurrentPortfolioValue = currentPortfolioValue,
                 StartPortfolioValue = startPortfolioValue
             };

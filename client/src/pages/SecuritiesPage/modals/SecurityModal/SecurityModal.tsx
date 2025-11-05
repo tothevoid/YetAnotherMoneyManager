@@ -1,5 +1,5 @@
 import { Field, Input, Stack} from "@chakra-ui/react"
-import React, { RefObject, useEffect, useRef, useState } from "react"
+import React, { RefObject, useEffect, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
@@ -28,8 +28,6 @@ interface State {
 }
 
 const SecurityModal: React.FC<ModalProps> = (props: ModalProps) => {
-    const inputRef = useRef<HTMLInputElement | null>(null);
-
     const [icon, setIcon] = useState<File | null>(null);
     const [iconUrl, setIconUrl] = useState<string | null>(null);
     const [state, setState] = useState<State>({securityTypes: [], currencies: []})

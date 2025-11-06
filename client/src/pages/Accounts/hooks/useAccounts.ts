@@ -40,7 +40,7 @@ export const useAccounts = (queryParameters: AccountsQuery) => {
 	}
 
 	const updateAccountEntity = async (updatedAccount: AccountEntity) => {
-	   if (!updatedAccount) {
+	   	if (!updatedAccount) {
 			return;
 		}
 

@@ -10,6 +10,10 @@ namespace MoneyManager.Infrastructure.Entities.User
 {
     public class UserProfile: BaseEntity
     {
+        public string UserName { get; set; }
+
+        public string Password { get; set; }
+
         public Guid CurrencyId { get; set; }
 
         public Currency Currency { get; set; }

@@ -6,6 +6,8 @@ namespace MoneyManager.WebApi.Models.User
 {
     public class UserProfileModel: BaseEntity
     {
+        public string UserName { get; set; }
+
         public Guid CurrencyId { get; set; }
 
         public CurrencyModel Currency { get; set; }

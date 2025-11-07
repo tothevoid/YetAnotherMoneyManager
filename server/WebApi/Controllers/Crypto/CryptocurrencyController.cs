@@ -60,6 +60,7 @@ namespace MoneyManager.WebApi.Controllers.Crypto
 
 
         [HttpGet("icon")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetCryptocurrencyIcon(string iconKey)
         {
             var url = await _cryptocurrencyService.GetIconUrl(iconKey);

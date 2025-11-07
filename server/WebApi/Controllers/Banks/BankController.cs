@@ -66,6 +66,7 @@ namespace MoneyManager.WebApi.Controllers.Banks
             await _bankService.Delete(id);
 
         [HttpGet("icon")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetBankIcon(string iconKey)
         {
             var url = await _bankService.GetIconUrl(iconKey);

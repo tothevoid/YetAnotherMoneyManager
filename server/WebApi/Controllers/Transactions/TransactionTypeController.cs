@@ -58,6 +58,7 @@ namespace MoneyManager.WebApi.Controllers.Transactions
             await _transactionTypeService.Delete(id);
 
         [HttpGet("icon")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetSecurityIcon(string iconKey)
         {
             var url = await _transactionTypeService.GetIconUrl(iconKey);

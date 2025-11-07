@@ -50,6 +50,7 @@ namespace MoneyManager.WebApi.Controllers.Securities
         }
 
         [HttpGet("icon")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetSecurityIcon(string iconKey)
         {
             var url = await _securityService.GetIconUrl(iconKey);

@@ -11,6 +11,8 @@ namespace MoneyManager.Application.Interfaces.User
     {
         Task<UserProfileDto> Get();
 
+        Task<UserProfileDto> GetByAuth(string userName, string password);
+
         Task Update(UserProfileDto userProfile);
     }
 }

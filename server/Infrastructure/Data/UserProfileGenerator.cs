@@ -17,7 +17,8 @@ namespace MoneyManager.Infrastructure.Data
                 { 
                     Id = UserProfileConstants.UserProfileId, 
                     CurrencyId = CurrencyConstants.USD, 
-                    LanguageCode = DefaultLanguageCode
+                    LanguageCode = DefaultLanguageCode,
+                    UserName = "admin"
                 }
             };
         }

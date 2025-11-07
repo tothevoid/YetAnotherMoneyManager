@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import config from "../../config";
 import "./AuthPage.scss";
 import { useTranslation } from "react-i18next";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const AuthPage: React.FC = () => {
 
@@ -22,6 +23,9 @@ const AuthPage: React.FC = () => {
         }
     });
 
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from ?? "/";
 
     const onSubmit = async (auth: AuthFormInput) => {
         setError("");
@@ -30,11 +34,16 @@ const AuthPage: React.FC = () => {
             const response = await fetch(basicUrl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ userName: auth.userName, password: auth.password })
+                body: JSON.stringify({ userName: auth.userName, password: auth.password ?? null })
             });
             if (!response.ok) throw new Error(t("auth_page_error_invalid_credentials"));
             const data = await response.json();
-            localStorage.setItem("token", data.token);
+            debugger;
+            if (data.token) {
+                localStorage.setItem("auth_token", data.token);
+                navigate(from, { replace: true });
+            }
+            
         } catch (err: unknown) {
             if (err instanceof Error) {
                 setError(err.message || t("auth_page_error"));

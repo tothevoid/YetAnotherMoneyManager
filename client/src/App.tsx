@@ -18,8 +18,8 @@ import CryptoAccountPage from './pages/CryptoAccountPage/CryptoAccountPage';
 import AuthPage from './pages/Auth/AuthPage';
 
 const RequireAuth = () => {
-  const token = localStorage.getItem("token");
-  return token ? <Outlet /> : <Navigate to="/auth" replace />;
+  const token = localStorage.getItem("auth_token");
+  return token ? <Outlet /> : <Navigate to="/auth" replace state={{ from: location.pathname }}/>;
 }
 
 const PageWrapper = () => (

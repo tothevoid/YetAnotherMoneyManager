@@ -35,7 +35,9 @@ namespace MoneyManager.Application.Services.User
         public async Task<UserProfileDto> GetByAuth(string userName, string password)
         {
             var users = await _userProfileRepo.GetAll((user) => 
-                user.UserName == userName && user.Password == password, GetFullHierarchyColumns);
+                user.UserName == userName && 
+                user.Password == password || (string.IsNullOrEmpty(user.Password) && string.IsNullOrEmpty(password)), 
+                GetFullHierarchyColumns);
             return _mapper.Map<UserProfileDto>(users.FirstOrDefault());
         }
 

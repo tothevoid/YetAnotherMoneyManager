@@ -6,16 +6,13 @@ import App from './App.tsx'
 import { Box, ChakraProvider } from '@chakra-ui/react'
 import "react-datepicker/dist/react-datepicker.css";
 import { darkTheme } from './theme.ts';
-import { UserProvider } from '../features/UserProfileSettingsModal/hooks/UserProfileContext.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ChakraProvider value={darkTheme}>
-      <UserProvider>
         <Box backgroundColor="background_main">
             <App />
         </Box>
-      </UserProvider>
     </ChakraProvider>
   </StrictMode>,
 )

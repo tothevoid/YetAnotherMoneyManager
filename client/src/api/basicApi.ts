@@ -154,8 +154,36 @@ export const getPagination = async (url: string): Promise<PaginationConfig | voi
 };
 
 export const getAuthHeader = (): HeadersInit => {
-    const token = localStorage.getItem("auth_token");
+    const token = getToken();
     return {
         "Authorization": `Bearer ${token}`
     };
+}
+
+const getToken = (): Nullable<string> =>  {
+    const token = localStorage.getItem("auth_token");
+    if (!token) {
+        removeToken();
+        return null;
+    }
+
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        if (payload.exp * 1000 < Date.now()) {
+             removeToken();
+            return null;
+        }
+    } catch {
+        removeToken();
+        return null;
+    }
+
+    return token;
+}
+
+const removeToken = (): void => {
+    localStorage.removeItem("auth_token");
+    if (!window.location.href.endsWith("/auth")){
+        window.location.href = "/auth";
+    }
 }

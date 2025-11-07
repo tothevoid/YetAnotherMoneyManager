@@ -46,7 +46,8 @@ namespace MoneyManager.Application.Services.Auth
                 issuer: issuer,
                 audience: audience,
                 claims: claims,
-                expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(15)),
+                // TODO: Fix after implementing refresh tokens
+                expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(120)),
                 signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)),
                     SecurityAlgorithms.HmacSha256));
 

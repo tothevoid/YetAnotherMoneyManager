@@ -28,6 +28,9 @@ services:
       - FileStorage__Password=${MINIO_ROOT_PASSWORD}
       - FileStorage__Port=${MINIO_API_PORT}
       - Client__Url=${CLIENT_HOST}:${CLIENT_PORT}
+      - Auth__Audience=${CLIENT_HOST}:${CLIENT_PORT}
+      - Auth__Issuer=${SERVER_HOST}:${SERVER_PORT}
+      - Auth__Secret=${AUTH_SECRET}
     depends_on:
       - database
       - files_database

@@ -1,60 +1,41 @@
 
 import { useState } from "react";
-import { Box, Button, Input, Field, Flex } from "@chakra-ui/react";
-import { useForm } from "react-hook-form";
-import { AuthFormInput, AuthValidationSchema } from "./AuthValidationSchema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import config from "../../config";
+import { Box, Flex } from "@chakra-ui/react";
 import "./AuthPage.scss";
-import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
-import { auth } from "../../api/auth/authApi";
+import AuthForm from "./components/AuthForm/AuthForm";
+import ChangePasswordForm from "./components/ChangePasswordForm/ChangePasswordForm";
+import { Nullable } from "../../shared/utilities/nullable";
+
+enum FormType {
+	Auth,
+	ChangePassword
+}
 
 const AuthPage: React.FC = () => {
-
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState("");
-
-    const { register, handleSubmit, formState: { errors }} = useForm<AuthFormInput>({
-        resolver: zodResolver(AuthValidationSchema),
-        mode: "onBlur",
-        defaultValues: {
-            userName: "",
-            password: ""
-        }
-    });
+    const [formType, setFormType] = useState<FormType>(FormType.Auth);
 
     const navigate = useNavigate();
     const location = useLocation();
     const from = location.state?.from ?? "/";
 
-    const onSubmit = async (authData: AuthFormInput) => {
-        setError("");
-        try {
-            const token = await auth(authData.userName, authData.password);
-
-            if (token) {
-                localStorage.setItem("auth_token", token);
-                navigate(from, { replace: true });
-            }
-            
-        } catch (err: unknown) {
-            if (err instanceof Error) {
-                setError(err.message || t("auth_page_error"));
-            } else {
-                setError(t("auth_page_error"));
-            }
-        } finally {
-            setLoading(false);
-        }
+    const onTokenReceived = (token: string) => {
+        localStorage.setItem("auth_token", token);
+        navigate(from, { replace: true });
     }
 
-    const {t} = useTranslation();
+    const [defaultPasswordResetValues, setDefaultPasswordResetValues] = 
+        useState<{userName: string, currentPassword: Nullable<string>}>({userName: "", currentPassword: null});
+
+    const onPasswordChangeRequired = (userName: string, currentPassword: Nullable<string>) => {
+        setDefaultPasswordResetValues({ userName, currentPassword });
+        setFormType(FormType.ChangePassword);
+    }
 
     return (
         <Flex minH="100vh" w="100vw" align="center" justify="center" 
             bgGradient="linear(120deg, #e0eafc 0%, #cfdef3 100%)">
-            <Box as="form" onSubmit={handleSubmit(onSubmit)}
+            <Box
                 maxW="sm"
                 w="100%"
                 p={8}
@@ -62,21 +43,8 @@ const AuthPage: React.FC = () => {
                 boxShadow="lg"
                 bg="white"
             >
-                <h2 className="auth-title" style={{ textAlign: "center", marginBottom: "2rem", fontWeight: 700, fontSize: "2rem" }}>
-                    {t("auth_page_title")}
-                </h2>
-                <Field.Root invalid={!!errors.userName}>
-                    <Field.Label>{t("auth_page_username")}</Field.Label>
-                    <Input {...register("userName")} autoComplete="off" placeholder={t("auth_page_username")} />
-                    <Field.ErrorText>{errors.userName?.message}</Field.ErrorText>
-                </Field.Root>
-                <Field.Root invalid={!!errors.password}>
-                    <Field.Label>{t("auth_page_password")}</Field.Label>
-                    <Input type="password" {...register("password")} autoComplete="off" placeholder={t("auth_page_password")} />
-                    <Field.ErrorText>{errors.password?.message}</Field.ErrorText>
-                </Field.Root>
-                {error && <div className="auth-error" style={{ color: "#e53e3e", margin: "1rem 0", textAlign: "center" }}>{error}</div>}
-                <Button loading={loading} type="submit" colorScheme="teal" w="full" mt={4} size="lg">{t("auth_page_login")}</Button>
+            {formType === FormType.Auth && <AuthForm onPasswordChangeRequired={onPasswordChangeRequired} onTokenReceived={onTokenReceived} />}
+            {formType === FormType.ChangePassword && <ChangePasswordForm defaultPasswordResetValues={defaultPasswordResetValues} onTokenReceived={onTokenReceived} />}
             </Box>
         </Flex>
     );

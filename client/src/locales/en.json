@@ -307,10 +307,17 @@
     "broker_account_daily_stats_percentage_diff_column": "Percentage diff",
     "broker_account_daily_stats_total_diff_column" : "Total diff",
 
-    "auth_page_title": "Authorization",
-    "auth_page_username": "Username",
-    "auth_page_password": "Password",
-    "auth_page_login": "Login",
-    "auth_page_error_invalid_credentials": "Invalid username or password",
-    "auth_page_error": "Authorization error"
+    "auth_form_title": "Authorization",
+    "auth_form_username": "Username",
+    "auth_form_password": "Password",
+    "auth_form_login": "Login",
+    "auth_form_error_invalid_credentials": "Invalid username or password",
+    "auth_form_error": "Authorization error",
+
+    "change_password_form_title": "Change password",
+    "change_password_form_username": "Username",
+    "change_password_form_current_password": "Current password",
+    "change_password_form_new_password": "New password",
+    "change_password_form_submit_button": "Change password",
+    "change_password_form_error": "Error changing password"
 }

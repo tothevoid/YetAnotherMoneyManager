@@ -308,10 +308,17 @@
     "broker_account_daily_stats_percentage_diff_column": "Процентная разница",
     "broker_account_daily_stats_total_diff_column": "Общая разница",
 
-    "auth_page_title": "Авторизация",
-    "auth_page_username": "Пользователь",
-    "auth_page_password": "Пароль",
-    "auth_page_login": "Войти",
-    "auth_page_error_invalid_credentials": "Неверный логин или пароль",
-    "auth_page_error": "Ошибка авторизации"
+    "auth_form_title": "Авторизация",
+    "auth_form_username": "Пользователь",
+    "auth_form_password": "Пароль",
+    "auth_form_login": "Войти",
+    "auth_form_error_invalid_credentials": "Неверный логин или пароль",
+    "auth_form_error": "Ошибка авторизации",
+
+    "change_password_form_title": "Смена пароля",
+    "change_password_form_username": "Пользователь",
+    "change_password_form_current_password": "Текущий пароль",
+    "change_password_form_new_password": "Новый пароль",
+    "change_password_form_submit_button": "Сменить пароль",
+    "change_password_form_error": "Ошибка смены пароля"
 }

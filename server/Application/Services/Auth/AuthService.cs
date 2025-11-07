@@ -1,9 +1,13 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MoneyManager.Application.Interfaces.User;
 using MoneyManager.Application.Services.User;
 using MoneyManager.Infrastructure.Database;
+using MoneyManager.Infrastructure.Entities.Brokers;
+using MoneyManager.Infrastructure.Entities.User;
+using MoneyManager.Infrastructure.Interfaces.Database;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -12,19 +16,26 @@ using System.Threading.Tasks;
 
 namespace MoneyManager.Application.Services.Auth
 {
+    // TODO: encrypt passwords
+
     public class AuthService : IAuthService
     {
-        private readonly ApplicationDbContext _db;
+        private readonly IUnitOfWork _uow;
+        private readonly IRepository<UserProfile> _db;
         private readonly IConfiguration _appConfig;
         private readonly IUserProfileService _userProfileService;
-        public AuthService(ApplicationDbContext db, IConfiguration appConfig, IUserProfileService userProfileService)
+        private readonly IMapper _mapper;
+
+        public AuthService(IMapper mapper, IUnitOfWork uow, IConfiguration appConfig, IUserProfileService userProfileService)
         {
-            _db = db;
+            _uow = uow;
+            _db = uow.CreateRepository<UserProfile>();
             _appConfig = appConfig;
             _userProfileService = userProfileService;
+            _mapper = mapper;
         }
 
-        public async Task<string> LoginAsync(string userName, string password)
+        public async Task<string> Login(string userName, string password)
         {
             var user = await _userProfileService.GetByAuth(userName, password);
             
@@ -52,6 +63,21 @@ namespace MoneyManager.Application.Services.Auth
                     SecurityAlgorithms.HmacSha256));
 
             return new JwtSecurityTokenHandler().WriteToken(jwt);
+        }
+
+        public async Task<bool> ChangePassword(string userName, string currentPassword, string newPassword)
+        {
+            var user = await _userProfileService.GetByAuth(userName, currentPassword);
+
+            if (user == null)
+                throw new ArgumentException(nameof(user));
+
+            user.Password = newPassword;
+
+            var mappedUser = _mapper.Map<UserProfile>(user);
+            _db.Update(mappedUser);
+            await _uow.Commit();
+            return true;
         }
     }
 }

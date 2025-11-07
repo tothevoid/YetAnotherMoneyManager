@@ -179,6 +179,10 @@ if (!app.Environment.IsDevelopment())
 app.MapHub<ServerMessagesHub>("/messages");
     
 app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
 app.UseTickerQ();
 

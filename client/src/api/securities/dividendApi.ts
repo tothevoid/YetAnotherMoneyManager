@@ -2,7 +2,6 @@ import config from '../../config'
 import { DividendEntity, DividendEntityRequest, DividendEntityResponse } from '../../models/securities/DividendEntity';
 import { DividendsQuery } from '../../pages/SecurityPage/hooks/useDividends';
 import { PaginationConfig } from '../../shared/models/PaginationConfig';
-import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { createEntity, deleteEntity, getAllEntities, getAllEntitiesByConfig, getPagination, updateEntity } from '../basicApi';
 import { prepareDividend, prepareDividendRequest } from './dividendApiMapping';
 

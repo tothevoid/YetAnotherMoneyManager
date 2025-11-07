@@ -1,4 +1,3 @@
-import { data } from "react-router-dom";
 import { PaginationConfig } from "../shared/models/PaginationConfig";
 import { Nullable } from "../shared/utilities/nullable";
 import { checkPromiseStatus, logPromiseError } from "../shared/utilities/webApiUtilities";

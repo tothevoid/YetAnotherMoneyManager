@@ -1,6 +1,5 @@
 import config from "../../config";
 import { AccountEntity, AccountEntityRequest, AccountEntityResponse } from "../../models/accounts/AccountEntity";
-import { checkPromiseStatus, logPromiseError } from "../../shared/utilities/webApiUtilities";
 import { AccountCurrencySummary } from "../../models/accounts/accountsSummary";
 import { createEntity, deleteEntity, getAllEntities, getAllEntitiesByConfig, postAction, updateEntity } from "../basicApi";
 import { Transfer } from "../../pages/Accounts/modals/AccountBalanceTransferModal/AccountBalanceTransferModal";

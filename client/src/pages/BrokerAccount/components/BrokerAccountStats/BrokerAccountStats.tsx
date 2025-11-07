@@ -22,6 +22,10 @@ const BrokerAccountStats: React.FC<Props> = ({ brokerAccount }) => {
     useEffect(() => {
         const getData = async () => {
             const result = await getBrokerAccountStats(brokerAccount.id, new Date(), new Date());
+            if (!result) {
+                return;
+            }
+
             setStats(result);
         }
     

@@ -32,6 +32,10 @@ const BrokerAccountDailyStats: React.FC<Props> = ({ brokerAccount }) => {
 		}
 		
 		const fetchedDailyStats = await getDailyStats(brokerAccount.id);
+		if (!fetchedDailyStats) {
+			return;
+		}
+		
 		setDailyStats(fetchedDailyStats);
 
 		if (showRefresh) {

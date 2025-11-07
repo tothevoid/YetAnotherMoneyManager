@@ -1,7 +1,6 @@
 import config from "../../config";
 import { TransactionTypeEntity } from "../../models/transactions/TransactionTypeEntity";
 import { Nullable } from "../../shared/utilities/nullable";
-import { checkPromiseStatus, logPromiseError } from "../../shared/utilities/webApiUtilities";
 import { createEntityWithIcon, deleteEntity, getAllEntities, updateEntityWithIcon } from "../basicApi";
 
 const basicUrl = `${config.api.URL}/TransactionType`;

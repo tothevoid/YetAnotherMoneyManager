@@ -1,6 +1,5 @@
 import { DepositMonthSummary } from '../../pages/Deposits/components/DepositStats/depositMonthSummary';
 import config from '../../config' 
-import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { DepositsRange } from '../../models/deposits/depositsRange';
 import { createEntity, deleteEntity, getAllEntitiesByConfig, getEntity, getEntityByConfig, updateEntity } from '../basicApi';
 import { DepositEntity, DepositEntityRequest, DepositEntityResponse } from '../../models/deposits/DepositEntity';

@@ -3,7 +3,7 @@ import config from '../../config'
 import { formatDate } from '../../shared/utilities/formatters/dateFormatter';
 import { SecurityHistoryValue } from '../../models/securities/SecurityHistoryValue';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
-import { createEntityWithIcon, deleteEntity, getAllEntities, getEntityById, updateEntityWithIcon } from '../basicApi';
+import { createEntityWithIcon, deleteEntity, getAllEntities, getEntity, getEntityById, updateEntityWithIcon } from '../basicApi';
 import { SecurityStats } from '../../models/securities/SecurityStats';
 import { SecurityEntity, SecurityEntityRequest, SecurityEntityResponse } from '../../models/securities/SecurityEntity';
 import { prepareSecurity, prepareSecurityEntityRequest } from './securityApiMapping';
@@ -24,16 +24,11 @@ export const getSecurityById = async (id: string): Promise<SecurityEntity | void
 }
 
 export const getSecurityStats = async (securityId: string): Promise<SecurityStats | void> => {
-    return await fetch(`${basicUrl}/GetStats?securityId=${securityId}`, { method: "GET"})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
-        .catch(logPromiseError);
+    return getEntity<SecurityStats>(`${basicUrl}/GetStats?securityId=${securityId}`);
 }
 
 export const getTickerHistory = async (ticker: string, format: i18n): Promise<SecurityHistoryValue[] | void> => {
-   const tickerHistoryValues: SecurityHistoryValue[] | void = await fetch(`${basicUrl}/GetTickerHistory?ticker=${ticker}`, { method: "GET"})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
+    return getAllEntities<SecurityHistoryValue>(`${basicUrl}/GetTickerHistory?ticker=${ticker}`)
         .then((securityHistories: SecurityHistoryValue[]) => {
             return securityHistories.map(securityHistory => {
                 return {
@@ -41,9 +36,7 @@ export const getTickerHistory = async (ticker: string, format: i18n): Promise<Se
                     date: formatDate(new Date(securityHistory.date), format)
                 }
             })
-        })
-        .catch(logPromiseError);
-    return tickerHistoryValues;
+        });
 }
 
 export const createSecurity = async (addedSecurity: SecurityEntity, file: File | null): Promise<SecurityEntity | void> => {

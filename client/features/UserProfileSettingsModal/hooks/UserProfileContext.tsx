@@ -16,6 +16,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 	useEffect(() => {
 		const fetchUser = async () => {
 			const userProfile = await getUserProfile();
+			if (!userProfile) return;
+
 			setUser(userProfile);
 			changeLanguage(userProfile.languageCode)
 		};

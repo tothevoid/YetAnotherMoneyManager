@@ -1,6 +1,5 @@
 import config from '../../config' 
 import { CryptoAccountCryptocurrencyEntity, CryptoAccountCryptocurrencyEntityRequest, CryptoAccountCryptocurrencyEntityResponse } from '../../models/crypto/CryptoAccountCryptocurrencyEntity';
-import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
 import { prepareCryptoAccountCryptocurrency, prepareCryptoAccountCryptocurrencyRequest } from './cryptoAccountCryptocurrencyApiMapping';
 
@@ -12,13 +11,8 @@ export const getCryptoAccountCryptocurrencies = async (): Promise<CryptoAccountC
 };
 
 export const getCryptocurrenciesByCryptoAccount = async (cryptoAccountId: string): Promise<CryptoAccountCryptocurrencyEntity[]> => {
-    const cryptoAccountCryptocurrencies = await fetch(`${basicUrl}/GetByCryptoAccount?cryptoAccountId=${cryptoAccountId}`, {method: "GET"})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
-        .then((cryptoAccountCryptocurrencies: CryptoAccountCryptocurrencyEntityResponse[]) => cryptoAccountCryptocurrencies.map(prepareCryptoAccountCryptocurrency))
-        .catch(logPromiseError);
-     
-    return cryptoAccountCryptocurrencies ?? [];
+    return await getAllEntities<CryptoAccountCryptocurrencyEntityResponse>(`${basicUrl}/GetByCryptoAccount?cryptoAccountId=${cryptoAccountId}`)
+        .then((cryptoAccountCryptocurrencies: CryptoAccountCryptocurrencyEntityResponse[]) => cryptoAccountCryptocurrencies.map(prepareCryptoAccountCryptocurrency));
 };
 
 export const createCryptoAccountCryptocurrency = async (addedCryptoAccountCryptocurrency: CryptoAccountCryptocurrencyEntity): Promise<CryptoAccountCryptocurrencyEntity | void> => {

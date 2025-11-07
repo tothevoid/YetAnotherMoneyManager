@@ -33,7 +33,7 @@ namespace MoneyManager.Application.Services.Crypto
             return _mapper.Map<IEnumerable<CryptocurrencyDto>>(cryptocurrencies);
         }
 
-        public async Task<Guid> Add(CryptocurrencyDto cryptocurrencyDto, IFormFile cryptocurrencyIcon)
+        public async Task<CryptocurrencyDto> Add(CryptocurrencyDto cryptocurrencyDto, IFormFile cryptocurrencyIcon)
         {
             var cryptocurrency = _mapper.Map<Cryptocurrency>(cryptocurrencyDto);
             cryptocurrency.Id = Guid.NewGuid();
@@ -47,10 +47,10 @@ namespace MoneyManager.Application.Services.Crypto
 
             await _cryptocurrencyRepo.Add(cryptocurrency);
             await _db.Commit();
-            return cryptocurrency.Id;
+            return _mapper.Map<CryptocurrencyDto>(cryptocurrency);
         }
 
-        public async Task Update(CryptocurrencyDto cryptocurrencyDto, IFormFile cryptocurrencyIcon)
+        public async Task<CryptocurrencyDto> Update(CryptocurrencyDto cryptocurrencyDto, IFormFile cryptocurrencyIcon)
         {
             var cryptocurrency = _mapper.Map<Cryptocurrency>(cryptocurrencyDto);
 
@@ -63,6 +63,7 @@ namespace MoneyManager.Application.Services.Crypto
 
             _cryptocurrencyRepo.Update(cryptocurrency);
             await _db.Commit();
+            return _mapper.Map<CryptocurrencyDto>(cryptocurrency);
         }
 
         public async Task Delete(Guid id)

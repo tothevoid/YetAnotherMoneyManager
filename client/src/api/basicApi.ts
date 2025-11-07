@@ -88,6 +88,15 @@ export const getEntity = async <T> (basicUrl: string): Promise<T | void> => {
     return entity;
 }
 
+export const getEntityByConfig = async <T> (basicUrl: string, body: unknown): Promise<T | void> => {
+    return await fetch(basicUrl, {method: "POST",  
+        body: JSON.stringify(body),
+        headers: {"Content-Type": "application/json", ...getAuthHeader()}})
+        .then(checkPromiseStatus)
+        .then((response: Response) => response.json())
+        .catch(logPromiseError);
+}
+
 export const getEntityById = async <T> (basicUrl: string, id: string): Promise<T | void> => {
     return getEntity(`${basicUrl}/GetById?id=${id}`);
 }
@@ -130,7 +139,7 @@ export const getAction = async (url: string): Promise<boolean> => {
 
 export const postAction = async (url: string, data: unknown): Promise<boolean> => {
     const result = await fetch(url, { method: "POST", body: JSON.stringify(data),  
-        headers: {"Content-Type": "application/json"}})
+        headers: {"Content-Type": "application/json", ...getAuthHeader()}})
         .then(checkPromiseStatus)
         .catch(logPromiseError)
 

@@ -8,6 +8,7 @@ import config from "../../config";
 import "./AuthPage.scss";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
+import { auth } from "../../api/auth/authApi";
 
 const AuthPage: React.FC = () => {
 
@@ -27,20 +28,13 @@ const AuthPage: React.FC = () => {
     const location = useLocation();
     const from = location.state?.from ?? "/";
 
-    const onSubmit = async (auth: AuthFormInput) => {
+    const onSubmit = async (authData: AuthFormInput) => {
         setError("");
         try {
-            const basicUrl = `${config.api.URL}/Auth/Login`;
-            const response = await fetch(basicUrl, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ userName: auth.userName, password: auth.password ?? null })
-            });
-            if (!response.ok) throw new Error(t("auth_page_error_invalid_credentials"));
-            const data = await response.json();
+            const token = await auth(authData.userName, authData.password);
 
-            if (data.token) {
-                localStorage.setItem("auth_token", data.token);
+            if (token) {
+                localStorage.setItem("auth_token", token);
                 navigate(from, { replace: true });
             }
             

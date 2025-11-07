@@ -24,17 +24,17 @@ export const useCryptocurrencies = () => {
     }, [fetchData])
 
     const createCryptocurrencyEntity = async (createdCryptocurrency: CryptocurrencyEntity, icon: File | null) => {
-        const addedCryptocurrency = await createCryptocurrency(createdCryptocurrency, icon);
-        if (!addedCryptocurrency) {
+        const createResult = await createCryptocurrency(createdCryptocurrency, icon);
+        if (!createResult) {
             return;
         }
 
-        setCryptocurrencies([addedCryptocurrency, ...cryptocurrencies]);
+        setCryptocurrencies([createResult, ...cryptocurrencies]);
     }
 
     const updateCryptocurrencyEntity = async (updatedCryptocurrency: CryptocurrencyEntity, icon: File | null) => {
-        const isCryptocurrencyUpdated = await updateCryptocurrency(updatedCryptocurrency, icon);
-        if (!isCryptocurrencyUpdated) {
+        const updateResult = await updateCryptocurrency(updatedCryptocurrency, icon);
+        if (!updateResult) {
             return;
         }
     

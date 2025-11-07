@@ -2,8 +2,7 @@ import config from '../../config'
 import { DividendPaymentEntity, DividendPaymentEntityRequest, DividendPaymentEntityResponse } from '../../models/brokers/DividendPaymentEntity';
 import { DividendPaymentsQuery } from '../../pages/BrokerAccount/hooks/useDividendPayments';
 import { PaginationConfig } from '../../shared/models/PaginationConfig';
-import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
-import { createEntity, deleteEntity, getAllEntitiesByConfig, getPagination, updateEntity } from '../basicApi';
+import { createEntity, deleteEntity, getAllEntitiesByConfig, getEntity, getPagination, updateEntity } from '../basicApi';
 import { prepareDividendPayment, prepareDividendPaymentRequest } from './dividendPaymentApiMapping';
 
 const basicUrl = `${config.api.URL}/DividendPayment`;
@@ -20,10 +19,7 @@ export const getDividendPaymentsPagination = async (brokerAccountId: string): Pr
 };
 
 export const getEarningsByBrokerAccount = async (brokerAccountId: string): Promise<number> => {
-    return await fetch(`${basicUrl}/GetEarningsByBrokerAccount?brokerAccountId=${brokerAccountId}`, {method: "GET"})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
-        .catch(logPromiseError);
+    return await getEntity<number>(`${basicUrl}/GetEarningsByBrokerAccount?brokerAccountId=${brokerAccountId}`) ?? 0;
 };
 
 export const createDividendPayment = async (modifiedDividendPayment: DividendPaymentEntity): Promise<void> => {

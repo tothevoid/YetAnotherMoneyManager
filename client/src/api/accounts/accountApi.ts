@@ -2,38 +2,22 @@ import config from "../../config";
 import { AccountEntity, AccountEntityRequest, AccountEntityResponse } from "../../models/accounts/AccountEntity";
 import { checkPromiseStatus, logPromiseError } from "../../shared/utilities/webApiUtilities";
 import { AccountCurrencySummary } from "../../models/accounts/accountsSummary";
-import { createEntity, deleteEntity, updateEntity } from "../basicApi";
+import { createEntity, deleteEntity, getAllEntities, getAllEntitiesByConfig, postAction, updateEntity } from "../basicApi";
 import { Transfer } from "../../pages/Accounts/modals/AccountBalanceTransferModal/AccountBalanceTransferModal";
 import { prepareAccount, prepareAccountRequest } from "./accountApiMapping";
 
 const basicUrl = `${config.api.URL}/Account`;
 
 export const getAccounts = async (onlyActive: boolean = false): Promise<AccountEntity[]> =>  {
-	const accounts = await fetch(`${basicUrl}/GetAll`, {
-			method: "POST", 
-			body: JSON.stringify({onlyActive}),
-			headers: {"Content-Type": "application/json"}
-		})
-		.then(checkPromiseStatus)
-		.then((response: Response) => response.json())
-		.then((accountResponses: AccountEntityResponse[]) => accountResponses.map(prepareAccount))
-		.catch(logPromiseError);
-
-	return accounts ?? []
+	return await getAllEntitiesByConfig<unknown, AccountEntityResponse>(`${basicUrl}/GetAll`, 
+		{onlyActive})
+		.then((accountResponses: AccountEntityResponse[]) => accountResponses.map(prepareAccount));
 }
 
 export const getAccountsByTypes = async (typesIds: string[], onlyActive: boolean = false): Promise<AccountEntity[]> =>  {
-	const accounts = await fetch(`${basicUrl}/GetAllByTypes`, {
-			method: "POST", 
-			body: JSON.stringify({onlyActive, typesIds}),
-			headers: {"Content-Type": "application/json"}
-		})
-		.then(checkPromiseStatus)
-		.then((response: Response) => response.json())
-		.then((accountResponses: AccountEntityResponse[]) => accountResponses.map(prepareAccount))
-		.catch(logPromiseError);
-
-	return accounts ?? [];
+	return await getAllEntitiesByConfig<unknown, AccountEntityResponse>(`${basicUrl}/GetAllByTypes`, 
+		{onlyActive, typesIds})
+		.then((accountResponses: AccountEntityResponse[]) => accountResponses.map(prepareAccount));
 }
 
 export const createAccount = async (newAccount: AccountEntity): Promise<string | void> => {
@@ -60,19 +44,9 @@ export const transferBalance = async (transfer: Transfer): Promise<boolean> => {
 		to: transfer.to.id,
 	}
 
-	const result = await fetch(`${basicUrl}/Transfer`, { method: "POST", body: JSON.stringify(requestTransfer),  
-		headers: {"Content-Type": "application/json"}})
-		.then(checkPromiseStatus)
-		.catch(logPromiseError)
-
-	return result?.ok ?? false;
+	return await postAction(`${basicUrl}/Transfer`, requestTransfer);
 }
 
 export const getSummary = async (): Promise<AccountCurrencySummary[]> => {
-	const summaries: AccountCurrencySummary[] = await fetch(`${basicUrl}/GetSummary`, { method: "GET"})
-		.then(checkPromiseStatus)
-		.then((response: Response) => response.json())
-		.catch(logPromiseError)
-
-	return summaries ? summaries: [] as AccountCurrencySummary[];
+	return await getAllEntities<AccountCurrencySummary>(`${basicUrl}/GetSummary`);
 }

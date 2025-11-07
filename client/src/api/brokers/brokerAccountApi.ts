@@ -1,7 +1,6 @@
 import config from '../../config' 
 import { BrokerAccountEntity, BrokerAccountEntityRequest, BrokerAccountEntityResponse } from '../../models/brokers/BrokerAccountEntity';
-import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
-import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
+import { createEntity, deleteEntity, getAllEntities, getEntityById, updateEntity } from '../basicApi';
 import { prepareBrokerAccount, prepareBrokerAccountRequest } from './brokerAccountApiMapping';
 
 const basicUrl = `${config.api.URL}/BrokerAccount`;
@@ -12,12 +11,8 @@ export const getBrokerAccounts = async (): Promise<BrokerAccountEntity[]> => {
 };
 
 export const getBrokerAccountById = async (id: string): Promise<BrokerAccountEntity | void> => {
-    const brokerAccount: BrokerAccountEntity | void = await fetch(`${basicUrl}/GetById?id=${id}`, { method: "GET"})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
-        .then((brokerAccount: BrokerAccountEntityResponse) => prepareBrokerAccount(brokerAccount))
-        .catch(logPromiseError);
-    return brokerAccount;
+    return getEntityById<BrokerAccountEntityResponse>(basicUrl, id)
+        .then((brokerAccount: BrokerAccountEntityResponse | void) => brokerAccount && prepareBrokerAccount(brokerAccount))
 }
 
 export const createBrokerAccount = async (addedBroker: BrokerAccountEntity): Promise<BrokerAccountEntity | void> => {

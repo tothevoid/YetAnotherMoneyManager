@@ -1,6 +1,5 @@
 import config from '../../config' 
-import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
-import { createAndGetFullEntity, deleteEntity } from '../basicApi';
+import { createAndGetFullEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
 import { TransactionEntity, TransactionEntityRequest, TransactionEntityResponse } from '../../models/transactions/TransactionEntity';
 import { prepareTransaction, prepareTransactionRequest } from './transactionApiMapping';
 
@@ -8,12 +7,9 @@ const basicUrl = `${config.api.URL}/Transaction`;
 
 export const getTransactions = async (month: number, year: number, showSystem: boolean): Promise<TransactionEntity[]> => {
 	const url = `${basicUrl}?month=${month}&year=${year}&showSystem=${showSystem}`;
-	const transactions = await fetch(url, {method: "GET"})
-		.then(checkPromiseStatus)
-		.then((response: Response) => response.json())
-		.then((transactionsResponses: TransactionEntityResponse[]) => transactionsResponses.map(prepareTransaction))
-		.catch(logPromiseError);
-	return transactions ?? [];
+
+	return getAllEntities<TransactionEntityResponse>(url)
+		.then((transactionsResponses: TransactionEntityResponse[]) => transactionsResponses.map(prepareTransaction));
 };
 
 export const createTransaction = async (transaction: TransactionEntity): Promise<TransactionEntity | void> => {
@@ -22,12 +18,7 @@ export const createTransaction = async (transaction: TransactionEntity): Promise
 }
 
 export const updateTransaction = async (modifiedTransaction: TransactionEntity): Promise<boolean> => {
-	const success = await fetch(basicUrl, { method: "PATCH", body: JSON.stringify(prepareTransactionRequest(modifiedTransaction)),  
-			headers: {"Content-Type": "application/json"}})
-		.then(checkPromiseStatus)
-		.then(result => result.status === 200)
-		.catch(logPromiseError)
-	return success ?? false;
+	return await updateEntity<TransactionEntityRequest>(basicUrl, prepareTransactionRequest(modifiedTransaction));
 }
 
 export const deleteTransaction = async (transactionId: string): Promise<boolean> => {

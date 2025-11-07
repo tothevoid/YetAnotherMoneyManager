@@ -3,7 +3,7 @@ import config from '../../config'
 import { formatDate } from '../../shared/utilities/formatters/dateFormatter';
 import { SecurityHistoryValue } from '../../models/securities/SecurityHistoryValue';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
-import { createEntityWithIcon, deleteEntity, getAllEntities, updateEntityWithIcon } from '../basicApi';
+import { createEntityWithIcon, deleteEntity, getAllEntities, getEntityById, updateEntityWithIcon } from '../basicApi';
 import { SecurityStats } from '../../models/securities/SecurityStats';
 import { SecurityEntity, SecurityEntityRequest, SecurityEntityResponse } from '../../models/securities/SecurityEntity';
 import { prepareSecurity, prepareSecurityEntityRequest } from './securityApiMapping';
@@ -19,11 +19,8 @@ export const getSecurities = async (): Promise<SecurityEntity[]> => {
 };
 
 export const getSecurityById = async (id: string): Promise<SecurityEntity | void> => {
-    return await fetch(`${basicUrl}/GetById?id=${id}`, { method: "GET"})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
-        .then((response: SecurityEntityResponse) => response && prepareSecurity(response))
-        .catch(logPromiseError);
+    return await getEntityById<SecurityEntityResponse>(basicUrl, id)
+        .then((response: SecurityEntityResponse | void) => response && prepareSecurity(response));
 }
 
 export const getSecurityStats = async (securityId: string): Promise<SecurityStats | void> => {

@@ -2,9 +2,11 @@ import config from "../../config";
 import { TransactionTypeEntity } from "../../models/transactions/TransactionTypeEntity";
 import { Nullable } from "../../shared/utilities/nullable";
 import { checkPromiseStatus, logPromiseError } from "../../shared/utilities/webApiUtilities";
-import { deleteEntity, getAllEntities } from "../basicApi";
+import { createEntityWithIcon, deleteEntity, getAllEntities, updateEntityWithIcon } from "../basicApi";
 
 const basicUrl = `${config.api.URL}/TransactionType`;
+const ENTITY_NAME = "transactionTypeJson"
+const ICON_NAME = "transactionTypeIcon"
 
 export const getTransactionTypes = async (onlyActive: boolean = false): Promise<TransactionTypeEntity[]> =>  {
     const url = onlyActive ?
@@ -15,20 +17,13 @@ export const getTransactionTypes = async (onlyActive: boolean = false): Promise<
 }
 
 export const createTransactionType = async (addedSecurity: TransactionTypeEntity, file: File | null): Promise<TransactionTypeEntity | void> => {
-    return await fetch(basicUrl, { method: "PUT", body: generateForm(addedSecurity, file)})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
-        .then(addedSecurity => {
-            return {...addedSecurity};
-        })
-        .catch(logPromiseError);
+    return createEntityWithIcon<TransactionTypeEntity, TransactionTypeEntity>(basicUrl, 
+        addedSecurity, ENTITY_NAME, ICON_NAME, file);
 }
 
 export const updateTransactionType = async (modifiedSecurity: TransactionTypeEntity, file: File | null): Promise<TransactionTypeEntity | void> => {
-    return await fetch(basicUrl, { method: "PATCH", body: generateForm(modifiedSecurity, file)})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
-        .catch(logPromiseError)
+    return updateEntityWithIcon<TransactionTypeEntity, TransactionTypeEntity>(basicUrl, 
+        modifiedSecurity, ENTITY_NAME, ICON_NAME, file);
 }
 
 export const deleteTransactionType = async (transactionTypeId: string): Promise<boolean> => {
@@ -41,13 +36,4 @@ export const getTransactionTypeIconUrl = (iconKey: Nullable<string>): string => 
     }
 
     return `${basicUrl}/icon?iconKey=${iconKey}`;
-}
-
-const generateForm = (transactionType: TransactionTypeEntity, file: File | null) => {
-    const formData = new FormData();
-    formData.append("transactionTypeJson", JSON.stringify(transactionType));
-    if (file) {
-        formData.append("transactionTypeIcon", file);
-    }
-    return formData;
 }

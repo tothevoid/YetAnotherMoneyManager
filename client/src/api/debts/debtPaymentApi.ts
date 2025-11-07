@@ -2,8 +2,7 @@ import config from "../../config";
 import { DebtPaymentEntity, DebtPaymentEntityRequest, DebtPaymentEntityResponse } from "../../models/debts/DebtPaymentEntity";
 import { DebtPaymentsQuery } from "../../pages/Debts/hooks/useDebtPayments";
 import { PaginationConfig } from "../../shared/models/PaginationConfig";
-import { checkPromiseStatus, logPromiseError } from "../../shared/utilities/webApiUtilities";
-import { createEntity, deleteEntity, getAllEntitiesByConfig, updateEntity } from "../basicApi";
+import { createEntity, deleteEntity, getAllEntitiesByConfig, getPagination, updateEntity } from "../basicApi";
 import { prepareDebtPayment, prepareDebtPaymentRequest } from "./debtPaymentApiMapping";
 
 const basicUrl = `${config.api.URL}/DebtPayment`;
@@ -16,10 +15,7 @@ export const getDebtPayments = async (query: DebtPaymentsQuery): Promise<DebtPay
 }
 
 export const getDebtPaymentsPagination = async (): Promise<PaginationConfig | void> => {
-    return await fetch(`${basicUrl}/GetPagination`, {method: "GET"})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
-        .catch(logPromiseError);
+    return await getPagination(`${basicUrl}/GetPagination`);
 };
 
 export const createDebtPayment = async (newDebtPayment: DebtPaymentEntity): Promise<boolean | void> => {

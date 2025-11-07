@@ -1,14 +1,11 @@
 import config from "../../config";
 import { CurrencyEntity } from "../../models/currencies/CurrencyEntity";
-import { checkPromiseStatus, logPromiseError } from "../../shared/utilities/webApiUtilities";
-import { createEntity, deleteEntity, getAllEntities, updateEntity } from "../basicApi";
+import { createEntity, deleteEntity, getAction, getAllEntities, updateEntity } from "../basicApi";
 
 const basicUrl = `${config.api.URL}/Currency`;
 
 export const syncRates = async () =>  {
-	await fetch(`${basicUrl}/SyncRates`, {method: "GET"})
-		.then(checkPromiseStatus)
-		.catch(logPromiseError);
+	await getAction(`${basicUrl}/SyncRates`);
 }
 
 export const getCurrencies = async (): Promise<CurrencyEntity[]> =>  {

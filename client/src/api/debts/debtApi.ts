@@ -1,20 +1,13 @@
 import config from "../../config";
 import { DebtEntity, DebtEntityRequest, DebtEntityResponse } from "../../models/debts/DebtEntity";
-import { checkPromiseStatus, logPromiseError } from "../../shared/utilities/webApiUtilities";
-import { createEntity, deleteEntity, updateEntity } from "../basicApi";
+import { createEntity, deleteEntity, getAllEntities, updateEntity } from "../basicApi";
 import { prepareDebt, prepareDebtRequest } from "./debtApiMapping";
 
 const basicUrl = `${config.api.URL}/Debt`;
 
 export const getDebts = async (onlyActive: boolean): Promise<DebtEntity[]> =>  {
-    const debts = await fetch(`${basicUrl}/GetAll?onlyActive=${onlyActive}`, {
-            method: "GET", 
-        })
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
-        .then((debtsResponses: DebtEntityResponse[]) => debtsResponses.map(prepareDebt))
-        .catch(logPromiseError);
-    return debts ?? [];
+    return await getAllEntities<DebtEntityResponse>(`${basicUrl}?onlyActive=${onlyActive}`)
+    .then((debtsResponses: DebtEntityResponse[]) => debtsResponses.map(prepareDebt))
 }
 
 export const createDebt = async (newDebt: DebtEntity): Promise<DebtEntity | void> => {

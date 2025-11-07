@@ -38,7 +38,7 @@ const AuthPage: React.FC = () => {
             });
             if (!response.ok) throw new Error(t("auth_page_error_invalid_credentials"));
             const data = await response.json();
-            debugger;
+
             if (data.token) {
                 localStorage.setItem("auth_token", data.token);
                 navigate(from, { replace: true });

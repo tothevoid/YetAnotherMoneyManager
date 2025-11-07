@@ -1,3 +1,6 @@
+import { data } from "react-router-dom";
+import { PaginationConfig } from "../shared/models/PaginationConfig";
+import { Nullable } from "../shared/utilities/nullable";
 import { checkPromiseStatus, logPromiseError } from "../shared/utilities/webApiUtilities";
 
 export const getAllEntities = async <T> (basicUrl: string): Promise<T[]> => {
@@ -33,12 +36,12 @@ export const createAndGetFullEntity = async<TRequest, TResponse> (basicUrl: stri
 }
 
 export const createEntityWithIcon = async<TRequest, TResponse>(basicUrl: string, addedEntity: TRequest, 
-        entityFieldName: string, iconFieldName: string, file: File | null): Promise<TResponse | void> => {
+        entityFieldName: string, iconFieldName: string, file: Nullable<File>): Promise<TResponse | void> => {
     return await fetch(basicUrl, { method: "PUT",  headers: {...getAuthHeader()}, body: generateForm(addedEntity, entityFieldName, iconFieldName, file)})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
-        .then(id => {
-            return {...addedEntity, id} as TResponse;
+        .then(responseEntity => {
+            return {...responseEntity} as TResponse;
         })
         .catch(logPromiseError);
 }
@@ -52,13 +55,16 @@ export const updateEntity = async<TRequest> (basicUrl: string, modifiedEntity: T
     return updatedEntity?.ok ?? false;
 }
 
-export const updateEntityWithIcon = async<TRequest> (basicUrl: string, modifiedEntity: TRequest, 
-    entityFieldName: string, iconFieldName: string, file: File | null): Promise<boolean> => {
-    const securityResponse = await fetch(basicUrl, { method: "PATCH", headers: {...getAuthHeader()}, body: generateForm(modifiedEntity, entityFieldName, iconFieldName, file )})
+export const updateEntityWithIcon = async<TRequest, TResponse> (basicUrl: string, modifiedEntity: TRequest, 
+    entityFieldName: string, iconFieldName: string, file: Nullable<File>): Promise<TResponse | void> => {
+    return await fetch(basicUrl, { method: "PATCH", headers: {...getAuthHeader()}, 
+        body: generateForm(modifiedEntity, entityFieldName, iconFieldName, file )})
         .then(checkPromiseStatus)
-        .catch(logPromiseError)
-
-    return securityResponse?.ok ?? false;
+        .then((response: Response) => response.json())
+        .then(responseEntity => {
+            return {...responseEntity} as TResponse;
+        })
+        .catch(logPromiseError);
 }
 
 export const deleteEntity = async (basicUrl: string, recordId: string): Promise<boolean> => {
@@ -74,19 +80,23 @@ export const deleteEntity = async (basicUrl: string, recordId: string): Promise<
     return result?.ok ?? false;
 }
 
-export const getEntityById = async <T> (basicUrl: string, id: string): Promise<T | void> => {
-    const entity: T | void = await fetch(`${basicUrl}/GetById?id=${id}`, { method: "GET", headers: getAuthHeader() })
+export const getEntity = async <T> (basicUrl: string): Promise<T | void> => {
+    const entity: T | void = await fetch(`${basicUrl}`, { method: "GET", headers: getAuthHeader() })
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
         .catch(logPromiseError);
     return entity;
 }
 
+export const getEntityById = async <T> (basicUrl: string, id: string): Promise<T | void> => {
+    return getEntity(`${basicUrl}/GetById?id=${id}`);
+}
+
 export const convertRecordToJson = <T>(record: T): string => {
     return JSON.stringify(record);
 }
 
-const generateForm = <T>(entity: T, entityField: string, iconField: string, file: File | null) => {
+const generateForm = <T>(entity: T, entityField: string, iconField: string, file: Nullable<File>) => {
     if (entityField === iconField) {
         throw new Error(`Entity field (${entityField}) same as icon field (${iconField})`)
     }
@@ -109,6 +119,30 @@ export const sendCreateRequest = async<TRequest, TResponse> (basicUrl: string, a
         .catch(logPromiseError);
     return newEntity;
 }
+
+export const getAction = async (url: string): Promise<boolean> => {
+    const result = await fetch(url, { method: "GET", headers: {...getAuthHeader()}})
+        .then(checkPromiseStatus)
+        .catch(logPromiseError)
+
+    return result?.ok ?? false;
+}
+
+export const postAction = async (url: string, data: unknown): Promise<boolean> => {
+    const result = await fetch(url, { method: "POST", body: JSON.stringify(data),  
+        headers: {"Content-Type": "application/json"}})
+        .then(checkPromiseStatus)
+        .catch(logPromiseError)
+
+    return result?.ok ?? false;
+}
+
+export const getPagination = async (url: string): Promise<PaginationConfig | void> => {
+    return await fetch(`${url}/GetPagination`, {method: "GET", headers: {...getAuthHeader()}})
+        .then(checkPromiseStatus)
+        .then((response: Response) => response.json())
+        .catch(logPromiseError);
+};
 
 export const getAuthHeader = (): HeadersInit => {
     const token = localStorage.getItem("auth_token");

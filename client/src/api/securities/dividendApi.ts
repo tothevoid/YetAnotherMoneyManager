@@ -3,7 +3,7 @@ import { DividendEntity, DividendEntityRequest, DividendEntityResponse } from '.
 import { DividendsQuery } from '../../pages/SecurityPage/hooks/useDividends';
 import { PaginationConfig } from '../../shared/models/PaginationConfig';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
-import { createEntity, deleteEntity, getAllEntitiesByConfig, updateEntity } from '../basicApi';
+import { createEntity, deleteEntity, getAllEntities, getAllEntitiesByConfig, getPagination, updateEntity } from '../basicApi';
 import { prepareDividend, prepareDividendRequest } from './dividendApiMapping';
 
 const basicUrl = `${config.api.URL}/Dividend`;
@@ -16,20 +16,12 @@ export const getDividends = async (query: DividendsQuery): Promise<DividendEntit
 };
 
 export const getDividendsPagination = async (securityId: string): Promise<PaginationConfig | void> => {
-    return await fetch(`${basicUrl}/GetPagination?securityId=${securityId}`, {method: "GET"})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
-        .catch(logPromiseError);
+    return await getPagination(`${basicUrl}/GetPagination?securityId=${securityId}`);
 };
 
 export const getAvailableDividends = async (brokerAccountId: string): Promise<DividendEntity[]> => {
-    const dividends: DividendEntity[] | void = await fetch(`${basicUrl}/GetAvailable?brokerAccountId=${brokerAccountId}`, { method: "GET"})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
-        .then(dividends => dividends.map(prepareDividend))
-        .catch(logPromiseError);
-    
-    return dividends ?? [];
+    return await getAllEntities<DividendEntityResponse>(`${basicUrl}/GetAvailable?brokerAccountId=${brokerAccountId}`)
+        .then(dividends => dividends.map(prepareDividend));
 };
 
 export const createDividend = async (dividend: DividendEntity): Promise<boolean> => {

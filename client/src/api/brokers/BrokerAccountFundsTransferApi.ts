@@ -2,8 +2,7 @@ import config from '../../config'
 import { BrokerAccountFundTransferEntity, BrokerAccountFundTransferEntityRequest, BrokerAccountFundTransferEntityResponse } from '../../models/brokers/BrokerAccountFundTransfer';
 import { FundTransfersQuery } from '../../pages/BrokerAccount/hooks/useBrokerAccountFundTransfers';
 import { PaginationConfig } from '../../shared/models/PaginationConfig';
-import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
-import { createEntity, deleteEntity, getAllEntitiesByConfig, updateEntity } from '../basicApi';
+import { createEntity, deleteEntity, getAllEntitiesByConfig, getPagination, updateEntity } from '../basicApi';
 import { prepareBrokerAccountFundsTransfer, prepareBrokerAccountFundsTransferRequest } from './BrokerAccountFundsTransferMapping';
 
 const basicUrl = `${config.api.URL}/BrokerAccountFundsTransfer`;
@@ -16,10 +15,7 @@ export const getBrokerAccountFundsTransfers = async (query: FundTransfersQuery):
 };
 
 export const getBrokerAccountFundsTransferPagination = async (brokerAccountId: string): Promise<PaginationConfig | void> => {
-    return await fetch(`${basicUrl}/GetPagination?brokerAccountId=${brokerAccountId}`, {method: "GET"})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
-        .catch(logPromiseError);
+    return getPagination(`${basicUrl}/GetPagination?brokerAccountId=${brokerAccountId}`);
 };
 
 export const createBrokerAccountFundsTransfer = async (addedBrokerAccountFundsTransfer: BrokerAccountFundTransferEntity): Promise<BrokerAccountFundTransferEntityResponse | void> => {

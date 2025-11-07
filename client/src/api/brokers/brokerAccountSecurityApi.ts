@@ -2,25 +2,18 @@ import config from '../../config'
 import { BrokerAccountSecurityEntity, BrokerAccountSecurityEntityResponse } from '../../models/brokers/BrokerAccountSecurityEntity';
 import { Nullable } from '../../shared/utilities/nullable';
 import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
-import { deleteEntity, updateEntity } from '../basicApi';
+import { deleteEntity, getAction, getAllEntities, updateEntity } from '../basicApi';
 import { prepareBrokerAccountSecurity, prepareBrokerAccountSecurityRequest } from './brokerAccountSecurityApiMapping';
 
 const basicUrl = `${config.api.URL}/BrokerAccountSecurity`;
 
 export const getSecuritiesByBrokerAccount = async (brokerAccountId: string): Promise<BrokerAccountSecurityEntity[]> => {
-    const securitiesByBrokerAccount = await fetch(`${basicUrl}/GetByBrokerAccount?brokerAccountId=${brokerAccountId}`, {method: "GET"})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
+    return await getAllEntities<BrokerAccountSecurityEntityResponse>(`${basicUrl}/GetByBrokerAccount?brokerAccountId=${brokerAccountId}`)
         .then((securities: BrokerAccountSecurityEntityResponse[]) => securities.map(prepareBrokerAccountSecurity))
-        .catch(logPromiseError);
-     
-    return securitiesByBrokerAccount ?? [];
 };
 
 export const pullBrokerAccountQuotations = async (brokerAccountId: string) => {
-    await fetch(`${basicUrl}/PullQuotations?brokerAccountId=${brokerAccountId}`, {method: "GET"})
-        .then(checkPromiseStatus)
-        .catch(logPromiseError);
+    await getAction(`${basicUrl}/PullQuotations?brokerAccountId=${brokerAccountId}`);
 };
 
 export const getLastPullDate = async (): Promise<Nullable<Date>> => {

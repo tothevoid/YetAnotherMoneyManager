@@ -3,8 +3,7 @@ import { SecurityTransactionEntity, SecurityTransactionEntityRequest, SecurityTr
 import { SecurityTransactionsHistory } from '../../models/securities/SecurityTransactionsHistory';
 import { SecurityTransactionsRequest } from '../../models/securities/SecurityTransactionsRequest';
 import { PaginationConfig } from '../../shared/models/PaginationConfig';
-import { checkPromiseStatus, logPromiseError } from '../../shared/utilities/webApiUtilities';
-import { createEntity, deleteEntity, getAllEntitiesByConfig, updateEntity } from '../basicApi';
+import { createEntity, deleteEntity, getAllEntities, getAllEntitiesByConfig, getPagination, updateEntity } from '../basicApi';
 import { prepareSecurityTransaction, prepareSecurityTransactionRequest } from './securityTransactionApiMapping';
 
 const basicUrl = `${config.api.URL}/SecurityTransaction`;
@@ -17,17 +16,11 @@ export const getSecurityTransactions = async (request: SecurityTransactionsReque
 };
 
 export const getSecurityTransactionsPagination = async (brokerAccountId: string): Promise<PaginationConfig | void> => {
-    return await fetch(`${basicUrl}/GetPagination?brokerAccountId=${brokerAccountId}`, {method: "GET"})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
-        .catch(logPromiseError);
+    return getPagination(`${basicUrl}/GetPagination?brokerAccountId=${brokerAccountId}`);
 };
 
 export const getTransactionsBySecurity = async (securityId: string): Promise<SecurityTransactionsHistory[]> => {
-    return await fetch(`${basicUrl}/GetTransactionsHistory?securityId=${securityId}`, {method: "GET"})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
-        .catch(logPromiseError);
+    return getAllEntities<SecurityTransactionsHistory>(`${basicUrl}/GetTransactionsHistory?securityId=${securityId}`);
 };
 
 export const createSecurityTransaction = async (addedSecurityTransaction: SecurityTransactionEntity): Promise<boolean | void> => {

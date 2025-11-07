@@ -34,8 +34,8 @@ export const useSecurities = () => {
 	}
 
 	const updateSecurityEntity = async (updatedSecurity: SecurityEntity, icon: File | null) => {
-		const isAccountUpdated = await updateSecurity(updatedSecurity, icon);
-		if (!isAccountUpdated) {
+		const securityResponse = await updateSecurity(updatedSecurity, icon);
+		if (!securityResponse) {
 			return;
 		}
 	

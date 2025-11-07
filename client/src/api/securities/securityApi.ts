@@ -50,18 +50,14 @@ export const getTickerHistory = async (ticker: string, format: i18n): Promise<Se
 }
 
 export const createSecurity = async (addedSecurity: SecurityEntity, file: File | null): Promise<SecurityEntity | void> => {
-    const createdEntity = await createEntityWithIcon<SecurityEntityRequest, SecurityEntityRequest>(basicUrl, 
-        prepareSecurityEntityRequest(addedSecurity), ENTITY_NAME, ICON_NAME, file);
-
-    if (!createdEntity) {
-        return;
-    }
-
-    return {...addedSecurity, id: createdEntity.id}
+    return await createEntityWithIcon<SecurityEntityRequest, SecurityEntityResponse>(basicUrl, 
+        prepareSecurityEntityRequest(addedSecurity), ENTITY_NAME, ICON_NAME, file)
+        .then((securityResponse: SecurityEntityResponse | void) => securityResponse && prepareSecurity(securityResponse));
 }
 
-export const updateSecurity = async (modifiedSecurity: SecurityEntity, file: File | null): Promise<boolean> => {
-    return await updateEntityWithIcon(basicUrl, prepareSecurityEntityRequest(modifiedSecurity), ENTITY_NAME, ICON_NAME, file);;
+export const updateSecurity = async (modifiedSecurity: SecurityEntity, file: File | null): Promise<SecurityEntity | void> => {
+    return await updateEntityWithIcon<SecurityEntityRequest, SecurityEntityResponse> (basicUrl, prepareSecurityEntityRequest(modifiedSecurity), ENTITY_NAME, ICON_NAME, file)
+        .then((securityResponse: SecurityEntityResponse | void) => securityResponse && prepareSecurity(securityResponse));
 }
 
 export const deleteSecurity = async (securityId: string): Promise<boolean> => {

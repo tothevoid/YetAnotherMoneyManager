@@ -116,7 +116,7 @@ namespace MoneyManager.Application.Services.Securities
             return await _stockConnector.GetTickerHistory(ticker, from, to);
         }
 
-        public async Task<Guid> Add(SecurityDTO securityDto, IFormFile securityIcon)
+        public async Task<SecurityDTO> Add(SecurityDTO securityDto, IFormFile securityIcon)
         {
             var security = _mapper.Map<Security>(securityDto);
             security.Id = Guid.NewGuid();
@@ -131,10 +131,10 @@ namespace MoneyManager.Application.Services.Securities
             await _securityRepo.Add(security);
             await _db.Commit();
 
-            return security.Id;
+            return await GetById(security.Id);
         }
 
-        public async Task Update(SecurityDTO securityTypeDto, IFormFile securityIcon)
+        public async Task<SecurityDTO> Update(SecurityDTO securityTypeDto, IFormFile securityIcon)
         {
             var security = _mapper.Map<Security>(securityTypeDto);
 
@@ -147,6 +147,8 @@ namespace MoneyManager.Application.Services.Securities
 
             _securityRepo.Update(security);
             await _db.Commit();
+
+            return await GetById(security.Id);
         }
 
         public async Task Delete(Guid id)

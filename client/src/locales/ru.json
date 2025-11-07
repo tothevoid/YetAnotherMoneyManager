@@ -306,5 +306,12 @@
     "broker_account_daily_stats_max_value_column": "Максимальная цена",
     "broker_account_daily_stats_diff_column": "Разница",
     "broker_account_daily_stats_percentage_diff_column": "Процентная разница",
-    "broker_account_daily_stats_total_diff_column": "Общая разница"
+    "broker_account_daily_stats_total_diff_column": "Общая разница",
+
+    "auth_page_title": "Авторизация",
+    "auth_page_username": "Пользователь",
+    "auth_page_password": "Пароль",
+    "auth_page_login": "Войти",
+    "auth_page_error_invalid_credentials": "Неверный логин или пароль",
+    "auth_page_error": "Ошибка авторизации"
 }

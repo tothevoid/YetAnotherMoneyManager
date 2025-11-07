@@ -19,7 +19,7 @@ namespace MoneyManager.WebApi.Controllers.Auth
         [HttpPost(nameof(Login))]
         public async Task<IActionResult> Login(LoginModel loginData)
         {
-            var token = await _authService.LoginAsync(loginData.Username, loginData.Password);
+            var token = await _authService.LoginAsync(loginData.UserName, loginData.Password);
             if (token == null)
                 return Unauthorized();
             return Ok(new { token });

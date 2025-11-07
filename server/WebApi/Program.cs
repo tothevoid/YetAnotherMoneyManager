@@ -1,14 +1,15 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Minio;
 using MoneyManager.Application.Integrations.Currency;
-using MoneyManager.Application.Integrations.Stock;
 using MoneyManager.Application.Integrations.Stock.Moex;
 using MoneyManager.Application.Interfaces.Accounts;
+using MoneyManager.Application.Interfaces.Banks;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Application.Interfaces.Crypto;
 using MoneyManager.Application.Interfaces.Currencies;
@@ -22,6 +23,7 @@ using MoneyManager.Application.Interfaces.Transactions;
 using MoneyManager.Application.Interfaces.User;
 using MoneyManager.Application.Mappings;
 using MoneyManager.Application.Services.Accounts;
+using MoneyManager.Application.Services.Banks;
 using MoneyManager.Application.Services.Brokers;
 using MoneyManager.Application.Services.Crypto;
 using MoneyManager.Application.Services.Currencies;
@@ -38,8 +40,8 @@ using MoneyManager.Infrastructure.Interfaces.Messages;
 using MoneyManager.Infrastructure.Messages;
 using MoneyManager.WebApi.Mappings;
 using System;
-using MoneyManager.Application.Interfaces.Banks;
-using MoneyManager.Application.Services.Banks;
+using System.Text;
+using MoneyManager.Application.Services.Auth;
 using TickerQ.DependencyInjection;
 using TickerQ.Utilities.Enums;
 
@@ -113,11 +115,34 @@ builder.Services.AddTransient<ICryptoProviderService, CryptoProviderService>();
 
 builder.Services.AddTransient<IBankService, BankService>();
 
+builder.Services.AddTransient<IAuthService, AuthService>();
+
 builder.Services.AddScoped<IServerNotifier, ServerNotifier>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 
 
 builder.Services.AddSingleton<IPullQuotationsService, PullQuotationsService>();
+
+var authSection = builder.Configuration.GetSection("Auth");
+
+var issuer = authSection.GetSection("Issuer").Value;
+var audience = authSection.GetSection("Audience").Value;
+var secret = authSection.GetSection("Secret").Value;
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = issuer,
+            ValidAudience = audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret))
+        };
+    });
 
 //TODO: make factory
 //TODO: possible change AddTransient to AddSingleton

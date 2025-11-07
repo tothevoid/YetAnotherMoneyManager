@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MoneyManager.Application.DTO.Banks;
@@ -15,6 +16,7 @@ namespace MoneyManager.WebApi.Controllers.Banks
     [Produces("application/json")]
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class BankController : ControllerBase
     {
         private readonly IBankService _bankService;

@@ -10,12 +10,14 @@ using MoneyManager.Application.Interfaces.User;
 using MoneyManager.WebApi.Models.Accounts;
 using MoneyManager.WebApi.Models.Transactions;
 using MoneyManager.WebApi.Models.User;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MoneyManager.WebApi.Controllers.User
 {
     [Produces("application/json")]
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class UserProfileController : ControllerBase
     {
         private readonly IUserProfileService _userProfileService;

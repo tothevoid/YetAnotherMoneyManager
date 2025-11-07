@@ -8,12 +8,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using MoneyManager.Application.DTO.Transactions;
 using MoneyManager.WebApi.Models.Transactions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MoneyManager.WebApi.Controllers.Transactions
 {
     [Produces("application/json")]
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class TransactionTypeController : ControllerBase
     {
         private readonly ITransactionTypeService _transactionTypeService;

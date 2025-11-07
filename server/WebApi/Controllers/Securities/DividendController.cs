@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Securities;
@@ -13,6 +14,7 @@ namespace MoneyManager.WebApi.Controllers.Securities
     [Produces("application/json")]
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class DividendController : ControllerBase
     {
         private readonly IDividendService _dividendService;

@@ -6,12 +6,14 @@ using AutoMapper;
 using MoneyManager.Application.DTO.Transactions;
 using MoneyManager.Application.Interfaces.Transactions;
 using MoneyManager.WebApi.Models.Transactions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MoneyManager.WebApi.Controllers.Transactions
 {
     [Produces("application/json")]
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class TransactionController : ControllerBase
     {
         private readonly ITransactionsService _transactionService;

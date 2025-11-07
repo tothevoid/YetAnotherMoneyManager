@@ -8,12 +8,14 @@ using MoneyManager.Application.Interfaces.Deposits;
 using MoneyManager.WebApi.Models.Deposits;
 using MoneyManager.WebApi.Models.Deposits.Charts;
 using MoneyManager.Application.DTO.Deposits;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MoneyManager.WebApi.Controllers.Deposits
 {
     [Produces("application/json")]
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class DepositController : ControllerBase
     {
         private readonly IDepositService _depositService;

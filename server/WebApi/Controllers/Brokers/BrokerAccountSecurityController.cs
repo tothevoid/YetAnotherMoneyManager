@@ -9,12 +9,14 @@ using MoneyManager.Application.Interfaces.Securities;
 using MoneyManager.WebApi.Models.Brokers;
 using MoneyManager.WebApi.Models.Securities;
 using MoneyManager.Application.Services.Brokers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MoneyManager.WebApi.Controllers.Brokers
 {
     [Produces("application/json")]
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class BrokerAccountSecurityController : ControllerBase
     {
         private readonly IBrokerAccountSecurityService _brokerAccountSecurityService;

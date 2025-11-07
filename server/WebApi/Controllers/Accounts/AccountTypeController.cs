@@ -6,12 +6,14 @@ using AutoMapper;
 using MoneyManager.Application.DTO.Accounts;
 using MoneyManager.Application.Interfaces.Accounts;
 using MoneyManager.WebApi.Models.Accounts;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MoneyManager.WebApi.Controllers.Accounts
 {
     [Produces("application/json")]
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class AccountTypeController : ControllerBase
     {
         private readonly IAccountTypeService _accountTypeService;

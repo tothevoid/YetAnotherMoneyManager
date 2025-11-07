@@ -6,12 +6,14 @@ using AutoMapper;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.WebApi.Models.Brokers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MoneyManager.WebApi.Controllers.Brokers
 {
     [Produces("application/json")]
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class BrokerAccountSummaryController : ControllerBase
     {
         private readonly IBrokerAccountSummaryService _brokerAccountSummaryService;

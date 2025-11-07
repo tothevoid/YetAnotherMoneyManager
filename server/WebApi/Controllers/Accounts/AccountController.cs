@@ -6,9 +6,11 @@ using AutoMapper;
 using MoneyManager.Application.DTO.Accounts;
 using MoneyManager.Application.Interfaces.Accounts;
 using MoneyManager.WebApi.Models.Accounts;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MoneyManager.WebApi.Controllers.Accounts
 {
+    [Authorize]
     [Produces("application/json")]
     [Route("[controller]")]
     [ApiController]

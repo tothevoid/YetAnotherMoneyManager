@@ -6,12 +6,14 @@ using System;
 using MoneyManager.Application.DTO.Debts;
 using MoneyManager.Application.Interfaces.Debts;
 using MoneyManager.WebApi.Models.Debts;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MoneyManager.WebApi.Controllers.Debts
 {
     [Produces("application/json")]
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class DebtController : ControllerBase
     {
         private readonly IDebtService _debtService;

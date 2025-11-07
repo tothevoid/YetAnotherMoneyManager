@@ -9,12 +9,14 @@ using MoneyManager.Application.Interfaces.Securities;
 using MoneyManager.Application.Interfaces.Currencies;
 using MoneyManager.Application.Services.Dashboard;
 using MoneyManager.WebApi.Models.Dashboard;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MoneyManager.WebApi.Controllers.Dashboard
 {
     [Produces("application/json")]
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class DashboardController : ControllerBase
     {
         private readonly IMapper _mapper;

@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Brokers;
@@ -13,6 +14,7 @@ namespace MoneyManager.WebApi.Controllers.Brokers
     [Produces("application/json")]
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class BrokerAccountFundsTransferController : ControllerBase
     {
         private readonly IBrokerAccountFundsTransferService _brokerAccountFundsTransferService;

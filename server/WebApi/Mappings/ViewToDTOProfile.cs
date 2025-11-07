@@ -1,29 +1,31 @@
 ﻿using AutoMapper;
 using MoneyManager.Application.DTO;
-using MoneyManager.Application.DTO.Transactions;
-using MoneyManager.Application.DTO.Deposits;
 using MoneyManager.Application.DTO.Accounts;
+using MoneyManager.Application.DTO.Banks;
 using MoneyManager.Application.DTO.Brokers;
+using MoneyManager.Application.DTO.Common;
 using MoneyManager.Application.DTO.Currencies;
+using MoneyManager.Application.DTO.Dashboard;
+using MoneyManager.Application.DTO.Debts;
+using MoneyManager.Application.DTO.Deposits;
 using MoneyManager.Application.DTO.Securities;
+using MoneyManager.Application.DTO.Transactions;
+using MoneyManager.Infrastructure.Entities.Banks;
+using MoneyManager.Infrastructure.Entities.Crypto;
 using MoneyManager.WebApi.Models.Accounts;
+using MoneyManager.WebApi.Models.Auth;
+using MoneyManager.WebApi.Models.Banks;
 using MoneyManager.WebApi.Models.Brokers;
+using MoneyManager.WebApi.Models.Common;
+using MoneyManager.WebApi.Models.Crypto;
 using MoneyManager.WebApi.Models.Currencies;
+using MoneyManager.WebApi.Models.Dashboard;
+using MoneyManager.WebApi.Models.Debts;
 using MoneyManager.WebApi.Models.Deposits;
 using MoneyManager.WebApi.Models.Deposits.Charts;
 using MoneyManager.WebApi.Models.Securities;
 using MoneyManager.WebApi.Models.Transactions;
 using MoneyManager.WebApi.Models.User;
-using MoneyManager.WebApi.Models.Dashboard;
-using MoneyManager.Application.DTO.Dashboard;
-using MoneyManager.Application.DTO.Debts;
-using MoneyManager.WebApi.Models.Debts;
-using MoneyManager.Infrastructure.Entities.Crypto;
-using MoneyManager.WebApi.Models.Crypto;
-using MoneyManager.WebApi.Models.Banks;
-using MoneyManager.Application.DTO.Banks;
-using MoneyManager.Application.DTO.Common;
-using MoneyManager.WebApi.Models.Common;
 
 namespace MoneyManager.WebApi.Mappings
 {
@@ -97,6 +99,8 @@ namespace MoneyManager.WebApi.Mappings
             CreateMap<BankDto, BankModel>().ReverseMap();
 
             CreateMap<PaginationConfigDto, PaginationConfigModel>();
+
+            CreateMap<LoginDto, LoginModel>().ReverseMap();
         }
     }
 }

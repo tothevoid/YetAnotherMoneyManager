@@ -8,12 +8,14 @@ using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Securities;
 using MoneyManager.WebApi.Models.Securities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MoneyManager.WebApi.Controllers.Securities
 {
     [Produces("application/json")]
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class SecurityController : ControllerBase
     {
         private readonly ISecurityService _securityService;

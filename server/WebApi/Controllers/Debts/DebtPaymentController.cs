@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoneyManager.Application.DTO.Debts;
 using MoneyManager.Application.Interfaces.Debts;
@@ -13,6 +14,7 @@ namespace MoneyManager.WebApi.Controllers.Debts
     [Produces("application/json")]
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class DebtPaymentController : ControllerBase
     {
         private readonly IDebtPaymentService _debtPaymentService;

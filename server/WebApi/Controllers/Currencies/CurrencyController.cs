@@ -9,12 +9,14 @@ using MoneyManager.WebApi.Models.Currencies;
 using MoneyManager.Application.DTO;
 using MoneyManager.Application.Interfaces.User;
 using MoneyManager.Application.Services.User;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MoneyManager.WebApi.Controllers.Currencies
 {
     [Produces("application/json")]
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class CurrencyController : ControllerBase
     {
         private readonly ICurrencyService _currencyService;

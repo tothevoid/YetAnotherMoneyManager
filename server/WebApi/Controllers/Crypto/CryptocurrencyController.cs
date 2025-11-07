@@ -9,12 +9,14 @@ using MoneyManager.Infrastructure.Entities.Crypto;
 using MoneyManager.WebApi.Models.Crypto;
 using Microsoft.AspNetCore.Http;
 using MoneyManager.WebApi.Models.Securities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MoneyManager.WebApi.Controllers.Crypto
 {
     [Produces("application/json")]
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class CryptocurrencyController: ControllerBase
     {
         private readonly ICryptocurrencyService _cryptocurrencyService;

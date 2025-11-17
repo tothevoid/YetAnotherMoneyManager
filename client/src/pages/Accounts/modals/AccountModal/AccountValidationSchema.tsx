@@ -8,7 +8,7 @@ export const AccountValidationSchema = z.object({
 	bank: z.object({
         id: z.string(),
         name: z.string()
-    }).optional(),
+    }).nullable().optional(),
 	balance: z.number(),
 	active: z.boolean(),
 	createdOn: z.date(),

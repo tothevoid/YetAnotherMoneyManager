@@ -17,6 +17,7 @@ import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import { generateGuid } from "../../../../shared/utilities/idUtilities";
 import { getBanks } from "../../../../api/banks/bankApi";
 import { BankEntity } from "../../../../models/banks/BankEntity";
+import { ACCOUNT_TYPE } from "../../../../shared/constants/accountType";
 
 
 interface ModalProps {
@@ -33,6 +34,8 @@ interface State {
 
 const AccountModal: React.FC<ModalProps> = (props: ModalProps) => {
   	const [state, setState] = useState<State>({currencies: [], accountTypes: [], banks: []})
+
+	const [bankFieldVisible, setBankFieldVisible] = useState<boolean>(false);
 
 	useEffect(() => {
 		const initData = async () => {
@@ -77,11 +80,19 @@ const AccountModal: React.FC<ModalProps> = (props: ModalProps) => {
 		}
 	}, [props.account]);
 
-	const { register, handleSubmit, control, formState: { errors }, reset} = useForm<AccountFormInput>({
+	const { register, handleSubmit, control, formState: { errors }, reset, watch} = useForm<AccountFormInput>({
 		resolver: zodResolver(AccountValidationSchema),
 		mode: "onBlur",
 		defaultValues: getFormDefaultValues()
 	});
+
+	const accountType = watch("accountType")
+
+	useEffect(() => {
+		const visible = accountType?.id === ACCOUNT_TYPE.DEBIT_CARD || 
+			accountType?.id === ACCOUNT_TYPE.CREDIT_CARD;
+		setBankFieldVisible(visible)
+	}, [accountType]);
 
 	useEffect(() => {
 		reset(getFormDefaultValues());
@@ -114,14 +125,16 @@ const AccountModal: React.FC<ModalProps> = (props: ModalProps) => {
 				valueSelector={(accountType => accountType.id)}/>
 			<Field.ErrorText>{errors.accountType?.message}</Field.ErrorText>
 		</Field.Root>
-		<Field.Root mt={4} invalid={!!errors.bank}>
-			<Field.Label>{t("entity_transaction_bank")}</Field.Label>
-			<CollectionSelect name="bank" control={control} placeholder="Select bank"
-				collection={state.banks} 
-				labelSelector={(bank => bank.name)} 
-				valueSelector={(bank => bank.id)}/>
-			<Field.ErrorText>{errors.bank?.message}</Field.ErrorText>
-		</Field.Root>
+		{
+			bankFieldVisible && <Field.Root mt={4} invalid={!!errors.bank}>
+				<Field.Label>{t("entity_transaction_bank")}</Field.Label>
+				<CollectionSelect name="bank" control={control} placeholder="Select bank"
+					collection={state.banks} 
+					labelSelector={(bank => bank.name)} 
+					valueSelector={(bank => bank.id)}/>
+				<Field.ErrorText>{errors.bank?.message}</Field.ErrorText>
+			</Field.Root>
+		}
 		<Field.Root mt={4} invalid={!!errors.currency}>
 			<Field.Label>{t("entity_transaction_currency")}</Field.Label>
 			<CollectionSelect name="currency" control={control} placeholder="Select currency"

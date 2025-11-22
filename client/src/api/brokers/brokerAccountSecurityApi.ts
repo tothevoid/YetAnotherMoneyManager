@@ -16,7 +16,7 @@ export const pullBrokerAccountQuotations = async (brokerAccountId: string) => {
 };
 
 export const getLastPullDate = async (): Promise<Nullable<Date>> => {
-    return getEntity<{pullInfo: {lastPullDate: string}}>(`${basicUrl}/GetLastPullDate`)
+    return getEntity<{lastPullDate: string}>(`${basicUrl}/GetLastPullDate`)
         .then((pullDateInfo) => pullDateInfo ? new Date(pullDateInfo.lastPullDate) : null);
 };
 

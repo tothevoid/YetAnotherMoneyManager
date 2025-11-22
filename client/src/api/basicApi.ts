@@ -146,7 +146,7 @@ export const postAction = async (url: string, data: unknown): Promise<boolean> =
 }
 
 export const getPagination = async (url: string): Promise<PaginationConfig | void> => {
-    return await fetch(`${url}/GetPagination`, {method: "GET", headers: {...getAuthHeader()}})
+    return await fetch(`${url}`, {method: "GET", headers: {...getAuthHeader()}})
         .then(checkPromiseStatus)
         .then((response: Response) => response.json())
         .catch(logPromiseError);

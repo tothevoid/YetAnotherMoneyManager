@@ -24,7 +24,7 @@ export const useDebtPayments = (queryParameters: DebtPaymentsQuery) => {
 		} finally {
 			setLoading(false)
 		}
-	}, [])
+	}, [debtPaymentsQueryParameters])
 
 	useEffect(() => {
 		fetchData();

@@ -28,7 +28,7 @@ namespace MoneyManager.Application.Services.Deposits
 
         public async Task<IEnumerable<DepositDTO>> GetAll(int monthsFrom, int monthsTo, bool onlyActive)
         {
-            var deposits = await GetDeposits(monthsFrom, monthsTo, onlyActive, x => x.From, true);
+            var deposits = await GetDeposits(monthsFrom, monthsTo, onlyActive, x => x.To, true);
             return _mapper.Map<IEnumerable<DepositDTO>>(deposits);
         }
 
@@ -94,15 +94,17 @@ namespace MoneyManager.Application.Services.Deposits
                     decimal profit = CalculateProfitInRange(periodStartDate, periodEndDate, depositDays, deposit.EstimatedEarn);
 
                     var date = new DateOnly(periodStartDate.Year, periodStartDate.Month, 1);
+                    var paymentName = deposit.Bank?.Name ?? "";
+
                     if (dates.ContainsKey(date))
                     {
-                        dates[date].Add(new Payment() { DepositId = deposit.Id, Name = deposit.Name, Value = profit});
+                        dates[date].Add(new Payment() { DepositId = deposit.Id, Name = paymentName, Value = profit});
                     }
                     else
                     {
                         dates[date] = new List<Payment>()
                         {
-                            new Payment(){DepositId = deposit.Id, Name = deposit.Name, Value = profit}
+                            new(){DepositId = deposit.Id, Name = paymentName, Value = profit}
                         };
                     }
 
@@ -193,6 +195,8 @@ namespace MoneyManager.Application.Services.Deposits
             public string Name { get; set; }
 
             public decimal Value { get; set; }
+
+            public Guid? BankId { get; set; }
         }
     }
 }

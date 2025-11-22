@@ -11,6 +11,7 @@ using MoneyManager.Infrastructure.Entities.Accounts;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Infrastructure.Constants;
+using MoneyManager.Infrastructure.Queries;
 
 namespace MoneyManager.Application.Services.Accounts
 {
@@ -30,9 +31,14 @@ namespace MoneyManager.Application.Services.Accounts
 
         public async Task<IEnumerable<AccountDTO>> GetAll(bool onlyActive)
         {
-            Expression<Func<Account, bool>> filter = onlyActive ? account => account.Active : null;
+            var query = new ComplexQueryBuilder<Account>()
+                .AddFilter(onlyActive ? account => account.Active : null)
+                .AddOrder(account => account.Name)
+                .AddJoins(GetFullHierarchyColumns)
+                .DisableTracking()
+                .GetQuery();
 
-            var transactions = await _accountRepo.GetAll(filter, GetFullHierarchyColumns);
+            var transactions = await _accountRepo.GetAll(query);
             return _mapper.Map<IEnumerable<AccountDTO>>(transactions);
         }
 

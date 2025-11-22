@@ -216,6 +216,7 @@
     "entity_debt_payment_transaction": "Транзакция",
     "entity_debt_payment_debt": "Долг",
     "entity_debt_payment_date": "Дата",
+    "entity_debt_payment_is_percentage_payment": "Выплата процентов",
 
     "security_page_tabs_history": "История котировок",
     "security_page_tabs_transactions": "Транзакции",

@@ -3,7 +3,8 @@ import { DebtEntity, DebtEntityResponse } from "./DebtEntity";
 
 export interface CommonDebtPaymentEntity {
     id: string,
-    amount: number
+    amount: number,
+    isPercentagePayment: boolean
 }
 
 export interface DebtPaymentEntityRequest extends CommonDebtPaymentEntity {

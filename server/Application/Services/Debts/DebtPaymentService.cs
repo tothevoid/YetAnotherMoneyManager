@@ -65,7 +65,7 @@ namespace MoneyManager.Application.Services.Debts
 
             await _debtPaymentRepo.Add(debtPayment);
 
-            await UpdateLinkedEntities(debtPayment.DebtId, debtPayment.TargetAccountId, debtPaymentDto.Amount);
+            await UpdateLinkedEntities(debtPayment.DebtId, debtPayment.TargetAccountId, debtPaymentDto.Amount, debtPaymentDto.IsPercentagePayment);
             await _db.Commit();
 
             return debtPayment.Id;
@@ -77,29 +77,8 @@ namespace MoneyManager.Application.Services.Debts
             var updatedDebtPayment = _mapper.Map<DebtPayment>(updatedPaymentDto);
             _debtPaymentRepo.Update(updatedDebtPayment);
 
-            var amountChanged = currentDebtPayment.Amount != updatedDebtPayment.Amount;
-
-            // debt changed
-            if (currentDebtPayment.DebtId != updatedDebtPayment.DebtId)
-            {
-                await UpdateLinkedDebt(currentDebtPayment.DebtId, currentDebtPayment.Amount);
-                await UpdateLinkedDebt(updatedDebtPayment.DebtId, -1  * updatedDebtPayment.Amount);
-            }
-            else if (amountChanged)
-            {
-                await UpdateLinkedDebt(updatedDebtPayment.DebtId, currentDebtPayment.Amount - updatedDebtPayment.Amount);
-            }
-
-            // account changed
-            if (currentDebtPayment.TargetAccountId != updatedDebtPayment.TargetAccountId)
-            {
-                await UpdateLinkedAccount(currentDebtPayment.TargetAccountId, currentDebtPayment.Amount * -1);
-                await UpdateLinkedAccount(updatedDebtPayment.TargetAccountId, updatedDebtPayment.Amount);
-            }
-            else if (amountChanged)
-            {
-                await UpdateLinkedDebt(updatedDebtPayment.DebtId, updatedDebtPayment.Amount - currentDebtPayment.Amount);
-            }
+            await ActualizeDebts(currentDebtPayment, updatedDebtPayment);
+            await ActualizeAccounts(currentDebtPayment, updatedDebtPayment);
 
             await _db.Commit();
         }
@@ -115,14 +94,64 @@ namespace MoneyManager.Application.Services.Debts
 
             await _debtPaymentRepo.Delete(id);
 
-            await UpdateLinkedEntities(debtPayment.DebtId, debtPayment.TargetAccountId, debtPayment.Amount * -1);
+            await UpdateLinkedEntities(debtPayment.DebtId, debtPayment.TargetAccountId, debtPayment.Amount * -1, 
+                debtPayment.IsPercentagePayment);
 
             await _db.Commit();
         }
 
-        private async Task UpdateLinkedEntities(Guid debtId, Guid accountId, decimal diff)
+        private async Task ActualizeDebts(DebtPayment currentDebtPayment, DebtPayment updatedDebtPayment)
         {
-            await UpdateLinkedDebt(debtId, -1 * diff);
+            var amountChanged = currentDebtPayment.Amount != updatedDebtPayment.Amount;
+            var debtChanged = currentDebtPayment.DebtId != updatedDebtPayment.DebtId;
+            var percentagePaymentChanged = currentDebtPayment.IsPercentagePayment != updatedDebtPayment.IsPercentagePayment;
+
+            if (!amountChanged && !debtChanged && !percentagePaymentChanged)
+            {
+                return;
+            }
+
+            if (debtChanged)
+            {
+                await ResetPreviousDebtChanges(currentDebtPayment);
+                await UpdateLinkedDebt(updatedDebtPayment.DebtId, -1 * updatedDebtPayment.Amount);
+                return;
+            }
+
+            if (percentagePaymentChanged)
+            {
+                var diff = updatedDebtPayment.IsPercentagePayment
+                    ? currentDebtPayment.Amount
+                    : updatedDebtPayment.Amount * -1;
+
+                await UpdateLinkedDebt(updatedDebtPayment.DebtId, diff);
+            }
+            else if (!updatedDebtPayment.IsPercentagePayment)
+            {
+                await UpdateLinkedDebt(updatedDebtPayment.DebtId, updatedDebtPayment.Amount - currentDebtPayment.Amount);
+            }
+        }
+
+        private async Task ActualizeAccounts(DebtPayment currentDebtPayment, DebtPayment updatedDebtPayment)
+        {
+            if (currentDebtPayment.TargetAccountId != updatedDebtPayment.TargetAccountId)
+            {
+                await UpdateLinkedAccount(currentDebtPayment.TargetAccountId, currentDebtPayment.Amount * -1);
+                await UpdateLinkedAccount(updatedDebtPayment.TargetAccountId, updatedDebtPayment.Amount);
+            }
+            else if (currentDebtPayment.Amount != updatedDebtPayment.Amount)
+            {
+                await UpdateLinkedAccount(updatedDebtPayment.TargetAccountId, updatedDebtPayment.Amount - currentDebtPayment.Amount);
+            }
+        }
+
+        private async Task UpdateLinkedEntities(Guid debtId, Guid accountId, decimal diff, bool isPercentagePayment)
+        {
+            if (!isPercentagePayment)
+            {
+                await UpdateLinkedDebt(debtId, -1 * diff);
+            }
+            
             await UpdateLinkedAccount(accountId, diff);
         }
 
@@ -131,6 +160,21 @@ namespace MoneyManager.Application.Services.Debts
             var debt = await _debtRepo.GetById(debtId, disableTracking: false);
 
             debt.Amount += diff;
+
+            _debtRepo.Update(debt);
+        }
+
+
+        private async Task ResetPreviousDebtChanges(DebtPayment currentDebtPayment)
+        {
+            if (currentDebtPayment.IsPercentagePayment)
+            {
+                return;
+            }
+
+            var debt = await _debtRepo.GetById(currentDebtPayment.Id, disableTracking: false);
+
+            debt.Amount += currentDebtPayment.Amount;
 
             _debtRepo.Update(debt);
         }

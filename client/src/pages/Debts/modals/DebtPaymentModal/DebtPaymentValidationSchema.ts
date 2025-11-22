@@ -13,5 +13,6 @@ export const DebtPaymentValidationSchema = z.object({
         id: z.string().nonempty({message: "Debt is not selected"}),
         name: z.string()
     }, {message: "Debt is not selected"}),
-    date: z.date()
+    date: z.date(),
+    isPercentagePayment: z.boolean()
 })

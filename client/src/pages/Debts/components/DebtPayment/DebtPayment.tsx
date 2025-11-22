@@ -12,7 +12,7 @@ type Props = {
 }
 
 const DebtPayment = (props: Props) => {
-    const { debt, date, amount, targetAccount } = props.debtPayment;
+    const { debt, date, amount, targetAccount, isPercentagePayment } = props.debtPayment;
 
     const { t, i18n } = useTranslation();
 
@@ -28,6 +28,7 @@ const DebtPayment = (props: Props) => {
                 <Flex justifyContent="space-between" alignItems="center">
                     <Stack direction={"row"}>
                         <Text textAlign={'center'} w={150} rounded={10} padding={1} background={'action_primary'}>{formatDate(date, i18n, false)}</Text>
+                        {isPercentagePayment && <Text textAlign={'center'} w={10} rounded={10} padding={1} background={'action_primary'}>%</Text>}
                         <Text fontWeight={600}>{title}</Text>
                     </Stack>
                     <Flex gap={2} justifyContent="space-between" alignItems="center">

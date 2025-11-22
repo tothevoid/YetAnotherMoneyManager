@@ -14,6 +14,7 @@ import { getAccounts } from "../../../../api/accounts/accountApi";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import { generateGuid } from "../../../../shared/utilities/idUtilities";
+import CheckboxInput from "../../../../shared/components/CheckboxInput/CheckboxInput";
 
 interface Props {
 	debtPayment?: DebtPaymentEntity | null,
@@ -51,7 +52,8 @@ const DebtPaymentModal: React.FC<Props> = (props: Props) => {
 			amount: props.debtPayment?.amount ?? 0,
 			date: props.debtPayment?.date ?? new Date(),
 			debt: props.debtPayment?.debt,
-			targetAccount: props.debtPayment?.targetAccount
+			targetAccount: props.debtPayment?.targetAccount,
+			isPercentagePayment: props.debtPayment?.isPercentagePayment ?? false
 		}
 	}, [props.debtPayment]);
 
@@ -98,6 +100,10 @@ const DebtPaymentModal: React.FC<Props> = (props: Props) => {
 			<Field.Label>{t("entity_debt_payment_date")}</Field.Label>
 			<DateSelect name="date" control={control}/>
 			<Field.ErrorText>{errors.date?.message}</Field.ErrorText>
+		</Field.Root>
+		<Field.Root invalid={!!errors.isPercentagePayment} mt={4}>
+			<CheckboxInput name="isPercentagePayment" control={control} title={t("entity_debt_payment_is_percentage_payment")}/>
+			<Field.ErrorText>{errors.isPercentagePayment?.message}</Field.ErrorText>
 		</Field.Root>
 	</BaseFormModal>
 }

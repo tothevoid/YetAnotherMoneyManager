@@ -18,5 +18,7 @@ namespace MoneyManager.Application.DTO.Debts
         public DateOnly Date { get; set; }
 
         public decimal Amount { get; set; }
+
+        public bool IsPercentagePayment { get; set; }
     }
 }

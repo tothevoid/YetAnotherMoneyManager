@@ -215,6 +215,7 @@
     "entity_debt_payment_transaction": "Transaction",
     "entity_debt_payment_debt": "Debt",
     "entity_debt_payment_date": "Date",
+    "entity_debt_payment_is_percentage_payment": "Is percentage payment",
 
     "security_page_tabs_history": "Quote history",
     "security_page_tabs_transactions": "Transactions",

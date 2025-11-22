@@ -9,7 +9,8 @@ export const prepareDebtPaymentRequest = (debtPayment: DebtPaymentEntity): DebtP
         amount: debtPayment.amount,
         debtId: debtPayment.debt.id,
         targetAccountId: debtPayment.targetAccount.id,
-        date: convertToDateOnly(debtPayment.date)
+        date: convertToDateOnly(debtPayment.date),
+        isPercentagePayment: debtPayment.isPercentagePayment
     };
 }
 
@@ -19,6 +20,7 @@ export const prepareDebtPayment = (debtPayment: DebtPaymentEntityResponse): Debt
         amount: debtPayment.amount,
         debt: prepareDebt(debtPayment.debt),
         targetAccount: prepareAccount(debtPayment.targetAccount),
-        date: new Date(debtPayment.date)
+        date: new Date(debtPayment.date),
+        isPercentagePayment: debtPayment.isPercentagePayment
     };
 }

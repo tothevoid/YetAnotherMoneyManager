@@ -1,6 +1,5 @@
 ﻿using System;
 using MoneyManager.Infrastructure.Entities.Accounts;
-using MoneyManager.Infrastructure.Entities.Transactions;
 using MoneyManager.Shared.Entities;
 
 namespace MoneyManager.Infrastructure.Entities.Debts
@@ -18,5 +17,7 @@ namespace MoneyManager.Infrastructure.Entities.Debts
         public DateOnly Date { get; set; }
 
         public decimal Amount { get; set; }
+
+        public bool IsPercentagePayment { get; set; }
     }
 }

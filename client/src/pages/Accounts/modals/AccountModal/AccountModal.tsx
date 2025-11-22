@@ -145,7 +145,7 @@ const AccountModal: React.FC<ModalProps> = (props: ModalProps) => {
 		</Field.Root>
 		<Field.Root invalid={!!errors.balance} mt={4}>
 			<Field.Label>{t("entity_account_balance")}</Field.Label>
-			<Input {...register("balance", { valueAsNumber: true })} name="balance" type="number" placeholder='10000' />
+			<Input {...register("balance", { valueAsNumber: true })} name="balance" type='number' step="0.01" placeholder='1000' />
 			<Field.ErrorText>{errors.balance?.message}</Field.ErrorText>
 		</Field.Root>
 		<Field.Root invalid={!!errors.createdOn} mt={4}>

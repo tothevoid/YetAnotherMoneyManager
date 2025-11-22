@@ -48,7 +48,7 @@ const SecurityHistory: React.FC<Props> = (props) => {
                 <YAxis domain={['dataMin - 10', 'dataMax + 10']}/>
                 <Tooltip contentStyle={getChartLabelConfig()} formatter={(value: number) => formatMoneyByCurrencyCulture(value, props.currencyName)} />
                 <Legend />
-                <Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} name={t("security_history_chart_value_name")}/>
+                <Line type="monotone" dataKey="value" stroke="#16a34a" activeDot={{ r: 8 }} name={t("security_history_chart_value_name")}/>
             </LineChart>
         </ResponsiveContainer>
     </Box>

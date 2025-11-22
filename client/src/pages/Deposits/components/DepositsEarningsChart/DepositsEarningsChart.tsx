@@ -34,7 +34,7 @@ const DepositsEarningsChart = (props: Props) => {
 				<YAxis/>
 				<Tooltip contentStyle={getChartLabelConfig()} formatter={(value: number, name: string) => [formatMoneyByCurrencyCulture(value, props.currencyName), name]}/>
 				<Legend />
-				<Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} name={t("earnings_chart_data_title")}/>
+				<Line type="monotone" dataKey="value" stroke="#16a34a" activeDot={{ r: 8 }} name={t("earnings_chart_data_title")}/>
 			</LineChart>
 		</ResponsiveContainer>
 	</Box>

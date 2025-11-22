@@ -28,7 +28,7 @@ namespace MoneyManager.Application.Services.Deposits
 
         public async Task<IEnumerable<DepositDTO>> GetAll(int monthsFrom, int monthsTo, bool onlyActive)
         {
-            var deposits = await GetDeposits(monthsFrom, monthsTo, onlyActive, x => x.To, true);
+            var deposits = await GetDeposits(monthsFrom, monthsTo, onlyActive, x => x.To, false);
             return _mapper.Map<IEnumerable<DepositDTO>>(deposits);
         }
 

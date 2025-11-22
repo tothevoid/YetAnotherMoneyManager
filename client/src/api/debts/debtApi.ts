@@ -6,7 +6,7 @@ import { prepareDebt, prepareDebtRequest } from "./debtApiMapping";
 const basicUrl = `${config.api.URL}/Debt`;
 
 export const getDebts = async (onlyActive: boolean): Promise<DebtEntity[]> =>  {
-    return await getAllEntities<DebtEntityResponse>(`${basicUrl}?onlyActive=${onlyActive}`)
+    return await getAllEntities<DebtEntityResponse>(`${basicUrl}/GetAll?onlyActive=${onlyActive}`)
     .then((debtsResponses: DebtEntityResponse[]) => debtsResponses.map(prepareDebt))
 }
 

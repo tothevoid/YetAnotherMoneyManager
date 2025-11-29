@@ -67,12 +67,12 @@ const AuthPage: React.FC<Props> = ({ onPasswordChangeRequired, onTokenReceived }
             </h2>
             <Field.Root invalid={!!errors.userName}>
                 <Field.Label>{t("auth_form_username")}</Field.Label>
-                <Input {...register("userName")} />
+                <Input {...register("userName")} autoComplete="username" />
                 <Field.ErrorText>{errors.userName?.message}</Field.ErrorText>
             </Field.Root>
             <Field.Root invalid={!!errors.password}>
                 <Field.Label>{t("auth_form_password")}</Field.Label>
-                <Input type="password" {...register("password")} />
+                <Input type="password" {...register("password")} autoComplete="current-password" />
                 <Field.ErrorText>{errors.password?.message}</Field.ErrorText>
             </Field.Root>
             {error && <div className="auth-error" style={{ color: "#e53e3e", margin: "1rem 0", textAlign: "center" }}>{error}</div>}

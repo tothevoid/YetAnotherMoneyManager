@@ -1,24 +1,16 @@
-import { Fragment, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { getSummary } from "../../api/accounts/accountApi";
 import { AccountCurrencySummary } from "../../models/accounts/accountsSummary";
-import { Box, Flex, Text } from "@chakra-ui/react";
-import { formatMoneyByCurrencyCulture } from "../../shared/utilities/formatters/moneyFormatter";
-import { useTranslation } from "react-i18next";
+import { Box } from "@chakra-ui/react";
 import AccountsList from "./components/AccountsList/AccountsList";
-
-interface State {
-	accountCurrencySummaries: AccountCurrencySummary[]
-}
+import AccountsTotal from "./components/AccountsTotal/AccountsTotal";
 
 const AccountsPage: React.FC = () => {
-	const [state, setState] = useState<State>({accountCurrencySummaries: []});
 
-	const { t } = useTranslation();
+	const [accountCurrencySummaries, setAccountCurrencySummaries] = useState<AccountCurrencySummary[]>([]);
 	const requestAccountsData = async () => {
 		const accountCurrencySummaries = await getSummary();
-		setState((currentState) => {
-			return {...currentState, accountCurrencySummaries}
-		})
+		setAccountCurrencySummaries(accountCurrencySummaries)
 	};
 
 	const onAccountsChanged = useCallback(async () => {
@@ -26,15 +18,7 @@ const AccountsPage: React.FC = () => {
 	}, []);
 
 	return <Box>
-		{
-			state.accountCurrencySummaries.length > 0 ?
-				<Flex justifyContent="space-between" alignItems="center" pt={5} pb={5}>
-					<Text color={"text_primary"} fontSize='3xl'>{t("accounts_page_summary_title")}: {state.accountCurrencySummaries.map(currency => 
-						formatMoneyByCurrencyCulture(currency.summary, currency.name)).join(" | ") }
-					</Text>
-				</Flex>:
-				<Fragment/>
-		}
+		<AccountsTotal accountCurrencySummaries={accountCurrencySummaries} />
 		<AccountsList onAccountsChanged={onAccountsChanged}/>
 	</Box>
 }

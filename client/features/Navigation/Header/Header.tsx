@@ -4,8 +4,9 @@ import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MdOutlineSettings } from 'react-icons/md';
 import UserProfileSettingsModal from '../../UserProfileSettingsModal/UserProfileSettingsModal';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { BaseModalRef } from '../../../src/shared/utilities/modalUtilities';
+import { MdOutlineExitToApp } from "react-icons/md";
 
 import appIcon from './AppIcon.svg';
 
@@ -13,8 +14,15 @@ const Header = () => {
     const { t } = useTranslation();
     const userProfileSettingsRef = useRef<BaseModalRef>(null);
 
+    const navigate = useNavigate();
+
     const onOpenSettingsClick = () => {
         userProfileSettingsRef.current?.openModal();
+    }
+
+    const onExitClick = () => {
+        localStorage.setItem("auth_token", "");
+        navigate("/auth", { replace: true });
     }
 
     const tabs = [
@@ -51,6 +59,11 @@ const Header = () => {
                     <Button borderColor="background_secondary" background="button_background_secondary" size={'md'} onClick={onOpenSettingsClick}>
                         <Icon color="card_action_icon_primary">
                             <MdOutlineSettings/>
+                        </Icon>
+                    </Button>
+                    <Button borderColor="background_secondary" background="button_background_secondary" size={'md'} onClick={onExitClick}>
+                        <Icon color="card_action_icon_primary">
+                            <MdOutlineExitToApp/>
                         </Icon>
                     </Button>
                 </Flex>

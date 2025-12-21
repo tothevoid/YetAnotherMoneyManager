@@ -1,9 +1,8 @@
-import config from '../../config' 
 import { BankEntity } from '../../models/banks/BankEntity';
 import { Nullable } from '../../shared/utilities/nullable';
 import { createEntityWithIcon, deleteEntity, getAllEntities, updateEntityWithIcon } from '../basicApi';
 
-const basicUrl = `${config.api.URL}/Bank`;
+const basicUrl = `/Bank`;
 
 const ENTITY_NAME = "bankJson"
 const ICON_NAME = "bankIcon"

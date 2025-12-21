@@ -1,29 +1,36 @@
+import config from "../config";
 import { PaginationConfig } from "../shared/models/PaginationConfig";
 import { Nullable } from "../shared/utilities/nullable";
-import { checkPromiseStatus, logPromiseError } from "../shared/utilities/webApiUtilities";
+import { logPromiseError } from "../shared/utilities/webApiUtilities";
+import axios from "axios";
+
+const api = axios.create({
+    baseURL: config.api.URL,
+});
+
+api.interceptors.request.use(config => {
+    const token = getToken();
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+});
 
 export const getAllEntities = async <T> (basicUrl: string): Promise<T[]> => {
-    const entities = await fetch(basicUrl, {method: "GET",  headers: {...getAuthHeader()}})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
+    const entities = await api.get(basicUrl)
+        .then((response) => response.data)
         .catch(logPromiseError);
   
-    return entities ?
-        entities: 
-        [] as T[];
+    return entities ?? [] as T[];
 };
 
 export const getAllEntitiesByConfig = async <TInput, TOutput> (basicUrl: string, data: TInput): Promise<TOutput[]> => {
-    const entities = await fetch(basicUrl, {method: "POST", body: convertRecordToJson(data),
-            headers: {"Content-Type": "application/json", ...getAuthHeader()}
-        })
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
+    const entities = await api.post(basicUrl, data)
+        .then((response) => response.data)
         .catch(logPromiseError);
-  
-    return entities ?
-        entities: 
-        [] as TOutput[];
+
+    return entities ?? [] as TOutput[];
 };
 
 export const createEntity = async<TRequest, TResponse> (basicUrl: string, addedEntity: TRequest): Promise<TResponse | void> => {
@@ -36,9 +43,8 @@ export const createAndGetFullEntity = async<TRequest, TResponse> (basicUrl: stri
 
 export const createEntityWithIcon = async<TRequest, TResponse>(basicUrl: string, addedEntity: TRequest, 
         entityFieldName: string, iconFieldName: string, file: Nullable<File>): Promise<TResponse | void> => {
-    return await fetch(basicUrl, { method: "PUT",  headers: {...getAuthHeader()}, body: generateForm(addedEntity, entityFieldName, iconFieldName, file)})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
+    return await api.put(basicUrl, generateForm(addedEntity, entityFieldName, iconFieldName, file))
+        .then((response) => response.data)
         .then(responseEntity => {
             return {...responseEntity} as TResponse;
         })
@@ -46,20 +52,18 @@ export const createEntityWithIcon = async<TRequest, TResponse>(basicUrl: string,
 }
 
 export const updateEntity = async<TRequest> (basicUrl: string, modifiedEntity: TRequest): Promise<boolean> => {
-    const updatedEntity = await fetch(basicUrl, { method: "PATCH", body: convertRecordToJson(modifiedEntity),  
-        headers: {"Content-Type": "application/json", ...getAuthHeader()}})
-        .then(checkPromiseStatus)
-        .catch(logPromiseError)
+    const updatedEntity = await api.patch(basicUrl, modifiedEntity)
+        .then(() => true)
+        .catch(logPromiseError);
 
-    return updatedEntity?.ok ?? false;
+    return updatedEntity ?? false;
 }
 
 export const updateEntityWithIcon = async<TRequest, TResponse> (basicUrl: string, modifiedEntity: TRequest, 
     entityFieldName: string, iconFieldName: string, file: Nullable<File>): Promise<TResponse | void> => {
-    return await fetch(basicUrl, { method: "PATCH", headers: {...getAuthHeader()}, 
-        body: generateForm(modifiedEntity, entityFieldName, iconFieldName, file )})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
+
+    return await api.patch(basicUrl, generateForm(modifiedEntity, entityFieldName, iconFieldName, file ))
+        .then((response) => response.data)
         .then(responseEntity => {
             return {...responseEntity} as TResponse;
         })
@@ -72,36 +76,28 @@ export const deleteEntity = async (basicUrl: string, recordId: string): Promise<
     }
 
     const url = `${basicUrl}?id=${recordId}`;
-    const result = await fetch(url, { method: "DELETE",  headers: {...getAuthHeader()}})
-        .then(checkPromiseStatus)
+    const result = await api.delete(url)
+        .then(() => true)
         .catch(logPromiseError);
 
-    return result?.ok ?? false;
+    return result ?? false;
 }
 
 export const getEntity = async <T> (basicUrl: string): Promise<T | void> => {
-    const entity: T | void = await fetch(`${basicUrl}`, { method: "GET", headers: getAuthHeader() })
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
+    const entity: T | void = await api.get(`${basicUrl}`)
+        .then((response) => response.data)
         .catch(logPromiseError);
     return entity;
 }
 
 export const getEntityByConfig = async <T> (basicUrl: string, body: unknown): Promise<T | void> => {
-    return await fetch(basicUrl, {method: "POST",  
-        body: JSON.stringify(body),
-        headers: {"Content-Type": "application/json", ...getAuthHeader()}})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
+    return await api.post(basicUrl, body)
+        .then((response) => response.data)
         .catch(logPromiseError);
 }
 
 export const getEntityById = async <T> (basicUrl: string, id: string): Promise<T | void> => {
     return getEntity(`${basicUrl}/GetById?id=${id}`);
-}
-
-export const convertRecordToJson = <T>(record: T): string => {
-    return JSON.stringify(record);
 }
 
 const generateForm = <T>(entity: T, entityField: string, iconField: string, file: Nullable<File>) => {
@@ -115,40 +111,36 @@ const generateForm = <T>(entity: T, entityField: string, iconField: string, file
         formData.append(iconField, file);
     }
     return formData;
-    }
+}
 
 export const sendCreateRequest = async<TRequest, TResponse> (basicUrl: string, addedEntity: TRequest, 
     responseHandler: (response: TResponse) => TResponse): Promise<TResponse | void> => {
-    const newEntity = await fetch(basicUrl, { method: "PUT", body: convertRecordToJson(addedEntity),
-        headers: {"Content-Type": "application/json", ...getAuthHeader()}})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
+    const newEntity = await api.put(basicUrl, addedEntity)
+        .then((response) => response.data)
         .then(responseHandler)
         .catch(logPromiseError);
     return newEntity;
 }
 
 export const getAction = async (url: string): Promise<boolean> => {
-    const result = await fetch(url, { method: "GET", headers: {...getAuthHeader()}})
-        .then(checkPromiseStatus)
+    const result = await api.get(url)
+        .then(() => true)
         .catch(logPromiseError)
 
-    return result?.ok ?? false;
+    return result ?? false;
 }
 
 export const postAction = async (url: string, data: unknown): Promise<boolean> => {
-    const result = await fetch(url, { method: "POST", body: JSON.stringify(data),  
-        headers: {"Content-Type": "application/json", ...getAuthHeader()}})
-        .then(checkPromiseStatus)
+    const result = await api.post(url, data)
+        .then(() => true)
         .catch(logPromiseError)
 
-    return result?.ok ?? false;
+    return result ?? false;
 }
 
 export const getPagination = async (url: string): Promise<PaginationConfig | void> => {
-    return await fetch(`${url}`, {method: "GET", headers: {...getAuthHeader()}})
-        .then(checkPromiseStatus)
-        .then((response: Response) => response.json())
+    return await api.get(url)
+        .then((response) => response.data)
         .catch(logPromiseError);
 };
 

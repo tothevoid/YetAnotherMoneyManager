@@ -1,4 +1,3 @@
-import config from '../../config' 
 import { SecurityTransactionEntity, SecurityTransactionEntityRequest, SecurityTransactionEntityResponse } from '../../models/securities/SecurityTransactionEntity';
 import { SecurityTransactionsHistory } from '../../models/securities/SecurityTransactionsHistory';
 import { SecurityTransactionsRequest } from '../../models/securities/SecurityTransactionsRequest';
@@ -6,7 +5,7 @@ import { PaginationConfig } from '../../shared/models/PaginationConfig';
 import { createEntity, deleteEntity, getAllEntities, getAllEntitiesByConfig, getPagination, updateEntity } from '../basicApi';
 import { prepareSecurityTransaction, prepareSecurityTransactionRequest } from './securityTransactionApiMapping';
 
-const basicUrl = `${config.api.URL}/SecurityTransaction`;
+const basicUrl = `/SecurityTransaction`;
 
 export const getSecurityTransactions = async (request: SecurityTransactionsRequest): Promise<SecurityTransactionEntity[]> => {
     return await getAllEntitiesByConfig<SecurityTransactionsRequest, SecurityTransactionEntityResponse> (`${basicUrl}/GetAll`, request)

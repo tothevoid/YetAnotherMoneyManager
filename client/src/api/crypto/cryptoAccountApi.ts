@@ -1,9 +1,8 @@
-import config from '../../config' 
-import { CryptoAccountEntity, CryptoAccountEntityRequest, CryptoAccountEntityResponse } from '../../models/crypto/CryptoAccountEntity';
+ import { CryptoAccountEntity, CryptoAccountEntityRequest, CryptoAccountEntityResponse } from '../../models/crypto/CryptoAccountEntity';
 import { createEntity, deleteEntity, getAllEntities, getEntityById, updateEntity } from '../basicApi';
 import { prepareCryptoAccount, prepareCryptoAccountEntityRequest } from './cryptoAccountApiMapping';
 
-const basicUrl = `${config.api.URL}/CryptoAccount`;
+const basicUrl = `/CryptoAccount`;
 
 export const getCryptoAccounts = async (): Promise<CryptoAccountEntity[]> => {
     return await getAllEntities<CryptoAccountEntityResponse>(basicUrl)

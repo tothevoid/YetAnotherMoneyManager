@@ -1,10 +1,9 @@
-import config from '../../config' 
 import { BrokerAccountSecurityEntity, BrokerAccountSecurityEntityResponse } from '../../models/brokers/BrokerAccountSecurityEntity';
 import { Nullable } from '../../shared/utilities/nullable';
 import { deleteEntity, getAction, getAllEntities, getEntity, updateEntity } from '../basicApi';
 import { prepareBrokerAccountSecurity, prepareBrokerAccountSecurityRequest } from './brokerAccountSecurityApiMapping';
 
-const basicUrl = `${config.api.URL}/BrokerAccountSecurity`;
+const basicUrl = `/BrokerAccountSecurity`;
 
 export const getSecuritiesByBrokerAccount = async (brokerAccountId: string): Promise<BrokerAccountSecurityEntity[]> => {
     return await getAllEntities<BrokerAccountSecurityEntityResponse>(`${basicUrl}/GetByBrokerAccount?brokerAccountId=${brokerAccountId}`)

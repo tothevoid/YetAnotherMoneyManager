@@ -1,9 +1,8 @@
-import config from '../../config' 
 import { CryptocurrencyEntity } from '../../models/crypto/CryptocurrencyEntity';
 import { Nullable } from '../../shared/utilities/nullable';
 import { createEntityWithIcon, deleteEntity, getAllEntities, updateEntityWithIcon } from '../basicApi';
 
-const basicUrl = `${config.api.URL}/Cryptocurrency`;
+const basicUrl = `/Cryptocurrency`;
 const ENTITY_NAME = "cryptocurrencyJson"
 const ICON_NAME = "cryptoCurrencyIcon"
 

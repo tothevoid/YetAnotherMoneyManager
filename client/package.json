@@ -15,7 +15,7 @@
     "@microsoft/signalr": "^8.0.7",
     "@types/node": "^22.13.1",
     "@types/react-datepicker": "^6.2.0",
-    "axios": "^1.7.9",
+    "axios": "^1.13.2",
     "chakra-react-select": "^6.0.1",
     "i18next": "^24.2.3",
     "install": "^0.13.0",

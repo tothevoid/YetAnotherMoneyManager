@@ -1,5 +1,4 @@
 import { i18n } from 'i18next';
-import config from '../../config' 
 import { formatDate } from '../../shared/utilities/formatters/dateFormatter';
 import { SecurityHistoryValue } from '../../models/securities/SecurityHistoryValue';
 import { createEntityWithIcon, deleteEntity, getAllEntities, getEntity, getEntityById, updateEntityWithIcon } from '../basicApi';
@@ -8,7 +7,7 @@ import { SecurityEntity, SecurityEntityRequest, SecurityEntityResponse } from '.
 import { prepareSecurity, prepareSecurityEntityRequest } from './securityApiMapping';
 import { Nullable } from '../../shared/utilities/nullable';
 
-const basicUrl = `${config.api.URL}/Security`;
+const basicUrl = `/Security`;
 const ENTITY_NAME = "securityJson"
 const ICON_NAME = "securityIcon"
 

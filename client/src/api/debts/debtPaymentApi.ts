@@ -1,11 +1,10 @@
-import config from "../../config";
 import { DebtPaymentEntity, DebtPaymentEntityRequest, DebtPaymentEntityResponse } from "../../models/debts/DebtPaymentEntity";
 import { DebtPaymentsQuery } from "../../pages/Debts/hooks/useDebtPayments";
 import { PaginationConfig } from "../../shared/models/PaginationConfig";
 import { createEntity, deleteEntity, getAllEntitiesByConfig, getPagination, updateEntity } from "../basicApi";
 import { prepareDebtPayment, prepareDebtPaymentRequest } from "./debtPaymentApiMapping";
 
-const basicUrl = `${config.api.URL}/DebtPayment`;
+const basicUrl = `/DebtPayment`;
 
 export const getDebtPayments = async (query: DebtPaymentsQuery): Promise<DebtPaymentEntity[]> =>  {
     return await getAllEntitiesByConfig<DebtPaymentsQuery, DebtPaymentEntityResponse>(`${basicUrl}/GetAll`, query)

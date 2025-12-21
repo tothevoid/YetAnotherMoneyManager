@@ -1,9 +1,8 @@
-import config from "../../config";
 import { UserProfileEntity } from "../../models/user/UserProfileEntity";
 import { getEntity, updateEntity } from "../basicApi";
 import { prepareUserProfileRequest } from "./userProfileApiMapping";
 
-const basicUrl = `${config.api.URL}/UserProfile`;
+const basicUrl = `/UserProfile`;
 
 export const getUserProfile = async (): Promise<UserProfileEntity | void> =>  {
     return getEntity<UserProfileEntity>(basicUrl);

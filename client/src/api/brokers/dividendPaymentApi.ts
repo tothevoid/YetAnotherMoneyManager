@@ -1,11 +1,10 @@
-import config from '../../config' 
 import { DividendPaymentEntity, DividendPaymentEntityRequest, DividendPaymentEntityResponse } from '../../models/brokers/DividendPaymentEntity';
 import { DividendPaymentsQuery } from '../../pages/BrokerAccount/hooks/useDividendPayments';
 import { PaginationConfig } from '../../shared/models/PaginationConfig';
 import { createEntity, deleteEntity, getAllEntitiesByConfig, getEntity, getPagination, updateEntity } from '../basicApi';
 import { prepareDividendPayment, prepareDividendPaymentRequest } from './dividendPaymentApiMapping';
 
-const basicUrl = `${config.api.URL}/DividendPayment`;
+const basicUrl = `/DividendPayment`;
 
 export const getDividendPaymentsByBrokerAccount = async (query: DividendPaymentsQuery): Promise<DividendPaymentEntity[]> => {
     return await getAllEntitiesByConfig<DividendPaymentsQuery, DividendPaymentEntityResponse>(`${basicUrl}/GetAll`, query)

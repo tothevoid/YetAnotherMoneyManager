@@ -1,9 +1,8 @@
-import config from '../../config' 
 import { CurrencyTransactionEntity, CurrencyTransactionEntityRequest, CurrencyTransactionEntityResponse } from '../../models/transactions/CurrencyTransactionEntity';
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
 import { prepareCurrencyTransaction, prepareCurrencyTransactionRequest } from './currencyTransactionApiMapping';
 
-const basicUrl = `${config.api.URL}/CurrencyTransaction`;
+const basicUrl = `/CurrencyTransaction`;
 
 export const getCurrencyTransactions = async (): Promise<CurrencyTransactionEntity[]> => {
 	return await getAllEntities<CurrencyTransactionEntityResponse>(basicUrl)

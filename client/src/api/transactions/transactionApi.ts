@@ -1,9 +1,8 @@
-import config from '../../config' 
 import { createAndGetFullEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
 import { TransactionEntity, TransactionEntityRequest, TransactionEntityResponse } from '../../models/transactions/TransactionEntity';
 import { prepareTransaction, prepareTransactionRequest } from './transactionApiMapping';
 
-const basicUrl = `${config.api.URL}/Transaction`;
+const basicUrl = `/Transaction`;
 
 export const getTransactions = async (month: number, year: number, showSystem: boolean): Promise<TransactionEntity[]> => {
 	const url = `${basicUrl}?month=${month}&year=${year}&showSystem=${showSystem}`;

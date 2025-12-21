@@ -1,11 +1,10 @@
 import { DepositMonthSummary } from '../../pages/Deposits/components/DepositStats/depositMonthSummary';
-import config from '../../config' 
 import { DepositsRange } from '../../models/deposits/depositsRange';
 import { createEntity, deleteEntity, getAllEntitiesByConfig, getEntity, getEntityByConfig, updateEntity } from '../basicApi';
 import { DepositEntity, DepositEntityRequest, DepositEntityResponse } from '../../models/deposits/DepositEntity';
 import { prepareDepositEntity, prepareDepositEntityRequest } from './depositApiMapping';
 
-const basicUrl = `${config.api.URL}/Deposit`;
+const basicUrl = `/Deposit`;
 
 export const getDeposits = async (monthsFrom: number, monthsTo: number, onlyActive: boolean): Promise<DepositEntity[]> => {
     return await getAllEntitiesByConfig<unknown, DepositEntityResponse>(`${basicUrl}/GetAll`, 

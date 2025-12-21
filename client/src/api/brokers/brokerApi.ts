@@ -1,8 +1,7 @@
-import config from '../../config' 
 import { BrokerEntity } from '../../models/brokers/BrokerEntity';
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
 
-const basicUrl = `${config.api.URL}/Broker`;
+const basicUrl = `/Broker`;
 
 export const getBrokers = async (): Promise<BrokerEntity[]> => {
    return await getAllEntities<BrokerEntity>(basicUrl);

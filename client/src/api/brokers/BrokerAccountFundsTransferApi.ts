@@ -1,11 +1,10 @@
-import config from '../../config' 
 import { BrokerAccountFundTransferEntity, BrokerAccountFundTransferEntityRequest, BrokerAccountFundTransferEntityResponse } from '../../models/brokers/BrokerAccountFundTransfer';
 import { FundTransfersQuery } from '../../pages/BrokerAccount/hooks/useBrokerAccountFundTransfers';
 import { PaginationConfig } from '../../shared/models/PaginationConfig';
 import { createEntity, deleteEntity, getAllEntitiesByConfig, getPagination, updateEntity } from '../basicApi';
 import { prepareBrokerAccountFundsTransfer, prepareBrokerAccountFundsTransferRequest } from './BrokerAccountFundsTransferMapping';
 
-const basicUrl = `${config.api.URL}/BrokerAccountFundsTransfer`;
+const basicUrl = `/BrokerAccountFundsTransfer`;
 
 export const getBrokerAccountFundsTransfers = async (query: FundTransfersQuery): Promise<BrokerAccountFundTransferEntity[]> => {
     return await getAllEntitiesByConfig<FundTransfersQuery, BrokerAccountFundTransferEntityResponse>(`${basicUrl}/GetAll`, query)

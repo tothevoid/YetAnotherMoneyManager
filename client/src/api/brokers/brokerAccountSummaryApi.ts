@@ -1,4 +1,3 @@
-import config from '../../config' 
 import { BrokerAccountDailyStatsEntity } from '../../models/brokers/BrokerAccountDailyStatsEntity';
 import { BrokerAccountDayTransferEntity } from '../../models/brokers/BrokerAccountDayTransferEntity';
 import { BrokerAccountMonthTransferEntity } from '../../models/brokers/BrokerAccountMonthTransferEntity';
@@ -6,7 +5,7 @@ import { BrokerAccountSummaryEntity } from '../../models/brokers/BrokerAccountSu
 import { getAllEntities, getEntity } from '../basicApi';
 import { prepareBrokerAccountsSecurityStats, prepareDailyStats } from './brokerAccountSummaryApiMapping';
 
-const basicUrl = `${config.api.URL}/BrokerAccountSummary`;
+const basicUrl = `/BrokerAccountSummary`;
 
 export const getBrokerAccountStats = async (brokerAccountId: string, from: Date, to: Date): Promise<BrokerAccountSummaryEntity | void> => {
     const url = `${basicUrl}/GetSummary?brokerAccountId=${brokerAccountId}&from=${from.toISOString()}&to=${to.toISOString()}`;

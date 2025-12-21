@@ -1,11 +1,10 @@
-import config from '../../config' 
 import { DividendEntity, DividendEntityRequest, DividendEntityResponse } from '../../models/securities/DividendEntity';
 import { DividendsQuery } from '../../pages/SecurityPage/hooks/useDividends';
 import { PaginationConfig } from '../../shared/models/PaginationConfig';
 import { createEntity, deleteEntity, getAllEntities, getAllEntitiesByConfig, getPagination, updateEntity } from '../basicApi';
 import { prepareDividend, prepareDividendRequest } from './dividendApiMapping';
 
-const basicUrl = `${config.api.URL}/Dividend`;
+const basicUrl = `/Dividend`;
 
 export const getDividends = async (query: DividendsQuery): Promise<DividendEntity[]> => {
     return await getAllEntitiesByConfig<DividendsQuery, DividendEntityResponse>(`${basicUrl}/GetAll`, query)

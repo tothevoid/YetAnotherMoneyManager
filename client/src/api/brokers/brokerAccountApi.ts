@@ -1,9 +1,8 @@
-import config from '../../config' 
 import { BrokerAccountEntity, BrokerAccountEntityRequest, BrokerAccountEntityResponse } from '../../models/brokers/BrokerAccountEntity';
 import { createEntity, deleteEntity, getAllEntities, getEntityById, updateEntity } from '../basicApi';
 import { prepareBrokerAccount, prepareBrokerAccountRequest } from './brokerAccountApiMapping';
 
-const basicUrl = `${config.api.URL}/BrokerAccount`;
+const basicUrl = `/BrokerAccount`;
 
 export const getBrokerAccounts = async (): Promise<BrokerAccountEntity[]> => {
     return await getAllEntities<BrokerAccountEntityResponse>(basicUrl)

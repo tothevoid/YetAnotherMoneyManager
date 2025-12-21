@@ -1,9 +1,8 @@
-import config from "../../config";
 import { TransactionTypeEntity } from "../../models/transactions/TransactionTypeEntity";
 import { Nullable } from "../../shared/utilities/nullable";
 import { createEntityWithIcon, deleteEntity, getAllEntities, updateEntityWithIcon } from "../basicApi";
 
-const basicUrl = `${config.api.URL}/TransactionType`;
+const basicUrl = `/TransactionType`;
 const ENTITY_NAME = "transactionTypeJson"
 const ICON_NAME = "transactionTypeIcon"
 

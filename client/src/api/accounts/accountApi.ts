@@ -1,11 +1,10 @@
-import config from "../../config";
 import { AccountEntity, AccountEntityRequest, AccountEntityResponse } from "../../models/accounts/AccountEntity";
 import { AccountCurrencySummary } from "../../models/accounts/accountsSummary";
 import { createEntity, deleteEntity, getAllEntities, getAllEntitiesByConfig, postAction, updateEntity } from "../basicApi";
 import { Transfer } from "../../pages/Accounts/modals/AccountBalanceTransferModal/AccountBalanceTransferModal";
 import { prepareAccount, prepareAccountRequest } from "./accountApiMapping";
 
-const basicUrl = `${config.api.URL}/Account`;
+const basicUrl = `/Account`;
 
 export const getAccounts = async (onlyActive: boolean = false): Promise<AccountEntity[]> =>  {
 	return await getAllEntitiesByConfig<unknown, AccountEntityResponse>(`${basicUrl}/GetAll`, 

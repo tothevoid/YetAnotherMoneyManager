@@ -1,6 +1,7 @@
+import config from '../../config' 
 import { Nullable } from '../../shared/utilities/nullable';
 
-const basicUrl = `/Auth`;
+const basicUrl = `${config.api.URL}/Auth`;
 
 export const auth = async (userName: string, password: Nullable<string>)
     : Promise<Nullable<{passwordChangeRequired: boolean, token: Nullable<string>}>> => {

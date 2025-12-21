@@ -128,7 +128,7 @@ namespace MoneyManager.Application.Services.Debts
             }
             else if (!updatedDebtPayment.IsPercentagePayment)
             {
-                await UpdateLinkedDebt(updatedDebtPayment.DebtId, updatedDebtPayment.Amount - currentDebtPayment.Amount);
+                await UpdateLinkedDebt(updatedDebtPayment.DebtId, currentDebtPayment.Amount - updatedDebtPayment.Amount);
             }
         }
 

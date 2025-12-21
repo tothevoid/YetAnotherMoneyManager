@@ -33,10 +33,6 @@ const BrokerAccountsList: React.FC = () => {
 		deleteBrokerAccountEntity,
 	} = useBrokerAccounts();
 
-	const getAddButton = () => {
-		return <AddButton buttonTitle={t("broker_accounts_page_summary_add")} onClick={onAddClicked}/>
-	}
-
 	const onBrokerAccountSaved = async (brokerAccount: BrokerAccountEntity) => {
 		if (mode === ActiveEntityMode.Add) {
 			await createBrokerAccountEntity(brokerAccount);
@@ -55,17 +51,22 @@ const BrokerAccountsList: React.FC = () => {
 		onActionEnded();
 	}
 
-	if (!brokerAccounts.length) {
-		return <Placeholder text={t("broker_accounts_page_no_accounts")}>
-			{getAddButton()}
-		</Placeholder>
+	const getHeader = () => {
+		const addButton = <AddButton buttonTitle={t("broker_accounts_page_summary_add")} 
+			onClick={onAddClicked}/>;
+
+		return brokerAccounts.length ?
+			<Flex justifyContent="space-between" alignItems="center" pt={5} pb={5}>
+				{addButton}
+			</Flex>:
+			<Placeholder text={t("broker_accounts_page_no_accounts")}>
+				{addButton}
+			</Placeholder>
 	}
 
 	return (
 		<Fragment>
-			<Flex justifyContent="space-between" alignItems="center" pt={5} pb={5}>
-				{getAddButton()}
-			</Flex>
+			{getHeader()}
 			<SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(400px, 3fr))'>
 				{
 					brokerAccounts.map((brokerAccount: BrokerAccountEntity) => 

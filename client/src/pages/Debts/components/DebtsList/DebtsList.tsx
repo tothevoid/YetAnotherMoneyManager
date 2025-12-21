@@ -55,12 +55,20 @@ const DebtsList: React.FC<Props> = ({debtsPaymentsVersion, onDebtsChanged}) => {
         onDebtsChanged(debts.length);
     }, [debts, onDebtsChanged])
 
-    const onOnlyActiveSwitched = (onlyActive: boolean) => {
-        setDebtQueryParameters({onlyActive});
+    const getHeader = () => {
+        const addButton = <AddButton buttonTitle={t("debts_page_add_debt")} 
+            onClick={onAddClicked}/>
+
+        return debts.length > 0 ?
+            <Flex justifyContent="space-between">
+                <SwitchButton active={debtQueryParameters.onlyActive} title={t("debts_page_only_active")} onSwitch={onOnlyActiveSwitched}/>
+                {debts.length && addButton}
+            </Flex>:
+            <Placeholder text={t("debts_page_no_debts")}>{addButton}</Placeholder>
     }
 
-    const getAddButton = () => {
-        return <AddButton buttonTitle={t("debts_page_add_debt")} onClick={onAddClicked}/>
+    const onOnlyActiveSwitched = (onlyActive: boolean) => {
+        setDebtQueryParameters({onlyActive});
     }
 
     const onDebtSaved = async (debt: DebtEntity) => {
@@ -81,29 +89,25 @@ const DebtsList: React.FC<Props> = ({debtsPaymentsVersion, onDebtsChanged}) => {
 		onActionEnded();
     }
 
-    return debts.length > 0 ?
-        <Box>
-            <Flex justifyContent="space-between">
-                <SwitchButton active={debtQueryParameters.onlyActive} title={t("debts_page_only_active")} onSwitch={onOnlyActiveSwitched}/>
-                {debts.length && getAddButton()}
-            </Flex>
-            <SimpleGrid pt={5} pb={5} gap={6} templateColumns='repeat(auto-fill, minmax(300px, 4fr))'>
-            {
-                debts.map((debt: DebtEntity) => 
-                    <Debt key={debt.id} debt={debt} 
-                        onEditClicked={onEditClicked}
-                        onDeleteClicked={onDeleteClicked}/>
-                )
-            }
-            </SimpleGrid>
-            <ConfirmModal onConfirmed={onDeleteConfirmed}
-                title={t("security_delete_title")}
-                message={t("modals_delete_message")}
-                confirmActionName={t("modals_delete_button")}
-                ref={confirmModalRef}/>
-            <DebtModal debt={activeEntity} modalRef={modalRef} onSaved={onDebtSaved}/>
-        </Box>:
-        <Placeholder text={t("debts_page_no_debts")}>{getAddButton()}</Placeholder>
+    return <Box>
+        {getHeader()}
+        <SimpleGrid pt={5} pb={5} gap={6} templateColumns='repeat(auto-fill, minmax(300px, 4fr))'>
+        {
+            debts.map((debt: DebtEntity) => 
+                <Debt key={debt.id} debt={debt} 
+                    onEditClicked={onEditClicked}
+                    onDeleteClicked={onDeleteClicked}/>
+            )
+        }
+        </SimpleGrid>
+        <ConfirmModal onConfirmed={onDeleteConfirmed}
+            title={t("security_delete_title")}
+            message={t("modals_delete_message")}
+            confirmActionName={t("modals_delete_button")}
+            ref={confirmModalRef}/>
+        <DebtModal debt={activeEntity} modalRef={modalRef} onSaved={onDebtSaved}/>
+    </Box>
+        
 }
 
 export default DebtsList;

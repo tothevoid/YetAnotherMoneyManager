@@ -11,7 +11,6 @@ Stack:
 Development:
 
 * install docker
-* create `.env` file by `.env.dev`
 * execute `docker compose -p moneymanager_dev --env-file .env.dev up -d --build`
 * remove client and server services
 * install at least .NET 9

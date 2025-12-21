@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { SimpleGrid, Box, Flex} from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { DebtEntity } from "../../../../models/debts/DebtEntity";
@@ -20,6 +20,8 @@ interface Props {
 const DebtsList: React.FC<Props> = ({debtsPaymentsVersion, onDebtsChanged}) => {
     const { t } = useTranslation();
 
+    const [onlyActive, setOnlyActive] = useState(true);
+
     const { 
         activeEntity,
         modalRef,
@@ -36,10 +38,8 @@ const DebtsList: React.FC<Props> = ({debtsPaymentsVersion, onDebtsChanged}) => {
         createDebtEntity,
         updateDebtEntity,
         deleteDebtEntity,
-        debtQueryParameters,
-        setDebtQueryParameters,
         reloadDebts
-    } = useDebts({onlyActive: true});
+    } = useDebts();
 
     const reloadData = useCallback(async () => {
         await reloadDebts();
@@ -61,14 +61,14 @@ const DebtsList: React.FC<Props> = ({debtsPaymentsVersion, onDebtsChanged}) => {
 
         return debts.length > 0 ?
             <Flex justifyContent="space-between">
-                <SwitchButton active={debtQueryParameters.onlyActive} title={t("debts_page_only_active")} onSwitch={onOnlyActiveSwitched}/>
+                <SwitchButton active={onlyActive} title={t("debts_page_only_active")} onSwitch={onOnlyActiveSwitched}/>
                 {debts.length && addButton}
             </Flex>:
             <Placeholder text={t("debts_page_no_debts")}>{addButton}</Placeholder>
     }
 
     const onOnlyActiveSwitched = (onlyActive: boolean) => {
-        setDebtQueryParameters({onlyActive});
+        setOnlyActive(onlyActive);
     }
 
     const onDebtSaved = async (debt: DebtEntity) => {
@@ -93,7 +93,7 @@ const DebtsList: React.FC<Props> = ({debtsPaymentsVersion, onDebtsChanged}) => {
         {getHeader()}
         <SimpleGrid pt={5} pb={5} gap={6} templateColumns='repeat(auto-fill, minmax(300px, 4fr))'>
         {
-            debts.map((debt: DebtEntity) => 
+            debts.filter(debt => !onlyActive || debt.amount).map((debt: DebtEntity) => 
                 <Debt key={debt.id} debt={debt} 
                     onEditClicked={onEditClicked}
                     onDeleteClicked={onDeleteClicked}/>
@@ -101,7 +101,7 @@ const DebtsList: React.FC<Props> = ({debtsPaymentsVersion, onDebtsChanged}) => {
         }
         </SimpleGrid>
         <ConfirmModal onConfirmed={onDeleteConfirmed}
-            title={t("security_delete_title")}
+            title={t("debts_delete_title")}
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
             ref={confirmModalRef}/>

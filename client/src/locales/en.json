@@ -257,6 +257,7 @@
     "debts_page_add_debt": "Add debt",
     "debts_page_no_debts": "No debts",
     "debts_page_add_payment": "Add payment",
+    "debts_delete_title": "Delete debt",
     "debt_payment_title": "Paid \"{{amount}}\" of \"{{debt}}\" on \"{{account}}\"",
     "debt_payment_modal_title": "Debt payment",
 
@@ -271,6 +272,7 @@
     "cryptocurrency_form_symbol": "Symbol",
     "cryptocurrency_form_name": "Name",
     "cryptocurrency_form_price": "Price",
+    "cryptocurrency_delete_title": "Delete cryptocurrency",
 
     "cryptocurrencies_page_no_cryptocurrencies": "No cryptocurrencies",
 

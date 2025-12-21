@@ -80,7 +80,7 @@ const CryptocurrenciesPage: React.FC = () => {
             }
         </SimpleGrid>
         <ConfirmModal onConfirmed={onDeleteConfirmed}
-            title={t("security_delete_title")}
+            title={t("cryptocurrency_delete_title")}
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
             ref={confirmModalRef}/>

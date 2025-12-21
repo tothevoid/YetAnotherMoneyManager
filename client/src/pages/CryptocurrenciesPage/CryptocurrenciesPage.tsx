@@ -42,6 +42,19 @@ const CryptocurrenciesPage: React.FC = () => {
         onActionEnded();
     }
 
+    const getHeader = () => {
+        const addButton = <AddButton onClick={onAddClicked} 
+            buttonTitle={t("security_page_summary_add")}/>
+
+        return cryptocurrencies.length ?
+            <Flex justifyContent="space-between" alignItems="center" pt={5} pb={5}>
+                {addButton}
+            </Flex>:
+            <Placeholder text={t("cryptocurrencies_page_no_cryptocurrencies")}>
+                {addButton}
+            </Placeholder>
+    }
+
     const onDeleteConfirmed = async () => {
         if (!activeEntity) {
             throw new Error("Deleted entity is not set")
@@ -51,24 +64,12 @@ const CryptocurrenciesPage: React.FC = () => {
         onActionEnded();
     }
 
-    const getAddButton = () => {
-        return <AddButton onClick={onAddClicked} buttonTitle={t("security_page_summary_add")}/>
-    }
-
-    if (!cryptocurrencies.length) {
-        return <Placeholder text={t("cryptocurrencies_page_no_cryptocurrencies")}>
-            {getAddButton()}
-        </Placeholder>
-    }
-
     const onModalClosed = () => {
         onActionEnded();
     }
 
     return <Fragment>
-        <Flex justifyContent="space-between" alignItems="center" pt={5} pb={5}>
-           {getAddButton()}
-        </Flex>
+        {getHeader()}
         <SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(300px, 3fr))'>
             {
                 cryptocurrencies.map((cryptocurrency: CryptocurrencyEntity) => 

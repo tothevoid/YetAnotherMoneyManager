@@ -21,6 +21,7 @@ const DateSelect: React.FC<Props> = ({name, control, fullWidth = true, isDateTim
         control={control}
         render={({ field: {onChange, value} }) => (
             <DatePicker
+                autoComplete="off"
                 showTimeSelect={isDateTime} 
                 wrapperClassName={fullWidth ? "date-select-full-with": undefined}
                 selected={value}

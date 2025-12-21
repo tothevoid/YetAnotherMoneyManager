@@ -4,7 +4,7 @@ import { createEntity, deleteEntity, getAllEntities, getAllEntitiesByConfig, pos
 import { Transfer } from "../../pages/Accounts/modals/AccountBalanceTransferModal/AccountBalanceTransferModal";
 import { prepareAccount, prepareAccountRequest } from "./accountApiMapping";
 
-const basicUrl = `/Account`;
+const basicUrl = `Account`;
 
 export const getAccounts = async (onlyActive: boolean = false): Promise<AccountEntity[]> =>  {
 	return await getAllEntitiesByConfig<unknown, AccountEntityResponse>(`${basicUrl}/GetAll`, 

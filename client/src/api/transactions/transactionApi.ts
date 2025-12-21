@@ -2,7 +2,7 @@ import { createAndGetFullEntity, deleteEntity, getAllEntities, updateEntity } fr
 import { TransactionEntity, TransactionEntityRequest, TransactionEntityResponse } from '../../models/transactions/TransactionEntity';
 import { prepareTransaction, prepareTransactionRequest } from './transactionApiMapping';
 
-const basicUrl = `/Transaction`;
+const basicUrl = `Transaction`;
 
 export const getTransactions = async (month: number, year: number, showSystem: boolean): Promise<TransactionEntity[]> => {
 	const url = `${basicUrl}?month=${month}&year=${year}&showSystem=${showSystem}`;

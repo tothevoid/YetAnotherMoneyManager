@@ -2,7 +2,7 @@ import { CurrencyTransactionEntity, CurrencyTransactionEntityRequest, CurrencyTr
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
 import { prepareCurrencyTransaction, prepareCurrencyTransactionRequest } from './currencyTransactionApiMapping';
 
-const basicUrl = `/CurrencyTransaction`;
+const basicUrl = `CurrencyTransaction`;
 
 export const getCurrencyTransactions = async (): Promise<CurrencyTransactionEntity[]> => {
 	return await getAllEntities<CurrencyTransactionEntityResponse>(basicUrl)

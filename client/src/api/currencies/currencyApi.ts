@@ -1,7 +1,7 @@
 import { CurrencyEntity } from "../../models/currencies/CurrencyEntity";
 import { createEntity, deleteEntity, getAction, getAllEntities, updateEntity } from "../basicApi";
 
-const basicUrl = `/Currency`;
+const basicUrl = `Currency`;
 
 export const syncRates = async () =>  {
 	await getAction(`${basicUrl}/SyncRates`);

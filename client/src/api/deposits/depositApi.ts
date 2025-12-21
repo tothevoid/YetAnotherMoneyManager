@@ -4,7 +4,7 @@ import { createEntity, deleteEntity, getAllEntitiesByConfig, getEntity, getEntit
 import { DepositEntity, DepositEntityRequest, DepositEntityResponse } from '../../models/deposits/DepositEntity';
 import { prepareDepositEntity, prepareDepositEntityRequest } from './depositApiMapping';
 
-const basicUrl = `/Deposit`;
+const basicUrl = `Deposit`;
 
 export const getDeposits = async (monthsFrom: number, monthsTo: number, onlyActive: boolean): Promise<DepositEntity[]> => {
     return await getAllEntitiesByConfig<unknown, DepositEntityResponse>(`${basicUrl}/GetAll`, 

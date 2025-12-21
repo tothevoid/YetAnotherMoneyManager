@@ -2,7 +2,7 @@ import { UserProfileEntity } from "../../models/user/UserProfileEntity";
 import { getEntity, updateEntity } from "../basicApi";
 import { prepareUserProfileRequest } from "./userProfileApiMapping";
 
-const basicUrl = `/UserProfile`;
+const basicUrl = `UserProfile`;
 
 export const getUserProfile = async (): Promise<UserProfileEntity | void> =>  {
     return getEntity<UserProfileEntity>(basicUrl);

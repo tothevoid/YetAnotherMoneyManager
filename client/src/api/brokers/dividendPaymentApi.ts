@@ -4,7 +4,7 @@ import { PaginationConfig } from '../../shared/models/PaginationConfig';
 import { createEntity, deleteEntity, getAllEntitiesByConfig, getEntity, getPagination, updateEntity } from '../basicApi';
 import { prepareDividendPayment, prepareDividendPaymentRequest } from './dividendPaymentApiMapping';
 
-const basicUrl = `/DividendPayment`;
+const basicUrl = `DividendPayment`;
 
 export const getDividendPaymentsByBrokerAccount = async (query: DividendPaymentsQuery): Promise<DividendPaymentEntity[]> => {
     return await getAllEntitiesByConfig<DividendPaymentsQuery, DividendPaymentEntityResponse>(`${basicUrl}/GetAll`, query)

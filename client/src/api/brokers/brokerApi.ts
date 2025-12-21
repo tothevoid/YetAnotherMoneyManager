@@ -1,7 +1,7 @@
 import { BrokerEntity } from '../../models/brokers/BrokerEntity';
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
 
-const basicUrl = `/Broker`;
+const basicUrl = `Broker`;
 
 export const getBrokers = async (): Promise<BrokerEntity[]> => {
    return await getAllEntities<BrokerEntity>(basicUrl);

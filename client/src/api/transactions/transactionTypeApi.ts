@@ -1,8 +1,9 @@
 import { TransactionTypeEntity } from "../../models/transactions/TransactionTypeEntity";
 import { Nullable } from "../../shared/utilities/nullable";
 import { createEntityWithIcon, deleteEntity, getAllEntities, updateEntityWithIcon } from "../basicApi";
+import { getStoredIconUrl } from "../iconApi";
 
-const basicUrl = `/TransactionType`;
+const basicUrl = `TransactionType`;
 const ENTITY_NAME = "transactionTypeJson"
 const ICON_NAME = "transactionTypeIcon"
 
@@ -33,5 +34,5 @@ export const getTransactionTypeIconUrl = (iconKey: Nullable<string>): string => 
         return "";
     }
 
-    return `${basicUrl}/icon?iconKey=${iconKey}`;
+    return getStoredIconUrl(basicUrl, iconKey);
 }

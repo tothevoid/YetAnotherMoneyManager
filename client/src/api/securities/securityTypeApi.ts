@@ -1,7 +1,7 @@
  import { SecurityTypeEntity } from '../../models/securities/SecurityTypeEntity';
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
 
-const basicUrl = `/SecurityType`;
+const basicUrl = `SecurityType`;
 
 export const getSecurityTypes = async (): Promise<SecurityTypeEntity[]> => {
    return await getAllEntities<SecurityTypeEntity>(basicUrl);

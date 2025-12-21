@@ -5,7 +5,7 @@ import { BrokerAccountSummaryEntity } from '../../models/brokers/BrokerAccountSu
 import { getAllEntities, getEntity } from '../basicApi';
 import { prepareBrokerAccountsSecurityStats, prepareDailyStats } from './brokerAccountSummaryApiMapping';
 
-const basicUrl = `/BrokerAccountSummary`;
+const basicUrl = `BrokerAccountSummary`;
 
 export const getBrokerAccountStats = async (brokerAccountId: string, from: Date, to: Date): Promise<BrokerAccountSummaryEntity | void> => {
     const url = `${basicUrl}/GetSummary?brokerAccountId=${brokerAccountId}&from=${from.toISOString()}&to=${to.toISOString()}`;

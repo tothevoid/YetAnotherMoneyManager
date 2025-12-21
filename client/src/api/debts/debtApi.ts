@@ -2,7 +2,7 @@ import { DebtEntity, DebtEntityRequest, DebtEntityResponse } from "../../models/
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from "../basicApi";
 import { prepareDebt, prepareDebtRequest } from "./debtApiMapping";
 
-const basicUrl = `/Debt`;
+const basicUrl = `Debt`;
 
 export const getDebts = async (onlyActive: boolean): Promise<DebtEntity[]> =>  {
     return await getAllEntities<DebtEntityResponse>(`${basicUrl}/GetAll?onlyActive=${onlyActive}`)

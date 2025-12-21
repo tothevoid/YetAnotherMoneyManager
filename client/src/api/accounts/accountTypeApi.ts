@@ -1,7 +1,7 @@
 import { AccountTypeEntity } from '../../models/accounts/AccountTypeEntity';
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
 
-const basicUrl = `/AccountType`;
+const basicUrl = `AccountType`;
 
 export const getAccountTypes = async (): Promise<AccountTypeEntity[]> => {
     return await getAllEntities(basicUrl)

@@ -6,8 +6,9 @@ import { SecurityStats } from '../../models/securities/SecurityStats';
 import { SecurityEntity, SecurityEntityRequest, SecurityEntityResponse } from '../../models/securities/SecurityEntity';
 import { prepareSecurity, prepareSecurityEntityRequest } from './securityApiMapping';
 import { Nullable } from '../../shared/utilities/nullable';
+import { getStoredIconUrl } from '../iconApi';
 
-const basicUrl = `/Security`;
+const basicUrl = `Security`;
 const ENTITY_NAME = "securityJson"
 const ICON_NAME = "securityIcon"
 
@@ -57,7 +58,7 @@ export const getIconUrl = (iconKey: Nullable<string>, date: Nullable<Date> = nul
         return "";
     }
 
-    const basicIconUrl = `${basicUrl}/icon?iconKey=${iconKey}`;
+    const basicIconUrl = getStoredIconUrl(basicUrl, iconKey);
     return date ?
         `${basicIconUrl}&date=${date}`:
         basicIconUrl;

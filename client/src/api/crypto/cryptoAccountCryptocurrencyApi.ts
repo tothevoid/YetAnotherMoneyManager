@@ -2,7 +2,7 @@ import { CryptoAccountCryptocurrencyEntity, CryptoAccountCryptocurrencyEntityReq
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
 import { prepareCryptoAccountCryptocurrency, prepareCryptoAccountCryptocurrencyRequest } from './cryptoAccountCryptocurrencyApiMapping';
 
-const basicUrl = `/CryptoAccountCryptocurrency`;
+const basicUrl = `CryptoAccountCryptocurrency`;
 
 export const getCryptoAccountCryptocurrencies = async (): Promise<CryptoAccountCryptocurrencyEntity[]> => {
    return await getAllEntities<CryptoAccountCryptocurrencyEntityResponse>(basicUrl)

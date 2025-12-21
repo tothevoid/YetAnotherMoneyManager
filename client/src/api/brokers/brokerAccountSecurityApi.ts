@@ -3,7 +3,7 @@ import { Nullable } from '../../shared/utilities/nullable';
 import { deleteEntity, getAction, getAllEntities, getEntity, updateEntity } from '../basicApi';
 import { prepareBrokerAccountSecurity, prepareBrokerAccountSecurityRequest } from './brokerAccountSecurityApiMapping';
 
-const basicUrl = `/BrokerAccountSecurity`;
+const basicUrl = `BrokerAccountSecurity`;
 
 export const getSecuritiesByBrokerAccount = async (brokerAccountId: string): Promise<BrokerAccountSecurityEntity[]> => {
     return await getAllEntities<BrokerAccountSecurityEntityResponse>(`${basicUrl}/GetByBrokerAccount?brokerAccountId=${brokerAccountId}`)

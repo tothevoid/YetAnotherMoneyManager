@@ -2,7 +2,7 @@ import { BrokerAccountEntity, BrokerAccountEntityRequest, BrokerAccountEntityRes
 import { createEntity, deleteEntity, getAllEntities, getEntityById, updateEntity } from '../basicApi';
 import { prepareBrokerAccount, prepareBrokerAccountRequest } from './brokerAccountApiMapping';
 
-const basicUrl = `/BrokerAccount`;
+const basicUrl = `BrokerAccount`;
 
 export const getBrokerAccounts = async (): Promise<BrokerAccountEntity[]> => {
     return await getAllEntities<BrokerAccountEntityResponse>(basicUrl)

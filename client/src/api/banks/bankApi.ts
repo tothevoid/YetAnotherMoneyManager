@@ -1,8 +1,9 @@
 import { BankEntity } from '../../models/banks/BankEntity';
 import { Nullable } from '../../shared/utilities/nullable';
 import { createEntityWithIcon, deleteEntity, getAllEntities, updateEntityWithIcon } from '../basicApi';
+import { getStoredIconUrl } from '../iconApi';
 
-const basicUrl = `/Bank`;
+const basicUrl = `Bank`;
 
 const ENTITY_NAME = "bankJson"
 const ICON_NAME = "bankIcon"
@@ -29,5 +30,5 @@ export const getBankIconUrl = (iconKey: Nullable<string>): string => {
         return "";
     }
 
-    return `${basicUrl}/icon?iconKey=${iconKey}`;
+    return getStoredIconUrl(basicUrl, iconKey);
 }

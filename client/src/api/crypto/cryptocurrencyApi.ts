@@ -1,8 +1,9 @@
 import { CryptocurrencyEntity } from '../../models/crypto/CryptocurrencyEntity';
 import { Nullable } from '../../shared/utilities/nullable';
 import { createEntityWithIcon, deleteEntity, getAllEntities, updateEntityWithIcon } from '../basicApi';
+import { getStoredIconUrl } from '../iconApi';
 
-const basicUrl = `/Cryptocurrency`;
+const basicUrl = `Cryptocurrency`;
 const ENTITY_NAME = "cryptocurrencyJson"
 const ICON_NAME = "cryptoCurrencyIcon"
 
@@ -26,8 +27,8 @@ export const getIconUrl = (iconKey: Nullable<string>, date: Nullable<Date> = nul
     if (!iconKey) {
         return "";
     }
-
-    const baseIconUrl = `${basicUrl}/icon?iconKey=${iconKey}`;
+    
+    const baseIconUrl = getStoredIconUrl(basicUrl, iconKey);
 
     return date ?
         `${baseIconUrl}&date=${date}`:

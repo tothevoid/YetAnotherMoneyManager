@@ -4,7 +4,7 @@ import { PaginationConfig } from '../../shared/models/PaginationConfig';
 import { createEntity, deleteEntity, getAllEntitiesByConfig, getPagination, updateEntity } from '../basicApi';
 import { prepareBrokerAccountFundsTransfer, prepareBrokerAccountFundsTransferRequest } from './BrokerAccountFundsTransferMapping';
 
-const basicUrl = `/BrokerAccountFundsTransfer`;
+const basicUrl = `BrokerAccountFundsTransfer`;
 
 export const getBrokerAccountFundsTransfers = async (query: FundTransfersQuery): Promise<BrokerAccountFundTransferEntity[]> => {
     return await getAllEntitiesByConfig<FundTransfersQuery, BrokerAccountFundTransferEntityResponse>(`${basicUrl}/GetAll`, query)

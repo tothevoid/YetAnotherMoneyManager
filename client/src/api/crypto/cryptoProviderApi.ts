@@ -1,7 +1,7 @@
 import { CryptoProviderEntity } from '../../models/crypto/CryptoProviderEntity';
 import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
 
-const basicUrl = `/CryptoProvider`;
+const basicUrl = `CryptoProvider`;
 
 export const getCryptoProviders = async (): Promise<CryptoProviderEntity[]> => {
    return await getAllEntities<CryptoProviderEntity>(basicUrl);

@@ -48,6 +48,13 @@ namespace MoneyManager.Application.Services.User
 
             var currencyChanged = currentUserState.CurrencyId != userProfile.CurrencyId;
 
+            userProfile.UserName = !string.IsNullOrEmpty(userProfileDto.UserName) ? 
+                userProfileDto.UserName : 
+                currentUserState.UserName;
+            userProfile.Password = !string.IsNullOrEmpty(userProfileDto.Password) ?
+                userProfileDto.Password :
+                currentUserState.Password;
+
             _userProfileRepo.Update(userProfile);
             await _db.Commit();
 

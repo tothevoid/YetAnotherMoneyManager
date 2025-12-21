@@ -33,14 +33,21 @@ const SecuritiesList: React.FC = () => {
 		deleteSecurityEntity	
 	} = useSecurities();
 	
-	const getAddButton = () => {
-		return <AddButton buttonTitle={t("security_page_summary_add")} onClick={onAddClicked}/>
-	}
+	
+	const getHeader = () => {
+		const addButton = <AddButton 
+			buttonTitle={t("security_page_summary_add")} 
+			onClick={onAddClicked}/>
 
-	if (!securities.length) {
-		return <Placeholder text={t("security_page_summary_no_securities")}>
-			{getAddButton()}
-		</Placeholder>
+		if (!securities.length) {
+			return <Placeholder text={t("security_page_summary_no_securities")}>
+				{addButton}
+			</Placeholder>
+		}
+
+		return <Flex justifyContent="space-between" alignItems="center" pt={5} pb={5}>
+			{addButton}
+		</Flex>
 	}
 
 	const onSecuritySaved = async (security: SecurityEntity, file: File | null) => {
@@ -64,9 +71,7 @@ const SecuritiesList: React.FC = () => {
 
 	return (
 		<Fragment>
-			<Flex justifyContent="space-between" alignItems="center" pt={5} pb={5}>
-				{getAddButton()}
-			</Flex>
+			{getHeader()}
 			<SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(300px, 3fr))'>
 				{
 					securities.map((security: SecurityEntity) => 

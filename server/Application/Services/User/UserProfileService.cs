@@ -41,18 +41,18 @@ namespace MoneyManager.Application.Services.User
             return _mapper.Map<UserProfileDto>(users.FirstOrDefault());
         }
 
-        public async Task Update(UserProfileDto userProfileDto)
+        public async Task Update(UserProfileDto newUserStateDto)
         {
             var currentUserState = await Get();
-            var userProfile = _mapper.Map<UserProfile>(userProfileDto);
+            var userProfile = _mapper.Map<UserProfile>(newUserStateDto);
 
             var currencyChanged = currentUserState.CurrencyId != userProfile.CurrencyId;
 
-            userProfile.UserName = !string.IsNullOrEmpty(userProfileDto.UserName) ? 
-                userProfileDto.UserName : 
+            userProfile.UserName = !string.IsNullOrEmpty(newUserStateDto.UserName) ? 
+                newUserStateDto.UserName : 
                 currentUserState.UserName;
-            userProfile.Password = !string.IsNullOrEmpty(userProfileDto.Password) ?
-                userProfileDto.Password :
+            userProfile.Password = !string.IsNullOrEmpty(newUserStateDto.Password) ?
+                newUserStateDto.Password :
                 currentUserState.Password;
 
             _userProfileRepo.Update(userProfile);
@@ -60,7 +60,7 @@ namespace MoneyManager.Application.Services.User
 
             if (currencyChanged)
             {
-                var currency = await _currencyService.GetById(userProfileDto.CurrencyId);
+                var currency = await _currencyService.GetById(newUserStateDto.CurrencyId);
                 await _currencyService.SyncRates(currency);
             }
         }

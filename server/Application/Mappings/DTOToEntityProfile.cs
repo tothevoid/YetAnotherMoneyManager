@@ -56,6 +56,7 @@ namespace MoneyManager.Application.Mappings
 
             CreateMap<BrokerAccountFundsTransferDto, BrokerAccountFundsTransfer>().ReverseMap();
             CreateMap<BankDto, Bank>().ReverseMap();
+            CreateMap<BrokerAccountTaxDeductionDto, BrokerAccountTaxDeduction>().ReverseMap();
         }
     }
 }

@@ -28,5 +28,6 @@ Deploy:
 
 Migrations:
 
+* dotnet tool install --global dotnet-ef --version 9.*
 * navigate to `./server`
 * execute `dotnet ef database update --project Infrastructure --startup-project WebApi`

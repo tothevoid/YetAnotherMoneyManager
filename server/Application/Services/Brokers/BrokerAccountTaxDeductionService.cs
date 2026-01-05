@@ -1,0 +1,53 @@
+using MoneyManager.Application.Interfaces.Brokers;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using AutoMapper;
+using MoneyManager.Application.DTO.Brokers;
+using MoneyManager.Infrastructure.Entities.Brokers;
+using MoneyManager.Infrastructure.Interfaces.Database;
+
+namespace MoneyManager.Application.Services.Brokers
+{
+    public class BrokerAccountTaxDeductionService : IBrokerAccountTaxDeductionService
+    {
+        private readonly IRepository<BrokerAccountTaxDeduction> _brokerAccountTaxDeductionRepo;
+        private readonly IUnitOfWork _db;
+        private readonly IMapper _mapper;
+
+        public BrokerAccountTaxDeductionService(IUnitOfWork uow, IMapper mapper)
+        {
+            _db = uow;
+            _mapper = mapper;
+            _brokerAccountTaxDeductionRepo = uow.CreateRepository<BrokerAccountTaxDeduction>();
+        }
+
+        public async Task<IEnumerable<BrokerAccountTaxDeductionDto>> GetAll()
+        {
+            var entities = await _brokerAccountTaxDeductionRepo.GetAll();
+            return _mapper.Map<IEnumerable<BrokerAccountTaxDeductionDto>>(entities);
+        }
+
+        public async Task<Guid> Add(BrokerAccountTaxDeductionDto dto)
+        {
+            var entity = _mapper.Map<BrokerAccountTaxDeduction>(dto);
+            entity.Id = Guid.NewGuid();
+            await _brokerAccountTaxDeductionRepo.Add(entity);
+            await _db.Commit();
+            return entity.Id;
+        }
+
+        public async Task Update(BrokerAccountTaxDeductionDto dto)
+        {
+            var entity = _mapper.Map<BrokerAccountTaxDeduction>(dto);
+            _brokerAccountTaxDeductionRepo.Update(entity);
+            await _db.Commit();
+        }
+
+        public async Task Delete(Guid id)
+        {
+            await _brokerAccountTaxDeductionRepo.Delete(id);
+            await _db.Commit();
+        }
+    }
+}

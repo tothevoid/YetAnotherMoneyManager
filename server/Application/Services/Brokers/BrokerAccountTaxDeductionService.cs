@@ -30,6 +30,13 @@ namespace MoneyManager.Application.Services.Brokers
             return _mapper.Map<IEnumerable<BrokerAccountTaxDeductionDto>>(entities);
         }
 
+        public async Task<decimal> GetAmountByBrokerAccount(Guid brokerAccountId)
+        {
+            return await _brokerAccountTaxDeductionRepo.GetSum(
+                projection: (taxDeduction) => taxDeduction.Amount,
+                filter: (taxDeduction) => taxDeduction.BrokerAccountId == brokerAccountId);
+        }
+
         public async Task<Guid> Add(BrokerAccountTaxDeductionDto dto)
         {
             var entity = _mapper.Map<BrokerAccountTaxDeduction>(dto);

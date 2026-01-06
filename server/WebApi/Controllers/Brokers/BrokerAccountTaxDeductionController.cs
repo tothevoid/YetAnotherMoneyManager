@@ -39,6 +39,12 @@ namespace MoneyManager.WebApi.Controllers.Brokers
             return await _service.Add(dto);
         }
 
+        [HttpGet(nameof(GetAmountByBrokerAccount))]
+        public async Task<decimal> GetAmountByBrokerAccount([FromQuery] Guid brokerAccountId)
+        {
+            return await _service.GetAmountByBrokerAccount(brokerAccountId);
+        }
+
         [HttpPatch]
         public async Task Update(BrokerAccountTaxDeductionModel model)
         {

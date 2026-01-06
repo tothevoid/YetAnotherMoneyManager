@@ -252,6 +252,7 @@
     "broker_account_page_transfer_button": "Перевести",
     "broker_account_page_total_profit_and_loss": "Общий P&L",
     "broker_account_page_dividends_earnings": "Доходы дивидендов",
+    "broker_account_page_deduction_taxes": "Налоговые вычеты",
     "broker_account_page_securities_profit_and_loss": "P&L по ценным бумагам",
     "broker_account_page_last_pull_date": "Последнее обновление: {{date}}",
 

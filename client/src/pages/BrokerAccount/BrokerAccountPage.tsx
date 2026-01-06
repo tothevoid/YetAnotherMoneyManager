@@ -23,6 +23,7 @@ import BrokerAccountDailyStats from "./components/BrokerAccountDailyStats/Broker
 import { IoMdStats } from "react-icons/io";
 import { TbTax } from "react-icons/tb";
 import BrokerAccountTaxDeductionsList from "./components/BrokerAccountTaxDeductionsList/BrokerAccountTaxDeductionsList";
+import { getAmountByBrokerAccount } from "../../api/brokers/BrokerAccountTaxDeductionApi";
 
 interface State {
     brokerAccount: BrokerAccountEntity | null,
@@ -38,6 +39,8 @@ const BrokerAccountPage: React.FC = () => {
     const [state, setState] = useState<State>({ brokerAccount: null, isReloading: false });
 
     const [incomes, setIncomes] = useState<number>(0);
+
+    const [taxDeductionSumamry, setTaxDeductionSumamry] = useState<number>(0);
 
     const [lastPullDate, setLastPullDate] = useState<Date | null>(null);
 
@@ -92,13 +95,19 @@ const BrokerAccountPage: React.FC = () => {
 
         const account = state.brokerAccount;
 
-        const getData = async () => {
+        const getEarnings = async () => {
             const brokerAccountIncomes = await getEarningsByBrokerAccount(account.id);
             setIncomes(brokerAccountIncomes);
         }
 
-        getData();
-    }, []);
+        const getTaxDeductions = async () => {
+            const taxDeductions = await getAmountByBrokerAccount(account.id);
+            setTaxDeductionSumamry(taxDeductions);
+        }
+
+        getTaxDeductions();
+        getEarnings();
+    }, [state.brokerAccount]);
 
     const formatPullDate = useCallback((date: Date) => {
         const formattedDate = formatShortDateTime(date, i18n, false);
@@ -136,6 +145,10 @@ const BrokerAccountPage: React.FC = () => {
         formatMoneyByCurrencyCulture(incomes, state.brokerAccount?.currency.name):
         "";
 
+    const taxDeductionsLabel = taxDeductionSumamry ?
+        formatMoneyByCurrencyCulture(taxDeductionSumamry, state.brokerAccount?.currency.name):
+        "";
+
     const {profitAndLoss, profitAndLossPercentage, color} = calculateDiff(currentValue, initialValue, state.brokerAccount?.currency.name);
     const profitAndLossWithDividends = calculateDiff(currentValue + incomes, initialValue, state.brokerAccount?.currency.name);
 
@@ -154,7 +167,8 @@ const BrokerAccountPage: React.FC = () => {
         </Stack>
         <Stack direction={"row"} color="text_primary">
             <Text backgroundColor="background_primary" borderColor="border_primary" color={color} textAlign={'center'} minW={150} rounded={10} padding={2} background={'black.600'}>{t("broker_account_page_securities_profit_and_loss")}: {profitAndLoss} | {profitAndLossPercentage}%</Text>
-            <Text backgroundColor="background_primary" borderColor="border_primary" textAlign={'center'} minW={150} rounded={10} padding={2}>{t("broker_account_page_dividends_earnings")}: {dividendsLabel}</Text>
+            {taxDeductionsLabel && <Text backgroundColor="background_primary" borderColor="border_primary" textAlign={'center'} minW={150} rounded={10} padding={2}>{t("broker_account_page_deduction_taxes")}: {taxDeductionsLabel}</Text>}
+            {dividendsLabel && <Text backgroundColor="background_primary" borderColor="border_primary" textAlign={'center'} minW={150} rounded={10} padding={2}>{t("broker_account_page_dividends_earnings")}: {dividendsLabel}</Text>}
             <Text backgroundColor="background_primary" borderColor="border_primary" color={profitAndLossWithDividends.color} textAlign={'center'} minW={150} rounded={10} padding={2}>{t("broker_account_page_total_profit_and_loss")}: {profitAndLossWithDividends.profitAndLoss}  | {profitAndLossWithDividends.profitAndLossPercentage}%</Text>
         </Stack>
         <BrokerAccountSecuritiesList ref={securitiesRef} brokerAccount={state.brokerAccount}/>

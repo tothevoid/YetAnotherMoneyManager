@@ -9,12 +9,11 @@ import { Box, Flex } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../../i18n";
 import BaseSelect from "../../../../shared/components/BaseSelect/BaseSelect";
-import { BrokerAccountEntity } from "../../../../models/brokers/BrokerAccountEntity";
 import { formatMoneyByCurrencyCulture } from "../../../../shared/utilities/formatters/moneyFormatter";
 import { getChartLabelConfig } from "../../../../shared/utilities/chartUtilities";
 
 interface Props {
-    brokerAccount: BrokerAccountEntity;
+    brokerAccountId: string;
 }
 
 const YEAR_RANGE = "YEAR_RANGE";
@@ -36,7 +35,7 @@ interface ChartDataItem {
     withdraw: number
 };
 
-const BrokerAccountTransfersHistoryChart: React.FC<Props> = ({ brokerAccount }) => {
+const BrokerAccountTransfersHistoryChart: React.FC<Props> = ({ brokerAccountId }) => {
     const { t } = useTranslation();
 
     const rangeTypes: RangeType[] = useMemo(
@@ -74,17 +73,17 @@ const BrokerAccountTransfersHistoryChart: React.FC<Props> = ({ brokerAccount }) 
     useEffect(() => {
         const fetchTransfers = async () => {
             if (selectedRangeType?.value === MONTH_RANGE) {
-                const data = await getMonthTransfersHistory(brokerAccount.id,
+                const data = await getMonthTransfersHistory(brokerAccountId,
                     selectedMonth.value, selectedYear.value);
                 setTransfers(data);
             } else {
-                const data = await getYearTransfersHistory(brokerAccount.id,
+                const data = await getYearTransfersHistory(brokerAccountId,
                     selectedYear.value);
                 setTransfers(data);
             }
         };
         fetchTransfers();
-    }, [brokerAccount, selectedMonth, selectedYear, selectedRangeType]);
+    }, [brokerAccountId, selectedMonth, selectedYear, selectedRangeType]);
 
     useEffect(() => {
         let data: ChartDataItem[] = [];

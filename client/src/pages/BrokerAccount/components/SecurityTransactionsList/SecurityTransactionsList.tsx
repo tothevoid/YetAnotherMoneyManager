@@ -15,7 +15,7 @@ import { getSecurityTransactionsPagination } from '../../../../api/securities/se
 
 interface Props {
 	brokerAccountId: string,
-	onDataReloaded: () => void
+	onTransactionsChanged: () => void
 }
 
 const SecurityTransactionsList: React.FC<Props> = (props) => {
@@ -42,7 +42,7 @@ const SecurityTransactionsList: React.FC<Props> = (props) => {
 	} = useSecurityTransactions({pageIndex: 1, recordsQuantity: -1, brokerAccountId: props.brokerAccountId });
 
 	useEffect(() => {
-		props.onDataReloaded();
+		props.onTransactionsChanged();
 	}, [securityTransactions])
 
 	const [context, setContext] = useState<Nullable<CreateSecurityTransactionContext | EditSecurityTransactionContext>>(null);

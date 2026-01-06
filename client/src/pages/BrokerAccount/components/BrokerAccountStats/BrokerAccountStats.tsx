@@ -9,10 +9,10 @@ import BrokerAccountTransfersHistoryChart from "../BrokerAccountTransfersHistory
 import { useTranslation } from "react-i18next";
 
 interface Props {
-    brokerAccount: BrokerAccountEntity
+    brokerAccountId: string
 }
 
-const BrokerAccountStats: React.FC<Props> = ({ brokerAccount }) => {    
+const BrokerAccountStats: React.FC<Props> = ({ brokerAccountId }) => {    
     const { user } = useUserProfile();
 
     const {t} = useTranslation();
@@ -21,7 +21,7 @@ const BrokerAccountStats: React.FC<Props> = ({ brokerAccount }) => {
 
     useEffect(() => {
         const getData = async () => {
-            const result = await getBrokerAccountStats(brokerAccount.id, new Date(), new Date());
+            const result = await getBrokerAccountStats(brokerAccountId, new Date(), new Date());
             if (!result) {
                 return;
             }
@@ -47,7 +47,7 @@ const BrokerAccountStats: React.FC<Props> = ({ brokerAccount }) => {
             <MoneyCard title={t("broker_account_stats_deposited")} value={transferStats.totalDeposited} currency={currencyName}/>
             <MoneyCard title={t("broker_account_stats_withdrawn")} value={transferStats.totalWithdrawn} currency={currencyName}/>
         </SimpleGrid>
-        <BrokerAccountTransfersHistoryChart brokerAccount={brokerAccount}/>
+        <BrokerAccountTransfersHistoryChart brokerAccountId={brokerAccountId}/>
     </SimpleGrid>
 }
 

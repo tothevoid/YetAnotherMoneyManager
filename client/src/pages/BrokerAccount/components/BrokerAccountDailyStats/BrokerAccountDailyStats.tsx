@@ -4,7 +4,6 @@ import React, { Fragment, useCallback, useEffect, useState } from "react";
 import { getDailyStats } from "../../../../api/brokers/brokerAccountSummaryApi";
 import { Card, SimpleGrid, Stack, Table, Text, Link, Image} from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
-import { BrokerAccountEntity } from "../../../../models/brokers/BrokerAccountEntity";
 import { BrokerAccountDailySecurityStatsEntity, BrokerAccountDailyStatsEntity } from "../../../../models/brokers/BrokerAccountDailyStatsEntity";
 import { Nullable } from "../../../../shared/utilities/nullable";
 import MoneyCard from "../../../../shared/components/MoneyCard/MoneyCard";
@@ -16,10 +15,11 @@ import StatsCard from "../../../../shared/components/StatsCard/StatsCard";
 import { getIconUrl } from "../../../../api/securities/securityApi";
 
 interface Props {
-	brokerAccount: BrokerAccountEntity;
+	brokerAccountId: string
+	currencyName: string
 }
 
-const BrokerAccountDailyStats: React.FC<Props> = ({ brokerAccount }) => {
+const BrokerAccountDailyStats: React.FC<Props> = ({ brokerAccountId, currencyName }) => {
 	const { t, i18n } = useTranslation();
 
 	const [dailyStats, setDailyStats] = useState<Nullable<BrokerAccountDailyStatsEntity>>(null);
@@ -31,7 +31,7 @@ const BrokerAccountDailyStats: React.FC<Props> = ({ brokerAccount }) => {
 			setIsRefreshing(true);
 		}
 		
-		const fetchedDailyStats = await getDailyStats(brokerAccount.id);
+		const fetchedDailyStats = await getDailyStats(brokerAccountId);
 		if (!fetchedDailyStats) {
 			return;
 		}
@@ -41,7 +41,7 @@ const BrokerAccountDailyStats: React.FC<Props> = ({ brokerAccount }) => {
 		if (showRefresh) {
 			setIsRefreshing(false);
 		}
-	}, [brokerAccount]);
+	}, [brokerAccountId]);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -85,7 +85,7 @@ const BrokerAccountDailyStats: React.FC<Props> = ({ brokerAccount }) => {
 	}
 
 	const { profitAndLoss, profitAndLossPercentage, color } = calculateDiff(dailyStats.currentPortfolioValue, 
-		dailyStats.startPortfolioValue, brokerAccount.currency.name);
+		dailyStats.startPortfolioValue, currencyName);
 
 	return (
 		<Stack gapY={4}>
@@ -94,9 +94,9 @@ const BrokerAccountDailyStats: React.FC<Props> = ({ brokerAccount }) => {
 				<RefreshButton isRefreshing={isRefreshing} transparent onClick={() => fetchDailyStats(true)}/>
 			</Stack>
 			<SimpleGrid columns={2} gap={4}>
-				<MoneyCard title={t("broker_account_start_portfolio_title")} value={dailyStats.startPortfolioValue} currency={brokerAccount.currency.name}/>
+				<MoneyCard title={t("broker_account_start_portfolio_title")} value={dailyStats.startPortfolioValue} currency={currencyName}/>
 				<StatsCard color={color} title={t("broker_account_current_portfolio_title")} 
-					value={`${formatMoneyByCurrencyCulture(dailyStats.currentPortfolioValue, brokerAccount.currency.name)} (${profitAndLoss} - ${profitAndLossPercentage}%)`} />
+					value={`${formatMoneyByCurrencyCulture(dailyStats.currentPortfolioValue, currencyName)} (${profitAndLoss} - ${profitAndLossPercentage}%)`} />
 			</SimpleGrid>
 			<Card.Root backgroundColor="background_primary" borderColor="border_primary" color="text_primary">
 				<Card.Header>

@@ -38,9 +38,9 @@ const BrokerAccountPage: React.FC = () => {
 
     const [state, setState] = useState<State>({ brokerAccount: null, isReloading: false });
 
-    const [incomes, setIncomes] = useState<number>(0);
+    const [dividendIncomes, setDividendIncomes] = useState<number>(0);
 
-    const [taxDeductionSumamry, setTaxDeductionSumamry] = useState<number>(0);
+    const [taxDeductionIncomes, setTaxDeductionIncomes] = useState<number>(0);
 
     const [lastPullDate, setLastPullDate] = useState<Date | null>(null);
 
@@ -95,18 +95,18 @@ const BrokerAccountPage: React.FC = () => {
 
         const account = state.brokerAccount;
 
-        const getEarnings = async () => {
-            const brokerAccountIncomes = await getEarningsByBrokerAccount(account.id);
-            setIncomes(brokerAccountIncomes);
+        const getDividendsEarnings = async () => {
+            const dividendIncomes = await getEarningsByBrokerAccount(account.id);
+            setDividendIncomes(dividendIncomes);
         }
 
         const getTaxDeductions = async () => {
             const taxDeductions = await getAmountByBrokerAccount(account.id);
-            setTaxDeductionSumamry(taxDeductions);
+            setTaxDeductionIncomes(taxDeductions);
         }
 
         getTaxDeductions();
-        getEarnings();
+        getDividendsEarnings();
     }, [state.brokerAccount]);
 
     const formatPullDate = useCallback((date: Date) => {
@@ -141,16 +141,16 @@ const BrokerAccountPage: React.FC = () => {
         formatMoneyByCurrencyCulture(currentValue, state.brokerAccount?.currency.name):
         "";
 
-    const dividendsLabel = incomes ?
-        formatMoneyByCurrencyCulture(incomes, state.brokerAccount?.currency.name):
+    const dividendsLabel = dividendIncomes ?
+        formatMoneyByCurrencyCulture(dividendIncomes, state.brokerAccount?.currency.name):
         "";
 
-    const taxDeductionsLabel = taxDeductionSumamry ?
-        formatMoneyByCurrencyCulture(taxDeductionSumamry, state.brokerAccount?.currency.name):
+    const taxDeductionsLabel = taxDeductionIncomes ?
+        formatMoneyByCurrencyCulture(taxDeductionIncomes, state.brokerAccount?.currency.name):
         "";
 
     const {profitAndLoss, profitAndLossPercentage, color} = calculateDiff(currentValue, initialValue, state.brokerAccount?.currency.name);
-    const profitAndLossWithDividends = calculateDiff(currentValue + incomes, initialValue, state.brokerAccount?.currency.name);
+    const profitAndLossWithDividends = calculateDiff(currentValue + dividendIncomes + taxDeductionIncomes, initialValue, state.brokerAccount?.currency.name);
 
     if (!state.brokerAccount) {
         return <Fragment/>
@@ -167,8 +167,8 @@ const BrokerAccountPage: React.FC = () => {
         </Stack>
         <Stack direction={"row"} color="text_primary">
             <Text backgroundColor="background_primary" borderColor="border_primary" color={color} textAlign={'center'} minW={150} rounded={10} padding={2} background={'black.600'}>{t("broker_account_page_securities_profit_and_loss")}: {profitAndLoss} | {profitAndLossPercentage}%</Text>
-            {taxDeductionsLabel && <Text backgroundColor="background_primary" borderColor="border_primary" textAlign={'center'} minW={150} rounded={10} padding={2}>{t("broker_account_page_deduction_taxes")}: {taxDeductionsLabel}</Text>}
-            {dividendsLabel && <Text backgroundColor="background_primary" borderColor="border_primary" textAlign={'center'} minW={150} rounded={10} padding={2}>{t("broker_account_page_dividends_earnings")}: {dividendsLabel}</Text>}
+            {taxDeductionsLabel && <Text color={"green.600"} backgroundColor="background_primary" borderColor="border_primary" textAlign={'center'} minW={150} rounded={10} padding={2}>{t("broker_account_page_deduction_taxes")}: {taxDeductionsLabel}</Text>}
+            {dividendsLabel && <Text color={"green.600"} backgroundColor="background_primary" borderColor="border_primary" textAlign={'center'} minW={150} rounded={10} padding={2}>{t("broker_account_page_dividends_earnings")}: {dividendsLabel}</Text>}
             <Text backgroundColor="background_primary" borderColor="border_primary" color={profitAndLossWithDividends.color} textAlign={'center'} minW={150} rounded={10} padding={2}>{t("broker_account_page_total_profit_and_loss")}: {profitAndLossWithDividends.profitAndLoss}  | {profitAndLossWithDividends.profitAndLossPercentage}%</Text>
         </Stack>
         <BrokerAccountSecuritiesList ref={securitiesRef} brokerAccount={state.brokerAccount}/>

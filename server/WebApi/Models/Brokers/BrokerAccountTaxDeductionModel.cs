@@ -1,10 +1,11 @@
 using MoneyManager.Application.DTO.Brokers;
 using System;
 using System.ComponentModel.DataAnnotations;
+using MoneyManager.Shared.Entities;
 
 namespace MoneyManager.WebApi.Models.Brokers
 {
-    public class BrokerAccountTaxDeductionModel
+    public class BrokerAccountTaxDeductionModel: BaseEntity
     {
         public string Name { get; set; }
 

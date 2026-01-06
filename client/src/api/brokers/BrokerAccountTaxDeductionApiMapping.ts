@@ -6,7 +6,7 @@ export const prepareBrokerAccountTaxDeductionRequest = (entity: BrokerAccountTax
         id: entity.id,
         name: entity.name,
         amount: entity.amount,
-        appliedOn: entity.appliedOn,
+        dateApplied: entity.dateApplied,
         brokerAccountId: entity.brokerAccount.id,
     };
 };
@@ -16,7 +16,7 @@ export const prepareBrokerAccountTaxDeductionResponse = (response: BrokerAccount
         id: response.id,
         name: response.name,
         amount: response.amount,
-        appliedOn: new Date(response.appliedOn),
+        dateApplied: new Date(response.dateApplied),
         brokerAccount: prepareBrokerAccount(response.brokerAccount),
     };
 };

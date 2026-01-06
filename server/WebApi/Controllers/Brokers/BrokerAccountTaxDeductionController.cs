@@ -4,13 +4,16 @@ using AutoMapper;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
+using Microsoft.AspNetCore.Authorization;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.WebApi.Models.Brokers;
 
 namespace MoneyManager.WebApi.Controllers.Brokers
 {
+    [Produces("application/json")]
+    [Route("[controller]")]
     [ApiController]
-    [Route("api/[controller]")]
+    [Authorize]
     public class BrokerAccountTaxDeductionController : ControllerBase
     {
         private readonly IBrokerAccountTaxDeductionService _service;
@@ -36,7 +39,7 @@ namespace MoneyManager.WebApi.Controllers.Brokers
             return await _service.Add(dto);
         }
 
-        [HttpPut]
+        [HttpPatch]
         public async Task Update(BrokerAccountTaxDeductionModel model)
         {
             var dto = _mapper.Map<BrokerAccountTaxDeductionDto>(model);

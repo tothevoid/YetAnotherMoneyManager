@@ -6,6 +6,8 @@ using AutoMapper;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Interfaces.Database;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace MoneyManager.Application.Services.Brokers
 {
@@ -24,7 +26,7 @@ namespace MoneyManager.Application.Services.Brokers
 
         public async Task<IEnumerable<BrokerAccountTaxDeductionDto>> GetAll()
         {
-            var entities = await _brokerAccountTaxDeductionRepo.GetAll();
+            var entities = await _brokerAccountTaxDeductionRepo.GetAll(include: GetFullHierarchyColumns);
             return _mapper.Map<IEnumerable<BrokerAccountTaxDeductionDto>>(entities);
         }
 
@@ -48,6 +50,15 @@ namespace MoneyManager.Application.Services.Brokers
         {
             await _brokerAccountTaxDeductionRepo.Delete(id);
             await _db.Commit();
+        }
+
+        private IQueryable<BrokerAccountTaxDeduction> GetFullHierarchyColumns(IQueryable<BrokerAccountTaxDeduction> taxDeductionQuery)
+        {
+            return taxDeductionQuery
+                .Include(taxDeduction => taxDeduction.BrokerAccount.Type)
+                .Include(taxDeduction => taxDeduction.BrokerAccount.Currency)
+                .Include(taxDeduction => taxDeduction.BrokerAccount.Broker)
+                .Include(taxDeduction => taxDeduction.BrokerAccount.Bank); ;
         }
     }
 }

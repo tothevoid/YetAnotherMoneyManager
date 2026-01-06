@@ -21,6 +21,8 @@ import BrokerAccountStats from "./components/BrokerAccountStats/BrokerAccountSta
 import { formatShortDateTime } from "../../shared/utilities/formatters/dateFormatter";
 import BrokerAccountDailyStats from "./components/BrokerAccountDailyStats/BrokerAccountDailyStats";
 import { IoMdStats } from "react-icons/io";
+import { TbTax } from "react-icons/tb";
+import BrokerAccountTaxDeductionsList from "./components/BrokerAccountTaxDeductionsList/BrokerAccountTaxDeductionsList";
 
 interface State {
     brokerAccount: BrokerAccountEntity | null,
@@ -50,7 +52,7 @@ const BrokerAccountPage: React.FC = () => {
         await onDataReloaded();
     }
 
-    const fetchBrokerAccount = async () => {
+    const fetchBrokerAccount = useCallback(async () => {
         if (!brokerAccountId) {
             return;
         }
@@ -63,7 +65,7 @@ const BrokerAccountPage: React.FC = () => {
         setState((currentState) => {
             return {...currentState, brokerAccount, isReloading: false}
         })
-    }
+    }, [brokerAccountId])
 
     const fetchLastPullDate = async () => {
         const lastPullDate = await getLastPullDate();
@@ -96,7 +98,7 @@ const BrokerAccountPage: React.FC = () => {
         }
 
         getData();
-    }, [state.brokerAccount]);
+    }, []);
 
     const formatPullDate = useCallback((date: Date) => {
         const formattedDate = formatShortDateTime(date, i18n, false);
@@ -178,6 +180,10 @@ const BrokerAccountPage: React.FC = () => {
                     <MdAttachMoney />
                      {t("broker_account_page_transfers_tab")}
                 </Tabs.Trigger>
+                <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="tax_deductions">
+                    <TbTax />
+                     {t("broker_account_page_deduction_taxes_tab")}
+                </Tabs.Trigger>
             </Tabs.List>
             <Tabs.Content value="daily_stats">
                <BrokerAccountDailyStats brokerAccount={state.brokerAccount}/>
@@ -193,6 +199,9 @@ const BrokerAccountPage: React.FC = () => {
             </Tabs.Content>
             <Tabs.Content value="transfers">
                 <BrokerAccountFundTransfersList onDataChanged={onBrokerAccountFundTransfersChanged} brokerAccountId={brokerAccountId}/>
+            </Tabs.Content>
+            <Tabs.Content value="tax_deductions">
+                <BrokerAccountTaxDeductionsList onDataChanged={fetchBrokerAccount} brokerAccountId={brokerAccountId}/>
             </Tabs.Content>
         </Tabs.Root>
     </Fragment>

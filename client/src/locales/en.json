@@ -246,6 +246,7 @@
     "broker_account_page_transactions_tab": "Transactions",
     "broker_account_page_dividends_tab": "Dividends",
     "broker_account_page_transfers_tab": "Transfers",
+    "broker_account_page_deduction_taxes_tab": "Tax deductions",
     "broker_account_page_add_dividend_payment_button": "Add payment",
     "broker_account_page_transfer_button": "Transfer",
     "broker_account_page_total_profit_and_loss": "Total P&L",
@@ -322,5 +323,13 @@
     "change_password_form_current_password": "Current password",
     "change_password_form_new_password": "New password",
     "change_password_form_submit_button": "Change password",
-    "change_password_form_error": "Error changing password"
+    "change_password_form_error": "Error changing password",
+
+    "broker_account_tax_deduction_modal_title": "Tax Deduction",
+    "broker_account_tax_deduction_modal_amount": "Amount",
+    "broker_account_tax_deduction_modal_deduction_button": "Save",
+    "broker_account_tax_deduction_modal_name": "Name",
+    "broker_account_tax_deduction_modal_name_placeholder": "Enter name",
+    "broker_account_tax_deduction_modal_date_applied": "Date Applied",
+    "entity_broker_account_tax_deduction_delete_title": "Delete Tax Deduction"
 }

@@ -247,6 +247,7 @@
     "broker_account_page_transactions_tab": "Транзакции",
     "broker_account_page_dividends_tab": "Дивиденды",
     "broker_account_page_transfers_tab": "Переводы",
+    "broker_account_page_deduction_taxes_tab": "Налоговые вычеты",
     "broker_account_page_add_dividend_payment_button": "Добавить выплату",
     "broker_account_page_transfer_button": "Перевести",
     "broker_account_page_total_profit_and_loss": "Общий P&L",
@@ -323,5 +324,13 @@
     "change_password_form_current_password": "Текущий пароль",
     "change_password_form_new_password": "Новый пароль",
     "change_password_form_submit_button": "Сменить пароль",
-    "change_password_form_error": "Ошибка смены пароля"
+    "change_password_form_error": "Ошибка смены пароля",
+
+    "broker_account_tax_deduction_modal_title": "Налоговый вычет",
+    "broker_account_tax_deduction_modal_amount": "Сумма",
+    "broker_account_tax_deduction_modal_deduction_button": "Сохранить",
+    "broker_account_tax_deduction_modal_name": "Название",
+    "broker_account_tax_deduction_modal_name_placeholder": "Введите название",
+    "broker_account_tax_deduction_modal_date_applied": "Дата применения",
+    "entity_broker_account_tax_deduction_delete_title": "Удалить налоговый вычет"
 }

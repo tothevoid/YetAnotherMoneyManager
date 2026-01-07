@@ -37,10 +37,17 @@ namespace MoneyManager.Application.Services.Brokers
             _brokerAccountService = brokerAccountService;
             _accountService = accountService;
         }
+        public async Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAll()
+        {
+            var complexQuery = GetBaseBuilder().GetQuery();
+
+            var transfers = await _transfersRepo.GetAll(complexQuery);
+            return _mapper.Map<IEnumerable<BrokerAccountFundsTransferDto>>(transfers).ToList();
+        }
 
         public async Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAll(Guid brokerAccountId)
         {
-            var complexQuery = GetBaseBuilder(brokerAccountId).GetQuery();
+            var complexQuery = GetBaseBuilderWithFilter(brokerAccountId).GetQuery();
 
             var transfers = await _transfersRepo.GetAll(complexQuery);
             return _mapper.Map<IEnumerable<BrokerAccountFundsTransferDto>>(transfers).ToList();
@@ -48,7 +55,7 @@ namespace MoneyManager.Application.Services.Brokers
 
         public async Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAll(Guid brokerAccountId, int pageIndex, int recordsQuantity)
         {
-            var complexQuery = GetBaseBuilder(brokerAccountId)
+            var complexQuery = GetBaseBuilderWithFilter(brokerAccountId)
                 .AddPagination(pageIndex, recordsQuantity,
                     transfer => transfer.Date,
                     true)
@@ -58,12 +65,17 @@ namespace MoneyManager.Application.Services.Brokers
             return _mapper.Map<IEnumerable<BrokerAccountFundsTransferDto>>(transfers).ToList();
         }
 
-        private ComplexQueryBuilder<BrokerAccountFundsTransfer> GetBaseBuilder(Guid brokerAccountId)
+        private ComplexQueryBuilder<BrokerAccountFundsTransfer> GetBaseBuilder()
         {
             return new ComplexQueryBuilder<BrokerAccountFundsTransfer>()
-                .AddFilter(GetBaseFilter(brokerAccountId))
                 .AddJoins(GetFullHierarchyColumns)
                 .DisableTracking();
+        }
+
+        private ComplexQueryBuilder<BrokerAccountFundsTransfer> GetBaseBuilderWithFilter(Guid brokerAccountId)
+        {
+            return GetBaseBuilder()
+                .AddFilter(GetBaseFilter(brokerAccountId));
         }
 
         public async Task<BrokerAccountFundsTransferDto> Add(BrokerAccountFundsTransferDto transferDto)

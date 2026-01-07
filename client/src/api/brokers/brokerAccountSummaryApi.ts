@@ -8,19 +8,26 @@ import { prepareBrokerAccountsSecurityStats, prepareDailyStats } from './brokerA
 
 const basicUrl = `BrokerAccountSummary`;
 
-export const getBrokerAccountStats = async (brokerAccountId: string, from: Date, to: Date): Promise<BrokerAccountSummaryEntity | void> => {
-    const url = `${basicUrl}/GetSummary?brokerAccountId=${brokerAccountId}&from=${from.toISOString()}&to=${to.toISOString()}`;
+export const getBrokerAccountStats = async (brokerAccountId: Nullable<string>): Promise<BrokerAccountSummaryEntity | void> => {
+    const url = brokerAccountId ?
+        `${basicUrl}/GetSummaryByBrokerAccount?brokerAccountId=${brokerAccountId}`:
+        `${basicUrl}/GetSummary`;
+
     return getEntity<BrokerAccountSummaryEntity>(url)
         .then((data: BrokerAccountSummaryEntity | void) => data && prepareBrokerAccountsSecurityStats(data));
 }
 
-export const getMonthTransfersHistory = async (brokerAccountId: string, month: number, year: number): Promise<BrokerAccountDayTransferEntity[]> => {
-    const url = `${basicUrl}/GetMonthTransfersHistory?brokerAccountId=${brokerAccountId}&month=${month}&year=${year}`;
+export const getMonthTransfersHistory = async (brokerAccountId: Nullable<string>, month: number, year: number): Promise<BrokerAccountDayTransferEntity[]> => {
+    const url = brokerAccountId ? 
+        `${basicUrl}/GetMonthTransfersHistoryByBrokerAccount?brokerAccountId=${brokerAccountId}&month=${month}&year=${year}` :
+        `${basicUrl}/GetMonthTransfersHistory?month=${month}&year=${year}`;
     return await getAllEntities<BrokerAccountDayTransferEntity>(url)
 }
 
-export const getYearTransfersHistory = async (brokerAccountId: string, year: number): Promise<BrokerAccountMonthTransferEntity[]> => {
-    const url = `${basicUrl}/GetYearTransfersHistory?brokerAccountId=${brokerAccountId}&year=${year}`;
+export const getYearTransfersHistory = async (brokerAccountId: Nullable<string>, year: number): Promise<BrokerAccountMonthTransferEntity[]> => {
+    const url = brokerAccountId ? 
+        `${basicUrl}/GetYearTransfersHistoryByBrokerAccount?brokerAccountId=${brokerAccountId}&year=${year}` :
+        `${basicUrl}/GetYearTransfersHistory?year=${year}`;
     return await getAllEntities<BrokerAccountMonthTransferEntity>(url);
 }
 

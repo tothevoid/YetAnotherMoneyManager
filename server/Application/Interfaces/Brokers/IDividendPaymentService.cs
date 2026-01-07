@@ -12,6 +12,8 @@ namespace MoneyManager.Application.Interfaces.Brokers
 
         Task<PaginationConfigDto> GetPagination(Guid brokerAccountId);
 
+        Task<decimal> GetEarnings();
+
         Task<decimal> GetEarningsByBrokerAccount(Guid brokerAccountId);
 
         Task<Guid> Add(DividendPaymentDto dividendPaymentDto);

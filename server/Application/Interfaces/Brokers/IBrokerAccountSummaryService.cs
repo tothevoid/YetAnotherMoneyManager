@@ -10,14 +10,20 @@ namespace MoneyManager.Application.Interfaces.Brokers
 {
     public interface IBrokerAccountSummaryService
     {
-        Task<BrokerAccountSummaryDto> GetSummary(Guid brokerAccountId, DateTime from, DateTime to);
+        Task<BrokerAccountSummaryDto> GetSummary();
+
+        Task<BrokerAccountSummaryDto> GetSummaryByBrokerAccount(Guid brokerAccountId);
 
         Task<BrokerAccountDailyStatsDto> GetDailyStatsByBrokerAccount(Guid brokerAccountId);
 
         Task<BrokerAccountDailyStatsDto> GetDailyStats();
 
-        Task<IEnumerable<BrokerAccountDayTransferDto>> GetMonthTransfersHistory(Guid brokerAccountId, int month, int year);
+        Task<IEnumerable<BrokerAccountDayTransferDto>> GetMonthTransfersHistory(int month, int year);
 
-        Task<IEnumerable<BrokerAccountMonthTransferDto>> GetYearTransfersHistory(Guid brokerAccountId, int year);
+        Task<IEnumerable<BrokerAccountDayTransferDto>> GetMonthTransfersHistoryByBrokerAccount(Guid brokerAccountId, int month, int year);
+
+        Task<IEnumerable<BrokerAccountMonthTransferDto>> GetYearTransfersHistory(int year);
+
+        Task<IEnumerable<BrokerAccountMonthTransferDto>> GetYearTransfersHistoryByBrokerAccount(Guid brokerAccountId, int year);
     }
 }

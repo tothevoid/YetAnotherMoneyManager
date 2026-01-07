@@ -3,7 +3,6 @@ import { getBrokerAccountStats } from "../../../../api/brokers/brokerAccountSumm
 import { BrokerAccountSummaryEntity } from "../../../../models/brokers/BrokerAccountSummaryEntity";
 import { SimpleGrid } from "@chakra-ui/react";
 import { useUserProfile } from "../../../../../features/UserProfileSettingsModal/hooks/UserProfileContext";
-import { BrokerAccountEntity } from "../../../../models/brokers/BrokerAccountEntity";
 import MoneyCard from "../../../../shared/components/MoneyCard/MoneyCard";
 import BrokerAccountTransfersHistoryChart from "../BrokerAccountTransfersHistoryChart/BrokerAccountTransfersHistoryChart";
 import { useTranslation } from "react-i18next";
@@ -22,7 +21,7 @@ const BrokerAccountStats: React.FC<Props> = ({ brokerAccountId }) => {
 
     useEffect(() => {
         const getData = async () => {
-            const result = await getBrokerAccountStats(brokerAccountId, new Date(), new Date());
+            const result = await getBrokerAccountStats(brokerAccountId);
             if (!result) {
                 return;
             }

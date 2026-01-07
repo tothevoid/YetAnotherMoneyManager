@@ -37,14 +37,25 @@ namespace MoneyManager.Application.Services.Brokers
             _userProfileService = userProfileService;
         }
 
-        public async Task<BrokerAccountSummaryDto> GetSummary(Guid brokerAccountId, DateTime from, DateTime to)
+        public async Task<BrokerAccountSummaryDto> GetSummary()
         {
-            //DailyStats = (await GetDailyStats(brokerAccountId, from, to)).ToList(),
+            var transfers = (await _fundsTransferService.GetAll()).ToList();
 
             return new BrokerAccountSummaryDto()
             {
-                TransferStats = await GetTransfersStats(brokerAccountId),
-                BrokerAccountStats = await GetBrokerAccountStats(brokerAccountId, from, to)
+                TransferStats = GetTransfersStats(transfers),
+                BrokerAccountStats = await GetBrokerAccountsStats()
+            };
+        }
+
+        public async Task<BrokerAccountSummaryDto> GetSummaryByBrokerAccount(Guid brokerAccountId)
+        {
+            var transfers = (await _fundsTransferService.GetAll(brokerAccountId)).ToList();
+
+            return new BrokerAccountSummaryDto()
+            {
+                TransferStats = GetTransfersStats(transfers),
+                BrokerAccountStats = await GetBrokerAccountStats(brokerAccountId)
             };
         }
 
@@ -152,13 +163,25 @@ namespace MoneyManager.Application.Services.Brokers
             return securityStats;
         }
 
-        public async Task<IEnumerable<BrokerAccountDayTransferDto>> GetMonthTransfersHistory(Guid brokerAccountId, int month, int year)
+        public async Task<IEnumerable<BrokerAccountDayTransferDto>> GetMonthTransfersHistory(int month, int year)
+        {
+            var transfers = (await _fundsTransferService.GetAll()).ToList();
+
+            return GetMonthTransfersHistoryByBrokerAccount(transfers, month, year);
+        }
+
+        public async Task<IEnumerable<BrokerAccountDayTransferDto>> GetMonthTransfersHistoryByBrokerAccount(Guid brokerAccountId, int month, int year)
+        {
+            var transfers = (await _fundsTransferService.GetAll(brokerAccountId)).ToList();
+
+            return GetMonthTransfersHistoryByBrokerAccount(transfers, month, year);
+        }
+
+        private IEnumerable<BrokerAccountDayTransferDto> GetMonthTransfersHistoryByBrokerAccount(List<BrokerAccountFundsTransferDto> transfers,
+            int month, int year)
         {
             //TODO: Add db month and year filter
             //TODO: fix GetMonthTransfersHistory & GetYearTransfersHistory code duplication
-
-            var transfers = await _fundsTransferService.GetAll(brokerAccountId);
-
             var filteredTransfers = transfers
                 .Where(transfer => transfer.Date.Year == year && transfer.Date.Month == month);
 
@@ -188,11 +211,22 @@ namespace MoneyManager.Application.Services.Brokers
             });
         }
 
-        public async Task<IEnumerable<BrokerAccountMonthTransferDto>> GetYearTransfersHistory(Guid brokerAccountId, int year)
+        public async Task<IEnumerable<BrokerAccountMonthTransferDto>> GetYearTransfersHistory(int year)
+        {
+            var transfers = (await _fundsTransferService.GetAll()).ToList();
+            return GetYearTransfersHistoryByBrokerAccount(transfers, year);
+        }
+
+        public async Task<IEnumerable<BrokerAccountMonthTransferDto>> GetYearTransfersHistoryByBrokerAccount(Guid brokerAccountId, int year)
+        {
+            var transfers = (await _fundsTransferService.GetAll(brokerAccountId)).ToList();
+            return GetYearTransfersHistoryByBrokerAccount(transfers, year);
+        }
+
+        private IEnumerable<BrokerAccountMonthTransferDto> GetYearTransfersHistoryByBrokerAccount(List<BrokerAccountFundsTransferDto> transfers, 
+            int year)
         {
             //TODO: Add db year filter
-
-            var transfers = await _fundsTransferService.GetAll(brokerAccountId);
             var filteredTransfers = transfers.Where(transfer => transfer.Date.Year == year);
 
             var distributions = Enumerable.Range(1, 12).ToDictionary(k => k, v => new TransfersHistory());
@@ -219,10 +253,8 @@ namespace MoneyManager.Application.Services.Brokers
             });
         }
 
-        private async Task<BrokerAccountTransfersStatsDto> GetTransfersStats(Guid brokerAccountId)
+        private BrokerAccountTransfersStatsDto GetTransfersStats(List<BrokerAccountFundsTransferDto> transfers)
         {
-            var transfers = (await _fundsTransferService.GetAll(brokerAccountId)).ToList();
-
             //bool TransfersFilter(BrokerAccountFundsTransferDto transfer) =>
             //    transfer.Date >= from && transfer.Date <= to;
 
@@ -237,7 +269,6 @@ namespace MoneyManager.Application.Services.Brokers
             var totalDeposit = deposits.Sum(transfer => transfer.Amount);
             var totalWithdraw = withdrawals.Sum(transfer => transfer.Amount);
 
-
             return new BrokerAccountTransfersStatsDto()
             {
                 TotalDeposited = totalDeposit,
@@ -245,9 +276,22 @@ namespace MoneyManager.Application.Services.Brokers
             };
         }
 
-        private async Task<BrokerAccountStatsDto> GetBrokerAccountStats(Guid brokerAccountId, DateTime from, DateTime to)
+        private async Task<BrokerAccountStatsDto> GetBrokerAccountsStats()
         {
-            var portfolioValues = await _brokerAccountService.GetPortfolioValues(brokerAccountId);
+            var portfolioValues = await _brokerAccountService.GetPortfolioValues();
+            var totalDividends = await _dividendPaymentService.GetEarnings();
+
+            return new BrokerAccountStatsDto()
+            {
+                CurrentValue = portfolioValues.CurrentValue,
+                InvestedValue = portfolioValues.InitialValue,
+                TotalDividendsValue = totalDividends
+            };
+        }
+
+        private async Task<BrokerAccountStatsDto> GetBrokerAccountStats(Guid brokerAccountId)
+        {
+            var portfolioValues = await _brokerAccountService.GetPortfolioValuesByBrokerAccount(brokerAccountId);
             var totalDividends = await _dividendPaymentService.GetEarningsByBrokerAccount(brokerAccountId);
 
             return new BrokerAccountStatsDto()

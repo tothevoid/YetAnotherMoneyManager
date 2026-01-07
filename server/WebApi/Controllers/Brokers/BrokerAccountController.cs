@@ -35,13 +35,6 @@ namespace MoneyManager.WebApi.Controllers.Brokers
             return _mapper.Map<IEnumerable<BrokerAccountModel>>(brokerAccounts);
         }
 
-        [HttpGet("GetSummary")]
-        public async Task<BrokerAccountSummaryModel> GetSummary(Guid brokerAccountId, DateTime from, DateTime to)
-        {
-            var brokerAccount = await _brokerAccountSummaryService.GetSummary(brokerAccountId, from, to);
-            return _mapper.Map<BrokerAccountSummaryModel>(brokerAccount);
-        }
-
         [HttpGet("GetById")]
         public async Task<BrokerAccountModel> GetById([FromQuery] Guid id)
         {

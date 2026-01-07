@@ -9,8 +9,8 @@ namespace MoneyManager.Application.Interfaces.Brokers
 {
     public interface IBrokerAccountFundsTransferService
     {
+        Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAll();
         Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAll(Guid brokerAccountId);
-
         Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAll(Guid brokerAccountId, int pageIndex, int recordsQuantity);
         Task<PaginationConfigDto> GetPagination(Guid brokerAccountId);
         Task<BrokerAccountFundsTransferDto> Add(BrokerAccountFundsTransferDto transfer);

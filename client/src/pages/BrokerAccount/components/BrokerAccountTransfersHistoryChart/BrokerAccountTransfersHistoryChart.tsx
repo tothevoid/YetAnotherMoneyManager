@@ -11,9 +11,10 @@ import i18n from "../../../../i18n";
 import BaseSelect from "../../../../shared/components/BaseSelect/BaseSelect";
 import { formatMoneyByCurrencyCulture } from "../../../../shared/utilities/formatters/moneyFormatter";
 import { getChartLabelConfig } from "../../../../shared/utilities/chartUtilities";
+import { Nullable } from "../../../../shared/utilities/nullable";
 
 interface Props {
-    brokerAccountId: string;
+    brokerAccountId: Nullable<string>;
 }
 
 const YEAR_RANGE = "YEAR_RANGE";
@@ -137,7 +138,10 @@ const BrokerAccountTransfersHistoryChart: React.FC<Props> = ({ brokerAccountId }
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
                     <YAxis />
-                    <Tooltip contentStyle={getChartLabelConfig()} formatter={(value: number, name: string) => [formatMoneyByCurrencyCulture(value, brokerAccount.currency.name), name]} />
+                    <Tooltip contentStyle={getChartLabelConfig()}
+                        // TODO: add dynamic currency formatting
+                        // formatter={(value: number, name: string) => [formatMoneyByCurrencyCulture(value, brokerAccount.currency.name), name]}
+                    />
                     <Legend />
                     <Bar dataKey="income" fill="#4CAF50" name={t('Ввод средств')} />
                     <Bar dataKey="withdraw" fill="#F44336" name={t('Вывод средств')} />

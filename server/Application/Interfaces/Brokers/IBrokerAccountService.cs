@@ -11,7 +11,9 @@ namespace MoneyManager.Application.Interfaces.Brokers
 
         Task<BrokerAccountDTO> GetById(Guid id);
 
-        Task<BrokerAccountPortfolioDto> GetPortfolioValues(Guid brokerAccountId);
+        Task<BrokerAccountPortfolioDto> GetPortfolioValuesByBrokerAccount(Guid brokerAccountId);
+
+        Task<BrokerAccountPortfolioDto> GetPortfolioValues();
 
         Task<Guid> Add(BrokerAccountDTO brokerAccount);
 

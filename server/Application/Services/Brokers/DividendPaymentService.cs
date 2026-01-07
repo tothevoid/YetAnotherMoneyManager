@@ -67,12 +67,20 @@ namespace MoneyManager.Application.Services.Brokers
             return brokerAccountSecurity => brokerAccountSecurity.BrokerAccountId == brokerAccountId;
         }
 
+        public async Task<decimal> GetEarnings()
+        {
+            return await _dividendPaymentRepo
+                .GetSum(EarningAggregationExpression);
+        }
+
         public async Task<decimal> GetEarningsByBrokerAccount(Guid brokerAccountId)
         {
             return await _dividendPaymentRepo
-                .GetSum(dividendPayment => dividendPayment.SecuritiesQuantity * dividendPayment.Dividend.Amount - dividendPayment.Tax,
-                    dividendPayment => dividendPayment.BrokerAccountId == brokerAccountId);
+                .GetSum(EarningAggregationExpression, dividendPayment => dividendPayment.BrokerAccountId == brokerAccountId);
         }
+
+        private static Expression<Func<DividendPayment, decimal>> EarningAggregationExpression =>
+            dividendPayment => dividendPayment.SecuritiesQuantity * dividendPayment.Dividend.Amount - dividendPayment.Tax;
 
         public async Task<Guid> Add(DividendPaymentDto dividendPaymentDto)
         {

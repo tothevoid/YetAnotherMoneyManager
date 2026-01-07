@@ -82,11 +82,29 @@ namespace MoneyManager.Application.Services.Brokers
             await _db.Commit();
         }
 
-        public async Task<BrokerAccountPortfolioDto> GetPortfolioValues(Guid brokerAccountId)
+        public async Task<BrokerAccountPortfolioDto> GetPortfolioValuesByBrokerAccount(Guid brokerAccountId)
         {
             var brokerAccount = await GetById(brokerAccountId);
 
             return await GetPortfolioValues(brokerAccount);
+        }
+
+        public async Task<BrokerAccountPortfolioDto> GetPortfolioValues()
+        {
+            var brokerAccounts = await GetAll();
+
+            var portfolioValues = new BrokerAccountPortfolioDto();
+
+            // TODO: Possible different currencies
+            foreach (var brokerAccount in brokerAccounts)
+            {
+                var portfolioValue = await GetPortfolioValues(brokerAccount);
+
+                portfolioValues.InitialValue += portfolioValue.InitialValue;
+                portfolioValues.CurrentValue += portfolioValue.CurrentValue;
+            }
+
+            return portfolioValues;
         }
 
         private async Task<BrokerAccountPortfolioDto> GetPortfolioValues(BrokerAccountDTO brokerAccount)

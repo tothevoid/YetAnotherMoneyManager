@@ -2,7 +2,7 @@ import { Fragment } from "react/jsx-runtime";
 import BrokerAccountsList from "./components/BrokerAccountsList/BrokerAccountsList";
 import BrokerAccountHeader from "../BrokerAccount/components/BrokerAccountHeader/BrokerAccountHeader";
 import BrokerAccountSecuritiesList, { BrokerAccountSecuritiesListRef } from "../BrokerAccount/components/BrokerAccountSecuritiesList/BrokerAccountSecuritiesList";
-import { ChangeAction } from "../BrokerAccount/components/BrokerAccountTabs/BrokerAccountTabs";
+import BrokerAccountTabs, { ChangeAction } from "../BrokerAccount/components/BrokerAccountTabs/BrokerAccountTabs";
 import BrokerAccountValuesSummary from "../BrokerAccount/components/BrokerAccountValuesSummary/BrokerAccountValuesSummary";
 import { useUserProfile } from "../../../features/UserProfileSettingsModal/hooks/UserProfileContext";
 import { getLastPullDate, pullBrokerAccountQuotations } from "../../api/brokers/brokerAccountSecurityApi";
@@ -29,6 +29,8 @@ const BrokerAccountsPage: React.FC = () => {
 
     const [state, setState] = useState<State>({ isReloading: false });
 
+    const [mainCurrencyAmount, setMainCurrencyAmount] = useState<number>(0);
+
     const [lastPullDate, setLastPullDate] = useState<Date | null>(null);
     const [brokerAccountsSummary, setBrokerAccountsSummary] = useState<BrokerAccountsSummary>({
         totalInitialValue: 0,
@@ -40,10 +42,13 @@ const BrokerAccountsPage: React.FC = () => {
     const fetchBrokerAccountsSummary = useCallback(async () => {
         const accounts = await getBrokerAccounts();
 
+        let currencyAmount = 0;
+
         const summary = accounts.reduce((state, currentValue) => {
             // TODO: Add specific API
             state.totalInitialValue += currentValue.initialValue;
             state.totalCurrentValue += currentValue.currentValue;
+            currencyAmount += currentValue.mainCurrencyAmount;
             return state;
             // state.totalDividendIncomes += currentValue.dividendIncomes;
             // state.totalTaxDeductionIncomes += currentValue.taxDeductionIncomes;
@@ -53,6 +58,8 @@ const BrokerAccountsPage: React.FC = () => {
             totalDividendIncomes: 0,
             totalTaxDeductionIncomes: 0
         } as BrokerAccountsSummary)
+
+        setMainCurrencyAmount(currencyAmount);
         setBrokerAccountsSummary(summary);
     }, []);
     
@@ -127,11 +134,11 @@ const BrokerAccountsPage: React.FC = () => {
         <BrokerAccountsList/>
         <BrokerAccountSecuritiesList 
             ref={securitiesRef}
-            currencyName={currencyName}/>
-        {/* <BrokerAccountTabs 
+            mainCurrencyAmount={mainCurrencyAmount}
+            mainCurrencyName={currencyName}/>
+        <BrokerAccountTabs 
             currencyName={currencyName} 
-            brokerAccountId={brokerAccountId} 
-            onActionTriggered={onActionTriggered}/> */}
+            onActionTriggered={onActionTriggered}/>
     </Fragment>
 }
 

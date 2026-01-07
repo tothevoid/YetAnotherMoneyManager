@@ -47,11 +47,19 @@ namespace MoneyManager.WebApi.Controllers.Brokers
             return _mapper.Map<IEnumerable<BrokerAccountMonthTransferModel>>(brokerAccount);
         }
 
-        [HttpGet(nameof(GetDailyStats))]
-        public async Task<BrokerAccountDailyStatsModel> GetDailyStats(Guid brokerAccountId)
+        [HttpGet(nameof(GetDailyStatsByBrokerAccount))]
+        public async Task<BrokerAccountDailyStatsModel> GetDailyStatsByBrokerAccount([FromQuery] Guid brokerAccountId)
         {
-            var brokerAccount = await _brokerAccountSummaryService.GetDailyStats(brokerAccountId);
+            var brokerAccount = await _brokerAccountSummaryService.GetDailyStatsByBrokerAccount(brokerAccountId);
             return _mapper.Map<BrokerAccountDailyStatsModel>(brokerAccount);
         }
+
+        [HttpGet(nameof(GetDailyStats))]
+        public async Task<BrokerAccountDailyStatsModel> GetDailyStats()
+        {
+            var brokerAccount = await _brokerAccountSummaryService.GetDailyStats();
+            return _mapper.Map<BrokerAccountDailyStatsModel>(brokerAccount);
+        }
+        
     }
 }

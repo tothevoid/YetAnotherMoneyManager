@@ -12,7 +12,7 @@ import { BrokerAccountTaxDeductionEntity } from '../../../../models/brokers/Brok
 import BrokerAccountTaxDeductionModal, { CreateBrokerAccountTaxDeductionContext, EditBrokerAccountTaxDeductionContext } from '../../../BrokerAccounts/modals/BrokerAccountTaxDeductionModal/BrokerAccountTaxDeductionModal';
 
 interface Props {
-    brokerAccountId: string,
+    brokerAccountId: Nullable<string>,
     onDataChanged?: () => void
 }
 

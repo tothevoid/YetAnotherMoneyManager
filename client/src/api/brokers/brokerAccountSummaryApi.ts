@@ -2,6 +2,7 @@ import { BrokerAccountDailyStatsEntity } from '../../models/brokers/BrokerAccoun
 import { BrokerAccountDayTransferEntity } from '../../models/brokers/BrokerAccountDayTransferEntity';
 import { BrokerAccountMonthTransferEntity } from '../../models/brokers/BrokerAccountMonthTransferEntity';
 import { BrokerAccountSummaryEntity } from '../../models/brokers/BrokerAccountSummaryEntity';
+import { Nullable } from '../../shared/utilities/nullable';
 import { getAllEntities, getEntity } from '../basicApi';
 import { prepareBrokerAccountsSecurityStats, prepareDailyStats } from './brokerAccountSummaryApiMapping';
 
@@ -23,8 +24,11 @@ export const getYearTransfersHistory = async (brokerAccountId: string, year: num
     return await getAllEntities<BrokerAccountMonthTransferEntity>(url);
 }
 
-export const getDailyStats = async (brokerAccountId: string): Promise<BrokerAccountDailyStatsEntity | void> => {
-    const url = `${basicUrl}/GetDailyStats?brokerAccountId=${brokerAccountId}`;
+export const getDailyStats = async (brokerAccountId: Nullable<string>): Promise<BrokerAccountDailyStatsEntity | void> => {
+    const url = brokerAccountId ?
+        `${basicUrl}/GetDailyStatsByBrokerAccount?brokerAccountId=${brokerAccountId}`:
+        `${basicUrl}/GetDailyStats`;
+
     return await getEntity<BrokerAccountDailyStatsEntity>(url)
         .then((data: BrokerAccountDailyStatsEntity | void) => data && prepareDailyStats(data));
 }

@@ -14,7 +14,7 @@ import { ActiveEntityMode } from '../../../../shared/enums/activeEntityMode';
 import CollectionPagination from '../../../../shared/components/CollectionPagination/CollectionPagination';
 
 interface Props {
-    brokerAccountId: string,
+    brokerAccountId: Nullable<string>,
     onDataChanged?: () => void
 }
 

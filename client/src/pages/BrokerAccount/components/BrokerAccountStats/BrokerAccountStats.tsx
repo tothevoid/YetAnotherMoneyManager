@@ -7,9 +7,10 @@ import { BrokerAccountEntity } from "../../../../models/brokers/BrokerAccountEnt
 import MoneyCard from "../../../../shared/components/MoneyCard/MoneyCard";
 import BrokerAccountTransfersHistoryChart from "../BrokerAccountTransfersHistoryChart/BrokerAccountTransfersHistoryChart";
 import { useTranslation } from "react-i18next";
+import { Nullable } from "../../../../shared/utilities/nullable";
 
 interface Props {
-    brokerAccountId: string
+    brokerAccountId: Nullable<string>
 }
 
 const BrokerAccountStats: React.FC<Props> = ({ brokerAccountId }) => {    

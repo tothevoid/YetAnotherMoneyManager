@@ -15,7 +15,7 @@ import StatsCard from "../../../../shared/components/StatsCard/StatsCard";
 import { getIconUrl } from "../../../../api/securities/securityApi";
 
 interface Props {
-	brokerAccountId: string
+	brokerAccountId: Nullable<string>
 	currencyName: string
 }
 

@@ -12,9 +12,10 @@ import BrokerAccountStats from "../BrokerAccountStats/BrokerAccountStats";
 import BrokerAccountTaxDeductionsList from "../BrokerAccountTaxDeductionsList/BrokerAccountTaxDeductionsList";
 import DividendPaymentsList from "../DividendPaymentsList/DividendPaymentsList";
 import SecurityTransactionsList from "../SecurityTransactionsList/SecurityTransactionsList";
+import { Nullable } from "../../../../shared/utilities/nullable";
 
 interface Props {
-    brokerAccountId: string
+    brokerAccountId?: Nullable<string>
     currencyName: string
     onActionTriggered: (action: ChangeAction) => void
 }

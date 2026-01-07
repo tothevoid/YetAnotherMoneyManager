@@ -14,7 +14,7 @@ import CollectionPagination from '../../../../shared/components/CollectionPagina
 import { getSecurityTransactionsPagination } from '../../../../api/securities/securityTransactionApi';
 
 interface Props {
-	brokerAccountId: string,
+	brokerAccountId: Nullable<string>,
 	onTransactionsChanged: () => void
 }
 

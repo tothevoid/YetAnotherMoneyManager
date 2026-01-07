@@ -14,7 +14,7 @@ import CollectionPagination from '../../../../shared/components/CollectionPagina
 import { getDividendPaymentsPagination } from '../../../../api/brokers/dividendPaymentApi';
 
 interface Props {
-	brokerAccountId: string,
+	brokerAccountId: Nullable<string>,
 	onDividendsChanged: () => void
 }
 

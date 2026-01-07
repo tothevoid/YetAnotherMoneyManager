@@ -10,7 +10,8 @@ import { BsCurrencyExchange } from "react-icons/bs";
 import { Nullable } from '../../../../shared/utilities/nullable';
 
 interface Props {
-	currencyName: string,
+	mainCurrencyAmount: number,
+	mainCurrencyName: string,
 	brokerAccountId?: Nullable<string>
 }
 
@@ -18,7 +19,7 @@ export interface BrokerAccountSecuritiesListRef {
 	reloadData: () => Promise<void>
 }
 
-const BrokerAccountSecuritiesList = forwardRef<BrokerAccountSecuritiesListRef, Props>(({ currencyName, brokerAccountId }, ref)=> {
+const BrokerAccountSecuritiesList = forwardRef<BrokerAccountSecuritiesListRef, Props>(({ brokerAccountId, mainCurrencyAmount, mainCurrencyName }, ref)=> {
 	const { t } = useTranslation()
 
 	const { 
@@ -42,9 +43,9 @@ const BrokerAccountSecuritiesList = forwardRef<BrokerAccountSecuritiesListRef, P
 								<Stack>
 									<Stack alignItems={"center"} justifyContent="start" direction={"row"}>
 										<BsCurrencyExchange size={32}/>
-										<Text color="text_primary" fontSize="xl" fontWeight={900}>{currencyName}</Text>
+										<Text color="text_primary" fontSize="xl" fontWeight={900}>{mainCurrencyName}</Text>
 									</Stack>
-									<Text fontWeight={600}>{t("broker_account_security_card_security_quantity")}: {formatMoneyByCurrencyCulture(props.brokerAccount.mainCurrencyAmount, currency)}</Text>
+									<Text fontWeight={600}>{t("broker_account_security_card_security_quantity")}: {formatMoneyByCurrencyCulture(mainCurrencyAmount, mainCurrencyName)}</Text>
 								</Stack>
 							</Flex>
 						</Card.Body>

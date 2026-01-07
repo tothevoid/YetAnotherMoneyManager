@@ -131,7 +131,7 @@ const BrokerAccountPage: React.FC = () => {
     return <Fragment>
         <BrokerAccountHeader name={state.brokerAccount?.name} currencyName={state.brokerAccount?.currency?.name} currentValue={state.brokerAccount?.currentValue} onPullQuotations={pullQuotations} lastPullDate={lastPullDate} isReloading={state.isReloading} />
         <BrokerAccountValuesSummary initialValue={state.brokerAccount?.initialValue ?? 0} currentValue={state.brokerAccount?.currentValue ?? 0} dividendIncomes={dividendIncomes} taxDeductionIncomes={taxDeductionIncomes} currencyName={state.brokerAccount?.currency?.name ?? ""} />
-        <BrokerAccountSecuritiesList ref={securitiesRef} brokerAccountId={state.brokerAccount.id} currencyName={state.brokerAccount.currency.name}/>
+        <BrokerAccountSecuritiesList ref={securitiesRef} mainCurrencyAmount={state.brokerAccount.mainCurrencyAmount} mainCurrencyName={state.brokerAccount.currency.name} brokerAccountId={state.brokerAccount.id}/>
         <BrokerAccountTabs currencyName={state?.brokerAccount?.currency?.name} brokerAccountId={brokerAccountId} onActionTriggered={onActionTriggered}/>
     </Fragment>
 }

@@ -5,19 +5,20 @@ import BrokerAccountSecurity from '../BrokerAccountSecurity/BrokerAccountSecurit
 import { BrokerAccountSecurityEntity } from '../../../../models/brokers/BrokerAccountSecurityEntity';
 import { useBrokerAccountsSecurities } from '../../hooks/useBrokerAccountsSecurities';
 import { Card, Flex, Stack, Text } from '@chakra-ui/react';
-import { BrokerAccountEntity } from '../../../../models/brokers/BrokerAccountEntity';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
 import { BsCurrencyExchange } from "react-icons/bs";
+import { Nullable } from '../../../../shared/utilities/nullable';
 
 interface Props {
-	brokerAccount: BrokerAccountEntity
+	currencyName: string,
+	brokerAccountId?: Nullable<string>
 }
 
 export interface BrokerAccountSecuritiesListRef {
 	reloadData: () => Promise<void>
 }
 
-const BrokerAccountSecuritiesList = forwardRef<BrokerAccountSecuritiesListRef, Props>((props: Props, ref)=> {
+const BrokerAccountSecuritiesList = forwardRef<BrokerAccountSecuritiesListRef, Props>(({ currencyName, brokerAccountId }, ref)=> {
 	const { t } = useTranslation()
 
 	const { 
@@ -25,13 +26,11 @@ const BrokerAccountSecuritiesList = forwardRef<BrokerAccountSecuritiesListRef, P
 		updateBrokerAccountSecurityEntity,
 		deleteBrokerAccountSecurityEntity,
 		reloadBrokerAccountSecurities
-	} = useBrokerAccountsSecurities({brokerAccountId: props.brokerAccount.id});
+	} = useBrokerAccountsSecurities({brokerAccountId: brokerAccountId});
 
 	useImperativeHandle(ref, () => ({
 		reloadData: reloadBrokerAccountSecurities,
 	}));
-
-	const currency = props.brokerAccount.currency.name;
 
 	return (
 		<Fragment>
@@ -43,7 +42,7 @@ const BrokerAccountSecuritiesList = forwardRef<BrokerAccountSecuritiesListRef, P
 								<Stack>
 									<Stack alignItems={"center"} justifyContent="start" direction={"row"}>
 										<BsCurrencyExchange size={32}/>
-										<Text color="text_primary" fontSize="xl" fontWeight={900}>{currency}</Text>
+										<Text color="text_primary" fontSize="xl" fontWeight={900}>{currencyName}</Text>
 									</Stack>
 									<Text fontWeight={600}>{t("broker_account_security_card_security_quantity")}: {formatMoneyByCurrencyCulture(props.brokerAccount.mainCurrencyAmount, currency)}</Text>
 								</Stack>

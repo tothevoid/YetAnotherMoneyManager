@@ -32,6 +32,14 @@ namespace MoneyManager.WebApi.Controllers.Brokers
             _pullQuotationsService = pullQuotationsService;
         }
 
+        [HttpGet(nameof(GetAll))]
+        public async Task<IEnumerable<BrokerAccountSecurityModel>> GetAll()
+        {
+            var brokerAccountSecurities = await _brokerAccountSecurityService
+                .GetAll();
+            return _mapper.Map<IEnumerable<BrokerAccountSecurityModel>>(brokerAccountSecurities);
+        }
+
         [HttpGet(nameof(GetByBrokerAccount))]
         public async Task<IEnumerable<BrokerAccountSecurityModel>> GetByBrokerAccount([FromQuery] Guid brokerAccountId)
         {

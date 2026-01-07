@@ -19,8 +19,6 @@ interface Props {
 const BrokerAccountHeader: React.FC<Props> = ({ name, currentValue, currencyName, onPullQuotations, lastPullDate, isReloading }) => {
     const { t, i18n } = useTranslation();
 
-    const { brokerAccountId } = useParams();
-
     const formatPullDate = useCallback(() => {
         if (!lastPullDate) {
             return "";
@@ -28,10 +26,6 @@ const BrokerAccountHeader: React.FC<Props> = ({ name, currentValue, currencyName
         const formattedDate = formatShortDateTime(lastPullDate, i18n, false);
         return t("broker_account_page_last_pull_date", { date: formattedDate });
     }, [i18n, lastPullDate]);
-
-    if (!brokerAccountId) {
-        return <Fragment/>
-    }
 
     const currentValueLabel = formatMoneyByCurrencyCulture(currentValue, currencyName);
  

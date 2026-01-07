@@ -1,11 +1,7 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { BrokerAccountEntity } from "../../models/brokers/BrokerAccountEntity";
 import { getBrokerAccountById } from "../../api/brokers/brokerAccountApi";
-import { Stack, Text } from "@chakra-ui/react";
-import { formatMoneyByCurrencyCulture } from "../../shared/utilities/formatters/moneyFormatter";
-import { calculateDiff } from "../../shared/utilities/numericDiffsUtilities";
 import { getLastPullDate, pullBrokerAccountQuotations } from "../../api/brokers/brokerAccountSecurityApi";
 import BrokerAccountSecuritiesList, { BrokerAccountSecuritiesListRef } from "./components/BrokerAccountSecuritiesList/BrokerAccountSecuritiesList";
 import { useSignalR } from "../../shared/hooks/SignalRHook";
@@ -135,7 +131,7 @@ const BrokerAccountPage: React.FC = () => {
     return <Fragment>
         <BrokerAccountHeader name={state.brokerAccount?.name} currencyName={state.brokerAccount?.currency?.name} currentValue={state.brokerAccount?.currentValue} onPullQuotations={pullQuotations} lastPullDate={lastPullDate} isReloading={state.isReloading} />
         <BrokerAccountValuesSummary initialValue={state.brokerAccount?.initialValue ?? 0} currentValue={state.brokerAccount?.currentValue ?? 0} dividendIncomes={dividendIncomes} taxDeductionIncomes={taxDeductionIncomes} currencyName={state.brokerAccount?.currency?.name ?? ""} />
-        <BrokerAccountSecuritiesList ref={securitiesRef} brokerAccount={state.brokerAccount}/>
+        <BrokerAccountSecuritiesList ref={securitiesRef} brokerAccountId={state.brokerAccount.id} currencyName={state.brokerAccount.currency.name}/>
         <BrokerAccountTabs currencyName={state?.brokerAccount?.currency?.name} brokerAccountId={brokerAccountId} onActionTriggered={onActionTriggered}/>
     </Fragment>
 }

@@ -5,8 +5,12 @@ import { prepareBrokerAccountSecurity, prepareBrokerAccountSecurityRequest } fro
 
 const basicUrl = `BrokerAccountSecurity`;
 
-export const getSecuritiesByBrokerAccount = async (brokerAccountId: string): Promise<BrokerAccountSecurityEntity[]> => {
-    return await getAllEntities<BrokerAccountSecurityEntityResponse>(`${basicUrl}/GetByBrokerAccount?brokerAccountId=${brokerAccountId}`)
+export const getSecuritiesByBrokerAccount = async (brokerAccountId: Nullable<string>): Promise<BrokerAccountSecurityEntity[]> => {
+    const query = brokerAccountId ?
+        getAllEntities<BrokerAccountSecurityEntityResponse>(`${basicUrl}/GetByBrokerAccount?brokerAccountId=${brokerAccountId}`):
+        getAllEntities<BrokerAccountSecurityEntityResponse>(`${basicUrl}/GetAll`);
+
+    return await query
         .then((securities: BrokerAccountSecurityEntityResponse[]) => securities.map(prepareBrokerAccountSecurity))
 };
 

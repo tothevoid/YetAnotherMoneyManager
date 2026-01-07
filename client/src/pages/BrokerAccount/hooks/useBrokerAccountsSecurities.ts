@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { BrokerAccountSecurityEntity } from "../../../models/brokers/BrokerAccountSecurityEntity";
 import { deleteBrokerAccountSecurity, getSecuritiesByBrokerAccount, updateBrokerAccountSecurity } from "../../../api/brokers/brokerAccountSecurityApi";
+import { Nullable } from "../../../shared/utilities/nullable";
 
 export interface BrokerAccountSecuritiesQuery {
-	brokerAccountId: string
+	brokerAccountId: Nullable<string>
 }
 
 export const useBrokerAccountsSecurities = (queryParameters: BrokerAccountSecuritiesQuery) => {

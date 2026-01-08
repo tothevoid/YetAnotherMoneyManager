@@ -70,6 +70,7 @@ const BrokerAccountTaxDeductionsList: React.FC<Props> = (props) => {
     }, [props.brokerAccountId, activeEntity]);
 
     const {t} = useTranslation();
+    const isGlobalBrokerAccount = !props.brokerAccountId;
 
     return <Box>
         <Flex alignItems="center" gapX={5}>
@@ -79,6 +80,7 @@ const BrokerAccountTaxDeductionsList: React.FC<Props> = (props) => {
         {
             taxDeductions.map((taxDeduction: BrokerAccountTaxDeductionEntity) => 
                 <BrokerAccountTaxDeduction key={taxDeduction.id}
+                    isGlobalBrokerAccount={isGlobalBrokerAccount}
                     onEditClicked={onEditClicked}
                     onDeleteClicked={onDeleteClicked}
                     taxDeduction={taxDeduction}
@@ -90,7 +92,7 @@ const BrokerAccountTaxDeductionsList: React.FC<Props> = (props) => {
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
             ref={confirmModalRef}/>
-        {context && <BrokerAccountTaxDeductionModal isGlobalBrokerAccount={!props.brokerAccountId} modalRef={modalRef} context={context} onSaved={onTaxDeductionSaved}  />}
+        {context && <BrokerAccountTaxDeductionModal isGlobalBrokerAccount={isGlobalBrokerAccount} modalRef={modalRef} context={context} onSaved={onTaxDeductionSaved}  />}
     </Box>
 }
 

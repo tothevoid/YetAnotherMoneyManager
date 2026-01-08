@@ -6,6 +6,7 @@ import { BrokerAccountTaxDeductionEntity } from '../../../../models/brokers/Brok
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
 
 interface Props {
+    isGlobalBrokerAccount: boolean
     taxDeduction: BrokerAccountTaxDeductionEntity,
     onEditClicked: (taxDeduction: BrokerAccountTaxDeductionEntity) => void
     onDeleteClicked: (taxDeduction: BrokerAccountTaxDeductionEntity) => void
@@ -22,6 +23,10 @@ const BrokerAccountTaxDeduction = (props: Props) => {
             <Flex justifyContent="space-between" alignItems="center">
                 <Stack direction={'row'} alignItems="center">
                     <Text textAlign={'center'} w={225} rounded={10} padding={1} background={'action_primary'}>{formatDateTime(dateApplied, i18n, true)}</Text>
+                    {
+                        props.isGlobalBrokerAccount &&
+                        <Text textAlign={'center'} w={150} rounded={10} padding={1} background={'action_primary'}>{props.taxDeduction.brokerAccount?.name}</Text>
+                    }
                     <Text fontWeight={700}>{name}</Text>
                     <Text fontWeight={700}>{formatMoneyByCurrencyCulture(amount, brokerAccount.currency.name)}</Text>
                 </Stack>

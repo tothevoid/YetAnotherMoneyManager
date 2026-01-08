@@ -79,6 +79,8 @@ const DividendPaymentsList: React.FC<Props> = (props) => {
 		setDividendPaymentsQueryParameters({recordsQuantity, pageIndex, brokerAccountId: dividendPaymentsQueryParameters.brokerAccountId});
 	}
 
+	const isGlobalBrokerAccount = !props.brokerAccountId 
+
 	return <Box>
 		<Flex alignItems="center" gapX={5}>
 			<AddButton buttonTitle={t("broker_account_page_add_dividend_payment_button")} onClick={onAddClicked}/>
@@ -87,6 +89,7 @@ const DividendPaymentsList: React.FC<Props> = (props) => {
 		{
 			dividendPayments.map((dividendPayment: DividendPaymentEntity) => 
 				<DividendPayment key={dividendPayment.id}
+					isGlobalBrokerAccount={isGlobalBrokerAccount}
 					dividendPayment={dividendPayment} 
 					onEditClicked={onEditClicked} 
 					onDeleteClicked={onDeleteClicked}/>)
@@ -98,7 +101,7 @@ const DividendPaymentsList: React.FC<Props> = (props) => {
 			message={t("modals_delete_message")}
 			confirmActionName={t("modals_delete_button")}
 			ref={confirmModalRef}/>
-		{context && <DividendPaymentModal isGlobalBrokerAccount={!props.brokerAccountId} context={context} modalRef={modalRef} onSaved={dividendPaymentSaved}/>}
+		{context && <DividendPaymentModal isGlobalBrokerAccount={isGlobalBrokerAccount} context={context} modalRef={modalRef} onSaved={dividendPaymentSaved}/>}
 	</Box>
 }
 

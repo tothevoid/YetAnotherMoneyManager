@@ -83,6 +83,8 @@ const BrokerAccountFundTransfersList: React.FC<Props> = (props) => {
 
     const {t} = useTranslation();
 
+    const isGlobalBrokerAccount = !props.brokerAccountId;
+
     return <Box>
         <Flex alignItems="center" gapX={5}>
 			<AddButton buttonTitle={t("broker_account_page_transfer_button")} onClick={onAddClicked}/>
@@ -91,6 +93,7 @@ const BrokerAccountFundTransfersList: React.FC<Props> = (props) => {
         {
             fundTransfers.map((fundTransfer: BrokerAccountFundTransferEntity) => 
                 <BrokerAccountFundTransfer key={fundTransfer.id}
+                    isGlobalBrokerAccount={isGlobalBrokerAccount}
                     onEditClicked={onEditClicked}
                     onDeleteClicked={onDeleteClicked}
                     fundTransfer={fundTransfer}
@@ -103,7 +106,7 @@ const BrokerAccountFundTransfersList: React.FC<Props> = (props) => {
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
             ref={confirmModalRef}/>
-        {context && <BrokerAccountFundTransferModal isGlobalBrokerAccount={!props.brokerAccountId} modalRef={modalRef} context={context} onSaved={onTransferSaved}  />}
+        {context && <BrokerAccountFundTransferModal isGlobalBrokerAccount={isGlobalBrokerAccount} modalRef={modalRef} context={context} onSaved={onTransferSaved}  />}
     </Box>
 }
 

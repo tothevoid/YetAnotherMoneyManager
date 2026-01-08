@@ -80,6 +80,8 @@ const SecurityTransactionsList: React.FC<Props> = (props) => {
 		return getSecurityTransactionsPagination(props.brokerAccountId);
 	}, [props.brokerAccountId]);
 
+	const isGlobalBrokerAccount= !props.brokerAccountId;
+	
 	return <Box>
 		<Flex alignItems="center" gapX={5}>
 			<AddButton buttonTitle={t("entity_securities_transaction_page_summary_add")} onClick={onAddClicked}/>
@@ -87,7 +89,9 @@ const SecurityTransactionsList: React.FC<Props> = (props) => {
 		<Box>
 		{
 			securityTransactions.map((security: SecurityTransactionEntity) => 
-				<SecurityTransaction key={security.id} securityTransaction={security} 
+				<SecurityTransaction key={security.id} 
+					isGlobalBrokerAccount={isGlobalBrokerAccount}
+					securityTransaction={security} 
 					onEditClicked={onEditClicked} 
 					onDeleteClicked={onDeleteClicked}/>)
 		}
@@ -98,7 +102,7 @@ const SecurityTransactionsList: React.FC<Props> = (props) => {
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
             ref={confirmModalRef}/>
-        {context && <SecurityTransactionModal isGlobalBrokerAccount={!props.brokerAccountId} context={context} modalRef={modalRef} onSaved={onSecurityTransactionSaved}/>}
+        {context && <SecurityTransactionModal isGlobalBrokerAccount={isGlobalBrokerAccount} context={context} modalRef={modalRef} onSaved={onSecurityTransactionSaved}/>}
 	</Box>
 }
 

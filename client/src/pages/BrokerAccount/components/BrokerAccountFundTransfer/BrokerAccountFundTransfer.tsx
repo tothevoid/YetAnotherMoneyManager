@@ -6,6 +6,7 @@ import { BrokerAccountFundTransferEntity } from '../../../../models/brokers/Brok
 import { MdDelete, MdEdit } from 'react-icons/md';
 
 interface Props {
+    isGlobalBrokerAccount: boolean
     fundTransfer: BrokerAccountFundTransferEntity,
     onEditClicked: (fundTransfer: BrokerAccountFundTransferEntity) => void
     onDeleteClicked: (fundTransfer: BrokerAccountFundTransferEntity) => void
@@ -24,6 +25,10 @@ const BrokerAccountFundTransfer = (props: Props) => {
             <Flex justifyContent="space-between" alignItems="center">
                 <Stack direction={'row'} alignItems="center">
                     <Text textAlign={'center'} w={225} rounded={10} padding={1} background={'action_primary'}>{formatDateTime(date, i18n, true)}</Text>
+                    {
+                        props.isGlobalBrokerAccount &&
+                        <Text textAlign={'center'} w={150} rounded={10} padding={1} background={'action_primary'}>{props.fundTransfer.brokerAccount?.name}</Text>
+                    }
                     <Text fontWeight={700}>{props.fundTransfer.account?.name}</Text>
                 </Stack>
                 <Flex gap={2} justifyContent="space-between" alignItems="center">

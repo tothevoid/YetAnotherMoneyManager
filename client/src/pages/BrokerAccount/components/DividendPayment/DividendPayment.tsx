@@ -6,6 +6,7 @@ import { formatDate } from '../../../../shared/utilities/formatters/dateFormatte
 import { useTranslation } from 'react-i18next';
 
 interface Props {
+    isGlobalBrokerAccount: boolean
 	dividendPayment: DividendPaymentEntity
     onEditClicked: (dividendPayment: DividendPaymentEntity) => void
 	onDeleteClicked: (dividendPayment: DividendPaymentEntity) => void
@@ -23,6 +24,10 @@ const DividendPayment = (props: Props) => {
             <Flex justifyContent="space-between" alignItems="center">
                 <Stack direction={'row'} alignItems="center">
                     <Text textAlign={'center'} w={150} rounded={10} padding={1} background={'action_primary'}>{formatDate(props.dividendPayment.receivedAt, i18n, true)}</Text>
+                    {
+                        props.isGlobalBrokerAccount &&
+                        <Text textAlign={'center'} w={150} rounded={10} padding={1} background={'action_primary'}>{props.dividendPayment.brokerAccount?.name}</Text>
+                    }
                     <Text fontWeight={700}>{dividend.security?.name} ({dividend.security?.ticker})</Text>
                 </Stack>
                 <Flex gap={2} justifyContent="space-between" alignItems="center">

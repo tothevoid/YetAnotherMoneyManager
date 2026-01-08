@@ -6,6 +6,7 @@ import { formatDateTime } from '../../../../shared/utilities/formatters/dateForm
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
 
 interface Props {
+    isGlobalBrokerAccount: boolean
     securityTransaction: SecurityTransactionEntity
     onEditClicked: (account: SecurityTransactionEntity) => void
     onDeleteClicked: (account: SecurityTransactionEntity) => void
@@ -22,13 +23,16 @@ const SecurityTransaction = (props: Props) => {
             <Flex justifyContent="space-between" alignItems="center">
                 <Stack direction={'row'} alignItems="center">
                     <Text textAlign={'center'} w={200} rounded={10} padding={1} background={'action_primary'}>{formatDateTime(date, i18n, false)}</Text>
+                    {
+                        props.isGlobalBrokerAccount &&
+                        <Text textAlign={'center'} w={150} rounded={10} padding={1} background={'action_primary'}>{props.securityTransaction.brokerAccount?.name}</Text>
+                    }
                     <Text fontWeight={700}>{security?.name} ({security?.ticker})</Text>
                 </Stack>
                 <Flex gap={2} justifyContent="space-between" alignItems="center">
                     <Text>
                         <Span>{formatMoneyByCurrencyCulture(price * quantity, security.currency.name)} </Span>
                         <Span pl={2.5} pr={2.5}>({formatMoneyByCurrencyCulture(price, security.currency.name)} x {quantity})</Span>
-                        
                     </Text>
                     <Button background={'background_secondary'} size={'sm'} onClick={() => props.onEditClicked(props.securityTransaction)}>
                         <Icon color="card_action_icon_primary">

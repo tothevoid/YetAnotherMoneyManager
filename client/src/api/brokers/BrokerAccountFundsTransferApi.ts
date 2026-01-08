@@ -1,6 +1,7 @@
 import { BrokerAccountFundTransferEntity, BrokerAccountFundTransferEntityRequest, BrokerAccountFundTransferEntityResponse } from '../../models/brokers/BrokerAccountFundTransfer';
 import { FundTransfersQuery } from '../../pages/BrokerAccount/hooks/useBrokerAccountFundTransfers';
 import { PaginationConfig } from '../../shared/models/PaginationConfig';
+import { Nullable } from '../../shared/utilities/nullable';
 import { createEntity, deleteEntity, getAllEntitiesByConfig, getPagination, updateEntity } from '../basicApi';
 import { prepareBrokerAccountFundsTransfer, prepareBrokerAccountFundsTransferRequest } from './BrokerAccountFundsTransferMapping';
 
@@ -13,8 +14,11 @@ export const getBrokerAccountFundsTransfers = async (query: FundTransfersQuery):
         })
 };
 
-export const getBrokerAccountFundsTransferPagination = async (brokerAccountId: string): Promise<PaginationConfig | void> => {
-    return getPagination(`${basicUrl}/GetPagination?brokerAccountId=${brokerAccountId}`);
+export const getBrokerAccountFundsTransferPagination = async (brokerAccountId: Nullable<string>): Promise<PaginationConfig | void> => {
+    const url = brokerAccountId ?
+        `${basicUrl}/GetPaginationByBrokerAccount?brokerAccountId=${brokerAccountId}` :
+        `${basicUrl}/GetPagination`;
+    return getPagination(url);
 };
 
 export const createBrokerAccountFundsTransfer = async (addedBrokerAccountFundsTransfer: BrokerAccountFundTransferEntity): Promise<BrokerAccountFundTransferEntityResponse | void> => {

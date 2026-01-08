@@ -2,11 +2,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { createBrokerAccountFundsTransfer, deleteBrokerAccountFundsTransfer, getBrokerAccountFundsTransfers, updateBrokerAccountFundsTransfer } from "../../../api/brokers/BrokerAccountFundsTransferApi";
 import { BrokerAccountFundTransferEntity } from "../../../models/brokers/BrokerAccountFundTransfer";
+import { Nullable } from "../../../shared/utilities/nullable";
 
 export interface FundTransfersQuery {
 	pageIndex: number,
 	recordsQuantity: number,
-	brokerAccountId: string
+	brokerAccountId: Nullable<string>
 }
 
 export const useBrokerAccountFundTransfers = (queryParameters: FundTransfersQuery) => {

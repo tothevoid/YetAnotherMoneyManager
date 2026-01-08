@@ -50,10 +50,18 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         }
 
         [HttpGet(nameof(GetPagination))]
-        public async Task<PaginationConfigModel> GetPagination([FromQuery] Guid brokerAccountId)
+        public async Task<PaginationConfigModel> GetPagination()
         {
             var pagination = await _brokerAccountFundsTransferService
-                .GetPagination(brokerAccountId);
+                .GetPagination();
+            return _mapper.Map<PaginationConfigModel>(pagination);
+        }
+
+        [HttpGet(nameof(GetPaginationByBrokerAccount))]
+        public async Task<PaginationConfigModel> GetPaginationByBrokerAccount([FromQuery] Guid brokerAccountId)
+        {
+            var pagination = await _brokerAccountFundsTransferService
+                .GetPaginationByBrokerAccount(brokerAccountId);
             return _mapper.Map<PaginationConfigModel>(pagination);
         }
 

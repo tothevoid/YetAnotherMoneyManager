@@ -53,9 +53,13 @@ namespace MoneyManager.Application.Services.Brokers
             return _mapper.Map<IEnumerable<BrokerAccountFundsTransferDto>>(transfers).ToList();
         }
 
-        public async Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAll(Guid brokerAccountId, int pageIndex, int recordsQuantity)
+        public async Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAll(Guid? brokerAccountId, int pageIndex, int recordsQuantity)
         {
-            var complexQuery = GetBaseBuilderWithFilter(brokerAccountId)
+            var builder = brokerAccountId != null ?
+                GetBaseBuilderWithFilter((Guid) brokerAccountId):
+                GetBaseBuilder();
+
+            var complexQuery = builder
                 .AddPagination(pageIndex, recordsQuantity,
                     transfer => transfer.Date,
                     true)
@@ -141,10 +145,21 @@ namespace MoneyManager.Application.Services.Brokers
             await _accountService.Update(_mapper.Map<AccountDTO>(account));
         }
 
-        public async Task<PaginationConfigDto> GetPagination(Guid brokerAccountId)
+        public async Task<PaginationConfigDto> GetPaginationByBrokerAccount(Guid brokerAccountId)
+        {
+            var filter = GetBaseFilter(brokerAccountId);
+            return await GetPaginationByFilter(filter);
+        }
+
+        public async Task<PaginationConfigDto> GetPagination()
+        {
+            return await GetPaginationByFilter();
+        }
+
+        private async Task<PaginationConfigDto> GetPaginationByFilter(Expression<Func<BrokerAccountFundsTransfer, bool>> filter = null)
         {
             int pageSize = 10;
-            var recordsQuantity = await _transfersRepo.GetCount(GetBaseFilter(brokerAccountId));
+            var recordsQuantity = await _transfersRepo.GetCount(filter);
 
             return new PaginationConfigDto()
             {

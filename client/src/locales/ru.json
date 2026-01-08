@@ -288,6 +288,7 @@
     "broker_account_transfer_modal_date": "Дата",
     "broker_account_transfer_modal_transfer_button": "Перевести",
     "broker_account_transfer_modal_operation": "Операция",
+    "broker_account_transfer_modal_broker_account": "Брокерский счёт",
     "broker_account_transfer_modal_operation_deposit": "Пополнить",
     "broker_account_transfer_modal_operation_withdraw": "Вывести",
 

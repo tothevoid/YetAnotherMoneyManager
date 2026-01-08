@@ -12,6 +12,8 @@ import { BrokerAccountFundTransferEntity } from "../../../../models/brokers/Brok
 import { generateGuid } from "../../../../shared/utilities/idUtilities";
 import DateSelect from "../../../../shared/components/DateSelect/DateSelect";
 import { BrokerAccountFundTransferFormInput, BrokerAccountFundTransferValidationSchema } from "./BrokerAccountFundTransferValidationSchema";
+import { getBrokerAccounts } from "../../../../api/brokers/brokerAccountApi";
+import { BrokerAccountEntity } from "../../../../models/brokers/BrokerAccountEntity";
 
 export interface CreateBrokerAccountFundTransferContext {
     brokerAccountId: string
@@ -22,6 +24,7 @@ export interface EditBrokerAccountFundTransferContext {
 }
 
 interface ModalProps {
+    isGlobalBrokerAccount: boolean
     onSaved: (transfer: BrokerAccountFundTransferEntity) => void
     context: CreateBrokerAccountFundTransferContext | EditBrokerAccountFundTransferContext
     modalRef: RefObject<BaseModalRef | null>}
@@ -33,6 +36,8 @@ interface TransferType {
 
 const BrokerAccountFundTransferModal: React.FC<ModalProps> = (props: ModalProps) => {
     const [accounts, setAccounts] = useState<AccountEntity[]>([]);
+    const [brokerAccounts, setBrokerAccounts] = useState<BrokerAccountEntity[]>([]);
+
 
     const { i18n, t } = useTranslation();
 
@@ -68,6 +73,11 @@ const BrokerAccountFundTransferModal: React.FC<ModalProps> = (props: ModalProps)
             // TODO: Filter by account type and currency
             const accounts = await getAccounts(true);
             setAccounts(accounts);
+
+            if (props.isGlobalBrokerAccount) {
+                const brokerAccounts = await getBrokerAccounts();
+                setBrokerAccounts(brokerAccounts);
+            }
         }
         fetchData()
     }, [])
@@ -106,6 +116,17 @@ const BrokerAccountFundTransferModal: React.FC<ModalProps> = (props: ModalProps)
             visibilityChanged={onModalVisibilityChanged}
             submitHandler={handleSubmit(onSubmit)} 
             saveButtonTitle={t("broker_account_transfer_modal_transfer_button")}>
+            {
+                props.isGlobalBrokerAccount &&
+                <Field.Root mt={4} invalid={!!errors.brokerAccount}>
+                    <Field.Label>{t("broker_account_transfer_modal_broker_account")}</Field.Label>
+                    <CollectionSelect name="brokerAccount" control={control} placeholder="Select broker account"
+                        collection={brokerAccounts}
+                        labelSelector={(brokerAccount => brokerAccount.name)}
+                        valueSelector={(brokerAccount => brokerAccount.id)} />
+                    <Field.ErrorText>{errors.brokerAccount?.message}</Field.ErrorText>
+                </Field.Root>
+            }
             <Field.Root mt={4} invalid={!!errors.income}>
                 <Field.Label>{t("broker_account_transfer_modal_operation")}</Field.Label>
                 <CollectionSelect name="income" control={control} placeholder="Select type"

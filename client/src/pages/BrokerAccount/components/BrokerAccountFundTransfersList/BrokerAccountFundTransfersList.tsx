@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import BrokerAccountFundTransferModal, { CreateBrokerAccountFundTransferContext, EditBrokerAccountFundTransferContext } from '../../../BrokerAccounts/modals/BrokerAccountFundTransferModal/BrokerAccountFundTransferModal';
 import { Nullable } from '../../../../shared/utilities/nullable';
 import AddButton from '../../../../shared/components/AddButton/AddButton';
-import { createBrokerAccountFundsTransfer, getBrokerAccountFundsTransferPagination, updateBrokerAccountFundsTransfer } from '../../../../api/brokers/BrokerAccountFundsTransferApi';
+import { getBrokerAccountFundsTransferPagination } from '../../../../api/brokers/BrokerAccountFundsTransferApi';
 import { ActiveEntityMode } from '../../../../shared/enums/activeEntityMode';
 import CollectionPagination from '../../../../shared/components/CollectionPagination/CollectionPagination';
 
@@ -21,8 +21,9 @@ interface Props {
 const BrokerAccountFundTransfersList: React.FC<Props> = (props) => {
     const {
         fundTransfers,
+        createFundTransferEntity,
+        updateFundTransferEntity,
         deleteFundTransferEntity,
-        reloadFundTransfers,
         fundTransfersQueryParameters,
         setFundTransfersQueryParameters
     } = useBrokerAccountFundTransfers({ pageIndex: 1, recordsQuantity: -1, brokerAccountId: props.brokerAccountId });
@@ -44,7 +45,6 @@ const BrokerAccountFundTransfersList: React.FC<Props> = (props) => {
 		}
 
 		await deleteFundTransferEntity(activeEntity);
-        await reloadFundTransfers();
 		onActionEnded();
     }
 
@@ -52,13 +52,12 @@ const BrokerAccountFundTransfersList: React.FC<Props> = (props) => {
 
     const onTransferSaved = async (transfer: BrokerAccountFundTransferEntity) => {
         if (mode === ActiveEntityMode.Add) {
-            await createBrokerAccountFundsTransfer(transfer);
+            await createFundTransferEntity(transfer);
         } else if (mode === ActiveEntityMode.Edit) {
-            await updateBrokerAccountFundsTransfer(transfer);
+            await updateFundTransferEntity(transfer);
         }
 
         onActionEnded();
-        await reloadFundTransfers();
     };
 
 	useEffect(() => {
@@ -104,7 +103,7 @@ const BrokerAccountFundTransfersList: React.FC<Props> = (props) => {
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
             ref={confirmModalRef}/>
-        {context && <BrokerAccountFundTransferModal modalRef={modalRef} context={context} onSaved={onTransferSaved}  />}
+        {context && <BrokerAccountFundTransferModal isGlobalBrokerAccount={!props.brokerAccountId} modalRef={modalRef} context={context} onSaved={onTransferSaved}  />}
     </Box>
 }
 

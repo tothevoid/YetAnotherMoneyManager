@@ -5,6 +5,6 @@ namespace MoneyManager.WebApi.Models.Brokers
 {
     public class GetAllDividendsPaymentsQuery: BasePageableQuery
     {
-        public Guid BrokerAccountId { get; set; }
+        public Guid? BrokerAccountId { get; set; }
     }
 }

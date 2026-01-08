@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { createDividendPayment, deleteDividendPayment, getDividendPaymentsByBrokerAccount, updateDividendPayment } from "../../../api/brokers/dividendPaymentApi";
 import { DividendPaymentEntity } from "../../../models/brokers/DividendPaymentEntity";
+import { Nullable } from "../../../shared/utilities/nullable";
 
 export interface DividendPaymentsQuery {
 	pageIndex: number,
 	recordsQuantity: number,
-	brokerAccountId: string
+	brokerAccountId: Nullable<string>
 }
 
 export const useDividendPayments = (queryParameters: DividendPaymentsQuery, onDataChanged: () => void) => {

@@ -1,6 +1,7 @@
 import { DividendPaymentEntity, DividendPaymentEntityRequest, DividendPaymentEntityResponse } from '../../models/brokers/DividendPaymentEntity';
 import { DividendPaymentsQuery } from '../../pages/BrokerAccount/hooks/useDividendPayments';
 import { PaginationConfig } from '../../shared/models/PaginationConfig';
+import { Nullable } from '../../shared/utilities/nullable';
 import { createEntity, deleteEntity, getAllEntitiesByConfig, getEntity, getPagination, updateEntity } from '../basicApi';
 import { prepareDividendPayment, prepareDividendPaymentRequest } from './dividendPaymentApiMapping';
 
@@ -13,8 +14,11 @@ export const getDividendPaymentsByBrokerAccount = async (query: DividendPayments
         });
 };
 
-export const getDividendPaymentsPagination = async (brokerAccountId: string): Promise<PaginationConfig | void> => {
-    await getPagination(`${basicUrl}/GetPagination?brokerAccountId=${brokerAccountId}`);
+export const getDividendPaymentsPagination = async (brokerAccountId: Nullable<string>): Promise<PaginationConfig | void> => {
+    const url = brokerAccountId ?
+        `${basicUrl}/GetPagination?brokerAccountId=${brokerAccountId}`:
+        `${basicUrl}/GetPagination`;
+    return await getPagination(url);
 };
 
 export const getEarningsByBrokerAccount = async (brokerAccountId: string): Promise<number> => {

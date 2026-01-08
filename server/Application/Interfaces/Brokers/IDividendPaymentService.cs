@@ -8,9 +8,11 @@ namespace MoneyManager.Application.Interfaces.Brokers
 {
     public interface IDividendPaymentService
     {
-        Task<IEnumerable<DividendPaymentDto>> GetAll(Guid brokerAccountId, int pageIndex, int recordsQuantity);
+        Task<IEnumerable<DividendPaymentDto>> GetAll(Guid? brokerAccountId, int pageIndex, int recordsQuantity);
 
-        Task<PaginationConfigDto> GetPagination(Guid brokerAccountId);
+        Task<PaginationConfigDto> GetPagination();
+
+        Task<PaginationConfigDto> GetPaginationByBrokerAccount(Guid brokerAccountId);
 
         Task<decimal> GetEarnings();
 

@@ -34,26 +34,39 @@ namespace MoneyManager.Application.Services.Brokers
             _dividendRepo = uow.CreateRepository<Dividend>();
         }
 
-        public async Task<IEnumerable<DividendPaymentDto>> GetAll(Guid brokerAccountId, int pageIndex, int recordsQuantity)
+        public async Task<IEnumerable<DividendPaymentDto>> GetAll(Guid? brokerAccountId, int pageIndex, int recordsQuantity)
         {
-            var complexQuery = new ComplexQueryBuilder<DividendPayment>()
-                .AddFilter(GetBaseFilter(brokerAccountId))
+            var query = new ComplexQueryBuilder<DividendPayment>()
                 .AddPagination(pageIndex, recordsQuantity,
-                    dividendPayment => dividendPayment.ReceivedAt, 
+                    dividendPayment => dividendPayment.ReceivedAt,
                     true)
-                .AddJoins(DividendPaymentQuery.GetFullHierarchyColumns)
-                .GetQuery();
+                .AddJoins(DividendPaymentQuery.GetFullHierarchyColumns);
+
+            if (brokerAccountId != null)
+            {
+                query.AddFilter(GetBaseFilter((Guid) brokerAccountId));
+            }
 
             var dividends = await _dividendPaymentRepo
-                .GetAll(complexQuery);
+                .GetAll(query.GetQuery());
             
             return _mapper.Map<IEnumerable<DividendPaymentDto>>(dividends);
         }
 
-        public async Task<PaginationConfigDto> GetPagination(Guid brokerAccountId)
+        public async Task<PaginationConfigDto> GetPagination()
+        {
+            return await GetPaginationByFilter();
+        }
+
+        public async Task<PaginationConfigDto> GetPaginationByBrokerAccount(Guid brokerAccountId)
+        {
+            return await GetPaginationByFilter(GetBaseFilter(brokerAccountId));
+        }
+
+        private async Task<PaginationConfigDto> GetPaginationByFilter(Expression<Func<DividendPayment, bool>> filter = null)
         {
             int pageSize = 10;
-            var recordsQuantity = await _dividendPaymentRepo.GetCount(GetBaseFilter(brokerAccountId));
+            var recordsQuantity = await _dividendPaymentRepo.GetCount(filter);
 
             return new PaginationConfigDto()
             {

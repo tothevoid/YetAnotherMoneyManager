@@ -88,7 +88,6 @@ const BrokerAccountTabs: React.FC<Props> = ({ brokerAccountId, currencyName, onA
                 <BrokerAccountsList/>
             </Tabs.Content>
         }
-       
         <Tabs.Content value="daily_stats">
             <BrokerAccountDailyStats currencyName={currencyName} brokerAccountId={brokerAccountId}/>
         </Tabs.Content>

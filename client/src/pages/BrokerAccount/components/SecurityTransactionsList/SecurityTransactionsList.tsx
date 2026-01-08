@@ -98,7 +98,7 @@ const SecurityTransactionsList: React.FC<Props> = (props) => {
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
             ref={confirmModalRef}/>
-        {context && <SecurityTransactionModal context={context} modalRef={modalRef} onSaved={onSecurityTransactionSaved}/>}
+        {context && <SecurityTransactionModal isGlobalBrokerAccount={!props.brokerAccountId} context={context} modalRef={modalRef} onSaved={onSecurityTransactionSaved}/>}
 	</Box>
 }
 

@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { createSecurityTransaction, deleteSecurityTransaction, getSecurityTransactions, updateSecurityTransaction } from "../../../api/securities/securityTransactionApi";
 import { SecurityTransactionEntity } from "../../../models/securities/SecurityTransactionEntity";
+import { Nullable } from "../../../shared/utilities/nullable";
 
 export interface SecurityTransactionsQuery {
 	pageIndex: number,
 	recordsQuantity: number,
-	brokerAccountId: string
+	brokerAccountId: Nullable<string>
 }
 
 export const useSecurityTransactions = (queryParameters: SecurityTransactionsQuery) => {

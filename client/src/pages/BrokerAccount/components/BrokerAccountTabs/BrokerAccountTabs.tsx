@@ -13,6 +13,7 @@ import BrokerAccountTaxDeductionsList from "../BrokerAccountTaxDeductionsList/Br
 import DividendPaymentsList from "../DividendPaymentsList/DividendPaymentsList";
 import SecurityTransactionsList from "../SecurityTransactionsList/SecurityTransactionsList";
 import { Nullable } from "../../../../shared/utilities/nullable";
+import BrokerAccountsList from "../../../BrokerAccounts/components/BrokerAccountsList/BrokerAccountsList";
 
 interface Props {
     brokerAccountId?: Nullable<string>
@@ -46,8 +47,16 @@ const BrokerAccountTabs: React.FC<Props> = ({ brokerAccountId, currencyName, onA
         onActionTriggered(ChangeAction.TaxDeductionsChanged);
     }, []);
 
-    return <Tabs.Root lazyMount={true} unmountOnExit={true} variant="enclosed" defaultValue="daily_stats">
+    return <Tabs.Root lazyMount={true} unmountOnExit={true} variant="enclosed" 
+        defaultValue={brokerAccountId ? "daily_stats": "broker_accounts"}>
         <Tabs.List background={"background_primary"}>
+            {
+                !brokerAccountId &&
+                <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="broker_accounts">
+                    <IoMdStats/>
+                        {t("broker_account_page_broker_accounts_tab")}
+                </Tabs.Trigger>
+            }
             <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="daily_stats">
                 <IoMdStats/>
                     {t("broker_account_page_daily_stats_tab")}
@@ -73,6 +82,13 @@ const BrokerAccountTabs: React.FC<Props> = ({ brokerAccountId, currencyName, onA
                     {t("broker_account_page_deduction_taxes_tab")}
             </Tabs.Trigger>
         </Tabs.List>
+        {
+            !brokerAccountId &&
+            <Tabs.Content value="broker_accounts">
+                <BrokerAccountsList/>
+            </Tabs.Content>
+        }
+       
         <Tabs.Content value="daily_stats">
             <BrokerAccountDailyStats currencyName={currencyName} brokerAccountId={brokerAccountId}/>
         </Tabs.Content>

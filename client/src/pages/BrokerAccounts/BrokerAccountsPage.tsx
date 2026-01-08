@@ -1,5 +1,4 @@
 import { Fragment } from "react/jsx-runtime";
-import BrokerAccountsList from "./components/BrokerAccountsList/BrokerAccountsList";
 import BrokerAccountHeader from "../BrokerAccount/components/BrokerAccountHeader/BrokerAccountHeader";
 import BrokerAccountSecuritiesList, { BrokerAccountSecuritiesListRef } from "../BrokerAccount/components/BrokerAccountSecuritiesList/BrokerAccountSecuritiesList";
 import BrokerAccountTabs, { ChangeAction } from "../BrokerAccount/components/BrokerAccountTabs/BrokerAccountTabs";
@@ -131,7 +130,6 @@ const BrokerAccountsPage: React.FC = () => {
             dividendIncomes={brokerAccountsSummary.totalDividendIncomes} 
             taxDeductionIncomes={brokerAccountsSummary.totalTaxDeductionIncomes} 
             currencyName={currencyName}/>
-        <BrokerAccountsList/>
         <BrokerAccountSecuritiesList 
             ref={securitiesRef}
             mainCurrencyAmount={mainCurrencyAmount}

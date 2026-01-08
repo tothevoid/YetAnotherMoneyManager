@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Minio.DataModel.Notification;
 using MoneyManager.Application.DTO.Common;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Securities;
@@ -36,20 +37,23 @@ namespace MoneyManager.Application.Services.Securities
             _dividendPaymentRepo = uow.CreateRepository<DividendPayment>();
         }
 
-        public async Task<IEnumerable<SecurityTransactionDTO>> GetAll(Guid brokerAccountId,
+        public async Task<IEnumerable<SecurityTransactionDTO>> GetAll(Guid? brokerAccountId,
             int recordsQuantity, int pageIndex)
         {
-            var complexQuery = new ComplexQueryBuilder<SecurityTransaction>()
-                .AddFilter(GetBaseFilter(brokerAccountId))
+            var query = new ComplexQueryBuilder<SecurityTransaction>()
                 .AddJoins(GetFullHierarchyColumns)
                 .AddPagination(pageIndex, recordsQuantity,
                     securityTransaction => securityTransaction.Date,
                     true)
-                .DisableTracking()
-                .GetQuery();
+                .DisableTracking();
+
+            if (brokerAccountId != null)
+            {
+                query.AddFilter(GetBaseFilter((Guid) brokerAccountId));
+            }
 
             var brokerAccountSecurities = await _securityTransactionRepo
-                .GetAll(complexQuery);
+                .GetAll(query.GetQuery());
             return _mapper.Map<IEnumerable<SecurityTransactionDTO>>(brokerAccountSecurities);
         }
 
@@ -95,8 +99,19 @@ namespace MoneyManager.Application.Services.Securities
 
         public async Task<PaginationConfigDto> GetPagination(Guid brokerAccountId)
         {
+            var filter = GetBaseFilter(brokerAccountId);
+            return await GetFilteredPagination(filter);
+        }
+
+        public async Task<PaginationConfigDto> GetPagination()
+        {
+            return await GetFilteredPagination();
+        }
+
+        private async Task<PaginationConfigDto> GetFilteredPagination(Expression<Func<SecurityTransaction, bool>> filter = null)
+        {
             int pageSize = 10;
-            var recordsQuantity = await _securityTransactionRepo.GetCount(GetBaseFilter(brokerAccountId));
+            var recordsQuantity = await _securityTransactionRepo.GetCount(filter);
 
             return new PaginationConfigDto()
             {

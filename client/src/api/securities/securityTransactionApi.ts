@@ -2,6 +2,7 @@ import { SecurityTransactionEntity, SecurityTransactionEntityRequest, SecurityTr
 import { SecurityTransactionsHistory } from '../../models/securities/SecurityTransactionsHistory';
 import { SecurityTransactionsRequest } from '../../models/securities/SecurityTransactionsRequest';
 import { PaginationConfig } from '../../shared/models/PaginationConfig';
+import { Nullable } from '../../shared/utilities/nullable';
 import { createEntity, deleteEntity, getAllEntities, getAllEntitiesByConfig, getPagination, updateEntity } from '../basicApi';
 import { prepareSecurityTransaction, prepareSecurityTransactionRequest } from './securityTransactionApiMapping';
 
@@ -14,8 +15,12 @@ export const getSecurityTransactions = async (request: SecurityTransactionsReque
         })
 };
 
-export const getSecurityTransactionsPagination = async (brokerAccountId: string): Promise<PaginationConfig | void> => {
-    return getPagination(`${basicUrl}/GetPagination?brokerAccountId=${brokerAccountId}`);
+export const getSecurityTransactionsPagination = async (brokerAccountId: Nullable<string>): Promise<PaginationConfig | void> => {
+    const url = brokerAccountId ?
+        `${basicUrl}/GetPaginationByBrokerAccount?brokerAccountId=${brokerAccountId}` :
+        `${basicUrl}/GetPagination`;
+    
+    return getPagination(url);
 };
 
 export const getTransactionsBySecurity = async (securityId: string): Promise<SecurityTransactionsHistory[]> => {

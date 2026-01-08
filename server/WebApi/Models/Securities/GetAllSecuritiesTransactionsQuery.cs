@@ -5,6 +5,6 @@ namespace MoneyManager.WebApi.Models.Securities
 {
     public class GetAllSecuritiesTransactionsQuery: BasePageableQuery
     {
-        public Guid BrokerAccountId { get; set; }
+        public Guid? BrokerAccountId { get; set; }
     }
 }

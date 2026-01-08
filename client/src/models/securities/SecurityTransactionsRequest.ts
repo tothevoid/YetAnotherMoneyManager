@@ -1,5 +1,7 @@
+import { Nullable } from "../../shared/utilities/nullable";
+
 export interface SecurityTransactionsRequest{
     recordsQuantity: number,
     pageIndex: number,
-    brokerAccountId: string
+    brokerAccountId: Nullable<string>
 }

@@ -29,7 +29,7 @@ const BrokerAccountTaxDeductionsList: React.FC<Props> = (props) => {
         reloadTaxDeductions,
         createTaxDeductionEntity,
         updateTaxDeductionEntity
-    } = useBrokerAccountTaxDeductions(dataChangedHandler);
+    } = useBrokerAccountTaxDeductions({brokerAccountId: props.brokerAccountId}, dataChangedHandler);
 
     const { 
         modalRef,

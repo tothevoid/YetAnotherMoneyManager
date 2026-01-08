@@ -1,18 +1,25 @@
 import { useCallback, useEffect, useState } from "react";
 import { createBrokerAccountTaxDeduction, deleteBrokerAccountTaxDeduction, getBrokerAccountTaxDeductions, updateBrokerAccountTaxDeduction } from "../../../api/brokers/BrokerAccountTaxDeductionApi";
 import { BrokerAccountTaxDeductionEntity } from "../../../models/brokers/BrokerAccountTaxDeductionEntity";
+import { Nullable } from "../../../shared/utilities/nullable";
 
-export const useBrokerAccountTaxDeductions = (onDataChanged: () => void) => {
+export interface TaxDecutionsQuery {
+	brokerAccountId: Nullable<string>
+}
+
+export const useBrokerAccountTaxDeductions = (queryParameters: TaxDecutionsQuery, 
+    onDataChanged: () => void) => {
 
     const [taxDeductions, setTaxDeductions] = useState<BrokerAccountTaxDeductionEntity[]>([]);
     const [isTaxDeductionsLoading, setLoading] = useState(false);
 
     const [error, setError] = useState<string | null>(null);
+    const [taxDeductionsQueryParameters, setTaxDeductionsQueryParameters] = useState<TaxDecutionsQuery>(queryParameters);
 
     const fetchData = useCallback(async () => {
         setLoading(true)
         try {
-            const deductions = await getBrokerAccountTaxDeductions();
+            const deductions = await getBrokerAccountTaxDeductions(taxDeductionsQueryParameters);
             setTaxDeductions(deductions);
         } catch (err: any) {
             debugger;
@@ -57,6 +64,8 @@ export const useBrokerAccountTaxDeductions = (onDataChanged: () => void) => {
         createTaxDeductionEntity,
         updateTaxDeductionEntity,
         deleteTaxDeductionEntity,
-        reloadTaxDeductions: fetchData
+        reloadTaxDeductions: fetchData,
+        taxDeductionsQueryParameters,
+        setTaxDeductionsQueryParameters
     }
 }

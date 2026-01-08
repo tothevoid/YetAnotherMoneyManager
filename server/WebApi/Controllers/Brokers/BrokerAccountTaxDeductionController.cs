@@ -25,10 +25,10 @@ namespace MoneyManager.WebApi.Controllers.Brokers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<BrokerAccountTaxDeductionModel>> GetAll()
+        [HttpPost(nameof(GetAll))]
+        public async Task<IEnumerable<BrokerAccountTaxDeductionModel>> GetAll(GetAllBrokerAccountsTaxDeductionsQuery query)
         {
-            var dtos = await _service.GetAll();
+            var dtos = await _service.GetAll(query.BrokerAccountId);
             return _mapper.Map<IEnumerable<BrokerAccountTaxDeductionModel>>(dtos);
         }
 

@@ -1,11 +1,12 @@
 import { BrokerAccountTaxDeductionEntity, BrokerAccountTaxDeductionEntityResponse } from "../../models/brokers/BrokerAccountTaxDeductionEntity";
-import { createEntity, deleteEntity, getAllEntities, getEntity, updateEntity } from "../basicApi";
+import { TaxDecutionsQuery } from "../../pages/BrokerAccount/hooks/useBrokerAccountTaxDeductions";
+import { createEntity, deleteEntity, getAllEntitiesByConfig, getEntity, updateEntity } from "../basicApi";
 import { prepareBrokerAccountTaxDeductionRequest, prepareBrokerAccountTaxDeductionResponse } from "./BrokerAccountTaxDeductionApiMapping";
 
 const basicUrl = `BrokerAccountTaxDeduction`;
 
-export const getBrokerAccountTaxDeductions = async (): Promise<BrokerAccountTaxDeductionEntity[]> => {
-    return await getAllEntities<BrokerAccountTaxDeductionEntityResponse>(basicUrl)
+export const getBrokerAccountTaxDeductions = async (query: TaxDecutionsQuery): Promise<BrokerAccountTaxDeductionEntity[]> => {
+    return await getAllEntitiesByConfig<TaxDecutionsQuery, BrokerAccountTaxDeductionEntityResponse>(`${basicUrl}/GetAll`, query)
         .then((data) => data.map(prepareBrokerAccountTaxDeductionResponse));
 };
 

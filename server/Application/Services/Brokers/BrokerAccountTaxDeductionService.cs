@@ -8,6 +8,8 @@ using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Minio.DataModel.Notification;
+using System.Linq.Expressions;
 
 namespace MoneyManager.Application.Services.Brokers
 {
@@ -24,9 +26,13 @@ namespace MoneyManager.Application.Services.Brokers
             _brokerAccountTaxDeductionRepo = uow.CreateRepository<BrokerAccountTaxDeduction>();
         }
 
-        public async Task<IEnumerable<BrokerAccountTaxDeductionDto>> GetAll()
+        public async Task<IEnumerable<BrokerAccountTaxDeductionDto>> GetAll(Guid? brokerAccountId = null)
         {
-            var entities = await _brokerAccountTaxDeductionRepo.GetAll(include: GetFullHierarchyColumns);
+            Expression<Func<BrokerAccountTaxDeduction, bool>> filter = brokerAccountId != null ? 
+                (taxDeduction) => taxDeduction.BrokerAccountId == brokerAccountId : 
+                null;
+
+            var entities = await _brokerAccountTaxDeductionRepo.GetAll(filter, GetFullHierarchyColumns);
             return _mapper.Map<IEnumerable<BrokerAccountTaxDeductionDto>>(entities);
         }
 

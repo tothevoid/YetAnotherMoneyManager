@@ -22,7 +22,7 @@ export const useBrokerAccountTaxDeductions = (queryParameters: TaxDecutionsQuery
             const deductions = await getBrokerAccountTaxDeductions(taxDeductionsQueryParameters);
             setTaxDeductions(deductions);
         } catch (err: any) {
-            debugger;
+            
             setError(err.message || 'Error loading data');
         } finally {
             setLoading(false);

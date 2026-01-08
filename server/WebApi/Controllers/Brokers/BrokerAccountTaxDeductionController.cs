@@ -32,7 +32,7 @@ namespace MoneyManager.WebApi.Controllers.Brokers
             return _mapper.Map<IEnumerable<BrokerAccountTaxDeductionModel>>(dtos);
         }
 
-        [HttpPost]
+        [HttpPut]
         public async Task<Guid> Add(BrokerAccountTaxDeductionModel model)
         {
             var dto = _mapper.Map<BrokerAccountTaxDeductionDto>(model);

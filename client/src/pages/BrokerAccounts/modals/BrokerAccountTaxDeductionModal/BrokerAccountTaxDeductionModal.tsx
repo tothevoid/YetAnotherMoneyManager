@@ -9,6 +9,9 @@ import { generateGuid } from "../../../../shared/utilities/idUtilities";
 import DateSelect from "../../../../shared/components/DateSelect/DateSelect";
 import { BrokerAccountTaxDeductionFormInput, BrokerAccountTaxDeductionValidationSchema } from "./BrokerAccountTaxDeductionValidationSchema";
 import { BrokerAccountTaxDeductionEntity } from "../../../../models/brokers/BrokerAccountTaxDeductionEntity";
+import { getBrokerAccounts } from "../../../../api/brokers/brokerAccountApi";
+import { BrokerAccountEntity } from "../../../../models/brokers/BrokerAccountEntity";
+import CollectionSelect from "../../../../shared/components/CollectionSelect/CollectionSelect";
 
 export interface CreateBrokerAccountTaxDeductionContext {
     brokerAccountId: string
@@ -19,6 +22,7 @@ export interface EditBrokerAccountTaxDeductionContext {
 }
 
 interface ModalProps {
+    isGlobalBrokerAccount: boolean
     onSaved: (transfer: BrokerAccountTaxDeductionEntity) => void
     context: CreateBrokerAccountTaxDeductionContext | EditBrokerAccountTaxDeductionContext
     modalRef: RefObject<BaseModalRef | null>}
@@ -26,6 +30,8 @@ interface ModalProps {
 const BrokerAccountTaxDeductionModal: React.FC<ModalProps> = (props: ModalProps) => {
     const { i18n, t } = useTranslation();
     
+    const [brokerAccounts, setBrokerAccounts] = useState<BrokerAccountEntity[]>([]);
+
     const getDefaultValues = useCallback(() => {
         const taxDeduction = "taxDeduction" in props.context ? props.context.taxDeduction: null;
         
@@ -64,11 +70,34 @@ const BrokerAccountTaxDeductionModal: React.FC<ModalProps> = (props: ModalProps)
         reset(getDefaultValues());
     }
 
+    useEffect(() => {
+        const runAsync = async () => {
+            if (!props.isGlobalBrokerAccount) {
+                return;
+            }
+            const brokerAccounts = await getBrokerAccounts();
+            setBrokerAccounts(brokerAccounts);
+        }
+
+        runAsync();
+    }, []);
+
     return (
         <BaseFormModal ref={props.modalRef} title={t("broker_account_tax_deduction_modal_title")}
             visibilityChanged={onModalVisibilityChanged}
             submitHandler={handleSubmit(onSubmit)} 
             saveButtonTitle={t("broker_account_tax_deduction_modal_deduction_button")}>
+            {
+                props.isGlobalBrokerAccount &&
+                <Field.Root mt={4} invalid={!!errors.brokerAccount}>
+                    <Field.Label>{t("broker_account_tax_deduction_modal_broker_account")}</Field.Label>
+                    <CollectionSelect name="brokerAccount" control={control} placeholder="Select broker account"
+                        collection={brokerAccounts}
+                        labelSelector={(brokerAccount => brokerAccount.name)}
+                        valueSelector={(brokerAccount => brokerAccount.id)} />
+                    <Field.ErrorText>{errors.brokerAccount?.message}</Field.ErrorText>
+                </Field.Root>
+            }
             <Field.Root mt={4} invalid={!!errors.name}>
                 <Field.Label>{t("broker_account_tax_deduction_modal_name")}</Field.Label>
                 <Input {...register("name")} name="name" type="text" placeholder={t("broker_account_tax_deduction_modal_name_placeholder")} />

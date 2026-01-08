@@ -25,10 +25,9 @@ const BrokerAccountTaxDeductionsList: React.FC<Props> = (props) => {
 
     const {
         taxDeductions,
-        deleteTaxDeductionEntity,
-        reloadTaxDeductions,
         createTaxDeductionEntity,
-        updateTaxDeductionEntity
+        updateTaxDeductionEntity,
+        deleteTaxDeductionEntity,
     } = useBrokerAccountTaxDeductions({brokerAccountId: props.brokerAccountId}, dataChangedHandler);
 
     const { 
@@ -48,13 +47,12 @@ const BrokerAccountTaxDeductionsList: React.FC<Props> = (props) => {
         }
 
         await deleteTaxDeductionEntity(activeEntity);
-        await reloadTaxDeductions();
         onActionEnded();
     }
 
     const [context, setContext] = useState<Nullable<CreateBrokerAccountTaxDeductionContext | EditBrokerAccountTaxDeductionContext>>(null);
 
-    const onTransferSaved = async (deduction: BrokerAccountTaxDeductionEntity) => {
+    const onTaxDeductionSaved = async (deduction: BrokerAccountTaxDeductionEntity) => {
         if (mode === ActiveEntityMode.Add) {
             await createTaxDeductionEntity(deduction);
         } else if (mode === ActiveEntityMode.Edit) {
@@ -62,7 +60,6 @@ const BrokerAccountTaxDeductionsList: React.FC<Props> = (props) => {
         }
 
         onActionEnded();
-        await reloadTaxDeductions();
     };
 
     useEffect(() => {
@@ -93,7 +90,7 @@ const BrokerAccountTaxDeductionsList: React.FC<Props> = (props) => {
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
             ref={confirmModalRef}/>
-        {context && <BrokerAccountTaxDeductionModal modalRef={modalRef} context={context} onSaved={onTransferSaved}  />}
+        {context && <BrokerAccountTaxDeductionModal isGlobalBrokerAccount={!props.brokerAccountId} modalRef={modalRef} context={context} onSaved={onTaxDeductionSaved}  />}
     </Box>
 }
 

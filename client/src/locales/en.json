@@ -331,6 +331,7 @@
     "broker_account_tax_deduction_modal_amount": "Amount",
     "broker_account_tax_deduction_modal_deduction_button": "Save",
     "broker_account_tax_deduction_modal_name": "Name",
+    "broker_account_tax_deduction_modal_broker_account": "Broker Account",
     "broker_account_tax_deduction_modal_name_placeholder": "Enter name",
     "broker_account_tax_deduction_modal_date_applied": "Date Applied",
     "entity_broker_account_tax_deduction_delete_title": "Delete Tax Deduction"

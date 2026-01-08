@@ -10,17 +10,16 @@ export const getBrokerAccountTaxDeductions = async (query: TaxDecutionsQuery): P
         .then((data) => data.map(prepareBrokerAccountTaxDeductionResponse));
 };
 
-export const createBrokerAccountTaxDeduction = async (addedTaxDeduction: BrokerAccountTaxDeductionEntity): Promise<BrokerAccountTaxDeductionEntity | void> => {
-    return await createEntity<any, any>(basicUrl, prepareBrokerAccountTaxDeductionRequest(addedTaxDeduction))
-        .then(prepareBrokerAccountTaxDeductionResponse);
+export const createBrokerAccountTaxDeduction = async (addedTaxDeduction: BrokerAccountTaxDeductionEntity): Promise<void> => {
+    await createEntity<any, any>(basicUrl, prepareBrokerAccountTaxDeductionRequest(addedTaxDeduction));
 };
 
 export const getAmountByBrokerAccount = async (brokerAccountId: string): Promise<number> => {
     return await getEntity<number>(`${basicUrl}/GetAmountByBrokerAccount?brokerAccountId=${brokerAccountId}`) ?? 0;   
 };
 
-export const updateBrokerAccountTaxDeduction = async (updatedTaxDeduction: BrokerAccountTaxDeductionEntity): Promise<boolean> => {
-    return await updateEntity(basicUrl, prepareBrokerAccountTaxDeductionRequest(updatedTaxDeduction));
+export const updateBrokerAccountTaxDeduction = async (updatedTaxDeduction: BrokerAccountTaxDeductionEntity): Promise<void> => {
+    await updateEntity(basicUrl, prepareBrokerAccountTaxDeductionRequest(updatedTaxDeduction));
 };
 
 export const deleteBrokerAccountTaxDeduction = async (taxDeductionId: string): Promise<boolean> => {

@@ -332,6 +332,7 @@
     "broker_account_tax_deduction_modal_amount": "Сумма",
     "broker_account_tax_deduction_modal_deduction_button": "Сохранить",
     "broker_account_tax_deduction_modal_name": "Название",
+    "broker_account_tax_deduction_modal_broker_account": "Брокерский счёт",
     "broker_account_tax_deduction_modal_name_placeholder": "Введите название",
     "broker_account_tax_deduction_modal_date_applied": "Дата применения",
     "entity_broker_account_tax_deduction_delete_title": "Удалить налоговый вычет"

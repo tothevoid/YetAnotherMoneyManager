@@ -16,6 +16,8 @@ import { formatDate } from "../../../../shared/utilities/formatters/dateFormatte
 import { formatMoneyByCurrencyCulture } from "../../../../shared/utilities/formatters/moneyFormatter";
 import { SecurityEntity } from "../../../../models/securities/SecurityEntity";
 import { generateGuid } from "../../../../shared/utilities/idUtilities";
+import { getBrokerAccounts } from "../../../../api/brokers/brokerAccountApi";
+import { BrokerAccountEntity } from "../../../../models/brokers/BrokerAccountEntity";
 
 export interface CreateDividendPaymentContext {
 	brokerAccountId: string
@@ -26,61 +28,22 @@ export interface EditDividendPaymentContext {
 }
 
 interface ModalProps {
-	modalRef: RefObject<BaseModalRef | null>,
-	context: CreateDividendPaymentContext | EditDividendPaymentContext,
-	onSaved: (account: DividendPaymentEntity) => void;
+	isGlobalBrokerAccount: boolean
+	modalRef: RefObject<BaseModalRef | null>
+	context: CreateDividendPaymentContext | EditDividendPaymentContext
+	onSaved: (account: DividendPaymentEntity) => void
 };
 
 const DividendPaymentModal: React.FC<ModalProps> = (props: ModalProps) => {
 	const {t, i18n} = useTranslation();
 
+	const [brokerAccounts, setBrokerAccounts] = useState<BrokerAccountEntity[]>([]);
 	const [availableSecurities, setAvailableSecurities] = useState<SecurityEntity[]>([]);
 	const [availableDividends, setAvailableDividends] = useState<DividendEntity[]>([]);
 	const [dividendsBySecurity, setDividendsBySecurity] = useState<DividendEntity[]>([]);
 	const [selectedSecurity, setSelectedSecurity] = useState<SecurityEntity | null>(null);
 	const [payment, setPayment] = useState<number>(0);
 	
-	const fetchAvailableDividends = async () => {
-		const brokerAccountId = "dividendPayment" in props.context ?
-			props.context.dividendPayment.brokerAccount.id:
-			props.context.brokerAccountId;
-
-		const dividends = await getAvailableDividends(brokerAccountId);
-		setAvailableDividends(dividends);
-
-		const securities = new Map<string, SecurityEntity>();
-		dividends.forEach((dividend) => {
-			const securityId = dividend.security.id;
-			if (securities.has(securityId)) {
-				return;
-			}
-
-			securities.set(securityId, dividend.security);
-		});
-		
-		setAvailableSecurities([...securities.values()])
-	}
-
-	useEffect(() => {
-		const security = "dividendPayment" in props.context ?
-			props.context.dividendPayment?.dividend?.security:
-			null;
-		setSelectedSecurity(security);
-	}, [props.context]);
-
-	useEffect(() => {
-		fetchAvailableDividends();
-	}, []);
-
-	useEffect(() => {
-		if (!selectedSecurity) {
-			setDividendsBySecurity([]);
-			return;
-		}
-
-		setDividendsBySecurity(availableDividends.filter((dividend) => dividend.security.id === selectedSecurity.id))
-	}, [selectedSecurity, availableDividends])
-
 	const getFormDefaultValues = useCallback(() => {
 		const dividendPayment = "dividendPayment" in props.context ? props.context.dividendPayment: null;
 		const brokerAccount = "brokerAccountId" in props.context ? { id: props.context.brokerAccountId }: { id: undefined };
@@ -101,13 +64,80 @@ const DividendPaymentModal: React.FC<ModalProps> = (props: ModalProps) => {
 		defaultValues: getFormDefaultValues()
 	});
 
-	useEffect(() => {
-		reset(getFormDefaultValues());
-	}, [reset, getFormDefaultValues, props.context]);
-
+	const brokerAccount = watch('brokerAccount');
 	const securitiesQuantity = watch('securitiesQuantity');
 	const dividend = watch('dividend');
 	const tax = watch('tax');
+
+	const getBrokerAccountId = () => {
+		if (props.isGlobalBrokerAccount) {
+			return brokerAccount.id;
+		}
+
+		return "dividendPayment" in props.context ?
+			props.context.dividendPayment.brokerAccount.id:
+			props.context.brokerAccountId;
+	}
+
+	const fetchAvailableDividends = async () => {
+		const brokerAccountId = getBrokerAccountId();
+
+		if (!brokerAccountId) {
+			return;
+		}
+
+		const dividends = await getAvailableDividends(brokerAccountId);
+		setAvailableDividends(dividends);
+
+		const securities = new Map<string, SecurityEntity>();
+		dividends.forEach((dividend) => {
+			const securityId = dividend.security.id;
+			if (securities.has(securityId)) {
+				return;
+			}
+
+			securities.set(securityId, dividend.security);
+		});
+		
+		setAvailableSecurities([...securities.values()])
+	}
+
+	const fetchBrokerAccounts = async () => {
+		if (!props.isGlobalBrokerAccount) {
+			return;
+		}
+
+		const brokerAccounts = await getBrokerAccounts();
+		setBrokerAccounts(brokerAccounts);
+	}
+
+	useEffect(() => {
+		const security = "dividendPayment" in props.context ?
+			props.context.dividendPayment?.dividend?.security:
+			null;
+		setSelectedSecurity(security);
+	}, [props.context]);
+
+	useEffect(() => {
+		const runAsync = async () => {
+			await fetchBrokerAccounts();
+			await fetchAvailableDividends();
+		}
+		runAsync();
+	}, []);
+
+	useEffect(() => {
+		if (!selectedSecurity) {
+			setDividendsBySecurity([]);
+			return;
+		}
+
+		setDividendsBySecurity(availableDividends.filter((dividend) => dividend.security.id === selectedSecurity.id))
+	}, [selectedSecurity, availableDividends])
+
+	useEffect(() => {
+		reset(getFormDefaultValues());
+	}, [reset, getFormDefaultValues, props.context]);
 
 	useEffect(() => {
 		if (!securitiesQuantity || !dividend) {
@@ -116,6 +146,20 @@ const DividendPaymentModal: React.FC<ModalProps> = (props: ModalProps) => {
 
 		setPayment(securitiesQuantity * dividend.amount - tax)
 	}, [securitiesQuantity, dividend, tax])
+
+	useEffect(() => {
+		const runAsync = async () => {
+			await fetchAvailableDividends();
+		};
+		runAsync();
+	}, [brokerAccount])
+
+	useEffect(() => {
+		if (props.isGlobalBrokerAccount) {
+			setSelectedSecurity(null);
+			// reset dividends
+		}
+	}, [props.isGlobalBrokerAccount, brokerAccount, reset]);
 
 	const onSubmit = (dividendPayment: DividendPaymentFormInput) => {
 		props.onSaved(dividendPayment as DividendPaymentEntity);
@@ -134,6 +178,17 @@ const DividendPaymentModal: React.FC<ModalProps> = (props: ModalProps) => {
   
 	return <BaseFormModal ref={props.modalRef} title={t("entity_dividend_payment_form_title")} 
 		submitHandler={handleSubmit(onSubmit)} visibilityChanged={onModalVisibilityChanged}>
+		{
+			props.isGlobalBrokerAccount &&
+			<Field.Root mt={4}>
+				<Field.Label>{t("entity_dividend_payment_broker_account")}</Field.Label>
+				<CollectionSelect name="brokerAccount" control={control} placeholder="Select broker account"
+					collection={brokerAccounts} 
+					labelSelector={brokerAccount => brokerAccount.name }
+					valueSelector={brokerAccount => brokerAccount.id}/>
+				<Field.ErrorText>{errors.brokerAccount?.message}</Field.ErrorText>
+			</Field.Root>
+		}
 		<Field.Root mt={4}>
 			<Field.Label>{t("dividend_payment_form_security")}</Field.Label>
 			<Select value={selectedSecurity} onChange={setSelectedSecurity} 

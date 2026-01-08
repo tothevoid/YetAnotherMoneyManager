@@ -9,7 +9,6 @@ import { Box, Flex } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../../i18n";
 import BaseSelect from "../../../../shared/components/BaseSelect/BaseSelect";
-import { formatMoneyByCurrencyCulture } from "../../../../shared/utilities/formatters/moneyFormatter";
 import { getChartLabelConfig } from "../../../../shared/utilities/chartUtilities";
 import { Nullable } from "../../../../shared/utilities/nullable";
 

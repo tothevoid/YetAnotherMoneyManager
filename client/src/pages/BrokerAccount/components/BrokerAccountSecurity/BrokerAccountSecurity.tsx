@@ -8,9 +8,6 @@ import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/forma
 
 type Props = {
     brokerAccountSecurity: BrokerAccountSecurityEntity,
-    onDeleteCallback: (account: BrokerAccountSecurityEntity) => void,
-    onEditCallback: (account: BrokerAccountSecurityEntity) => void,
-    onReloadBrokerAccounts: () => void
 }
 
 const BrokerAccountSecurity = (props: Props) => {

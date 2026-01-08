@@ -1,6 +1,5 @@
-import { Fragment, useCallback } from "react";
+import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
 import { Stack, Text } from "@chakra-ui/react";
 import RefreshButton from "../../../../shared/components/RefreshButton/RefreshButton";
 import { formatShortDateTime } from "../../../../shared/utilities/formatters/dateFormatter";
@@ -33,7 +32,7 @@ const BrokerAccountHeader: React.FC<Props> = ({ name, currentValue, currencyName
         <Text fontSize="3xl" fontWeight={900}>
             {`${name}: ${currentValueLabel}`}
         </Text>
-        { lastPullDate && <Text backgroundColor="background_primary" borderColor="border_primary" textAlign={'center'} minW={150} rounded={10} padding={2} background={'black.600'}>{formatPullDate(lastPullDate)}</Text>}
+        { lastPullDate && <Text backgroundColor="background_primary" borderColor="border_primary" textAlign={'center'} minW={150} rounded={10} padding={2} background={'black.600'}>{formatPullDate()}</Text>}
         <RefreshButton transparent isRefreshing={isReloading} onClick={onPullQuotations}/>
     </Stack>;
 }

@@ -7,13 +7,13 @@ namespace MoneyManager.Application.Interfaces.Brokers
 {
     public interface IBrokerAccountSecurityService
     {
-        Task<IEnumerable<BrokerAccountSecurityDTO>> GetAll();
+        Task<IEnumerable<BrokerAccountSecurityDTO>> GetAll(bool unionSecurities = false);
         
         Task<IEnumerable<BrokerAccountSecurityDTO>> GetByBrokerAccount(Guid brokerAccountId);
 
         Task PullQuotations();
 
-        Task PullQuotations(Guid brokerAccountId);
+        Task PullQuotationsByBrokerAccount(Guid brokerAccountId);
         
         Task<Guid> Add(BrokerAccountSecurityDTO security);
         

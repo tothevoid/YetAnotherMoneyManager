@@ -1,7 +1,7 @@
 import { BrokerAccountSecurityEntity, BrokerAccountSecurityEntityResponse } from '../../models/brokers/BrokerAccountSecurityEntity';
 import { Nullable } from '../../shared/utilities/nullable';
-import { deleteEntity, getAction, getAllEntities, getEntity, updateEntity } from '../basicApi';
-import { prepareBrokerAccountSecurity, prepareBrokerAccountSecurityRequest } from './brokerAccountSecurityApiMapping';
+import { getAction, getAllEntities, getEntity } from '../basicApi';
+import { prepareBrokerAccountSecurity } from './brokerAccountSecurityApiMapping';
 
 const basicUrl = `BrokerAccountSecurity`;
 
@@ -14,19 +14,15 @@ export const getSecuritiesByBrokerAccount = async (brokerAccountId: Nullable<str
         .then((securities: BrokerAccountSecurityEntityResponse[]) => securities.map(prepareBrokerAccountSecurity))
 };
 
-export const pullBrokerAccountQuotations = async (brokerAccountId: string) => {
-    await getAction(`${basicUrl}/PullQuotations?brokerAccountId=${brokerAccountId}`);
+export const pullBrokerAccountQuotations = async (brokerAccountId: Nullable<string> = null) => {
+    const url = brokerAccountId ?
+        `${basicUrl}/PullQuotationsByBrokerAccount?brokerAccountId=${brokerAccountId}`:
+        `${basicUrl}/PullQuotations`;
+
+    await getAction(url);
 };
 
 export const getLastPullDate = async (): Promise<Nullable<Date>> => {
     return getEntity<{lastPullDate: string}>(`${basicUrl}/GetLastPullDate`)
         .then((pullDateInfo) => pullDateInfo ? new Date(pullDateInfo.lastPullDate) : null);
 };
-
-export const updateBrokerAccountSecurity = async (modifiedBrokerAccountSecurity: BrokerAccountSecurityEntity): Promise<boolean> => {
-    return await updateEntity(basicUrl, prepareBrokerAccountSecurityRequest(modifiedBrokerAccountSecurity));
-}
-
-export const deleteBrokerAccountSecurity = async (brokerAccountSecurityId: string): Promise<boolean> => {
-    return await deleteEntity(basicUrl, brokerAccountSecurityId);
-}

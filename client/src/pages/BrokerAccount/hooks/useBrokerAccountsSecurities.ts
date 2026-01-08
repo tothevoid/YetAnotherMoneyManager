@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { BrokerAccountSecurityEntity } from "../../../models/brokers/BrokerAccountSecurityEntity";
-import { deleteBrokerAccountSecurity, getSecuritiesByBrokerAccount, updateBrokerAccountSecurity } from "../../../api/brokers/brokerAccountSecurityApi";
+import { getSecuritiesByBrokerAccount } from "../../../api/brokers/brokerAccountSecurityApi";
 import { Nullable } from "../../../shared/utilities/nullable";
 
 export interface BrokerAccountSecuritiesQuery {
@@ -29,33 +29,11 @@ export const useBrokerAccountsSecurities = (queryParameters: BrokerAccountSecuri
 	useEffect(() => {
 		fetchData();
 	}, [fetchData])
-
-	const updateBrokerAccountSecurityEntity = async (updatedBrokerAccountSecurity: BrokerAccountSecurityEntity) => {
-		const brokerAccountSecurityUpdated = await updateBrokerAccountSecurity(updatedBrokerAccountSecurity);
-
-		if (!brokerAccountSecurityUpdated) {
-			return
-		}
-
-		await fetchData();
-	}
-
-	const deleteBrokerAccountSecurityEntity = async (deletedBrokerAccountSecurity: BrokerAccountSecurityEntity) => {
-		const brokerAccountSecurityDeleted = await deleteBrokerAccountSecurity(deletedBrokerAccountSecurity.id);
-		
-		if (!brokerAccountSecurityDeleted) {
-			return;
-		}
-
-	   await fetchData();
-	}
 	
 	return {
 		brokerAccountSecurities,
 		isBrokerAccountSecuritiesLoading,
 		error,
-		updateBrokerAccountSecurityEntity,
-		deleteBrokerAccountSecurityEntity,
 		setBrokerAccountSecurityQueryParameters,
 		brokerAccountSecurityQueryParameters,
 		reloadBrokerAccountSecurities: fetchData

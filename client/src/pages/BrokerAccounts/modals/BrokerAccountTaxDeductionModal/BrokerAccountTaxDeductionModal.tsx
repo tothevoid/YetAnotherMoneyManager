@@ -1,5 +1,5 @@
 import { Field, Input } from "@chakra-ui/react";
-import React, { RefObject, useCallback, useEffect, useMemo, useState } from "react";
+import React, { RefObject, useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
@@ -28,7 +28,7 @@ interface ModalProps {
     modalRef: RefObject<BaseModalRef | null>}
 
 const BrokerAccountTaxDeductionModal: React.FC<ModalProps> = (props: ModalProps) => {
-    const { i18n, t } = useTranslation();
+    const { t } = useTranslation();
     
     const [brokerAccounts, setBrokerAccounts] = useState<BrokerAccountEntity[]>([]);
 

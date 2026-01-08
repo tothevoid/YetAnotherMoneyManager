@@ -44,11 +44,35 @@ namespace MoneyManager.Application.Services.Brokers
             _stockConnector = stockConnector;
         }
 
-        public async Task<IEnumerable<BrokerAccountSecurityDTO>> GetAll()
+        public async Task<IEnumerable<BrokerAccountSecurityDTO>> GetAll(bool unionSecurities = false)
         {
             var brokerAccountSecurities = await _brokerAccountSecurityRepo
                 .GetAll(include: GetFullHierarchyColumns);
-            return _mapper.Map<IEnumerable<BrokerAccountSecurityDTO>>(brokerAccountSecurities);
+
+            if (!unionSecurities)
+            {
+                return _mapper.Map<IEnumerable<BrokerAccountSecurityDTO>>(brokerAccountSecurities);
+            }
+
+            var handledBrokerAccountSecurities = new Dictionary<Guid, BrokerAccountSecurity>();
+
+            foreach (var brokerAccountSecurity in brokerAccountSecurities)
+            {
+                var securityId = brokerAccountSecurity.SecurityId;
+
+                if (handledBrokerAccountSecurities.ContainsKey(securityId))
+                {
+                    var existingBrokerAccountSecurity = handledBrokerAccountSecurities[securityId];
+                    existingBrokerAccountSecurity.Quantity += brokerAccountSecurity.Quantity;
+                    existingBrokerAccountSecurity.Price += brokerAccountSecurity.Price;
+                }
+                else
+                {
+                    handledBrokerAccountSecurities.Add(securityId, brokerAccountSecurity);
+                }
+            }
+
+            return _mapper.Map<IEnumerable<BrokerAccountSecurityDTO>>(handledBrokerAccountSecurities.Values);
         }
 
         public async Task<IEnumerable<BrokerAccountSecurityDTO>> GetByBrokerAccount(Guid brokerAccountId)
@@ -71,7 +95,7 @@ namespace MoneyManager.Application.Services.Brokers
             await PullQuotations(tickers);
         }
 
-        public async Task PullQuotations(Guid brokerAccountId)
+        public async Task PullQuotationsByBrokerAccount(Guid brokerAccountId)
         {
             //TODO: limit data to only ticker
             var brokerAccountSecurities = await _brokerAccountSecurityRepo

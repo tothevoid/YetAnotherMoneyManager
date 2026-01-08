@@ -24,8 +24,6 @@ const BrokerAccountSecuritiesList = forwardRef<BrokerAccountSecuritiesListRef, P
 
 	const { 
 		brokerAccountSecurities,
-		updateBrokerAccountSecurityEntity,
-		deleteBrokerAccountSecurityEntity,
 		reloadBrokerAccountSecurities
 	} = useBrokerAccountsSecurities({brokerAccountId: brokerAccountId});
 
@@ -53,9 +51,10 @@ const BrokerAccountSecuritiesList = forwardRef<BrokerAccountSecuritiesListRef, P
 				}
 				{
 					brokerAccountSecurities.map((brokerAccountSecurity: BrokerAccountSecurityEntity) => 
-						<BrokerAccountSecurity onReloadBrokerAccounts={reloadBrokerAccountSecurities} 
-							brokerAccountSecurity={brokerAccountSecurity} onEditCallback={updateBrokerAccountSecurityEntity} 
-							onDeleteCallback={deleteBrokerAccountSecurityEntity} key={brokerAccountSecurity.id}/>)
+						<BrokerAccountSecurity 
+							key={brokerAccountSecurity.id}
+							brokerAccountSecurity={brokerAccountSecurity}  
+						/>)
 				}
 			</SimpleGrid>
 		</Fragment>

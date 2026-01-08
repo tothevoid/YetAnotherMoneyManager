@@ -36,7 +36,8 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         public async Task<IEnumerable<BrokerAccountSecurityModel>> GetAll()
         {
             var brokerAccountSecurities = await _brokerAccountSecurityService
-                .GetAll();
+                .GetAll(true);
+
             return _mapper.Map<IEnumerable<BrokerAccountSecurityModel>>(brokerAccountSecurities);
         }
 
@@ -49,9 +50,15 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         }
 
         [HttpGet(nameof(PullQuotations))]
-        public async Task PullQuotations([FromQuery] Guid brokerAccountId)
+        public async Task PullQuotations()
         {
-            await _brokerAccountSecurityService.PullQuotations(brokerAccountId);
+            await _brokerAccountSecurityService.PullQuotations();
+        }
+
+        [HttpGet(nameof(PullQuotationsByBrokerAccount))]
+        public async Task PullQuotationsByBrokerAccount([FromQuery] Guid brokerAccountId)
+        {
+            await _brokerAccountSecurityService.PullQuotationsByBrokerAccount(brokerAccountId);
         }
 
         [HttpGet(nameof(GetLastPullDate))]
@@ -59,23 +66,5 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         {
             return new LastPullInfoModel() { LastPullDate = _pullQuotationsService.LastPullDate ?? DateTime.UtcNow};
         }
-
-        [HttpPut]
-        public async Task<Guid> Add(BrokerAccountSecurityModel brokerAccountSecurity)
-        {
-            var brokerAccountSecurityDto = _mapper.Map<BrokerAccountSecurityDTO>(brokerAccountSecurity);
-            return await _brokerAccountSecurityService.Add(brokerAccountSecurityDto);
-        }
-
-        [HttpPatch]
-        public async Task Update(BrokerAccountSecurityModel brokerAccountSecurity)
-        {
-            var brokerAccountSecurityDto = _mapper.Map<BrokerAccountSecurityDTO>(brokerAccountSecurity);
-            await _brokerAccountSecurityService.Update(brokerAccountSecurityDto);
-        }
-
-        [HttpDelete]
-        public async Task Delete(Guid id) =>
-            await _brokerAccountSecurityService.Delete(id);
     }
 }

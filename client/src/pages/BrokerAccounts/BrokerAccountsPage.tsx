@@ -8,6 +8,7 @@ import { getLastPullDate, pullBrokerAccountQuotations } from "../../api/brokers/
 import { useSignalR } from "../../shared/hooks/SignalRHook";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getBrokerAccounts } from "../../api/brokers/brokerAccountApi";
+import { useTranslation } from "react-i18next";
 
 interface State {
     isReloading: boolean
@@ -21,6 +22,7 @@ interface BrokerAccountsSummary {
 }
 
 const BrokerAccountsPage: React.FC = () => {
+    const { t } = useTranslation();
     const securitiesRef = useRef<BrokerAccountSecuritiesListRef>(null);
     const { user } = useUserProfile();
     // TODO: Currency can be different for each account
@@ -118,7 +120,7 @@ const BrokerAccountsPage: React.FC = () => {
 
     return <Fragment>
         <BrokerAccountHeader 
-            name="Common" 
+            name={t('all_broker_accounts_header')} 
             currencyName={currencyName} 
             currentValue={brokerAccountsSummary.totalCurrentValue} 
             onPullQuotations={pullQuotations} 

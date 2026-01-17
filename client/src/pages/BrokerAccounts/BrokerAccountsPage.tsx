@@ -9,6 +9,8 @@ import { useSignalR } from "../../shared/hooks/SignalRHook";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getBrokerAccounts } from "../../api/brokers/brokerAccountApi";
 import { useTranslation } from "react-i18next";
+import { getEarningsByBrokerAccount } from "../../api/brokers/dividendPaymentApi";
+import { getBrokerAccountTaxDeductions } from "../../api/brokers/BrokerAccountTaxDeductionApi";
 
 interface State {
     isReloading: boolean
@@ -43,21 +45,26 @@ const BrokerAccountsPage: React.FC = () => {
     const fetchBrokerAccountsSummary = useCallback(async () => {
         const accounts = await getBrokerAccounts();
 
+        const taxDeductions = (await getBrokerAccountTaxDeductions({brokerAccountId: null}))
+            .reduce((state, tax) => state + tax.amount, 0);
         let currencyAmount = 0;
 
-        const summary = accounts.reduce((state, currentValue) => {
-            // TODO: Add specific API
-            state.totalInitialValue += currentValue.initialValue;
-            state.totalCurrentValue += currentValue.currentValue;
-            currencyAmount += currentValue.mainCurrencyAmount;
+        let totalDividends = 0;
+        for (const account of accounts) {
+            const dividendIncomes = await getEarningsByBrokerAccount(account.id);
+            totalDividends += dividendIncomes;
+        }
+
+        const summary = accounts.reduce((state, account) => {
+            state.totalInitialValue += account.initialValue;
+            state.totalCurrentValue += account.currentValue;
+            currencyAmount += account.mainCurrencyAmount;
             return state;
-            // state.totalDividendIncomes += currentValue.dividendIncomes;
-            // state.totalTaxDeductionIncomes += currentValue.taxDeductionIncomes;
         }, {
             totalInitialValue: 0,
             totalCurrentValue: 0,
-            totalDividendIncomes: 0,
-            totalTaxDeductionIncomes: 0
+            totalDividendIncomes: totalDividends,
+            totalTaxDeductionIncomes: taxDeductions
         } as BrokerAccountsSummary)
 
         setMainCurrencyAmount(currencyAmount);

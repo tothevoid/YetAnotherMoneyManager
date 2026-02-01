@@ -1,5 +1,6 @@
 ﻿using ClosedXML.Excel;
 using MoneyManager.Application.DTO.Banks;
+using MoneyManager.Application.DTO.Dashboard;
 using MoneyManager.Application.Interfaces.Accounts;
 using MoneyManager.Application.Interfaces.Banks;
 using MoneyManager.Application.Interfaces.Brokers;
@@ -9,6 +10,7 @@ using MoneyManager.Application.Interfaces.Deposits;
 using MoneyManager.Application.Interfaces.Reports;
 using MoneyManager.Application.Services.Dashboard;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -272,6 +274,47 @@ namespace MoneyManager.Application.Services.Reports
 
             worksheet.Cell($"A{currentRow}").Value = "Итого";
             SetFinanceValue(worksheet.Cell($"B{currentRow}"), dashboard.Total);
+
+            currentRow += 2;
+
+            var currencyDistributions = GetCurrencyDistributions(dashboard);
+
+            foreach (var currency in currencyDistributions)
+            {
+                worksheet.Cell($"A{currentRow}").Value = currency.Key;
+                SetFinanceValue(worksheet.Cell($"B{currentRow}"), currency.Value);
+                currentRow++;
+            }
+        }
+
+        private Dictionary<string, decimal> GetCurrencyDistributions(GlobalDashboardDto dashboard)
+        {
+            var totalCurrencies = new Dictionary<string, decimal>();
+
+            var summaryDistributions = new List<DistributionDto>();
+
+            summaryDistributions.AddRange(dashboard.AccountsGlobalDashboard.BankAccountsDistribution);
+            summaryDistributions.AddRange(dashboard.AccountsGlobalDashboard.CashDistribution);
+
+            summaryDistributions.AddRange(dashboard.BrokerAccountsGlobalDashboard.Distribution);
+            summaryDistributions.AddRange(dashboard.CryptoAccountsGlobalDashboard.Distribution);
+            summaryDistributions.AddRange(dashboard.DebtsGlobalDashboard.Distribution);
+            summaryDistributions.AddRange(dashboard.DepositsGlobalDashboard.EarningsDistribution);
+            summaryDistributions.AddRange(dashboard.DepositsGlobalDashboard.StartedAmountDistribution);
+
+            foreach (var distribution in summaryDistributions)
+            {
+                if (totalCurrencies.ContainsKey(distribution.Currency))
+                {
+                    totalCurrencies[distribution.Currency] += distribution.Amount;
+                }
+                else
+                {
+                    totalCurrencies.Add(distribution.Currency, distribution.Amount);
+                }
+            }
+
+            return totalCurrencies;
         }
 
         private void SetPercentValue(IXLCell cell, decimal value)

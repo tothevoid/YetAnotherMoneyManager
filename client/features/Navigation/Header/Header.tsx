@@ -1,5 +1,6 @@
 import HeaderItem from '../HeaderItem/HeaderItem';
 import { Box, Button,Flex, Icon, Image, Link } from '@chakra-ui/react';
+import { MdDownload } from 'react-icons/md';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MdOutlineSettings } from 'react-icons/md';
@@ -9,6 +10,7 @@ import { BaseModalRef } from '../../../src/shared/utilities/modalUtilities';
 import { MdOutlineExitToApp } from "react-icons/md";
 
 import appIcon from './AppIcon.svg';
+import { downloadAllAssetsReportXlsx } from '../../../src/api/reports/allAssetsReport';
 
 const Header = () => {
     const { t } = useTranslation();
@@ -19,6 +21,20 @@ const Header = () => {
     const onOpenSettingsClick = () => {
         userProfileSettingsRef.current?.openModal();
     }
+
+    const onDownloadReportClick = async () => {
+        const blob = await downloadAllAssetsReportXlsx();
+        if (blob) {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'all-assets-report.xlsx';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        }
+    };
 
     const onExitClick = () => {
         localStorage.setItem("auth_token", "");
@@ -55,7 +71,12 @@ const Header = () => {
                         }
                     </Flex>
                 </Flex>
-                <Flex width="50px" justify="flex-end" direction="row">
+                <Flex width="auto" justify="flex-end" direction="row" gap={2}>
+                    <Button borderColor="background_secondary" background="button_background_secondary" size={'md'} onClick={onDownloadReportClick}>
+                        <Icon color="card_action_icon_primary">
+                            <MdDownload/>
+                        </Icon>
+                    </Button>
                     <Button borderColor="background_secondary" background="button_background_secondary" size={'md'} onClick={onOpenSettingsClick}>
                         <Icon color="card_action_icon_primary">
                             <MdOutlineSettings/>

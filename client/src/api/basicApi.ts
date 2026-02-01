@@ -151,6 +151,16 @@ export const getAuthHeader = (): HeadersInit => {
     };
 }
 
+export const downloadFileByUrl = async (url: string): Promise<Blob | null> => {
+    try {
+        const response = await api.get(url, { responseType: "blob" });
+        return response.data;
+    } catch (e) {
+        logPromiseError(e);
+        return null;
+    }
+};
+
 const getToken = (): Nullable<string> =>  {
     const token = localStorage.getItem("auth_token");
     if (!token) {

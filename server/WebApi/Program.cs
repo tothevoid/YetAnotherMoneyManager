@@ -39,11 +39,11 @@ using MoneyManager.Infrastructure.Interfaces.Database;
 using MoneyManager.Infrastructure.Interfaces.Messages;
 using MoneyManager.Infrastructure.Messages;
 using MoneyManager.WebApi.Mappings;
-using System;
 using System.Text;
+using MoneyManager.Application.Interfaces.Reports;
 using MoneyManager.Application.Services.Auth;
+using MoneyManager.Application.Services.Reports;
 using TickerQ.DependencyInjection;
-using TickerQ.Utilities.Enums;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -121,6 +121,7 @@ builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddScoped<IServerNotifier, ServerNotifier>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 
+builder.Services.AddTransient<IAllAssetsReportService, AllAssetsReportService>();
 
 builder.Services.AddSingleton<IPullQuotationsService, PullQuotationsService>();
 

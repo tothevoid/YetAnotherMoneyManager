@@ -3,9 +3,11 @@ using MoneyManager.Application.DTO.Banks;
 using MoneyManager.Application.Interfaces.Accounts;
 using MoneyManager.Application.Interfaces.Banks;
 using MoneyManager.Application.Interfaces.Brokers;
+using MoneyManager.Application.Interfaces.Currencies;
 using MoneyManager.Application.Interfaces.Debts;
 using MoneyManager.Application.Interfaces.Deposits;
 using MoneyManager.Application.Interfaces.Reports;
+using MoneyManager.Application.Services.Dashboard;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,12 +25,14 @@ namespace MoneyManager.Application.Services.Reports
         private readonly IBrokerAccountService _brokerAccountService;
         private readonly IBrokerAccountSecurityService _brokerAccountSecurityService;
         private readonly IDebtService _debtService;
+        private readonly IDashboardService _dashboardService;
 
         public AllAssetsReportService(IDepositService depositService, 
             IAccountService accountService, IBankService bankService, 
             IBrokerAccountService brokerAccountService, 
             IBrokerAccountSecurityService brokerAccountSecurityService,
-            IDebtService debtService)
+            IDebtService debtService,
+            IDashboardService dashboardService)
         {
             _depositService = depositService;
             _accountService = accountService;
@@ -36,11 +40,16 @@ namespace MoneyManager.Application.Services.Reports
             _brokerAccountService = brokerAccountService;
             _brokerAccountSecurityService = brokerAccountSecurityService;
             _debtService = debtService;
+            _dashboardService = dashboardService;
         }
 
         public async Task<byte[]> CreateReport()
         {
             using var workbook = new XLWorkbook();
+
+            var totalsSheet = workbook.Worksheets.Add("Итоги");
+            await CreateTotalsWorksheet(totalsSheet);
+            totalsSheet.Columns().AdjustToContents();
 
             var bankAccounts = await _bankService.GetAll();
             foreach (var bank in bankAccounts)
@@ -48,7 +57,7 @@ namespace MoneyManager.Application.Services.Reports
                 await CreateBankAccountWorksheet(workbook, bank);
             }
 
-            var brokerSheet = workbook.Worksheets.Add("Брокерские счета");
+            var brokerSheet = workbook.Worksheets.Add("Инвестиции");
             await CreateBrokerAccountWorksheet(brokerSheet);
             brokerSheet.Columns().AdjustToContents();
 
@@ -61,7 +70,7 @@ namespace MoneyManager.Application.Services.Reports
             return ms.ToArray();
         }
 
-        public async Task CreateBankAccountWorksheet(IXLWorkbook workbook, BankDto bank)
+        private async Task CreateBankAccountWorksheet(IXLWorkbook workbook, BankDto bank)
         {
             var accounts = (await _accountService.GetAll(true))
                 .Where(account => account.BankId == bank.Id).ToList();
@@ -76,7 +85,7 @@ namespace MoneyManager.Application.Services.Reports
 
             var worksheet = workbook.Worksheets.Add(bank.Name);
 
-            worksheet.Cell("A1").Value = bank.Name;
+            worksheet.Cell("A1").Value = $"На счете '{bank.Name}'";
             worksheet.Cell("B1").Value = "Количество";
             worksheet.Cell("C1").Value = "Отношение к осн. валюте";
             worksheet.Cell("D1").Value = "Процент";
@@ -97,8 +106,8 @@ namespace MoneyManager.Application.Services.Reports
             foreach (var account in accounts)
             {
                 worksheet.Cell($"A{currentRow}").Value = account.Name;
-                worksheet.Cell($"B{currentRow}").Value = account.Balance;
-                worksheet.Cell($"C{currentRow}").Value = account.Currency.Rate;
+                SetFinanceValue(worksheet.Cell($"B{currentRow}"), account.Balance);
+                SetFinanceValue(worksheet.Cell($"C{currentRow}"), account.Currency.Rate);
 
                 totalStatic += account.Balance * account.Currency.Rate;
                 total += account.Balance * account.Currency.Rate;
@@ -117,14 +126,14 @@ namespace MoneyManager.Application.Services.Reports
                 int daysPassed = currentDate.DayNumber - deposit.From.DayNumber;
 
                 worksheet.Cell($"A{currentRow}").Value = deposit.Name;
-                worksheet.Cell($"B{currentRow}").Value = deposit.InitialAmount;
-                worksheet.Cell($"C{currentRow}").Value = deposit.Currency.Rate;
+                SetFinanceValue(worksheet.Cell($"B{currentRow}"), deposit.InitialAmount);
+                SetFinanceValue(worksheet.Cell($"C{currentRow}"), deposit.Currency.Rate);
                 worksheet.Cell($"D{currentRow}").Value = deposit.Percentage;
                 worksheet.Cell($"E{currentRow}").Value = deposit.From.ToDateTime(new TimeOnly());
                 worksheet.Cell($"F{currentRow}").Value = totalDays;
-                worksheet.Cell($"G{currentRow}").Value = deposit.EstimatedEarn / totalDays * daysPassed;
+                SetFinanceValue(worksheet.Cell($"G{currentRow}"), deposit.EstimatedEarn / totalDays * daysPassed);
 
-                total += income;
+                total += deposit.InitialAmount + income;
                 totalDynamic += deposit.InitialAmount;
                 notConfirmedIncomes += income;
                 incomeInMonth += deposit.InitialAmount / 12 / 100 * deposit.Percentage;
@@ -133,24 +142,24 @@ namespace MoneyManager.Application.Services.Reports
             }
 
             worksheet.Cell($"A{reservedRowsBeforeSummaries}").Value = "Итого";
-            worksheet.Cell($"B{reservedRowsBeforeSummaries++}").Value = total;
+            SetFinanceValue(worksheet.Cell($"B{reservedRowsBeforeSummaries++}"), total);
 
             worksheet.Cell($"A{reservedRowsBeforeSummaries}").Value = "Итого динамических";
-            worksheet.Cell($"B{reservedRowsBeforeSummaries++}").Value = totalDynamic;
+            SetFinanceValue(worksheet.Cell($"B{reservedRowsBeforeSummaries++}"), totalDynamic);
 
             worksheet.Cell($"A{reservedRowsBeforeSummaries}").Value = "В месяц";
-            worksheet.Cell($"B{reservedRowsBeforeSummaries++}").Value = incomeInMonth;
+            SetFinanceValue(worksheet.Cell($"B{reservedRowsBeforeSummaries++}"), incomeInMonth);
 
             worksheet.Cell($"A{reservedRowsBeforeSummaries}").Value = "Только после завершения";
-            worksheet.Cell($"B{reservedRowsBeforeSummaries++}").Value = notConfirmedIncomes;
+            SetFinanceValue(worksheet.Cell($"B{reservedRowsBeforeSummaries++}"), notConfirmedIncomes);
 
             worksheet.Cell($"A{reservedRowsBeforeSummaries}").Value = "Итого статических";
-            worksheet.Cell($"B{reservedRowsBeforeSummaries}").Value = totalStatic;
+            SetFinanceValue(worksheet.Cell($"B{reservedRowsBeforeSummaries}"), totalStatic);
 
             worksheet.Columns().AdjustToContents();
         }
 
-        public async Task CreateBrokerAccountWorksheet(IXLWorksheet worksheet)
+        private async Task CreateBrokerAccountWorksheet(IXLWorksheet worksheet)
         {
             var accounts = await _brokerAccountService.GetAll();
 
@@ -170,9 +179,9 @@ namespace MoneyManager.Application.Services.Reports
                 var currency = accountsByCurrencyGroup.First().Currency;
 
                 worksheet.Cell($"A{currentRow}").Value = currency.Name;
-                worksheet.Cell($"B{currentRow}").Value = amount;
-                worksheet.Cell($"C{currentRow}").Value = currency.Rate;
-                worksheet.Cell($"D{currentRow}").Value = currency.Rate * amount;
+                SetFinanceValue(worksheet.Cell($"B{currentRow}"), amount);
+                SetFinanceValue(worksheet.Cell($"C{currentRow}"), currency.Rate);
+                SetFinanceValue(worksheet.Cell($"D{currentRow}"), currency.Rate * amount);
 
                 currentRow++;
             }
@@ -182,15 +191,15 @@ namespace MoneyManager.Application.Services.Reports
             foreach (var brokerAccountSecurity in brokerAccountSecurities)
             {
                 worksheet.Cell($"A{currentRow}").Value = brokerAccountSecurity.Security.Ticker;
-                worksheet.Cell($"B{currentRow}").Value = brokerAccountSecurity.Quantity;
-                worksheet.Cell($"C{currentRow}").Value = brokerAccountSecurity.Security.ActualPrice;
-                worksheet.Cell($"D{currentRow}").Value = brokerAccountSecurity.Security.ActualPrice * brokerAccountSecurity.Quantity;
+                SetFinanceValue(worksheet.Cell($"B{currentRow}"), brokerAccountSecurity.Quantity);
+                SetFinanceValue(worksheet.Cell($"C{currentRow}"), brokerAccountSecurity.Security.ActualPrice);
+                SetFinanceValue(worksheet.Cell($"D{currentRow}"), brokerAccountSecurity.Security.ActualPrice * brokerAccountSecurity.Quantity);
 
                 currentRow++;
             }
         }
 
-        public async Task CreateDebtorsWorksheet(IXLWorksheet worksheet)
+        private async Task CreateDebtorsWorksheet(IXLWorksheet worksheet)
         {
             worksheet.Cell("A1").Value = "Название";
             worksheet.Cell("B1").Value = "Количество";
@@ -204,8 +213,8 @@ namespace MoneyManager.Application.Services.Reports
             foreach (var debt in activeDebtors)
             {
                 worksheet.Cell($"A{currentRow}").Value = debt.Name;
-                worksheet.Cell($"B{currentRow}").Value = debt.Amount;
-                worksheet.Cell($"C{currentRow}").Value = debt.Currency.Rate;
+                SetFinanceValue(worksheet.Cell($"B{currentRow}"), debt.Amount);
+                SetFinanceValue(worksheet.Cell($"C{currentRow}"), debt.Currency.Rate);
 
                 total += debt.Currency.Rate * debt.Amount;
 
@@ -214,7 +223,67 @@ namespace MoneyManager.Application.Services.Reports
 
             int totalsRow = 20;
             worksheet.Cell($"A{totalsRow}").Value = "Итого:";
-            worksheet.Cell($"B{totalsRow}").Value = total;
+            SetFinanceValue(worksheet.Cell($"B{totalsRow}"), total);
+        }
+
+        private async Task CreateTotalsWorksheet(IXLWorksheet worksheet)
+        {
+            var dashboard = await _dashboardService.GetDashboard();
+
+            var currentRow = 1;
+
+            foreach (var cash in dashboard.AccountsGlobalDashboard.CashDistribution)
+            {
+                worksheet.Cell($"A{currentRow}").Value = $"В физических '{cash.Name}'";
+                SetFinanceValue(worksheet.Cell($"B{currentRow}"), cash.ConvertedAmount);
+                SetPercentValue(worksheet.Cell($"C{currentRow}"), dashboard.Total == 0 ? 0 : cash.ConvertedAmount / dashboard.Total);
+                currentRow++;
+            }
+
+            worksheet.Cell($"A{currentRow}").Value = "На баковских счетах";
+            SetFinanceValue(worksheet.Cell($"B{currentRow}"), dashboard.AccountsGlobalDashboard.TotalBankAccount);
+            SetPercentValue(worksheet.Cell($"C{currentRow}"), dashboard.Total == 0 ? 0 : dashboard.AccountsGlobalDashboard.TotalBankAccount / dashboard.Total);
+            currentRow++;
+
+            worksheet.Cell($"A{currentRow}").Value = "В криптовалюте";
+            SetFinanceValue(worksheet.Cell($"B{currentRow}"), dashboard.CryptoAccountsGlobalDashboard.Total);
+            SetPercentValue(worksheet.Cell($"C{currentRow}"), dashboard.Total == 0 ? 0 : dashboard.CryptoAccountsGlobalDashboard.Total / dashboard.Total);
+            currentRow++;
+
+            worksheet.Cell($"A{currentRow}").Value = "Одолжено";
+            SetFinanceValue(worksheet.Cell($"B{currentRow}"), dashboard.DebtsGlobalDashboard.Total);
+            SetPercentValue(worksheet.Cell($"C{currentRow}"), dashboard.Total == 0 ? 0 : dashboard.DebtsGlobalDashboard.Total / dashboard.Total);
+            currentRow++;
+
+            worksheet.Cell($"A{currentRow}").Value = "Инвестировано";
+            SetFinanceValue(worksheet.Cell($"B{currentRow}"), dashboard.BrokerAccountsGlobalDashboard.Total);
+            SetPercentValue(worksheet.Cell($"C{currentRow}"), dashboard.Total == 0 ? 0 : dashboard.BrokerAccountsGlobalDashboard.Total / dashboard.Total);
+            currentRow++;
+
+            worksheet.Cell($"A{currentRow}").Value = "На депозитах";
+            SetFinanceValue(worksheet.Cell($"B{currentRow}"), dashboard.DepositsGlobalDashboard.TotalStartedAmount);
+            SetPercentValue(worksheet.Cell($"C{currentRow}"), dashboard.Total == 0 ? 0 : dashboard.DepositsGlobalDashboard.TotalStartedAmount / dashboard.Total);
+            currentRow++;
+
+            worksheet.Cell($"A{currentRow}").Value = "При завершении депозита";
+            SetFinanceValue(worksheet.Cell($"B{currentRow}"), dashboard.DepositsGlobalDashboard.TotalEarned);
+            SetPercentValue(worksheet.Cell($"C{currentRow}"), dashboard.Total == 0 ? 0 : dashboard.DepositsGlobalDashboard.TotalEarned / dashboard.Total);
+            currentRow++;
+
+            worksheet.Cell($"A{currentRow}").Value = "Итого";
+            SetFinanceValue(worksheet.Cell($"B{currentRow}"), dashboard.Total);
+        }
+
+        private void SetPercentValue(IXLCell cell, decimal value)
+        {
+            cell.Value = value;
+            cell.Style.NumberFormat.Format = "0.00%";
+        }
+
+        private void SetFinanceValue(IXLCell cell, decimal value)
+        {
+            cell.Value = value;
+            cell.Style.NumberFormat.Format = "#,##0.00";
         }
     }
 }

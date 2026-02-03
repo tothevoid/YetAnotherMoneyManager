@@ -90,12 +90,12 @@ const CurrencyTransactionForm: React.FC<Props> = (props: Props) => {
         </Field.Root>
         <Field.Root mt={4} invalid={!!errors.rate}>
             <Field.Label>{t("entity_currency_transaction_rate")}</Field.Label>
-            <Input {...register("rate", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='500' />
+            <Input {...register("rate", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='500' step="0.01"/>
             <Field.ErrorText>{errors.rate?.message}</Field.ErrorText>
         </Field.Root>
         <Field.Root mt={4} invalid={!!errors.amount}>
             <Field.Label>{t("entity_currency_transaction_amount")}</Field.Label>
-            <Input {...register("amount", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='500' />
+            <Input {...register("amount", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='500' step="0.01"/>
             <Field.ErrorText>{errors.amount?.message}</Field.ErrorText>
         </Field.Root>
         <Field.Root mt={4} invalid={!!errors.date}>

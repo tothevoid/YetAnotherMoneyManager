@@ -17,6 +17,7 @@ import CryptoAccountsPage from './pages/CryptoAccountsPage/CryptoAccountsPage';
 import CryptoAccountPage from './pages/CryptoAccountPage/CryptoAccountPage';
 import AuthPage from './pages/Auth/AuthPage';
 import { UserProvider } from '../features/UserProfileSettingsModal/hooks/UserProfileContext.tsx';
+import CashAccountPage from './pages/CashAccountPage/CashAccountPage.tsx';
 
 
 const RequireAuth = () => {
@@ -58,6 +59,7 @@ const App = () => {
 						<Route path="/data/:tab" element={<DataPage />} />
 						<Route path="/broker_account/:brokerAccountId" element={<BrokerAccountPage />} />
 						<Route path="/security/:securityId" element={<SecurityPage />} />
+						<Route path="/cash_account/:cashAccountId" element={<CashAccountPage />} />
 					</Route>
 				</Route>
 			</Routes>

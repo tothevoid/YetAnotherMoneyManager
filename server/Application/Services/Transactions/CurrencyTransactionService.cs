@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Transactions;
 using MoneyManager.Application.Interfaces.Transactions;
 using MoneyManager.Infrastructure.Entities.Transactions;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MoneyManager.Application.Services.Transactions
@@ -24,7 +26,7 @@ namespace MoneyManager.Application.Services.Transactions
 
         public async Task<IEnumerable<CurrencyTransactionDto>> GetAll()
         {
-            var currencyTransactions = await _currencyTransactionRepo.GetAll();
+            var currencyTransactions = await _currencyTransactionRepo.GetAll(include: GetFullHierarchyColumns);
             return _mapper.Map<IEnumerable<CurrencyTransactionDto>>(currencyTransactions);
         }
 
@@ -48,6 +50,18 @@ namespace MoneyManager.Application.Services.Transactions
         {
             await _currencyTransactionRepo.Delete(id);
             await _db.Commit();
+        }
+
+        private IQueryable<CurrencyTransaction> GetFullHierarchyColumns(
+            IQueryable<CurrencyTransaction> currencyTransactionQuery)
+        {
+            return currencyTransactionQuery
+                .Include(currencyTransaction => currencyTransaction.SourceAccount.Currency)
+                .Include(currencyTransaction => currencyTransaction.SourceAccount.AccountType)
+                .Include(currencyTransaction => currencyTransaction.SourceAccount.Bank)
+                .Include(currencyTransaction => currencyTransaction.DestinationAccount.Currency)
+                .Include(currencyTransaction => currencyTransaction.DestinationAccount.AccountType)
+                .Include(currencyTransaction => currencyTransaction.DestinationAccount.Bank);
         }
     }
 }

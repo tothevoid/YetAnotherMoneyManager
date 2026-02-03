@@ -81,6 +81,10 @@
     "entity_currency_transaction_amount": "Bought",
     "entity_currency_transaction_rate": "Rate of purchase",
     "entity_currency_transaction_date": "Date",
+    "currency_transaction_total": "Total",
+    "currency_transactions_title": "Currency Transactions",
+    "currency_transactions_current_rate": "Current rate",
+    "currency_transactions_diff": "Diff",
 
     "transaction_delete_title": "Delete transaction",
 

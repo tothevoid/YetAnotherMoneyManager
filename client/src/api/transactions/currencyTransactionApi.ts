@@ -11,10 +11,9 @@ export const getCurrencyTransactions = async (): Promise<CurrencyTransactionEnti
 		})
 };
 
-export const createCurrencyTransaction = async (addedSecurityTransaction: CurrencyTransactionEntity): Promise<CurrencyTransactionEntity | void> => {
-	return await createEntity<CurrencyTransactionEntityRequest, CurrencyTransactionEntityResponse>(basicUrl, 
-		prepareCurrencyTransactionRequest(addedSecurityTransaction))
-			.then((currencyTransaction) => currencyTransaction && prepareCurrencyTransaction(currencyTransaction));
+export const createCurrencyTransaction = async (addedSecurityTransaction: CurrencyTransactionEntity): Promise<void> => {
+	await createEntity<CurrencyTransactionEntityRequest, CurrencyTransactionEntityResponse>(basicUrl, 
+		prepareCurrencyTransactionRequest(addedSecurityTransaction));
 }
 
 export const updateCurrencyTransaction = async (modifiedSecurityTransaction: CurrencyTransactionEntity): Promise<boolean> => {

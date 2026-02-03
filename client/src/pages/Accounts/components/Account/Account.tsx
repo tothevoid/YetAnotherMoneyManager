@@ -1,4 +1,4 @@
-import { Button, Card, Flex, Icon, Stack, Text, Image } from '@chakra-ui/react';
+import { Button, Card, Flex, Icon, Stack, Text, Image, Link } from '@chakra-ui/react';
 import { MdDelete, MdEdit, MdCompareArrows } from "react-icons/md";
 import { Fragment, useCallback } from 'react';
 import { AccountEntity } from '../../../../models/accounts/AccountEntity';
@@ -28,6 +28,13 @@ const Account = (props: Props) => {
         return getBankIconUrl(bank?.iconKey)
     }, [accountType, bank]);
 
+    const getTtile = useCallback(() => {
+        if (accountType.id === ACCOUNT_TYPE.CASH ) {
+            return <Link color="text_primary" href={`../cash_account/${props.account.id}`} fontSize="xl" fontWeight={900}>{name}</Link>
+        }
+        return <Text fontWeight={600}>{name}</Text>;
+    }, []);
+
     return <Fragment>
         <Card.Root backgroundColor="background_primary" borderColor="border_primary" >
             <Card.Body color="text_primary" boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
@@ -35,7 +42,7 @@ const Account = (props: Props) => {
                     <Stack>
                         <Flex gapX={2} alignItems={"center"}>
                             {getIconUrl()}
-                            <Text fontWeight={600}>{name}</Text>
+                            {getTtile()}
                         </Flex>
                         <Text fontWeight={700}>{formatMoneyByCurrencyCulture(balance, currency.name)}</Text>
                     </Stack>

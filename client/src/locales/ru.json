@@ -81,7 +81,10 @@
     "entity_currency_transaction_amount": "Приобретено",
     "entity_currency_transaction_rate": "Курс покупки",
     "entity_currency_transaction_date": "Дата",
-
+    "currency_transaction_total": "Итого",
+    "currency_transactions_title": "Валютные транзакции",
+    "currency_transactions_current_rate": "Текущий курс",
+    "currency_transactions_diff": "Разница",
     "transaction_delete_title": "Удалить транзакцию",
 
     "modals_delete_button": "Удалить",

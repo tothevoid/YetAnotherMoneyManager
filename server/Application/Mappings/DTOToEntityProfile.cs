@@ -31,6 +31,7 @@ namespace MoneyManager.Application.Mappings
             CreateMap<DepositDTO, Deposit>().ReverseMap();
             CreateMap<CurrencyDTO, Currency>().ReverseMap();
             CreateMap<AccountTypeDTO, AccountType>().ReverseMap();
+            CreateMap<CurrencyTransactionDto, CurrencyTransaction>().ReverseMap();
 
             CreateMap<DepositDTO, Deposit>().ReverseMap();
 

@@ -23,6 +23,7 @@ import TransactionModal from "./modals/TransactionModal/TransactionModal";
 import AddButton from "../../shared/components/AddButton/AddButton";
 import { BaseModalRef } from "../../shared/utilities/modalUtilities";
 import { ACCOUNT_TYPE } from "../../shared/constants/accountType";
+import { createCurrencyTransaction } from "../../api/transactions/currencyTransactionApi";
 
 interface State {
     accounts: AccountEntity[]
@@ -92,8 +93,8 @@ const TransactionsPage: React.FC = () => {
         addTransactionModalRef.current?.openModal()
     }
 
-    const createCurrencyTransaction = async (currencyTransactionEntity: CurrencyTransactionEntity) => {
-        await createCurrencyTransaction(currencyTransactionEntity)
+    const onCreateCurrencyTransaction = async (currencyTransactionEntity: CurrencyTransactionEntity) => {
+        await createCurrencyTransaction(currencyTransactionEntity);
     }
 
     const onTransactionSaved = async (transaction: TransactionEntity) => {
@@ -170,7 +171,7 @@ const TransactionsPage: React.FC = () => {
 			ref={confirmModalRef}/>
             <TransactionModal transaction={activeEntity} modalRef={modalRef} onSaved={onTransactionSaved}/>
             <NewTransactionModal modalRef={addTransactionModalRef} 
-                onTransactionSaved={createTransactionEntity} onCurrencyTransactionSaved={createCurrencyTransaction}/>
+                onTransactionSaved={createTransactionEntity} onCurrencyTransactionSaved={onCreateCurrencyTransaction}/>
         </Box>
     );
 }

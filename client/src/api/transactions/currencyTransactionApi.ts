@@ -1,5 +1,5 @@
 import { CurrencyTransactionEntity, CurrencyTransactionEntityRequest, CurrencyTransactionEntityResponse } from '../../models/transactions/CurrencyTransactionEntity';
-import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
+import { createEntity, deleteEntity, getAllEntities, updateEntity, getEntityById, getAllEntitiesByConfig } from '../basicApi';
 import { prepareCurrencyTransaction, prepareCurrencyTransactionRequest } from './currencyTransactionApiMapping';
 
 const basicUrl = `CurrencyTransaction`;
@@ -23,3 +23,14 @@ export const updateCurrencyTransaction = async (modifiedSecurityTransaction: Cur
 export const deleteCurrencyTransaction = async (securityTransactionId: string): Promise<boolean> => {
 	return await deleteEntity(basicUrl, securityTransactionId);
 }
+
+export const getCurrencyTransactionById = async (id: string): Promise<CurrencyTransactionEntity | null> => {
+	const dto = await getEntityById<CurrencyTransactionEntityResponse>(basicUrl, id);
+	if (!dto) return null;
+	return prepareCurrencyTransaction(dto);
+};
+
+export const getCurrencyTransactionsByAccountId = async (accountId: string): Promise<CurrencyTransactionEntity[]> => {
+	const dtos = await getAllEntities<CurrencyTransactionEntityResponse>(`${basicUrl}/GetAllByAccountId?accountId=${accountId}`);
+	return dtos.map(prepareCurrencyTransaction);
+};

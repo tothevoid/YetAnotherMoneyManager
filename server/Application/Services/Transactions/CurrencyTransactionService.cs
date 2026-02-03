@@ -52,6 +52,20 @@ namespace MoneyManager.Application.Services.Transactions
             await _db.Commit();
         }
 
+        public async Task<CurrencyTransactionDto> GetById(Guid id)
+        {
+            var entity = await _currencyTransactionRepo.GetById(id, include: GetFullHierarchyColumns);
+            return _mapper.Map<CurrencyTransactionDto>(entity);
+        }
+
+        public async Task<IEnumerable<CurrencyTransactionDto>> GetAllByAccountId(Guid accountId)
+        {
+            var query = await _currencyTransactionRepo.GetAll(
+                x => x.SourceAccountId == accountId || x.DestinationAccountId == accountId,
+                include: GetFullHierarchyColumns);
+            return _mapper.Map<IEnumerable<CurrencyTransactionDto>>(query);
+        }
+
         private IQueryable<CurrencyTransaction> GetFullHierarchyColumns(
             IQueryable<CurrencyTransaction> currencyTransactionQuery)
         {

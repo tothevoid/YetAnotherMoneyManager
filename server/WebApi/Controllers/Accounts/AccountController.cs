@@ -70,5 +70,13 @@ namespace MoneyManager.WebApi.Controllers.Accounts
             var summaryModel = _mapper.Map<AccountCurrencySummaryModel[]>(result);
             return summaryModel;
         }
+
+        [HttpGet(nameof(GetById))]
+        public async Task<ActionResult<AccountModel>> GetById(Guid id)
+        {
+            var account = await _accountService.GetById(id);
+            if (account == null) return NotFound();
+            return _mapper.Map<AccountModel>(account);
+        }
     }
 }

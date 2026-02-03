@@ -14,5 +14,7 @@ namespace MoneyManager.Application.Interfaces.Transactions
         Task<Guid> Add(CurrencyTransactionDto currencyTransactionDto);
         Task Update(CurrencyTransactionDto currencyTransactionDto);
         Task Delete(Guid id);
+        Task<CurrencyTransactionDto> GetById(Guid id);
+        Task<IEnumerable<CurrencyTransactionDto>> GetAllByAccountId(Guid accountId);
     }
 }

@@ -1,6 +1,6 @@
 import { AccountEntity, AccountEntityRequest, AccountEntityResponse } from "../../models/accounts/AccountEntity";
 import { AccountCurrencySummary } from "../../models/accounts/accountsSummary";
-import { createEntity, deleteEntity, getAllEntities, getAllEntitiesByConfig, postAction, updateEntity } from "../basicApi";
+import { createEntity, deleteEntity, getAllEntities, getAllEntitiesByConfig, postAction, updateEntity, getEntityById } from "../basicApi";
 import { Transfer } from "../../pages/Accounts/modals/AccountBalanceTransferModal/AccountBalanceTransferModal";
 import { prepareAccount, prepareAccountRequest } from "./accountApiMapping";
 
@@ -47,4 +47,10 @@ export const transferBalance = async (transfer: Transfer): Promise<boolean> => {
 
 export const getSummary = async (): Promise<AccountCurrencySummary[]> => {
 	return await getAllEntities<AccountCurrencySummary>(`${basicUrl}/GetSummary`);
+}
+
+export const getAccountById = async (id: string): Promise<AccountEntity | null> => {
+	const dto = await getEntityById<AccountEntityResponse>(basicUrl, id);
+	if (!dto) return null;
+	return prepareAccount(dto);
 }

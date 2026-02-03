@@ -34,6 +34,21 @@ namespace MoneyManager.WebApi.Controllers.Transactions
             return _mapper.Map<IEnumerable<CurrencyTransactionModel>>(currencyTransactions);
         }
 
+        [HttpGet(nameof(GetById))]
+        public async Task<ActionResult<CurrencyTransactionModel>> GetById(Guid id)
+        {
+            var dto = await _currencyTransactionService.GetById(id);
+            if (dto == null) return NotFound();
+            return _mapper.Map<CurrencyTransactionModel>(dto);
+        }
+
+        [HttpGet(nameof(GetAllByAccountId))]
+        public async Task<IEnumerable<CurrencyTransactionModel>> GetAllByAccountId([FromQuery] Guid accountId)
+        {
+            var dtos = await _currencyTransactionService.GetAllByAccountId(accountId);
+            return _mapper.Map<IEnumerable<CurrencyTransactionModel>>(dtos);
+        }
+
         [HttpPut]
         public async Task<Guid> Add(CurrencyTransactionModel currencyTransaction)
         {

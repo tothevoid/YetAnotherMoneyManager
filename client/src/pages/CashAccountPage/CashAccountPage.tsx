@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Stack, Text, Table, Card } from "@chakra-ui/react";
-import { getCurrencyTransactions } from "../../api/transactions/currencyTransactionApi";
+import { getAccountById } from "../../api/accounts/accountApi";
+import { getCurrencyTransactionsByAccountId } from "../../api/transactions/currencyTransactionApi";
 import { CurrencyTransactionEntity } from "../../models/transactions/CurrencyTransactionEntity";
 import { useTranslation } from "react-i18next";
 import { formatMoneyByCurrencyCulture } from "../../shared/utilities/formatters/moneyFormatter";
 import { formatDate } from "../../shared/utilities/formatters/dateFormatter";
 import { getCurrencies } from "../../api/currencies/currencyApi";
 import { calculateDiff } from "../../shared/utilities/numericDiffsUtilities";
+import { AccountEntity } from "../../models/accounts/AccountEntity";
 
 interface State {
     currencyTransactions: CurrencyTransactionEntity[],
@@ -22,7 +24,10 @@ const CashAccountPage: React.FC = () => {
 
     useEffect(() => {
         const initData = async () => {
-            const currencyTransactions = await getCurrencyTransactions();
+            if (!cashAccountId) return;
+            const account = await getAccountById(cashAccountId);
+            setAccount(account);
+            const currencyTransactions = await getCurrencyTransactionsByAccountId(cashAccountId);
             const currencies = await getCurrencies();
             const map: Record<string, number> = {};
             currencies.forEach(c => { map[c.id] = c.rate });
@@ -30,12 +35,14 @@ const CashAccountPage: React.FC = () => {
             setState({ currencyTransactions });
         }
         initData();
-    }, []);
+    }, [cashAccountId]);
+
+    const [account, setAccount] = useState<AccountEntity | null>(null);
 
     return (
         <Stack p={6} gap={4}>
             <Text fontSize="3xl" fontWeight={900} color="text_primary">
-                {t("currency_transactions_title")}
+                {account ? account.name : t("currency_transactions_title")}
             </Text>
             
             <Card.Root>

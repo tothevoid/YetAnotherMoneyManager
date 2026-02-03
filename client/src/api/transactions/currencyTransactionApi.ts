@@ -1,5 +1,5 @@
 import { CurrencyTransactionEntity, CurrencyTransactionEntityRequest, CurrencyTransactionEntityResponse } from '../../models/transactions/CurrencyTransactionEntity';
-import { createEntity, deleteEntity, getAllEntities, updateEntity, getEntityById, getAllEntitiesByConfig } from '../basicApi';
+import { createEntity, deleteEntity, getAllEntities, updateEntity, getEntityById } from '../basicApi';
 import { prepareCurrencyTransaction, prepareCurrencyTransactionRequest } from './currencyTransactionApiMapping';
 
 const basicUrl = `CurrencyTransaction`;

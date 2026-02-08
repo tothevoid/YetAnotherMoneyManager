@@ -1,5 +1,5 @@
 import { MdDelete, MdEdit, MdContentCopy } from "react-icons/md";
-import { Card, Flex, Stack, Button, Text, Container, Icon, Image } from "@chakra-ui/react";
+import { Card, Flex, Stack, Button, Text, Container, Icon, Image, Progress } from "@chakra-ui/react";
 import {  formatNumericDate } from "../../../../shared/utilities/formatters/dateFormatter";
 import { formatMoney } from "../../../../shared/utilities/formatters/moneyFormatter";
 import { DepositEntity } from "../../../../models/deposits/DepositEntity";
@@ -20,6 +20,10 @@ const Deposit: React.FC<Props> = ({deposit, onEditClicked, onCloneClicked, onDel
         t("entity_deposit_estimated_earn"):
         t("entity_deposit_earned");
 
+    const daysPassed = Math.floor((new Date().getTime() - new Date(deposit.from).getTime()) / (1000 * 3600 * 24));
+    const totalDays = Math.floor((new Date(deposit.to).getTime() - new Date(deposit.from).getTime()) / (1000 * 3600 * 24));
+    const progressValue = totalDays > 0 ? (daysPassed / totalDays) * 100 : 0;
+
     return <Card.Root borderColor="border_primary" color="text_primary" backgroundColor="background_primary">
         <Card.Body boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
             <Stack>
@@ -29,6 +33,12 @@ const Deposit: React.FC<Props> = ({deposit, onEditClicked, onCloneClicked, onDel
                         {deposit.name}
                     </Text>
                 </Flex>
+
+                <Progress.Root colorPalette={"green"} defaultValue={progressValue}>
+                    <Progress.Track >
+                        <Progress.Range />
+                    </Progress.Track>
+                </Progress.Root>
                
                 <Container padding={0}>
                     <Flex justifyContent="space-between">

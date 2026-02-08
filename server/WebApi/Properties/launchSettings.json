@@ -3,11 +3,11 @@
     "JustBackend": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "http://localhost:8100",
+      "launchUrl": "http://localhost:8400",
       "applicationUrl": "http://localhost:8200",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "Client__Url": "http://localhost:8100"
+        "Client__Url": "http://localhost:8400"
       }
     }
   }

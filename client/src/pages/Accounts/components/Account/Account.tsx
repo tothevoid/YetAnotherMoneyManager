@@ -28,9 +28,9 @@ const Account = (props: Props) => {
         return getBankIconUrl(bank?.iconKey)
     }, [accountType, bank]);
 
-    const getTtile = useCallback(() => {
+    const getTitle = useCallback(() => {
         if (accountType.id === ACCOUNT_TYPE.CASH ) {
-            return <Link color="text_primary" href={`../cash_account/${props.account.id}`} fontSize="xl" fontWeight={900}>{name}</Link>
+            return <Link color="text_primary" href={`../cash_account/${props.account.id}`} fontWeight={600}>{name}</Link>
         }
         return <Text fontWeight={600}>{name}</Text>;
     }, []);
@@ -42,7 +42,7 @@ const Account = (props: Props) => {
                     <Stack>
                         <Flex gapX={2} alignItems={"center"}>
                             {getIconUrl()}
-                            {getTtile()}
+                            {getTitle()}
                         </Flex>
                         <Text fontWeight={700}>{formatMoneyByCurrencyCulture(balance, currency.name)}</Text>
                     </Stack>

@@ -24,6 +24,8 @@ const Deposit: React.FC<Props> = ({deposit, onEditClicked, onCloneClicked, onDel
     const totalDays = Math.floor((new Date(deposit.to).getTime() - new Date(deposit.from).getTime()) / (1000 * 3600 * 24));
     const progressValue = totalDays > 0 ? (daysPassed / totalDays) * 100 : 0;
 
+    const alreadyEarned = (deposit.estimatedEarn ?? 0) / totalDays * daysPassed;
+
     return <Card.Root borderColor="border_primary" color="text_primary" backgroundColor="background_primary">
         <Card.Body boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
             <Stack>
@@ -57,6 +59,14 @@ const Deposit: React.FC<Props> = ({deposit, onEditClicked, onCloneClicked, onDel
                         <Text color={"gray.500"}>{estimatedEarnTitle}:</Text>
                         <Text color={"green.500"}>+{formatMoney(deposit?.estimatedEarn ?? 0)}</Text>
                     </Flex>
+                    {
+                        deposit.to > new Date() &&
+                            <Flex justifyContent="space-between">
+                                <Text color={"gray.500"}>{t("entity_deposit_already_earned")}:</Text>
+                                <Text color={"green.500"}>+{formatMoney(alreadyEarned)}</Text>
+                            </Flex>
+                    }
+                  
                     <Flex gap={2} paddingTop={4} justifyContent="end">
                         <Button background={'background_secondary'} onClick={() => onEditClicked(deposit)} size={'sm'}>
                             <Icon color="card_action_icon_primary">

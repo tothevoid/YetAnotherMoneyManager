@@ -58,6 +58,7 @@
     "entity_deposit_estimated_earn": "Estimated earn",
     "entity_deposit_dates": "Dates",
     "entity_deposit_earned": "Earned",
+    "entity_deposit_already_earned": "Already earned",
 
     "deposit_delete_title": "Delete deposit",
 

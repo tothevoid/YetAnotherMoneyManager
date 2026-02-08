@@ -58,6 +58,7 @@
     "entity_deposit_estimated_earn": "Ожидаемый доход",
     "entity_deposit_dates": "Даты",
     "entity_deposit_earned": "Доход",
+    "entity_deposit_already_earned": "Уже заработано",
 
     "deposit_delete_title": "Удалить депозит",
 

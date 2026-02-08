@@ -53,6 +53,7 @@ const CashAccountPage: React.FC = () => {
             const diffResult = calculateDiff(
                 currentRate * transaction.amount,
                 transactionRate * transaction.amount,
+                // TODO: Fix currency
                 transaction.sourceAccount.currency.name
             );
             return acc + diffResult.rawProfitAndLoss;

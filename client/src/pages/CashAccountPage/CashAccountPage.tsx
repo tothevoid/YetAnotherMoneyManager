@@ -10,6 +10,7 @@ import { formatDate } from "../../shared/utilities/formatters/dateFormatter";
 import { getCurrencies } from "../../api/currencies/currencyApi";
 import { calculateDiff } from "../../shared/utilities/numericDiffsUtilities";
 import { AccountEntity } from "../../models/accounts/AccountEntity";
+import { useUserProfile } from "../../../features/UserProfileSettingsModal/hooks/UserProfileContext";
 
 interface State {
     currencyTransactions: CurrencyTransactionEntity[],
@@ -18,6 +19,8 @@ interface State {
 const CashAccountPage: React.FC = () => {
     const { cashAccountId } = useParams();
     const { t, i18n } = useTranslation();
+
+    const { user } = useUserProfile()
 
     const [state, setState] = useState<State>({ currencyTransactions: [] })
     const [currenciesMap, setCurrenciesMap] = useState<Record<string, number>>({});
@@ -86,7 +89,8 @@ const CashAccountPage: React.FC = () => {
                             state.currencyTransactions.map((transaction) => {
                                 const currentRate = currenciesMap[transaction.destinationAccount.currency.id];
                                 const transactionRate = transaction.rate;
-                                const diffResult = calculateDiff(currentRate * transaction.amount, transactionRate * transaction.amount);
+                                const diffResult = calculateDiff(currentRate * transaction.amount, transactionRate * transaction.amount,
+                                    transaction.sourceAccount.currency.name);
                                 return (
                                     <Table.Row key={transaction.id} color="text_primary" backgroundColor="background_primary">
                                         <Table.Cell>
@@ -94,15 +98,9 @@ const CashAccountPage: React.FC = () => {
                                         </Table.Cell>
                                         <Table.Cell>
                                             {transaction.sourceAccount.name}
-                                            <Text fontSize="sm" color="text_secondary">
-                                                {transaction.sourceAccount.currency.name}
-                                            </Text>
                                         </Table.Cell>
                                         <Table.Cell>
                                             {transaction.destinationAccount.name}
-                                            <Text fontSize="sm" color="text_secondary">
-                                                {transaction.destinationAccount.currency.name}
-                                            </Text>
                                         </Table.Cell>
                                         <Table.Cell>
                                             {formatMoneyByCurrencyCulture(
@@ -111,7 +109,10 @@ const CashAccountPage: React.FC = () => {
                                             )}
                                         </Table.Cell>
                                         <Table.Cell>
-                                            {transaction.rate.toFixed(4)}
+                                           {formatMoneyByCurrencyCulture(
+                                                transaction.rate, 
+                                                transaction.sourceAccount.currency.name
+                                            )}
                                         </Table.Cell>
                                         <Table.Cell>
                                             {formatMoneyByCurrencyCulture(
@@ -120,11 +121,14 @@ const CashAccountPage: React.FC = () => {
                                             )}
                                         </Table.Cell>
                                         <Table.Cell>
-                                            {currentRate?.toFixed(4) ?? "-"}
+                                            {formatMoneyByCurrencyCulture(
+                                                currentRate, 
+                                                user?.currency.name
+                                            )}
                                         </Table.Cell>
                                         <Table.Cell>
                                             <Text color={diffResult.color} fontWeight={700}>
-                                                {diffResult.rawProfitAndLoss > 0 ? "+" : ""}{diffResult.rawProfitAndLoss.toFixed(4)}
+                                                {diffResult.rawProfitAndLoss > 0 ? "+" : ""}{diffResult.profitAndLoss}
                                             </Text>
                                         </Table.Cell>
                                     </Table.Row>

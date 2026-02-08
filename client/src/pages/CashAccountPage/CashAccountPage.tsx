@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { formatMoneyByCurrencyCulture } from "../../shared/utilities/formatters/moneyFormatter";
 import { formatDate } from "../../shared/utilities/formatters/dateFormatter";
 import { getCurrencies } from "../../api/currencies/currencyApi";
-import { calculateDiff } from "../../shared/utilities/numericDiffsUtilities";
+import { calculateDiff, getDiffColor } from "../../shared/utilities/numericDiffsUtilities";
 import { AccountEntity } from "../../models/accounts/AccountEntity";
 import { useUserProfile } from "../../../features/UserProfileSettingsModal/hooks/UserProfileContext";
 
@@ -40,14 +40,36 @@ const CashAccountPage: React.FC = () => {
         initData();
     }, [cashAccountId]);
 
+    const [totalPnl, setTotalPnl] = useState<number>(0);
+
+    useEffect(() => {
+        if (!state.currencyTransactions || state.currencyTransactions.length === 0) {
+            return;
+        }
+
+        const totalPnl = state.currencyTransactions.reduce((acc, transaction) => {
+            const currentRate = currenciesMap[transaction.destinationAccount.currency.id];
+            const transactionRate = transaction.rate;
+            const diffResult = calculateDiff(
+                currentRate * transaction.amount,
+                transactionRate * transaction.amount,
+                transaction.sourceAccount.currency.name
+            );
+            return acc + diffResult.rawProfitAndLoss;
+        }, 0);
+        setTotalPnl(totalPnl);
+    }, [state.currencyTransactions, currenciesMap])
+
     const [account, setAccount] = useState<AccountEntity | null>(null);
 
     return (
         <Stack p={6} gap={4}>
-            <Text fontSize="3xl" fontWeight={900} color="text_primary">
-                {account ? account.name : t("currency_transactions_title")}
-            </Text>
-            
+            <Stack alignItems={"end"} gapX={2} direction={"row"} color="text_primary">
+                <Text fontSize="3xl" fontWeight={900}>
+                    {account ? account.name : t("currency_transactions_title")}
+                </Text>
+                <Text color={getDiffColor(totalPnl)} backgroundColor="background_primary" borderColor="border_primary" textAlign={'center'} minW={150} rounded={10} padding={2} background={'black.600'}> {totalPnl > 0 ? "+" : ""}{formatMoneyByCurrencyCulture(totalPnl, user?.currency.name)}</Text>
+            </Stack>
             <Card.Root>
                 <Table.Root variant="outline" size="lg">
                     <Table.Header>

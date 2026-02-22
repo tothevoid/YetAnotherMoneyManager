@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using MoneyManager.Application.DTO.Accounts;
 using MoneyManager.Application.DTO.Banks;
 using MoneyManager.Application.DTO.Dashboard;
 using MoneyManager.Application.Interfaces.Accounts;
@@ -8,7 +9,8 @@ using MoneyManager.Application.Interfaces.Currencies;
 using MoneyManager.Application.Interfaces.Debts;
 using MoneyManager.Application.Interfaces.Deposits;
 using MoneyManager.Application.Interfaces.Reports;
-using MoneyManager.Application.Services.Dashboard;
+using MoneyManager.Application.Interfaces.Transactions;
+using MoneyManager.Infrastructure.Constants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,13 +30,15 @@ namespace MoneyManager.Application.Services.Reports
         private readonly IBrokerAccountSecurityService _brokerAccountSecurityService;
         private readonly IDebtService _debtService;
         private readonly IDashboardService _dashboardService;
+        private readonly ICurrencyTransactionService _currencyTransactionService;
 
         public AllAssetsReportService(IDepositService depositService, 
             IAccountService accountService, IBankService bankService, 
             IBrokerAccountService brokerAccountService, 
             IBrokerAccountSecurityService brokerAccountSecurityService,
             IDebtService debtService,
-            IDashboardService dashboardService)
+            IDashboardService dashboardService,
+            ICurrencyTransactionService currencyTransactionService)
         {
             _depositService = depositService;
             _accountService = accountService;
@@ -43,6 +47,7 @@ namespace MoneyManager.Application.Services.Reports
             _brokerAccountSecurityService = brokerAccountSecurityService;
             _debtService = debtService;
             _dashboardService = dashboardService;
+            _currencyTransactionService = currencyTransactionService;
         }
 
         public async Task<byte[]> CreateReport()
@@ -57,6 +62,14 @@ namespace MoneyManager.Application.Services.Reports
             foreach (var bank in bankAccounts)
             {
                 await CreateBankAccountWorksheet(workbook, bank);
+            }
+
+            var cashAccountsSheet = await GetCashAccounts();
+            foreach (var cashAccount in cashAccountsSheet)
+            {
+                var accountWorksheet = workbook.Worksheets.Add($"Наличные {cashAccount.Currency.Name}");
+                await CreateCashAccountsWorksheet(accountWorksheet, cashAccount);
+                accountWorksheet.Columns().AdjustToContents();
             }
 
             var brokerSheet = workbook.Worksheets.Add("Инвестиции");
@@ -287,6 +300,55 @@ namespace MoneyManager.Application.Services.Reports
             }
         }
 
+        public async Task CreateCashAccountsWorksheet(IXLWorksheet worksheet, AccountDTO cashAccount)
+        {
+            worksheet.Cell("A1").Value = "";
+            worksheet.Cell("B1").Value = "Количество";
+            worksheet.Cell("C1").Value = "Отношение к осн. валюте";
+            worksheet.Cell("D1").Value = "Дата покупки";
+            worksheet.Cell("E1").Value = "Курс покупки";
+            worksheet.Cell("F1").Value = "P&L";
+            worksheet.Cell("G1").Value = "Сумма";
+
+            int currentRow = 2;
+            decimal totalInMainCurrency = 0;
+            decimal totalPnL = 0;
+            decimal total = 0;
+
+            var transactions = (await _currencyTransactionService.GetAllByAccountId(cashAccount.Id))
+                .Where(transaction => transaction.DestinationAccountId == cashAccount.Id).ToList();
+
+            foreach (var transaction in transactions.OrderBy(transaction => transaction.Date))
+            {
+                worksheet.Cell($"A{currentRow}").Value = "";
+                worksheet.Cell($"B{currentRow}").Value = transaction.Amount;
+                SetFinanceValue(worksheet.Cell($"C{currentRow}"), transaction.DestinationAccount.Currency.Rate);
+                worksheet.Cell($"D{currentRow}").Value = transaction.Date.ToString();
+                SetFinanceValue(worksheet.Cell($"E{currentRow}"), transaction.Rate);
+
+                var pnl = transaction.Amount * transaction.DestinationAccount.Currency.Rate - transaction.Amount * transaction.Rate;
+
+                SetFinanceValue(worksheet.Cell($"F{currentRow}"), pnl);
+                SetFinanceValue(worksheet.Cell($"G{currentRow}"), transaction.Amount * transaction.Rate);
+
+                totalInMainCurrency += transaction.Amount * transaction.Rate;
+                total += transaction.Amount;
+                totalPnL += pnl;
+                currentRow++;
+            }
+
+            currentRow += 2;
+
+            worksheet.Cell($"A{currentRow}").Value = "Итого в основной валюте:";
+            SetFinanceValue(worksheet.Cell($"B{currentRow++}"), totalInMainCurrency);
+
+            worksheet.Cell($"A{currentRow}").Value = $"Итого в {cashAccount.Currency.Name}:";
+            SetFinanceValue(worksheet.Cell($"B{currentRow++}"), total);
+
+            worksheet.Cell($"A{currentRow}").Value = "P&L:";
+            SetFinanceValue(worksheet.Cell($"B{currentRow}"), totalPnL);
+        }
+
         private Dictionary<string, decimal> GetCurrencyDistributions(GlobalDashboardDto dashboard)
         {
             var totalCurrencies = new Dictionary<string, decimal>();
@@ -315,6 +377,11 @@ namespace MoneyManager.Application.Services.Reports
             }
 
             return totalCurrencies;
+        }
+
+        private async Task<IEnumerable<AccountDTO>> GetCashAccounts()
+        {
+            return await _accountService.GetAllByTypes(new[] { AccountTypeConstants.Cash }, true);
         }
 
         private void SetPercentValue(IXLCell cell, decimal value)

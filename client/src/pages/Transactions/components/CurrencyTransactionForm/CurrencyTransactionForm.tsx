@@ -28,6 +28,7 @@ const CurrencyTransactionForm: React.FC<Props> = (props: Props) => {
     const getDefaultTransactionFormState = useCallback(() => {
         return {
             id: props.currencyTransaction?.id ?? generateGuid(),
+            name: props.currencyTransaction?.name ?? "",
             date: props.currencyTransaction?.date ?? new Date(),
             amount: props.currencyTransaction?.amount ?? 0,
             rate: props.currencyTransaction?.rate ?? 0,

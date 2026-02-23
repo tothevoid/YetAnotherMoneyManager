@@ -2,8 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Transactions;
 using MoneyManager.Application.Interfaces.Transactions;
+using MoneyManager.Infrastructure.Entities.Currencies;
 using MoneyManager.Infrastructure.Entities.Transactions;
 using MoneyManager.Infrastructure.Interfaces.Database;
+using MoneyManager.Infrastructure.Queries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +28,12 @@ namespace MoneyManager.Application.Services.Transactions
 
         public async Task<IEnumerable<CurrencyTransactionDto>> GetAll()
         {
-            var currencyTransactions = await _currencyTransactionRepo.GetAll(include: GetFullHierarchyColumns);
+            var query = new ComplexQueryBuilder<CurrencyTransaction>()
+                .AddJoins(GetFullHierarchyColumns)
+                .AddOrder(CurrencyTransaction => CurrencyTransaction.Date)
+                .GetQuery();
+            var currencyTransactions = await _currencyTransactionRepo.GetAll(query);
+            
             return _mapper.Map<IEnumerable<CurrencyTransactionDto>>(currencyTransactions);
         }
 
@@ -60,10 +67,15 @@ namespace MoneyManager.Application.Services.Transactions
 
         public async Task<IEnumerable<CurrencyTransactionDto>> GetAllByAccountId(Guid accountId)
         {
-            var query = await _currencyTransactionRepo.GetAll(
-                x => x.SourceAccountId == accountId || x.DestinationAccountId == accountId,
-                include: GetFullHierarchyColumns);
-            return _mapper.Map<IEnumerable<CurrencyTransactionDto>>(query);
+            var query = new ComplexQueryBuilder<CurrencyTransaction>()
+                .AddFilter(x => x.SourceAccountId == accountId || x.DestinationAccountId == accountId)
+                .AddJoins(GetFullHierarchyColumns)
+                .AddOrder(CurrencyTransaction => CurrencyTransaction.Date)
+                .GetQuery();
+
+            var transactions = await _currencyTransactionRepo.GetAll(query);
+
+            return _mapper.Map<IEnumerable<CurrencyTransactionDto>>(transactions);
         }
 
         private IQueryable<CurrencyTransaction> GetFullHierarchyColumns(

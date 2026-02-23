@@ -1,16 +1,22 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Stack, Text, Table, Card } from "@chakra-ui/react";
+import { Stack, Text, Table, Card, Button, Icon, Flex } from "@chakra-ui/react";
 import { getAccountById } from "../../api/accounts/accountApi";
-import { getCurrencyTransactionsByAccountId } from "../../api/transactions/currencyTransactionApi";
+import { createCurrencyTransaction, deleteCurrencyTransaction, getCurrencyTransactionsByAccountId, updateCurrencyTransaction } from "../../api/transactions/currencyTransactionApi";
 import { CurrencyTransactionEntity } from "../../models/transactions/CurrencyTransactionEntity";
 import { useTranslation } from "react-i18next";
 import { formatMoneyByCurrencyCulture } from "../../shared/utilities/formatters/moneyFormatter";
-import { formatDate, formatNumericDate, formatShortDateTime } from "../../shared/utilities/formatters/dateFormatter";
+import { formatNumericDate } from "../../shared/utilities/formatters/dateFormatter";
 import { getCurrencies } from "../../api/currencies/currencyApi";
 import { calculateDiff, getDiffColor } from "../../shared/utilities/numericDiffsUtilities";
 import { AccountEntity } from "../../models/accounts/AccountEntity";
 import { useUserProfile } from "../../../features/UserProfileSettingsModal/hooks/UserProfileContext";
+import { MdEdit, MdDelete } from "react-icons/md";
+import CurrencyTransactionModal from "../Transactions/modals/CurrencyTransactionModal/CurrencyTransactionModal";
+import { ConfirmModal } from "../../shared/modals/ConfirmModal/ConfirmModal";
+import { useEntityModal } from "../../shared/hooks/useEntityModal";
+import { ActiveEntityMode } from "../../shared/enums/activeEntityMode";
+import AddButton from "../../shared/components/AddButton/AddButton";
 
 interface State {
     currencyTransactions: CurrencyTransactionEntity[],
@@ -25,18 +31,48 @@ const CashAccountPage: React.FC = () => {
     const [state, setState] = useState<State>({ currencyTransactions: [] })
     const [currenciesMap, setCurrenciesMap] = useState<Record<string, number>>({});
 
+    const { 
+        activeEntity,
+        modalRef,
+        confirmModalRef,
+        onAddClicked,
+        onEditClicked,
+        onDeleteClicked,
+        mode,
+        onActionEnded
+    } = useEntityModal<CurrencyTransactionEntity>();
+
+    const initAccount = async (cashAccountId: string) => {
+        const account = await getAccountById(cashAccountId);
+        setAccount(account);
+    }
+
+    const initTransactions = async (cashAccountId: string) => {
+        const currencyTransactions = await getCurrencyTransactionsByAccountId(cashAccountId);
+        const currencies = await getCurrencies();
+        const map: Record<string, number> = {};
+        currencies.forEach(c => { map[c.id] = c.rate });
+        setCurrenciesMap(map);
+        setState({ currencyTransactions });
+    }
+     
+    const initData = async () => {
+        if (!cashAccountId) return;
+
+        await initAccount(cashAccountId);
+        await initTransactions(cashAccountId);
+    }
+
     useEffect(() => {
-        const initData = async () => {
-            if (!cashAccountId) return;
-            const account = await getAccountById(cashAccountId);
-            setAccount(account);
-            const currencyTransactions = await getCurrencyTransactionsByAccountId(cashAccountId);
-            const currencies = await getCurrencies();
-            const map: Record<string, number> = {};
-            currencies.forEach(c => { map[c.id] = c.rate });
-            setCurrenciesMap(map);
-            setState({ currencyTransactions });
+        if (mode !== ActiveEntityMode.None) {
+            return
         }
+
+        if (!cashAccountId) return;
+        initTransactions(cashAccountId);
+    }, [mode])
+
+    useEffect(() => {
         initData();
     }, [cashAccountId]);
 
@@ -61,16 +97,34 @@ const CashAccountPage: React.FC = () => {
         setTotalPnl(totalPnl);
     }, [state.currencyTransactions, currenciesMap])
 
+    const onCurrencyTransactionSaved = async (transaction: CurrencyTransactionEntity) => {
+        if (mode === ActiveEntityMode.Add) {
+            await createCurrencyTransaction(transaction);
+        } else {
+            await updateCurrencyTransaction(transaction)
+        }
+
+        onActionEnded();
+    }
+
+    const onDeleteConfirmed = async () => {
+        await deleteCurrencyTransaction(activeEntity!.id);
+        onActionEnded()
+    }
+
     const [account, setAccount] = useState<AccountEntity | null>(null);
 
     return (
         <Stack p={6} gap={4}>
-            <Stack alignItems={"end"} gapX={2} direction={"row"} color="text_primary">
-                <Text fontSize="3xl" fontWeight={900}>
-                    {account ? account.name : t("currency_transactions_title")}
-                </Text>
-                <Text color={getDiffColor(totalPnl)} backgroundColor="background_primary" borderColor="border_primary" textAlign={'center'} minW={150} rounded={10} padding={2} background={'black.600'}> {totalPnl > 0 ? "+" : ""}{formatMoneyByCurrencyCulture(totalPnl, user?.currency.name)}</Text>
-            </Stack>
+            <Flex justifyContent={"space-between"}>
+                <Stack alignItems={"end"} gapX={2} direction={"row"} color="text_primary">
+                    <Text fontSize="3xl" fontWeight={900}>
+                        {account ? account.name : t("currency_transactions_title")}
+                    </Text>
+                    <Text color={getDiffColor(totalPnl)} backgroundColor="background_primary" borderColor="border_primary" textAlign={'center'} minW={150} rounded={10} padding={2} background={'black.600'}> {totalPnl > 0 ? "+" : ""}{formatMoneyByCurrencyCulture(totalPnl, user?.currency.name)}</Text>
+                </Stack>
+                <AddButton buttonTitle="Add" onClick={onAddClicked}/>
+            </Flex>
             <Card.Root>
                 <Table.Root variant="outline" size="lg">
                     <Table.Header>
@@ -102,6 +156,7 @@ const CashAccountPage: React.FC = () => {
                             <Table.ColumnHeader color="text_primary">
                                 {t("currency_transactions_diff")}
                             </Table.ColumnHeader>
+                            <Table.ColumnHeader/>
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
@@ -160,6 +215,20 @@ const CashAccountPage: React.FC = () => {
                                                 {diffResult.rawProfitAndLoss > 0 ? "+" : ""}{diffResult.profitAndLoss}
                                             </Text>
                                         </Table.Cell>
+                                        <Table.Cell>
+                                            <Stack direction={"row"} gapX={2}>
+                                                <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={() => onEditClicked(transaction)}>
+                                                    <Icon color="card_action_icon_primary">
+                                                        <MdEdit/>
+                                                    </Icon>
+                                                </Button>
+                                                <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={() => onDeleteClicked(transaction)}>
+                                                    <Icon color="card_action_icon_danger">
+                                                        <MdDelete/>
+                                                    </Icon>
+                                                </Button>
+                                            </Stack>
+                                        </Table.Cell>
                                     </Table.Row>
                                 );
                             })
@@ -167,6 +236,12 @@ const CashAccountPage: React.FC = () => {
                     </Table.Body>
                 </Table.Root>
             </Card.Root>
+            <CurrencyTransactionModal modalRef={modalRef} onSaved={onCurrencyTransactionSaved} currencyTransaction={activeEntity}/>
+            <ConfirmModal onConfirmed={onDeleteConfirmed}
+                title={t("account_delete_title")}
+                message={t("modals_delete_message")}
+                confirmActionName={t("modals_delete_button")}
+                ref={confirmModalRef}/>
         </Stack>
     );
 }

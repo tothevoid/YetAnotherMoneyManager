@@ -9,7 +9,7 @@ import { SetSubmitHandler } from '../NewTransactionModal/NewTransactionModal';
 
 interface ModalProps {
     modalRef: RefObject<BaseModalRef | null>,
-    currencyTransaction?: CurrencyTransactionEntity,
+    currencyTransaction?: CurrencyTransactionEntity | null,
     onSaved: (transaction: CurrencyTransactionEntity) => Promise<void>
 }
 

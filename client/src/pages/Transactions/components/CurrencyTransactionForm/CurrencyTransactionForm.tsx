@@ -13,7 +13,7 @@ import { generateGuid } from '../../../../shared/utilities/idUtilities';
 import { SetSubmitHandler } from '../../modals/NewTransactionModal/NewTransactionModal';
 
 interface Props {
-    currencyTransaction?: CurrencyTransactionEntity
+    currencyTransaction?: CurrencyTransactionEntity | null
     setSubmitHandler: SetSubmitHandler,
     onCurrencyTransactionSaved: (currencyTransaction: CurrencyTransactionEntity) => Promise<void>
 }

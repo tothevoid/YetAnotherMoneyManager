@@ -2,6 +2,7 @@ import { AccountEntity, AccountEntityResponse } from "../accounts/AccountEntity"
 
 interface CommonCurrencyTransactionEntity {
 	id: string,
+	name: string,
 	rate: number,
 	amount: number
 }

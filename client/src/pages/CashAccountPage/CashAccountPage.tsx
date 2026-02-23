@@ -6,7 +6,7 @@ import { getCurrencyTransactionsByAccountId } from "../../api/transactions/curre
 import { CurrencyTransactionEntity } from "../../models/transactions/CurrencyTransactionEntity";
 import { useTranslation } from "react-i18next";
 import { formatMoneyByCurrencyCulture } from "../../shared/utilities/formatters/moneyFormatter";
-import { formatDate } from "../../shared/utilities/formatters/dateFormatter";
+import { formatDate, formatNumericDate, formatShortDateTime } from "../../shared/utilities/formatters/dateFormatter";
 import { getCurrencies } from "../../api/currencies/currencyApi";
 import { calculateDiff, getDiffColor } from "../../shared/utilities/numericDiffsUtilities";
 import { AccountEntity } from "../../models/accounts/AccountEntity";
@@ -79,6 +79,9 @@ const CashAccountPage: React.FC = () => {
                                 {t("entity_currency_transaction_date")}
                             </Table.ColumnHeader>
                             <Table.ColumnHeader color="text_primary">
+                                {t("entity_currency_transaction_name")}
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader color="text_primary">
                                 {t("entity_currency_transaction_source_account")}
                             </Table.ColumnHeader>
                             <Table.ColumnHeader color="text_primary">
@@ -117,7 +120,10 @@ const CashAccountPage: React.FC = () => {
                                 return (
                                     <Table.Row key={transaction.id} color="text_primary" backgroundColor="background_primary">
                                         <Table.Cell>
-                                            {formatDate(transaction.date, i18n)}
+                                            {formatNumericDate(transaction.date, i18n)}
+                                        </Table.Cell>
+                                        <Table.Cell>
+                                            {transaction.name}
                                         </Table.Cell>
                                         <Table.Cell>
                                             {transaction.sourceAccount.name}

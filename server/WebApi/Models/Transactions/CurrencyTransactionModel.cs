@@ -11,6 +11,8 @@ namespace MoneyManager.WebApi.Models.Transactions
 {
     public class CurrencyTransactionModel: BaseEntity
     {
+        public string Name { get; set; }
+
         public AccountModel SourceAccount { get; set; }
 
         public Guid SourceAccountId { get; set; }

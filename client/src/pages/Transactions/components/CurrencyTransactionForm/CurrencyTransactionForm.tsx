@@ -72,6 +72,11 @@ const CurrencyTransactionForm: React.FC<Props> = (props: Props) => {
     }, [state]);
 
     return <Fragment>
+        <Field.Root mt={4} invalid={!!errors.name}>
+            <Field.Label>{t("entity_currency_transaction_name")}</Field.Label>
+            <Input {...register("name")} placeholder="Enter transaction name"/>
+            <Field.ErrorText>{errors.name?.message}</Field.ErrorText>
+        </Field.Root>
         <Field.Root mt={4} invalid={!!errors.sourceAccount}>
             <Field.Label>{t("entity_currency_transaction_source_account")}</Field.Label>
             <CollectionSelect name="sourceAccount" control={control} placeholder="Select source account"

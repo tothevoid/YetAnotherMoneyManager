@@ -4,6 +4,7 @@ export type CurrencyTransactionFormInput = z.infer<typeof CurrencyTransactionVal
 
 export const CurrencyTransactionValidationSchema = z.object({
   id: string().optional(),
+  name: string().nonempty({message: "Transaction name is required"}),
   date: z.date(),
   amount: z.number()
     .gte(0),

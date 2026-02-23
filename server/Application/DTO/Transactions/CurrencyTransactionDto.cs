@@ -11,6 +11,8 @@ namespace MoneyManager.Application.DTO.Transactions
 {
     public class CurrencyTransactionDto: BaseEntity
     {
+        public string Name { get; set; }
+
         public AccountDTO SourceAccount { get; set; }
 
         public Guid SourceAccountId { get; set; }

@@ -9,7 +9,8 @@ export const prepareCurrencyTransactionRequest = (currencyTransaction: CurrencyT
 		rate: currencyTransaction.rate,
 		destinationAccountId: currencyTransaction.destinationAccount.id,
 		sourceAccountId: currencyTransaction.sourceAccount.id,
-		date: convertToDateOnly(currencyTransaction.date)
+		date: convertToDateOnly(currencyTransaction.date),
+		name: currencyTransaction.name
 	}
 }
 
@@ -20,6 +21,7 @@ export const prepareCurrencyTransaction = (currencyTransaction: CurrencyTransact
 		rate: currencyTransaction.rate,
 		destinationAccount: prepareAccount(currencyTransaction.destinationAccount),
 		sourceAccount: prepareAccount(currencyTransaction.sourceAccount),
-		date: new Date(currencyTransaction.date)
+		date: new Date(currencyTransaction.date),
+		name: currencyTransaction.name
 	}
 }

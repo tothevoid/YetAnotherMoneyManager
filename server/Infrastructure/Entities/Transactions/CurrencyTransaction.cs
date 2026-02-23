@@ -10,6 +10,8 @@ namespace MoneyManager.Infrastructure.Entities.Transactions
 {
     public class CurrencyTransaction: BaseEntity
     {
+        public string Name { get; set; }
+
         public Account SourceAccount { get; set; }
 
         public Guid SourceAccountId { get; set; }

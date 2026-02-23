@@ -123,7 +123,7 @@ const CashAccountPage: React.FC = () => {
                     </Text>
                     <Text color={getDiffColor(totalPnl)} backgroundColor="background_primary" borderColor="border_primary" textAlign={'center'} minW={150} rounded={10} padding={2} background={'black.600'}> {totalPnl > 0 ? "+" : ""}{formatMoneyByCurrencyCulture(totalPnl, user?.currency.name)}</Text>
                 </Stack>
-                <AddButton buttonTitle="Add" onClick={onAddClicked}/>
+                <AddButton buttonTitle={t("currency_transactions_account_add_button")} onClick={onAddClicked}/>
             </Flex>
             <Card.Root>
                 <Table.Root variant="outline" size="lg">
@@ -238,7 +238,7 @@ const CashAccountPage: React.FC = () => {
             </Card.Root>
             <CurrencyTransactionModal modalRef={modalRef} onSaved={onCurrencyTransactionSaved} currencyTransaction={activeEntity}/>
             <ConfirmModal onConfirmed={onDeleteConfirmed}
-                title={t("account_delete_title")}
+                title={t("currency_transactions_account_delete_title")}
                 message={t("modals_delete_message")}
                 confirmActionName={t("modals_delete_button")}
                 ref={confirmModalRef}/>

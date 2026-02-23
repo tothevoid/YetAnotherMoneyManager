@@ -85,6 +85,8 @@
     "entity_currency_transaction_date": "Дата",
     "currency_transaction_total": "Итого",
     "currency_transactions_title": "Валютные транзакции",
+    "currency_transactions_account_delete_title": "Удалить валютную транзакцию",
+    "currency_transactions_account_add_button": "Добавить",
     "currency_transactions_current_rate": "Текущий курс",
     "currency_transactions_diff": "Разница",
     "transaction_delete_title": "Удалить транзакцию",

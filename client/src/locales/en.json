@@ -85,6 +85,8 @@
     "entity_currency_transaction_date": "Date",
     "currency_transaction_total": "Total",
     "currency_transactions_title": "Currency Transactions",
+    "currency_transactions_account_delete_title": "Delete currency transaction",
+    "currency_transactions_account_add_button": "Add",
     "currency_transactions_current_rate": "Current rate",
     "currency_transactions_diff": "Diff",
 

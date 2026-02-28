@@ -48,8 +48,12 @@ const BrokerAccountTabs: React.FC<Props> = ({ brokerAccountId, currencyName, onA
     }, []);
 
     return <Tabs.Root lazyMount={true} unmountOnExit={true} variant="enclosed" 
-        defaultValue={brokerAccountId ? "daily_stats": "broker_accounts"}>
+        defaultValue={"daily_stats"}>
         <Tabs.List background={"background_primary"}>
+            <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="daily_stats">
+                <IoMdStats/>
+                    {t("broker_account_page_daily_stats_tab")}
+            </Tabs.Trigger>
             {
                 !brokerAccountId &&
                 <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="broker_accounts">
@@ -57,10 +61,6 @@ const BrokerAccountTabs: React.FC<Props> = ({ brokerAccountId, currencyName, onA
                         {t("broker_account_page_broker_accounts_tab")}
                 </Tabs.Trigger>
             }
-            <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="daily_stats">
-                <IoMdStats/>
-                    {t("broker_account_page_daily_stats_tab")}
-            </Tabs.Trigger>
             <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="stats">
                 <MdQueryStats />
                     {t("broker_account_page_account_stats_tab")}

@@ -93,7 +93,7 @@ namespace MoneyManager.Application.Services.Reports
             var deposits = (await _depositService.GetAllActive())
                 .Where(deposit => deposit.BankId == bank.Id).ToList();
 
-            if (!accounts.Any() || !deposits.Any())
+            if (!accounts.Any() && !deposits.Any())
             {
                 return;
             }
@@ -108,7 +108,7 @@ namespace MoneyManager.Application.Services.Reports
             worksheet.Cell("F1").Value = "Кол-во дней";
             worksheet.Cell("G1").Value = "Доход";
 
-            int reservedRowsBeforeSummaries = 10;
+            int reservedRowsBeforeSummaries = 20;
 
             decimal total = 0;
             decimal totalDynamic = 0;
@@ -290,6 +290,8 @@ namespace MoneyManager.Application.Services.Reports
 
             currentRow += 2;
 
+            worksheet.Cell($"A{currentRow++}").Value = "В валюте:";
+
             var currencyDistributions = GetCurrencyDistributions(dashboard);
 
             foreach (var currency in currencyDistributions)
@@ -302,7 +304,7 @@ namespace MoneyManager.Application.Services.Reports
 
         public async Task CreateCashAccountsWorksheet(IXLWorksheet worksheet, AccountDTO cashAccount)
         {
-            worksheet.Cell("A1").Value = "";
+            worksheet.Cell("A1").Value = "Название";
             worksheet.Cell("B1").Value = "Количество";
             worksheet.Cell("C1").Value = "Отношение к осн. валюте";
             worksheet.Cell("D1").Value = "Дата покупки";
@@ -320,10 +322,10 @@ namespace MoneyManager.Application.Services.Reports
 
             foreach (var transaction in transactions.OrderBy(transaction => transaction.Date))
             {
-                worksheet.Cell($"A{currentRow}").Value = "";
+                worksheet.Cell($"A{currentRow}").Value = transaction.Name;
                 worksheet.Cell($"B{currentRow}").Value = transaction.Amount;
                 SetFinanceValue(worksheet.Cell($"C{currentRow}"), transaction.DestinationAccount.Currency.Rate);
-                worksheet.Cell($"D{currentRow}").Value = transaction.Date.ToString();
+                worksheet.Cell($"D{currentRow}").Value = transaction.Date.ToString("dd.MM.yyyy");
                 SetFinanceValue(worksheet.Cell($"E{currentRow}"), transaction.Rate);
 
                 var pnl = transaction.Amount * transaction.DestinationAccount.Currency.Rate - transaction.Amount * transaction.Rate;
@@ -331,7 +333,7 @@ namespace MoneyManager.Application.Services.Reports
                 SetFinanceValue(worksheet.Cell($"F{currentRow}"), pnl);
                 SetFinanceValue(worksheet.Cell($"G{currentRow}"), transaction.Amount * transaction.Rate);
 
-                totalInMainCurrency += transaction.Amount * transaction.Rate;
+                totalInMainCurrency += transaction.Amount * transaction.DestinationAccount.Currency.Rate;
                 total += transaction.Amount;
                 totalPnL += pnl;
                 currentRow++;

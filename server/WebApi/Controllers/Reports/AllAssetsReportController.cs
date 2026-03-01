@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using MoneyManager.Application.Interfaces.Reports;
+using System;
 
 namespace MoneyManager.WebApi.Controllers.Reports
 {
@@ -20,7 +21,8 @@ namespace MoneyManager.WebApi.Controllers.Reports
         public async Task<IActionResult> GetAllAssetsReportXlsx()
         {
             var fileBytes = await _reportService.CreateReport();
-            return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "all-assets-report.xlsx");
+            var dt = DateTime.Now;
+            return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"assets_{dt:hh-mm_dd-MM-yy}.xlsx");
         }
     }
 }

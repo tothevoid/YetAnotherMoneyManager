@@ -70,14 +70,15 @@ builder.Services.AddTickerQ();
 
 var fileStorageSection = builder.Configuration.GetSection("FileStorage");
 
-var host = fileStorageSection.GetSection("Host").Value;
+var endpoint = fileStorageSection.GetSection("Endpoint").Value;
+var useSsl = bool.Parse(fileStorageSection.GetSection("UseSsl").Value);
+
 var user = fileStorageSection.GetSection("User").Value;
 var password = fileStorageSection.GetSection("Password").Value;
-var port = int.Parse(fileStorageSection.GetSection("Port").Value);
 
 builder.Services.AddMinio(configureClient => configureClient
-    .WithEndpoint(host, port)
-    .WithSSL(false)
+    .WithEndpoint(endpoint)
+    .WithSSL(useSsl)
     .WithCredentials(user, password)
     .Build());
 

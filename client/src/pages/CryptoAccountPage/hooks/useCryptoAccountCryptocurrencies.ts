@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { CryptoAccountCryptocurrencyEntity } from "../../../models/crypto/CryptoAccountCryptocurrencyEntity";
-import { getCryptocurrenciesByCryptoAccount } from "../../../api/crypto/cryptoAccountCryptocurrencyApi";
+import { createCryptoAccountCryptocurrency, deleteCryptoAccountCryptocurrency, updateCryptoAccountCryptocurrency, getCryptocurrenciesByCryptoAccount } from "../../../api/crypto/cryptoAccountCryptocurrencyApi";
 
 export interface CryptoAccountCryptocurrenciesQuery {
     cryptoAccountId: string
@@ -29,9 +29,26 @@ export const useCryptoAccountCryptocurrencies = (queryParameters: CryptoAccountC
         fetchData();
     }, [fetchData])
 
+    const addCryptoAccountCryptocurrencyEntity = async (cryptoAccountCryptocurrency: CryptoAccountCryptocurrencyEntity) => {
+        await createCryptoAccountCryptocurrency(cryptoAccountCryptocurrency);
+        await fetchData();
+    }
+
+    const updateCryptoAccountCryptocurrencyEntity = async (cryptoAccountCryptocurrency: CryptoAccountCryptocurrencyEntity) => {
+        await updateCryptoAccountCryptocurrency(cryptoAccountCryptocurrency);
+        await fetchData();
+    }
+
+    const deleteCryptoAccountCryptocurrencyEntity = async (id: string) => {
+        await deleteCryptoAccountCryptocurrency(id);
+        await fetchData();
+    }
 
     return {
         cryptoAccountCryptocurrencies,
+        addCryptoAccountCryptocurrencyEntity,
+        updateCryptoAccountCryptocurrencyEntity,
+        deleteCryptoAccountCryptocurrencyEntity,
         isBrokerAccountSecuritiesLoading,
         error,
         setCryptoAccountCryptocurrenciesQueryParameters,

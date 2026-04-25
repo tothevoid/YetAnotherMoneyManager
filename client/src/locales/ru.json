@@ -345,5 +345,12 @@
     "broker_account_tax_deduction_modal_date_applied": "Дата применения",
     "entity_broker_account_tax_deduction_delete_title": "Удалить налоговый вычет",
     
-    "all_broker_accounts_header": "Все брокерские счета"
+    "all_broker_accounts_header": "Все брокерские счета",
+
+    "crypto_account_cryptocurrency_quantity": "Количество",
+
+    "crypto_account_cryptocurrency_modal_title": "Добавить криптовалюту",
+    "add_crypto_account_cryptocurrency_title": "Добавить",
+    "crypto_account_cryptocurrency_delete_title": "Удалить криптовалюту",
+    "crypto_account_cryptocurrency_cryptocurrency": "Криптовалюта"
 }

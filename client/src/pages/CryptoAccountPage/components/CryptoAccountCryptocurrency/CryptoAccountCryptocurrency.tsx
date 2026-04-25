@@ -1,14 +1,17 @@
-import { Card, Flex, Stack, Text, Image } from '@chakra-ui/react';
+import { Card, Flex, Stack, Text, Image, Button, Icon } from '@chakra-ui/react';
 import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 import { HiOutlineBuildingOffice2 } from 'react-icons/hi2';
 import { CryptoAccountCryptocurrencyEntity } from '../../../../models/crypto/CryptoAccountCryptocurrencyEntity';
 import { getIconUrl } from '../../../../api/crypto/cryptocurrencyApi';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
+import { MdDelete, MdEdit } from 'react-icons/md';
 
 type Props = {
     cryptoAccountCryptocurrency: CryptoAccountCryptocurrencyEntity,
-    onReloadCryptoAccountCryptocurrencies: () => void
+    onReloadCryptoAccountCryptocurrencies: () => void,
+    onEditClicked: (cryptoAccountCryptocurrency: CryptoAccountCryptocurrencyEntity) => void,
+    onDeleteClicked: (cryptoAccountCryptocurrency: CryptoAccountCryptocurrencyEntity) => void
 }
 
 const CryptoAccountCryptocurrency = (props: Props) => {
@@ -32,6 +35,18 @@ const CryptoAccountCryptocurrency = (props: Props) => {
                         </Stack>
                         <Text fontWeight={600}>{t("broker_account_security_card_security_quantity")}: {formatMoneyByCurrencyCulture(quantity, "USD")}</Text>
                     </Stack>
+                    <Flex gap={2} justifyContent="space-between" alignItems="center">
+                        <Button background={'background_secondary'} size={'sm'} onClick={() => props.onEditClicked(props.cryptoAccountCryptocurrency)}>
+                            <Icon color="card_action_icon_primary">
+                                <MdEdit/>
+                            </Icon>
+                        </Button>
+                        <Button background={'background_secondary'} size={'sm'} onClick={() => props.onDeleteClicked(props.cryptoAccountCryptocurrency)}>
+                            <Icon color="card_action_icon_danger">
+                                <MdDelete/>
+                            </Icon>
+                        </Button>
+                    </Flex>
                 </Flex>
             </Card.Body>
         </Card.Root>

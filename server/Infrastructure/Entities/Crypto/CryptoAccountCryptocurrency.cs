@@ -9,7 +9,7 @@ namespace MoneyManager.Infrastructure.Entities.Crypto
 {
     public class CryptoAccountCryptocurrency: BaseEntity
     {
-        public Guid CrpytocurrencyId { get; set; }
+        public Guid CryptocurrencyId { get; set; }
 
         public Cryptocurrency Cryptocurrency { get; set; }
 

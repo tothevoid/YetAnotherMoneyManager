@@ -12,7 +12,7 @@ namespace MoneyManager.Infrastructure.Configurations.Securities
             cryptoAccountCryptocurrencyConfiguration
                 .HasOne(cryptoAccountCryptocurrency => cryptoAccountCryptocurrency.Cryptocurrency)
                 .WithMany(cryptocurrency => cryptocurrency.CryptoAccountCryptocurrencies)
-                .HasForeignKey(cryptoAccountCryptocurrency => cryptoAccountCryptocurrency.CrpytocurrencyId)
+                .HasForeignKey(cryptoAccountCryptocurrency => cryptoAccountCryptocurrency.CryptocurrencyId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             cryptoAccountCryptocurrencyConfiguration

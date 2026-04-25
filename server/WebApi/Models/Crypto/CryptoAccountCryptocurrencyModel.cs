@@ -5,7 +5,7 @@ namespace MoneyManager.WebApi.Models.Crypto
 {
     public class CryptoAccountCryptocurrencyModel: BaseEntity
     {
-        public Guid CrpytocurrencyId { get; set; }
+        public Guid CryptocurrencyId { get; set; }
 
         public CryptocurrencyModel Cryptocurrency { get; set; }
 

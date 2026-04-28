@@ -44,6 +44,7 @@ using MoneyManager.Application.Interfaces.Reports;
 using MoneyManager.Application.Services.Auth;
 using MoneyManager.Application.Services.Reports;
 using TickerQ.DependencyInjection;
+using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -168,9 +169,6 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
 }
 
-// Configure the HTTP request pipeline.
-app.UseCors("AllowReactApp");
-
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
@@ -180,8 +178,16 @@ if (!app.Environment.IsDevelopment())
 //app.UseHttpsRedirection()
 
 app.MapHub<ServerMessagesHub>("/messages");
+
+app.Map("/Error", (HttpContext context) =>
+{
+    return Results.Problem("Something went wrong");
+});
     
 app.UseRouting();
+
+// Configure the HTTP request pipeline.
+app.UseCors("AllowReactApp");
 
 app.UseAuthentication();
 app.UseAuthorization();

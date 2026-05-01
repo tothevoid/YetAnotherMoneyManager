@@ -67,7 +67,7 @@ namespace MoneyManager.Application.Services.Reports
             var cashAccountsSheet = await GetCashAccounts();
             foreach (var cashAccount in cashAccountsSheet)
             {
-                var accountWorksheet = workbook.Worksheets.Add($"Наличные {cashAccount.Currency.Name}");
+                var accountWorksheet = workbook.Worksheets.Add($"Наличные \"{cashAccount.Name}\"");
                 await CreateCashAccountsWorksheet(accountWorksheet, cashAccount);
                 accountWorksheet.Columns().AdjustToContents();
             }

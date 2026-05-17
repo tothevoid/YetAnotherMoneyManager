@@ -1,12 +1,16 @@
-﻿namespace MoneyManager.Application.Integrations.Stock.Moex.Builders
+﻿using System;
+
+namespace MoneyManager.Application.Integrations.Stock.Moex.Builders
 {
-    public class MoexHistoryUrlBuilder: BaseMoexUrlBuilder
+    public class MoexHistoryUrlBuilder : BaseMoexUrlBuilder
     {
+        protected virtual string Ticker { get; }
+
         public MoexHistoryUrlBuilder(string ticker)
         {
-            Url = ApplyTickerToUrl(ticker);
+            Ticker = ticker;
         }
-       
+
         public MoexHistoryUrlBuilder IncludeHistory()
         {
             OutputFilters.Add("history");
@@ -14,9 +18,9 @@
             return this;
         }
 
-        private string ApplyTickerToUrl(string ticker)
+        protected override string GetUrl()
         {
-            return $"{Url}/history/engines/stock/markets/shares/securities/{ticker}.json";
+            return $"{BaseUrl}/history/engines/stock/markets/shares/securities/{Ticker}.json";
         }
     }
 }

@@ -69,6 +69,9 @@ const BrokerAccountsPage: React.FC = () => {
 
         setMainCurrencyAmount(currencyAmount);
         setBrokerAccountsSummary(summary);
+        setState((state) => {
+            return {...state, isReloading: false}
+        });
     }, []);
     
     const onTransactionsChanged = useCallback(async () => {

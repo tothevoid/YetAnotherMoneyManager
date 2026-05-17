@@ -1,20 +1,20 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Brokers;
+using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Application.Interfaces.Integrations.Stock;
 using MoneyManager.Application.Interfaces.Securities;
 using MoneyManager.Application.Services.Securities;
 using MoneyManager.Infrastructure.Entities.Brokers;
-using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using MoneyManager.Infrastructure.Interfaces.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace MoneyManager.Application.Services.Brokers
 {
@@ -24,7 +24,7 @@ namespace MoneyManager.Application.Services.Brokers
         private readonly IMapper _mapper;
 
         private readonly IRepository<BrokerAccountSecurity> _brokerAccountSecurityRepo;
-        private readonly IRepository<Security> _securityRepo;
+        private readonly ISecurityService _securityService;
         private readonly IStockConnector _stockConnector;
         private readonly IPullQuotationsService _pullQuotationsService;
 
@@ -32,12 +32,13 @@ namespace MoneyManager.Application.Services.Brokers
 
         public BrokerAccountSecurityService(IUnitOfWork uow, IMapper mapper, 
             IStockConnector stockConnector, IServerNotifier serverNotifier,
+            ISecurityService securityService,
             IPullQuotationsService pullQuotationsService)
         {
             _db = uow;
             _mapper = mapper;
             _brokerAccountSecurityRepo = uow.CreateRepository<BrokerAccountSecurity>();
-            _securityRepo = uow.CreateRepository<Security>();
+            _securityService = securityService;
             _serverNotifier = serverNotifier;
             _pullQuotationsService = pullQuotationsService;
 
@@ -84,15 +85,14 @@ namespace MoneyManager.Application.Services.Brokers
 
         public async Task PullQuotations()
         {
-            var securities = await _securityRepo.GetAll();
-            var tickers = securities.Select(security => security.Ticker).ToList();
+            var securities = (await _securityService.GetAll()).ToList();
 
-            if (!tickers.Any())
+            if (!securities.Any())
             {
                 return;
             }
 
-            await PullQuotations(tickers);
+            await PullQuotations(securities);
         }
 
         public async Task PullQuotationsByBrokerAccount(Guid brokerAccountId)
@@ -102,35 +102,29 @@ namespace MoneyManager.Application.Services.Brokers
                 .GetAll((brokerAccountSecurity) => brokerAccountSecurity.BrokerAccountId == brokerAccountId,
                     (query) => query.Include((brokerAccount) => brokerAccount.Security));
 
-            var tickers = brokerAccountSecurities
-                .Select(brokerAccountSecurity => brokerAccountSecurity.Security.Ticker)
-                .ToArray();
+            var mappedSecurities =  _mapper.Map<IEnumerable<BrokerAccountSecurityDTO>>(brokerAccountSecurities);
 
-            await PullQuotations(tickers);
+            await PullQuotations(mappedSecurities.Select(brokerAccountSecurity => brokerAccountSecurity.Security).ToList());
         }
 
-        private async Task PullQuotations(IEnumerable<string> tickers)
+        private async Task PullQuotations(IEnumerable<SecurityDTO> securities)
         {
             var date = DateTime.UtcNow;
             var tickersValues = (await _stockConnector
-                .GetValuesByTickers(tickers)).ToList();
+                .GetValuesByTickers(securities)).ToList();
                 
             var filteredValue = tickersValues
                 .Where(marketValue => (marketValue.LastValue ?? marketValue.MarketPrice) != null)
                 .OrderByDescending(marketValue => marketValue.Date)
                 .DistinctBy(marketValue => marketValue.Ticker)
                 .ToDictionary((marketValue) => marketValue.Ticker, (marketValue) => marketValue);
-
-            //TODO: possible reuse brokerAccountSecurities
-            var brokerAccountSecuritiesToUpdated = await _securityRepo
-              .GetAll((security) => tickers.Contains(security.Ticker),
-                  disableTracking: false);
-
-            foreach (var security in brokerAccountSecuritiesToUpdated)
-            {
+           
+            foreach (var security in securities)
+            {  
                 var row = filteredValue.GetValueOrDefault(security.Ticker);
-                security.ActualPrice = row.GetLastValue();
-                security.PriceFetchedAt = DateTime.UtcNow;
+                var updatingSecurity = await _securityService.GetById(security.Id, false, false);
+                updatingSecurity.ActualPrice = row.GetLastValue();
+                updatingSecurity.PriceFetchedAt = DateTime.UtcNow;
             }
 
             _pullQuotationsService.UpdatePullDate(date);

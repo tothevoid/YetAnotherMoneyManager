@@ -43,9 +43,24 @@ namespace MoneyManager.Application.Services.Securities
             _fileStorageService = fileStorageService;
         }
 
-        public async Task<IEnumerable<SecurityDTO>> GetAll()
+        public async Task<IEnumerable<SecurityDTO>> GetAll(bool disableTracking = true)
         {
-            var securities = await _securityRepo.GetAll(include: GetFullHierarchyColumns);
+            var securities = await _securityRepo.GetAll(include: GetFullHierarchyColumns, disableTracking: disableTracking);
+            return _mapper.Map<IEnumerable<SecurityDTO>>(securities);
+        }
+        public async Task<SecurityDTO> FindByTicker(string ticker)
+        {
+            var securities = await _securityRepo
+                .GetAll(filter: security => security.Ticker.ToLower() == ticker.ToLower(), include: GetFullHierarchyColumns);
+            return (await FindByTickers(new[] { ticker })).FirstOrDefault();
+        }
+
+        public async Task<IEnumerable<SecurityDTO>> FindByTickers(IEnumerable<string> tickers)
+        {
+            var lowerTickers = tickers.Select(ticker => ticker.ToLower()).ToArray();
+
+            var securities = await _securityRepo
+                .GetAll(filter: security => lowerTickers.Contains(security.Ticker.ToLower()), include: GetFullHierarchyColumns);
             return _mapper.Map<IEnumerable<SecurityDTO>>(securities);
         }
 
@@ -101,9 +116,9 @@ namespace MoneyManager.Application.Services.Securities
             };
         }
 
-        public async Task<SecurityDTO> GetById(Guid id)
+        public async Task<SecurityDTO> GetById(Guid id, bool loadHierarchy = true, bool disableTracking = true)
         {
-            var security = await _securityRepo.GetById(id, GetFullHierarchyColumns);
+            var security = await _securityRepo.GetById(id, loadHierarchy ? GetFullHierarchyColumns: null, disableTracking);
             var securityDto = _mapper.Map<SecurityDTO>(security);
             return securityDto;
         }
@@ -113,7 +128,14 @@ namespace MoneyManager.Application.Services.Securities
             var to = DateOnly.FromDateTime(DateTime.Now);
             var from = to.AddMonths(-3);
 
-            return await _stockConnector.GetTickerHistory(ticker, from, to);
+            var security = await FindByTicker(ticker);
+                
+            if (security == null)
+            {
+                return Enumerable.Empty<SecurityHistoryValueDto>();
+            }
+
+            return await _stockConnector.GetTickerHistory(security, from, to);
         }
 
         public async Task<SecurityDTO> Add(SecurityDTO securityDto, IFormFile securityIcon)

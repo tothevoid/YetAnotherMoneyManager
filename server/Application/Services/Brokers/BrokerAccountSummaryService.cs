@@ -130,7 +130,7 @@ namespace MoneyManager.Application.Services.Brokers
             }
 
             var marketValues = (await _stockConnector
-                .GetExtendedValuesByTickers(tickers.Keys));
+                .GetExtendedValuesByTickers(tickers.Values));
 
             var securityStats = new List<BrokerAccountDailySecurityStatsDto>();
 

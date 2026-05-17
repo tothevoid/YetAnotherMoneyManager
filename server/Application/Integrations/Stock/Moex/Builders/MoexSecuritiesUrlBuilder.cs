@@ -4,11 +4,6 @@ namespace MoneyManager.Application.Integrations.Stock.Moex.Builders
 {
     public class MoexSecuritiesUrlBuilder: BaseMoexUrlBuilder
     {
-        public MoexSecuritiesUrlBuilder()
-        {
-            Url = $"{Url}/engines/stock/markets/shares/securities.json";
-        }
-
         public MoexSecuritiesUrlBuilder IncludeMarket()
         {
             OutputFilters.Add("marketdata");
@@ -29,6 +24,11 @@ namespace MoneyManager.Application.Integrations.Stock.Moex.Builders
         {
             AdditionalParameters.Add($"securities={string.Join(',', tickers)}");
             return this;
+        }
+
+        protected override string GetUrl()
+        {
+            return $"{BaseUrl}/engines/stock/markets/shares/securities.json";
         }
 
     }

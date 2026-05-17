@@ -11,10 +11,10 @@ namespace MoneyManager.Application.Interfaces.Integrations.Stock
 {
     public interface IStockConnector
     {
-        Task<IEnumerable<MarketDataRow>> GetValuesByTickers(IEnumerable<string> tickers);
+        Task<IEnumerable<MarketDataRow>> GetValuesByTickers(IEnumerable<SecurityDTO> tickers);
 
-        Task<IEnumerable<SecurityHistoryValueDto>> GetTickerHistory(string ticker, DateOnly from, DateOnly to);
+        Task<IEnumerable<SecurityHistoryValueDto>> GetTickerHistory(SecurityDTO security, DateOnly from, DateOnly to);
 
-        Task<IEnumerable<MarketDataRow>> GetExtendedValuesByTickers(IEnumerable<string> tickers);
+        Task<IEnumerable<MarketDataRow>> GetExtendedValuesByTickers(IEnumerable<SecurityDTO> tickers);
     }
 }

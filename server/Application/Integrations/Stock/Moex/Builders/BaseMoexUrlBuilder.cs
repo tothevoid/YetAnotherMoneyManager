@@ -6,7 +6,7 @@ namespace MoneyManager.Application.Integrations.Stock.Moex.Builders
 {
     public class BaseMoexUrlBuilder
     {
-        protected string Url = "https://iss.moex.com/iss";
+        protected string BaseUrl = "https://iss.moex.com/iss";
 
         protected readonly List<string> AdditionalParameters = new();
 
@@ -32,13 +32,17 @@ namespace MoneyManager.Application.Integrations.Stock.Moex.Builders
                 AdditionalParameters.Add($"iss.only={string.Join(",", OutputFilters)}");
             }
 
+            var url = GetUrl();
+
             if (AdditionalParameters.Any())
             {
                 var combinedParameters = string.Join("&", AdditionalParameters);
-                return $"{Url}?{combinedParameters}";
+                return $"{url}?{combinedParameters}";
             }
 
-            return Url;
+            return url;
         }
+
+        protected virtual string GetUrl() => BaseUrl;
     }
 }

@@ -45,6 +45,7 @@ using MoneyManager.Application.Services.Auth;
 using MoneyManager.Application.Services.Reports;
 using TickerQ.DependencyInjection;
 using Microsoft.AspNetCore.Http;
+using System.Net.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -81,6 +82,11 @@ builder.Services.AddMinio(configureClient => configureClient
     .WithEndpoint(endpoint)
     .WithSSL(useSsl)
     .WithCredentials(user, password)
+    .WithHttpClient(new HttpClient(new HttpClientHandler
+    {
+        // TODO: fix self signed cert workaround
+        ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+    }))
     .Build());
 
 builder.Services.AddSignalR();

@@ -96,7 +96,7 @@ const BrokerAccountDailyStats: React.FC<Props> = ({ brokerAccountId, currencyNam
 			<SimpleGrid columns={2} gap={4}>
 				<MoneyCard title={t("broker_account_start_portfolio_title")} value={dailyStats.startPortfolioValue} currency={currencyName}/>
 				<StatsCard color={color} title={t("broker_account_current_portfolio_title")} 
-					value={`${formatMoneyByCurrencyCulture(dailyStats.currentPortfolioValue, currencyName)} (${profitAndLoss} - ${profitAndLossPercentage}%)`} />
+					value={`${formatMoneyByCurrencyCulture(dailyStats.currentPortfolioValue, currencyName)} (${profitAndLoss} | ${profitAndLossPercentage}%)`} />
 			</SimpleGrid>
 			<Card.Root backgroundColor="background_primary" borderColor="border_primary" color="text_primary">
 				<Card.Header>

@@ -7,6 +7,7 @@ using MoneyManager.Application.Interfaces.Integrations.Stock;
 using MoneyManager.Application.Interfaces.Securities;
 using MoneyManager.Application.Services.Securities;
 using MoneyManager.Infrastructure.Entities.Brokers;
+using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using MoneyManager.Infrastructure.Interfaces.Messages;
 using System;
@@ -24,6 +25,7 @@ namespace MoneyManager.Application.Services.Brokers
         private readonly IMapper _mapper;
 
         private readonly IRepository<BrokerAccountSecurity> _brokerAccountSecurityRepo;
+        private readonly IRepository<Security> _securityRepo;
         private readonly ISecurityService _securityService;
         private readonly IStockConnector _stockConnector;
         private readonly IPullQuotationsService _pullQuotationsService;
@@ -38,6 +40,7 @@ namespace MoneyManager.Application.Services.Brokers
             _db = uow;
             _mapper = mapper;
             _brokerAccountSecurityRepo = uow.CreateRepository<BrokerAccountSecurity>();
+            _securityRepo = uow.CreateRepository<Security>();
             _securityService = securityService;
             _serverNotifier = serverNotifier;
             _pullQuotationsService = pullQuotationsService;
@@ -120,9 +123,12 @@ namespace MoneyManager.Application.Services.Brokers
                 .ToDictionary((marketValue) => marketValue.Ticker, (marketValue) => marketValue);
            
             foreach (var security in securities)
-            {  
+            {
                 var row = filteredValue.GetValueOrDefault(security.Ticker);
-                var updatingSecurity = await _securityService.GetById(security.Id, false, false);
+                if (row == null) continue;
+
+                // TODO: use service instead of repo
+                var updatingSecurity = await _securityRepo.GetById(security.Id, null, false);
                 updatingSecurity.ActualPrice = row.GetLastValue();
                 updatingSecurity.PriceFetchedAt = DateTime.UtcNow;
             }

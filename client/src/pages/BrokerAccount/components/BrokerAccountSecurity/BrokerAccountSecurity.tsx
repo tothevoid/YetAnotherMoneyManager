@@ -22,7 +22,7 @@ const BrokerAccountSecurity = (props: Props) => {
         "green.600":
         "red.600";
 
-    const percentage = profitAndLoss / actualPrice * 100;
+    const percentage = profitAndLoss / price * 100;
 
     const securityLink = `../security/${security.id}`;
 

@@ -14,6 +14,10 @@ export const darkTheme = createSystem(defaultConfig, {
                 header_bg: {"value": "#181818"},
                 action_primary: {value: "#0a8e3a"},
                 spinner_primary: {value: "#0a8e3a"},
+
+                // Transactions
+                buy_action_bg: {value: "#0a8e3a"},
+                sell_action_bg: {value: "#dc2626"},
             },
         },
     },

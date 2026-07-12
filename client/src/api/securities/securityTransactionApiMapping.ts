@@ -12,7 +12,8 @@ export const prepareSecurityTransactionRequest = (securityTransaction: SecurityT
         tax: securityTransaction.tax,
         date: securityTransaction.date,
         brokerAccountId: securityTransaction.brokerAccount.id,
-        securityId: securityTransaction.security.id
+        securityId: securityTransaction.security.id,
+        isSell: securityTransaction.isSell
     }
 }
 
@@ -26,6 +27,7 @@ export const prepareSecurityTransaction = (securityTransaction: SecurityTransact
         tax: securityTransaction.tax,
         date: new Date(securityTransaction.date),
         brokerAccount: prepareBrokerAccount(securityTransaction.brokerAccount),
-        security: prepareSecurity(securityTransaction.security)
+        security: prepareSecurity(securityTransaction.security),
+        isSell: securityTransaction.isSell
     }
 }

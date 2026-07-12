@@ -49,7 +49,6 @@ const SecurityTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
 		[SecurityTransactionOperation.Sell]: { label: t("entity_security_transaction_operation_sell"), value: SecurityTransactionOperation.Sell },
 	} as const;
 
-
 	useEffect(() => {
 		const initData = async () => {
 			await requestData();
@@ -68,7 +67,7 @@ const SecurityTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
 	const getFormDefaultValues = useCallback(() => {
 		const securityTransaction = "securityTransaction" in props.context ? props.context.securityTransaction: null;
 		const brokerAccount = "brokerAccountId" in props.context ? { id: props.context.brokerAccountId }: { id: undefined};
-		
+
 		const operation = securityTransaction?.isSell ?
 			operations[SecurityTransactionOperation.Sell]:
 			operations[SecurityTransactionOperation.Buy];
@@ -83,7 +82,7 @@ const SecurityTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
 			price: securityTransaction?.price ?? 0,
 			tax: securityTransaction?.tax ?? 0,
 			quantity: securityTransaction?.quantity ?? 0,
-			direction: operation
+			operation
 		}
 	}, [props.context])
 

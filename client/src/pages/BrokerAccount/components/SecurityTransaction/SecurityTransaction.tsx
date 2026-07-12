@@ -13,19 +13,21 @@ interface Props {
 }
 
 const SecurityTransaction = (props: Props) => {
-    const { security, date, price, quantity } = props.securityTransaction;
+    const { security, date, price, quantity, isSell } = props.securityTransaction;
 
     const { i18n } = useTranslation();
+
+    const bgColorTheme = isSell ? "sell_action_bg": "buy_action_bg"
 
     return <Card.Root borderColor="border_primary" color="text_primary" backgroundColor="background_primary" 
         mt={5} mb={5} boxShadow={"sm"} _hover={{ boxShadow: "md" }}>
         <CardBody>
             <Flex justifyContent="space-between" alignItems="center">
                 <Stack direction={'row'} alignItems="center">
-                    <Text textAlign={'center'} w={200} rounded={10} padding={1} background={'action_primary'}>{formatDateTime(date, i18n, false)}</Text>
+                    <Text textAlign={'center'} w={200} rounded={10} padding={1} background={bgColorTheme}>{formatDateTime(date, i18n, false)}</Text>
                     {
                         props.isGlobalBrokerAccount &&
-                        <Text textAlign={'center'} w={150} rounded={10} padding={1} background={'action_primary'}>{props.securityTransaction.brokerAccount?.name}</Text>
+                        <Text textAlign={'center'} w={150} rounded={10} padding={1} background={bgColorTheme}>{props.securityTransaction.brokerAccount?.name}</Text>
                     }
                     <Text fontWeight={700}>{security?.name} ({security?.ticker})</Text>
                 </Stack>

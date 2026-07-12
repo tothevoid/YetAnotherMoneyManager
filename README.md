@@ -15,7 +15,7 @@ Development:
 * remove client and server services
 * install at least .NET 9
 * install [Node.js](https://nodejs.org/en/)
-* navigate to `./server/MoneyManager`
+* navigate to `./server/WebApi`
 * execute `dotnet run`
 * navigate to the directory `./client`
 * execute `npm run dev`

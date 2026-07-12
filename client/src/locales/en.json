@@ -168,6 +168,9 @@
     "entity_security_transaction_broker_commission": "Broker commission",
     "entity_security_transaction_stock_exchange_commission": "Stock exchange commission",
     "entity_security_transaction_tax": "Tax",
+    "entity_security_transaction_operation": "Operation",
+    "entity_security_transaction_operation_buy": "Buy",
+    "entity_security_transaction_operation_sell": "Sell",
 
     "entity_dividend_form_title": "Dividend",
     "entity_dividend_security": "Stock",

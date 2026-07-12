@@ -10,7 +10,7 @@ import { BrokerAccountEntity } from "../../../../models/brokers/BrokerAccountEnt
 import { SecurityEntity } from "../../../../models/securities/SecurityEntity";
 import { SecurityTransactionFormInput, SecurityTransactionValidationSchema } from "./SecurityTransactionValidationSchema";
 import DateSelect from "../../../../shared/components/DateSelect/DateSelect";
-import { SecurityTransactionEntity } from "../../../../models/securities/SecurityTransactionEntity";
+import { SecurityTransactionEntity, SecurityTransactionEntityRequest } from "../../../../models/securities/SecurityTransactionEntity";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
 import { generateGuid } from "../../../../shared/utilities/idUtilities";
@@ -23,10 +23,15 @@ export interface EditSecurityTransactionContext {
 	securityTransaction: SecurityTransactionEntity
 }
 
+enum SecurityTransactionOperation {
+	Buy = "buy",
+	Sell = "sell",
+}
+
 interface ModalProps {
 	isGlobalBrokerAccount: boolean
 	modalRef: RefObject<BaseModalRef | null>
-	onSaved: (account: SecurityTransactionEntity) => void
+	onSaved: (transaction: SecurityTransactionEntityRequest) => void
 	context: CreateSecurityTransactionContext | EditSecurityTransactionContext
 };
 
@@ -38,7 +43,13 @@ interface State {
 const SecurityTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
 	const [state, setState] = useState<State>({ brokerAccounts: [], securities: []});
 	const { t } = useTranslation()
-	
+
+	const operations = {
+		[SecurityTransactionOperation.Buy]: { label: t("entity_security_transaction_operation_buy"), value: SecurityTransactionOperation.Buy },
+		[SecurityTransactionOperation.Sell]: { label: t("entity_security_transaction_operation_sell"), value: SecurityTransactionOperation.Sell },
+	} as const;
+
+
 	useEffect(() => {
 		const initData = async () => {
 			await requestData();
@@ -58,6 +69,10 @@ const SecurityTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
 		const securityTransaction = "securityTransaction" in props.context ? props.context.securityTransaction: null;
 		const brokerAccount = "brokerAccountId" in props.context ? { id: props.context.brokerAccountId }: { id: undefined};
 		
+		const operation = securityTransaction?.isSell ?
+			operations[SecurityTransactionOperation.Sell]:
+			operations[SecurityTransactionOperation.Buy];
+
 		return {
 			id: securityTransaction?.id ?? generateGuid(),
 			brokerAccount: securityTransaction?.brokerAccount ?? brokerAccount,
@@ -67,7 +82,8 @@ const SecurityTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
 			date: securityTransaction?.date ?? new Date(),
 			price: securityTransaction?.price ?? 0,
 			tax: securityTransaction?.tax ?? 0,
-			quantity: securityTransaction?.quantity ?? 0
+			quantity: securityTransaction?.quantity ?? 0,
+			direction: operation
 		}
 	}, [props.context])
 
@@ -82,7 +98,22 @@ const SecurityTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
 	}, [reset, getFormDefaultValues, props.context]);
 
 	const onSubmit = (securityTransaction: SecurityTransactionFormInput) => {
-		props.onSaved(securityTransaction as SecurityTransactionEntity);
+		const isSell = securityTransaction.operation.value === SecurityTransactionOperation.Sell;
+
+		const transaction: SecurityTransactionEntityRequest = {
+			id: securityTransaction.id,
+			quantity: securityTransaction.quantity,
+			price: securityTransaction.price,
+			brokerCommission: securityTransaction.brokerCommission,
+			stockExchangeCommission: securityTransaction.stockExchangeCommission,
+			tax: securityTransaction.tax,
+			isSell,
+			date: securityTransaction.date,
+			securityId: securityTransaction.security.id,
+			brokerAccountId: securityTransaction.brokerAccount.id
+		}
+
+		props.onSaved(transaction);
 		props.modalRef?.current?.closeModal();
 	}
 
@@ -97,6 +128,13 @@ const SecurityTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
 				<Field.ErrorText>{errors.brokerAccount?.message}</Field.ErrorText>
 			</Field.Root>
 		}
+		<Field.Root mt={4}>
+			<Field.Label>{t("entity_security_transaction_operation")}</Field.Label>
+			<CollectionSelect name="operation" control={control} placeholder="Select operation"
+				collection={Object.values(operations)} 
+				labelSelector={(operation => operation.label)} 
+				valueSelector={(operation => operation.value)}/>
+		</Field.Root>
 		<Field.Root mt={4} invalid={!!errors.security}>
 			<Field.Label>{t("entity_security_transaction_security")}</Field.Label>
 			<CollectionSelect name="security" control={control} placeholder="Select security"

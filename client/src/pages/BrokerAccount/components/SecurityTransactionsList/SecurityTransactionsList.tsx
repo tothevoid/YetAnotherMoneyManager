@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
-import { SecurityTransactionEntity } from '../../../../models/securities/SecurityTransactionEntity';
+import { SecurityTransactionEntity, SecurityTransactionEntityRequest } from '../../../../models/securities/SecurityTransactionEntity';
 import SecurityTransaction from '../SecurityTransaction/SecurityTransaction';
 import SecurityTransactionModal, { CreateSecurityTransactionContext, EditSecurityTransactionContext } from '../../modals/SecurityTransactionModal/SecurityTransactionModal';
 import { useSecurityTransactions } from '../../hooks/useSecurityTransactions';
@@ -58,7 +58,7 @@ const SecurityTransactionsList: React.FC<Props> = (props) => {
 		setContext(context);
 	}, [props.brokerAccountId, activeEntity]);
 
-	const onSecurityTransactionSaved = async (securityTransaction: SecurityTransactionEntity) => {
+	const onSecurityTransactionSaved = async (securityTransaction: SecurityTransactionEntityRequest) => {
 		if (mode === ActiveEntityMode.Add) {
 			await createSecurityTransactionEntity(securityTransaction);
 		} else if (mode === ActiveEntityMode.Edit) {

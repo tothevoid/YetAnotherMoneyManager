@@ -168,6 +168,9 @@
     "entity_security_transaction_broker_commission": "Комиссия брокера",
     "entity_security_transaction_stock_exchange_commission": "Комиссия биржи",
     "entity_security_transaction_tax": "Налог",
+    "entity_security_transaction_operation": "Операция",
+    "entity_security_transaction_operation_buy": "Покупка",
+    "entity_security_transaction_operation_sell": "Продажа",
 
     "entity_dividend_form_title": "Дивиденд",
     "entity_dividend_security": "Акция",

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { createSecurityTransaction, deleteSecurityTransaction, getSecurityTransactions, updateSecurityTransaction } from "../../../api/securities/securityTransactionApi";
-import { SecurityTransactionEntity } from "../../../models/securities/SecurityTransactionEntity";
+import { SecurityTransactionEntity, SecurityTransactionEntityRequest } from "../../../models/securities/SecurityTransactionEntity";
 import { Nullable } from "../../../shared/utilities/nullable";
 
 export interface SecurityTransactionsQuery {
@@ -32,7 +32,7 @@ export const useSecurityTransactions = (queryParameters: SecurityTransactionsQue
 		fetchData();
 	}, [fetchData])
 
-	const createSecurityTransactionEntity = async (createdSecurityTransaction: SecurityTransactionEntity) => {
+	const createSecurityTransactionEntity = async (createdSecurityTransaction: SecurityTransactionEntityRequest) => {
 		const securityTransaction = await createSecurityTransaction(createdSecurityTransaction);
 		if (!securityTransaction) {
 			return;
@@ -41,7 +41,7 @@ export const useSecurityTransactions = (queryParameters: SecurityTransactionsQue
 		await fetchData();
 	}
 
-	const updatedSecurityTransactionEntity = async (updatedSecurityTransaction: SecurityTransactionEntity) => {
+	const updatedSecurityTransactionEntity = async (updatedSecurityTransaction: SecurityTransactionEntityRequest) => {
 	    const securityTransactionUpdated = await updateSecurityTransaction(updatedSecurityTransaction);
 		if (!securityTransactionUpdated) {
 			return;

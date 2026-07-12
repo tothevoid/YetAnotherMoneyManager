@@ -25,5 +25,7 @@ namespace MoneyManager.WebApi.Models.Securities
         public decimal StockExchangeCommission { get; set; }
 
         public decimal Tax { get; set; }
+
+        public bool IsSell { get; set; }
     }
 }

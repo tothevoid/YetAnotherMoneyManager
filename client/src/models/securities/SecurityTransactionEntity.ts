@@ -8,6 +8,7 @@ interface CommonSecurityTransactionEntity {
     brokerCommission: number,
     stockExchangeCommission: number,
     tax: number
+    isSell: boolean
 }
 
 export interface SecurityTransactionEntityRequest extends CommonSecurityTransactionEntity {

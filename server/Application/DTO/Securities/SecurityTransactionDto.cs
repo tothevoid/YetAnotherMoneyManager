@@ -26,6 +26,8 @@ namespace MoneyManager.Application.DTO.Securities
 
         public decimal Tax { get; set; }
 
+        public bool IsSell { get; set; }
+
         public decimal GetTotalPrice => Quantity * Price + BrokerCommission + StockExchangeCommission + Tax;
     }
 }

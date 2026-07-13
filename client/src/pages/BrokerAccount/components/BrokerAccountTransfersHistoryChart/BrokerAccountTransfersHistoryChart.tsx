@@ -5,15 +5,17 @@ import { BrokerAccountDayTransferEntity } from "../../../../models/brokers/Broke
 import { BrokerAccountMonthTransferEntity } from "../../../../models/brokers/BrokerAccountMonthTransferEntity";
 import { getMonthTransfersHistory, getYearTransfersHistory } from "../../../../api/brokers/brokerAccountSummaryApi";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from "recharts";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, SimpleGrid } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../../i18n";
 import BaseSelect from "../../../../shared/components/BaseSelect/BaseSelect";
 import { getChartLabelConfig } from "../../../../shared/utilities/chartUtilities";
 import { Nullable } from "../../../../shared/utilities/nullable";
+import MoneyCard from "../../../../shared/components/MoneyCard/MoneyCard";
 
 interface Props {
     brokerAccountId: Nullable<string>;
+    currencyName: string
 }
 
 const YEAR_RANGE = "YEAR_RANGE";
@@ -35,7 +37,7 @@ interface ChartDataItem {
     withdraw: number
 };
 
-const BrokerAccountTransfersHistoryChart: React.FC<Props> = ({ brokerAccountId }) => {
+const BrokerAccountTransfersHistoryChart: React.FC<Props> = ({ brokerAccountId, currencyName }) => {
     const { t } = useTranslation();
 
     const rangeTypes: RangeType[] = useMemo(
@@ -70,6 +72,9 @@ const BrokerAccountTransfersHistoryChart: React.FC<Props> = ({ brokerAccountId }
     const [selectedYear, selectYear] = useState<NumericOption>(years[0]);
     const [selectedMonth, selectMonth] = useState<NumericOption>(months[0]);
 
+    const [depositedByPeriod, setDepositedByPeriod] = useState<number>(0);
+    const [withdrawnByPeriod, setWithdrawnByPeriod] = useState<number>(0);
+
     useEffect(() => {
         const fetchTransfers = async () => {
             if (selectedRangeType?.value === MONTH_RANGE) {
@@ -86,21 +91,37 @@ const BrokerAccountTransfersHistoryChart: React.FC<Props> = ({ brokerAccountId }
     }, [brokerAccountId, selectedMonth, selectedYear, selectedRangeType]);
 
     useEffect(() => {
+        let deposited = 0;
+        let withdrawn = 0;
+
         let data: ChartDataItem[] = [];
         if (selectedRangeType?.value === MONTH_RANGE) {
-            data = (transfers as BrokerAccountDayTransferEntity[]).map(tr => ({
-                name: tr.dayIndex?.toString(),
-                income: tr.totalDeposited,
-                withdraw: tr.totalWithdrawn
-            }));
+            data = (transfers as BrokerAccountDayTransferEntity[]).map(tr => {
+                deposited += tr.totalDeposited;
+                withdrawn += tr.totalWithdrawn
+
+                return {
+                    name: tr.dayIndex?.toString(),
+                    income: tr.totalDeposited,
+                    withdraw: tr.totalWithdrawn
+                };
+            });
         } else {
-            data = (transfers as BrokerAccountMonthTransferEntity[]).map(tr => ({
-                name: new Date(selectedYear.value, tr.monthIndex - 1, 1)
-                    .toLocaleString(i18n.language, { month: "long" }),
-                income: tr.totalDeposited,
-                withdraw: tr.totalWithdrawn
-            }));
+            data = (transfers as BrokerAccountMonthTransferEntity[]).map(tr => {
+                deposited += tr.totalDeposited;
+                withdrawn += tr.totalWithdrawn
+
+                return {
+                    name: new Date(selectedYear.value, tr.monthIndex - 1, 1)
+                        .toLocaleString(i18n.language, { month: "long" }),
+                    income: tr.totalDeposited,
+                    withdraw: tr.totalWithdrawn
+                }
+            });
         }
+
+        setDepositedByPeriod(deposited);
+        setWithdrawnByPeriod(withdrawn);
         setChartData(data);
     }, [selectedRangeType, transfers, selectedYear]);
    
@@ -109,7 +130,7 @@ const BrokerAccountTransfersHistoryChart: React.FC<Props> = ({ brokerAccountId }
     const onMonthSelected = (month: NumericOption) => selectMonth(month);
 
     return (
-        <Box style={{ width: '100%', height: 400, marginBlock: 20 }}>
+        <Box style={{ width: '100%', height: 650, marginBlock: 20 }}>
             <Flex mb={4} gap={4} width={550}>
                 <BaseSelect placeholder="Select range"
                     selectedValue={selectedRangeType}
@@ -132,7 +153,11 @@ const BrokerAccountTransfersHistoryChart: React.FC<Props> = ({ brokerAccountId }
                         valueSelector={(range => range.value)}/>
                 }
             </Flex>
-            <ResponsiveContainer>
+            <SimpleGrid columns={2} gap={4}>
+                <MoneyCard title={t("broker_account_stats_deposited")} value={depositedByPeriod} currency={currencyName}/>
+                <MoneyCard title={t("broker_account_stats_withdrawn")} value={withdrawnByPeriod} currency={currencyName}/>
+            </SimpleGrid>
+            <ResponsiveContainer height={500}>
                 <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
@@ -142,8 +167,8 @@ const BrokerAccountTransfersHistoryChart: React.FC<Props> = ({ brokerAccountId }
                         // formatter={(value: number, name: string) => [formatMoneyByCurrencyCulture(value, brokerAccount.currency.name), name]}
                     />
                     <Legend />
-                    <Bar dataKey="income" fill="#4CAF50" name={t('Ввод средств')} />
-                    <Bar dataKey="withdraw" fill="#F44336" name={t('Вывод средств')} />
+                    <Bar dataKey="income" fill="#4CAF50" name={t('broker_account_stats_deposited')} />
+                    <Bar dataKey="withdraw" fill="#F44336" name={t('broker_account_stats_withdrawn')} />
                 </BarChart>
             </ResponsiveContainer>
         </Box>

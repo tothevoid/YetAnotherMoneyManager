@@ -47,7 +47,7 @@ const BrokerAccountStats: React.FC<Props> = ({ brokerAccountId }) => {
             <MoneyCard title={t("broker_account_stats_deposited")} value={transferStats.totalDeposited} currency={currencyName}/>
             <MoneyCard title={t("broker_account_stats_withdrawn")} value={transferStats.totalWithdrawn} currency={currencyName}/>
         </SimpleGrid>
-        <BrokerAccountTransfersHistoryChart brokerAccountId={brokerAccountId}/>
+        <BrokerAccountTransfersHistoryChart brokerAccountId={brokerAccountId} currencyName={currencyName}/>
     </SimpleGrid>
 }
 

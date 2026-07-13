@@ -222,7 +222,7 @@ namespace MoneyManager.Application.Services.Dashboard
             {
                 var currencyName = brokerAccount.Currency.Name;
 
-                var values = await _brokerAccountSummaryService.GetPortfolioValues();
+                var values = await _brokerAccountSummaryService.GetPortfolioValuesByBrokerAccount(brokerAccount.Id);
 
                 var amount = values.CurrentAmount;
 

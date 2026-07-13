@@ -44,19 +44,12 @@ namespace MoneyManager.Application.Services.Brokers
             var brokerAccountsDtos = _mapper.Map<IEnumerable<BrokerAccountDTO>>(brokerAccounts)
                 .ToList();
 
-            // TODO: make it on DB level
-            foreach (var brokerAccount in brokerAccountsDtos)
-            {
-                brokerAccount.ApplyPortfolioValues(await GetPortfolioValues(brokerAccount));
-            }
-
             return brokerAccountsDtos;
         }
         public async Task<BrokerAccountDTO> GetById(Guid id)
         {
             var brokerAccount = await _brokerAccountRepo.GetById(id, GetFullHierarchyColumns);
             var brokerAccountDto = _mapper.Map<BrokerAccountDTO>(brokerAccount);
-            brokerAccountDto.ApplyPortfolioValues(await GetPortfolioValues(brokerAccountDto));
             return brokerAccountDto;
         }
 
@@ -82,52 +75,9 @@ namespace MoneyManager.Application.Services.Brokers
             await _db.Commit();
         }
 
-        public async Task<BrokerAccountPortfolioDto> GetPortfolioValuesByBrokerAccount(Guid brokerAccountId)
-        {
-            var brokerAccount = await GetById(brokerAccountId);
-
-            return await GetPortfolioValues(brokerAccount);
-        }
-
-        public async Task<BrokerAccountPortfolioDto> GetPortfolioValues()
-        {
-            var brokerAccounts = await GetAll();
-
-            var portfolioValues = new BrokerAccountPortfolioDto();
-
-            // TODO: Possible different currencies
-            foreach (var brokerAccount in brokerAccounts)
-            {
-                var portfolioValue = await GetPortfolioValues(brokerAccount);
-
-                portfolioValues.InitialValue += portfolioValue.InitialValue;
-                portfolioValues.CurrentValue += portfolioValue.CurrentValue;
-            }
-
-            return portfolioValues;
-        }
-
         public async Task<decimal> GetTotalSoldAmountByBrokerAccountId(Guid brokerAccountId)
         {
             return await _brokerAccountSecurityService.GetTotalSoldByBrokerAccount(brokerAccountId);
-        }
-
-        private async Task<BrokerAccountPortfolioDto> GetPortfolioValues(BrokerAccountDTO brokerAccount)
-        {
-            var mainCurrencyAmount = brokerAccount.MainCurrencyAmount * brokerAccount.Currency.Rate;
-
-            // TODO: Use single query to get both values
-            var currentSecuritiesValue = await _brokerAccountSecurityService.GetActualSecuritiesValue(brokerAccount.Id);
-            var initialSecuritiesValue = await _brokerAccountSecurityService.GetInitialSecuritiesValue(brokerAccount.Id);
-
-            brokerAccount.CurrentValue = currentSecuritiesValue + mainCurrencyAmount;
-            brokerAccount.InitialValue = initialSecuritiesValue + mainCurrencyAmount;
-
-            return new BrokerAccountPortfolioDto
-            {
-                CurrentValue = currentSecuritiesValue + mainCurrencyAmount,
-                InitialValue = initialSecuritiesValue + mainCurrencyAmount
-            };
         }
 
         private IQueryable<BrokerAccount> GetFullHierarchyColumns(IQueryable<BrokerAccount> brokerAccountQuery)

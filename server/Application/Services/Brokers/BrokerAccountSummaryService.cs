@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Markup;
 using MoneyManager.Application.Interfaces.User;
 using MoneyManager.Infrastructure.Entities.Brokers;
 
@@ -20,6 +19,7 @@ namespace MoneyManager.Application.Services.Brokers
         private readonly IBrokerAccountService _brokerAccountService;
         private readonly IDividendPaymentService _dividendPaymentService;
         private readonly IStockConnector _stockConnector;
+        private readonly IBrokerAccountTaxDeductionService _taxDeductionService;
 
         public BrokerAccountSummaryService(
             IBrokerAccountSecurityService brokerAccountSecuritySecurityService,
@@ -27,7 +27,8 @@ namespace MoneyManager.Application.Services.Brokers
             IBrokerAccountService brokerAccountService,
             IDividendPaymentService dividendPaymentService,
             IStockConnector stockConnector,
-            IUserProfileService userProfileService)
+            IUserProfileService userProfileService,
+            IBrokerAccountTaxDeductionService taxDeductionService)
         {
             _brokerAccountSecurityService = brokerAccountSecuritySecurityService;
             _fundsTransferService = fundsTransferService;
@@ -35,6 +36,7 @@ namespace MoneyManager.Application.Services.Brokers
             _brokerAccountService = brokerAccountService;
             _dividendPaymentService = dividendPaymentService;
             _userProfileService = userProfileService;
+            _taxDeductionService = taxDeductionService;
         }
 
         public async Task<BrokerAccountSummaryDto> GetSummary()
@@ -76,6 +78,58 @@ namespace MoneyManager.Application.Services.Brokers
             var amount = brokerAccounts.Sum(account => account.MainCurrencyAmount);
 
             return await GetDailyStats(brokerAccountSecurities, amount);
+        }
+
+        public async Task<BrokerAccountPortfolioDto> GetPortfolioValuesByBrokerAccount(Guid brokerAccountId)
+        {
+            var brokerAccount = await _brokerAccountService.GetById(brokerAccountId);
+
+            return await GetPortfolioValues(brokerAccount);
+        }
+
+        public async Task<BrokerAccountPortfolioDto> GetPortfolioValues()
+        {
+            var brokerAccounts = await _brokerAccountService.GetAll();
+
+            var portfolioValues = new BrokerAccountPortfolioDto();
+
+            // TODO: Possible different currencies
+            foreach (var brokerAccount in brokerAccounts)
+            {
+                var portfolioValue = await GetPortfolioValues(brokerAccount);
+
+                portfolioValues.CurrentAmount += portfolioValue.CurrentAmount;
+                portfolioValues.DividendsIncome += portfolioValue.DividendsIncome;
+                portfolioValues.TaxDeductions += portfolioValue.TaxDeductions;
+                portfolioValues.ProfitAndLoss += portfolioValue.ProfitAndLoss;
+            }
+
+            return portfolioValues;
+        }
+
+        private async Task<BrokerAccountPortfolioDto> GetPortfolioValues(BrokerAccountDTO brokerAccount)
+        {
+            var mainCurrencyAmount = brokerAccount.MainCurrencyAmount * brokerAccount.Currency.Rate;
+
+            // TODO: Use single query to get both values
+            var currentSecuritiesValue = await _brokerAccountSecurityService.GetActualSecuritiesValue(brokerAccount.Id);
+            var taxDeductions = await _taxDeductionService.GetAmountByBrokerAccount(brokerAccount.Id);
+
+            // TODO: Run in parallel
+            var transfers = await _fundsTransferService.GetAll(brokerAccount.Id);
+            var depositedAmount = transfers.Sum(transfer => transfer.Income ? transfer.Amount : transfer.Amount * -1);
+
+            var dividends = await _dividendPaymentService.GetEarningsByBrokerAccount(brokerAccount.Id);
+
+            var currentAmount = currentSecuritiesValue + mainCurrencyAmount;
+
+            return new BrokerAccountPortfolioDto
+            {
+                CurrentAmount = currentSecuritiesValue + mainCurrencyAmount,
+                DividendsIncome = dividends,
+                TaxDeductions = taxDeductions,
+                ProfitAndLoss = currentAmount - depositedAmount + taxDeductions,
+            };
         }
 
         private async Task<BrokerAccountDailyStatsDto> GetDailyStats(List<BrokerAccountSecurityDTO> brokerAccountSecurities, 
@@ -278,26 +332,28 @@ namespace MoneyManager.Application.Services.Brokers
 
         private async Task<BrokerAccountStatsDto> GetBrokerAccountsStats()
         {
-            var portfolioValues = await _brokerAccountService.GetPortfolioValues();
+            var portfolioValues = await GetPortfolioValues();
             var totalDividends = await _dividendPaymentService.GetEarnings();
 
             return new BrokerAccountStatsDto()
             {
-                CurrentValue = portfolioValues.CurrentValue,
-                InvestedValue = portfolioValues.InitialValue,
+                CurrentValue = portfolioValues.CurrentAmount,
+                // TODO: rework
+                InvestedValue = portfolioValues.CurrentAmount - portfolioValues.ProfitAndLoss,
                 TotalDividendsValue = totalDividends
             };
         }
 
         private async Task<BrokerAccountStatsDto> GetBrokerAccountStats(Guid brokerAccountId)
         {
-            var portfolioValues = await _brokerAccountService.GetPortfolioValuesByBrokerAccount(brokerAccountId);
+            var portfolioValues = await GetPortfolioValues();
             var totalDividends = await _dividendPaymentService.GetEarningsByBrokerAccount(brokerAccountId);
 
             return new BrokerAccountStatsDto()
             {
-                CurrentValue = portfolioValues.CurrentValue,
-                InvestedValue = portfolioValues.InitialValue,
+                CurrentValue = portfolioValues.CurrentAmount,
+                // TODO: rework
+                InvestedValue = portfolioValues.CurrentAmount - portfolioValues.ProfitAndLoss,
                 TotalDividendsValue = totalDividends
             };
         }

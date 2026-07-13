@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using MoneyManager.Application.DTO.Accounts;
 using MoneyManager.Application.DTO.Banks;
+using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.DTO.Dashboard;
+using MoneyManager.Application.DTO.Deposits;
 using MoneyManager.Application.DTO.Transactions;
 using MoneyManager.Application.Interfaces.Accounts;
 using MoneyManager.Application.Interfaces.Banks;
@@ -12,13 +14,14 @@ using MoneyManager.Application.Interfaces.Debts;
 using MoneyManager.Application.Interfaces.Deposits;
 using MoneyManager.Application.Interfaces.Transactions;
 using MoneyManager.Application.Interfaces.User;
+using MoneyManager.Application.Services.Brokers;
 using MoneyManager.Infrastructure.Constants;
+using MoneyManager.Infrastructure.Entities.Accounts;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MoneyManager.Application.DTO.Deposits;
 
 namespace MoneyManager.Application.Services.Dashboard
 {
@@ -36,13 +39,14 @@ namespace MoneyManager.Application.Services.Dashboard
         private readonly ICurrencyService _currencyService;
         private readonly ICryptoAccountCryptocurrencyService _cryptoAccountCryptocurrencyService;
         private readonly IBankService _bankService;
+        private readonly IBrokerAccountSummaryService _brokerAccountSummaryService;
 
         public DashboardService(IUnitOfWork uow, IMapper mapper, IAccountService accountService, 
             IDepositService depositService, ITransactionsService transactionsService,
             IBrokerAccountService brokerAccountService, IDebtService debtService, 
             IUserProfileService userProfile, ICryptoAccountService cryptoAccountService, 
             ICurrencyService currencyService, ICryptoAccountCryptocurrencyService cryptoAccountCryptocurrencyService,
-            IBankService bankService)
+            IBankService bankService, IBrokerAccountSummaryService brokerAccountSummaryService)
         {
             _db = uow;
             _mapper = mapper;
@@ -56,6 +60,7 @@ namespace MoneyManager.Application.Services.Dashboard
             _currencyService = currencyService;
             _cryptoAccountCryptocurrencyService = cryptoAccountCryptocurrencyService;
             _bankService = bankService;
+            _brokerAccountSummaryService = brokerAccountSummaryService;
         }
 
         public async Task<GlobalDashboardDto> GetDashboard()
@@ -216,16 +221,19 @@ namespace MoneyManager.Application.Services.Dashboard
             foreach (var brokerAccount in brokerAccounts)
             {
                 var currencyName = brokerAccount.Currency.Name;
-                var amount = brokerAccount.CurrentValue;
 
-                var convertedAmount = brokerAccount.CurrentValue * brokerAccount.Currency.Rate;
+                var values = await _brokerAccountSummaryService.GetPortfolioValues();
+
+                var amount = values.CurrentAmount;
+
+                var convertedAmount = amount * brokerAccount.Currency.Rate;
                 brokerAccountsSummary += convertedAmount;
 
                 brokerAccountsValues.Add(new DistributionDto()
                 {
                     Name = brokerAccount.Name,
                     Currency = currencyName,
-                    Amount = brokerAccount.CurrentValue,
+                    Amount = amount,
                     ConvertedAmount = convertedAmount
                 });
 

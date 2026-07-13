@@ -153,7 +153,10 @@
     "entity_broker_quantity": "Quantity",
 
     "broker_account_security_card_security_quantity": "Quantity",
-    "broker_account_security_card_security_initial_price": "Spent",
+    "broker_account_security_card_security_sold_quantity": "Sold quantity",
+    "broker_account_security_card_security_sold": "Total sold",
+    "broker_account_security_card_security_on_account": "On account",
+    "broker_account_security_card_security_initial_price": "Bought",
     "broker_account_security_card_security_current_price": "Now",
     "broker_account_security_card_security_p&l": "P&L",
 

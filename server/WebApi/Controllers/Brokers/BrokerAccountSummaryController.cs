@@ -81,6 +81,20 @@ namespace MoneyManager.WebApi.Controllers.Brokers
             var brokerAccount = await _brokerAccountSummaryService.GetDailyStats();
             return _mapper.Map<BrokerAccountDailyStatsModel>(brokerAccount);
         }
-        
+
+        [HttpGet(nameof(GetPortfolioValuesByBrokerAccount))]
+        public async Task<BrokerAccountPortfolioModel> GetPortfolioValuesByBrokerAccount([FromQuery] Guid brokerAccountId)
+        {
+            var brokerAccount = await _brokerAccountSummaryService.GetPortfolioValuesByBrokerAccount(brokerAccountId);
+            return _mapper.Map<BrokerAccountPortfolioModel>(brokerAccount);
+        }
+
+        [HttpGet(nameof(GetPortfolioValues))]
+        public async Task<BrokerAccountPortfolioModel> GetPortfolioValues()
+        {
+            var brokerAccount = await _brokerAccountSummaryService.GetPortfolioValues();
+            return _mapper.Map<BrokerAccountPortfolioModel>(brokerAccount);
+        }
+
     }
 }

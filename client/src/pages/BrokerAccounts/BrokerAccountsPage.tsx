@@ -7,20 +7,12 @@ import { useUserProfile } from "../../../features/UserProfileSettingsModal/hooks
 import { getLastPullDate, pullBrokerAccountQuotations } from "../../api/brokers/brokerAccountSecurityApi";
 import { useSignalR } from "../../shared/hooks/SignalRHook";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { getBrokerAccounts } from "../../api/brokers/brokerAccountApi";
 import { useTranslation } from "react-i18next";
-import { getEarningsByBrokerAccount } from "../../api/brokers/dividendPaymentApi";
-import { getBrokerAccountTaxDeductions } from "../../api/brokers/BrokerAccountTaxDeductionApi";
+import { getPortfolioValues } from "../../api/brokers/brokerAccountSummaryApi";
+import { BrokerAccountPortfolioEntity } from "../../models/brokers/BrokerAccountPortfolioEntity";
 
 interface State {
     isReloading: boolean
-}
-
-interface BrokerAccountsSummary {
-    totalInitialValue: number,
-    totalCurrentValue: number
-    totalDividendIncomes: number,
-    totalTaxDeductionIncomes: number
 }
 
 const BrokerAccountsPage: React.FC = () => {
@@ -32,46 +24,23 @@ const BrokerAccountsPage: React.FC = () => {
 
     const [state, setState] = useState<State>({ isReloading: false });
 
-    const [mainCurrencyAmount, setMainCurrencyAmount] = useState<number>(0);
+    const [portfolio, setPortfolio] = useState<BrokerAccountPortfolioEntity | null>(null);
 
     const [lastPullDate, setLastPullDate] = useState<Date | null>(null);
-    const [brokerAccountsSummary, setBrokerAccountsSummary] = useState<BrokerAccountsSummary>({
-        totalInitialValue: 0,
-        totalCurrentValue: 0,
-        totalDividendIncomes: 0,
-        totalTaxDeductionIncomes: 0
-    });
     
     const fetchBrokerAccountsSummary = useCallback(async () => {
-        const accounts = await getBrokerAccounts();
-
-        const taxDeductions = (await getBrokerAccountTaxDeductions({brokerAccountId: null}))
-            .reduce((state, tax) => state + tax.amount, 0);
-        let currencyAmount = 0;
-
-        let totalDividends = 0;
-        for (const account of accounts) {
-            const dividendIncomes = await getEarningsByBrokerAccount(account.id);
-            totalDividends += dividendIncomes;
-        }
-
-        const summary = accounts.reduce((state, account) => {
-            state.totalInitialValue += account.initialValue;
-            state.totalCurrentValue += account.currentValue;
-            currencyAmount += account.mainCurrencyAmount;
-            return state;
-        }, {
-            totalInitialValue: 0,
-            totalCurrentValue: 0,
-            totalDividendIncomes: totalDividends,
-            totalTaxDeductionIncomes: taxDeductions
-        } as BrokerAccountsSummary)
-
-        setMainCurrencyAmount(currencyAmount);
-        setBrokerAccountsSummary(summary);
         setState((state) => {
             return {...state, isReloading: false}
         });
+
+        const fetchPortfolioValues = async () => {
+            const values = await getPortfolioValues()
+            if (values) {
+                setPortfolio(values);
+            }
+        }
+
+        fetchPortfolioValues();
     }, []);
     
     const onTransactionsChanged = useCallback(async () => {
@@ -102,7 +71,6 @@ const BrokerAccountsPage: React.FC = () => {
             await fetchBrokerAccountsSummary();
             await fetchLastPullDate();
         }
-
         getData();
     }, []);
 
@@ -129,23 +97,25 @@ const BrokerAccountsPage: React.FC = () => {
     }
 
     return <Fragment>
-        <BrokerAccountHeader 
-            name={t('all_broker_accounts_header')} 
-            currencyName={currencyName} 
-            currentValue={brokerAccountsSummary.totalCurrentValue} 
-            onPullQuotations={pullQuotations} 
-            lastPullDate={lastPullDate} 
-            isReloading={state.isReloading}/>
-        <BrokerAccountValuesSummary 
-            initialValue={brokerAccountsSummary.totalInitialValue} 
-            currentValue={brokerAccountsSummary.totalCurrentValue} 
-            dividendIncomes={brokerAccountsSummary.totalDividendIncomes} 
-            taxDeductionIncomes={brokerAccountsSummary.totalTaxDeductionIncomes} 
-            currencyName={currencyName}/>
-        <BrokerAccountSecuritiesList 
-            ref={securitiesRef}
-            mainCurrencyAmount={mainCurrencyAmount}
-            mainCurrencyName={currencyName}/>
+        {
+            portfolio && <BrokerAccountHeader 
+                name={t("all_broker_accounts_header")}
+                currencyName={currencyName}
+                lastPullDate={lastPullDate}
+                isReloading={state.isReloading}
+                onPullQuotations={pullQuotations} 
+                currentValue={portfolio.currentAmount}
+                />
+        }
+        {
+            portfolio && <BrokerAccountValuesSummary portfolio={portfolio} currencyName={currencyName}/>
+        }
+        {
+            portfolio && <BrokerAccountSecuritiesList 
+                ref={securitiesRef}
+                mainCurrencyAmount={portfolio?.currentAmount}
+                mainCurrencyName={currencyName}/>
+        }
         <BrokerAccountTabs 
             currencyName={currencyName} 
             onActionTriggered={onActionTriggered}/>

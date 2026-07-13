@@ -5,11 +5,11 @@ import { getBrokerAccountById } from "../../api/brokers/brokerAccountApi";
 import { getLastPullDate, pullBrokerAccountQuotations } from "../../api/brokers/brokerAccountSecurityApi";
 import BrokerAccountSecuritiesList, { BrokerAccountSecuritiesListRef } from "./components/BrokerAccountSecuritiesList/BrokerAccountSecuritiesList";
 import { useSignalR } from "../../shared/hooks/SignalRHook";
-import { getEarningsByBrokerAccount } from "../../api/brokers/dividendPaymentApi";
-import { getAmountByBrokerAccount } from "../../api/brokers/BrokerAccountTaxDeductionApi";
 import BrokerAccountTabs, { ChangeAction } from "./components/BrokerAccountTabs/BrokerAccountTabs";
 import BrokerAccountHeader from "./components/BrokerAccountHeader/BrokerAccountHeader";
 import BrokerAccountValuesSummary from "./components/BrokerAccountValuesSummary/BrokerAccountValuesSummary";
+import { getPortfolioValues } from "../../api/brokers/brokerAccountSummaryApi";
+import { BrokerAccountPortfolioEntity } from "../../models/brokers/BrokerAccountPortfolioEntity";
 
 interface State {
     brokerAccount: BrokerAccountEntity | null,
@@ -23,11 +23,9 @@ const BrokerAccountPage: React.FC = () => {
 
     const [state, setState] = useState<State>({ brokerAccount: null, isReloading: false });
     
-    const [dividendIncomes, setDividendIncomes] = useState<number>(0);
-
-    const [taxDeductionIncomes, setTaxDeductionIncomes] = useState<number>(0);
-
     const [lastPullDate, setLastPullDate] = useState<Date | null>(null);
+
+    const [portfolio, setPortfolio] = useState<BrokerAccountPortfolioEntity | null>(null);
 
     const onQuotesRecalculated = async (message: string) => {
         const data = JSON.parse(message);
@@ -80,18 +78,14 @@ const BrokerAccountPage: React.FC = () => {
 
         const account = state.brokerAccount;
 
-        const getDividendsEarnings = async () => {
-            const dividendIncomes = await getEarningsByBrokerAccount(account.id);
-            setDividendIncomes(dividendIncomes);
+        const fetchPortfolioValues = async () => {
+            const values = await getPortfolioValues(account.id)
+            if (values) {
+                setPortfolio(values);
+            }
         }
 
-        const getTaxDeductions = async () => {
-            const taxDeductions = await getAmountByBrokerAccount(account.id);
-            setTaxDeductionIncomes(taxDeductions);
-        }
-
-        getTaxDeductions();
-        getDividendsEarnings();
+        fetchPortfolioValues()
     }, [state.brokerAccount]);
 
     const onTransactionsChanged = useCallback(async () => {
@@ -129,8 +123,8 @@ const BrokerAccountPage: React.FC = () => {
     }
 
     return <Fragment>
-        <BrokerAccountHeader name={state.brokerAccount?.name} currencyName={state.brokerAccount?.currency?.name} currentValue={state.brokerAccount?.currentValue} onPullQuotations={pullQuotations} lastPullDate={lastPullDate} isReloading={state.isReloading} />
-        <BrokerAccountValuesSummary initialValue={state.brokerAccount?.initialValue ?? 0} currentValue={state.brokerAccount?.currentValue ?? 0} dividendIncomes={dividendIncomes} taxDeductionIncomes={taxDeductionIncomes} currencyName={state.brokerAccount?.currency?.name ?? ""} />
+        {portfolio && <BrokerAccountHeader name={state.brokerAccount?.name} currencyName={state.brokerAccount?.currency?.name} currentValue={portfolio?.currentAmount} onPullQuotations={pullQuotations} lastPullDate={lastPullDate} isReloading={state.isReloading} />}
+        {portfolio && <BrokerAccountValuesSummary portfolio={portfolio} currencyName={state.brokerAccount?.currency?.name ?? ""} />}
         <BrokerAccountSecuritiesList ref={securitiesRef} mainCurrencyAmount={state.brokerAccount.mainCurrencyAmount} mainCurrencyName={state.brokerAccount.currency.name} brokerAccountId={state.brokerAccount.id}/>
         <BrokerAccountTabs currencyName={state?.brokerAccount?.currency?.name} brokerAccountId={brokerAccountId} onActionTriggered={onActionTriggered}/>
     </Fragment>

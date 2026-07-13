@@ -18,6 +18,10 @@ export const darkTheme = createSystem(defaultConfig, {
                 // Transactions
                 buy_action_bg: {value: "#0a8e3a"},
                 sell_action_bg: {value: "#dc2626"},
+
+                // Stats
+                gain: {value: "#0a8e3a"},
+                loss: {value: "#dc2626"},
             },
         },
     },

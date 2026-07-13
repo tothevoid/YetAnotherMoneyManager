@@ -6,8 +6,6 @@ import { BrokerEntity } from "./BrokerEntity";
 interface CommonBrokerAccountEntity {
 	id: string,
 	name: string,
-	initialValue: number,
-	currentValue: number,
 	mainCurrencyAmount: number,
 }
 

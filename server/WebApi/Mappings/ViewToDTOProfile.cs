@@ -103,6 +103,8 @@ namespace MoneyManager.WebApi.Mappings
 
             CreateMap<LoginDto, LoginModel>().ReverseMap();
             CreateMap<BrokerAccountTaxDeductionModel, BrokerAccountTaxDeductionDto>().ReverseMap();
+
+            CreateMap<BrokerAccountPortfolioDto, BrokerAccountPortfolioModel>();
         }
     }
 }

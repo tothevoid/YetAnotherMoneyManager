@@ -1,10 +1,11 @@
 import { Button, Card, Flex, Icon, Link, Span, Stack, Text, Image } from '@chakra-ui/react';
 import { MdDelete, MdEdit } from "react-icons/md";
-import { Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
 import { BrokerAccountEntity } from '../../../../models/brokers/BrokerAccountEntity';
-import { calculateDiff } from '../../../../shared/utilities/numericDiffsUtilities';
 import { getBankIconUrl } from '../../../../api/banks/bankApi';
+import { getPortfolioValues } from '../../../../api/brokers/brokerAccountSummaryApi';
+import { BrokerAccountPortfolioEntity } from '../../../../models/brokers/BrokerAccountPortfolioEntity';
 
 interface Props {
 	brokerAccount: BrokerAccountEntity
@@ -13,10 +14,28 @@ interface Props {
 }
 
 const BrokerAccount = (props: Props) => {
-	const { id, name, broker, currency, type, initialValue, currentValue, bank } = props.brokerAccount;
+	const { id, name, broker, currency, type, bank } = props.brokerAccount;
+
+	const [portfolio, setPortfolio] = useState<BrokerAccountPortfolioEntity | null>(null);
+
+	useEffect(() => {
+		const fetchPortfolioValues = async () => {
+			const values = await getPortfolioValues(id)
+			if (values) {
+				setPortfolio(values);
+			}
+		}
+
+		fetchPortfolioValues()
+	}, [id]);
 
 	const accountLink = `../broker_account/${id}`;
-	const { profitAndLoss, profitAndLossPercentage, color } = calculateDiff(currentValue, initialValue, currency.name);
+
+	if (!portfolio) {
+		return <Fragment/>
+	}
+
+	const color = portfolio.currentAmount >= 0 ? "gain": "loss";
 
 	return <Fragment>
 		<Card.Root backgroundColor="background_primary" borderColor="border_primary" >
@@ -30,8 +49,8 @@ const BrokerAccount = (props: Props) => {
 						<Text fontWeight={600}>{broker.name}</Text>
 						<Text fontWeight={600}>{type.name}</Text>
 						<Stack gapX={1} direction="row">
-							<Span>{formatMoneyByCurrencyCulture(currentValue, currency.name)}</Span>
-							<Span color={color}>({profitAndLoss} | {profitAndLossPercentage})</Span>
+							<Span>{formatMoneyByCurrencyCulture(portfolio?.currentAmount, currency.name)}</Span>
+							<Span color={color}>({formatMoneyByCurrencyCulture(portfolio.profitAndLoss, currency.name)})</Span>
 						</Stack>
 					</Stack>
 					<Flex gap={1}>

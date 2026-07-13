@@ -5,7 +5,6 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Minio.DataModel.Notification;
 using MoneyManager.Application.DTO.Common;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Securities;
@@ -145,7 +144,6 @@ namespace MoneyManager.Application.Services.Securities
 
         public async Task Delete(Guid id)
         {
-            //TODO: Add transaction
             await HandleDeletedTransaction(id);
             await _securityTransactionRepo.Delete(id);
 
@@ -203,6 +201,7 @@ namespace MoneyManager.Application.Services.Securities
             {
                 await GenerateBrokerAccountSecurity(securityTransaction);
             }
+
         }
 
         private async Task ApplyAddedSellTransaction(SecurityTransactionDTO securityTransaction, BrokerAccountSecurity brokerAccountSecurity)
@@ -213,15 +212,13 @@ namespace MoneyManager.Application.Services.Securities
             }
 
             var totalPrice = securityTransaction.GetTotalPrice;
-            brokerAccountSecurity.Quantity -= securityTransaction.Quantity;
-            brokerAccountSecurity.Price -= totalPrice;
 
-            //TODO: add sell price and quantity
+            brokerAccountSecurity.SoldPrice += totalPrice;
+            brokerAccountSecurity.SoldQuantity += securityTransaction.Quantity;
 
             _brokerAccountSecurityRepo.Update(brokerAccountSecurity);
 
             await ActualizeBrokerAccountCurrencyValue(brokerAccountSecurity.BrokerAccountId, totalPrice);
-            
         }
 
         private async Task HandleModifiedTransaction(SecurityTransactionDTO modifiedSecurityTransaction)
@@ -239,6 +236,16 @@ namespace MoneyManager.Application.Services.Securities
             var committedSecurityTransaction = await _securityTransactionRepo.GetById(modifiedSecurityTransaction.Id);
             var committedSecurityTransactionDto = _mapper.Map<SecurityTransactionDTO>(committedSecurityTransaction);
 
+            if (await HandleChangedBrokerAccount(committedSecurityTransactionDto, modifiedSecurityTransaction))
+            {
+                return;
+            }
+
+            if (await HandleChangedTransactionOperation(committedSecurityTransactionDto, modifiedSecurityTransaction))
+            {
+                return;
+            }
+
             var quantityDiff = modifiedSecurityTransaction.Quantity - committedSecurityTransaction.Quantity;
 
             var totalCommittedPrice = committedSecurityTransactionDto.GetTotalPrice;
@@ -251,25 +258,60 @@ namespace MoneyManager.Application.Services.Securities
 
             if (quantityDiff != 0)
             {
-                brokerAccountSecurity.Quantity += modifiedSecurityTransaction.Quantity - committedSecurityTransactionDto.Quantity;
+                var diff = modifiedSecurityTransaction.Quantity - committedSecurityTransactionDto.Quantity;
+
+                if (modifiedSecurityTransaction.IsSell)
+                {
+                    brokerAccountSecurity.SoldQuantity += diff;
+                }
+                else
+                {
+                    brokerAccountSecurity.Quantity += diff;
+                }
             }
 
             var priceDiff = totalModifiedPrice - totalCommittedPrice;
 
-            brokerAccountSecurity.Price += priceDiff;
-
-            _brokerAccountSecurityRepo.Update(brokerAccountSecurity);
-
-            if (committedSecurityTransaction.BrokerAccountId != brokerAccountSecurity.BrokerAccountId)
+            if (modifiedSecurityTransaction.IsSell)
             {
-                
+                brokerAccountSecurity.SoldPrice += priceDiff;
             }
             else
             {
-
-
-                await ActualizeBrokerAccountCurrencyValue(brokerAccountSecurity.BrokerAccountId, priceDiff * -1);   
+                brokerAccountSecurity.Price += priceDiff;
             }
+
+            _brokerAccountSecurityRepo.Update(brokerAccountSecurity);
+
+            await ActualizeBrokerAccountCurrencyValue(brokerAccountSecurity.BrokerAccountId, priceDiff * -1);
+        }
+
+        private async Task<bool> HandleChangedBrokerAccount(SecurityTransactionDTO committedTransaction, 
+            SecurityTransactionDTO modifiedTransaction)
+        {
+            if (committedTransaction.BrokerAccountId == modifiedTransaction.BrokerAccountId)
+            {
+                return false;
+            }
+
+            await HandleDeletedTransaction(committedTransaction.Id);
+            await HandleAddedTransaction(modifiedTransaction);
+
+            return true;
+        }
+
+        private async Task<bool> HandleChangedTransactionOperation(SecurityTransactionDTO committedTransaction,
+            SecurityTransactionDTO modifiedTransaction)
+        {
+            if (committedTransaction.IsSell == modifiedTransaction.IsSell)
+            {
+                return false;
+            }
+
+            await HandleDeletedTransaction(committedTransaction.Id);
+            await HandleAddedTransaction(modifiedTransaction);
+
+            return true;
         }
 
         private async Task ActualizeBrokerAccountCurrencyValue(Guid brokerAccountId, decimal currencyDiff)
@@ -304,7 +346,7 @@ namespace MoneyManager.Application.Services.Securities
 
             var price = transaction.GetTotalPrice;
 
-            if (brokerAccountSecurity.Quantity == transaction.Quantity)
+            if (brokerAccountSecurity.Quantity == transaction.Quantity && brokerAccountSecurity.SoldQuantity == 0)
             {
                 await _brokerAccountSecurityRepo.Delete(brokerAccountSecurity.Id);
             }
@@ -318,7 +360,6 @@ namespace MoneyManager.Application.Services.Securities
             await ActualizeBrokerAccountCurrencyValue(brokerAccountSecurity.BrokerAccountId, price);
         }
 
-
         private async Task HandleDeletedSellTransaction(SecurityTransactionDTO transaction, BrokerAccountSecurity brokerAccountSecurity)
         {
             var price = transaction.GetTotalPrice;
@@ -329,13 +370,13 @@ namespace MoneyManager.Application.Services.Securities
             }
             else
             {
-                //TODO: subtract sell price and quantity
-                brokerAccountSecurity.Quantity += transaction.Quantity;
-                brokerAccountSecurity.Price += price;
+                brokerAccountSecurity.SoldPrice += price;
+                brokerAccountSecurity.SoldQuantity += transaction.Quantity;
+
                 _brokerAccountSecurityRepo.Update(brokerAccountSecurity);
             }
            
-            await ActualizeBrokerAccountCurrencyValue(brokerAccountSecurity.BrokerAccountId, -1 * price);
+            await ActualizeBrokerAccountCurrencyValue(transaction.BrokerAccountId, -1 * price);
         }
 
         private IQueryable<SecurityTransaction> GetFullHierarchyColumns(

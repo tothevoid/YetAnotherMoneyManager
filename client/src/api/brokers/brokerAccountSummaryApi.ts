@@ -1,6 +1,7 @@
 import { BrokerAccountDailyStatsEntity } from '../../models/brokers/BrokerAccountDailyStatsEntity';
 import { BrokerAccountDayTransferEntity } from '../../models/brokers/BrokerAccountDayTransferEntity';
 import { BrokerAccountMonthTransferEntity } from '../../models/brokers/BrokerAccountMonthTransferEntity';
+import { BrokerAccountPortfolioEntity } from '../../models/brokers/BrokerAccountPortfolioEntity';
 import { BrokerAccountSummaryEntity } from '../../models/brokers/BrokerAccountSummaryEntity';
 import { Nullable } from '../../shared/utilities/nullable';
 import { getAllEntities, getEntity } from '../basicApi';
@@ -38,4 +39,13 @@ export const getDailyStats = async (brokerAccountId: Nullable<string>): Promise<
 
     return await getEntity<BrokerAccountDailyStatsEntity>(url)
         .then((data: BrokerAccountDailyStatsEntity | void) => data && prepareDailyStats(data));
+}
+
+export const getPortfolioValues = async (brokerAccountId: Nullable<string> = null): Promise<BrokerAccountPortfolioEntity | void> => {
+    const url = brokerAccountId ?
+        `${basicUrl}/GetPortfolioValuesByBrokerAccount?brokerAccountId=${brokerAccountId}`:
+        `${basicUrl}/GetPortfolioValues`;
+
+    return await getEntity<BrokerAccountPortfolioEntity>(url)
+        .then((data: BrokerAccountPortfolioEntity | void) => data);
 }

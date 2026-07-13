@@ -18,6 +18,10 @@ namespace MoneyManager.Application.Interfaces.Brokers
 
         Task<BrokerAccountDailyStatsDto> GetDailyStats();
 
+        Task<BrokerAccountPortfolioDto> GetPortfolioValuesByBrokerAccount(Guid brokerAccountId);
+
+        Task<BrokerAccountPortfolioDto> GetPortfolioValues();
+
         Task<IEnumerable<BrokerAccountDayTransferDto>> GetMonthTransfersHistory(int month, int year);
 
         Task<IEnumerable<BrokerAccountDayTransferDto>> GetMonthTransfersHistoryByBrokerAccount(Guid brokerAccountId, int month, int year);

@@ -169,7 +169,7 @@ namespace MoneyManager.Application.Services.Brokers
         public async Task<decimal> GetActualSecuritiesValue(Guid brokerAccountId)
         {
             var securities = await GetByBrokerAccount(brokerAccountId);
-            return securities.Sum(accountSecurity => accountSecurity.Quantity * accountSecurity.Security.ActualPrice);
+            return securities.Sum(accountSecurity => (accountSecurity.Quantity - accountSecurity.SoldQuantity) * accountSecurity.Security.ActualPrice);
         }
 
         public async Task<decimal> GetTotalSoldByBrokerAccount(Guid brokerAccountId)

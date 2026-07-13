@@ -59,8 +59,6 @@ const BrokerAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
             type: props.brokerAccount?.type,
             currency: props.brokerAccount?.currency,
             broker: props.brokerAccount?.broker,
-            initialValue: props.brokerAccount?.initialValue,
-            currentValue: props.brokerAccount?.currentValue,
             mainCurrencyAmount: props.brokerAccount?.mainCurrencyAmount ?? 0,
             bank: props.brokerAccount?.bank
         }

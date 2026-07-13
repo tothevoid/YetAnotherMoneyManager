@@ -11,12 +11,14 @@ type Props = {
 }
 
 const BrokerAccountSecurity = (props: Props) => {
-    const {price, quantity, security } = props.brokerAccountSecurity;
+    const {price, quantity, security, soldPrice, soldQuantity } = props.brokerAccountSecurity;
 
     const { t } = useTranslation();
 
-    const actualPrice = security.actualPrice * quantity;
-    const profitAndLoss = actualPrice - price;
+    const quantityNow = quantity - soldQuantity;
+
+    const actualPrice = security.actualPrice * quantityNow;
+    const profitAndLoss = actualPrice - price + soldPrice;
 
     const color = profitAndLoss > 0 ?
         "green.600":
@@ -40,9 +42,9 @@ const BrokerAccountSecurity = (props: Props) => {
                             {icon}
                             <Link color="text_primary" href={securityLink} fontSize="xl" fontWeight={900}>{security?.name} ({security?.ticker})</Link>
                         </Stack>
-                        <Text fontWeight={600}>{t("broker_account_security_card_security_quantity")}: {quantity}</Text>
-                        <Text fontWeight={600}>{t("broker_account_security_card_security_initial_price")}: {formatMoneyByCurrencyCulture(price, security?.currency?.name)}</Text>
-                        <Text fontWeight={600}>{t("broker_account_security_card_security_current_price")}: {formatMoneyByCurrencyCulture(actualPrice, security?.currency?.name)}</Text>
+                        <Text fontWeight={600}>{t("broker_account_security_card_security_initial_price")} [{quantity}]: {formatMoneyByCurrencyCulture(price, security?.currency?.name)}</Text>
+                        <Text fontWeight={600}>{t("broker_account_security_card_security_sold_quantity")} [{soldQuantity}]: {formatMoneyByCurrencyCulture(soldPrice, security?.currency?.name)}</Text>
+                        <Text fontWeight={600}>{t("broker_account_security_card_security_current_price")}: [{quantityNow}] {formatMoneyByCurrencyCulture(actualPrice, security?.currency?.name)}</Text>
                         <Text fontWeight={600}>
                             {t("broker_account_security_card_security_p&l")}:
                             <Span paddingLeft={1.5} color={color}>{formatMoneyByCurrencyCulture(profitAndLoss, security?.currency?.name)} ({percentage.toFixed(2)}%)</Span>

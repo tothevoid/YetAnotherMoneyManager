@@ -40,7 +40,7 @@ namespace MoneyManager.Infrastructure.Database
                 query = include(query);
             }
 
-            return await query.Where(entity => entity.Id == id).FirstOrDefaultAsync();
+             return await query.Where(entity => entity.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<TEntity> Find(Expression<Func<TEntity, bool>> predicate)

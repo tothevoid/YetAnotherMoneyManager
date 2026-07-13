@@ -69,6 +69,8 @@ namespace MoneyManager.Application.Services.Brokers
                     var existingBrokerAccountSecurity = handledBrokerAccountSecurities[securityId];
                     existingBrokerAccountSecurity.Quantity += brokerAccountSecurity.Quantity;
                     existingBrokerAccountSecurity.Price += brokerAccountSecurity.Price;
+                    existingBrokerAccountSecurity.SoldPrice += brokerAccountSecurity.SoldPrice;
+                    existingBrokerAccountSecurity.SoldQuantity += brokerAccountSecurity.SoldQuantity;
                 }
                 else
                 {

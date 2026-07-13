@@ -42,6 +42,12 @@ namespace MoneyManager.WebApi.Controllers.Brokers
             return _mapper.Map<BrokerAccountModel>(brokerAccount);
         }
 
+        [HttpGet(nameof(GetTotalSoldAmountByBrokerAccountId))]
+        public async Task<decimal> GetTotalSoldAmountByBrokerAccountId([FromQuery] Guid brokerAccountId)
+        {
+            return await _brokerAccountService.GetTotalSoldAmountByBrokerAccountId(brokerAccountId);
+        }
+
         [HttpPut]
         public async Task<Guid> Add(BrokerAccountModel brokerAccount)
         {

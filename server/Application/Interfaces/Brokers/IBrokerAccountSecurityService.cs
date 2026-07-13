@@ -24,5 +24,7 @@ namespace MoneyManager.Application.Interfaces.Brokers
         Task<decimal> GetInitialSecuritiesValue(Guid brokerAccountId);
 
         Task<decimal> GetActualSecuritiesValue(Guid brokerAccountId);
+
+        Task<decimal> GetTotalSoldByBrokerAccount(Guid brokerAccountId);
     }
 }

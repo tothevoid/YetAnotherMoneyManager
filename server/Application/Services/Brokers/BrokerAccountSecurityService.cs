@@ -172,6 +172,13 @@ namespace MoneyManager.Application.Services.Brokers
             return securities.Sum(accountSecurity => accountSecurity.Quantity * accountSecurity.Security.ActualPrice);
         }
 
+        public async Task<decimal> GetTotalSoldByBrokerAccount(Guid brokerAccountId)
+        {
+            var brokerAccountSecurities = await GetByBrokerAccount(brokerAccountId);
+
+            return brokerAccountSecurities.Sum(brokerAccountSecurity => brokerAccountSecurity.SoldPrice);
+        }
+
         private Expression<Func<BrokerAccountSecurity, bool>> GetBaseFilter(Guid brokerAccountId)
         {
             return brokerAccountSecurity => brokerAccountSecurity.BrokerAccountId == brokerAccountId;

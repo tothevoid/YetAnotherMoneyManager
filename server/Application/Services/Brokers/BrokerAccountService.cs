@@ -107,6 +107,11 @@ namespace MoneyManager.Application.Services.Brokers
             return portfolioValues;
         }
 
+        public async Task<decimal> GetTotalSoldAmountByBrokerAccountId(Guid brokerAccountId)
+        {
+            return await _brokerAccountSecurityService.GetTotalSoldByBrokerAccount(brokerAccountId);
+        }
+
         private async Task<BrokerAccountPortfolioDto> GetPortfolioValues(BrokerAccountDTO brokerAccount)
         {
             var mainCurrencyAmount = brokerAccount.MainCurrencyAmount * brokerAccount.Currency.Rate;

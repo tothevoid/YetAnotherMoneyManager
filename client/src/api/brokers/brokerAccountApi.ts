@@ -1,5 +1,5 @@
 import { BrokerAccountEntity, BrokerAccountEntityRequest, BrokerAccountEntityResponse } from '../../models/brokers/BrokerAccountEntity';
-import { createEntity, deleteEntity, getAllEntities, getEntityById, updateEntity } from '../basicApi';
+import { createEntity, deleteEntity, getAllEntities, getEntity, getEntityById, updateEntity } from '../basicApi';
 import { prepareBrokerAccount, prepareBrokerAccountRequest } from './brokerAccountApiMapping';
 
 const basicUrl = `BrokerAccount`;
@@ -12,6 +12,10 @@ export const getBrokerAccounts = async (): Promise<BrokerAccountEntity[]> => {
 export const getBrokerAccountById = async (id: string): Promise<BrokerAccountEntity | void> => {
     return getEntityById<BrokerAccountEntityResponse>(basicUrl, id)
         .then((brokerAccount: BrokerAccountEntityResponse | void) => brokerAccount && prepareBrokerAccount(brokerAccount))
+}
+
+export const getTotalSoldAmountByBrokerAccountId = async (id: string): Promise<number | void> => {
+    return getEntity<number>(`${basicUrl}/GetTotalSoldAmountByBrokerAccountId?brokerAccountId=${id}`);
 }
 
 export const createBrokerAccount = async (addedBroker: BrokerAccountEntity): Promise<BrokerAccountEntity | void> => {

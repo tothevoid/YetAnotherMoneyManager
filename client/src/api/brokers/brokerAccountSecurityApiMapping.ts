@@ -8,7 +8,9 @@ export const prepareBrokerAccountSecurityRequest = (brokerAccountSecurity: Broke
         brokerAccountId: brokerAccountSecurity.brokerAccount.id,
         price: brokerAccountSecurity.price,
         quantity: brokerAccountSecurity.quantity,
-        securityId: brokerAccountSecurity.security.id
+        securityId: brokerAccountSecurity.security.id,
+        soldPrice: brokerAccountSecurity.soldPrice,
+        soldQuantity: brokerAccountSecurity.soldQuantity
     };
 }
 
@@ -18,6 +20,8 @@ export const prepareBrokerAccountSecurity = (brokerAccountSecurity: BrokerAccoun
         brokerAccount: prepareBrokerAccount(brokerAccountSecurity.brokerAccount),
         price: brokerAccountSecurity.price,
         quantity: brokerAccountSecurity.quantity,
-        security: prepareSecurity(brokerAccountSecurity.security)
+        security: prepareSecurity(brokerAccountSecurity.security),
+        soldPrice: brokerAccountSecurity.soldPrice,
+        soldQuantity: brokerAccountSecurity.soldQuantity
     };
 }

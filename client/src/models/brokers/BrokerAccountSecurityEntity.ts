@@ -4,7 +4,9 @@ import { SecurityEntity, SecurityEntityResponse } from "../securities/SecurityEn
 export interface CommonBrokerAccountSecurityEntity {
     id: string,
     quantity: number,
-    price: number
+    price: number,
+    soldPrice: number,
+    soldQuantity: number
 }
 
 export interface BrokerAccountSecurityEntityRequest extends CommonBrokerAccountSecurityEntity {

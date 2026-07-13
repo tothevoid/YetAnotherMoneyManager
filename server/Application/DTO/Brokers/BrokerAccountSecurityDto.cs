@@ -17,5 +17,9 @@ namespace MoneyManager.Application.DTO.Brokers
         public int Quantity { get; set; }
 
         public decimal Price { get; set; }
+
+        public decimal SoldPrice { get; set; }
+
+        public int SoldQuantity { get; set; }
     }
 }

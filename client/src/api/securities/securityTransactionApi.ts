@@ -4,7 +4,7 @@ import { SecurityTransactionsRequest } from '../../models/securities/SecurityTra
 import { PaginationConfig } from '../../shared/models/PaginationConfig';
 import { Nullable } from '../../shared/utilities/nullable';
 import { createEntity, deleteEntity, getAllEntities, getAllEntitiesByConfig, getPagination, updateEntity } from '../basicApi';
-import { prepareSecurityTransaction, prepareSecurityTransactionRequest } from './securityTransactionApiMapping';
+import { prepareSecurityTransaction } from './securityTransactionApiMapping';
 
 const basicUrl = `SecurityTransaction`;
 

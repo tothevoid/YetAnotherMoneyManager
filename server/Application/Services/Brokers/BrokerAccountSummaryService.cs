@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MoneyManager.Application.Interfaces.User;
 using MoneyManager.Infrastructure.Entities.Brokers;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace MoneyManager.Application.Services.Brokers
 {
@@ -102,6 +103,7 @@ namespace MoneyManager.Application.Services.Brokers
                 portfolioValues.DividendsIncome += portfolioValue.DividendsIncome;
                 portfolioValues.TaxDeductions += portfolioValue.TaxDeductions;
                 portfolioValues.ProfitAndLoss += portfolioValue.ProfitAndLoss;
+                portfolioValues.MainCurrencyAmount += portfolioValue.MainCurrencyAmount;
             }
 
             return portfolioValues;
@@ -129,6 +131,7 @@ namespace MoneyManager.Application.Services.Brokers
                 DividendsIncome = dividends,
                 TaxDeductions = taxDeductions,
                 ProfitAndLoss = currentAmount - depositedAmount + taxDeductions,
+                MainCurrencyAmount = mainCurrencyAmount
             };
         }
 

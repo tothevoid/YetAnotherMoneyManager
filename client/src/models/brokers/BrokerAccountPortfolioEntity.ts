@@ -3,4 +3,5 @@ export interface BrokerAccountPortfolioEntity {
     dividendsIncome: number
     taxDeductions: number
     profitAndLoss: number
+    mainCurrencyAmount: number
 }

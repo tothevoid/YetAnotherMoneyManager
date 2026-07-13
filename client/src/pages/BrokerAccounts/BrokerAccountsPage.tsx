@@ -113,7 +113,7 @@ const BrokerAccountsPage: React.FC = () => {
         {
             portfolio && <BrokerAccountSecuritiesList 
                 ref={securitiesRef}
-                mainCurrencyAmount={portfolio?.currentAmount}
+                mainCurrencyAmount={portfolio?.mainCurrencyAmount}
                 mainCurrencyName={currencyName}/>
         }
         <BrokerAccountTabs 

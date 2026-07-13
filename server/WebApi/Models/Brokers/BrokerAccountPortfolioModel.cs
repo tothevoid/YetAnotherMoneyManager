@@ -9,5 +9,7 @@
         public decimal TaxDeductions { get; set; }
 
         public decimal ProfitAndLoss { get; set; }
+
+        public decimal MainCurrencyAmount { get; set;}
     }
 }

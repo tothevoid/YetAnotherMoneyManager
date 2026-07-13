@@ -10,6 +10,7 @@ using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using MoneyManager.Infrastructure.Interfaces.Messages;
+using MoneyManager.Infrastructure.Queries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,9 @@ namespace MoneyManager.Application.Services.Brokers
         private readonly ISecurityService _securityService;
         private readonly IStockConnector _stockConnector;
         private readonly IPullQuotationsService _pullQuotationsService;
+
+        private static readonly Expression<Func<BrokerAccountSecurity, object>> DefaultOrder = 
+            (BrokerAccountSecurity brokerAccountSecurity) => brokerAccountSecurity.Security.Ticker;
 
         private IServerNotifier _serverNotifier;
 
@@ -50,8 +54,13 @@ namespace MoneyManager.Application.Services.Brokers
 
         public async Task<IEnumerable<BrokerAccountSecurityDTO>> GetAll(bool unionSecurities = false)
         {
+            var complexQuery = new ComplexQueryBuilder<BrokerAccountSecurity>()
+                .AddJoins(GetFullHierarchyColumns)
+                .AddOrder(DefaultOrder)
+                .GetQuery();
+
             var brokerAccountSecurities = await _brokerAccountSecurityRepo
-                .GetAll(include: GetFullHierarchyColumns);
+                .GetAll(complexQuery);
 
             if (!unionSecurities)
             {
@@ -83,8 +92,14 @@ namespace MoneyManager.Application.Services.Brokers
 
         public async Task<IEnumerable<BrokerAccountSecurityDTO>> GetByBrokerAccount(Guid brokerAccountId)
         {
+            var complexQuery = new ComplexQueryBuilder<BrokerAccountSecurity>()
+                .AddFilter(GetBaseFilter(brokerAccountId))
+                .AddJoins(GetFullHierarchyColumns)
+                .AddOrder(DefaultOrder)
+                .GetQuery();
+
             var brokerAccountSecurities = await _brokerAccountSecurityRepo
-                .GetAll(GetBaseFilter(brokerAccountId), GetFullHierarchyColumns);
+                .GetAll(complexQuery);
             return _mapper.Map<IEnumerable<BrokerAccountSecurityDTO>>(brokerAccountSecurities);
         }
 

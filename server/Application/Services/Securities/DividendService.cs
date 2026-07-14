@@ -65,8 +65,9 @@ namespace MoneyManager.Application.Services.Securities
         {
             var securities = await _dividendRepo
                 .GetAll((dividend) => dividend.DividendPayments.All(payment => 
-                        payment.BrokerAccountId == brokerAccountId && 
-                        payment.BrokerAccount.BrokerAccountSecurities.Any(security => security.Id == dividend.SecurityId)),
+                       !dividend.DividendPayments.Any(p => p.BrokerAccountId == brokerAccountId) &&
+                        dividend.Security.BrokerAccountSecurities.Any(s => s.BrokerAccountId == brokerAccountId)
+                    ),
                     include: GetFullHierarchyColumns);
             return _mapper.Map<IEnumerable<DividendDto>>(securities);
         }

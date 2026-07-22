@@ -35,7 +35,7 @@ const BrokerAccount = (props: Props) => {
 		return <Fragment/>
 	}
 
-	const color = portfolio.currentAmount >= 0 ? "gain": "loss";
+	const color = portfolio.profitAndLoss >= 0 ? "gain": "loss";
 
 	return <Fragment>
 		<Card.Root backgroundColor="background_primary" borderColor="border_primary" >

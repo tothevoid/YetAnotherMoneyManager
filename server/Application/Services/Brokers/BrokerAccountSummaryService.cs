@@ -176,13 +176,16 @@ namespace MoneyManager.Application.Services.Brokers
             foreach (var brokerAccountSecurity in brokerAccountSecurities)
             {
                 var securityId = brokerAccountSecurity.SecurityId;
+
+                var quantity = brokerAccountSecurity.Quantity - brokerAccountSecurity.SoldQuantity;
+
                 if (securitiesQuantities.ContainsKey(securityId))
                 {
-                    securitiesQuantities[securityId] += brokerAccountSecurity.Quantity;
+                    securitiesQuantities[securityId] += quantity;
                 }
                 else
                 {
-                    securitiesQuantities.Add(securityId, brokerAccountSecurity.Quantity);
+                    securitiesQuantities.Add(securityId, quantity);
                 }
             }
 
@@ -203,6 +206,13 @@ namespace MoneyManager.Application.Services.Brokers
                 var security = tickers[marketValue.Ticker];
 
                 var currentPrice = marketValue.GetLastValue();
+
+                var quantity = securitiesQuantities[security.Id];
+
+                if (quantity == 0)
+                {
+                    continue;
+                }
 
                 securityStats.Add(new BrokerAccountDailySecurityStatsDto()
                 {

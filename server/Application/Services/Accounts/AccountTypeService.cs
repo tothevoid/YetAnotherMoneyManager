@@ -14,6 +14,7 @@ namespace MoneyManager.Application.Services.Accounts
         private readonly IUnitOfWork _db;
         private readonly IRepository<AccountType> _accountTypeRepo;
         private readonly IMapper _mapper;
+
         public AccountTypeService(IUnitOfWork uow, IMapper mapper)
         {
             _db = uow;
@@ -37,7 +38,12 @@ namespace MoneyManager.Application.Services.Accounts
         public async Task<Guid> Add(AccountTypeDTO accountTypeDto)
         {
             var accountType = _mapper.Map<AccountType>(accountTypeDto);
-            accountType.Id = Guid.NewGuid();
+
+            if (accountType.Id == Guid.Empty)
+            {
+                accountType.Id = Guid.NewGuid();
+            }
+
             await _accountTypeRepo.Add(accountType);
             await _db.Commit();
             return accountType.Id;

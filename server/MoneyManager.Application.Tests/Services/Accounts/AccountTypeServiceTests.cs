@@ -1,45 +1,48 @@
-﻿using AutoMapper;
-using DocumentFormat.OpenXml.InkML;
-using DocumentFormat.OpenXml.Presentation;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Extensions.DependencyInjection;
 using MoneyManager.Application.DTO.Accounts;
 using MoneyManager.Application.Interfaces.Accounts;
-using MoneyManager.Application.Mappings;
-using MoneyManager.Application.Services.Accounts;
 using MoneyManager.Application.Tests.Fixtures;
-using MoneyManager.Infrastructure.Database;
 
 namespace MoneyManager.Application.Tests.Services.Accounts
 {
-    public class AccountTypeServiceTests: IClassFixture<PostgreSqlFixture>, IClassFixture<MapperFixture>
+    public class AccountTypeServiceTests: TestBase
     {
-        private readonly PostgreSqlFixture _pgFixture;
-
-        private readonly MapperFixture _mapperFixture;
-
-        public AccountTypeServiceTests(PostgreSqlFixture pgFixture, MapperFixture mapperFixture)
+        public AccountTypeServiceTests(ServiceCollectionFixture serviceCollectionFixture): base(serviceCollectionFixture)
         {
-            _pgFixture = pgFixture;
-            _mapperFixture = mapperFixture;
         }
 
         [Fact]
         public async Task TestAdd()
         {
-            var uow = new UnitOfWork(_pgFixture.CreateDbContext());
+            var typesBefore = await ExecuteScopeAsync(async sp =>
+            {
+                var accountTypeService = sp.GetRequiredService<IAccountTypeService>();
 
-            var accountTypeService = new AccountTypeService(uow, _mapperFixture.Mapper);
+                var typesBefore = await accountTypeService.GetAll();
 
-            var typesBefore = await accountTypeService.GetAll();
+                return typesBefore;
+            });
 
             var names = Enumerable.Range(0, 10).Select(x => $"Account: {x}").ToArray();
 
-            foreach (var name in names)
+            await ExecuteScopeAsync(async sp =>
             {
-                await accountTypeService.Add(new AccountTypeDTO() { Active = true, Id = Guid.NewGuid(), Name = name });
-            }
+                var accountTypeService = sp.GetRequiredService<IAccountTypeService>();
 
-            var typesAfter = await accountTypeService.GetAll();
+                foreach (var name in names)
+                {
+                    await accountTypeService.Add(new AccountTypeDTO() { Active = true, Id = Guid.NewGuid(), Name = name });
+                }
+            });
+
+            var typesAfter = await ExecuteScopeAsync(async sp =>
+            {
+                var accountTypeService = sp.GetRequiredService<IAccountTypeService>();
+
+                var typesAfter = await accountTypeService.GetAll();
+
+                return typesAfter;
+            });
 
             Assert.Equivalent(typesBefore.Count(), typesAfter.Count() - names.Length);
         }
@@ -51,28 +54,28 @@ namespace MoneyManager.Application.Tests.Services.Accounts
 
             var id = Guid.NewGuid();
 
-            await using (var dbArrange = _pgFixture.CreateDbContext())
+            await ExecuteScopeAsync(async sp =>
             {
-                var accountTypeService = new AccountTypeService(new UnitOfWork(dbArrange), _mapperFixture.Mapper);
-               
+                var accountTypeService = sp.GetRequiredService<IAccountTypeService>();
+
                 var accountType = CreateAccountType(id, nameBefore);
                 await accountTypeService.Add(accountType);
-            }
+            });
 
             var nameAfter = "TestAfter";
 
-            await using (var dbAct = _pgFixture.CreateDbContext())
+            await ExecuteScopeAsync(async sp =>
             {
-                var accountTypeService = new AccountTypeService(new UnitOfWork(dbAct), _mapperFixture.Mapper);
+                var accountTypeService = sp.GetRequiredService<IAccountTypeService>();
 
                 var accountType = CreateAccountType(id, nameAfter);
-
                 await accountTypeService.Update(accountType);
-            }
+            });
 
-            await using (var dbAssert = _pgFixture.CreateDbContext())
+            await ExecuteScopeAsync(async sp =>
             {
-                var accountTypeService = new AccountTypeService(new UnitOfWork(dbAssert), _mapperFixture.Mapper);
+                var accountTypeService = sp.GetRequiredService<IAccountTypeService>();
+
                 var typesAfter = await accountTypeService.GetAll();
 
                 var accountTypeWithNameBefore = typesAfter.FirstOrDefault(type => type.Name == nameBefore);
@@ -81,7 +84,7 @@ namespace MoneyManager.Application.Tests.Services.Accounts
 
                 Assert.Null(accountTypeWithNameBefore);
                 Assert.NotNull(accountTypeWithNameAfter);
-            }
+            });
         }
 
         [Fact]
@@ -89,32 +92,32 @@ namespace MoneyManager.Application.Tests.Services.Accounts
         {
             var id = Guid.NewGuid();
 
-            await using (var dbArrange = _pgFixture.CreateDbContext())
+            await ExecuteScopeAsync(async sp =>
             {
-                var accountTypeService = new AccountTypeService(new UnitOfWork(dbArrange), _mapperFixture.Mapper);
+                var accountTypeService = sp.GetRequiredService<IAccountTypeService>();
 
                 var accountType = CreateAccountType(id, nameof(TestDelete));
                 await accountTypeService.Add(accountType);
-            }
+            });
 
-            await using (var dbAct = _pgFixture.CreateDbContext())
+            await ExecuteScopeAsync(async sp =>
             {
-                var accountTypeService = new AccountTypeService(new UnitOfWork(dbAct), _mapperFixture.Mapper);
+                var accountTypeService = sp.GetRequiredService<IAccountTypeService>();
 
                 await accountTypeService.Delete(id);
-            }
+            });
 
-            await using (var dbAssert = _pgFixture.CreateDbContext())
+            await ExecuteScopeAsync(async sp =>
             {
-                var accountTypeService = new AccountTypeService(new UnitOfWork(dbAssert), _mapperFixture.Mapper);
+                var accountTypeService = sp.GetRequiredService<IAccountTypeService>();
+
                 var typesAfter = await accountTypeService.GetAll();
 
                 var accountTypesWithSameId = typesAfter.FirstOrDefault(type => type.Id == id);
 
                 Assert.Null(accountTypesWithSameId);
-            }
+            });
         }
-
 
         private AccountTypeDTO CreateAccountType(Guid id, string name) => new() { Id = id, Active = true, Name = name };
     }

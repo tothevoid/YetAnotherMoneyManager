@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -114,7 +114,7 @@ namespace MoneyManager.Application.Services.Accounts
 
             var fromAccountTransaction = GenerateSystemTransaction(fromAccount, $"-{transferDto.Balance} => {toAccount.Name} (Fee: {transferDto.Fee})", 
                 -1 * transferDto.Balance - transferDto.Fee);
-            var toAccountTransaction = GenerateSystemTransaction(fromAccount, $"+{transferDto.Balance} <= {fromAccount.Name}", transferDto.Balance);
+            var toAccountTransaction = GenerateSystemTransaction(toAccount, $"+{transferDto.Balance} <= {fromAccount.Name}", transferDto.Balance);
 
             _accountRepo.Update(fromAccount);
             _accountRepo.Update(toAccount);

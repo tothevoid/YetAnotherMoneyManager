@@ -41,6 +41,8 @@ namespace MoneyManager.Application.Services.Currencies
             return _mapper.Map<CurrencyDTO>(transactions);
         }
 
+        //TODO: Guid parameter instead of DTO
+        //TODO: Should be in separate service
         public async Task SyncRates(CurrencyDTO mainCurrency)
         {
             var currencies = (await _currencyRepo.GetAll(disableTracking: false)).ToList();

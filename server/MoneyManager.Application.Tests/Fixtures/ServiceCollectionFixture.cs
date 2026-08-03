@@ -1,10 +1,13 @@
-﻿using AutoMapper;
+using AutoMapper;
 using ClosedXML.Parser;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MoneyManager.Application.Extensions;
+using MoneyManager.Application.Interfaces.FileStorage;
 using MoneyManager.Infrastructure.Database;
 using MoneyManager.Infrastructure.Interfaces.Database;
+using MoneyManager.Infrastructure.Interfaces.Messages;
 using Testcontainers.PostgreSql;
 
 namespace MoneyManager.Application.Tests.Fixtures
@@ -23,7 +26,22 @@ namespace MoneyManager.Application.Tests.Fixtures
             await _container.StartAsync();
 
             var services = new ServiceCollection();
+
+            var inMemorySettings = new Dictionary<string, string?> {
+                {"Auth:Issuer", "MoneyManagerApp"},
+                {"Auth:Audience", "MoneyManagerAppUsers"},
+                {"Auth:Secret", "SuperSecretKeyForJwtTokenGeneration12345!"}
+            };
+
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(inMemorySettings)
+                .Build();
+
+            services.AddSingleton<IConfiguration>(configuration);
+            services.AddHttpClient();
             services.AddApplicationServices();
+            services.AddScoped<IFileStorageService, TestFileStorageService>();
+            services.AddScoped<IServerNotifier, TestServerNotifier>();
 
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseNpgsql(ConnectionString)

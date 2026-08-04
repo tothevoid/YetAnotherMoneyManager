@@ -1,0 +1,95 @@
+using Microsoft.Extensions.DependencyInjection;
+using MoneyManager.Application.DTO.Securities;
+using MoneyManager.Application.Interfaces.Securities;
+using MoneyManager.Application.Tests.Fixtures;
+
+namespace MoneyManager.Application.Tests.Services.Securities
+{
+    public class SecurityTypeServiceTests : TestBase
+    {
+        public SecurityTypeServiceTests(ServiceCollectionFixture serviceCollectionFixture) : base(serviceCollectionFixture)
+        {
+        }
+
+        [Fact]
+        public async Task TestAddAndGetAll()
+        {
+            var typeId = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISecurityTypeService>();
+                return await service.Add(new SecurityTypeDTO { Name = "Stock" });
+            });
+
+            Assert.NotEqual(Guid.Empty, typeId);
+
+            var all = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISecurityTypeService>();
+                return await service.GetAll();
+            });
+
+            Assert.NotNull(all);
+            Assert.Contains(all, t => t.Id == typeId && t.Name == "Stock");
+        }
+
+        [Fact]
+        public async Task TestUpdateAndDelete()
+        {
+            var actualName = "Bond Updated";
+
+            var typeId = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISecurityTypeService>();
+                return await service.Add(new SecurityTypeDTO { Name = "Bond Initial" });
+            });
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISecurityTypeService>();
+                await service.Update(new SecurityTypeDTO { Id = typeId, Name = actualName });
+            });
+
+            var all = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISecurityTypeService>();
+                return await service.GetAll();
+            });
+
+            var updated = all.FirstOrDefault(t => t.Id == typeId);
+            Assert.NotNull(updated);
+            Assert.Equal(actualName, updated.Name);
+        }
+
+        [Fact]
+        public async Task TestDelete()
+        {
+            var typeId = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISecurityTypeService>();
+                return await service.Add(new SecurityTypeDTO { Name = "Bond to delete" });
+            });
+
+            var typesInDatabase = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISecurityTypeService>();
+                return await service.GetAll();
+            });
+
+            Assert.Contains(typesInDatabase, t => t.Id == typeId);
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISecurityTypeService>();
+                await service.Delete(typeId);
+            });
+
+            var allAfterDelete = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISecurityTypeService>();
+                return await service.GetAll();
+            });
+
+            Assert.DoesNotContain(allAfterDelete, t => t.Id == typeId);
+        }
+    }
+}

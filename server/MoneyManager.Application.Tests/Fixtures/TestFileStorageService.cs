@@ -3,6 +3,7 @@ using MoneyManager.Application.Interfaces.FileStorage;
 
 namespace MoneyManager.Application.Tests.Fixtures
 {
+    //TODO: Use TestContainers minio
     public class TestFileStorageService : IFileStorageService
     {
         public Task UploadFile(string bucketName, IFormFile file, string key)

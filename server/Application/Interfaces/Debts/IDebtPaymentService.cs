@@ -8,6 +8,7 @@ namespace MoneyManager.Application.Interfaces.Debts
 {
     public interface IDebtPaymentService
     {
+        Task<DebtPaymentDto> GetById(Guid id);
         Task<IEnumerable<DebtPaymentDto>> GetAll(int pageIndex, int recordsQuantity);
         Task<PaginationConfigDto> GetPagination();
         Task<Guid> Add(DebtPaymentDto debtPayment);

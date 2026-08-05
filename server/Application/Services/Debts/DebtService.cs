@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using MoneyManager.Application.DTO.Currencies;
-using MoneyManager.Infrastructure.Entities.Currencies;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using System;
 using System.Collections.Generic;
@@ -10,8 +8,6 @@ using MoneyManager.Application.DTO.Debts;
 using MoneyManager.Application.Interfaces.Debts;
 using MoneyManager.Infrastructure.Entities.Debts;
 using Microsoft.EntityFrameworkCore;
-using MoneyManager.Infrastructure.Entities.Securities;
-using Minio.DataModel.Notification;
 using MoneyManager.Infrastructure.Queries;
 
 namespace MoneyManager.Application.Services.Debts
@@ -27,6 +23,12 @@ namespace MoneyManager.Application.Services.Debts
             _db = uow;
             _mapper = mapper;
             _debtRepo = uow.CreateRepository<Debt>();
+        }
+
+        public async Task<DebtDto> GetById(Guid id)
+        {
+            var debt = await _debtRepo.GetById(id);
+            return _mapper.Map<DebtDto>(debt);
         }
 
         public async Task<IEnumerable<DebtDto>> GetAll(bool onlyActive)

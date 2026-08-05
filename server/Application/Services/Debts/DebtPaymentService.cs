@@ -34,6 +34,12 @@ namespace MoneyManager.Application.Services.Debts
             _accountRepo = uow.CreateRepository<Account>();
         }
 
+        public async Task<DebtPaymentDto> GetById(Guid id)
+        {
+            var debtPayment = await _debtPaymentRepo.GetById(id);
+            return _mapper.Map<DebtPaymentDto>(debtPayment);
+        }
+
         public async Task<IEnumerable<DebtPaymentDto>> GetAll(int pageIndex, int recordsQuantity)
         {
             var query = new ComplexQueryBuilder<DebtPayment>()

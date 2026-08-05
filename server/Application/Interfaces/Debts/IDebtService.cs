@@ -9,6 +9,7 @@ namespace MoneyManager.Application.Interfaces.Debts
     public interface IDebtService
     {
         Task<IEnumerable<DebtDto>> GetAll(bool onlyActive);
+        Task<DebtDto> GetById(Guid id);
         Task<Guid> Add(DebtDto debt);
         Task Update(DebtDto debt);
         Task Delete(Guid id);

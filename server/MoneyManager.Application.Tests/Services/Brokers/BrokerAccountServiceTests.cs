@@ -1,0 +1,155 @@
+using Microsoft.Extensions.DependencyInjection;
+using MoneyManager.Application.DTO.Banks;
+using MoneyManager.Application.DTO.Brokers;
+using MoneyManager.Application.Interfaces.Banks;
+using MoneyManager.Application.Interfaces.Brokers;
+using MoneyManager.Application.Tests.Fixtures;
+using MoneyManager.Infrastructure.Constants;
+
+namespace MoneyManager.Application.Tests.Services.Brokers
+{
+    public class BrokerAccountServiceTests : TestBase
+    {
+        public BrokerAccountServiceTests(ServiceCollectionFixture serviceCollectionFixture) : base(serviceCollectionFixture)
+        {
+        }
+
+        [Fact]
+        public async Task TestAddAndGetAll()
+        {
+            var (brokerId, typeId, bankId) = await SetupDependencies();
+
+            var accountId = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountService>();
+                return await service.Add(new BrokerAccountDTO
+                {
+                    Name = "Main Brokerage Account",
+                    BrokerId = brokerId,
+                    BankId = bankId,
+                    TypeId = typeId,
+                    CurrencyId = CurrencyConstants.USD,
+                    MainCurrencyAmount = 10000m
+                });
+            });
+
+            Assert.NotEqual(Guid.Empty, accountId);
+
+            var all = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountService>();
+                return await service.GetAll();
+            });
+
+            Assert.NotNull(all);
+            Assert.Contains(all, a => a.Id == accountId && a.Name == "Main Brokerage Account");
+        }
+
+        [Fact]
+        public async Task TestUpdate()
+        {
+            var (brokerId, typeId, bankId) = await SetupDependencies();
+
+            var (actualBrokerId, actualTypeId, actualBankId) = await SetupDependencies();
+
+            var actualName = "Updated Broker Acc";
+
+            var accountId = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountService>();
+                return await service.Add(new BrokerAccountDTO
+                {
+                    Name = "Initial Broker Acc",
+                    BrokerId = brokerId,
+                    TypeId = typeId,
+                    BankId = bankId,
+                    CurrencyId = CurrencyConstants.USD
+                });
+            });
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountService>();
+                await service.Update(new BrokerAccountDTO
+                {
+                    Id = accountId,
+                    Name = actualName,
+                    BrokerId = actualBrokerId,
+                    TypeId = actualTypeId,
+                    BankId = actualBankId,
+                    CurrencyId = CurrencyConstants.USD
+                });
+            });
+
+            var current = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountService>();
+                return await service.GetById(accountId);
+            });
+
+            Assert.NotNull(current);
+            Assert.Equal(actualName, current.Name);
+            Assert.Equal(actualBrokerId, current.BrokerId);
+            Assert.Equal(actualTypeId, current.TypeId);
+            Assert.Equal(actualBankId, current.BankId);
+            Assert.Equal(actualTypeId, current.TypeId);
+        }
+
+        [Fact]
+        public async Task TestDelete()
+        {
+            var (brokerId, typeId, bankId) = await SetupDependencies();
+
+            var accountId = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountService>();
+                return await service.Add(new BrokerAccountDTO
+                {
+                    Name = "Initial Broker Acc",
+                    BrokerId = brokerId,
+                    TypeId = typeId,
+                    CurrencyId = CurrencyConstants.USD,
+                    BankId = bankId
+                });
+            });
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountService>();
+                await service.Delete(accountId);
+            });
+
+            var listAfterDelete = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountService>();
+                return await service.GetAll();
+            });
+
+            Assert.DoesNotContain(listAfterDelete, a => a.Id == accountId);
+        }
+
+        private async Task<(Guid brokerId, Guid typeId, Guid bankId)> SetupDependencies()
+        {
+            var brokerId = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerService>();
+                return await service.Add(new BrokerDTO { Name = "Test Broker" });
+            });
+
+            var typeId = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountTypeService>();
+                return await service.Add(new BrokerAccountTypeDTO { Name = "Test Broker Acc Type" });
+            });
+
+            var bankId = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBankService>();
+                var bank = await service.Add(new BankDto { Name = "Test Broker Acc Type" }, null);
+                return bank.Id;
+            });
+
+            return (brokerId, typeId, bankId);
+        }
+    }
+}

@@ -1,0 +1,200 @@
+using Microsoft.Extensions.DependencyInjection;
+using MoneyManager.Application.DTO.Accounts;
+using MoneyManager.Application.DTO.Transactions;
+using MoneyManager.Application.Interfaces.Accounts;
+using MoneyManager.Application.Interfaces.Transactions;
+using MoneyManager.Application.Tests.Fixtures;
+using MoneyManager.Infrastructure.Constants;
+
+namespace MoneyManager.Application.Tests.Services.Transactions
+{
+    public class CurrencyTransactionServiceTests : TestBase
+    {
+        public CurrencyTransactionServiceTests(ServiceCollectionFixture serviceCollectionFixture) : base(serviceCollectionFixture)
+        {
+        }
+
+        [Fact]
+        public async Task TestAddAndGetById()
+        {
+            var (sourceId, destId) = await SetupAccounts();
+
+            var dto = new CurrencyTransactionDto
+            {
+                Name = "USD to EUR Exchange",
+                SourceAccountId = sourceId,
+                DestinationAccountId = destId,
+                Amount = 1000m,
+                Rate = 0.85m,
+                Date = DateOnly.FromDateTime(DateTime.Now)
+            };
+
+            var id = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ICurrencyTransactionService>();
+                return await service.Add(dto);
+            });
+
+            Assert.NotEqual(Guid.Empty, id);
+
+            var fetched = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ICurrencyTransactionService>();
+                return await service.GetById(id);
+            });
+
+            Assert.NotNull(fetched);
+            Assert.Equal("USD to EUR Exchange", fetched.Name);
+            Assert.Equal(1000m, fetched.Amount);
+            Assert.Equal(0.85m, fetched.Rate);
+        }
+
+        [Fact]
+        public async Task TestGetAllByAccountId()
+        {
+            var (sourceId, destId) = await SetupAccounts();
+
+            var dto = new CurrencyTransactionDto
+            {
+                Name = "Fx Transfer",
+                SourceAccountId = sourceId,
+                DestinationAccountId = destId,
+                Amount = 500m,
+                Rate = 0.9m,
+                Date = DateOnly.FromDateTime(DateTime.Now)
+            };
+
+            var id = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ICurrencyTransactionService>();
+                return await service.Add(dto);
+            });
+
+            var sourceTransactions = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ICurrencyTransactionService>();
+                return await service.GetAllByAccountId(sourceId);
+            });
+
+            Assert.NotNull(sourceTransactions);
+            Assert.Contains(sourceTransactions, t => t.Id == id);
+
+            var destTransactions = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ICurrencyTransactionService>();
+                return await service.GetAllByAccountId(destId);
+            });
+
+            Assert.NotNull(destTransactions);
+            Assert.Contains(destTransactions, t => t.Id == id);
+        }
+
+        [Fact]
+        public async Task TestUpdate()
+        {
+            var (sourceId, destId) = await SetupAccounts();
+
+            var id = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ICurrencyTransactionService>();
+                return await service.Add(new CurrencyTransactionDto
+                {
+                    Name = "Initial Fx",
+                    SourceAccountId = sourceId,
+                    DestinationAccountId = destId,
+                    Amount = 200m,
+                    Rate = 1.0m,
+                    Date = DateOnly.FromDateTime(DateTime.Now)
+                });
+            });
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ICurrencyTransactionService>();
+                var item = await service.GetById(id);
+                item.Name = "Updated Fx";
+                item.Amount = 300m;
+                item.SourceAccount = null;
+                item.DestinationAccount = null;
+                await service.Update(item);
+            });
+
+            var updated = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ICurrencyTransactionService>();
+                return await service.GetById(id);
+            });
+
+            Assert.NotNull(updated);
+            Assert.Equal("Updated Fx", updated.Name);
+            Assert.Equal(300m, updated.Amount);
+        }
+
+        [Fact]
+        public async Task TestDelete()
+        {
+            var (sourceId, destId) = await SetupAccounts();
+
+            var id = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ICurrencyTransactionService>();
+                return await service.Add(new CurrencyTransactionDto
+                {
+                    Name = "To Delete Fx",
+                    SourceAccountId = sourceId,
+                    DestinationAccountId = destId,
+                    Amount = 100m,
+                    Rate = 1.0m,
+                    Date = DateOnly.FromDateTime(DateTime.Now)
+                });
+            });
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ICurrencyTransactionService>();
+                await service.Delete(id);
+            });
+
+            var deleted = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ICurrencyTransactionService>();
+                return await service.GetById(id);
+            });
+
+            Assert.Null(deleted);
+        }
+
+        private async Task<(Guid sourceId, Guid destId)> SetupAccounts()
+        {
+            var sourceId = await ExecuteScopeAsync(async sp =>
+            {
+                var accService = sp.GetRequiredService<IAccountService>();
+                return await accService.Add(new AccountDTO
+                {
+                    Active = true,
+                    Name = "Fx Source Acc",
+                    AccountTypeId = AccountTypeConstants.Cash,
+                    CurrencyId = CurrencyConstants.USD,
+                    Balance = 5000m,
+                    CreatedOn = DateOnly.FromDateTime(DateTime.Now)
+                });
+            });
+
+            var destId = await ExecuteScopeAsync(async sp =>
+            {
+                var accService = sp.GetRequiredService<IAccountService>();
+                return await accService.Add(new AccountDTO
+                {
+                    Active = true,
+                    Name = "Fx Dest Acc",
+                    AccountTypeId = AccountTypeConstants.Cash,
+                    CurrencyId = CurrencyConstants.EUR,
+                    Balance = 2000m,
+                    CreatedOn = DateOnly.FromDateTime(DateTime.Now)
+                });
+            });
+
+            return (sourceId, destId);
+        }
+    }
+}

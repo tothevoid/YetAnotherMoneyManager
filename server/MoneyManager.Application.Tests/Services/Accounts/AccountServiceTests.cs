@@ -1,0 +1,377 @@
+using Microsoft.Extensions.DependencyInjection;
+using MoneyManager.Application.DTO.Accounts;
+using MoneyManager.Application.Interfaces.Accounts;
+using MoneyManager.Application.Tests.Fixtures;
+using MoneyManager.Infrastructure.Constants;
+using MoneyManager.Infrastructure.Entities.Transactions;
+using MoneyManager.Infrastructure.Interfaces.Database;
+
+namespace MoneyManager.Application.Tests.Services.Accounts
+{
+    public class AccountServiceTests : TestBase
+    {
+        public AccountServiceTests(ServiceCollectionFixture serviceCollectionFixture) : base(serviceCollectionFixture)
+        {
+
+        }
+
+        [Fact]
+        public async Task TestGetAll()
+        {
+            var activeAccountsBefore = await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                return (await accountsService.GetAll(true)).Count();
+            });
+
+            var allAccountsBefore = await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                return (await accountsService.GetAll(false)).Count();
+            });
+
+            var activeAccountsToCreate = 15;
+            var nonActiveAccountsToCreate = 12;
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+
+                foreach (var account in Enumerable.Range(0, activeAccountsToCreate))
+                {
+                    await accountsService.Add(CreateAccount(Guid.NewGuid(), 
+                        account.ToString(), AccountTypeConstants.Cash, CurrencyConstants.USD, true));
+                }
+
+                foreach (var account in Enumerable.Range(0, nonActiveAccountsToCreate))
+                {
+                    await accountsService.Add(CreateAccount(Guid.NewGuid(),
+                        account.ToString(), AccountTypeConstants.Cash, CurrencyConstants.USD, false));
+                }
+            });
+
+            var activeAccountsAfter = await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                return (await accountsService.GetAll(true)).Count();
+            });
+
+            var allAccountsAfter = await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                return (await accountsService.GetAll(false)).Count();
+            });
+
+            Assert.Equal(activeAccountsBefore + activeAccountsToCreate, activeAccountsAfter);
+            Assert.Equal(allAccountsBefore + activeAccountsToCreate + nonActiveAccountsToCreate, allAccountsAfter);
+        }
+
+        [Fact]
+        public async Task GetAllByTypesTest()
+        {
+            var activeCashAccountsBefore = await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                return (await accountsService.GetAllByTypes(new Guid[] { AccountTypeConstants.Cash}, true)).Count();
+            });
+
+            var newAccountTypeId = Guid.NewGuid();
+            var newAccountTypeAccounts = 15;
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var typesService = sp.GetRequiredService<IAccountTypeService>();
+                var accountsService = sp.GetRequiredService<IAccountService>();
+
+                await typesService.Add(new AccountTypeDTO() { Id = newAccountTypeId, Name = "Test", Active = true });
+
+                foreach (var account in Enumerable.Range(0, newAccountTypeAccounts))
+                {
+                    await accountsService.Add(CreateAccount(Guid.NewGuid(),
+                        account.ToString(), newAccountTypeId, CurrencyConstants.USD, true));
+                }
+            });
+
+            var activeCashAccountsAfter = await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                return (await accountsService.GetAllByTypes(new Guid[] { AccountTypeConstants.Cash }, true)).Count();
+            });
+
+            var newAccountTypeActiveAccountsAfter = await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                return (await accountsService.GetAllByTypes(new Guid[] { newAccountTypeId }, true)).Count();
+            });
+
+            Assert.Equal(activeCashAccountsBefore, activeCashAccountsAfter);
+            Assert.Equal(newAccountTypeAccounts, newAccountTypeActiveAccountsAfter);
+        }
+
+        [Fact]
+        public async Task TestGetById_WhenExists_ReturnsAccount()
+        {
+            var accountName = "GetById Account";
+
+            var createdId = await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                return await accountsService.Add(CreateAccount(Guid.NewGuid(), accountName, AccountTypeConstants.Cash, CurrencyConstants.USD, true, 500));
+            });
+
+            var account = await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                return await accountsService.GetById(createdId);
+            });
+
+            Assert.NotNull(account);
+            Assert.Equal(createdId, account.Id);
+            Assert.Equal(accountName, account.Name);
+            Assert.Equal(500, account.Balance);
+        }
+
+        [Fact]
+        public async Task TestGetById_WhenNotExists_ReturnsNull()
+        {
+            var account = await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                return await accountsService.GetById(Guid.NewGuid());
+            });
+
+            Assert.Null(account);
+        }
+
+        [Fact]
+        public async Task TestAdd_CreatesAccountAndReturnsGuid()
+        {
+            var dto = CreateAccount(Guid.Empty, "New Added Account", AccountTypeConstants.Cash, CurrencyConstants.USD, true, 250);
+
+            var createdId = await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                return await accountsService.Add(dto);
+            });
+
+            Assert.NotEqual(Guid.Empty, createdId);
+
+            var fetched = await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                return await accountsService.GetById(createdId);
+            });
+
+            Assert.NotNull(fetched);
+            Assert.Equal("New Added Account", fetched.Name);
+            Assert.Equal(250, fetched.Balance);
+        }
+
+        [Fact]
+        public async Task TestUpdate_BalanceChanged_CreatesSystemTransaction()
+        {
+            var initialBalance = 100m;
+            var updatedBalance = 250m;
+
+            var accountId = await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                return await accountsService.Add(CreateAccount(Guid.NewGuid(), "Update Balance Test", AccountTypeConstants.Cash, CurrencyConstants.USD, true, initialBalance));
+            });
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                var accountDto = await accountsService.GetById(accountId);
+                accountDto.Balance = updatedBalance;
+                accountDto.Name = "Updated Name";
+                await accountsService.Update(accountDto);
+            });
+
+            var (updatedAccount, systemTxCount) = await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                var uow = sp.GetRequiredService<IUnitOfWork>();
+                var txRepo = uow.CreateRepository<Transaction>();
+
+                var acc = await accountsService.GetById(accountId);
+                var txs = await txRepo.GetAll(t => t.AccountId == accountId && t.IsSystem);
+                return (acc, txs.Count());
+            });
+
+            Assert.NotNull(updatedAccount);
+            Assert.Equal("Updated Name", updatedAccount.Name);
+            Assert.Equal(updatedBalance, updatedAccount.Balance);
+            Assert.Equal(1, systemTxCount);
+        }
+
+        [Fact]
+        public async Task TestUpdate_BalanceUnchanged_DoesNotCreateSystemTransaction()
+        {
+            var balance = 100m;
+
+            var accountId = await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                return await accountsService.Add(CreateAccount(Guid.NewGuid(), "Update Same Balance", AccountTypeConstants.Cash, CurrencyConstants.USD, true, balance));
+            });
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                var accountDto = await accountsService.GetById(accountId);
+                accountDto.Name = "Renamed Only";
+                await accountsService.Update(accountDto);
+            });
+
+            var systemTxCount = await ExecuteScopeAsync(async sp =>
+            {
+                var uow = sp.GetRequiredService<IUnitOfWork>();
+                var txRepo = uow.CreateRepository<Transaction>();
+                var txs = await txRepo.GetAll(t => t.AccountId == accountId && t.IsSystem);
+                return txs.Count();
+            });
+
+            Assert.Equal(0, systemTxCount);
+        }
+
+        [Fact]
+        public async Task TestUpdate_AccountNotFound_DoesNotThrow()
+        {
+            await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                var nonExistentAccount = CreateAccount(Guid.NewGuid(), "Ghost", AccountTypeConstants.Cash, CurrencyConstants.USD, true);
+                await accountsService.Update(nonExistentAccount);
+            });
+        }
+
+        [Fact]
+        public async Task TestDelete_RemovesAccount()
+        {
+            var accountId = await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                return await accountsService.Add(CreateAccount(Guid.NewGuid(), "To Delete", AccountTypeConstants.Cash, CurrencyConstants.USD, true));
+            });
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                await accountsService.Delete(accountId);
+            });
+
+            var deleted = await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                return await accountsService.GetById(accountId);
+            });
+
+            Assert.Null(deleted);
+        }
+
+        [Fact]
+        public async Task TestTransfer_Success_UpdatesBalancesAndCreatesTransactions()
+        {
+            var fromId = await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                return await accountsService.Add(CreateAccount(Guid.NewGuid(), "From Account", AccountTypeConstants.Cash, CurrencyConstants.USD, true, 1000m));
+            });
+
+            var toId = await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                return await accountsService.Add(CreateAccount(Guid.NewGuid(), "To Account", AccountTypeConstants.Cash, CurrencyConstants.USD, true, 200m));
+            });
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                await accountsService.Transfer(new AccountTransferDTO
+                {
+                    From = fromId,
+                    To = toId,
+                    Balance = 300m,
+                    Fee = 10m
+                });
+            });
+
+            var (fromAcc, toAcc, fromTxsCount, toTxsCount) = await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                var uow = sp.GetRequiredService<IUnitOfWork>();
+                var txRepo = uow.CreateRepository<Transaction>();
+
+                var from = await accountsService.GetById(fromId);
+                var to = await accountsService.GetById(toId);
+                var fromTxs = await txRepo.GetAll(t => t.AccountId == fromId);
+                var toTxs = await txRepo.GetAll(t => t.AccountId == toId);
+
+                return (from, to, fromTxs.Count(), toTxs.Count());
+            });
+
+            Assert.Equal(690m, fromAcc.Balance); // 1000 - 300 - 10
+            Assert.Equal(500m, toAcc.Balance);   // 200 + 300
+            Assert.True(fromTxsCount >= 1);
+            Assert.True(toTxsCount >= 1);
+        }
+
+        [Fact]
+        public async Task TestTransfer_AccountNotFound_ThrowsArgumentException()
+        {
+            await Assert.ThrowsAsync<ArgumentException>(async () =>
+            {
+                await ExecuteScopeAsync(async sp =>
+                {
+                    var accountsService = sp.GetRequiredService<IAccountService>();
+                    await accountsService.Transfer(new AccountTransferDTO
+                    {
+                        From = Guid.NewGuid(),
+                        To = Guid.NewGuid(),
+                        Balance = 100m,
+                        Fee = 0m
+                    });
+                });
+            });
+        }
+
+        [Fact]
+        public async Task TestGetSummary_ReturnsAggregatedBalancesByCurrency()
+        {
+            var usdAcc1 = Guid.NewGuid();
+            var usdAcc2 = Guid.NewGuid();
+            var usdInactive = Guid.NewGuid();
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                await accountsService.Add(CreateAccount(usdAcc1, "Summary USD 1", AccountTypeConstants.Cash, CurrencyConstants.USD, true, 150m));
+                await accountsService.Add(CreateAccount(usdAcc2, "Summary USD 2", AccountTypeConstants.Cash, CurrencyConstants.USD, true, 350m));
+                await accountsService.Add(CreateAccount(usdInactive, "Summary USD Inactive", AccountTypeConstants.Cash, CurrencyConstants.USD, false, 500m));
+            });
+
+            var summaries = await ExecuteScopeAsync(async sp =>
+            {
+                var accountsService = sp.GetRequiredService<IAccountService>();
+                return await accountsService.GetSummary();
+            });
+
+            Assert.NotNull(summaries);
+            var usdSummary = summaries.FirstOrDefault(s => s.Name == "USD");
+            Assert.NotNull(usdSummary);
+            Assert.True(usdSummary.Summary >= 500m); // 150 + 350 active accounts
+        }
+
+        private AccountDTO CreateAccount(Guid id, string name, Guid typeId, Guid currencyId, bool active, decimal balance = 100) => new()
+        {
+            Id = id, 
+            Active = active, 
+            Name = name, 
+            AccountTypeId = typeId,
+            Balance = balance,
+            CreatedOn = DateOnly.FromDateTime(DateTime.Now),
+            CurrencyId = currencyId,
+        };
+    }
+}

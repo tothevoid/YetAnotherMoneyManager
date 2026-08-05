@@ -1,0 +1,34 @@
+using Microsoft.Extensions.DependencyInjection;
+using MoneyManager.Application.Interfaces.Securities;
+using MoneyManager.Application.Tests.Fixtures;
+
+namespace MoneyManager.Application.Tests.Services.Securities
+{
+    public class PullQuotationsServiceTests : TestBase
+    {
+        public PullQuotationsServiceTests(ServiceCollectionFixture serviceCollectionFixture) : base(serviceCollectionFixture)
+        {
+        }
+
+        [Fact]
+        public async Task TestUpdateAndGetPullDate()
+        {
+            var testDate = new DateTime(2026, 8, 3, 12, 0, 0, DateTimeKind.Utc);
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IPullQuotationsService>();
+                service.UpdatePullDate(testDate);
+                await Task.CompletedTask;
+            });
+
+            var pullDate = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IPullQuotationsService>();
+                return await Task.FromResult(service.LastPullDate);
+            });
+
+            Assert.Equal(testDate, pullDate);
+        }
+    }
+}

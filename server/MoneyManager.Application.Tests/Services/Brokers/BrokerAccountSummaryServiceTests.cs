@@ -1,0 +1,120 @@
+using Microsoft.Extensions.DependencyInjection;
+using MoneyManager.Application.DTO.Accounts;
+using MoneyManager.Application.DTO.Brokers;
+using MoneyManager.Application.Interfaces.Accounts;
+using MoneyManager.Application.Interfaces.Brokers;
+using MoneyManager.Application.Tests.Fixtures;
+using MoneyManager.Infrastructure.Constants;
+
+namespace MoneyManager.Application.Tests.Services.Brokers
+{
+    public class BrokerAccountSummaryServiceTests : TestBase
+    {
+        public BrokerAccountSummaryServiceTests(ServiceCollectionFixture serviceCollectionFixture) : base(serviceCollectionFixture)
+        {
+        }
+
+        [Fact]
+        public async Task TestGetSummaryAndTransfersHistory()
+        {
+            var (brokerAccountId, accountId) = await SetupDependencies();
+
+            // Add a funds transfer
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountFundsTransferService>();
+                await service.Add(new BrokerAccountFundsTransferDto
+                {
+                    BrokerAccountId = brokerAccountId,
+                    AccountId = accountId,
+                    Amount = 5000m,
+                    Income = true,
+                    Date = DateTime.UtcNow
+                });
+            });
+
+            var summary = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountSummaryService>();
+                return await service.GetSummary();
+            });
+
+            Assert.NotNull(summary);
+            Assert.NotNull(summary.TransferStats);
+            Assert.Equal(5000m, summary.TransferStats.TotalDeposited);
+
+            var accountSummary = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountSummaryService>();
+                return await service.GetSummaryByBrokerAccount(brokerAccountId);
+            });
+
+            Assert.NotNull(accountSummary);
+            Assert.Equal(5000m, accountSummary.TransferStats.TotalDeposited);
+
+            var now = DateTime.UtcNow;
+
+            var monthHistory = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountSummaryService>();
+                return await service.GetMonthTransfersHistoryByBrokerAccount(brokerAccountId, now.Month, now.Year);
+            });
+
+            Assert.NotNull(monthHistory);
+            Assert.NotEmpty(monthHistory);
+
+            var yearHistory = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountSummaryService>();
+                return await service.GetYearTransfersHistoryByBrokerAccount(brokerAccountId, now.Year);
+            });
+
+            Assert.NotNull(yearHistory);
+            Assert.NotEmpty(yearHistory);
+        }
+
+        private async Task<(Guid brokerAccountId, Guid accountId)> SetupDependencies()
+        {
+            var brokerId = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerService>();
+                return await service.Add(new BrokerDTO { Name = "Summary Broker" });
+            });
+
+            var typeId = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountTypeService>();
+                return await service.Add(new BrokerAccountTypeDTO { Name = "Summary Acc Type" });
+            });
+
+            var brokerAccountId = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountService>();
+                return await service.Add(new BrokerAccountDTO
+                {
+                    Name = "Summary Broker Acc",
+                    BrokerId = brokerId,
+                    TypeId = typeId,
+                    CurrencyId = CurrencyConstants.USD,
+                    MainCurrencyAmount = 2000m
+                });
+            });
+
+            var accountId = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IAccountService>();
+                return await service.Add(new AccountDTO
+                {
+                    Active = true,
+                    Name = "Summary Linked Card",
+                    AccountTypeId = AccountTypeConstants.Cash,
+                    CurrencyId = CurrencyConstants.USD,
+                    Balance = 10000m,
+                    CreatedOn = DateOnly.FromDateTime(DateTime.UtcNow)
+                });
+            });
+
+            return (brokerAccountId, accountId);
+        }
+    }
+}

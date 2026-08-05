@@ -102,7 +102,7 @@ namespace MoneyManager.Application.Services.Transactions
             }
             //changed account from transaction
             else if (lastTransactionId != default && updateAccountModelId != default &&
-                currentTransaction.Account.Id != updatedTransaction.Account.Id)
+                lastTransactionId != updateAccountModelId)
             {
                 accountsToUpdate.Add((lastTransactionId, currentTransaction.Amount * -1));
                 accountsToUpdate.Add((updateAccountModelId, updatedTransaction.Amount));

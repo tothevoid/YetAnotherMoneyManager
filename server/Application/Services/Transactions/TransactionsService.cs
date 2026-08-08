@@ -48,7 +48,6 @@ namespace MoneyManager.Application.Services.Transactions
             var transaction = _mapper.Map<Transaction>(transactionDTO);
             transaction.Id = Guid.NewGuid();
             var sourceId = transactionDTO?.Account?.Id ?? default;
-            var tasks = new List<Task>();
             if (sourceId != default)
             {
                 transaction.AccountId = sourceId;
@@ -57,9 +56,8 @@ namespace MoneyManager.Application.Services.Transactions
                 account.Balance += transaction.Amount;
                 _accountRepo.Update(account);
             }
-           
-            tasks.Add(_transactionsRepo.Add(transaction));
-            await Task.WhenAll(tasks);
+
+            await _transactionsRepo.Add(transaction);
             await _db.Commit();
 
             var newTransaction = await _transactionsRepo.GetById(transaction.Id, GetFullHierarchyColumns, true);

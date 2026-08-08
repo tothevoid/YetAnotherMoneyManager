@@ -36,6 +36,15 @@ namespace MoneyManager.Application.Services.Brokers
             return _mapper.Map<IEnumerable<BrokerAccountTaxDeductionDto>>(entities);
         }
 
+        public async Task<decimal> GetSumOnSpecificDate(DateOnly date, Guid? brokerAccountId)
+        {
+            Expression<Func<BrokerAccountTaxDeduction, bool>> filter = brokerAccountId != null ?
+                (taxDeduction) => DateOnly.FromDateTime(taxDeduction.DateApplied) <= date && taxDeduction.BrokerAccountId == brokerAccountId :
+                (taxDeduction) => DateOnly.FromDateTime(taxDeduction.DateApplied) <= date;
+
+            return await _brokerAccountTaxDeductionRepo.GetSum((taxDeduction) => taxDeduction.Amount, filter);
+        }
+
         public async Task<decimal> GetAmountByBrokerAccount(Guid brokerAccountId)
         {
             return await _brokerAccountTaxDeductionRepo.GetSum(

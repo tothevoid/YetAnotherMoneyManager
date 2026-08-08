@@ -10,6 +10,8 @@ namespace MoneyManager.Application.Interfaces.Brokers
     {
         Task<IEnumerable<DividendPaymentDto>> GetAll(Guid? brokerAccountId, int pageIndex, int recordsQuantity);
 
+        Task<decimal> GetSumOnSpecificDate(DateOnly date, Guid? brokerAccountId);
+
         Task<PaginationConfigDto> GetPagination();
 
         Task<PaginationConfigDto> GetPaginationByBrokerAccount(Guid brokerAccountId);

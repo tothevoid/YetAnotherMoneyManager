@@ -53,6 +53,15 @@ namespace MoneyManager.Application.Services.Brokers
             return _mapper.Map<IEnumerable<DividendPaymentDto>>(dividends);
         }
 
+        public async Task<decimal> GetSumOnSpecificDate(DateOnly date, Guid? brokerAccountId)
+        {
+            Expression<Func<DividendPayment, bool>> filter = brokerAccountId != null ?
+                (dividendPayment) => dividendPayment.ReceivedAt <= date && dividendPayment.BrokerAccountId == brokerAccountId :
+                (dividendPayment) => dividendPayment.ReceivedAt <= date;
+
+            return await _dividendPaymentRepo.GetSum((payment) => payment.SecuritiesQuantity * payment.Dividend.Amount - payment.Tax, filter);
+        }
+
         public async Task<PaginationConfigDto> GetPagination()
         {
             return await GetPaginationByFilter();
@@ -156,5 +165,7 @@ namespace MoneyManager.Application.Services.Brokers
         {
             return dividend.Amount * securitiesQuantity - tax;
         }
+
+      
     }
 }

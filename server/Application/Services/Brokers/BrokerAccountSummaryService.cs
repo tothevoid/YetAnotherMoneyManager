@@ -222,7 +222,7 @@ namespace MoneyManager.Application.Services.Brokers
                     MinPrice = marketValue.Low,
                     MaxPrice = marketValue.High,
                     PreviousDayClosePrice = marketValue.PrevPrice ?? 0,
-                    Quantity = securitiesQuantities[security.Id]
+                    Quantity = quantity
                 });
                 handledTickers.Add(marketValue.Ticker);
             }

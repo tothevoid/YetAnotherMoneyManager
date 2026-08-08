@@ -5,13 +5,11 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.DTO.Common;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Application.Interfaces.Securities;
 using MoneyManager.Application.Queries.Brokers;
-using MoneyManager.Application.Services.Brokers;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Infrastructure.Interfaces.Database;
@@ -62,6 +60,38 @@ namespace MoneyManager.Application.Services.Securities
             var brokerAccountSecurities = await _securityTransactionRepo
                 .GetAll(query.GetQuery());
             return _mapper.Map<IEnumerable<SecurityTransactionDTO>>(brokerAccountSecurities);
+        }
+
+        public async Task<Dictionary<string, SecurityTransactionsSummary>> GetSummaryByDate(DateOnly date, Guid? brokerAccountId)
+        {
+            Expression<Func<SecurityTransaction, bool>> filter = brokerAccountId != null ?
+                (transaction) => DateOnly.FromDateTime(transaction.Date) <= date && transaction.BrokerAccountId == brokerAccountId :
+                (transaction) => DateOnly.FromDateTime(transaction.Date) <= date;
+
+            var result = await _securityTransactionRepo.Group(
+                (transaction) => transaction.Security.Ticker, 
+                (group) =>
+                    new
+                    {
+                        Ticker = group.Key,
+                        Stats = new
+                        {
+                            ActualQuantity = group.Sum(x => x.IsSell ? -1 * x.Quantity : x.Quantity),
+                            PurchasePriceSum = group.Sum(x => x.IsSell ? 0: x.Price * x.Quantity + x.Tax + x.BrokerCommission),
+                            SellPriceSum = group.Sum(x => !x.IsSell ? 0 : x.Price * x.Quantity - x.Tax - x.BrokerCommission),
+                        }
+                    }
+                ,
+                filter);
+
+            return result.ToDictionary(
+                (key) => key.Ticker,
+                (value) => new SecurityTransactionsSummary
+                {
+                    ActualQuantity = value.Stats.ActualQuantity,
+                    PurchasePriceSum = value.Stats.PurchasePriceSum,
+                    SellPriceSum = value.Stats.SellPriceSum
+                });
         }
 
         public async Task<IEnumerable<SecurityTransactionsHistoryDto>> GetTransactionsHistory(Guid securityId)

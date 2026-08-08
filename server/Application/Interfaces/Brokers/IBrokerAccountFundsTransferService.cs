@@ -11,7 +11,10 @@ namespace MoneyManager.Application.Interfaces.Brokers
         Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAll();
         Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAll(Guid brokerAccountId);
         Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAll(Guid? brokerAccountId, int pageIndex, int recordsQuantity);
-        Task<PaginationConfigDto> GetPagination();
+
+        Task<(decimal deposited, decimal withdrawn)> GetSumOnSpecificDate(DateOnly date, Guid? brokerAccountId);
+
+        Task <PaginationConfigDto> GetPagination();
         Task<PaginationConfigDto> GetPaginationByBrokerAccount(Guid brokerAccountId);
         Task<BrokerAccountFundsTransferDto> Add(BrokerAccountFundsTransferDto transfer);
         Task Update(BrokerAccountFundsTransferDto transfer);

@@ -69,6 +69,27 @@ namespace MoneyManager.Application.Services.Brokers
             return _mapper.Map<IEnumerable<BrokerAccountFundsTransferDto>>(transfers).ToList();
         }
 
+        public async Task<(decimal deposited, decimal withdrawn)> GetSumOnSpecificDate(DateOnly date, Guid? brokerAccountId)
+        {
+            async Task<decimal> GetSum(bool isIncome)
+            {
+                Expression<Func<BrokerAccountFundsTransfer, bool>> filter = brokerAccountId != null ?
+                  (fundTransfer) => isIncome == fundTransfer.Income && DateOnly.FromDateTime(fundTransfer.Date) <= date && fundTransfer.BrokerAccountId == brokerAccountId :
+                  (fundTransfer) => isIncome == fundTransfer.Income && DateOnly.FromDateTime(fundTransfer.Date) <= date;
+
+                return await _transfersRepo.GetSum((payment) => payment.Amount, filter);
+            }
+
+            //TODO: Task.WhenAll
+            var deposited = await GetSum(true);
+            var withdrawn = await GetSum(false);
+
+            return (
+               deposited,
+               withdrawn
+            );
+        }
+
         private ComplexQueryBuilder<BrokerAccountFundsTransfer> GetBaseBuilder()
         {
             return new ComplexQueryBuilder<BrokerAccountFundsTransfer>()

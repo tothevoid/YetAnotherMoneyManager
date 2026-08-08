@@ -49,6 +49,20 @@ namespace MoneyManager.Infrastructure.Database
             return await query.Where(predicate).FirstOrDefaultAsync();
         }
 
+        public async Task<IEnumerable<Output>> Group<TKey, Output>(
+            Expression<Func<TEntity, TKey>> groupSelector,
+            Expression<Func<IGrouping<TKey, TEntity>, Output>> projection,
+            Expression<Func<TEntity, bool>> filter = null)
+        {
+            IQueryable<TEntity> query = _entities.AsNoTracking();
+            if (filter != null)
+            {
+                query.Where(filter);
+            }
+
+            return await query.GroupBy(groupSelector).Select(projection).ToListAsync();
+        }
+
         public async Task<IEnumerable<TEntity>> GetAll(Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null,
             bool disableTracking = true)

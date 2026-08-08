@@ -22,6 +22,10 @@ namespace MoneyManager.Infrastructure.Interfaces.Database
             bool disableTracking = true);
         Task<IEnumerable<TEntity>> GetAll(ComplexQuery<TEntity> complexQuery);
 
+        Task<IEnumerable<Output>> Group<KeySelector, Output>(Expression<Func<TEntity, KeySelector>> groupSelector,
+            Expression<Func<IGrouping<KeySelector, TEntity>, Output>> projection,
+            Expression<Func<TEntity, bool>> filter = null);
+
         Task<int> GetCount(Expression<Func<TEntity, bool>> filter = null);
 
         Task<TEntity> Find(Expression<Func<TEntity, bool>> predicate);

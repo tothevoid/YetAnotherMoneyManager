@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using DocumentFormat.OpenXml.Office.PowerPoint.Y2021.M06.Main;
 using Microsoft.Extensions.DependencyInjection;
 using MoneyManager.Application.Integrations.Currency;
@@ -71,6 +71,7 @@ namespace MoneyManager.Application.Extensions
             services.AddTransient<IAuthService, AuthService>();
 
             services.AddTransient<IAllAssetsReportService, AllAssetsReportService>();
+            services.AddTransient<IBrokerAccountPortfolioHistoryService, BrokerAccountPortfolioHistoryService>();
             services.AddSingleton<IPullQuotationsService, PullQuotationsService>();
 
             //TODO: make factory

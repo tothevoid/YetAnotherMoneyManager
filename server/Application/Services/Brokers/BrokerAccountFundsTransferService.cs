@@ -69,7 +69,7 @@ namespace MoneyManager.Application.Services.Brokers
             return _mapper.Map<IEnumerable<BrokerAccountFundsTransferDto>>(transfers).ToList();
         }
 
-        public async Task<(decimal deposited, decimal withdrawn)> GetSumOnSpecificDate(DateOnly date, Guid? brokerAccountId)
+        public async Task<(decimal deposited, decimal withdrawn)> GetSumTillSpecificDate(DateOnly date, Guid? brokerAccountId)
         {
             async Task<decimal> GetSum(bool isIncome)
             {

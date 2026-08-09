@@ -1,4 +1,4 @@
-﻿using MoneyManager.Application.DTO.Brokers;
+using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.DTO.Common;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ namespace MoneyManager.Application.Interfaces.Brokers
     {
         Task<IEnumerable<DividendPaymentDto>> GetAll(Guid? brokerAccountId, int pageIndex, int recordsQuantity);
 
-        Task<decimal> GetSumOnSpecificDate(DateOnly date, Guid? brokerAccountId);
+        Task<decimal> GetSumTillSpecificDate(DateOnly date, Guid? brokerAccountId);
 
         Task<PaginationConfigDto> GetPagination();
 

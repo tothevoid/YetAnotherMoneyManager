@@ -36,7 +36,7 @@ namespace MoneyManager.Application.Services.Brokers
             return _mapper.Map<IEnumerable<BrokerAccountTaxDeductionDto>>(entities);
         }
 
-        public async Task<decimal> GetSumOnSpecificDate(DateOnly date, Guid? brokerAccountId)
+        public async Task<decimal> GetSumTillSpecificDate(DateOnly date, Guid? brokerAccountId)
         {
             Expression<Func<BrokerAccountTaxDeduction, bool>> filter = brokerAccountId != null ?
                 (taxDeduction) => DateOnly.FromDateTime(taxDeduction.DateApplied) <= date && taxDeduction.BrokerAccountId == brokerAccountId :

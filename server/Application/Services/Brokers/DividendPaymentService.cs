@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.DTO.Common;
@@ -53,7 +53,7 @@ namespace MoneyManager.Application.Services.Brokers
             return _mapper.Map<IEnumerable<DividendPaymentDto>>(dividends);
         }
 
-        public async Task<decimal> GetSumOnSpecificDate(DateOnly date, Guid? brokerAccountId)
+        public async Task<decimal> GetSumTillSpecificDate(DateOnly date, Guid? brokerAccountId)
         {
             Expression<Func<DividendPayment, bool>> filter = brokerAccountId != null ?
                 (dividendPayment) => dividendPayment.ReceivedAt <= date && dividendPayment.BrokerAccountId == brokerAccountId :

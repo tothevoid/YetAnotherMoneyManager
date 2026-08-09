@@ -12,7 +12,7 @@ namespace MoneyManager.Application.Interfaces.Brokers
         Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAll(Guid brokerAccountId);
         Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAll(Guid? brokerAccountId, int pageIndex, int recordsQuantity);
 
-        Task<(decimal deposited, decimal withdrawn)> GetSumOnSpecificDate(DateOnly date, Guid? brokerAccountId);
+        Task<(decimal deposited, decimal withdrawn)> GetSumTillSpecificDate(DateOnly date, Guid? brokerAccountId);
 
         Task <PaginationConfigDto> GetPagination();
         Task<PaginationConfigDto> GetPaginationByBrokerAccount(Guid brokerAccountId);

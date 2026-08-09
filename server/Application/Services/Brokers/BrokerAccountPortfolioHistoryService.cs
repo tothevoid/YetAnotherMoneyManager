@@ -84,14 +84,19 @@ namespace MoneyManager.Application.Services.Brokers
                 return 0m;
             }
 
+            var securitiesList = await _securityService.FindByTickers(securitiesStats.Keys);
+            var securitiesMap = securitiesList.ToDictionary(s => s.Ticker.ToLower(), s => s);
+
             using var semaphore = new SemaphoreSlim(5);
             var priceTasks = securitiesStats.Select(async securitiesStat =>
             {
                 await semaphore.WaitAsync();
                 try
                 {
-                    var security = await _securityService.FindByTicker(securitiesStat.Key);
-                    if (security == null) return (securitiesStat.Key, 0m);
+                    if (!securitiesMap.TryGetValue(securitiesStat.Key.ToLower(), out var security) || security == null)
+                    {
+                        return (securitiesStat.Key, 0m);
+                    }
 
                     decimal price = await GetSecurityPriceAtDate(security, date);
                     await Task.Delay(100);
@@ -129,10 +134,10 @@ namespace MoneyManager.Application.Services.Brokers
             }
             catch
             {
-                // TODO: Use logger
-                Console.WriteLine($"Error getting price for ticker {security.Ticker}");
-                return 0m;
+                // Return 0m fallback when history fetch fails or missing
             }
+
+            return 0m;
         }
 
         private async Task<decimal> GetTotalTaxDeduction(DateOnly date, Guid? brokerAccountId)

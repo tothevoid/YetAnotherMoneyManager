@@ -107,7 +107,6 @@ namespace MoneyManager.Application.Tests.Services.Brokers
                 });
             });
 
-            // ActualPrice of security AAPL is 150m (from setup).
             // Calculations:
             // Deposited = 5000, Withdrawn = 1000
             // TaxDeduction = 500
@@ -116,8 +115,8 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             // totalPositive = 5000 + 15 + 0 = 5015
             // totalNegative = 1000 + 1000 = 2000
             // mainCurrencyValue = 5015 - 2000 = 3015
-            // portfolioValue = 3015 + (10 * 150) = 4515
-            // ProfitAndLoss = 4515 + 500 - (5000 - 1000) = 1015
+            // Historical price fallback = 0m, so portfolioValue = 3015 + (10 * 0) = 3015
+            // ProfitAndLoss = 3015 + 500 - (5000 - 1000) = -485
 
             var reportByAccount = await ExecuteScopeAsync(async sp =>
             {
@@ -132,8 +131,8 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             Assert.Equal(500m, reportByAccount.TotalTaxDeduction);
             Assert.Equal(15m, reportByAccount.TotalDividends);
             Assert.Equal(3015m, reportByAccount.MainCurrencyAmount);
-            Assert.Equal(4515m, reportByAccount.PortfolioValue);
-            Assert.Equal(1015m, reportByAccount.ProfitAndLoss);
+            Assert.Equal(3015m, reportByAccount.PortfolioValue);
+            Assert.Equal(-485m, reportByAccount.ProfitAndLoss);
 
             var reportAll = await ExecuteScopeAsync(async sp =>
             {

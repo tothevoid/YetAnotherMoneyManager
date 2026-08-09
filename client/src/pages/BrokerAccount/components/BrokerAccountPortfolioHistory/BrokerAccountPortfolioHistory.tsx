@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useEffect, useState } from "react";
-import { SimpleGrid, Stack, Text, Input, Skeleton } from "@chakra-ui/react";
+import { SimpleGrid, Stack, Text, Input, Card, Skeleton, Button } from "@chakra-ui/react";
 import DatePicker from "react-datepicker";
 import { useTranslation } from "react-i18next";
 import { useUserProfile } from "../../../../../features/UserProfileSettingsModal/hooks/UserProfileContext";
@@ -7,6 +7,8 @@ import MoneyCard from "../../../../shared/components/MoneyCard/MoneyCard";
 import { Nullable } from "../../../../shared/utilities/nullable";
 import { getBrokerAccountPortfolioHistory } from "../../../../api/brokers/brokerAccountPortfolioHistoryApi";
 import { BrokerAccountPortfolioHistoryEntity } from "../../../../models/brokers/BrokerAccountPortfolioHistoryEntity";
+import { formatMoneyByCurrencyCulture } from "../../../../shared/utilities/formatters/moneyFormatter";
+import { getDiffColor } from "../../../../shared/utilities/numericDiffsUtilities";
 
 interface Props {
     brokerAccountId?: Nullable<string>;
@@ -50,6 +52,8 @@ const BrokerAccountPortfolioHistory: React.FC<Props> = ({ brokerAccountId }) => 
 
     const currencyName = user.currency.name;
 
+    const pnlSign = history && history.profitAndLoss > 0 ? "+" : "";
+
     return (
         <SimpleGrid marginBlock={4} gap={4}>
             <Stack direction="row" alignItems="center" gap={4}>
@@ -64,6 +68,7 @@ const BrokerAccountPortfolioHistory: React.FC<Props> = ({ brokerAccountId }) => 
                             setSelectedDate(date);
                         }
                     }}
+                    maxDate={new Date()}
                     dateFormat="dd.MM.yyyy"
                     customInput={
                         <Input
@@ -74,6 +79,15 @@ const BrokerAccountPortfolioHistory: React.FC<Props> = ({ brokerAccountId }) => 
                         />
                     }
                 />
+                <Button
+                    size="sm"
+                    variant="outline"
+                    borderColor="border_primary"
+                    color="text_primary"
+                    onClick={() => setSelectedDate(new Date())}
+                >
+                    {t("broker_account_portfolio_history_today")}
+                </Button>
             </Stack>
 
             {isLoading ? (
@@ -90,50 +104,49 @@ const BrokerAccountPortfolioHistory: React.FC<Props> = ({ brokerAccountId }) => 
                         <Skeleton height="100px" borderRadius="md" />
                         <Skeleton height="100px" borderRadius="md" />
                     </SimpleGrid>
-                    <SimpleGrid columns={2} gap={4}>
-                        <Skeleton height="100px" borderRadius="md" />
-                    </SimpleGrid>
                 </>
             ) : (
                 history && (
                     <>
                         <SimpleGrid columns={2} gap={4}>
-                            <MoneyCard
-                                title={t("broker_account_portfolio_history_portfolio_value")}
-                                value={history.portfolioValue}
-                                currency={currencyName}
-                            />
-                            <MoneyCard
-                                title={t("broker_account_portfolio_history_profit_and_loss")}
-                                value={history.profitAndLoss}
-                                currency={currencyName}
-                            />
-                        </SimpleGrid>
-                        <SimpleGrid columns={2} gap={4}>
+                            <Card.Root backgroundColor="background_primary" borderColor="border_primary" color="text_primary">
+                                <Card.Header>
+                                    {t("broker_account_portfolio_history_portfolio_value")}
+                                </Card.Header>
+                                <Card.Body fontSize="xl" fontWeight={700} display="flex" flexDirection="row" alignItems="baseline" gap={2} flexWrap="wrap">
+                                    <Text as="span">{formatMoneyByCurrencyCulture(history.portfolioValue, currencyName)}</Text>
+                                    {history.profitAndLoss !== 0 && (
+                                        <Text as="span" color={getDiffColor(history.profitAndLoss)}>
+                                            ({pnlSign}{formatMoneyByCurrencyCulture(history.profitAndLoss, currencyName)})
+                                        </Text>
+                                    )}
+                                </Card.Body>
+                            </Card.Root>
+
                             <MoneyCard
                                 title={t("broker_account_portfolio_history_main_currency_amount")}
                                 value={history.mainCurrencyAmount}
                                 currency={currencyName}
                             />
+                        </SimpleGrid>
+                        <SimpleGrid columns={2} gap={4}>
                             <MoneyCard
                                 title={t("broker_account_portfolio_history_total_dividends")}
                                 value={history.totalDividends}
                                 currency={currencyName}
                             />
-                        </SimpleGrid>
-                        <SimpleGrid columns={2} gap={4}>
                             <MoneyCard
                                 title={t("broker_account_portfolio_history_total_tax_deduction")}
                                 value={history.totalTaxDeduction}
                                 currency={currencyName}
                             />
+                        </SimpleGrid>
+                        <SimpleGrid columns={2} gap={4}>
                             <MoneyCard
                                 title={t("broker_account_portfolio_history_total_deposited")}
                                 value={history.totalDeposited}
                                 currency={currencyName}
                             />
-                        </SimpleGrid>
-                        <SimpleGrid columns={2} gap={4}>
                             <MoneyCard
                                 title={t("broker_account_portfolio_history_total_withdrawn")}
                                 value={history.totalWithdraw}

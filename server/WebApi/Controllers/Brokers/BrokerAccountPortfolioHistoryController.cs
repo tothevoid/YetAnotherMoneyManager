@@ -22,13 +22,19 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         [HttpGet(nameof(GetAll))]
         public async Task<BrokerAccountPortfolioHistoryDto> GetAll([FromQuery] DateOnly date)
         {
-            return await _brokerAccountPortfolioHistoryService.GetAll(date);
+            return await _brokerAccountPortfolioHistoryService.GetAll(AdjustDate(date));
         }
 
         [HttpGet(nameof(GetByBrokerAccount))]
         public async Task<BrokerAccountPortfolioHistoryDto> GetByBrokerAccount([FromQuery] DateOnly date, [FromQuery] Guid brokerAccountId)
         {
-            return await _brokerAccountPortfolioHistoryService.GetByBrokerAccount(date, brokerAccountId);
+            return await _brokerAccountPortfolioHistoryService.GetByBrokerAccount(AdjustDate(date), brokerAccountId);
+        }
+
+        private DateOnly AdjustDate(DateOnly date)
+        {
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            return date > today ? today : date;
         }
     }
 }

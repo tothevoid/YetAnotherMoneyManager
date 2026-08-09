@@ -66,6 +66,7 @@ This document contains guidelines, coding standards, and architectural patterns 
 - **Dual Translations Mandatory**: Every user-facing string MUST be added to **both** `client/src/locales/en.json` and `client/src/locales/ru.json`.
 - **Key Format**: Use `snake_case` keys categorized by domain/feature (e.g., `broker_account_page_*`, `entity_*`).
 - **Hook**: Access strings via `const { t } = useTranslation()`.
+- **Preserve Blank Lines**: Keep blank lines in `ru.json` and `en.json` between logical key blocks for semantic grouping. Do NOT delete or format away empty lines.
 
 ### Date Selection & UI Components
 - **Date Picker**: Use `react-datepicker` (`DatePicker`) with Chakra UI `<Input width="200px" color="text_primary" backgroundColor="background_primary" borderColor="border_primary" />`.

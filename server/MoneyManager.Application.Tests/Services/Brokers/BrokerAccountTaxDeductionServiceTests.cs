@@ -104,6 +104,92 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             Assert.DoesNotContain(listAfterDelete, d => d.Id == addedId);
         }
 
+        [Fact]
+        public async Task TestGetSumTillSpecificDate()
+        {
+            var broker1AccId = await SetupBrokerAccount();
+            var broker2AccId = await SetupBrokerAccount();
+            var targetDate = new DateOnly(2020, 2, 1);
+
+            // Broker 1 deductions
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountTaxDeductionService>();
+                // Before date
+                await service.Add(new BrokerAccountTaxDeductionDto
+                {
+                    BrokerAccountId = broker1AccId,
+                    Name = "Broker 1 Deduction 2020",
+                    Amount = 13000m,
+                    DateApplied = new DateTime(2020, 1, 15, 10, 0, 0, DateTimeKind.Utc)
+                });
+            });
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountTaxDeductionService>();
+                // After target date (boundary out)
+                await service.Add(new BrokerAccountTaxDeductionDto
+                {
+                    BrokerAccountId = broker1AccId,
+                    Name = "Broker 1 Deduction 2020 Out",
+                    Amount = 26000m,
+                    DateApplied = new DateTime(2020, 2, 15, 10, 0, 0, DateTimeKind.Utc)
+                });
+            });
+
+            // Broker 2 deductions
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountTaxDeductionService>();
+                // Before date
+                await service.Add(new BrokerAccountTaxDeductionDto
+                {
+                    BrokerAccountId = broker2AccId,
+                    Name = "Broker 2 Deduction 2020",
+                    Amount = 52000m,
+                    DateApplied = new DateTime(2020, 1, 20, 10, 0, 0, DateTimeKind.Utc)
+                });
+            });
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountTaxDeductionService>();
+                // After target date (boundary out)
+                await service.Add(new BrokerAccountTaxDeductionDto
+                {
+                    BrokerAccountId = broker2AccId,
+                    Name = "Broker 2 Deduction Future",
+                    Amount = 10000m,
+                    DateApplied = new DateTime(2020, 3, 1, 10, 0, 0, DateTimeKind.Utc)
+                });
+            });
+
+            // Verify Broker 1
+            var sumB1 = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountTaxDeductionService>();
+                return await service.GetSumTillSpecificDate(targetDate, broker1AccId);
+            });
+            Assert.Equal(13000m, sumB1);
+
+            // Verify Broker 2
+            var sumB2 = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountTaxDeductionService>();
+                return await service.GetSumTillSpecificDate(targetDate, broker2AccId);
+            });
+            Assert.Equal(52000m, sumB2);
+
+            // Verify All brokers
+            var sumAll = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountTaxDeductionService>();
+                return await service.GetSumTillSpecificDate(targetDate, null);
+            });
+            Assert.Equal(65000m, sumAll);
+        }
+
         private async Task<Guid> SetupBrokerAccount()
         {
             var brokerId = await ExecuteScopeAsync(async sp =>

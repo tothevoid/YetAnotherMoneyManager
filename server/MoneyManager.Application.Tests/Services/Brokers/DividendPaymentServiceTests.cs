@@ -90,6 +90,96 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             });
         }
 
+        [Fact]
+        public async Task TestGetSumTillSpecificDate()
+        {
+            var (broker1AccId, dividendId) = await SetupDependencies();
+            var (broker2AccId, _) = await SetupDependencies();
+            var targetDate = new DateOnly(2020, 3, 1);
+
+            // Broker 1 dividend payments
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IDividendPaymentService>();
+                // Before targetDate: 100 * 1.5 - 5 = 145m
+                await service.Add(new DividendPaymentDto
+                {
+                    BrokerAccountId = broker1AccId,
+                    DividendId = dividendId,
+                    SecuritiesQuantity = 100,
+                    Tax = 5m,
+                    ReceivedAt = new DateOnly(2020, 2, 10)
+                });
+            });
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IDividendPaymentService>();
+                // After targetDate (boundary out)
+                await service.Add(new DividendPaymentDto
+                {
+                    BrokerAccountId = broker1AccId,
+                    DividendId = dividendId,
+                    SecuritiesQuantity = 200,
+                    Tax = 10m,
+                    ReceivedAt = new DateOnly(2020, 3, 10)
+                });
+            });
+
+            // Broker 2 dividend payments
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IDividendPaymentService>();
+                // Before targetDate: 50 * 1.5 - 2 = 73m
+                await service.Add(new DividendPaymentDto
+                {
+                    BrokerAccountId = broker2AccId,
+                    DividendId = dividendId,
+                    SecuritiesQuantity = 50,
+                    Tax = 2m,
+                    ReceivedAt = new DateOnly(2020, 2, 20)
+                });
+            });
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IDividendPaymentService>();
+                // After targetDate (boundary out)
+                await service.Add(new DividendPaymentDto
+                {
+                    BrokerAccountId = broker2AccId,
+                    DividendId = dividendId,
+                    SecuritiesQuantity = 300,
+                    Tax = 15m,
+                    ReceivedAt = new DateOnly(2020, 4, 1)
+                });
+            });
+
+            // Verify Broker 1
+            var sumB1 = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IDividendPaymentService>();
+                return await service.GetSumTillSpecificDate(targetDate, broker1AccId);
+            });
+            Assert.Equal(145m, sumB1);
+
+            // Verify Broker 2
+            var sumB2 = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IDividendPaymentService>();
+                return await service.GetSumTillSpecificDate(targetDate, broker2AccId);
+            });
+            Assert.Equal(73m, sumB2);
+
+            // Verify All brokers
+            var sumAll = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IDividendPaymentService>();
+                return await service.GetSumTillSpecificDate(targetDate, null);
+            });
+            Assert.Equal(218m, sumAll);
+        }
+
         private async Task<(Guid brokerAccountId, Guid dividendId)> SetupDependencies()
         {
             var brokerId = await ExecuteScopeAsync(async sp =>

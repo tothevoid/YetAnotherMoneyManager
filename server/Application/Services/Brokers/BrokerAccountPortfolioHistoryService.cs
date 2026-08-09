@@ -125,6 +125,7 @@ namespace MoneyManager.Application.Services.Brokers
         {
             try
             {
+                // TODO: handle long holidays (>7 days) case
                 var history = await _stockConnector.GetTickerHistory(security, date.AddDays(-7), date);
                 var lastHistoryValue = history?.OrderBy(h => h.Date).LastOrDefault();
                 if (lastHistoryValue != null && lastHistoryValue.Value > 0)
@@ -134,6 +135,7 @@ namespace MoneyManager.Application.Services.Brokers
             }
             catch
             {
+                Console.WriteLine($"'{security.Ticker}' history fetch error");
                 // Return 0m fallback when history fetch fails or missing
             }
 

@@ -7,7 +7,6 @@ import BrokerAccountSecuritiesList, { BrokerAccountSecuritiesListRef } from "./c
 import { useSignalR } from "../../shared/hooks/SignalRHook";
 import BrokerAccountTabs, { ChangeAction } from "./components/BrokerAccountTabs/BrokerAccountTabs";
 import BrokerAccountHeader from "./components/BrokerAccountHeader/BrokerAccountHeader";
-import BrokerAccountValuesSummary from "./components/BrokerAccountValuesSummary/BrokerAccountValuesSummary";
 import { getPortfolioValues } from "../../api/brokers/brokerAccountSummaryApi";
 import { BrokerAccountPortfolioEntity } from "../../models/brokers/BrokerAccountPortfolioEntity";
 
@@ -123,11 +122,20 @@ const BrokerAccountPage: React.FC = () => {
     }
 
     return <Fragment>
-        {portfolio && <BrokerAccountHeader name={state.brokerAccount?.name} currencyName={state.brokerAccount?.currency?.name} currentValue={portfolio?.currentAmount} onPullQuotations={pullQuotations} lastPullDate={lastPullDate} isReloading={state.isReloading} />}
-        {portfolio && <BrokerAccountValuesSummary portfolio={portfolio} currencyName={state.brokerAccount?.currency?.name ?? ""} />}
-        <BrokerAccountSecuritiesList ref={securitiesRef} mainCurrencyAmount={state.brokerAccount.mainCurrencyAmount} mainCurrencyName={state.brokerAccount.currency.name} brokerAccountId={state.brokerAccount.id}/>
+        {portfolio && (
+            <BrokerAccountHeader
+                name={state.brokerAccount?.name ?? ""}
+                currencyName={state.brokerAccount?.currency?.name ?? ""}
+                portfolio={portfolio}
+                onPullQuotations={pullQuotations}
+                lastPullDate={lastPullDate}
+                isReloading={state.isReloading}
+            />
+        )}
+        <BrokerAccountSecuritiesList ref={securitiesRef} brokerAccountId={state.brokerAccount.id}/>
         <BrokerAccountTabs currencyName={state?.brokerAccount?.currency?.name} brokerAccountId={brokerAccountId} onActionTriggered={onActionTriggered}/>
     </Fragment>
 }
+
 
 export default BrokerAccountPage;

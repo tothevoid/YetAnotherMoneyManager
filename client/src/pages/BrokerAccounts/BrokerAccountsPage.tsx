@@ -2,7 +2,6 @@ import { Fragment } from "react/jsx-runtime";
 import BrokerAccountHeader from "../BrokerAccount/components/BrokerAccountHeader/BrokerAccountHeader";
 import BrokerAccountSecuritiesList, { BrokerAccountSecuritiesListRef } from "../BrokerAccount/components/BrokerAccountSecuritiesList/BrokerAccountSecuritiesList";
 import BrokerAccountTabs, { ChangeAction } from "../BrokerAccount/components/BrokerAccountTabs/BrokerAccountTabs";
-import BrokerAccountValuesSummary from "../BrokerAccount/components/BrokerAccountValuesSummary/BrokerAccountValuesSummary";
 import { useUserProfile } from "../../../features/UserProfileSettingsModal/hooks/UserProfileContext";
 import { getLastPullDate, pullBrokerAccountQuotations } from "../../api/brokers/brokerAccountSecurityApi";
 import { useSignalR } from "../../shared/hooks/SignalRHook";
@@ -101,25 +100,17 @@ const BrokerAccountsPage: React.FC = () => {
             portfolio && <BrokerAccountHeader 
                 name={t("all_broker_accounts_header")}
                 currencyName={currencyName}
+                portfolio={portfolio}
                 lastPullDate={lastPullDate}
                 isReloading={state.isReloading}
                 onPullQuotations={pullQuotations} 
-                currentValue={portfolio.currentAmount}
-                />
+            />
         }
-        {
-            portfolio && <BrokerAccountValuesSummary portfolio={portfolio} currencyName={currencyName}/>
-        }
-        {
-            portfolio && <BrokerAccountSecuritiesList 
-                ref={securitiesRef}
-                mainCurrencyAmount={portfolio?.mainCurrencyAmount}
-                mainCurrencyName={currencyName}/>
-        }
+        <BrokerAccountSecuritiesList ref={securitiesRef} />
         <BrokerAccountTabs 
             currencyName={currencyName} 
             onActionTriggered={onActionTriggered}/>
     </Fragment>
 }
 
-export default BrokerAccountsPage;
+export default BrokerAccountsPage;

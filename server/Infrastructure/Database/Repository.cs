@@ -57,7 +57,7 @@ namespace MoneyManager.Infrastructure.Database
             IQueryable<TEntity> query = _entities.AsNoTracking();
             if (filter != null)
             {
-                query.Where(filter);
+                query = query.Where(filter);
             }
 
             return await query.GroupBy(groupSelector).Select(projection).ToListAsync();

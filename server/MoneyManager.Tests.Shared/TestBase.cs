@@ -1,0 +1,34 @@
+using Microsoft.Extensions.DependencyInjection;
+using MoneyManager.Infrastructure.Database;
+using MoneyManager.Tests.Shared.Fixtures;
+using Xunit;
+
+namespace MoneyManager.Tests.Shared
+{
+    public abstract class TestBase : IClassFixture<PostgresDbFixture>
+    {
+        protected readonly PostgresDbFixture Fixture;
+
+        protected TestBase(PostgresDbFixture fixture)
+        {
+            Fixture = fixture;
+        }
+
+        protected async Task ExecuteScopeAsync(Func<IServiceProvider, Task> action)
+        {
+            using var scope = Fixture.ServiceProvider.CreateScope();
+            await action(scope.ServiceProvider);
+        }
+
+        protected async Task<T> ExecuteScopeAsync<T>(Func<IServiceProvider, Task<T>> action)
+        {
+            using var scope = Fixture.ServiceProvider.CreateScope();
+            return await action(scope.ServiceProvider);
+        }
+
+        protected ApplicationDbContext CreateDbContext()
+        {
+            return Fixture.CreateDbContext();
+        }
+    }
+}

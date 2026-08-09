@@ -1,83 +1,8 @@
-using AutoMapper;
-using ClosedXML.Parser;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using MoneyManager.Application.Extensions;
-using MoneyManager.Application.Interfaces.FileStorage;
-using MoneyManager.Infrastructure.Database;
-using MoneyManager.Infrastructure.Interfaces.Database;
-using MoneyManager.Infrastructure.Interfaces.Messages;
-using Testcontainers.PostgreSql;
+using MoneyManager.Tests.Shared.Fixtures;
 
 namespace MoneyManager.Application.Tests.Fixtures
 {
-    public class ServiceCollectionFixture : IAsyncLifetime
+    public class ServiceCollectionFixture : PostgresDbFixture
     {
-        private readonly PostgreSqlContainer _container = new PostgreSqlBuilder("postgres:17")
-            .Build();
-
-        public IServiceProvider ServiceProvider { get; private set; }
-
-        public string ConnectionString => _container.GetConnectionString();
-
-        public async Task InitializeAsync()
-        {
-            await _container.StartAsync();
-
-            var services = new ServiceCollection();
-
-            var inMemorySettings = new Dictionary<string, string?> {
-                {"Auth:Issuer", "MoneyManagerApp"},
-                {"Auth:Audience", "MoneyManagerAppUsers"},
-                {"Auth:Secret", "SuperSecretKeyForJwtTokenGeneration12345!"}
-            };
-
-            var configuration = new ConfigurationBuilder()
-                .AddInMemoryCollection(inMemorySettings)
-                .Build();
-
-            services.AddSingleton<IConfiguration>(configuration);
-            services.AddHttpClient();
-            services.AddApplicationServices();
-            services.AddScoped<IFileStorageService, TestFileStorageService>();
-            services.AddScoped<IServerNotifier, TestServerNotifier>();
-
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseNpgsql(ConnectionString)
-                .Options;
-
-
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql(_container.GetConnectionString()));
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddApplicationProfile();
-            }).CreateMapper();
-
-            services.AddSingleton(mapper);
-
-            ServiceProvider = services.BuildServiceProvider();
-
-             using var scope = ServiceProvider.CreateScope();
-             var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-             await db.Database.MigrateAsync();
-        }
-
-        public async Task DisposeAsync()
-        {
-            await _container.DisposeAsync();
-        }
-
-        public ApplicationDbContext CreateDbContext()
-        {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseNpgsql(ConnectionString)
-                .Options;
-
-            return new ApplicationDbContext(options);
-        }
     }
 }

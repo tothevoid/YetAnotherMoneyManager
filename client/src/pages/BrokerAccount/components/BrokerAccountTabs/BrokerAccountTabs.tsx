@@ -3,12 +3,13 @@ import { useTranslation } from "react-i18next";
 import { Tabs } from "@chakra-ui/react";
 import { GrTransaction } from "react-icons/gr";
 import { PiCoinsLight } from "react-icons/pi";
-import { MdAttachMoney, MdQueryStats } from "react-icons/md";
+import { MdAttachMoney, MdQueryStats, MdHistory } from "react-icons/md";
 import { IoMdStats } from "react-icons/io";
 import { TbTax } from "react-icons/tb";
 import BrokerAccountDailyStats from "../BrokerAccountDailyStats/BrokerAccountDailyStats";
 import BrokerAccountFundTransfersList from "../BrokerAccountFundTransfersList/BrokerAccountFundTransfersList";
 import BrokerAccountStats from "../BrokerAccountStats/BrokerAccountStats";
+import BrokerAccountPortfolioHistory from "../BrokerAccountPortfolioHistory/BrokerAccountPortfolioHistory";
 import BrokerAccountTaxDeductionsList from "../BrokerAccountTaxDeductionsList/BrokerAccountTaxDeductionsList";
 import DividendPaymentsList from "../DividendPaymentsList/DividendPaymentsList";
 import SecurityTransactionsList from "../SecurityTransactionsList/SecurityTransactionsList";
@@ -65,6 +66,10 @@ const BrokerAccountTabs: React.FC<Props> = ({ brokerAccountId, currencyName, onA
                 <MdQueryStats />
                     {t("broker_account_page_account_stats_tab")}
             </Tabs.Trigger>
+            <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="history">
+                <MdHistory />
+                    {t("broker_account_page_history_tab")}
+            </Tabs.Trigger>
             <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="transactions">
                 <GrTransaction />
                 {t("broker_account_page_transactions_tab")}
@@ -93,6 +98,9 @@ const BrokerAccountTabs: React.FC<Props> = ({ brokerAccountId, currencyName, onA
         </Tabs.Content>
         <Tabs.Content value="stats">
             <BrokerAccountStats brokerAccountId={brokerAccountId}/>
+        </Tabs.Content>
+        <Tabs.Content value="history">
+            <BrokerAccountPortfolioHistory brokerAccountId={brokerAccountId}/>
         </Tabs.Content>
         <Tabs.Content value="transactions">
             <SecurityTransactionsList onTransactionsChanged={onTransactionsChanged} brokerAccountId={brokerAccountId}/>

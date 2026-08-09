@@ -1,8 +1,11 @@
+using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Brokers;
+using MoneyManager.Application.Interfaces.Integrations.Stock;
 using MoneyManager.Application.Interfaces.Securities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MoneyManager.Application.Services.Brokers
@@ -14,19 +17,22 @@ namespace MoneyManager.Application.Services.Brokers
         private readonly IDividendPaymentService _dividendPaymentService;
         private readonly IBrokerAccountTaxDeductionService _taxDeductionService;
         private readonly ISecurityService _securityService;
+        private readonly IStockConnector _stockConnector;
 
         public BrokerAccountPortfolioHistoryService(
             ISecurityTransactionService securityTransactionService,
             IBrokerAccountFundsTransferService brokerAccountFundsTransferService,
             IDividendPaymentService dividendPaymentService,
             IBrokerAccountTaxDeductionService taxDeductionService,
-            ISecurityService securityService)
+            ISecurityService securityService,
+            IStockConnector stockConnector)
         {
             _securityTransactionService = securityTransactionService;
             _brokerAccountFundsTransferService = brokerAccountFundsTransferService;
             _dividendPaymentService = dividendPaymentService;
             _taxDeductionService = taxDeductionService;
             _securityService = securityService;
+            _stockConnector = stockConnector;
         }
 
         public async Task<BrokerAccountPortfolioHistoryDto> GetAll(DateOnly date)
@@ -50,26 +56,12 @@ namespace MoneyManager.Application.Services.Brokers
             var totalPurchased = securitiesStats.Sum(security => security.Value.PurchasePriceSum);
             var totalSold = securitiesStats.Sum(security => security.Value.SellPriceSum);
 
-            Console.WriteLine("Purch:" + totalPurchased);
-            Console.WriteLine("Sold:" + totalSold);
-
             decimal totalPositive = totalDeposited + dividendPaymentsSum + totalSold;
             decimal totalNegative = totalWithdrawn + totalPurchased;
             decimal mainCurrencyValue = totalPositive - totalNegative;
 
-            Console.WriteLine("Dep:" + totalDeposited);
-
-            decimal portfolioValue = mainCurrencyValue;
-
-            foreach (var securitiesStat in securitiesStats)
-            {
-                //TODO: Fetch by date
-                var security = await _securityService.FindByTicker(securitiesStat.Key);
-
-                portfolioValue += securitiesStat.Value.ActualQuantity * security.ActualPrice;
-
-                Console.WriteLine($"ticker: {security.Ticker}. Total: {securitiesStat.Value.ActualQuantity * security.ActualPrice}");
-            }
+            decimal securitiesValue = await CalculateSecuritiesValue(securitiesStats, date);
+            decimal portfolioValue = mainCurrencyValue + securitiesValue;
 
             return new BrokerAccountPortfolioHistoryDto
             {
@@ -83,6 +75,64 @@ namespace MoneyManager.Application.Services.Brokers
                 PortfolioValue = portfolioValue,
                 ProfitAndLoss = portfolioValue + taxDeductionsSum - (totalDeposited - totalWithdrawn),
             };
+        }
+
+        private async Task<decimal> CalculateSecuritiesValue(Dictionary<string, SecurityTransactionsSummary> securitiesStats, DateOnly date)
+        {
+            if (securitiesStats == null || !securitiesStats.Any())
+            {
+                return 0m;
+            }
+
+            using var semaphore = new SemaphoreSlim(5);
+            var priceTasks = securitiesStats.Select(async securitiesStat =>
+            {
+                await semaphore.WaitAsync();
+                try
+                {
+                    var security = await _securityService.FindByTicker(securitiesStat.Key);
+                    if (security == null) return (securitiesStat.Key, 0m);
+
+                    decimal price = await GetSecurityPriceAtDate(security, date);
+                    await Task.Delay(100);
+                    return (securitiesStat.Key, price);
+                }
+                finally
+                {
+                    semaphore.Release();
+                }
+            });
+
+            var priceResults = await Task.WhenAll(priceTasks);
+            var priceMap = priceResults.ToDictionary(r => r.Key, r => r.Item2);
+
+            decimal totalSecuritiesValue = 0m;
+            foreach (var securitiesStat in securitiesStats)
+            {
+                decimal price = priceMap.TryGetValue(securitiesStat.Key, out var securityPrice) ? securityPrice : 0m;
+                totalSecuritiesValue += securitiesStat.Value.ActualQuantity * price;
+            }
+
+            return totalSecuritiesValue;
+        }
+
+        private async Task<decimal> GetSecurityPriceAtDate(SecurityDTO security, DateOnly date)
+        {
+            try
+            {
+                var history = await _stockConnector.GetTickerHistory(security, date.AddDays(-7), date);
+                var lastHistoryValue = history?.OrderBy(h => h.Date).LastOrDefault();
+                if (lastHistoryValue != null && lastHistoryValue.Value > 0)
+                {
+                    return lastHistoryValue.Value;
+                }
+            }
+            catch
+            {
+                // TODO: Use logger
+                Console.WriteLine($"Error getting price for ticker {security.Ticker}");
+                return 0m;
+            }
         }
 
         private async Task<decimal> GetTotalTaxDeduction(DateOnly date, Guid? brokerAccountId)

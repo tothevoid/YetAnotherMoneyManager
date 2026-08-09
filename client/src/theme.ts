@@ -22,6 +22,14 @@ export const darkTheme = createSystem(defaultConfig, {
                 // Stats
                 gain: {value: "#0a8e3a"},
                 loss: {value: "#dc2626"},
+
+                // P&L
+                pnl_positive: { value: "#4ade80" },
+                pnl_positive_bg: { value: "rgba(34, 197, 94, 0.12)" },
+                pnl_positive_border: { value: "rgba(34, 197, 94, 0.3)" },
+                pnl_negative: { value: "#f87171" },
+                pnl_negative_bg: { value: "rgba(239, 68, 68, 0.12)" },
+                pnl_negative_border: { value: "rgba(239, 68, 68, 0.3)" },
             },
         },
     },

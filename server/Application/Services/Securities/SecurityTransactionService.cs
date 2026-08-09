@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -62,7 +62,7 @@ namespace MoneyManager.Application.Services.Securities
             return _mapper.Map<IEnumerable<SecurityTransactionDTO>>(brokerAccountSecurities);
         }
 
-        public async Task<Dictionary<string, SecurityTransactionsSummary>> GetSummaryByDate(DateOnly date, Guid? brokerAccountId)
+        public async Task<Dictionary<string, SecurityTransactionsSummary>> GetSummaryTillSpecificDate(DateOnly date, Guid? brokerAccountId)
         {
             Expression<Func<SecurityTransaction, bool>> filter = brokerAccountId != null ?
                 (transaction) => DateOnly.FromDateTime(transaction.Date) <= date && transaction.BrokerAccountId == brokerAccountId :
@@ -77,8 +77,8 @@ namespace MoneyManager.Application.Services.Securities
                         Stats = new
                         {
                             ActualQuantity = group.Sum(x => x.IsSell ? -1 * x.Quantity : x.Quantity),
-                            PurchasePriceSum = group.Sum(x => x.IsSell ? 0: x.Price * x.Quantity + x.Tax + x.BrokerCommission),
-                            SellPriceSum = group.Sum(x => !x.IsSell ? 0 : x.Price * x.Quantity - x.Tax - x.BrokerCommission),
+                            PurchasePriceSum = group.Sum(x => x.IsSell ? 0: x.Price * x.Quantity + x.Tax + x.BrokerCommission + x.StockExchangeCommission),
+                            SellPriceSum = group.Sum(x => !x.IsSell ? 0 : x.Price * x.Quantity - x.Tax - x.BrokerCommission - x.StockExchangeCommission),
                         }
                     }
                 ,

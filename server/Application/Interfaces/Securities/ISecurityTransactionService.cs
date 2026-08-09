@@ -1,4 +1,4 @@
-﻿using MoneyManager.Application.DTO.Securities;
+using MoneyManager.Application.DTO.Securities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,7 +10,7 @@ namespace MoneyManager.Application.Interfaces.Securities
     {
         Task<IEnumerable<SecurityTransactionDTO>> GetAll(Guid? brokerAccountId, int recordsQuantity, int pageIndex);
 
-        Task<Dictionary<string, SecurityTransactionsSummary>> GetSummaryByDate(DateOnly date, Guid? brokerAccountId);
+        Task<Dictionary<string, SecurityTransactionsSummary>> GetSummaryTillSpecificDate(DateOnly date, Guid? brokerAccountId);
 
         Task<IEnumerable<SecurityTransactionsHistoryDto>> GetTransactionsHistory(Guid securityId);
         Task<PaginationConfigDto> GetPagination(Guid brokerAccountId);

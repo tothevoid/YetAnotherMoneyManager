@@ -1,0 +1,84 @@
+using System.Linq.Expressions;
+using MoneyManager.Infrastructure.Entities.Accounts;
+using MoneyManager.Infrastructure.Queries;
+using Xunit;
+
+namespace MoneyManager.Infrastructure.Tests.Queries
+{
+    public class ComplexQueryBuilderTests
+    {
+        [Fact]
+        public void Build_DefaultQuery_HasDefaultValues()
+        {
+            var builder = new ComplexQueryBuilder<AccountType>();
+
+            var query = builder.GetQuery();
+
+            Assert.NotNull(query);
+            Assert.Null(query.Filter);
+            Assert.Null(query.Joins);
+            Assert.Empty(query.OrderByExpressions);
+            Assert.Equal(-1, query.RecordsLimit);
+            Assert.Equal(-1, query.RecordsOffset);
+            Assert.False(query.TrackingDisabled);
+        }
+
+        [Fact]
+        public void AddFilter_SetsFilterExpression()
+        {
+            var builder = new ComplexQueryBuilder<AccountType>();
+            Expression<Func<AccountType, bool>> filter = x => x.Active;
+
+            builder.AddFilter(filter);
+            var query = builder.GetQuery();
+
+            Assert.Equal(filter, query.Filter);
+        }
+
+        [Fact]
+        public void AddOrder_EnqueuesOrderByExpressions()
+        {
+            var builder = new ComplexQueryBuilder<AccountType>();
+
+            builder.AddOrder(x => x.Name, isDescending: false);
+            builder.AddOrder(x => x.Id, isDescending: true);
+
+            var query = builder.GetQuery();
+
+            Assert.Equal(2, query.OrderByExpressions.Count);
+            var firstOrder = query.OrderByExpressions.Dequeue();
+            Assert.False(firstOrder.IsDescending);
+
+            var secondOrder = query.OrderByExpressions.Dequeue();
+            Assert.True(secondOrder.IsDescending);
+        }
+
+        [Fact]
+        public void AddPagination_CalculatesLimitAndOffset()
+        {
+            var builder = new ComplexQueryBuilder<AccountType>();
+
+            builder.AddPagination(pageIndex: 3, recordsQuantity: 10, orderBy: x => x.Name, isDescending: true);
+
+            var query = builder.GetQuery();
+
+            Assert.Equal(10, query.RecordsLimit);
+            Assert.Equal(20, query.RecordsOffset); // (3 - 1) * 10 = 20
+            Assert.Single(query.OrderByExpressions);
+            var order = query.OrderByExpressions.Peek();
+            Assert.True(order.IsDescending);
+        }
+
+        [Fact]
+        public void DisableTracking_SetsTrackingDisabledToTrue()
+        {
+            var builder = new ComplexQueryBuilder<AccountType>();
+
+            builder.DisableTracking();
+
+            var query = builder.GetQuery();
+
+            Assert.True(query.TrackingDisabled);
+        }
+    }
+}

@@ -47,7 +47,7 @@ namespace MoneyManager.Application.Services.Transactions
         {
             var transaction = _mapper.Map<Transaction>(transactionDTO);
             transaction.Id = Guid.NewGuid();
-            var sourceId = transactionDTO?.Account?.Id ?? default;
+            var sourceId = transactionDTO.AccountId != Guid.Empty ? transactionDTO.AccountId : (transactionDTO?.Account?.Id ?? default);
             if (sourceId != default)
             {
                 transaction.AccountId = sourceId;
@@ -67,10 +67,10 @@ namespace MoneyManager.Application.Services.Transactions
         public async Task Update(TransactionDTO transactionToUpdate)
         {
             var transaction = _mapper.Map<Transaction>(transactionToUpdate);
-            var sourceId = transactionToUpdate?.Account?.Id ?? default;
+            var sourceId = transactionToUpdate.AccountId != Guid.Empty ? transactionToUpdate.AccountId : (transactionToUpdate?.Account?.Id ?? default);
             if (sourceId != default)
             {
-                transaction.AccountId = transactionToUpdate.Account.Id;
+                transaction.AccountId = sourceId;
             }
 
             var lastTransaction = await _transactionsRepo.GetById(transactionToUpdate.Id);
@@ -84,8 +84,8 @@ namespace MoneyManager.Application.Services.Transactions
         private async Task RecalculateAccount(TransactionDTO currentTransaction, TransactionDTO updatedTransaction)
         {
             var accountsToUpdate = new List<(Guid accountId, decimal delta)>();
-            var lastTransactionId = currentTransaction?.Account?.Id ?? default;
-            var updateAccountModelId = updatedTransaction?.Account?.Id ?? default;
+            var lastTransactionId = currentTransaction.AccountId != Guid.Empty ? currentTransaction.AccountId : (currentTransaction?.Account?.Id ?? default);
+            var updateAccountModelId = updatedTransaction.AccountId != Guid.Empty ? updatedTransaction.AccountId : (updatedTransaction?.Account?.Id ?? default);
 
             //account deleted from transaction
             if (lastTransactionId != default && updateAccountModelId == default)
@@ -130,7 +130,7 @@ namespace MoneyManager.Application.Services.Transactions
                 throw new ArgumentException(nameof(id));
             }
 
-            var sourceId = transaction?.Account?.Id ?? default;
+            var sourceId = transaction.AccountId != Guid.Empty ? transaction.AccountId : (transaction?.Account?.Id ?? default);
             if (sourceId != default && transaction.Amount != 0)
             {
                 var accountEntity = await _accountRepo.GetById(sourceId);

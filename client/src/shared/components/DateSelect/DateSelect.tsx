@@ -2,16 +2,16 @@ import "./DateSelect.scss"
 
 import { Input } from "@chakra-ui/react";
 import DatePicker from "react-datepicker";
-import { Control, Controller } from "react-hook-form"
+import { Control, Controller, FieldValues, Path } from "react-hook-form"
 
-interface Props {
-    name: string
-    control: Control<any>
+interface Props<TFieldValues extends FieldValues> {
+    name: Path<TFieldValues>
+    control: Control<TFieldValues>
     fullWidth?: boolean,
     isDateTime?: boolean,
 }
 
-const DateSelect: React.FC<Props> = ({name, control, fullWidth = true, isDateTime = false}) => {
+const DateSelect = <TFieldValues extends FieldValues>({name, control, fullWidth = true, isDateTime = false}: Props<TFieldValues>) => {
     const format = isDateTime ?
         "dd.MM.yyyy HH:mm:ss":
         "dd.MM.yyyy";
@@ -32,4 +32,4 @@ const DateSelect: React.FC<Props> = ({name, control, fullWidth = true, isDateTim
     />
 }
 
-export default DateSelect;
+export default DateSelect;

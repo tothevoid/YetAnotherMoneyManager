@@ -1,14 +1,14 @@
 import { Checkbox, ConditionalValue } from "@chakra-ui/react";
-import { Control, Controller } from "react-hook-form"
+import { Control, Controller, FieldValues, Path } from "react-hook-form"
 
-interface Props {
-    name: string,
+interface Props<TFieldValues extends FieldValues> {
+    name: Path<TFieldValues>,
     title: string,
-    control: Control<any>
+    control: Control<TFieldValues>
     variant?: ConditionalValue<"outline" | "solid" | "subtle" | undefined>
 }
 
-const CheckboxInput: React.FC<Props> = ({name, title, control, variant = "solid"}) => {
+const CheckboxInput = <TFieldValues extends FieldValues>({name, title, control, variant = "solid"}: Props<TFieldValues>) => {
     return <Controller
         name={name}
         control={control}
@@ -22,4 +22,4 @@ const CheckboxInput: React.FC<Props> = ({name, title, control, variant = "solid"
     />
 }
 
-export default CheckboxInput;
+export default CheckboxInput;

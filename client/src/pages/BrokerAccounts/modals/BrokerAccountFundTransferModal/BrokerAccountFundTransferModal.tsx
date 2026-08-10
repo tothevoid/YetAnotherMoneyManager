@@ -132,7 +132,7 @@ const BrokerAccountFundTransferModal: React.FC<ModalProps> = (props: ModalProps)
                 <CollectionSelect name="income" control={control} placeholder="Select type"
                     collection={transferTypes}
                     labelSelector={(transferType => transferType.label)}
-                    valueSelector={(transferType => transferType.value)} />
+                    valueSelector={(transferType => String(transferType.value))} />
                 <Field.ErrorText>{errors.income?.message}</Field.ErrorText>
             </Field.Root>
             <Field.Root mt={4} invalid={!!errors.account}>

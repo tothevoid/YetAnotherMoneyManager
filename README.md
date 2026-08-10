@@ -3,9 +3,9 @@
 Stack:
 
 * React 19 + Vite + ChakraUI
-* .NET 9
+* .NET 10
 * Postgres 17.4
-* minio (images)
+* minio
 * Docker
 
 Development:
@@ -13,7 +13,7 @@ Development:
 * install docker
 * execute `docker compose -p moneymanager_dev --env-file .env.dev up -d --build`
 * remove client and server services
-* install at least .NET 9
+* install at least .NET 10
 * install [Node.js](https://nodejs.org/en/)
 * navigate to `./server/WebApi`
 * execute `dotnet run`
@@ -28,6 +28,6 @@ Deploy:
 
 Migrations:
 
-* dotnet tool install --global dotnet-ef --version 9.*
+* dotnet tool install --global dotnet-ef --version 10.*
 * navigate to `./server`
 * execute `dotnet ef database update --project Infrastructure --startup-project WebApi`

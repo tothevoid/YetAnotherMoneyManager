@@ -7,7 +7,7 @@ This document contains guidelines, coding standards, and architectural patterns 
 ## 🛠️ Server (Backend) Guidelines
 
 ### Stack & Architecture
-- **Framework**: .NET 9 Web API
+- **Framework**: .NET 10 Web API
 - **Layering**:
   - `server/WebApi`: ASP.NET Core Controllers and DTO models. Controllers must remain thin and delegate logic to application services.
   - `server/Application`: Core business logic, services (`MoneyManager.Application.Services`), interfaces (`MoneyManager.Application.Interfaces`), and DTOs.

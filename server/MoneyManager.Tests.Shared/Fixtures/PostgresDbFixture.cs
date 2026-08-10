@@ -20,7 +20,7 @@ namespace MoneyManager.Tests.Shared.Fixtures
 
         public string ConnectionString => _container.GetConnectionString();
 
-        public async Task InitializeAsync()
+        public async ValueTask InitializeAsync()
         {
             await _container.StartAsync();
 
@@ -53,7 +53,7 @@ namespace MoneyManager.Tests.Shared.Fixtures
             await db.Database.MigrateAsync();
         }
 
-        public async Task DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
             await _container.DisposeAsync();
         }

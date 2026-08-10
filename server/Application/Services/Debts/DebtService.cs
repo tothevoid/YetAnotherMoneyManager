@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using System;
 using System.Collections.Generic;
@@ -6,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MoneyManager.Application.DTO.Debts;
 using MoneyManager.Application.Interfaces.Debts;
+using MoneyManager.Application.Mappings;
 using MoneyManager.Infrastructure.Entities.Debts;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Infrastructure.Queries;
@@ -16,9 +16,9 @@ namespace MoneyManager.Application.Services.Debts
     {
         private readonly IUnitOfWork _db;
         private readonly IRepository<Debt> _debtRepo;
-        private readonly IMapper _mapper;
+        private readonly ApplicationMapper _mapper;
 
-        public DebtService(IUnitOfWork uow, IMapper mapper)
+        public DebtService(IUnitOfWork uow, ApplicationMapper mapper)
         {
             _db = uow;
             _mapper = mapper;
@@ -28,7 +28,7 @@ namespace MoneyManager.Application.Services.Debts
         public async Task<DebtDto> GetById(Guid id)
         {
             var debt = await _debtRepo.GetById(id);
-            return _mapper.Map<DebtDto>(debt);
+            return _mapper.Map(debt);
         }
 
         public async Task<IEnumerable<DebtDto>> GetAll(bool onlyActive)
@@ -44,19 +44,19 @@ namespace MoneyManager.Application.Services.Debts
                 .AddOrder((debt) => debt.Date, true);
 
             var debts = await _debtRepo.GetAll(builder.GetQuery());
-            return _mapper.Map<IEnumerable<DebtDto>>(debts);
+            return _mapper.Map(debts);
         }
 
         public async Task Update(DebtDto debtDto)
         {
-            var debt = _mapper.Map<Debt>(debtDto);
+            var debt = _mapper.Map(debtDto);
             _debtRepo.Update(debt);
             await _db.Commit();
         }
 
         public async Task<Guid> Add(DebtDto debtDto)
         {
-            var debt = _mapper.Map<Debt>(debtDto);
+            var debt = _mapper.Map(debtDto);
             debt.Id = Guid.NewGuid();
             
             await _debtRepo.Add(debt);

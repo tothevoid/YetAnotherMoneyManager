@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.FileStorage;
 using MoneyManager.Application.Interfaces.Integrations.Stock;
 using MoneyManager.Application.Interfaces.Securities;
+using MoneyManager.Application.Mappings;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Infrastructure.Interfaces.Database;
@@ -25,11 +25,11 @@ namespace MoneyManager.Application.Services.Securities
         private readonly IRepository<DividendPayment> _dividendPaymentRepo;
 
         private readonly IStockConnector _stockConnector;
-        private readonly IMapper _mapper;
+        private readonly ApplicationMapper _mapper;
         private readonly IFileStorageService _fileStorageService;
         private const string _iconsBucket = "security";
 
-        public SecurityService(IUnitOfWork uow, IMapper mapper, IStockConnector stockConnector, 
+        public SecurityService(IUnitOfWork uow, ApplicationMapper mapper, IStockConnector stockConnector, 
             IFileStorageService fileStorageService)
         {
             _db = uow;
@@ -46,7 +46,7 @@ namespace MoneyManager.Application.Services.Securities
         public async Task<IEnumerable<SecurityDTO>> GetAll(bool disableTracking = true)
         {
             var securities = await _securityRepo.GetAll(include: GetFullHierarchyColumns, disableTracking: disableTracking);
-            return _mapper.Map<IEnumerable<SecurityDTO>>(securities);
+            return _mapper.Map(securities);
         }
         public async Task<SecurityDTO> FindByTicker(string ticker)
         {
@@ -61,7 +61,7 @@ namespace MoneyManager.Application.Services.Securities
 
             var securities = await _securityRepo
                 .GetAll(filter: security => lowerTickers.Contains(security.Ticker.ToLower()), include: GetFullHierarchyColumns);
-            return _mapper.Map<IEnumerable<SecurityDTO>>(securities);
+            return _mapper.Map(securities);
         }
 
         public async Task<SecurityStatsDto> GetStats(Guid securityId)
@@ -119,7 +119,7 @@ namespace MoneyManager.Application.Services.Securities
         public async Task<SecurityDTO> GetById(Guid id, bool loadHierarchy = true, bool disableTracking = true)
         {
             var security = await _securityRepo.GetById(id, loadHierarchy ? GetFullHierarchyColumns: null, disableTracking);
-            var securityDto = _mapper.Map<SecurityDTO>(security);
+            var securityDto = _mapper.Map(security);
             return securityDto;
         }
 
@@ -140,7 +140,7 @@ namespace MoneyManager.Application.Services.Securities
 
         public async Task<SecurityDTO> Add(SecurityDTO securityDto, IFormFile securityIcon)
         {
-            var security = _mapper.Map<Security>(securityDto);
+            var security = _mapper.Map(securityDto);
             security.Id = Guid.NewGuid();
             
             if (securityIcon != null)
@@ -158,7 +158,7 @@ namespace MoneyManager.Application.Services.Securities
 
         public async Task<SecurityDTO> Update(SecurityDTO securityTypeDto, IFormFile securityIcon)
         {
-            var security = _mapper.Map<Security>(securityTypeDto);
+            var security = _mapper.Map(securityTypeDto);
 
             if (securityIcon != null)
             {

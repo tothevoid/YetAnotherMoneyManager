@@ -2,8 +2,8 @@ using MoneyManager.Application.Interfaces.Brokers;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoMapper;
 using MoneyManager.Application.DTO.Brokers;
+using MoneyManager.Application.Mappings;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using System.Linq;
@@ -17,9 +17,9 @@ namespace MoneyManager.Application.Services.Brokers
     {
         private readonly IRepository<BrokerAccountTaxDeduction> _brokerAccountTaxDeductionRepo;
         private readonly IUnitOfWork _db;
-        private readonly IMapper _mapper;
+        private readonly ApplicationMapper _mapper;
 
-        public BrokerAccountTaxDeductionService(IUnitOfWork uow, IMapper mapper)
+        public BrokerAccountTaxDeductionService(IUnitOfWork uow, ApplicationMapper mapper)
         {
             _db = uow;
             _mapper = mapper;
@@ -33,7 +33,7 @@ namespace MoneyManager.Application.Services.Brokers
                 null;
 
             var entities = await _brokerAccountTaxDeductionRepo.GetAll(filter, GetFullHierarchyColumns);
-            return _mapper.Map<IEnumerable<BrokerAccountTaxDeductionDto>>(entities);
+            return _mapper.Map(entities);
         }
 
         public async Task<decimal> GetSumTillSpecificDate(DateOnly date, Guid? brokerAccountId)
@@ -54,7 +54,7 @@ namespace MoneyManager.Application.Services.Brokers
 
         public async Task<Guid> Add(BrokerAccountTaxDeductionDto dto)
         {
-            var entity = _mapper.Map<BrokerAccountTaxDeduction>(dto);
+            var entity = _mapper.Map(dto);
             entity.Id = Guid.NewGuid();
             await _brokerAccountTaxDeductionRepo.Add(entity);
             await _db.Commit();
@@ -63,7 +63,7 @@ namespace MoneyManager.Application.Services.Brokers
 
         public async Task Update(BrokerAccountTaxDeductionDto dto)
         {
-            var entity = _mapper.Map<BrokerAccountTaxDeduction>(dto);
+            var entity = _mapper.Map(dto);
             _brokerAccountTaxDeductionRepo.Update(entity);
             await _db.Commit();
         }

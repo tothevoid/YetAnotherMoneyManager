@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using MoneyManager.Application.Interfaces.Crypto;
 using MoneyManager.Application.Tests.Fixtures;
+using MoneyManager.Application.DTO.Crypto;
 using MoneyManager.Infrastructure.Entities.Crypto;
 
 namespace MoneyManager.Application.Tests.Services.Crypto

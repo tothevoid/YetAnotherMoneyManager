@@ -1,8 +1,8 @@
-﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoneyManager.Application.DTO.Debts;
 using MoneyManager.Application.Interfaces.Debts;
+using MoneyManager.WebApi.Mappings;
 using MoneyManager.WebApi.Models.Common;
 using MoneyManager.WebApi.Models.Debts;
 using System;
@@ -18,8 +18,8 @@ namespace MoneyManager.WebApi.Controllers.Debts
     public class DebtPaymentController : ControllerBase
     {
         private readonly IDebtPaymentService _debtPaymentService;
-        private readonly IMapper _mapper;
-        public DebtPaymentController(IDebtPaymentService debtPaymentService, IMapper mapper)
+        private readonly WebApiMapper _mapper;
+        public DebtPaymentController(IDebtPaymentService debtPaymentService, WebApiMapper mapper)
         {
             _mapper = mapper;
             _debtPaymentService = debtPaymentService;
@@ -29,27 +29,27 @@ namespace MoneyManager.WebApi.Controllers.Debts
         public async Task<IEnumerable<DebtPaymentModel>> GetAll(GetAllDebtPaymentsQuery query)
         {
             var debtPayments = await _debtPaymentService.GetAll(query.PageIndex, query.RecordsQuantity);
-            return _mapper.Map<IEnumerable<DebtPaymentModel>>(debtPayments);
+            return _mapper.Map(debtPayments);
         }
 
         [HttpGet(nameof(GetPagination))]
         public async Task<PaginationConfigModel> GetPagination()
         {
             var pagination = await _debtPaymentService.GetPagination();
-            return _mapper.Map<PaginationConfigModel>(pagination);
+            return _mapper.Map(pagination);
         }
 
         [HttpPut]
         public async Task<Guid> Add(DebtPaymentModel debtPayment)
         {
-            var debtPaymentDto = _mapper.Map<DebtPaymentDto>(debtPayment);
+            var debtPaymentDto = _mapper.Map(debtPayment);
             return await _debtPaymentService.Add(debtPaymentDto);
         }
 
         [HttpPatch]
         public async Task Update(DebtPaymentModel debtPayment)
         {
-            var debtPaymentDto = _mapper.Map<DebtPaymentDto>(debtPayment);
+            var debtPaymentDto = _mapper.Map(debtPayment);
             await _debtPaymentService.Update(debtPaymentDto);
         }
 

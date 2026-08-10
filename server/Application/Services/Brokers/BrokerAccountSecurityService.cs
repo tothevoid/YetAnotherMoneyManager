@@ -1,10 +1,10 @@
-﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Application.Interfaces.Integrations.Stock;
 using MoneyManager.Application.Interfaces.Securities;
+using MoneyManager.Application.Mappings;
 using MoneyManager.Application.Services.Securities;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Entities.Securities;
@@ -23,7 +23,7 @@ namespace MoneyManager.Application.Services.Brokers
     public class BrokerAccountSecurityService : IBrokerAccountSecurityService
     {
         private readonly IUnitOfWork _db;
-        private readonly IMapper _mapper;
+        private readonly ApplicationMapper _mapper;
 
         private readonly IRepository<BrokerAccountSecurity> _brokerAccountSecurityRepo;
         private readonly IRepository<Security> _securityRepo;
@@ -36,7 +36,7 @@ namespace MoneyManager.Application.Services.Brokers
 
         private IServerNotifier _serverNotifier;
 
-        public BrokerAccountSecurityService(IUnitOfWork uow, IMapper mapper, 
+        public BrokerAccountSecurityService(IUnitOfWork uow, ApplicationMapper mapper, 
             IStockConnector stockConnector, IServerNotifier serverNotifier,
             ISecurityService securityService,
             IPullQuotationsService pullQuotationsService)
@@ -64,7 +64,7 @@ namespace MoneyManager.Application.Services.Brokers
 
             if (!unionSecurities)
             {
-                return _mapper.Map<IEnumerable<BrokerAccountSecurityDTO>>(brokerAccountSecurities);
+                return _mapper.Map(brokerAccountSecurities);
             }
 
             var handledBrokerAccountSecurities = new Dictionary<Guid, BrokerAccountSecurity>();
@@ -87,7 +87,7 @@ namespace MoneyManager.Application.Services.Brokers
                 }
             }
 
-            return _mapper.Map<IEnumerable<BrokerAccountSecurityDTO>>(handledBrokerAccountSecurities.Values);
+            return _mapper.Map(handledBrokerAccountSecurities.Values);
         }
 
         public async Task<IEnumerable<BrokerAccountSecurityDTO>> GetByBrokerAccount(Guid brokerAccountId)
@@ -100,7 +100,7 @@ namespace MoneyManager.Application.Services.Brokers
 
             var brokerAccountSecurities = await _brokerAccountSecurityRepo
                 .GetAll(complexQuery);
-            return _mapper.Map<IEnumerable<BrokerAccountSecurityDTO>>(brokerAccountSecurities);
+            return _mapper.Map(brokerAccountSecurities);
         }
 
         public async Task PullQuotations()
@@ -122,7 +122,7 @@ namespace MoneyManager.Application.Services.Brokers
                 .GetAll((brokerAccountSecurity) => brokerAccountSecurity.BrokerAccountId == brokerAccountId,
                     (query) => query.Include((brokerAccount) => brokerAccount.Security));
 
-            var mappedSecurities =  _mapper.Map<IEnumerable<BrokerAccountSecurityDTO>>(brokerAccountSecurities);
+            var mappedSecurities =  _mapper.Map(brokerAccountSecurities);
 
             await PullQuotations(mappedSecurities.Select(brokerAccountSecurity => brokerAccountSecurity.Security).ToList());
         }
@@ -157,7 +157,7 @@ namespace MoneyManager.Application.Services.Brokers
 
         public async Task<Guid> Add(BrokerAccountSecurityDTO brokerAccountSecurityDto)
         {
-            var brokerAccountSecurity = _mapper.Map<BrokerAccountSecurity>(brokerAccountSecurityDto);
+            var brokerAccountSecurity = _mapper.Map(brokerAccountSecurityDto);
             brokerAccountSecurity.Id = Guid.NewGuid();
             await _brokerAccountSecurityRepo.Add(brokerAccountSecurity);
             await _db.Commit();
@@ -166,7 +166,7 @@ namespace MoneyManager.Application.Services.Brokers
 
         public async Task Update(BrokerAccountSecurityDTO brokerAccountSecurityDto)
         {
-            var brokerAccountSecurity = _mapper.Map<BrokerAccountSecurity>(brokerAccountSecurityDto);
+            var brokerAccountSecurity = _mapper.Map(brokerAccountSecurityDto);
             _brokerAccountSecurityRepo.Update(brokerAccountSecurity);
             await _db.Commit();
         }

@@ -1,6 +1,6 @@
-﻿using System;
-using AutoMapper;
+using System;
 using MoneyManager.Application.Interfaces.Transactions;
+using MoneyManager.Application.Mappings;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -18,10 +18,10 @@ namespace MoneyManager.Application.Services.Transactions
 
         private readonly IUnitOfWork _db;
         private readonly IRepository<TransactionType> _transactionTypeRepo;
-        private readonly IMapper _mapper;
+        private readonly ApplicationMapper _mapper;
         private readonly IFileStorageService _fileStorageService;
 
-        public TransactionTypeService(IUnitOfWork uow, IMapper mapper, IFileStorageService fileStorageService)
+        public TransactionTypeService(IUnitOfWork uow, ApplicationMapper mapper, IFileStorageService fileStorageService)
         {
             _db = uow;
             _mapper = mapper;
@@ -34,7 +34,7 @@ namespace MoneyManager.Application.Services.Transactions
             var result = onlyActive
                 ? await _transactionTypeRepo.GetAll(transaction => transaction.Active)
                 : await _transactionTypeRepo.GetAll();
-            return _mapper.Map<IEnumerable<TransactionTypeDTO>>(result);
+            return _mapper.Map(result);
         }
 
         public async Task<string> GetIconUrl(string iconKey)
@@ -44,7 +44,7 @@ namespace MoneyManager.Application.Services.Transactions
 
         public async Task<TransactionTypeDTO> Add(TransactionTypeDTO transactionTypeDto, IFormFile transactionTypeIcon)
         {
-            var transactionType = _mapper.Map<TransactionType>(transactionTypeDto);
+            var transactionType = _mapper.Map(transactionTypeDto);
             transactionType.Id = Guid.NewGuid();
 
             if (transactionTypeIcon != null)
@@ -57,12 +57,12 @@ namespace MoneyManager.Application.Services.Transactions
             await _transactionTypeRepo.Add(transactionType);
             await _db.Commit();
             
-            return _mapper.Map<TransactionTypeDTO>(transactionType);
+            return _mapper.Map(transactionType);
         }
 
         public async Task<TransactionTypeDTO> Update(TransactionTypeDTO transactionTypeDto, IFormFile transactionTypeIcon)
         {
-            var transactionType = _mapper.Map<TransactionType>(transactionTypeDto);
+            var transactionType = _mapper.Map(transactionTypeDto);
 
             if (transactionTypeIcon != null)
             {
@@ -74,7 +74,7 @@ namespace MoneyManager.Application.Services.Transactions
             _transactionTypeRepo.Update(transactionType);
             await _db.Commit();
 
-            return _mapper.Map<TransactionTypeDTO>(transactionType);
+            return _mapper.Map(transactionType);
         }
 
         public async Task Delete(Guid id)

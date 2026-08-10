@@ -1,9 +1,9 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MoneyManager.Application.DTO.Banks;
 using MoneyManager.Application.Interfaces.Banks;
+using MoneyManager.WebApi.Mappings;
 using MoneyManager.WebApi.Models.Banks;
 using MoneyManager.WebApi.Models.Transactions;
 using System;
@@ -20,8 +20,8 @@ namespace MoneyManager.WebApi.Controllers.Banks
     public class BankController : ControllerBase
     {
         private readonly IBankService _bankService;
-        private readonly IMapper _mapper;
-        public BankController(IBankService bankService, IMapper mapper)
+        private readonly WebApiMapper _mapper;
+        public BankController(IBankService bankService, WebApiMapper mapper)
         {
             _mapper = mapper;
             _bankService = bankService;
@@ -31,14 +31,14 @@ namespace MoneyManager.WebApi.Controllers.Banks
         public async Task<IEnumerable<BankModel>> GetAll()
         {
             var banks = await _bankService.GetAll();
-            return _mapper.Map<IEnumerable<BankModel>>(banks);
+            return _mapper.Map(banks);
         }
 
         [HttpGet(nameof(GetById))]
         public async Task<BankModel> GetById([FromQuery] Guid id)
         {
             var bank = await _bankService.GetById(id);
-            return _mapper.Map<BankModel>(bank);
+            return _mapper.Map(bank);
         }
 
         [HttpPut]
@@ -46,9 +46,9 @@ namespace MoneyManager.WebApi.Controllers.Banks
         {
             var bank = JsonSerializer.Deserialize<BankModel>(bankJson);
 
-            var bankDto = _mapper.Map<BankDto>(bank);
+            var bankDto = _mapper.Map(bank);
             var createdBank = await _bankService.Add(bankDto, bankIcon);
-            return _mapper.Map<BankModel>(createdBank);
+            return _mapper.Map(createdBank);
         }
 
         [HttpPatch]
@@ -56,9 +56,9 @@ namespace MoneyManager.WebApi.Controllers.Banks
         {
             var bank = JsonSerializer.Deserialize<BankModel>(bankJson);
 
-            var bankDto = _mapper.Map<BankDto>(bank);
+            var bankDto = _mapper.Map(bank);
             var updatedBank = await _bankService.Update(bankDto, bankIcon);
-            return _mapper.Map<BankModel>(updatedBank);
+            return _mapper.Map(updatedBank);
         }
 
         [HttpDelete]

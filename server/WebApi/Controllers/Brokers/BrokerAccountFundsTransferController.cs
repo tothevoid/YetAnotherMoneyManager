@@ -1,8 +1,8 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Brokers;
+using MoneyManager.WebApi.Mappings;
 using MoneyManager.WebApi.Models.Brokers;
 using MoneyManager.WebApi.Models.Common;
 using System;
@@ -18,9 +18,9 @@ namespace MoneyManager.WebApi.Controllers.Brokers
     public class BrokerAccountFundsTransferController : ControllerBase
     {
         private readonly IBrokerAccountFundsTransferService _brokerAccountFundsTransferService;
-        private readonly IMapper _mapper;
+        private readonly WebApiMapper _mapper;
 
-        public BrokerAccountFundsTransferController(IBrokerAccountFundsTransferService brokerAccountFundsTransferService, IMapper mapper)
+        public BrokerAccountFundsTransferController(IBrokerAccountFundsTransferService brokerAccountFundsTransferService, WebApiMapper mapper)
         {
             _brokerAccountFundsTransferService = brokerAccountFundsTransferService;
             _mapper = mapper;
@@ -31,21 +31,21 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         {
             var transfers = await _brokerAccountFundsTransferService.GetAll(query.BrokerAccountId, 
                 query.PageIndex, query.RecordsQuantity);
-            return _mapper.Map<IEnumerable<BrokerAccountFundsTransferModel>>(transfers);
+            return _mapper.Map(transfers);
         }
 
         [HttpPut]
         public async Task<BrokerAccountFundsTransferModel> Add(BrokerAccountFundsTransferModel transferModel)
         {
-            var transferDto = _mapper.Map<BrokerAccountFundsTransferDto>(transferModel);
+            var transferDto = _mapper.Map(transferModel);
             var result = await _brokerAccountFundsTransferService.Add(transferDto);
-            return _mapper.Map<BrokerAccountFundsTransferModel>(result);
+            return _mapper.Map(result);
         }
 
         [HttpPatch]
         public async Task Update(BrokerAccountFundsTransferModel transferModel)
         {
-            var transferDto = _mapper.Map<BrokerAccountFundsTransferDto>(transferModel);
+            var transferDto = _mapper.Map(transferModel);
             await _brokerAccountFundsTransferService.Update(transferDto);
         }
 
@@ -54,7 +54,7 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         {
             var pagination = await _brokerAccountFundsTransferService
                 .GetPagination();
-            return _mapper.Map<PaginationConfigModel>(pagination);
+            return _mapper.Map(pagination);
         }
 
         [HttpGet(nameof(GetPaginationByBrokerAccount))]
@@ -62,7 +62,7 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         {
             var pagination = await _brokerAccountFundsTransferService
                 .GetPaginationByBrokerAccount(brokerAccountId);
-            return _mapper.Map<PaginationConfigModel>(pagination);
+            return _mapper.Map(pagination);
         }
 
         [HttpDelete]

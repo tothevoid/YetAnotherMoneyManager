@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
-using AutoMapper;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Securities;
+using MoneyManager.WebApi.Mappings;
 using MoneyManager.WebApi.Models.Securities;
 using MoneyManager.WebApi.Models.Common;
 using Microsoft.AspNetCore.Authorization;
@@ -18,9 +18,9 @@ namespace MoneyManager.WebApi.Controllers.Securities
     public class SecurityTransactionController : ControllerBase
     {
         private readonly ISecurityTransactionService _securityTransactionService;
-        private readonly IMapper _mapper;
+        private readonly WebApiMapper _mapper;
 
-        public SecurityTransactionController(ISecurityTransactionService securityTransactionService, IMapper mapper)
+        public SecurityTransactionController(ISecurityTransactionService securityTransactionService, WebApiMapper mapper)
         {
             _mapper = mapper;
             _securityTransactionService = securityTransactionService;
@@ -31,7 +31,7 @@ namespace MoneyManager.WebApi.Controllers.Securities
         {
             var securityTransactions = await _securityTransactionService
                 .GetAll(request.BrokerAccountId, request.RecordsQuantity, request.PageIndex);
-            return _mapper.Map<IEnumerable<SecurityTransactionModel>>(securityTransactions);
+            return _mapper.Map(securityTransactions);
         }
 
         [HttpGet(nameof(GetPaginationByBrokerAccount))]
@@ -39,7 +39,7 @@ namespace MoneyManager.WebApi.Controllers.Securities
         {
             var pagination = await _securityTransactionService
                 .GetPagination(brokerAccountId);
-            return _mapper.Map<PaginationConfigModel>(pagination);
+            return _mapper.Map(pagination);
         }
 
         [HttpGet(nameof(GetPagination))]
@@ -47,7 +47,7 @@ namespace MoneyManager.WebApi.Controllers.Securities
         {
             var pagination = await _securityTransactionService
                 .GetPagination();
-            return _mapper.Map<PaginationConfigModel>(pagination);
+            return _mapper.Map(pagination);
         }
 
         [HttpGet(nameof(GetTransactionsHistory))]
@@ -55,20 +55,20 @@ namespace MoneyManager.WebApi.Controllers.Securities
         {
             var transactions = await _securityTransactionService
                 .GetTransactionsHistory(securityId);
-            return _mapper.Map<IEnumerable<SecurityTransactionsHistoryModel>>(transactions);
+            return _mapper.Map(transactions);
         }
 
         [HttpPut]
         public async Task<Guid> Add(SecurityTransactionModel securityTransaction)
         {
-            var securityTransactionDto = _mapper.Map<SecurityTransactionDTO>(securityTransaction);
+            var securityTransactionDto = _mapper.Map(securityTransaction);
             return await _securityTransactionService.Add(securityTransactionDto);
         }
 
         [HttpPatch]
         public async Task Update(SecurityTransactionModel securityTransaction)
         {
-            var securityTransactionDto = _mapper.Map<SecurityTransactionDTO>(securityTransaction);
+            var securityTransactionDto = _mapper.Map(securityTransaction);
             await _securityTransactionService.Update(securityTransactionDto);
         }
 

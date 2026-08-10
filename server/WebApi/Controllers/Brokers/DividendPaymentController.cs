@@ -1,9 +1,9 @@
-﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Application.Services.Brokers;
+using MoneyManager.WebApi.Mappings;
 using MoneyManager.WebApi.Models.Brokers;
 using MoneyManager.WebApi.Models.Common;
 using System;
@@ -19,9 +19,9 @@ namespace MoneyManager.WebApi.Controllers.Brokers
     public class DividendPaymentController : ControllerBase
     {
         private readonly IDividendPaymentService _dividendPaymentService;
-        private readonly IMapper _mapper;
+        private readonly WebApiMapper _mapper;
 
-        public DividendPaymentController(IDividendPaymentService dividendPaymentService, IMapper mapper)
+        public DividendPaymentController(IDividendPaymentService dividendPaymentService, WebApiMapper mapper)
         {
             _mapper = mapper;
             _dividendPaymentService = dividendPaymentService;
@@ -31,7 +31,7 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         public async Task<IEnumerable<DividendPaymentModel>> GetAll(GetAllDividendsPaymentsQuery query)
         {
             var dividendPayments = await _dividendPaymentService.GetAll(query.BrokerAccountId, query.PageIndex, query.RecordsQuantity);
-            return _mapper.Map<IEnumerable<DividendPaymentModel>>(dividendPayments);
+            return _mapper.Map(dividendPayments);
         }
 
         [HttpGet(nameof(GetEarningsByBrokerAccount))]
@@ -43,14 +43,14 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         [HttpPut]
         public async Task<Guid> Add(DividendPaymentModel dividendPayment)
         {
-            var dividendDto = _mapper.Map<DividendPaymentDto>(dividendPayment);
+            var dividendDto = _mapper.Map(dividendPayment);
             return await _dividendPaymentService.Add(dividendDto);
         }
 
         [HttpPatch]
         public async Task Update(DividendPaymentModel dividendPayment)
         {
-            var dividendDto = _mapper.Map<DividendPaymentDto>(dividendPayment);
+            var dividendDto = _mapper.Map(dividendPayment);
             await _dividendPaymentService.Update(dividendDto);
         }
 
@@ -59,7 +59,7 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         {
             var pagination = await _dividendPaymentService
                 .GetPagination();
-            return _mapper.Map<PaginationConfigModel>(pagination);
+            return _mapper.Map(pagination);
         }
 
         [HttpGet(nameof(GetPaginationByBrokerAccount))]
@@ -67,7 +67,7 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         {
             var pagination = await _dividendPaymentService
                 .GetPaginationByBrokerAccount(brokerAccountId);
-            return _mapper.Map<PaginationConfigModel>(pagination);
+            return _mapper.Map(pagination);
         }
 
         [HttpDelete]

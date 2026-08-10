@@ -1,6 +1,6 @@
-﻿using AutoMapper;
 using MoneyManager.Application.DTO.Currencies;
 using MoneyManager.Application.Interfaces.Currencies;
+using MoneyManager.Application.Mappings;
 using MoneyManager.Infrastructure.Entities.Currencies;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using System;
@@ -18,10 +18,10 @@ namespace MoneyManager.Application.Services.Currencies
     {
         private readonly IUnitOfWork _db;
         private readonly IRepository<Currency> _currencyRepo;
-        private readonly IMapper _mapper;
+        private readonly ApplicationMapper _mapper;
         private readonly ICurrencyGrabber _currencyGrabber;
       
-        public CurrencyService(IUnitOfWork uow, IMapper mapper, ICurrencyGrabber currencyGrabber)
+        public CurrencyService(IUnitOfWork uow, ApplicationMapper mapper, ICurrencyGrabber currencyGrabber)
         {
             _db = uow;
             _mapper = mapper;
@@ -32,13 +32,13 @@ namespace MoneyManager.Application.Services.Currencies
         public async Task<IEnumerable<CurrencyDTO>> GetAll()
         {
             var transactions = await _currencyRepo.GetAll();
-            return _mapper.Map<IEnumerable<CurrencyDTO>>(transactions);
+            return _mapper.Map(transactions);
         }
 
         public async Task<CurrencyDTO> GetById(Guid id)
         {
             var transactions = await _currencyRepo.GetById(id);
-            return _mapper.Map<CurrencyDTO>(transactions);
+            return _mapper.Map(transactions);
         }
 
         //TODO: Guid parameter instead of DTO
@@ -65,14 +65,14 @@ namespace MoneyManager.Application.Services.Currencies
 
         public async Task Update(CurrencyDTO currencyDto)
         {
-            var currency = _mapper.Map<Currency>(currencyDto);
+            var currency = _mapper.Map(currencyDto);
             _currencyRepo.Update(currency);
             await _db.Commit();
         }
 
         public async Task<Guid> Add(CurrencyDTO currencyDto)
         {
-            var currency = _mapper.Map<Currency>(currencyDto);
+            var currency = _mapper.Map(currencyDto);
             currency.Id = Guid.NewGuid();
             await _currencyRepo.Add(currency);
             await _db.Commit();

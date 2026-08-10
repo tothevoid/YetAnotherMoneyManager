@@ -2,9 +2,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
-using AutoMapper;
 using MoneyManager.Application.DTO.Transactions;
 using MoneyManager.Application.Interfaces.Transactions;
+using MoneyManager.WebApi.Mappings;
 using MoneyManager.WebApi.Models.Transactions;
 using Microsoft.AspNetCore.Authorization;
 
@@ -17,8 +17,8 @@ namespace MoneyManager.WebApi.Controllers.Transactions
     public class TransactionController : ControllerBase
     {
         private readonly ITransactionsService _transactionService;
-        private readonly IMapper _mapper;
-        public TransactionController(ITransactionsService transactionService, IMapper mapper)
+        private readonly WebApiMapper _mapper;
+        public TransactionController(ITransactionsService transactionService, WebApiMapper mapper)
         {
             _mapper = mapper;
             _transactionService = transactionService;
@@ -28,21 +28,21 @@ namespace MoneyManager.WebApi.Controllers.Transactions
         public async Task<IEnumerable<TransactionModel>> GetAll(int month, int year, bool showSystem)
         {
             var transactions = await _transactionService.GetAll(month, year, showSystem);
-            return _mapper.Map<IEnumerable<TransactionModel>>(transactions);
+            return _mapper.Map(transactions);
         }
 
         [HttpPut]
         public async Task<TransactionModel> Add(TransactionModel transaction)
         {
-            var transactionDto = _mapper.Map<TransactionDTO>(transaction);
+            var transactionDto = _mapper.Map(transaction);
             var addedTransaction = await _transactionService.Add(transactionDto);
-            return _mapper.Map<TransactionModel>(addedTransaction);
+            return _mapper.Map(addedTransaction);
         }
 
         [HttpPatch]
         public async Task Update(TransactionModel updatedTransaction)
         {
-            var transactionDto = _mapper.Map<TransactionDTO>(updatedTransaction);
+            var transactionDto = _mapper.Map(updatedTransaction);
             await _transactionService.Update(transactionDto);
         }
 

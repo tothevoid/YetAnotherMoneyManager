@@ -1,10 +1,10 @@
-﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 using MoneyManager.Application.DTO.Currencies;
 using MoneyManager.Application.Interfaces.Currencies;
+using MoneyManager.WebApi.Mappings;
 using MoneyManager.WebApi.Models.Currencies;
 using MoneyManager.Application.DTO;
 using MoneyManager.Application.Interfaces.User;
@@ -20,10 +20,10 @@ namespace MoneyManager.WebApi.Controllers.Currencies
     public class CurrencyController : ControllerBase
     {
         private readonly ICurrencyService _currencyService;
-        private readonly IMapper _mapper;
+        private readonly WebApiMapper _mapper;
         private readonly IUserProfileService _userProfileService;
 
-        public CurrencyController(ICurrencyService currencyService, IMapper mapper, IUserProfileService userProfileService)
+        public CurrencyController(ICurrencyService currencyService, WebApiMapper mapper, IUserProfileService userProfileService)
         {
             _mapper = mapper;
             _currencyService = currencyService;
@@ -41,20 +41,20 @@ namespace MoneyManager.WebApi.Controllers.Currencies
         public async Task<IEnumerable<CurrencyModel>> GetAll()
         {
             var currencies = await _currencyService.GetAll();
-            return _mapper.Map<IEnumerable<CurrencyModel>>(currencies);
+            return _mapper.Map(currencies);
         }
 
         [HttpPut]
         public async Task<Guid> Add(CurrencyModel currency)
         {
-            var currencyDto = _mapper.Map<CurrencyDTO>(currency);
+            var currencyDto = _mapper.Map(currency);
             return await _currencyService.Add(currencyDto);
         }
 
         [HttpPatch]
         public async Task Update(CurrencyModel currency)
         {
-            var currencyDto = _mapper.Map<CurrencyDTO>(currency);
+            var currencyDto = _mapper.Map(currency);
             await _currencyService.Update(currencyDto);
         }
 

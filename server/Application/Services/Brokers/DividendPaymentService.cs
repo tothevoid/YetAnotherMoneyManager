@@ -1,8 +1,8 @@
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.DTO.Common;
 using MoneyManager.Application.Interfaces.Brokers;
+using MoneyManager.Application.Mappings;
 using MoneyManager.Application.Queries.Brokers;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Entities.Securities;
@@ -23,9 +23,9 @@ namespace MoneyManager.Application.Services.Brokers
         private readonly IRepository<DividendPayment> _dividendPaymentRepo;
         private readonly IRepository<BrokerAccount> _brokerAccountRepo;
         private readonly IRepository<Dividend> _dividendRepo;
-        private readonly IMapper _mapper;
+        private readonly ApplicationMapper _mapper;
 
-        public DividendPaymentService(IUnitOfWork uow, IMapper mapper)
+        public DividendPaymentService(IUnitOfWork uow, ApplicationMapper mapper)
         {
             _db = uow;
             _mapper = mapper;
@@ -50,7 +50,7 @@ namespace MoneyManager.Application.Services.Brokers
             var dividends = await _dividendPaymentRepo
                 .GetAll(query.GetQuery());
             
-            return _mapper.Map<IEnumerable<DividendPaymentDto>>(dividends);
+            return _mapper.Map(dividends);
         }
 
         public async Task<decimal> GetSumTillSpecificDate(DateOnly date, Guid? brokerAccountId)
@@ -106,7 +106,7 @@ namespace MoneyManager.Application.Services.Brokers
 
         public async Task<Guid> Add(DividendPaymentDto dividendPaymentDto)
         {
-            var dividendPayment = _mapper.Map<DividendPayment>(dividendPaymentDto);
+            var dividendPayment = _mapper.Map(dividendPaymentDto);
             dividendPayment.Id = Guid.NewGuid();
             await _dividendPaymentRepo.Add(dividendPayment);
 
@@ -120,7 +120,7 @@ namespace MoneyManager.Application.Services.Brokers
 
         public async Task Update(DividendPaymentDto dividendPaymentDto)
         {
-            var dividendPayment = _mapper.Map<DividendPayment>(dividendPaymentDto);
+            var dividendPayment = _mapper.Map(dividendPaymentDto);
 
             var existingDividend = await _dividendPaymentRepo.GetById(dividendPaymentDto.Id, DividendPaymentQuery.GetFullHierarchyColumns);
             var existingDividendAmount = CalculateDividendPaymentAmount(existingDividend.Dividend, existingDividend.SecuritiesQuantity,

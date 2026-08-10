@@ -1,9 +1,9 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using MoneyManager.Application.DTO.Banks;
 using MoneyManager.Application.DTO.Transactions;
 using MoneyManager.Application.Interfaces.Banks;
 using MoneyManager.Application.Interfaces.FileStorage;
+using MoneyManager.Application.Mappings;
 using MoneyManager.Application.Services.FileStorage;
 using MoneyManager.Infrastructure.Entities.Banks;
 using MoneyManager.Infrastructure.Entities.Transactions;
@@ -20,10 +20,10 @@ namespace MoneyManager.Application.Services.Banks
 
         private readonly IUnitOfWork _db;
         private readonly IRepository<Bank> _bankRepo;
-        private readonly IMapper _mapper;
+        private readonly ApplicationMapper _mapper;
         private readonly IFileStorageService _fileStorageService;
 
-        public BankService(IUnitOfWork uow, IMapper mapper, IFileStorageService fileStorageService)
+        public BankService(IUnitOfWork uow, ApplicationMapper mapper, IFileStorageService fileStorageService)
         {
             _db = uow;
             _mapper = mapper;
@@ -34,18 +34,18 @@ namespace MoneyManager.Application.Services.Banks
         public async Task<IEnumerable<BankDto>> GetAll()
         {
             var banks = await _bankRepo.GetAll();
-            return _mapper.Map<IEnumerable<BankDto>>(banks);
+            return _mapper.Map(banks);
         }
 
         public async Task<BankDto> GetById(Guid id)
         {
             var bank = await _bankRepo.GetById(id);
-            return _mapper.Map<BankDto>(bank);
+            return _mapper.Map(bank);
         }
 
         public async Task<BankDto> Add(BankDto bankDto, IFormFile bankIcon)
         {
-            var bank = _mapper.Map<Bank>(bankDto);
+            var bank = _mapper.Map(bankDto);
 
             if (bankIcon != null)
             {
@@ -56,12 +56,12 @@ namespace MoneyManager.Application.Services.Banks
 
             await _bankRepo.Add(bank);
             await _db.Commit();
-            return _mapper.Map<BankDto>(bank);
+            return _mapper.Map(bank);
         }
 
         public async Task<BankDto> Update(BankDto bankDto, IFormFile bankIcon)
         {
-            var bank = _mapper.Map<Bank>(bankDto);
+            var bank = _mapper.Map(bankDto);
 
             if (bankIcon != null)
             {
@@ -72,7 +72,7 @@ namespace MoneyManager.Application.Services.Banks
             
             _bankRepo.Update(bank);
             await _db.Commit();
-            return _mapper.Map<BankDto>(bank);
+            return _mapper.Map(bank);
         }
 
         public async Task<bool> Delete(Guid id)

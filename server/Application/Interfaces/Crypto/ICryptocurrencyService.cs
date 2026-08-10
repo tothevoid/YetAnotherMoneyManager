@@ -1,5 +1,5 @@
-﻿using MoneyManager.Application.DTO.Currencies;
-using MoneyManager.Infrastructure.Entities.Crypto;
+using MoneyManager.Application.DTO.Currencies;
+using MoneyManager.Application.DTO.Crypto;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

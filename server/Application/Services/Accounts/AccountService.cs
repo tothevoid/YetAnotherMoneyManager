@@ -1,10 +1,10 @@
-using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MoneyManager.Application.DTO.Accounts;
 using MoneyManager.Application.Interfaces.Accounts;
+using MoneyManager.Application.Mappings;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using MoneyManager.Infrastructure.Entities.Transactions;
 using MoneyManager.Infrastructure.Entities.Accounts;
@@ -20,8 +20,8 @@ namespace MoneyManager.Application.Services.Accounts
         private readonly IUnitOfWork _db;
         private readonly IRepository<Account> _accountRepo;
         private readonly IRepository<Transaction> _transactionRepo;
-        private readonly IMapper _mapper;
-        public AccountService(IUnitOfWork uow, IMapper mapper)
+        private readonly ApplicationMapper _mapper;
+        public AccountService(IUnitOfWork uow, ApplicationMapper mapper)
         {
             _db = uow;
             _mapper = mapper;
@@ -39,13 +39,13 @@ namespace MoneyManager.Application.Services.Accounts
                 .GetQuery();
 
             var transactions = await _accountRepo.GetAll(query);
-            return _mapper.Map<IEnumerable<AccountDTO>>(transactions);
+            return _mapper.Map(transactions);
         }
 
         public async Task<AccountDTO> GetById(Guid id)
         {
             var account = await _accountRepo.GetById(id, GetFullHierarchyColumns);
-            return _mapper.Map<AccountDTO>(account);
+            return _mapper.Map(account);
         }
 
         public async Task<IEnumerable<AccountDTO>> GetAllByTypes(Guid[] typesIds, bool onlyActive = false)
@@ -56,12 +56,12 @@ namespace MoneyManager.Application.Services.Accounts
                 (!onlyActive || account.Active) && typesIds.Contains(account.AccountTypeId);
 
             var transactions = await _accountRepo.GetAll(filter, GetFullHierarchyColumns);
-            return _mapper.Map<IEnumerable<AccountDTO>>(transactions);
+            return _mapper.Map(transactions);
         }
 
         public async Task Update(AccountDTO accountDTO)
         {
-            var account = _mapper.Map<Account>(accountDTO);
+            var account = _mapper.Map(accountDTO);
 
             var currentAccountState = await _accountRepo.GetById(account.Id);
             if (currentAccountState == null)
@@ -84,7 +84,7 @@ namespace MoneyManager.Application.Services.Accounts
 
         public async Task<Guid> Add(AccountDTO accountDto)
         {
-            var account = _mapper.Map<Account>(accountDto);
+            var account = _mapper.Map(accountDto);
             account.Id = Guid.NewGuid();
             await _accountRepo.Add(account);
             await _db.Commit();

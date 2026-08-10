@@ -1,9 +1,9 @@
-﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.DTO.Common;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Securities;
+using MoneyManager.Application.Mappings;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Entities.Debts;
 using MoneyManager.Infrastructure.Entities.Deposits;
@@ -23,8 +23,8 @@ namespace MoneyManager.Application.Services.Securities
         private readonly IUnitOfWork _db;
 
         private readonly IRepository<Dividend> _dividendRepo;
-        private readonly IMapper _mapper;
-        public DividendService(IUnitOfWork uow, IMapper mapper)
+        private readonly ApplicationMapper _mapper;
+        public DividendService(IUnitOfWork uow, ApplicationMapper mapper)
         {
             _db = uow;
             _mapper = mapper;
@@ -41,7 +41,7 @@ namespace MoneyManager.Application.Services.Securities
                 .GetQuery();
 
             var dividends = await _dividendRepo.GetAll(query);
-            return _mapper.Map<IEnumerable<DividendDto>>(dividends);
+            return _mapper.Map(dividends);
         }
 
         public async Task<PaginationConfigDto> GetPagination(Guid securityId)
@@ -69,19 +69,19 @@ namespace MoneyManager.Application.Services.Securities
                         dividend.Security.BrokerAccountSecurities.Any(s => s.BrokerAccountId == brokerAccountId)
                     ),
                     include: GetFullHierarchyColumns);
-            return _mapper.Map<IEnumerable<DividendDto>>(securities);
+            return _mapper.Map(securities);
         }
 
         public async Task Update(DividendDto securityTypeDto)
         {
-            var dividend = _mapper.Map<Dividend>(securityTypeDto);
+            var dividend = _mapper.Map(securityTypeDto);
             _dividendRepo.Update(dividend);
             await _db.Commit();
         }
 
         public async Task<Guid> Add(DividendDto securityDto)
         {
-            var dividend = _mapper.Map<Dividend>(securityDto);
+            var dividend = _mapper.Map(securityDto);
             dividend.Id = Guid.NewGuid();
             await _dividendRepo.Add(dividend);
             await _db.Commit();

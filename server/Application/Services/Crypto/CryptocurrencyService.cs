@@ -1,9 +1,10 @@
-﻿using AutoMapper;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MoneyManager.Application.DTO.Crypto;
 using MoneyManager.Application.Interfaces.Crypto;
+using MoneyManager.Application.Mappings;
 using MoneyManager.Infrastructure.Entities.Crypto;
 using MoneyManager.Application.Interfaces.FileStorage;
 using Microsoft.AspNetCore.Http;
@@ -14,12 +15,12 @@ namespace MoneyManager.Application.Services.Crypto
     {
         private readonly IUnitOfWork _db;
         private readonly IRepository<Cryptocurrency> _cryptocurrencyRepo;
-        private readonly IMapper _mapper;
+        private readonly ApplicationMapper _mapper;
 
         private readonly IFileStorageService _fileStorageService;
         private const string _iconsBucket = "cryptocurrency";
 
-        public CryptocurrencyService(IUnitOfWork uow, IMapper mapper, IFileStorageService fileStorageService)
+        public CryptocurrencyService(IUnitOfWork uow, ApplicationMapper mapper, IFileStorageService fileStorageService)
         {
             _db = uow;
             _mapper = mapper;
@@ -30,12 +31,12 @@ namespace MoneyManager.Application.Services.Crypto
         public async Task<IEnumerable<CryptocurrencyDto>> GetAll()
         {
             var cryptocurrencies = await _cryptocurrencyRepo.GetAll();
-            return _mapper.Map<IEnumerable<CryptocurrencyDto>>(cryptocurrencies);
+            return _mapper.Map(cryptocurrencies);
         }
 
         public async Task<CryptocurrencyDto> Add(CryptocurrencyDto cryptocurrencyDto, IFormFile cryptocurrencyIcon)
         {
-            var cryptocurrency = _mapper.Map<Cryptocurrency>(cryptocurrencyDto);
+            var cryptocurrency = _mapper.Map(cryptocurrencyDto);
             cryptocurrency.Id = Guid.NewGuid();
 
             if (cryptocurrencyIcon != null)
@@ -47,12 +48,12 @@ namespace MoneyManager.Application.Services.Crypto
 
             await _cryptocurrencyRepo.Add(cryptocurrency);
             await _db.Commit();
-            return _mapper.Map<CryptocurrencyDto>(cryptocurrency);
+            return _mapper.Map(cryptocurrency);
         }
 
         public async Task<CryptocurrencyDto> Update(CryptocurrencyDto cryptocurrencyDto, IFormFile cryptocurrencyIcon)
         {
-            var cryptocurrency = _mapper.Map<Cryptocurrency>(cryptocurrencyDto);
+            var cryptocurrency = _mapper.Map(cryptocurrencyDto);
 
             if (cryptocurrencyIcon != null)
             {
@@ -63,7 +64,7 @@ namespace MoneyManager.Application.Services.Crypto
 
             _cryptocurrencyRepo.Update(cryptocurrency);
             await _db.Commit();
-            return _mapper.Map<CryptocurrencyDto>(cryptocurrency);
+            return _mapper.Map(cryptocurrency);
         }
 
         public async Task Delete(Guid id)

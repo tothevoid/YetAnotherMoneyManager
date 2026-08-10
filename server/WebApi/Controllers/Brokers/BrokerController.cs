@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
-using AutoMapper;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Brokers;
+using MoneyManager.WebApi.Mappings;
 using MoneyManager.WebApi.Models.Brokers;
 using Microsoft.AspNetCore.Authorization;
 
@@ -17,8 +17,8 @@ namespace MoneyManager.WebApi.Controllers.Brokers
     public class BrokerController : ControllerBase
     {
         private readonly IBrokerService _brokerService;
-        private readonly IMapper _mapper;
-        public BrokerController(IBrokerService brokerService, IMapper mapper)
+        private readonly WebApiMapper _mapper;
+        public BrokerController(IBrokerService brokerService, WebApiMapper mapper)
         {
             _mapper = mapper;
             _brokerService = brokerService;
@@ -28,20 +28,20 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         public async Task<IEnumerable<BrokerModel>> GetAll()
         {
             var securities = await _brokerService.GetAll();
-            return _mapper.Map<IEnumerable<BrokerModel>>(securities);
+            return _mapper.Map(securities);
         }
 
         [HttpPut]
         public async Task<Guid> Add(BrokerModel broker)
         {
-            var brokerDto = _mapper.Map<BrokerDTO>(broker);
+            var brokerDto = _mapper.Map(broker);
             return await _brokerService.Add(brokerDto);
         }
 
         [HttpPatch]
         public async Task Update(BrokerModel broker)
         {
-            var brokerDto = _mapper.Map<BrokerDTO>(broker);
+            var brokerDto = _mapper.Map(broker);
             await _brokerService.Update(brokerDto);
         }
 

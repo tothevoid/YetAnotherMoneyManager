@@ -1,11 +1,11 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
-using AutoMapper;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Application.Interfaces.Securities;
+using MoneyManager.WebApi.Mappings;
 using MoneyManager.WebApi.Models.Brokers;
 using MoneyManager.WebApi.Models.Securities;
 using MoneyManager.Application.Services.Brokers;
@@ -20,12 +20,12 @@ namespace MoneyManager.WebApi.Controllers.Brokers
     public class BrokerAccountSecurityController : ControllerBase
     {
         private readonly IBrokerAccountSecurityService _brokerAccountSecurityService;
-        private readonly IMapper _mapper;
+        private readonly WebApiMapper _mapper;
         private readonly IPullQuotationsService _pullQuotationsService;
 
         public BrokerAccountSecurityController(IBrokerAccountSecurityService brokerAccountSecurityServiceRepo,
             IPullQuotationsService pullQuotationsService,
-            IMapper mapper)
+            WebApiMapper mapper)
         {
             _mapper = mapper;
             _brokerAccountSecurityService = brokerAccountSecurityServiceRepo;
@@ -38,7 +38,7 @@ namespace MoneyManager.WebApi.Controllers.Brokers
             var brokerAccountSecurities = await _brokerAccountSecurityService
                 .GetAll(true);
 
-            return _mapper.Map<IEnumerable<BrokerAccountSecurityModel>>(brokerAccountSecurities);
+            return _mapper.Map(brokerAccountSecurities);
         }
 
         [HttpGet(nameof(GetByBrokerAccount))]
@@ -46,7 +46,7 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         {
             var brokerAccountSecurities = await _brokerAccountSecurityService
                 .GetByBrokerAccount(brokerAccountId);
-            return _mapper.Map<IEnumerable<BrokerAccountSecurityModel>>(brokerAccountSecurities);
+            return _mapper.Map(brokerAccountSecurities);
         }
 
         [HttpGet(nameof(PullQuotations))]

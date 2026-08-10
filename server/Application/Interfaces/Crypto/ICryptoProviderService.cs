@@ -1,8 +1,8 @@
-﻿using MoneyManager.Application.DTO.Currencies;
+using MoneyManager.Application.DTO.Currencies;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MoneyManager.Infrastructure.Entities.Crypto;
+using MoneyManager.Application.DTO.Crypto;
 
 namespace MoneyManager.Application.Interfaces.Crypto
 {

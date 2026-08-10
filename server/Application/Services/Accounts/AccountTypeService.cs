@@ -1,9 +1,9 @@
-﻿using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MoneyManager.Application.DTO.Accounts;
 using MoneyManager.Application.Interfaces.Accounts;
+using MoneyManager.Application.Mappings;
 using MoneyManager.Infrastructure.Entities.Accounts;
 using MoneyManager.Infrastructure.Interfaces.Database;
 
@@ -13,9 +13,9 @@ namespace MoneyManager.Application.Services.Accounts
     {
         private readonly IUnitOfWork _db;
         private readonly IRepository<AccountType> _accountTypeRepo;
-        private readonly IMapper _mapper;
+        private readonly ApplicationMapper _mapper;
 
-        public AccountTypeService(IUnitOfWork uow, IMapper mapper)
+        public AccountTypeService(IUnitOfWork uow, ApplicationMapper mapper)
         {
             _db = uow;
             _mapper = mapper;
@@ -25,19 +25,19 @@ namespace MoneyManager.Application.Services.Accounts
         public async Task<IEnumerable<AccountTypeDTO>> GetAll()
         {
             var transactions = await _accountTypeRepo.GetAll();
-            return _mapper.Map<IEnumerable<AccountTypeDTO>>(transactions);
+            return _mapper.Map(transactions);
         }
 
         public async Task Update(AccountTypeDTO accountTypeDto)
         {
-            var accountType = _mapper.Map<AccountType>(accountTypeDto);
+            var accountType = _mapper.Map(accountTypeDto);
             _accountTypeRepo.Update(accountType);
             await _db.Commit();
         }
 
         public async Task<Guid> Add(AccountTypeDTO accountTypeDto)
         {
-            var accountType = _mapper.Map<AccountType>(accountTypeDto);
+            var accountType = _mapper.Map(accountTypeDto);
 
             if (accountType.Id == Guid.Empty)
             {

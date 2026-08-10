@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoMapper;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Brokers;
+using MoneyManager.Application.Mappings;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Interfaces.Database;
 
@@ -14,8 +14,8 @@ namespace MoneyManager.Application.Services.Brokers
         private readonly IUnitOfWork _db;
 
         private readonly IRepository<Broker> _brokerRepo;
-        private readonly IMapper _mapper;
-        public BrokerService(IUnitOfWork uow, IMapper mapper)
+        private readonly ApplicationMapper _mapper;
+        public BrokerService(IUnitOfWork uow, ApplicationMapper mapper)
         {
             _db = uow;
             _mapper = mapper;
@@ -25,12 +25,12 @@ namespace MoneyManager.Application.Services.Brokers
         public async Task<IEnumerable<BrokerDTO>> GetAll()
         {
             var brokers = await _brokerRepo.GetAll();
-            return _mapper.Map<IEnumerable<BrokerDTO>>(brokers);
+            return _mapper.Map(brokers);
         }
 
          public async Task<Guid> Add(BrokerDTO securityDto)
         {
-            var broker = _mapper.Map<Broker>(securityDto);
+            var broker = _mapper.Map(securityDto);
             broker.Id = Guid.NewGuid();
             await _brokerRepo.Add(broker);
             await _db.Commit();
@@ -39,7 +39,7 @@ namespace MoneyManager.Application.Services.Brokers
 
         public async Task Update(BrokerDTO brokersDto)
         {
-            var brokers = _mapper.Map<Broker>(brokersDto);
+            var brokers = _mapper.Map(brokersDto);
             _brokerRepo.Update(brokers);
             await _db.Commit();
         }

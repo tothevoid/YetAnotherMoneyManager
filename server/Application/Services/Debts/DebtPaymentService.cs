@@ -1,9 +1,9 @@
-﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Common;
 using MoneyManager.Application.DTO.Debts;
 using MoneyManager.Application.Interfaces.Debts;
 using MoneyManager.Application.Interfaces.Transactions;
+using MoneyManager.Application.Mappings;
 using MoneyManager.Infrastructure.Entities.Accounts;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Entities.Debts;
@@ -23,9 +23,9 @@ namespace MoneyManager.Application.Services.Debts
         private readonly IRepository<Debt> _debtRepo;
         private readonly IRepository<DebtPayment> _debtPaymentRepo;
         private readonly IRepository<Account> _accountRepo;
-        private readonly IMapper _mapper;
+        private readonly ApplicationMapper _mapper;
 
-        public DebtPaymentService(IUnitOfWork uow, IMapper mapper, ITransactionsService transactionService)
+        public DebtPaymentService(IUnitOfWork uow, ApplicationMapper mapper, ITransactionsService transactionService)
         {
             _db = uow;
             _mapper = mapper;
@@ -37,7 +37,7 @@ namespace MoneyManager.Application.Services.Debts
         public async Task<DebtPaymentDto> GetById(Guid id)
         {
             var debtPayment = await _debtPaymentRepo.GetById(id);
-            return _mapper.Map<DebtPaymentDto>(debtPayment);
+            return _mapper.Map(debtPayment);
         }
 
         public async Task<IEnumerable<DebtPaymentDto>> GetAll(int pageIndex, int recordsQuantity)
@@ -49,7 +49,7 @@ namespace MoneyManager.Application.Services.Debts
                 .GetQuery();
 
             var debtPayments = await _debtPaymentRepo.GetAll(query);
-            return _mapper.Map<IEnumerable<DebtPaymentDto>>(debtPayments);
+            return _mapper.Map(debtPayments);
         }
 
         public async Task<PaginationConfigDto> GetPagination()
@@ -66,7 +66,7 @@ namespace MoneyManager.Application.Services.Debts
 
         public async Task<Guid> Add(DebtPaymentDto debtPaymentDto)
         {
-            var debtPayment = _mapper.Map<DebtPayment>(debtPaymentDto);
+            var debtPayment = _mapper.Map(debtPaymentDto);
             debtPayment.Id = Guid.NewGuid();
 
             await _debtPaymentRepo.Add(debtPayment);
@@ -80,7 +80,7 @@ namespace MoneyManager.Application.Services.Debts
         public async Task Update(DebtPaymentDto updatedPaymentDto)
         {
             var currentDebtPayment = await _debtPaymentRepo.GetById(updatedPaymentDto.Id);
-            var updatedDebtPayment = _mapper.Map<DebtPayment>(updatedPaymentDto);
+            var updatedDebtPayment = _mapper.Map(updatedPaymentDto);
             _debtPaymentRepo.Update(updatedDebtPayment);
 
             await ActualizeDebts(currentDebtPayment, updatedDebtPayment);

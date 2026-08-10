@@ -1,8 +1,8 @@
-using AutoMapper;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MoneyManager.Application.Interfaces.User;
+using MoneyManager.Application.Mappings;
 using MoneyManager.Application.Services.User;
 using MoneyManager.Infrastructure.Database;
 using MoneyManager.Infrastructure.Entities.Brokers;
@@ -24,9 +24,9 @@ namespace MoneyManager.Application.Services.Auth
         private readonly IRepository<UserProfile> _db;
         private readonly IConfiguration _appConfig;
         private readonly IUserProfileService _userProfileService;
-        private readonly IMapper _mapper;
+        private readonly ApplicationMapper _mapper;
 
-        public AuthService(IMapper mapper, IUnitOfWork uow, IConfiguration appConfig, IUserProfileService userProfileService)
+        public AuthService(ApplicationMapper mapper, IUnitOfWork uow, IConfiguration appConfig, IUserProfileService userProfileService)
         {
             _uow = uow;
             _db = uow.CreateRepository<UserProfile>();
@@ -74,7 +74,7 @@ namespace MoneyManager.Application.Services.Auth
 
             user.Password = newPassword;
 
-            var mappedUser = _mapper.Map<UserProfile>(user);
+            var mappedUser = _mapper.Map(user);
             _db.Update(mappedUser);
             await _uow.Commit();
             return true;

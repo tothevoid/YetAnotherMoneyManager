@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
-using AutoMapper;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Securities;
+using MoneyManager.WebApi.Mappings;
 using MoneyManager.WebApi.Models.Securities;
 using Microsoft.AspNetCore.Authorization;
 
@@ -17,8 +17,8 @@ namespace MoneyManager.WebApi.Controllers.Securities
     public class SecurityTypeController : ControllerBase
     {
         private readonly ISecurityTypeService _securityTypeService;
-        private readonly IMapper _mapper;
-        public SecurityTypeController(ISecurityTypeService securityTypeService, IMapper mapper)
+        private readonly WebApiMapper _mapper;
+        public SecurityTypeController(ISecurityTypeService securityTypeService, WebApiMapper mapper)
         {
             _mapper = mapper;
             _securityTypeService = securityTypeService;
@@ -28,20 +28,20 @@ namespace MoneyManager.WebApi.Controllers.Securities
         public async Task<IEnumerable<SecurityTypeModel>> GetAll()
         {
             var types = await _securityTypeService.GetAll();
-            return _mapper.Map<IEnumerable<SecurityTypeModel>>(types);
+            return _mapper.Map(types);
         }
 
         [HttpPut]
         public async Task<Guid> Add(SecurityTypeModel securityType)
         {
-            var securityTypeDto = _mapper.Map<SecurityTypeDTO>(securityType);
+            var securityTypeDto = _mapper.Map(securityType);
             return await _securityTypeService.Add(securityTypeDto);
         }
 
         [HttpPatch]
         public async Task Update(SecurityTypeModel securityType)
         {
-            var securityTypeDto = _mapper.Map<SecurityTypeDTO>(securityType);
+            var securityTypeDto = _mapper.Map(securityType);
             await _securityTypeService.Update(securityTypeDto);
         }
 

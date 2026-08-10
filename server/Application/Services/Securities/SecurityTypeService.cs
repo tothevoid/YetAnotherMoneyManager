@@ -1,9 +1,9 @@
-﻿using AutoMapper;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Securities;
+using MoneyManager.Application.Mappings;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using MoneyManager.Infrastructure.Entities.Securities;
 
@@ -13,8 +13,8 @@ namespace MoneyManager.Application.Services.Securities
     {
         private readonly IUnitOfWork _db;
         private readonly IRepository<SecurityType> _securityTypeRepo;
-        private readonly IMapper _mapper;
-        public SecurityTypeService(IUnitOfWork uow, IMapper mapper)
+        private readonly ApplicationMapper _mapper;
+        public SecurityTypeService(IUnitOfWork uow, ApplicationMapper mapper)
         {
             _db = uow;
             _mapper = mapper;
@@ -24,19 +24,19 @@ namespace MoneyManager.Application.Services.Securities
         public async Task<IEnumerable<SecurityTypeDTO>> GetAll()
         {
             var securityTypes = await _securityTypeRepo.GetAll();
-            return _mapper.Map<IEnumerable<SecurityTypeDTO>>(securityTypes);
+            return _mapper.Map(securityTypes);
         }
 
         public async Task Update(SecurityTypeDTO securityTypeDto)
         {
-            var securityType = _mapper.Map<SecurityType>(securityTypeDto);
+            var securityType = _mapper.Map(securityTypeDto);
             _securityTypeRepo.Update(securityType);
             await _db.Commit();
         }
 
         public async Task<Guid> Add(SecurityTypeDTO securityTypeDto)
         {
-            var securityType = _mapper.Map<SecurityType>(securityTypeDto);
+            var securityType = _mapper.Map(securityTypeDto);
             securityType.Id = Guid.NewGuid();
             await _securityTypeRepo.Add(securityType);
             await _db.Commit();

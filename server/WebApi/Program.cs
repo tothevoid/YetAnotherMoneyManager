@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Builder;
+using System;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using MoneyManager.Infrastructure.Database;
 using MoneyManager.Infrastructure.Messages;
 using TickerQ.DependencyInjection;
@@ -33,11 +35,7 @@ builder.Services.AddMappings();
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    db.Database.Migrate();
-}
+app.MigrateDatabase();
 
 if (!app.Environment.IsDevelopment())
 {

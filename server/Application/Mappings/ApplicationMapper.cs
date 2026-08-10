@@ -23,7 +23,7 @@ using MoneyManager.Infrastructure.Entities.User;
 
 namespace MoneyManager.Application.Mappings
 {
-    [Mapper]
+    [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.None)]
     public partial class ApplicationMapper
     {
         public partial Transaction Map(TransactionDTO dto);

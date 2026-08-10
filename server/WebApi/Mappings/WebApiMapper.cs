@@ -29,7 +29,8 @@ using MoneyManager.WebApi.Models.User;
 
 namespace MoneyManager.WebApi.Mappings
 {
-    [Mapper]
+    // EF navigation properties will be ignored by the mapper so RequiredMappingStrategy = None is ok.
+    [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.None)]
     public partial class WebApiMapper
     {
         public partial TransactionDTO Map(TransactionModel model);

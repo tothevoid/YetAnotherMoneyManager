@@ -2,11 +2,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
-using AutoMapper;
 using MoneyManager.Application.DTO;
 using MoneyManager.Application.DTO.Transactions;
 using MoneyManager.Application.Interfaces.Transactions;
 using MoneyManager.Application.Interfaces.User;
+using MoneyManager.WebApi.Mappings;
 using MoneyManager.WebApi.Models.Accounts;
 using MoneyManager.WebApi.Models.Transactions;
 using MoneyManager.WebApi.Models.User;
@@ -21,9 +21,9 @@ namespace MoneyManager.WebApi.Controllers.User
     public class UserProfileController : ControllerBase
     {
         private readonly IUserProfileService _userProfileService;
-        private readonly IMapper _mapper;
+        private readonly WebApiMapper _mapper;
 
-        public UserProfileController(IUserProfileService userProfileService, IMapper mapper)
+        public UserProfileController(IUserProfileService userProfileService, WebApiMapper mapper)
         {
             _mapper = mapper;
             _userProfileService = userProfileService;
@@ -33,13 +33,13 @@ namespace MoneyManager.WebApi.Controllers.User
         public async Task<UserProfileModel> Get()
         {
             var userProfile = await _userProfileService.Get();
-            return _mapper.Map<UserProfileModel>(userProfile);
+            return _mapper.Map(userProfile);
         }
 
         [HttpPatch]
         public async Task Update(UserProfileModel userProfile)
         {
-            var userProfileDto = _mapper.Map<UserProfileDto>(userProfile);
+            var userProfileDto = _mapper.Map(userProfile);
             await _userProfileService.Update(userProfileDto);
         }
 

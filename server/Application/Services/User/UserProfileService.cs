@@ -1,9 +1,9 @@
-﻿using AutoMapper;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using System.Linq;
 using System.Threading.Tasks;
 using MoneyManager.Application.DTO;
 using MoneyManager.Application.Interfaces.User;
+using MoneyManager.Application.Mappings;
 using MoneyManager.Infrastructure.Entities.User;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.Interfaces.Currencies;
@@ -15,10 +15,10 @@ namespace MoneyManager.Application.Services.User
     {
         private readonly IUnitOfWork _db;
         private readonly IRepository<UserProfile> _userProfileRepo;
-        private readonly IMapper _mapper;
+        private readonly ApplicationMapper _mapper;
         private readonly ICurrencyService _currencyService;
 
-        public UserProfileService(IUnitOfWork uow, IMapper mapper, ICurrencyService currencyService)
+        public UserProfileService(IUnitOfWork uow, ApplicationMapper mapper, ICurrencyService currencyService)
         {
             _db = uow;
             _mapper = mapper;
@@ -29,7 +29,7 @@ namespace MoneyManager.Application.Services.User
         public async Task<UserProfileDto> Get()
         {
             var users = await _userProfileRepo.GetAll(include: GetFullHierarchyColumns);
-            return _mapper.Map<UserProfileDto>(users.FirstOrDefault());
+            return _mapper.Map(users.FirstOrDefault());
         }
 
         public async Task<UserProfileDto> GetByAuth(string userName, string password)
@@ -38,13 +38,13 @@ namespace MoneyManager.Application.Services.User
                 string.Equals(user.UserName, userName) && 
                 (string.Equals(user.Password, password) || 
                   (string.IsNullOrEmpty(user.Password) && string.IsNullOrEmpty(password))));
-            return _mapper.Map<UserProfileDto>(users.FirstOrDefault());
+            return _mapper.Map(users.FirstOrDefault());
         }
 
         public async Task Update(UserProfileDto newUserStateDto)
         {
             var currentUserState = await Get();
-            var userProfile = _mapper.Map<UserProfile>(newUserStateDto);
+            var userProfile = _mapper.Map(newUserStateDto);
 
             var currencyChanged = currentUserState.CurrencyId != userProfile.CurrencyId;
 

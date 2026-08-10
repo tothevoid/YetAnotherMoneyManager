@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Securities;
@@ -8,6 +7,7 @@ using System.Threading.Tasks;
 using System;
 using MoneyManager.Application.DTO.Transactions;
 using MoneyManager.Application.Interfaces.Transactions;
+using MoneyManager.WebApi.Mappings;
 using MoneyManager.WebApi.Models.Transactions;
 using Microsoft.AspNetCore.Authorization;
 
@@ -20,8 +20,8 @@ namespace MoneyManager.WebApi.Controllers.Transactions
     public class CurrencyTransactionController : ControllerBase
     {
         private readonly ICurrencyTransactionService _currencyTransactionService;
-        private readonly IMapper _mapper;
-        public CurrencyTransactionController(ICurrencyTransactionService currencyTransactionService, IMapper mapper)
+        private readonly WebApiMapper _mapper;
+        public CurrencyTransactionController(ICurrencyTransactionService currencyTransactionService, WebApiMapper mapper)
         {
             _mapper = mapper;
             _currencyTransactionService = currencyTransactionService;
@@ -31,7 +31,7 @@ namespace MoneyManager.WebApi.Controllers.Transactions
         public async Task<IEnumerable<CurrencyTransactionModel>> GetAll()
         {
             var currencyTransactions = await _currencyTransactionService.GetAll();
-            return _mapper.Map<IEnumerable<CurrencyTransactionModel>>(currencyTransactions);
+            return _mapper.Map(currencyTransactions);
         }
 
         [HttpGet(nameof(GetById))]
@@ -39,27 +39,27 @@ namespace MoneyManager.WebApi.Controllers.Transactions
         {
             var dto = await _currencyTransactionService.GetById(id);
             if (dto == null) return NotFound();
-            return _mapper.Map<CurrencyTransactionModel>(dto);
+            return _mapper.Map(dto);
         }
 
         [HttpGet(nameof(GetAllByAccountId))]
         public async Task<IEnumerable<CurrencyTransactionModel>> GetAllByAccountId([FromQuery] Guid accountId)
         {
             var dtos = await _currencyTransactionService.GetAllByAccountId(accountId);
-            return _mapper.Map<IEnumerable<CurrencyTransactionModel>>(dtos);
+            return _mapper.Map(dtos);
         }
 
         [HttpPut]
         public async Task<Guid> Add(CurrencyTransactionModel currencyTransaction)
         {
-            var currencyTransactionDto = _mapper.Map<CurrencyTransactionDto>(currencyTransaction);
+            var currencyTransactionDto = _mapper.Map(currencyTransaction);
             return await _currencyTransactionService.Add(currencyTransactionDto);
         }
 
         [HttpPatch]
         public async Task Update(CurrencyTransactionModel currencyTransaction)
         {
-            var currencyTransactionDto = _mapper.Map<CurrencyTransactionDto>(currencyTransaction);
+            var currencyTransactionDto = _mapper.Map(currencyTransaction);
             await _currencyTransactionService.Update(currencyTransactionDto);
         }
 

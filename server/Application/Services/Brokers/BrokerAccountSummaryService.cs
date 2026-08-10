@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Application.Interfaces.Integrations.Stock;

@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
-using AutoMapper;
 using MoneyManager.Application.DTO.Accounts;
 using MoneyManager.Application.Interfaces.Accounts;
+using MoneyManager.WebApi.Mappings;
 using MoneyManager.WebApi.Models.Accounts;
 using Microsoft.AspNetCore.Authorization;
 
@@ -17,8 +17,8 @@ namespace MoneyManager.WebApi.Controllers.Accounts
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
-        private readonly IMapper _mapper;
-        public AccountController(IAccountService accountService, IMapper mapper)
+        private readonly WebApiMapper _mapper;
+        public AccountController(IAccountService accountService, WebApiMapper mapper)
         {
             _mapper = mapper;
             _accountService = accountService;
@@ -28,27 +28,27 @@ namespace MoneyManager.WebApi.Controllers.Accounts
         public async Task<IEnumerable<AccountModel>> GetAll(AccountGetAllConfig getAllConfig)
         {
             var accounts = await _accountService.GetAll(getAllConfig.OnlyActive);
-            return _mapper.Map<IEnumerable<AccountModel>>(accounts);
+            return _mapper.Map(accounts);
         }
 
         [HttpPost("GetAllByTypes")]
         public async Task<IEnumerable<AccountModel>> GetAllByTypes(AccountGetAllByTypesConfig getAllConfig)
         {
             var accounts = await _accountService.GetAllByTypes(getAllConfig.TypesIds, getAllConfig.OnlyActive);
-            return _mapper.Map<IEnumerable<AccountModel>>(accounts);
+            return _mapper.Map(accounts);
         }
 
         [HttpPut]
         public async Task<Guid> Add(AccountModel account)
         {
-            var accountDTO = _mapper.Map<AccountDTO>(account);
+            var accountDTO = _mapper.Map(account);
             return await _accountService.Add(accountDTO);
         }
 
         [HttpPatch]
         public async Task Update(AccountModel account)
         {
-            var accountDTO = _mapper.Map<AccountDTO>(account);
+            var accountDTO = _mapper.Map(account);
             await _accountService.Update(accountDTO);
         }
 
@@ -59,15 +59,15 @@ namespace MoneyManager.WebApi.Controllers.Accounts
         [HttpPost(nameof(Transfer))]
         public async Task Transfer(AccountTransferModel accountTransfer)
         {
-            var transferDto = _mapper.Map<AccountTransferDTO>(accountTransfer);
+            var transferDto = _mapper.Map(accountTransfer);
             await _accountService.Transfer(transferDto);
         }
 
         [HttpGet(nameof(GetSummary))]
-        public async Task<AccountCurrencySummaryModel[]> GetSummary()
+        public async Task<IEnumerable<AccountCurrencySummaryModel>> GetSummary()
         {
             var result =  await _accountService.GetSummary();
-            var summaryModel = _mapper.Map<AccountCurrencySummaryModel[]>(result);
+            var summaryModel = _mapper.Map(result);
             return summaryModel;
         }
 
@@ -76,7 +76,7 @@ namespace MoneyManager.WebApi.Controllers.Accounts
         {
             var account = await _accountService.GetById(id);
             if (account == null) return NotFound();
-            return _mapper.Map<AccountModel>(account);
+            return _mapper.Map(account);
         }
     }
 }

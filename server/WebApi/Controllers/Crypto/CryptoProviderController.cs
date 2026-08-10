@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Brokers;
@@ -6,8 +5,10 @@ using MoneyManager.WebApi.Models.Brokers;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
+using MoneyManager.Application.DTO.Crypto;
 using MoneyManager.Application.Interfaces.Crypto;
 using MoneyManager.Infrastructure.Entities.Crypto;
+using MoneyManager.WebApi.Mappings;
 using MoneyManager.WebApi.Models.Crypto;
 using Microsoft.AspNetCore.Authorization;
 
@@ -20,8 +21,8 @@ namespace MoneyManager.WebApi.Controllers.Crypto
     public class CryptoProviderController: ControllerBase
     {
         private readonly ICryptoProviderService _cryptoProviderService;
-        private readonly IMapper _mapper;
-        public CryptoProviderController(ICryptoProviderService cryptoProviderService, IMapper mapper)
+        private readonly WebApiMapper _mapper;
+        public CryptoProviderController(ICryptoProviderService cryptoProviderService, WebApiMapper mapper)
         {
             _mapper = mapper;
             _cryptoProviderService = cryptoProviderService;
@@ -31,20 +32,20 @@ namespace MoneyManager.WebApi.Controllers.Crypto
         public async Task<IEnumerable<CryptoProviderModel>> GetAll()
         {
             var cryptoProviders = await _cryptoProviderService.GetAll();
-            return _mapper.Map<IEnumerable<CryptoProviderModel>>(cryptoProviders);
+            return _mapper.Map(cryptoProviders);
         }
 
         [HttpPut]
         public async Task<Guid> Add(CryptoProviderModel cryptoProvider)
         {
-            var cryptoProviderDto = _mapper.Map<CryptoProviderDto>(cryptoProvider);
+            var cryptoProviderDto = _mapper.Map(cryptoProvider);
             return await _cryptoProviderService.Add(cryptoProviderDto);
         }
 
         [HttpPatch]
         public async Task Update(CryptoProviderModel cryptoProvider)
         {
-            var cryptoProviderDto = _mapper.Map<CryptoProviderDto>(cryptoProvider);
+            var cryptoProviderDto = _mapper.Map(cryptoProvider);
             await _cryptoProviderService.Update(cryptoProviderDto);
         }
 

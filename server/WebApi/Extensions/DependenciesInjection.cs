@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -94,15 +93,7 @@ namespace MoneyManager.WebApi.Extensions
 
         public static IServiceCollection AddMappings(this IServiceCollection services)
         {
-            var mapperConfig = new MapperConfiguration(cfg =>
-            {
-                cfg.AddApplicationProfile();
-                cfg.AddProfile<ViewToDTOProfile>();
-            });
-
-            var mapper = mapperConfig.CreateMapper();
-            services.AddSingleton(mapper);
-
+            services.AddSingleton<WebApiMapper>();
             return services;
         }
     }

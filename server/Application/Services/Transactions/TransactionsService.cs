@@ -1,6 +1,6 @@
-using AutoMapper;
 using MoneyManager.Application.DTO.Transactions;
 using MoneyManager.Application.Interfaces.Transactions;
+using MoneyManager.Application.Mappings;
 using MoneyManager.Infrastructure.Entities.Transactions;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using System;
@@ -18,8 +18,8 @@ namespace MoneyManager.Application.Services.Transactions
         private readonly IUnitOfWork _db;
         private readonly IRepository<Transaction> _transactionsRepo;
         private readonly IRepository<Account> _accountRepo;
-        private readonly IMapper _mapper;
-        public TransactionsService(IUnitOfWork uow, IMapper mapper)
+        private readonly ApplicationMapper _mapper;
+        public TransactionsService(IUnitOfWork uow, ApplicationMapper mapper)
         {
             _db = uow;
             _mapper = mapper;
@@ -30,7 +30,7 @@ namespace MoneyManager.Application.Services.Transactions
         public async Task<TransactionDTO> GetById(Guid id)
         {
             var transaction =  await _transactionsRepo.GetById(id);
-            return _mapper.Map<TransactionDTO>(transaction);
+            return _mapper.Map(transaction);
         }
 
         public async Task<IEnumerable<TransactionDTO>> GetAll(int month, int year, bool showSystem)
@@ -40,12 +40,12 @@ namespace MoneyManager.Application.Services.Transactions
             var transactions = await _transactionsRepo.GetAll(transaction => 
                 transaction.Date >= startDate && transaction.Date <= endDate && (showSystem || !transaction.IsSystem),
                 GetFullHierarchyColumns);
-            return _mapper.Map<IEnumerable<TransactionDTO>>(transactions.OrderByDescending(x => x.Date));
+            return _mapper.Map(transactions.OrderByDescending(x => x.Date));
         }
 
         public async Task<TransactionDTO> Add(TransactionDTO transactionDTO)
         {
-            var transaction = _mapper.Map<Transaction>(transactionDTO);
+            var transaction = _mapper.Map(transactionDTO);
             transaction.Id = Guid.NewGuid();
             var sourceId = transactionDTO.AccountId != Guid.Empty ? transactionDTO.AccountId : (transactionDTO?.Account?.Id ?? default);
             if (sourceId != default)
@@ -61,12 +61,12 @@ namespace MoneyManager.Application.Services.Transactions
             await _db.Commit();
 
             var newTransaction = await _transactionsRepo.GetById(transaction.Id, GetFullHierarchyColumns, true);
-            return _mapper.Map<TransactionDTO>(newTransaction);
+            return _mapper.Map(newTransaction);
         }
 
         public async Task Update(TransactionDTO transactionToUpdate)
         {
-            var transaction = _mapper.Map<Transaction>(transactionToUpdate);
+            var transaction = _mapper.Map(transactionToUpdate);
             var sourceId = transactionToUpdate.AccountId != Guid.Empty ? transactionToUpdate.AccountId : (transactionToUpdate?.Account?.Id ?? default);
             if (sourceId != default)
             {
@@ -74,7 +74,7 @@ namespace MoneyManager.Application.Services.Transactions
             }
 
             var lastTransaction = await _transactionsRepo.GetById(transactionToUpdate.Id);
-            var lastTransactionDto = _mapper.Map<TransactionDTO>(lastTransaction);
+            var lastTransactionDto = _mapper.Map(lastTransaction);
             _transactionsRepo.Update(transaction);
 
             await RecalculateAccount(lastTransactionDto, transactionToUpdate);

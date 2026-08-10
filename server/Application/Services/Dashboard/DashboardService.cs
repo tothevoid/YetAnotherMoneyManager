@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using MoneyManager.Application.DTO.Accounts;
 using MoneyManager.Application.DTO.Banks;
 using MoneyManager.Application.DTO.Brokers;
@@ -28,7 +27,6 @@ namespace MoneyManager.Application.Services.Dashboard
     public class DashboardService : IDashboardService
     {
         private readonly IUnitOfWork _db;
-        private readonly IMapper _mapper;
         private readonly IAccountService _accountService;
         private readonly IDepositService _depositService;
         private readonly ITransactionsService _transactionsService;
@@ -41,7 +39,7 @@ namespace MoneyManager.Application.Services.Dashboard
         private readonly IBankService _bankService;
         private readonly IBrokerAccountSummaryService _brokerAccountSummaryService;
 
-        public DashboardService(IUnitOfWork uow, IMapper mapper, IAccountService accountService, 
+        public DashboardService(IUnitOfWork uow, IAccountService accountService, 
             IDepositService depositService, ITransactionsService transactionsService,
             IBrokerAccountService brokerAccountService, IDebtService debtService, 
             IUserProfileService userProfile, ICryptoAccountService cryptoAccountService, 
@@ -49,7 +47,6 @@ namespace MoneyManager.Application.Services.Dashboard
             IBankService bankService, IBrokerAccountSummaryService brokerAccountSummaryService)
         {
             _db = uow;
-            _mapper = mapper;
             _accountService = accountService;
             _depositService = depositService;
             _transactionsService = transactionsService;

@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
-using AutoMapper;
 using MoneyManager.Application.DTO.Securities;
+using MoneyManager.WebApi.Mappings;
 using MoneyManager.WebApi.Models.Securities;
 using MoneyManager.Application.Interfaces.Securities;
 using MoneyManager.Application.Interfaces.Currencies;
@@ -19,10 +19,10 @@ namespace MoneyManager.WebApi.Controllers.Dashboard
     [Authorize]
     public class DashboardController : ControllerBase
     {
-        private readonly IMapper _mapper;
+        private readonly WebApiMapper _mapper;
         private readonly IDashboardService _dashboardService;
 
-        public DashboardController(IMapper mapper, IDashboardService dashboardService)
+        public DashboardController(WebApiMapper mapper, IDashboardService dashboardService)
         {
             _mapper = mapper;
             _dashboardService = dashboardService;
@@ -31,7 +31,7 @@ namespace MoneyManager.WebApi.Controllers.Dashboard
         public async Task<GlobalDashboardModel> Get()
         {
             var dasboard = await _dashboardService.GetDashboard();
-            return _mapper.Map<GlobalDashboardModel>(dasboard);
+            return _mapper.Map(dasboard);
         }
     }
 }

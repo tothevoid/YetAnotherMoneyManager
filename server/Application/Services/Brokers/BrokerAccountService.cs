@@ -1,12 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Application.Interfaces.Integrations.Stock;
+using MoneyManager.Application.Mappings;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using MoneyManager.Infrastructure.Queries;
@@ -20,9 +20,9 @@ namespace MoneyManager.Application.Services.Brokers
         private readonly IRepository<BrokerAccount> _brokerAccountRepo;
         private readonly IBrokerAccountSecurityService _brokerAccountSecurityService;
 
-        private readonly IMapper _mapper;
+        private readonly ApplicationMapper _mapper;
        
-        public BrokerAccountService(IUnitOfWork uow, IMapper mapper, 
+        public BrokerAccountService(IUnitOfWork uow, ApplicationMapper mapper, 
             IBrokerAccountSecurityService brokerAccountSecuritySecurityService)
         {
             _db = uow;
@@ -41,7 +41,7 @@ namespace MoneyManager.Application.Services.Brokers
             var brokerAccounts = await _brokerAccountRepo
                 .GetAll(query);
 
-            var brokerAccountsDtos = _mapper.Map<IEnumerable<BrokerAccountDTO>>(brokerAccounts)
+            var brokerAccountsDtos = _mapper.Map(brokerAccounts)
                 .ToList();
 
             return brokerAccountsDtos;
@@ -49,13 +49,13 @@ namespace MoneyManager.Application.Services.Brokers
         public async Task<BrokerAccountDTO> GetById(Guid id)
         {
             var brokerAccount = await _brokerAccountRepo.GetById(id, GetFullHierarchyColumns);
-            var brokerAccountDto = _mapper.Map<BrokerAccountDTO>(brokerAccount);
+            var brokerAccountDto = _mapper.Map(brokerAccount);
             return brokerAccountDto;
         }
 
         public async Task<Guid> Add(BrokerAccountDTO brokerAccountDto)
         {
-            var brokerAccount = _mapper.Map<BrokerAccount>(brokerAccountDto);
+            var brokerAccount = _mapper.Map(brokerAccountDto);
             brokerAccount.Id = Guid.NewGuid();
             await _brokerAccountRepo.Add(brokerAccount);
             await _db.Commit();
@@ -64,7 +64,7 @@ namespace MoneyManager.Application.Services.Brokers
 
         public async Task Update(BrokerAccountDTO brokerAccountDto)
         {
-            var brokerAccount = _mapper.Map<BrokerAccount>(brokerAccountDto);
+            var brokerAccount = _mapper.Map(brokerAccountDto);
             _brokerAccountRepo.Update(brokerAccount);
             await _db.Commit();
         }

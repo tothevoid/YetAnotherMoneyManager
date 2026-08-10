@@ -1,4 +1,3 @@
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,13 +45,6 @@ namespace MoneyManager.Tests.Shared.Fixtures
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(ConnectionString));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddApplicationProfile();
-            }).CreateMapper();
-
-            services.AddSingleton(mapper);
 
             ServiceProvider = services.BuildServiceProvider();
 

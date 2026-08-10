@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +6,7 @@ using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Deposits;
 using MoneyManager.Application.Interfaces.Deposits;
+using MoneyManager.Application.Mappings;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using MoneyManager.Infrastructure.Entities.Deposits;
 using MoneyManager.Infrastructure.Queries;
@@ -18,8 +18,8 @@ namespace MoneyManager.Application.Services.Deposits
         private readonly IUnitOfWork _db;
         private readonly IRepository<Deposit> _depositRepo;
 
-        private readonly IMapper _mapper;
-        public DepositService(IUnitOfWork uow, IMapper mapper)
+        private readonly ApplicationMapper _mapper;
+        public DepositService(IUnitOfWork uow, ApplicationMapper mapper)
         {
             _db = uow;
             _mapper = mapper;
@@ -29,19 +29,19 @@ namespace MoneyManager.Application.Services.Deposits
         public async Task<IEnumerable<DepositDTO>> GetAll(int monthsFrom, int monthsTo, bool onlyActive)
         {
             var deposits = await GetDeposits(monthsFrom, monthsTo, onlyActive, x => x.To, false);
-            return _mapper.Map<IEnumerable<DepositDTO>>(deposits);
+            return _mapper.Map(deposits);
         }
 
         public async Task<IEnumerable<DepositDTO>> GetAllActive()
         {
             var deposits = await _depositRepo.GetAll(deposit => deposit.To > DateOnly.FromDateTime(DateTime.Now), 
                 include: GetFullHierarchyColumns);
-            return _mapper.Map<IEnumerable<DepositDTO>>(deposits.OrderByDescending(x => x.From));
+            return _mapper.Map(deposits.OrderByDescending(x => x.From));
         }
 
         public async Task<Guid> Add(DepositDTO deposit)
         {
-            var mappedDeposit = _mapper.Map<Deposit>(deposit);
+            var mappedDeposit = _mapper.Map(deposit);
             mappedDeposit.Id = Guid.NewGuid();
             await _depositRepo.Add(mappedDeposit);
             await _db.Commit();
@@ -57,7 +57,7 @@ namespace MoneyManager.Application.Services.Deposits
                 return;
             }
 
-            var deposit = _mapper.Map<Deposit>(modifiedDeposit);
+            var deposit = _mapper.Map(modifiedDeposit);
             _depositRepo.Update(deposit);
             await _db.Commit();
         }

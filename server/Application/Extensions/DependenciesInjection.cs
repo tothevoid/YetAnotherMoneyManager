@@ -1,5 +1,3 @@
-using AutoMapper;
-using DocumentFormat.OpenXml.Office.PowerPoint.Y2021.M06.Main;
 using Microsoft.Extensions.DependencyInjection;
 using MoneyManager.Application.Integrations.Currency;
 using MoneyManager.Application.Integrations.Stock.Moex;
@@ -40,6 +38,7 @@ namespace MoneyManager.Application.Extensions
         public static IServiceCollection AddApplicationServices(
             this IServiceCollection services)
         {
+            services.AddSingleton<ApplicationMapper>();
             services.AddTransient<ITransactionsService, TransactionsService>();
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IDepositService, DepositService>();
@@ -83,13 +82,5 @@ namespace MoneyManager.Application.Extensions
 
             return services;
         }
-
-        public static IMapperConfigurationExpression AddApplicationProfile(
-            this IMapperConfigurationExpression cfg)
-        {
-            cfg.AddProfile<DTOToEntityProfile>();
-            return cfg;
-        }
-
     }
 }

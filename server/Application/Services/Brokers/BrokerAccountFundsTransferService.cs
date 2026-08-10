@@ -1,10 +1,10 @@
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Accounts;
 using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.DTO.Common;
 using MoneyManager.Application.Interfaces.Accounts;
 using MoneyManager.Application.Interfaces.Brokers;
+using MoneyManager.Application.Mappings;
 using MoneyManager.Infrastructure.Entities.Accounts;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Interfaces.Database;
@@ -25,9 +25,9 @@ namespace MoneyManager.Application.Services.Brokers
         private readonly IRepository<BrokerAccount> _brokerAccountRepo;
         private readonly IBrokerAccountService _brokerAccountService;
         private readonly IAccountService _accountService;
-        private readonly IMapper _mapper;
+        private readonly ApplicationMapper _mapper;
 
-        public BrokerAccountFundsTransferService(IUnitOfWork db, IMapper mapper, IBrokerAccountService brokerAccountService, IAccountService accountService)
+        public BrokerAccountFundsTransferService(IUnitOfWork db, ApplicationMapper mapper, IBrokerAccountService brokerAccountService, IAccountService accountService)
         {
             _db = db;
             _mapper = mapper;
@@ -42,7 +42,7 @@ namespace MoneyManager.Application.Services.Brokers
             var complexQuery = GetBaseBuilder().GetQuery();
 
             var transfers = await _transfersRepo.GetAll(complexQuery);
-            return _mapper.Map<IEnumerable<BrokerAccountFundsTransferDto>>(transfers).ToList();
+            return _mapper.Map(transfers).ToList();
         }
 
         public async Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAll(Guid brokerAccountId)
@@ -50,7 +50,7 @@ namespace MoneyManager.Application.Services.Brokers
             var complexQuery = GetBaseBuilderWithFilter(brokerAccountId).GetQuery();
 
             var transfers = await _transfersRepo.GetAll(complexQuery);
-            return _mapper.Map<IEnumerable<BrokerAccountFundsTransferDto>>(transfers).ToList();
+            return _mapper.Map(transfers).ToList();
         }
 
         public async Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAll(Guid? brokerAccountId, int pageIndex, int recordsQuantity)
@@ -66,7 +66,7 @@ namespace MoneyManager.Application.Services.Brokers
                 .GetQuery();
 
             var transfers = await _transfersRepo.GetAll(complexQuery);
-            return _mapper.Map<IEnumerable<BrokerAccountFundsTransferDto>>(transfers).ToList();
+            return _mapper.Map(transfers).ToList();
         }
 
         public async Task<(decimal deposited, decimal withdrawn)> GetSumTillSpecificDate(DateOnly date, Guid? brokerAccountId)
@@ -105,7 +105,7 @@ namespace MoneyManager.Application.Services.Brokers
 
         public async Task<BrokerAccountFundsTransferDto> Add(BrokerAccountFundsTransferDto transferDto)
         {
-            var transfer = _mapper.Map<BrokerAccountFundsTransfer>(transferDto);
+            var transfer = _mapper.Map(transferDto);
             await _transfersRepo.Add(transfer);
 
             await UpdateLinkedAccountsBalance(transferDto.AccountId, transferDto.BrokerAccountId, 
@@ -114,14 +114,14 @@ namespace MoneyManager.Application.Services.Brokers
             await _db.Commit();
             
             var storedRecord = await _transfersRepo.GetById(transfer.Id, GetFullHierarchyColumns);
-            return _mapper.Map<BrokerAccountFundsTransferDto>(storedRecord);
+            return _mapper.Map(storedRecord);
         }
 
         public async Task Update(BrokerAccountFundsTransferDto transferDto)
         {
             var storedTransfer = await _transfersRepo.GetById(transferDto.Id);
 
-            var transfer = _mapper.Map<BrokerAccountFundsTransfer>(transferDto);
+            var transfer = _mapper.Map(transferDto);
             _transfersRepo.Update(transfer);
 
             var amountBefore = storedTransfer.Amount * (storedTransfer.Income ? 1 : -1);
@@ -161,9 +161,9 @@ namespace MoneyManager.Application.Services.Brokers
             }
 
             brokerAccount.MainCurrencyAmount += amount;
-            await _brokerAccountService.Update(_mapper.Map<BrokerAccountDTO>(brokerAccount));
+            await _brokerAccountService.Update(_mapper.Map(brokerAccount));
             account.Balance += -1 * amount;
-            await _accountService.Update(_mapper.Map<AccountDTO>(account));
+            await _accountService.Update(_mapper.Map(account));
         }
 
         public async Task<PaginationConfigDto> GetPaginationByBrokerAccount(Guid brokerAccountId)

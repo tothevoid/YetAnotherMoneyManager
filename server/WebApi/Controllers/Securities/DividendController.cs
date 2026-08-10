@@ -1,8 +1,8 @@
-﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Securities;
+using MoneyManager.WebApi.Mappings;
 using MoneyManager.WebApi.Models.Common;
 using MoneyManager.WebApi.Models.Securities;
 using System;
@@ -18,8 +18,8 @@ namespace MoneyManager.WebApi.Controllers.Securities
     public class DividendController : ControllerBase
     {
         private readonly IDividendService _dividendService;
-        private readonly IMapper _mapper;
-        public DividendController(IDividendService dividendService, IMapper mapper)
+        private readonly WebApiMapper _mapper;
+        public DividendController(IDividendService dividendService, WebApiMapper mapper)
         {
             _mapper = mapper;
             _dividendService = dividendService;
@@ -29,34 +29,34 @@ namespace MoneyManager.WebApi.Controllers.Securities
         public async Task<IEnumerable<DividendModel>> GetAll(GetAllDividendsQuery query)
         {
             var securities = await _dividendService.GetAll(query.SecurityId, query.PageIndex, query.RecordsQuantity);
-            return _mapper.Map<IEnumerable<DividendModel>>(securities);
+            return _mapper.Map(securities);
         }
 
         [HttpGet(nameof(GetAvailable))]
         public async Task<IEnumerable<DividendModel>> GetAvailable(Guid brokerAccountId)
         {
             var securities = await _dividendService.GetAvailable(brokerAccountId);
-            return _mapper.Map<IEnumerable<DividendModel>>(securities);
+            return _mapper.Map(securities);
         }
 
         [HttpGet(nameof(GetPagination))]
         public async Task<PaginationConfigModel> GetPagination([FromQuery] Guid securityId)
         {
             var pagination = await _dividendService.GetPagination(securityId);
-            return _mapper.Map<PaginationConfigModel>(pagination);
+            return _mapper.Map(pagination);
         }
 
         [HttpPut]
         public async Task<Guid> Add(DividendModel dividend)
         {
-            var dividendDto = _mapper.Map<DividendDto>(dividend);
+            var dividendDto = _mapper.Map(dividend);
             return await _dividendService.Add(dividendDto);
         }
 
         [HttpPatch]
         public async Task Update(DividendModel dividend)
         {
-            var dividendDto = _mapper.Map<DividendDto>(dividend);
+            var dividendDto = _mapper.Map(dividend);
             await _dividendService.Update(dividendDto);
         }
 

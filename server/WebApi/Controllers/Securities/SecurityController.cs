@@ -1,11 +1,11 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
 using System.Text.Json;
-using AutoMapper;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Securities;
+using MoneyManager.WebApi.Mappings;
 using MoneyManager.WebApi.Models.Securities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
@@ -20,9 +20,9 @@ namespace MoneyManager.WebApi.Controllers.Securities
     {
         private readonly ISecurityService _securityService;
 
-        private readonly IMapper _mapper;
+        private readonly WebApiMapper _mapper;
 
-        public SecurityController(ISecurityService securityService, IMapper mapper)
+        public SecurityController(ISecurityService securityService, WebApiMapper mapper)
         {
             _mapper = mapper;
             _securityService = securityService;
@@ -32,21 +32,21 @@ namespace MoneyManager.WebApi.Controllers.Securities
         public async Task<IEnumerable<SecurityModel>> GetAll()
         {
             var securities = await _securityService.GetAll();
-            return _mapper.Map<IEnumerable<SecurityModel>>(securities);
+            return _mapper.Map(securities);
         }
 
         [HttpGet(nameof(GetById))]
         public async Task<SecurityModel> GetById([FromQuery] Guid id)
         {
             var brokerAccount = await _securityService.GetById(id);
-            return _mapper.Map<SecurityModel>(brokerAccount);
+            return _mapper.Map(brokerAccount);
         }
 
         [HttpGet(nameof(GetStats))]
         public async Task<SecurityStatsModel> GetStats([FromQuery] Guid securityId)
         {
             var stats = await _securityService.GetStats(securityId);
-            return _mapper.Map<SecurityStatsModel>(stats);
+            return _mapper.Map(stats);
         }
 
         [HttpGet("icon")]
@@ -61,14 +61,14 @@ namespace MoneyManager.WebApi.Controllers.Securities
         public async Task<IEnumerable<SecurityHistoryValueModel>> GetTickerHistory([FromQuery] string ticker)
         {
             var brokerAccount = await _securityService.GetTickerHistory(ticker);
-            return _mapper.Map<IEnumerable<SecurityHistoryValueModel>>(brokerAccount);
+            return _mapper.Map(brokerAccount);
         }
 
         [HttpPut]
         public async Task<SecurityDTO> Add([FromForm] string securityJson, [FromForm] IFormFile securityIcon)
         {
             var security = JsonSerializer.Deserialize<SecurityModel>(securityJson);
-            var securityDto = _mapper.Map<SecurityDTO>(security);
+            var securityDto = _mapper.Map(security);
             return await _securityService.Add(securityDto, securityIcon);
         }
 
@@ -76,7 +76,7 @@ namespace MoneyManager.WebApi.Controllers.Securities
         public async Task<SecurityDTO> Update([FromForm] string securityJson, [FromForm] IFormFile securityIcon)
         {
             var security = JsonSerializer.Deserialize<SecurityModel>(securityJson);
-            var securityDto = _mapper.Map<SecurityDTO>(security);
+            var securityDto = _mapper.Map(security);
             return await _securityService.Update(securityDto, securityIcon);
         }
 

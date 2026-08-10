@@ -1,7 +1,7 @@
-﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Transactions;
 using MoneyManager.Application.Interfaces.Transactions;
+using MoneyManager.Application.Mappings;
 using MoneyManager.Infrastructure.Entities.Currencies;
 using MoneyManager.Infrastructure.Entities.Transactions;
 using MoneyManager.Infrastructure.Interfaces.Database;
@@ -17,9 +17,9 @@ namespace MoneyManager.Application.Services.Transactions
     {
         private readonly IUnitOfWork _db;
         private readonly IRepository<CurrencyTransaction> _currencyTransactionRepo;
-        private readonly IMapper _mapper;
+        private readonly ApplicationMapper _mapper;
 
-        public CurrencyTransactionService(IUnitOfWork uow, IMapper mapper)
+        public CurrencyTransactionService(IUnitOfWork uow, ApplicationMapper mapper)
         {
             _db = uow;
             _mapper = mapper;
@@ -34,19 +34,19 @@ namespace MoneyManager.Application.Services.Transactions
                 .GetQuery();
             var currencyTransactions = await _currencyTransactionRepo.GetAll(query);
             
-            return _mapper.Map<IEnumerable<CurrencyTransactionDto>>(currencyTransactions);
+            return _mapper.Map(currencyTransactions);
         }
 
         public async Task Update(CurrencyTransactionDto currencyTransactionDto)
         {
-            var currencyTransaction = _mapper.Map<CurrencyTransaction>(currencyTransactionDto);
+            var currencyTransaction = _mapper.Map(currencyTransactionDto);
             _currencyTransactionRepo.Update(currencyTransaction);
             await _db.Commit();
         }
 
         public async Task<Guid> Add(CurrencyTransactionDto currencyTransactionDto)
         {
-            var currencyTransaction = _mapper.Map<CurrencyTransaction>(currencyTransactionDto);
+            var currencyTransaction = _mapper.Map(currencyTransactionDto);
             currencyTransaction.Id = Guid.NewGuid();
             await _currencyTransactionRepo.Add(currencyTransaction);
             await _db.Commit();
@@ -62,7 +62,7 @@ namespace MoneyManager.Application.Services.Transactions
         public async Task<CurrencyTransactionDto> GetById(Guid id)
         {
             var entity = await _currencyTransactionRepo.GetById(id, include: GetFullHierarchyColumns);
-            return _mapper.Map<CurrencyTransactionDto>(entity);
+            return _mapper.Map(entity);
         }
 
         public async Task<IEnumerable<CurrencyTransactionDto>> GetAllByAccountId(Guid accountId)
@@ -75,7 +75,7 @@ namespace MoneyManager.Application.Services.Transactions
 
             var transactions = await _currencyTransactionRepo.GetAll(query);
 
-            return _mapper.Map<IEnumerable<CurrencyTransactionDto>>(transactions);
+            return _mapper.Map(transactions);
         }
 
         private IQueryable<CurrencyTransaction> GetFullHierarchyColumns(

@@ -1,8 +1,8 @@
-﻿using MoneyManager.Shared.Entities;
+using MoneyManager.Shared.Entities;
 using System;
 using System.Collections.Generic;
 
-namespace MoneyManager.Infrastructure.Entities.Crypto
+namespace MoneyManager.Application.DTO.Crypto
 {
     public class CryptoAccountDto: BaseEntity
     {

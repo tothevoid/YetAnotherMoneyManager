@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MoneyManager.Application.DTO.Common;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Application.Interfaces.Securities;
+using MoneyManager.Application.Mappings;
 using MoneyManager.Application.Queries.Brokers;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Entities.Securities;
@@ -27,9 +27,9 @@ namespace MoneyManager.Application.Services.Securities
         private readonly IRepository<BrokerAccount> _brokerAccountRepo;
         private readonly IRepository<DividendPayment> _dividendPaymentRepo;
         private readonly IBrokerAccountSecurityService _brokerAccountSecurityService;
-        private readonly IMapper _mapper;
+        private readonly ApplicationMapper _mapper;
 
-        public SecurityTransactionService(IUnitOfWork uow, IMapper mapper, IBrokerAccountSecurityService brokerAccountSecurityService)
+        public SecurityTransactionService(IUnitOfWork uow, ApplicationMapper mapper, IBrokerAccountSecurityService brokerAccountSecurityService)
         {
             _db = uow;
             _mapper = mapper;
@@ -59,7 +59,7 @@ namespace MoneyManager.Application.Services.Securities
 
             var brokerAccountSecurities = await _securityTransactionRepo
                 .GetAll(query.GetQuery());
-            return _mapper.Map<IEnumerable<SecurityTransactionDTO>>(brokerAccountSecurities);
+            return _mapper.Map(brokerAccountSecurities);
         }
 
         public async Task<Dictionary<string, SecurityTransactionsSummary>> GetSummaryTillSpecificDate(DateOnly date, Guid? brokerAccountId)
@@ -164,7 +164,7 @@ namespace MoneyManager.Application.Services.Securities
 
         public async Task<Guid> Add(SecurityTransactionDTO securityDto)
         {
-            var securityTransaction = _mapper.Map<SecurityTransaction>(securityDto);
+            var securityTransaction = _mapper.Map(securityDto);
             securityTransaction.Id = Guid.NewGuid();
             await HandleAddedTransaction(securityDto);
             await _securityTransactionRepo.Add(securityTransaction);
@@ -175,7 +175,7 @@ namespace MoneyManager.Application.Services.Securities
         public async Task Update(SecurityTransactionDTO securityDto)
         {
             await HandleModifiedTransaction(securityDto);
-            var securityTransaction = _mapper.Map<SecurityTransaction>(securityDto);
+            var securityTransaction = _mapper.Map(securityDto);
             _securityTransactionRepo.Update(securityTransaction);
             await _db.Commit();
         }
@@ -281,7 +281,7 @@ namespace MoneyManager.Application.Services.Securities
             SecurityTransactionDTO modifiedSecurityTransaction)
         {
             var committedSecurityTransaction = await _securityTransactionRepo.GetById(modifiedSecurityTransaction.Id);
-            var committedSecurityTransactionDto = _mapper.Map<SecurityTransactionDTO>(committedSecurityTransaction);
+            var committedSecurityTransactionDto = _mapper.Map(committedSecurityTransaction);
 
             if (committedSecurityTransactionDto.BrokerAccountId == modifiedSecurityTransaction.BrokerAccountId ||
                 committedSecurityTransactionDto.IsSell == modifiedSecurityTransaction.IsSell)
@@ -334,7 +334,7 @@ namespace MoneyManager.Application.Services.Securities
             SecurityTransactionDTO modifiedTransaction)
         {
             var securityTransaction = await _securityTransactionRepo.GetById(committedTransaction.Id);
-            var securityTransactionDto = _mapper.Map<SecurityTransactionDTO>(securityTransaction);
+            var securityTransactionDto = _mapper.Map(securityTransaction);
             var brokerAccountSecurity = await FindExistingBrokerAccountSecurity(securityTransactionDto);
 
             await HandleDeletedTransaction(committedTransaction.Id, brokerAccountSecurity);
@@ -354,7 +354,7 @@ namespace MoneyManager.Application.Services.Securities
         private async Task HandleDeletedTransaction(Guid transactionId, BrokerAccountSecurity brokerAccountSecurity = null)
         {
             var securityTransaction = await _securityTransactionRepo.GetById(transactionId);
-            var securityTransactionDto = _mapper.Map<SecurityTransactionDTO>(securityTransaction);
+            var securityTransactionDto = _mapper.Map(securityTransaction);
 
             if (brokerAccountSecurity == null)
             {

@@ -1,12 +1,13 @@
-﻿using AutoMapper;
 using MoneyManager.Application.DTO.Currencies;
 using MoneyManager.Infrastructure.Entities.Currencies;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MoneyManager.Application.DTO.Crypto;
 using MoneyManager.Application.Interfaces.Crypto;
 using MoneyManager.Application.Interfaces.Integrations.Currency;
+using MoneyManager.Application.Mappings;
 using MoneyManager.Infrastructure.Entities.Crypto;
 
 namespace MoneyManager.Application.Services.Crypto
@@ -15,9 +16,9 @@ namespace MoneyManager.Application.Services.Crypto
     {
         private readonly IUnitOfWork _db;
         private readonly IRepository<CryptoProvider> _cryptoProviderRepo;
-        private readonly IMapper _mapper;
+        private readonly ApplicationMapper _mapper;
 
-        public CryptoProviderService(IUnitOfWork uow, IMapper mapper)
+        public CryptoProviderService(IUnitOfWork uow, ApplicationMapper mapper)
         {
             _db = uow;
             _mapper = mapper;
@@ -27,19 +28,19 @@ namespace MoneyManager.Application.Services.Crypto
         public async Task<IEnumerable<CryptoProviderDto>> GetAll()
         {
             var cryptoProviders = await _cryptoProviderRepo.GetAll();
-            return _mapper.Map<IEnumerable<CryptoProviderDto>>(cryptoProviders);
+            return _mapper.Map(cryptoProviders);
         }
 
         public async Task Update(CryptoProviderDto cryptoProviderDto)
         {
-            var cryptoProvider = _mapper.Map<CryptoProvider>(cryptoProviderDto);
+            var cryptoProvider = _mapper.Map(cryptoProviderDto);
             _cryptoProviderRepo.Update(cryptoProvider);
             await _db.Commit();
         }
 
         public async Task<Guid> Add(CryptoProviderDto cryptoProviderDto)
         {
-            var cryptoProvider = _mapper.Map<CryptoProvider>(cryptoProviderDto);
+            var cryptoProvider = _mapper.Map(cryptoProviderDto);
             cryptoProvider.Id = Guid.NewGuid();
             await _cryptoProviderRepo.Add(cryptoProvider);
             await _db.Commit();

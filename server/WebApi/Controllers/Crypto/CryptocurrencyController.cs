@@ -1,10 +1,11 @@
-﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using MoneyManager.Application.DTO.Crypto;
 using MoneyManager.Application.Interfaces.Crypto;
 using MoneyManager.Infrastructure.Entities.Crypto;
+using MoneyManager.WebApi.Mappings;
 using MoneyManager.WebApi.Models.Crypto;
 using MoneyManager.WebApi.Models.Securities;
 using System;
@@ -21,9 +22,9 @@ namespace MoneyManager.WebApi.Controllers.Crypto
     public class CryptocurrencyController: ControllerBase
     {
         private readonly ICryptocurrencyService _cryptocurrencyService;
-        private readonly IMapper _mapper;
+        private readonly WebApiMapper _mapper;
 
-        public CryptocurrencyController(ICryptocurrencyService cryptocurrencyService, IMapper mapper)
+        public CryptocurrencyController(ICryptocurrencyService cryptocurrencyService, WebApiMapper mapper)
         {
             _mapper = mapper;
             _cryptocurrencyService = cryptocurrencyService;
@@ -33,25 +34,25 @@ namespace MoneyManager.WebApi.Controllers.Crypto
         public async Task<IEnumerable<CryptocurrencyModel>> GetAll()
         {
             var cryptocurrencies = await _cryptocurrencyService.GetAll();
-            return _mapper.Map<IEnumerable<CryptocurrencyModel>>(cryptocurrencies);
+            return _mapper.Map(cryptocurrencies);
         }
 
         [HttpPut]
         public async Task<CryptocurrencyModel> Add([FromForm] string cryptocurrencyJson, [FromForm] IFormFile cryptocurrencyIcon)
         {
             var cryptocurrency = JsonSerializer.Deserialize<CryptocurrencyModel>(cryptocurrencyJson);
-            var cryptocurrencyDto = _mapper.Map<CryptocurrencyDto>(cryptocurrency);
+            var cryptocurrencyDto = _mapper.Map(cryptocurrency);
             var result = await _cryptocurrencyService.Add(cryptocurrencyDto, cryptocurrencyIcon);
-            return _mapper.Map<CryptocurrencyModel>(result);
+            return _mapper.Map(result);
         }
 
         [HttpPatch]
         public async Task<CryptocurrencyModel> Update([FromForm] string cryptocurrencyJson, [FromForm] IFormFile cryptocurrencyIcon)
         {
             var cryptocurrency = JsonSerializer.Deserialize<CryptocurrencyModel>(cryptocurrencyJson);
-            var cryptocurrencyDto = _mapper.Map<CryptocurrencyDto>(cryptocurrency);
+            var cryptocurrencyDto = _mapper.Map(cryptocurrency);
             var result = await _cryptocurrencyService.Update(cryptocurrencyDto, cryptocurrencyIcon);
-            return _mapper.Map<CryptocurrencyModel>(result);
+            return _mapper.Map(result);
         }
 
         [HttpDelete]

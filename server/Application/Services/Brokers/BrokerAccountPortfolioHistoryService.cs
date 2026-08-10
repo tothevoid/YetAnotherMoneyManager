@@ -10,30 +10,20 @@ using System.Threading.Tasks;
 
 namespace MoneyManager.Application.Services.Brokers
 {
-    public class BrokerAccountPortfolioHistoryService : IBrokerAccountPortfolioHistoryService
+    public class BrokerAccountPortfolioHistoryService(
+        ISecurityTransactionService securityTransactionService,
+        IBrokerAccountFundsTransferService brokerAccountFundsTransferService,
+        IDividendPaymentService dividendPaymentService,
+        IBrokerAccountTaxDeductionService taxDeductionService,
+        ISecurityService securityService,
+        IStockConnector stockConnector) : IBrokerAccountPortfolioHistoryService
     {
-        private readonly ISecurityTransactionService _securityTransactionService;
-        private readonly IBrokerAccountFundsTransferService _brokerAccountFundsTransferService;
-        private readonly IDividendPaymentService _dividendPaymentService;
-        private readonly IBrokerAccountTaxDeductionService _taxDeductionService;
-        private readonly ISecurityService _securityService;
-        private readonly IStockConnector _stockConnector;
-
-        public BrokerAccountPortfolioHistoryService(
-            ISecurityTransactionService securityTransactionService,
-            IBrokerAccountFundsTransferService brokerAccountFundsTransferService,
-            IDividendPaymentService dividendPaymentService,
-            IBrokerAccountTaxDeductionService taxDeductionService,
-            ISecurityService securityService,
-            IStockConnector stockConnector)
-        {
-            _securityTransactionService = securityTransactionService;
-            _brokerAccountFundsTransferService = brokerAccountFundsTransferService;
-            _dividendPaymentService = dividendPaymentService;
-            _taxDeductionService = taxDeductionService;
-            _securityService = securityService;
-            _stockConnector = stockConnector;
-        }
+        private readonly ISecurityTransactionService _securityTransactionService = securityTransactionService;
+        private readonly IBrokerAccountFundsTransferService _brokerAccountFundsTransferService = brokerAccountFundsTransferService;
+        private readonly IDividendPaymentService _dividendPaymentService = dividendPaymentService;
+        private readonly IBrokerAccountTaxDeductionService _taxDeductionService = taxDeductionService;
+        private readonly ISecurityService _securityService = securityService;
+        private readonly IStockConnector _stockConnector = stockConnector;
 
         public async Task<BrokerAccountPortfolioHistoryDto> GetAll(DateOnly date)
         {
@@ -79,7 +69,7 @@ namespace MoneyManager.Application.Services.Brokers
 
         private async Task<decimal> CalculateSecuritiesValue(Dictionary<string, SecurityTransactionsSummary> securitiesStats, DateOnly date)
         {
-            if (securitiesStats == null || !securitiesStats.Any())
+            if (securitiesStats == null || securitiesStats.Count == 0)
             {
                 return 0m;
             }

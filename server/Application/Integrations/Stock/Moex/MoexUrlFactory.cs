@@ -37,7 +37,7 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
         {
             if (tickers == null || !tickers.Any())
             {
-                throw new ArgumentException(nameof(tickers));
+                throw new ArgumentException("Tickers collection cannot be null or empty.", nameof(tickers));
             }
 
             return new MoexCurrencySecuritiesUrlBuilder()
@@ -49,7 +49,7 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
         {
             if (tickers == null || !tickers.Any())
             {
-                throw new ArgumentException(nameof(tickers));
+                throw new ArgumentException("Tickers collection cannot be null or empty.", nameof(tickers));
             }
 
             return new MoexSecuritiesUrlBuilder()

@@ -87,29 +87,21 @@ namespace MoneyManager.Application.Tests.Integrations.Stock
             Assert.Single(result);
         }
 
-        private class StubHttpClientFactory : IHttpClientFactory
+        private class StubHttpClientFactory(HttpClient client) : IHttpClientFactory
         {
-            private readonly HttpClient _client;
-            public StubHttpClientFactory(HttpClient client) => _client = client;
-            public HttpClient CreateClient(string name) => _client;
+            public HttpClient CreateClient(string name) => client;
         }
 
-        private class MockHttpMessageHandler : HttpMessageHandler
+        private class MockHttpMessageHandler(string responseContent) : HttpMessageHandler
         {
-            private readonly string _responseContent;
             public Uri? LastRequestUri { get; private set; }
-
-            public MockHttpMessageHandler(string responseContent)
-            {
-                _responseContent = responseContent;
-            }
 
             protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
             {
                 LastRequestUri = request.RequestUri;
                 var response = new HttpResponseMessage(HttpStatusCode.OK)
                 {
-                    Content = new StringContent(_responseContent, Encoding.UTF8, "application/json")
+                    Content = new StringContent(responseContent, Encoding.UTF8, "application/json")
                 };
                 return Task.FromResult(response);
             }

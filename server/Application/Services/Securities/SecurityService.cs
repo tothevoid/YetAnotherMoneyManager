@@ -15,33 +15,20 @@ using MoneyManager.Infrastructure.Interfaces.Database;
 
 namespace MoneyManager.Application.Services.Securities
 {
-    public class SecurityService : ISecurityService
+    public class SecurityService(IUnitOfWork uow, ApplicationMapper mapper, IStockConnector stockConnector, 
+        IFileStorageService fileStorageService) : ISecurityService
     {
-        private readonly IUnitOfWork _db;
+        private readonly IUnitOfWork _db = uow;
 
-        private readonly IRepository<Security> _securityRepo;
-        private readonly IRepository<BrokerAccountSecurity> _brokerAccountSecurityRepo;
-        private readonly IRepository<SecurityTransaction> _securityTransactionsRepo;
-        private readonly IRepository<DividendPayment> _dividendPaymentRepo;
+        private readonly IRepository<Security> _securityRepo = uow.CreateRepository<Security>();
+        private readonly IRepository<BrokerAccountSecurity> _brokerAccountSecurityRepo = uow.CreateRepository<BrokerAccountSecurity>();
+        private readonly IRepository<SecurityTransaction> _securityTransactionsRepo = uow.CreateRepository<SecurityTransaction>();
+        private readonly IRepository<DividendPayment> _dividendPaymentRepo = uow.CreateRepository<DividendPayment>();
 
-        private readonly IStockConnector _stockConnector;
-        private readonly ApplicationMapper _mapper;
-        private readonly IFileStorageService _fileStorageService;
+        private readonly IStockConnector _stockConnector = stockConnector;
+        private readonly ApplicationMapper _mapper = mapper;
+        private readonly IFileStorageService _fileStorageService = fileStorageService;
         private const string _iconsBucket = "security";
-
-        public SecurityService(IUnitOfWork uow, ApplicationMapper mapper, IStockConnector stockConnector, 
-            IFileStorageService fileStorageService)
-        {
-            _db = uow;
-            _mapper = mapper;
-            _securityRepo = uow.CreateRepository<Security>();
-            _securityTransactionsRepo = uow.CreateRepository<SecurityTransaction>();
-            _brokerAccountSecurityRepo = uow.CreateRepository<BrokerAccountSecurity>();
-            _dividendPaymentRepo = uow.CreateRepository<DividendPayment>();
-
-            _stockConnector = stockConnector;
-            _fileStorageService = fileStorageService;
-        }
 
         public async Task<IEnumerable<SecurityDTO>> GetAll(bool disableTracking = true)
         {
@@ -51,8 +38,8 @@ namespace MoneyManager.Application.Services.Securities
         public async Task<SecurityDTO> FindByTicker(string ticker)
         {
             var securities = await _securityRepo
-                .GetAll(filter: security => security.Ticker.ToLower() == ticker.ToLower(), include: GetFullHierarchyColumns);
-            return (await FindByTickers(new[] { ticker })).FirstOrDefault();
+                .GetAll(filter: security => string.Equals(security.Ticker, ticker, StringComparison.OrdinalIgnoreCase), include: GetFullHierarchyColumns);
+            return (await FindByTickers([ticker])).FirstOrDefault();
         }
 
         public async Task<IEnumerable<SecurityDTO>> FindByTickers(IEnumerable<string> tickers)
@@ -132,7 +119,7 @@ namespace MoneyManager.Application.Services.Securities
                 
             if (security == null)
             {
-                return Enumerable.Empty<SecurityHistoryValueDto>();
+                return [];
             }
 
             return await _stockConnector.GetTickerHistory(security, from, to);

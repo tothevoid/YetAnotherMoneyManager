@@ -15,18 +15,11 @@ using MoneyManager.Infrastructure.Constants;
 
 namespace MoneyManager.Application.Integrations.Stock.Moex
 {
-    public class MoexConnector: IStockConnector
+    public class MoexConnector(IHttpClientFactory httpClientFactory) : IStockConnector
     {
-        private IHttpClientFactory _httpClientFactory;
-
-        public MoexConnector(IHttpClientFactory httpClientFactory)
-        {
-            _httpClientFactory = httpClientFactory;
-        }
-
         public async Task<IEnumerable<SecurityHistoryValueDto>> GetTickerHistory(SecurityDTO security, DateOnly from, DateOnly to)
         {
-            var httpClient = _httpClientFactory.CreateClient();
+            var httpClient = httpClientFactory.CreateClient();
 
             string query = security.TypeId == SecurityTypeConstants.PreciousMetal ?
                 MoexUrlFactory.GetCurrencyHistoricalQuery(security.Ticker, from, to):
@@ -37,19 +30,19 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
 
         public async Task<IEnumerable<MarketDataRow>> GetExtendedValuesByTickers(IEnumerable<SecurityDTO> securities)
         {
-            var httpClient = _httpClientFactory.CreateClient();
+            var httpClient = httpClientFactory.CreateClient();
 
             var (baseSecurities, currencySecurities) = SplitTickersByType(securities);
 
             var result = new List<MarketDataRow>();
 
-            if (baseSecurities.Any())
+            if (baseSecurities.Count > 0)
             {
                 var query = MoexUrlFactory.GetFullSecuritiesQuery(baseSecurities);
                 result.AddRange(await FetchAndApplySecuritiesAsync(httpClient, query));
             }
            
-            if (currencySecurities.Any())
+            if (currencySecurities.Count > 0)
             {
                 var query = MoexUrlFactory.GetFullCurrencySecuritiesQuery(currencySecurities);
                 result.AddRange(await FetchAndApplySecuritiesAsync(httpClient, query));
@@ -60,19 +53,19 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
 
         public async Task<IEnumerable<MarketDataRow>> GetValuesByTickers(IEnumerable<SecurityDTO> securities)
         {
-            var httpClient = _httpClientFactory.CreateClient();
+            var httpClient = httpClientFactory.CreateClient();
 
             var (baseSecurities, currencySecurities) = SplitTickersByType(securities);
 
             var dataRows = new List<MarketDataRow>();
 
-            if (baseSecurities.Any())
+            if (baseSecurities.Count > 0)
             {
                 var baseSecuritiesQuery = MoexUrlFactory.GetBaseSecuritiesQuery(baseSecurities);
                 dataRows.AddRange(await FetchMarketDataRowsAsync(httpClient, baseSecuritiesQuery));
             }
 
-            if (currencySecurities.Any())
+            if (currencySecurities.Count > 0)
             {
                 var currencySecuritiesQuery = MoexUrlFactory.GetBaseCurrencySecuritiesQuery(currencySecurities);
                 dataRows.AddRange(await FetchMarketDataRowsAsync(httpClient, currencySecuritiesQuery));
@@ -81,20 +74,20 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
             return dataRows;
         }
 
-        private async Task<IEnumerable<MarketDataRow>> FetchMarketDataRowsAsync(HttpClient httpClient, string query)
+        private static async Task<IEnumerable<MarketDataRow>> FetchMarketDataRowsAsync(HttpClient httpClient, string query)
         {
             var tickersData = await FetchTickersDataAsync(httpClient, query);
 
             return ParseMarketDataRows(tickersData.MarketData.Columns, tickersData.MarketData);
         }
 
-        private async Task<MoexResponse> FetchTickersDataAsync(HttpClient httpClient, string query)
+        private static async Task<MoexResponse> FetchTickersDataAsync(HttpClient httpClient, string query)
         {
             var result = await httpClient.GetAsync(query);
             return await result.Content.ReadFromJsonAsync<MoexResponse>();
         }
 
-        private async Task<IEnumerable<MarketDataRow>> FetchAndApplySecuritiesAsync(HttpClient httpClient, string query)
+        private static async Task<IEnumerable<MarketDataRow>> FetchAndApplySecuritiesAsync(HttpClient httpClient, string query)
         {
             var tickersData = await FetchTickersDataAsync(httpClient, query);
 
@@ -104,7 +97,7 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
             return ParseAndApplySecuritiesRows(marketData, tickersData.Securities.Columns, tickersData.Securities);
         }
 
-        private (HashSet<string> baseSecurities, HashSet<string> currencySecurities) SplitTickersByType(IEnumerable<dynamic> securities)
+        private static (HashSet<string> baseSecurities, HashSet<string> currencySecurities) SplitTickersByType(IEnumerable<dynamic> securities)
         {
             var baseSecurities = new HashSet<string>();
             var currencySecurities = new HashSet<string>();
@@ -129,9 +122,9 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
             return (baseSecurities, currencySecurities);
         }
 
-        private IEnumerable<MarketDataRow> ParseMarketDataRows(IEnumerable<string> columns, DynamicMoexResponseObject marketData)
+        private static IEnumerable<MarketDataRow> ParseMarketDataRows(IEnumerable<string> columns, DynamicMoexResponseObject marketData)
         {
-            var columnsIndexes = GetColumnIndexMapping(columns.ToArray());
+            var columnsIndexes = GetColumnIndexMapping(columns);
 
             var boardIdIndex = columnsIndexes["BOARDID"];
             var openIndex = columnsIndexes["OPEN"];
@@ -159,23 +152,23 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
                 .OrderBy(row => GetBoardPriority(row.BoardId));
         }
 
-        private decimal? TryGetDecimalValue(object value)
+        private static decimal? TryGetDecimalValue(object value)
         {
             return value != null
                 ? Convert.ToDecimal(value.ToString(), CultureInfo.InvariantCulture)
                 : null;
         }
 
-        private decimal TryGetDecimalValue(object value, decimal defaultValue)
+        private static decimal TryGetDecimalValue(object value, decimal defaultValue)
         {
             return TryGetDecimalValue(value) ?? defaultValue;
         }
 
-        private IEnumerable<MarketDataRow> ParseAndApplySecuritiesRows(IEnumerable<MarketDataRow> marketDataRows, 
+        private static IEnumerable<MarketDataRow> ParseAndApplySecuritiesRows(IEnumerable<MarketDataRow> marketDataRows, 
             IEnumerable<string> columns,
             DynamicMoexResponseObject securities)
         {
-            var columnsIndexes = GetColumnIndexMapping(columns.ToArray());
+            var columnsIndexes = GetColumnIndexMapping(columns);
 
             var tickerIndex = columnsIndexes["SECID"];
             var boardIdIndex = columnsIndexes["BOARDID"];
@@ -207,40 +200,26 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
             return marketDataRows;
         }
 
-        private int GetBoardPriority(string boardId)
+        private static int GetBoardPriority(string boardId) => boardId switch
         {
-            // Lower -> higher priority
-            switch (boardId)
-            {
-                case "TQBR":
-                    return 1;
-                case "TQTF":
-                    return 2;
-                case "TQPI":
-                    return 3;
-                case "SMAL":
-                    return 4;
-                case "SPEQ":
-                    return 5;
-                case "EQRP":
-                    return 6;
-                case "EQOB":
-                    return 7;
-                case "TQOD":
-                    return 8;
-                case "CETS":
-                    return 9;
-                default:
-                    return 100;
-            }
-        }
+            "TQBR" => 1,
+            "TQTF" => 2,
+            "TQPI" => 3,
+            "SMAL" => 4,
+            "SPEQ" => 5,
+            "EQRP" => 6,
+            "EQOB" => 7,
+            "TQOD" => 8,
+            "CETS" => 9,
+            _ => 100
+        };
 
-        private async Task<IEnumerable<SecurityHistoryValueDto>> GetHistory(string query, HttpClient httpClient)
+        private static async Task<IEnumerable<SecurityHistoryValueDto>> GetHistory(string query, HttpClient httpClient)
         {
             var result = await httpClient.GetAsync(query);
             var tickerHistory = await result.Content.ReadFromJsonAsync<MoexHistoryResponse>();
 
-            var columnsIndexes = GetColumnIndexMapping(tickerHistory.History.Columns.ToArray());
+            var columnsIndexes = GetColumnIndexMapping(tickerHistory.History.Columns);
 
             var tradeDate = columnsIndexes["TRADEDATE"];
             var closeValue = columnsIndexes["CLOSE"];
@@ -270,13 +249,14 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
             return historyValues;
         }
 
-        private Dictionary<string, int> GetColumnIndexMapping(string[] columns)
+        private static Dictionary<string, int> GetColumnIndexMapping(IEnumerable<string> columns)
         {
             var columnsIndexes = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
-            for (int i = 0; i < columns.Length; i++)
+            int i = 0;
+            foreach (var col in columns)
             {
-                columnsIndexes[columns[i]] = i;
+                columnsIndexes[col] = i++;
             }
 
             return columnsIndexes;
@@ -284,7 +264,7 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
 
         public async Task<IEnumerable<SecurityCandleDto>> GetCandles(SecurityDTO security, DateOnly from, DateOnly to, int interval = 24)
         {
-            var httpClient = _httpClientFactory.CreateClient();
+            var httpClient = httpClientFactory.CreateClient();
 
             string query = security.TypeId == SecurityTypeConstants.PreciousMetal
                 ? MoexUrlFactory.GetCurrencyCandlesQuery(security.Ticker, from, to, interval)
@@ -293,31 +273,31 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
             return await GetCandlesAsync(query, httpClient);
         }
 
-        private decimal GetDecimalValue(object[] row, int index, decimal defaultValue = 0m)
+        private static decimal GetDecimalValue(object[] row, int index, decimal defaultValue = 0m)
         {
             return index >= 0 && index < row.Length && row[index] != null
                 ? TryGetDecimalValue(row[index], defaultValue)
                 : defaultValue;
         }
 
-        private DateTime GetDateTimeValue(object[] row, int index, DateTime defaultValue = default)
+        private static DateTime GetDateTimeValue(object[] row, int index, DateTime defaultValue = default)
         {
             return index >= 0 && index < row.Length && row[index] != null
                 ? Convert.ToDateTime(row[index].ToString(), CultureInfo.InvariantCulture)
                 : defaultValue;
         }
 
-        private async Task<IEnumerable<SecurityCandleDto>> GetCandlesAsync(string query, HttpClient httpClient)
+        private static async Task<IEnumerable<SecurityCandleDto>> GetCandlesAsync(string query, HttpClient httpClient)
         {
             var result = await httpClient.GetAsync(query);
             var response = await result.Content.ReadFromJsonAsync<MoexCandlesResponse>();
 
             if (response?.Candles?.Columns == null || response.Candles.Data == null)
             {
-                return Enumerable.Empty<SecurityCandleDto>();
+                return [];
             }
 
-            var columnsIndexes = GetColumnIndexMapping(response.Candles.Columns.ToArray());
+            var columnsIndexes = GetColumnIndexMapping(response.Candles.Columns);
 
             int openIdx = columnsIndexes.GetValueOrDefault("open", -1);
             int closeIdx = columnsIndexes.GetValueOrDefault("close", -1);

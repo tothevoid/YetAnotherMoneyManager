@@ -245,3 +245,4 @@ client/.env
 .env.prod
 
 .research
+.features

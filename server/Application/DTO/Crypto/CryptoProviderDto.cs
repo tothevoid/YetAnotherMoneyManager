@@ -11,7 +11,5 @@ namespace MoneyManager.Application.DTO.Crypto
     public class CryptoProviderDto: BaseEntity
     {
         public string Name { get; set; }
-
-        public ICollection<CryptoAccountDto> CryptoAccounts { get; set; }
     }
 }

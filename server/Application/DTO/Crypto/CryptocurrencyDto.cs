@@ -16,7 +16,5 @@ namespace MoneyManager.Application.DTO.Crypto
         public decimal Price { get; set; } 
 
         public string IconKey { get; set; }
-
-        public ICollection<CryptoAccountCryptocurrencyDto> CryptoAccountCryptocurrencies { get; set; }
     }
 }

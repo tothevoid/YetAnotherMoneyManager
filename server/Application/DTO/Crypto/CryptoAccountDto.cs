@@ -11,7 +11,5 @@ namespace MoneyManager.Application.DTO.Crypto
         public Guid CryptoProviderId { get; set; }
 
         public CryptoProviderDto CryptoProvider { get; set; }
-
-        public ICollection<CryptoAccountCryptocurrencyDto> CryptoAccountCryptocurrencies { get; set; }
     }
 }

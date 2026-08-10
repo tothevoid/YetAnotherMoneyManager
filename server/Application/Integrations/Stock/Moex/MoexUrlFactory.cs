@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoneyManager.Application.Integrations.Stock.Moex.Builders;
@@ -73,6 +73,28 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
 
             return builder
                 .IncludeHistory()
+                .AddRange(from, to)
+                .Build();
+        }
+
+        public static string GetCandlesQuery(string ticker, DateOnly from, DateOnly to, int interval = 24)
+        {
+            var builder = new MoexCandlesUrlBuilder(ticker);
+
+            return builder
+                .IncludeCandles()
+                .AddInterval(interval)
+                .AddRange(from, to)
+                .Build();
+        }
+
+        public static string GetCurrencyCandlesQuery(string ticker, DateOnly from, DateOnly to, int interval = 24)
+        {
+            var builder = new MoexCurrencyCandlesUrlBuilder(ticker);
+
+            return builder
+                .IncludeCandles()
+                .AddInterval(interval)
                 .AddRange(from, to)
                 .Build();
         }

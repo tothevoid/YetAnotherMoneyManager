@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
@@ -148,9 +148,7 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
                     {
                         Ticker = Convert.ToString(row[tickerIndex]),
                         BoardId = Convert.ToString(row[boardIdIndex]),
-                        LastValue = row[lastValueIndex] != null
-                            ? Convert.ToDecimal(row[lastValueIndex].ToString(), CultureInfo.InvariantCulture)
-                            : null,
+                        LastValue = TryGetDecimalValue(row[lastValueIndex]),
                         Date = Convert.ToDateTime(row[dateIndex].ToString()),
                         MarketPrice = TryGetDecimalValue(row[marketPriceIndex]),
                         Open = TryGetDecimalValue(row[openIndex]),
@@ -274,7 +272,7 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
 
         private Dictionary<string, int> GetColumnIndexMapping(string[] columns)
         {
-            var columnsIndexes = new Dictionary<string, int>();
+            var columnsIndexes = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
             for (int i = 0; i < columns.Length; i++)
             {
@@ -282,6 +280,76 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
             }
 
             return columnsIndexes;
+        }
+
+        public async Task<IEnumerable<SecurityCandleDto>> GetCandles(SecurityDTO security, DateOnly from, DateOnly to, int interval = 24)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+
+            string query = security.TypeId == SecurityTypeConstants.PreciousMetal
+                ? MoexUrlFactory.GetCurrencyCandlesQuery(security.Ticker, from, to, interval)
+                : MoexUrlFactory.GetCandlesQuery(security.Ticker, from, to, interval);
+
+            return await GetCandlesAsync(query, httpClient);
+        }
+
+        private decimal GetDecimalValue(object[] row, int index, decimal defaultValue = 0m)
+        {
+            return index >= 0 && index < row.Length && row[index] != null
+                ? TryGetDecimalValue(row[index], defaultValue)
+                : defaultValue;
+        }
+
+        private DateTime GetDateTimeValue(object[] row, int index, DateTime defaultValue = default)
+        {
+            return index >= 0 && index < row.Length && row[index] != null
+                ? Convert.ToDateTime(row[index].ToString(), CultureInfo.InvariantCulture)
+                : defaultValue;
+        }
+
+        private async Task<IEnumerable<SecurityCandleDto>> GetCandlesAsync(string query, HttpClient httpClient)
+        {
+            var result = await httpClient.GetAsync(query);
+            var response = await result.Content.ReadFromJsonAsync<MoexCandlesResponse>();
+
+            if (response?.Candles?.Columns == null || response.Candles.Data == null)
+            {
+                return Enumerable.Empty<SecurityCandleDto>();
+            }
+
+            var columnsIndexes = GetColumnIndexMapping(response.Candles.Columns.ToArray());
+
+            int openIdx = columnsIndexes.GetValueOrDefault("open", -1);
+            int closeIdx = columnsIndexes.GetValueOrDefault("close", -1);
+            int highIdx = columnsIndexes.GetValueOrDefault("high", -1);
+            int lowIdx = columnsIndexes.GetValueOrDefault("low", -1);
+            int valueIdx = columnsIndexes.GetValueOrDefault("value", -1);
+            int volumeIdx = columnsIndexes.GetValueOrDefault("volume", -1);
+            int beginIdx = columnsIndexes.GetValueOrDefault("begin", -1);
+            int endIdx = columnsIndexes.GetValueOrDefault("end", -1);
+
+            var candles = new List<SecurityCandleDto>();
+
+            foreach (var row in response.Candles.Data)
+            {
+                if (row == null) continue;
+
+                var candle = new SecurityCandleDto
+                {
+                    Open = GetDecimalValue(row, openIdx),
+                    Close = GetDecimalValue(row, closeIdx),
+                    High = GetDecimalValue(row, highIdx),
+                    Low = GetDecimalValue(row, lowIdx),
+                    Value = GetDecimalValue(row, valueIdx),
+                    Volume = GetDecimalValue(row, volumeIdx),
+                    Begin = GetDateTimeValue(row, beginIdx),
+                    End = GetDateTimeValue(row, endIdx)
+                };
+
+                candles.Add(candle);
+            }
+
+            return candles;
         }
     }
 }

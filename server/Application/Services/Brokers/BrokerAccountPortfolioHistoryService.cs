@@ -126,11 +126,11 @@ namespace MoneyManager.Application.Services.Brokers
             try
             {
                 // TODO: handle long holidays (>7 days) case
-                var history = await _stockConnector.GetTickerHistory(security, date.AddDays(-7), date);
-                var lastHistoryValue = history?.OrderBy(h => h.Date).LastOrDefault();
-                if (lastHistoryValue != null && lastHistoryValue.Value > 0)
+                var history = await _stockConnector.GetCandles(security, date.AddDays(-7), date);
+                var lastHistoryValue = history?.OrderBy(h => h.End).LastOrDefault();
+                if (lastHistoryValue != null && lastHistoryValue.Close > 0)
                 {
-                    return lastHistoryValue.Value;
+                    return lastHistoryValue.Close;
                 }
             }
             catch

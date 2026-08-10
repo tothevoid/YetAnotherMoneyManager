@@ -1,4 +1,4 @@
-﻿using MoneyManager.Application.DTO.Securities;
+using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Integrations.Stock;
 using System;
 using System.Collections.Generic;
@@ -16,5 +16,7 @@ namespace MoneyManager.Application.Interfaces.Integrations.Stock
         Task<IEnumerable<SecurityHistoryValueDto>> GetTickerHistory(SecurityDTO security, DateOnly from, DateOnly to);
 
         Task<IEnumerable<MarketDataRow>> GetExtendedValuesByTickers(IEnumerable<SecurityDTO> tickers);
+
+        Task<IEnumerable<SecurityCandleDto>> GetCandles(SecurityDTO security, DateOnly from, DateOnly to, int interval = 24);
     }
 }

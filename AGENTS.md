@@ -17,6 +17,9 @@ This document contains guidelines, coding standards, and architectural patterns 
 - **Orphan Directory Prohibition**: Do NOT create or restore legacy directories (`server/BLL`, `server/DAL`, `server/Common`, `server/MoneyManager`, `server/server`). Only project folders in `MoneyManager.sln` are valid.
 
 ### EF Core & Service Layer Performance Guidelines
+- **BaseEntity Inheritance**: ALL database entities in `server/Infrastructure/Entities` (including domain entities, join entities, and lookup tables) MUST inherit from `BaseEntity`.
+- **Entity Identification**: Every entity uses `Guid Id` inherited from `BaseEntity` as its primary key. Do NOT use composite keys or explicit `builder.HasKey(...)` in entity configurations, as EF Core automatically configures `Id` by convention.
+- **Assigning Entity Ids**: When creating entity instances (including join entities) in application services, explicitly assign `Id = Guid.NewGuid()`.
 - **Read Query Optimization**: All read-only queries in services MUST use `.AsNoTracking()` to avoid unnecessary change-tracking memory allocations.
 - **Batch Async Execution**: Avoid sequential `await` inside `foreach` loops for multi-account computations. Use `Task.WhenAll` or aggregated SQL queries.
 - **Direct Bulk Deletes**: Prefer EF Core `ExecuteDeleteAsync()` for primary-key deletions rather than fetching detached entity instances prior to deletion.

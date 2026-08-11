@@ -1,4 +1,6 @@
 using System;
+using System.Data.Common;
+using System.Net.Sockets;
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,15 +28,23 @@ namespace MoneyManager.Infrastructure.Extensions
                     logger.LogInformation("Database migration completed successfully.");
                     break;
                 }
-                catch (Exception ex) when (retryCount < maxRetries - 1)
+                catch (Exception ex) when (IsTransientDatabaseException(ex) && retryCount < maxRetries - 1)
                 {
                     retryCount++;
-                    logger.LogWarning(ex, "Database is not ready yet. Waiting {Delay}ms before retry {RetryCount}/{MaxRetries}...", delayMilliseconds, retryCount, maxRetries);
+                    logger.LogWarning("Database is not ready yet ({Reason}). Waiting {Delay}ms before retry {RetryCount}/{MaxRetries}...", ex.Message, delayMilliseconds, retryCount, maxRetries);
                     Thread.Sleep(delayMilliseconds);
                 }
             }
 
             return host;
+        }
+
+        private static bool IsTransientDatabaseException(Exception ex)
+        {
+            return ex is DbException ||
+                   ex is SocketException ||
+                   ex.InnerException is DbException ||
+                   ex.InnerException is SocketException;
         }
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MoneyManager.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddDebtTagSystem : Migration
+    public partial class AddDebtTag : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

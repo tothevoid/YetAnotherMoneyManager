@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MoneyManager.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260811221305_AddDebtTagSystem")]
-    partial class AddDebtTagSystem
+    [Migration("20260811224813_AddDebtTag")]
+    partial class AddDebtTag
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -135,6 +135,13 @@ namespace MoneyManager.WebApi.Mappings
         public partial DebtDto Map(DebtModel model);
         public partial IEnumerable<DebtModel> Map(IEnumerable<DebtDto> dtos);
 
+        public partial DebtTagModel Map(DebtTagDto dto);
+        public partial DebtTagDto Map(DebtTagModel model);
+        public partial IEnumerable<DebtTagModel> Map(IEnumerable<DebtTagDto> dtos);
+
+        public partial DebtTagStatsModel Map(DebtTagStatsDto dto);
+        public partial IEnumerable<DebtTagStatsModel> Map(IEnumerable<DebtTagStatsDto> dtos);
+
         public partial DebtPaymentModel Map(DebtPaymentDto dto);
         public partial DebtPaymentDto Map(DebtPaymentModel model);
         public partial IEnumerable<DebtPaymentModel> Map(IEnumerable<DebtPaymentDto> dtos);

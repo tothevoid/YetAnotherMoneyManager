@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using MoneyManager.Infrastructure.Entities.Brokers;
 using System.Collections.Generic;
 using MoneyManager.Infrastructure.Entities.Currencies;
@@ -19,5 +19,7 @@ namespace MoneyManager.Infrastructure.Entities.Debts
         public DateOnly Date { get; set; }
 
         public ICollection<DebtPayment> DebtPayments { get; set; }
+
+        public ICollection<DebtToDebtTag> DebtTags { get; set; } = new List<DebtToDebtTag>();
     }
 }

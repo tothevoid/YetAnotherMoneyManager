@@ -18,7 +18,7 @@ namespace MoneyManager.Tests.Shared.Fixtures
 
         public IServiceProvider ServiceProvider { get; private set; } = null!;
 
-        public string ConnectionString => _container.GetConnectionString();
+        public string ConnectionString => $"{_container.GetConnectionString()};Pooling=true;MinPoolSize=1;Application Name=MoneyManagerTests;Enlist=false;";
 
         public async ValueTask InitializeAsync()
         {

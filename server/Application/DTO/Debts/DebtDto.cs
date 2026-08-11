@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,5 +19,7 @@ namespace MoneyManager.Application.DTO.Debts
         public decimal Amount { get; set; }
 
         public DateOnly Date { get; set; }
+
+        public List<DebtTagDto> DebtTags { get; set; } = new List<DebtTagDto>();
     }
 }

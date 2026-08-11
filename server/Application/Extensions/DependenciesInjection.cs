@@ -57,6 +57,7 @@ namespace MoneyManager.Application.Extensions
             services.AddTransient<IUserProfileService, UserProfileService>();
             services.AddTransient<IDashboardService, DashboardService>();
             services.AddTransient<IDebtService, DebtService>();
+            services.AddTransient<IDebtTagService, DebtTagService>();
             services.AddTransient<IDebtPaymentService, DebtPaymentService>();
             services.AddTransient<IDividendPaymentService, DividendPaymentService>();
             services.AddTransient<ICurrencyTransactionService, CurrencyTransactionService>();

@@ -3,7 +3,7 @@ import { Box, Button, Flex, Stack } from '@chakra-ui/react'
 import { Text } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
+import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, TooltipValueType } from 'recharts';
 import { TransactionEntity } from '../../../../models/transactions/TransactionEntity';
 import { getChartLabelConfig } from '../../../../shared/utilities/chartUtilities';
 import { useUserProfile } from '../../../../../features/UserProfileSettingsModal/hooks/UserProfileContext';
@@ -126,7 +126,7 @@ const TransactionStats = (props: Props) => {
                                     <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />))
                             }
                         </Pie>
-                        <Tooltip itemStyle={{ color: '#FFFFFF' }} contentStyle={getChartLabelConfig()} formatter={(value: number, name) => [formatMoneyByCurrencyCulture(value, user?.currency.name), name]} />
+                        <Tooltip itemStyle={{ color: '#FFFFFF' }} contentStyle={getChartLabelConfig()} formatter={(value: TooltipValueType | undefined, name: TooltipValueType | undefined) => [formatMoneyByCurrencyCulture(Number(value ?? 0), user?.currency.name), String(name ?? '')]} />
                         <Legend/>
                     </PieChart>
                 </ResponsiveContainer>

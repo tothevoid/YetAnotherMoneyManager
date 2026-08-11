@@ -1,4 +1,4 @@
-import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line } from "recharts";
+import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line, TooltipValueType } from "recharts";
 import { DepositMonthSummary, DepositPayment } from "../DepositStats/depositMonthSummary";
 import { Box } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
@@ -20,6 +20,11 @@ const DepositsEarningsChart = (props: Props) => {
 		return { date: payment.period, value: sum};
 	})
 
+	const formatTooltipValue = (value: TooltipValueType | undefined, name: TooltipValueType | undefined) => [
+		formatMoneyByCurrencyCulture(Number(value ?? 0), props.currencyName),
+		String(name ?? '')
+	];
+
 	return <Box style={{ width: '100%', height: 400 }}>
 		<ResponsiveContainer>
 			<LineChart data={data}
@@ -32,7 +37,7 @@ const DepositsEarningsChart = (props: Props) => {
 				<CartesianGrid strokeDasharray="3 3" />
 				<XAxis dataKey="date"/>
 				<YAxis/>
-				<Tooltip contentStyle={getChartLabelConfig()} formatter={(value: number, name: string) => [formatMoneyByCurrencyCulture(value, props.currencyName), name]}/>
+				<Tooltip contentStyle={getChartLabelConfig()} formatter={formatTooltipValue}/>
 				<Legend />
 				<Line type="monotone" dataKey="value" stroke="#16a34a" activeDot={{ r: 8 }} name={t("earnings_chart_data_title")}/>
 			</LineChart>

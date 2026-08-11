@@ -1,9 +1,8 @@
 import { Stack } from '@chakra-ui/react'
-import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
+import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, TooltipValueType, TooltipPayloadEntry } from 'recharts';
 import { DistributionModel } from '../../../models/dashboard/DashboardEntity';
 import { getChartLabelConfig } from '../../../shared/utilities/chartUtilities';
 import { formatMoneyByCurrencyCulture } from '../../../shared/utilities/formatters/moneyFormatter';
-import { Payload } from 'recharts/types/component/DefaultTooltipContent';
 
 const getPossibleColors = () => {
     return [
@@ -23,8 +22,14 @@ type Props = {
 const DistributionChart = (props: Props) => {
     const colors = getPossibleColors();
 
-    const formatLabel = (_value: number, _key: string, data: Payload<number, string>) => {
-        const {currency, amount, convertedAmount} = data.payload as DistributionModel;
+    const formatLabel = (
+        _value: TooltipValueType | undefined,
+        _name: TooltipValueType | undefined,
+        item: TooltipPayloadEntry
+    ) => {
+        const payload = item?.payload as DistributionModel | undefined;
+        if (!payload) return '';
+        const { currency, amount, convertedAmount } = payload;
 
         const convertedValue = formatMoneyByCurrencyCulture(convertedAmount, props.mainCurrency);
 

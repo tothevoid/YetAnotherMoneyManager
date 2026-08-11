@@ -1,5 +1,5 @@
 import { forwardRef, Fragment, useImperativeHandle } from 'react';
-import { SimpleGrid } from '@chakra-ui/react/grid';
+import { SimpleGrid } from '@chakra-ui/react';
 import BrokerAccountSecurity from '../BrokerAccountSecurity/BrokerAccountSecurity';
 import { BrokerAccountSecurityEntity } from '../../../../models/brokers/BrokerAccountSecurityEntity';
 import { useBrokerAccountsSecurities } from '../../hooks/useBrokerAccountsSecurities';

@@ -1,5 +1,5 @@
 import { Stack } from "@chakra-ui/react"
-import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis, TooltipValueType } from "recharts"
 import { CHARTS_COLORS } from "../DepositStats/chartsColors"
 import { DepositMonthSummary } from "../DepositStats/depositMonthSummary"
 import { getChartLabelConfig } from "../../../../shared/utilities/chartUtilities"
@@ -12,21 +12,16 @@ interface Props {
 	currencyName: string
 }
 
-interface ChartBarData {
-	date: string;
-	[key: string]: number | string;
-}
-
-
 const StackedDepositsChart = (props: Props) => {
 	const { i18n } = useTranslation();
-
 	const deposits = new Map<string, string>();
 
-	const data = props.data.payments.map(payment => {
-		const output: ChartBarData = { date: payment.period };
-		
-		payment.payments.forEach((payment) => {
+	const data = props.data.payments.map((payment) => {
+		const output: { [key: string]: number | string } = {
+			date: payment.period
+		}
+
+		payment.payments.forEach(payment => {
 			output[payment.depositId] = payment.value;
 
 			if (!deposits.has(payment.depositId)) {
@@ -39,17 +34,23 @@ const StackedDepositsChart = (props: Props) => {
 
 	const getDepositTitle = (value: string) => deposits.get(value) ?? "";
 
-	const getMonthTitle = (value: string) => {
-		const [month, year] = value.split(".");
+	const getMonthTitle = (label: React.ReactNode) => {
+		if (typeof label !== 'string') return '';
+		const [month, year] = label.split(".");
 		return `${formatMonth(Number.parseInt(month), i18n)} ${year}`
 	}
+
+	const formatTooltipValue = (value: TooltipValueType | undefined, name: TooltipValueType | undefined) => [
+		formatMoneyByCurrencyCulture(Number(value ?? 0), props.currencyName),
+		getDepositTitle(String(name ?? ''))
+	];
 
 	return <Stack>
 		<ResponsiveContainer width="100%" height={300}>
 		<BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
 			<XAxis dataKey="date" />
 			<YAxis />
-			<Tooltip labelFormatter={getMonthTitle}  contentStyle={getChartLabelConfig()} formatter={(value: number, name: string) => [formatMoneyByCurrencyCulture(value, props.currencyName), getDepositTitle(name)]} />
+			<Tooltip labelFormatter={getMonthTitle} contentStyle={getChartLabelConfig()} formatter={formatTooltipValue} />
 			<Legend formatter={getDepositTitle} />
 			{
 				[...deposits.keys()].map((deposit: string, index: number) => {

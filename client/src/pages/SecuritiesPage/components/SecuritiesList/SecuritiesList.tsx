@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
-import { SimpleGrid } from '@chakra-ui/react/grid';
-import { Flex } from '@chakra-ui/react';
+import { Flex, SimpleGrid } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import Security from '../Security/Security';
 import { SecurityEntity } from '../../../../models/securities/SecurityEntity';

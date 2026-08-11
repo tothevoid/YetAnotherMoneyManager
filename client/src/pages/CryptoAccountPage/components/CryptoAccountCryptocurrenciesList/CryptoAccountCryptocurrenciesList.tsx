@@ -1,10 +1,9 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { SimpleGrid } from '@chakra-ui/react/grid';
+import { Flex, SimpleGrid } from '@chakra-ui/react';
 import { useCryptoAccountCryptocurrencies } from '../../hooks/useCryptoAccountCryptocurrencies';
 import { CryptoAccountEntity } from '../../../../models/crypto/CryptoAccountEntity';
 import { CryptoAccountCryptocurrencyEntity } from '../../../../models/crypto/CryptoAccountCryptocurrencyEntity';
 import CryptoAccountCryptocurrency from '../CryptoAccountCryptocurrency/CryptoAccountCryptocurrency';
-import { Flex } from '@chakra-ui/react';
 import CryptoAccountCryptocurrencyModal from '../../modals/CryptoAccountCryptocurrencyModal';
 import { useEntityModal } from '../../../../shared/hooks/useEntityModal';
 import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModal';

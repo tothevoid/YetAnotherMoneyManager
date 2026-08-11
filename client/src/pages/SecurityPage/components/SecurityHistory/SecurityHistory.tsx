@@ -1,4 +1,4 @@
-import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line } from "recharts";
+import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line, TooltipValueType } from "recharts";
 import { Box } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
@@ -46,7 +46,7 @@ const SecurityHistory: React.FC<Props> = (props) => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date"/>
                 <YAxis domain={['dataMin - 10', 'dataMax + 10']}/>
-                <Tooltip contentStyle={getChartLabelConfig()} formatter={(value: number) => formatMoneyByCurrencyCulture(value, props.currencyName)} />
+                <Tooltip contentStyle={getChartLabelConfig()} formatter={(value: TooltipValueType | undefined) => formatMoneyByCurrencyCulture(Number(value ?? 0), props.currencyName)} />
                 <Legend />
                 <Line type="monotone" dataKey="value" stroke="#16a34a" activeDot={{ r: 8 }} name={t("security_history_chart_value_name")}/>
             </LineChart>

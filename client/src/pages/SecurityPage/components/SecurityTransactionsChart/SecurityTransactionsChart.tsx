@@ -1,4 +1,4 @@
-import { ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line, ReferenceLine, ComposedChart, Bar } from "recharts";
+import { ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line, ReferenceLine, ComposedChart, Bar, TooltipValueType } from "recharts";
 import { Box } from "@chakra-ui/react";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -43,12 +43,12 @@ const SecurityTransactionsChart: React.FC<Props> = (props) => {
         initData();
     }, []);
 
-    const formatTooltipValue = useCallback((value: number, name: string) => {
-        if (name === t("securities_transactions_volume")) {
-            return value;
+    const formatTooltipValue = useCallback((value: TooltipValueType | undefined, name: TooltipValueType | undefined) => {
+        if (String(name) === t("securities_transactions_volume")) {
+            return Number(value ?? 0);
         }
 
-        return formatMoneyByCurrencyCulture(value, props.currencyName)
+        return formatMoneyByCurrencyCulture(Number(value ?? 0), props.currencyName)
     }, [props.currencyName, t]);
 
     return <Box style={{ width: '100%', height: 400 }}>

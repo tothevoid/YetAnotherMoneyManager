@@ -13,8 +13,9 @@ export const getDebtPayments = async (query: DebtPaymentsQuery): Promise<DebtPay
         });
 }
 
-export const getDebtPaymentsPagination = async (): Promise<PaginationConfig | void> => {
-    return await getPagination(`${basicUrl}/GetPagination`);
+export const getDebtPaymentsPagination = async (debtId?: string): Promise<PaginationConfig | void> => {
+    const url = debtId ? `${basicUrl}/GetPagination?debtId=${debtId}` : `${basicUrl}/GetPagination`;
+    return await getPagination(url);
 };
 
 export const createDebtPayment = async (newDebtPayment: DebtPaymentEntity): Promise<boolean | void> => {

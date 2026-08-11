@@ -40,9 +40,16 @@ namespace MoneyManager.Application.Services.Debts
             return _mapper.Map(debtPayment);
         }
 
-        public async Task<IEnumerable<DebtPaymentDto>> GetAll(int pageIndex, int recordsQuantity)
+        public async Task<IEnumerable<DebtPaymentDto>> GetAll(int pageIndex, int recordsQuantity, Guid? debtId = null)
         {
-            var query = new ComplexQueryBuilder<DebtPayment>()
+            var builder = new ComplexQueryBuilder<DebtPayment>();
+
+            if (debtId.HasValue && debtId.Value != Guid.Empty)
+            {
+                builder.AddFilter(payment => payment.DebtId == debtId.Value);
+            }
+
+            var query = builder
                 .AddPagination(pageIndex, recordsQuantity,
                     (payment) => payment.Date, true)
                 .AddJoins(GetFullHierarchyColumns)
@@ -52,10 +59,12 @@ namespace MoneyManager.Application.Services.Debts
             return _mapper.Map(debtPayments);
         }
 
-        public async Task<PaginationConfigDto> GetPagination()
+        public async Task<PaginationConfigDto> GetPagination(Guid? debtId = null)
         {
             int pageSize = 10;
-            var recordsQuantity = await _debtPaymentRepo.GetCount();
+            int recordsQuantity = debtId.HasValue && debtId.Value != Guid.Empty ? 
+                await _debtPaymentRepo.GetCount(p => p.DebtId == debtId.Value): 
+                await _debtPaymentRepo.GetCount();
 
             return new PaginationConfigDto()
             {

@@ -98,8 +98,11 @@ This document contains guidelines, coding standards, and architectural patterns 
 
 ---
 
-## 🔄 Verification Workflow
-Before finalizing any task, always execute:
-1. `npm run build` in `client/`
-2. `dotnet build` in `server/`
-3. `dotnet test` in `server/`
+## 🔄 Verification Commands & Workflow
+Execute verification commands selectively based on the scope of changes made during the task:
+
+- **Client Changes (`client/`)**: Run `npm run build` in `client/`.
+- **Server Changes (`server/`)**: Run `dotnet build` and `dotnet test` in `server/`.
+- **Both / Full-Stack Changes**: Run both client build and server build/tests.
+
+Do NOT run verification commands for a component (client or server) if no changes were made to that component.

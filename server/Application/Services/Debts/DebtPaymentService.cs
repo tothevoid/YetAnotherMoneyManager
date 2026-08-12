@@ -25,7 +25,7 @@ namespace MoneyManager.Application.Services.Debts
         private readonly IRepository<Account> _accountRepo;
         private readonly ApplicationMapper _mapper;
 
-        public DebtPaymentService(IUnitOfWork uow, ApplicationMapper mapper, ITransactionsService transactionService)
+        public DebtPaymentService(IUnitOfWork uow, ApplicationMapper mapper)
         {
             _db = uow;
             _mapper = mapper;

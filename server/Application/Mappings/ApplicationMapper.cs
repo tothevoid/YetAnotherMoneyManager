@@ -89,9 +89,16 @@ namespace MoneyManager.Application.Mappings
         public partial UserProfile Map(UserProfileDto dto);
         public partial UserProfileDto Map(UserProfile entity);
 
+        [MapperIgnoreTarget(nameof(Debt.DebtTags))]
         public partial Debt Map(DebtDto dto);
         public partial DebtDto Map(Debt entity);
         public partial IEnumerable<DebtDto> Map(IEnumerable<Debt> entities);
+
+        public partial DebtTag Map(DebtTagDto dto);
+        public partial DebtTagDto Map(DebtTag entity);
+        public partial IEnumerable<DebtTagDto> Map(IEnumerable<DebtTag> entities);
+
+        public DebtTagDto Map(DebtToDebtTag source) => source.DebtTag == null ? null! : Map(source.DebtTag);
 
         public partial DebtPayment Map(DebtPaymentDto dto);
         public partial DebtPaymentDto Map(DebtPayment entity);

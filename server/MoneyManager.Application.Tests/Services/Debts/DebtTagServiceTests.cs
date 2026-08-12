@@ -130,16 +130,17 @@ namespace MoneyManager.Application.Tests.Services.Debts
             {
                 var debtService = sp.GetRequiredService<IDebtService>();
                 var tagService = sp.GetRequiredService<IDebtTagService>();
-                var tag = await tagService.GetById(tagId);
 
-                return await debtService.Add(new DebtDto
+                var createdDebtId = await debtService.Add(new DebtDto
                 {
                     Name = "Auto Parts",
                     Amount = 1000m,
                     CurrencyId = CurrencyConstants.USD,
-                    Date = DateOnly.FromDateTime(DateTime.Now),
-                    DebtTags = new System.Collections.Generic.List<DebtTagDto> { tag }
+                    Date = DateOnly.FromDateTime(DateTime.Now)
                 });
+
+                await tagService.AssignTagsToDebt(createdDebtId, new[] { tagId });
+                return createdDebtId;
             });
 
             var stats = await ExecuteScopeAsync(async sp =>

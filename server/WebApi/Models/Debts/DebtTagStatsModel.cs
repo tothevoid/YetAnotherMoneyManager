@@ -16,6 +16,8 @@ namespace MoneyManager.WebApi.Models.Debts
 
         public decimal RemainingAmount { get; set; }
 
+        public string CurrencyName { get; set; } = string.Empty;
+
         public double RepaymentPercentage { get; set; }
     }
 }

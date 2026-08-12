@@ -12,7 +12,7 @@ using MoneyManager.Infrastructure.Queries;
 
 namespace MoneyManager.Application.Services.Debts
 {
-    public class DebtService: IDebtService
+    public class DebtService : IDebtService
     {
         private readonly IUnitOfWork _db;
         private readonly IRepository<Debt> _debtRepo;
@@ -27,7 +27,7 @@ namespace MoneyManager.Application.Services.Debts
 
         public async Task<DebtDto> GetById(Guid id)
         {
-            var debt = await _debtRepo.GetById(id);
+            var debt = await _debtRepo.GetById(id, include: GetFullHierarchyColumns);
             return _mapper.Map(debt);
         }
 
@@ -49,8 +49,15 @@ namespace MoneyManager.Application.Services.Debts
 
         public async Task Update(DebtDto debtDto)
         {
-            var debt = _mapper.Map(debtDto);
-            _debtRepo.Update(debt);
+            var debt = await _debtRepo.GetById(debtDto.Id, disableTracking: false);
+
+            if (debt == null) return;
+
+            debt.Name = debtDto.Name;
+            debt.Amount = debtDto.Amount;
+            debt.CurrencyId = debtDto.CurrencyId;
+            debt.Date = debtDto.Date;
+
             await _db.Commit();
         }
 
@@ -58,10 +65,9 @@ namespace MoneyManager.Application.Services.Debts
         {
             var debt = _mapper.Map(debtDto);
             debt.Id = Guid.NewGuid();
-            
+
             await _debtRepo.Add(debt);
             await _db.Commit();
-            
             return debt.Id;
         }
 
@@ -74,7 +80,9 @@ namespace MoneyManager.Application.Services.Debts
         private IQueryable<Debt> GetFullHierarchyColumns(IQueryable<Debt> debtQuery)
         {
             return debtQuery
-                .Include(debt => debt.Currency);
+                .Include(debt => debt.Currency)
+                .Include(debt => debt.DebtTags)
+                    .ThenInclude(dt => dt.DebtTag);
         }
     }
 }

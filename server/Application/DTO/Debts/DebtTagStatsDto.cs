@@ -16,6 +16,8 @@ namespace MoneyManager.Application.DTO.Debts
 
         public decimal RemainingAmount { get; set; }
 
+        public string CurrencyName { get; set; } = string.Empty;
+
         public double RepaymentPercentage => TotalAmount > 0 ? (double)(TotalPaid / TotalAmount * 100) : 0;
     }
 }

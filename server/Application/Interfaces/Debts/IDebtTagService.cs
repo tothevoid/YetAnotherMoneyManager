@@ -13,5 +13,6 @@ namespace MoneyManager.Application.Interfaces.Debts
         Task<Guid> Add(DebtTagDto debtTag);
         Task Update(DebtTagDto debtTag);
         Task Delete(Guid id);
+        Task AssignTagsToDebt(Guid debtId, IEnumerable<Guid> tagIds);
     }
 }

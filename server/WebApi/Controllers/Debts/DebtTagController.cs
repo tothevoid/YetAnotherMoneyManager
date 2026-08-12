@@ -39,14 +39,14 @@ namespace MoneyManager.WebApi.Controllers.Debts
             return _mapper.Map(stats);
         }
 
-        [HttpPost]
+        [HttpPut]
         public async Task<Guid> Add([FromBody] DebtTagModel model)
         {
             var dto = _mapper.Map(model);
             return await _debtTagService.Add(dto);
         }
 
-        [HttpPut]
+        [HttpPatch]
         public async Task Update([FromBody] DebtTagModel model)
         {
             var dto = _mapper.Map(model);
@@ -57,6 +57,12 @@ namespace MoneyManager.WebApi.Controllers.Debts
         public async Task Delete([FromQuery] Guid id)
         {
             await _debtTagService.Delete(id);
+        }
+
+        [HttpPut("debt/{debtId}")]
+        public async Task AssignTagsToDebt([FromRoute] Guid debtId, [FromBody] IEnumerable<Guid> tagIds)
+        {
+            await _debtTagService.AssignTagsToDebt(debtId, tagIds);
         }
     }
 }

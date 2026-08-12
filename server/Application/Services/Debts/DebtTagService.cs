@@ -16,6 +16,7 @@ namespace MoneyManager.Application.Services.Debts
         private readonly IUnitOfWork _db;
         private readonly IRepository<DebtTag> _debtTagRepo;
         private readonly IRepository<DebtPayment> _debtPaymentRepo;
+        private readonly IRepository<DebtToDebtTag> _debtToDebtTagRepo;
         private readonly ApplicationMapper _mapper;
 
         public DebtTagService(IUnitOfWork uow, ApplicationMapper mapper)
@@ -24,6 +25,7 @@ namespace MoneyManager.Application.Services.Debts
             _mapper = mapper;
             _debtTagRepo = uow.CreateRepository<DebtTag>();
             _debtPaymentRepo = uow.CreateRepository<DebtPayment>();
+            _debtToDebtTagRepo = uow.CreateRepository<DebtToDebtTag>();
         }
 
         public async Task<IEnumerable<DebtTagDto>> GetAll()
@@ -72,6 +74,8 @@ namespace MoneyManager.Application.Services.Debts
                 var remainingAmount = associatedDebts.Sum(debt => debt.Amount);
                 var paidAmount = debtPayments.Where(payment => debtIds.Contains(payment.DebtId)).Sum(payment => payment.Amount);
                 var totalAmount = remainingAmount + paidAmount;
+                // TODO: possible more than 1 currency
+                var currencyName = associatedDebts.FirstOrDefault()?.Currency?.Name ?? string.Empty;
 
                 debtTagStats.Add(new DebtTagStatsDto
                 {
@@ -80,7 +84,8 @@ namespace MoneyManager.Application.Services.Debts
                     ColorHex = debtTag.ColorHex,
                     RemainingAmount = remainingAmount,
                     TotalPaid = paidAmount,
-                    TotalAmount = totalAmount
+                    TotalAmount = totalAmount,
+                    CurrencyName = currencyName
                 });
             }
 
@@ -120,11 +125,46 @@ namespace MoneyManager.Application.Services.Debts
             await _db.Commit();
         }
 
+        public async Task AssignTagsToDebt(Guid debtId, IEnumerable<Guid> tagIds)
+        {
+            var existingAssociations = await _debtToDebtTagRepo.GetAll(dt => dt.DebtId == debtId, disableTracking: false);
+            var desiredTagIds = tagIds?.ToHashSet() ?? new HashSet<Guid>();
+
+            foreach (var assoc in existingAssociations)
+            {
+                if (!desiredTagIds.Contains(assoc.DebtTagId))
+                {
+                    await _debtToDebtTagRepo.Delete(assoc.Id);
+                }
+            }
+
+            var remainingTagIds = existingAssociations
+                .Where(assoc => desiredTagIds.Contains(assoc.DebtTagId))
+                .Select(assoc => assoc.DebtTagId)
+                .ToHashSet();
+
+            foreach (var tagId in desiredTagIds)
+            {
+                if (!remainingTagIds.Contains(tagId))
+                {
+                    await _debtToDebtTagRepo.Add(new DebtToDebtTag
+                    {
+                        Id = Guid.NewGuid(),
+                        DebtId = debtId,
+                        DebtTagId = tagId
+                    });
+                }
+            }
+
+            await _db.Commit();
+        }
+
         private IQueryable<DebtTag> GetFullHierarchyColumns(IQueryable<DebtTag> debtTagQuery)
         {
             return debtTagQuery
                 .Include(debtTag => debtTag.DebtAssociations)
-                    .ThenInclude(association => association.Debt);
+                    .ThenInclude(association => association.Debt)
+                        .ThenInclude(debt => debt.Currency);
         }
     }
 }

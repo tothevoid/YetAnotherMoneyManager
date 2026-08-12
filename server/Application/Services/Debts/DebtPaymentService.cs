@@ -187,7 +187,7 @@ namespace MoneyManager.Application.Services.Debts
                 return;
             }
 
-            var debt = await _debtRepo.GetById(currentDebtPayment.Id, disableTracking: false);
+            var debt = await _debtRepo.GetById(currentDebtPayment.DebtId, disableTracking: false);
 
             debt.Amount += currentDebtPayment.Amount;
 

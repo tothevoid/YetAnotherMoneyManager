@@ -17,6 +17,7 @@ export const prepareDebt = (debt: DebtEntityResponse): DebtEntity => {
         amount: debt.amount,
         name: debt.name,
         currency: debt.currency,
-        date: new Date(debt.date)
+        date: new Date(debt.date),
+        debtTags: debt.debtTags || []
     };
 }

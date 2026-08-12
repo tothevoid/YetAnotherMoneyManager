@@ -10,6 +10,7 @@ export function useEntityModal<T>() {
     const confirmModalRef = useRef<BaseModalRef>(null);
 
     const onAddClicked = useCallback(() => {
+        setActiveEntity(null);
         setMode(ActiveEntityMode.Add);
         modalRef.current?.openModal();
     }, []);

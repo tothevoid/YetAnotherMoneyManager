@@ -1,4 +1,5 @@
 import { CurrencyEntity } from "../currencies/CurrencyEntity";
+import { DebtTagEntity } from "./DebtTagEntity";
 
 interface CommonDebtEntity {
     id: string,
@@ -7,16 +8,18 @@ interface CommonDebtEntity {
 }
 
 export interface DebtEntityRequest extends CommonDebtEntity {
-    currencyId: string
+    currencyId: string,
     date: string
 }
 
 export interface DebtEntity extends CommonDebtEntity {
     currency: CurrencyEntity,
-    date: Date
+    date: Date,
+    debtTags?: DebtTagEntity[]
 }
 
 export interface DebtEntityResponse extends CommonDebtEntity {
     currency: CurrencyEntity,
-    date: string
+    date: string,
+    debtTags?: DebtTagEntity[]
 }

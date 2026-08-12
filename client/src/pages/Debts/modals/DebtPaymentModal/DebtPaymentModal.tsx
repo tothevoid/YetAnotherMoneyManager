@@ -1,6 +1,6 @@
-import { Field, Input} from "@chakra-ui/react"
-import React, { RefObject, useCallback, useEffect, useState } from "react"
-import { useForm } from "react-hook-form";
+import { Field, Input } from "@chakra-ui/react";
+import React, { RefObject, useCallback, useEffect, useMemo, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import CollectionSelect from "../../../../shared/components/CollectionSelect/CollectionSelect";
@@ -21,19 +21,19 @@ interface Props {
 	onSaved: (debt: DebtPaymentEntity) => void;
 	modalRef: RefObject<BaseModalRef | null>
 };
-	
+
 interface State {
 	accounts: AccountEntity[],
 	debts: DebtEntity[]
 }
 
 const DebtPaymentModal: React.FC<Props> = (props: Props) => {
-	const [state, setState] = useState<State>({accounts: [], debts: []})
+	const [state, setState] = useState<State>({ accounts: [], debts: [] });
 
 	useEffect(() => {
 		const initData = async () => {
 			await requestData();
-		}
+		};
 		initData();
 	}, []);
 
@@ -42,8 +42,8 @@ const DebtPaymentModal: React.FC<Props> = (props: Props) => {
 		const accounts = await getAccounts(true);
 
 		setState((currentState) => {
-			return {...currentState, debts, accounts }
-		})
+			return { ...currentState, debts, accounts };
+		});
 	};
 
 	const getDefaultFormState = useCallback(() => {
@@ -54,10 +54,10 @@ const DebtPaymentModal: React.FC<Props> = (props: Props) => {
 			debt: props.debtPayment?.debt,
 			targetAccount: props.debtPayment?.targetAccount,
 			isPercentagePayment: props.debtPayment?.isPercentagePayment ?? false
-		}
+		};
 	}, [props.debtPayment]);
 
-	const { register, handleSubmit, control, formState: { errors }, reset} = useForm<DebtPaymentFormInput>({
+	const { register, handleSubmit, control, formState: { errors }, reset, setValue } = useForm<DebtPaymentFormInput>({
 		resolver: zodResolver(DebtPaymentValidationSchema),
 		mode: "onBlur",
 		defaultValues: getDefaultFormState()
@@ -67,45 +67,73 @@ const DebtPaymentModal: React.FC<Props> = (props: Props) => {
 		reset(getDefaultFormState());
 	}, [reset, getDefaultFormState, props.debtPayment]);
 
+	const selectedDebtFormValue = useWatch({ control, name: "debt" });
+	const selectedAccountFormValue = useWatch({ control, name: "targetAccount" });
+
+	const selectedDebtEntity = useMemo(() => {
+		if (!selectedDebtFormValue?.id) return null;
+		return state.debts.find((d) => d.id === selectedDebtFormValue.id) || null;
+	}, [selectedDebtFormValue, state.debts]);
+
+	const availableAccounts = useMemo(() => {
+		if (!selectedDebtEntity || !selectedDebtEntity.currency) {
+			return state.accounts;
+		}
+		return state.accounts.filter(
+			(account) => account.currency?.id === selectedDebtEntity.currency.id
+		);
+	}, [selectedDebtEntity, state.accounts]);
+
+	useEffect(() => {
+		if (selectedDebtEntity && selectedDebtEntity.currency && selectedAccountFormValue?.id) {
+			const selectedAccountEntity = state.accounts.find((a) => a.id === selectedAccountFormValue.id);
+			if (selectedAccountEntity && selectedAccountEntity.currency?.id !== selectedDebtEntity.currency.id) {
+				setValue("targetAccount", undefined as any);
+			}
+		}
+	}, [selectedDebtEntity, selectedAccountFormValue, state.accounts, setValue]);
+
 	const onSubmit = (debt: DebtPaymentFormInput) => {
 		props.onSaved(debt as DebtPaymentEntity);
 		props.modalRef?.current?.closeModal();
-	}
+	};
 
-	const {t} = useTranslation()
+	const { t } = useTranslation();
 
-	return <BaseFormModal ref={props.modalRef} title={t("entity_debt_payment_form_title")} submitHandler={handleSubmit(onSubmit)}>
-		<Field.Root mt={4} invalid={!!errors.debt}>
-			<Field.Label>{t("entity_debt_payment_debt")}</Field.Label>
-			<CollectionSelect name="debt" control={control} placeholder="Select debt"
-				collection={state.debts} 
-				labelSelector={(debt => debt.name)} 
-				valueSelector={(debt => debt.id)}/>
-			<Field.ErrorText>{errors.debt?.message}</Field.ErrorText>
-		</Field.Root>
-		<Field.Root invalid={!!errors.amount}>
-			<Field.Label>{t("entity_debt_payment_amount")}</Field.Label>
-			<Input {...register("amount", {valueAsNumber: true})} min={0} step="0.01" autoComplete="off" type='number' placeholder='500' />
-			<Field.ErrorText>{errors.amount?.message}</Field.ErrorText>
-		</Field.Root>
+	return (
+		<BaseFormModal ref={props.modalRef} title={t("entity_debt_payment_form_title")} submitHandler={handleSubmit(onSubmit)}>
+			<Field.Root mt={4} invalid={!!errors.debt}>
+				<Field.Label>{t("entity_debt_payment_debt")}</Field.Label>
+				<CollectionSelect name="debt" control={control} placeholder="Select debt"
+					collection={state.debts}
+					labelSelector={(debt => debt.name)}
+					valueSelector={(debt => debt.id)} />
+				<Field.ErrorText>{errors.debt?.message}</Field.ErrorText>
+			</Field.Root>
+			<Field.Root invalid={!!errors.amount}>
+				<Field.Label>{t("entity_debt_payment_amount")}</Field.Label>
+				<Input {...register("amount", { valueAsNumber: true })} min={0} step="0.01" autoComplete="off" type='number' placeholder='500' />
+				<Field.ErrorText>{errors.amount?.message}</Field.ErrorText>
+			</Field.Root>
 			<Field.Root mt={4} invalid={!!errors.targetAccount}>
-			<Field.Label>{t("entity_debt_payment_target_account")}</Field.Label>
-			<CollectionSelect name="targetAccount" control={control} placeholder="Select account"
-				collection={state.accounts} 
-				labelSelector={(account => account.name)} 
-				valueSelector={(account => account.id)}/>
-			<Field.ErrorText>{errors.targetAccount?.message}</Field.ErrorText>
-		</Field.Root>		
-		<Field.Root mt={4} invalid={!!errors.date}>
-			<Field.Label>{t("entity_debt_payment_date")}</Field.Label>
-			<DateSelect name="date" control={control}/>
-			<Field.ErrorText>{errors.date?.message}</Field.ErrorText>
-		</Field.Root>
-		<Field.Root invalid={!!errors.isPercentagePayment} mt={4}>
-			<CheckboxInput name="isPercentagePayment" control={control} title={t("entity_debt_payment_is_percentage_payment")}/>
-			<Field.ErrorText>{errors.isPercentagePayment?.message}</Field.ErrorText>
-		</Field.Root>
-	</BaseFormModal>
-}
+				<Field.Label>{t("entity_debt_payment_target_account")}</Field.Label>
+				<CollectionSelect name="targetAccount" control={control} placeholder="Select account"
+					collection={availableAccounts}
+					labelSelector={(account => account.name)}
+					valueSelector={(account => account.id)} />
+				<Field.ErrorText>{errors.targetAccount?.message}</Field.ErrorText>
+			</Field.Root>
+			<Field.Root mt={4} invalid={!!errors.date}>
+				<Field.Label>{t("entity_debt_payment_date")}</Field.Label>
+				<DateSelect name="date" control={control} />
+				<Field.ErrorText>{errors.date?.message}</Field.ErrorText>
+			</Field.Root>
+			<Field.Root invalid={!!errors.isPercentagePayment} mt={4}>
+				<CheckboxInput name="isPercentagePayment" control={control} title={t("entity_debt_payment_is_percentage_payment")} />
+				<Field.ErrorText>{errors.isPercentagePayment?.message}</Field.ErrorText>
+			</Field.Root>
+		</BaseFormModal>
+	);
+};
 
 export default DebtPaymentModal;

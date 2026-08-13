@@ -62,7 +62,7 @@ const Header = () => {
     ]
 
     return <nav>
-        <Box pos="fixed" w={"100%"} zIndex={1000}>
+        <Box w="100%">
             <Flex minH={50} alignItems="center" padding={1} direction={'row'} backgroundColor="header_bg" color="text_primary">
                 <Flex flex={{ base: 1 }} justify="center" align={"center"}>
                     <Link href='/'>

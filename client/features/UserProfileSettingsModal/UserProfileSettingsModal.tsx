@@ -83,11 +83,11 @@ const UserProfileSettingsModal = forwardRef<BaseModalRef>((_, ref)=> {
 	const {t} = useTranslation()
 
 	return (
-		<Dialog.Root placement="center" open={open} onEscapeKeyDown={onClose}>
+		<Dialog.Root placement="center" open={open} onEscapeKeyDown={onClose} onOpenChange={(e) => { if (!e.open) onClose(); }}>
 		  <Portal>
 			<Dialog.Backdrop/>
 			<Dialog.Positioner>
-				<Dialog.Content as="form" onSubmit={handleSubmit(onSubmit)}>
+				<Dialog.Content as="form" onSubmit={handleSubmit(onSubmit)} backgroundColor="background_primary" borderColor="border_primary" color="text_primary">
 					<Dialog.Header>
 						<Dialog.Title>{t("user_profile_settings_title")}</Dialog.Title>
 					</Dialog.Header>

@@ -1,28 +1,49 @@
-import { useCallback, useEffect, useState } from "react";
-import { SimpleGrid, Box, Flex} from "@chakra-ui/react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { SimpleGrid, Box } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { DebtEntity } from "../../../../models/debts/DebtEntity";
-import SwitchButton from "../../../../shared/components/SwitchButton/SwitchButton";
+import { DebtTagEntity } from "../../../../models/debts/DebtTagEntity";
 import { useDebts } from "../../hooks/useDebts";
 import DebtModal from "../../modals/DebtModal.tsx/DebtModal";
 import Debt from "../Debt/Debt";
-import Placeholder from "../../../../shared/components/Placeholder/Placeholder";
 import { ConfirmModal } from "../../../../shared/modals/ConfirmModal/ConfirmModal";
 import { useEntityModal } from "../../../../shared/hooks/useEntityModal";
-import AddButton from "../../../../shared/components/AddButton/AddButton";
 import { ActiveEntityMode } from "../../../../shared/enums/activeEntityMode";
+import { DebtTagAssignModal } from "../../modals/DebtTagAssignModal/DebtTagAssignModal";
+import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
+import { assignTagsToDebt } from "../../../../api/debts/debtTagApi";
+import DebtsHeader from "../DebtsHeader/DebtsHeader";
 
 interface Props {
-    debtsPaymentsVersion: number,
-    onDebtsChanged: (debts: number) => void
+    debtsPaymentsVersion: number;
+    onDebtsChanged: (debts: number) => void;
+    tags: DebtTagEntity[];
+    selectedDebtId?: string | null;
+    onSelectDebt?: (debtId: string | null) => void;
+    onTagCreatedOrUpdated?: () => Promise<void>;
+    onOpenTagManagerModal?: () => void;
+    onOpenTagStatsModal?: () => void;
 }
 
-const DebtsList: React.FC<Props> = ({debtsPaymentsVersion, onDebtsChanged}) => {
+const DebtsList: React.FC<Props> = ({
+    debtsPaymentsVersion,
+    onDebtsChanged,
+    tags,
+    selectedDebtId,
+    onSelectDebt,
+    onTagCreatedOrUpdated,
+    onOpenTagManagerModal,
+    onOpenTagStatsModal
+}) => {
     const { t } = useTranslation();
 
     const [onlyActive, setOnlyActive] = useState(true);
+    const [selectedTagFilter, setSelectedTagFilter] = useState<string | null>(null);
+    const [tagAssignDebt, setTagAssignDebt] = useState<DebtEntity | null>(null);
 
-    const { 
+    const tagAssignModalRef = useRef<BaseModalRef>(null);
+
+    const {
         activeEntity,
         modalRef,
         confirmModalRef,
@@ -46,30 +67,22 @@ const DebtsList: React.FC<Props> = ({debtsPaymentsVersion, onDebtsChanged}) => {
     }, [reloadDebts]);
 
     useEffect(() => {
-        if (debtsPaymentsVersion >= 0){
+        if (debtsPaymentsVersion >= 0) {
             reloadData();
         }
     }, [debtsPaymentsVersion, reloadData]);
 
-    useEffect(()=> {
+    useEffect(() => {
         onDebtsChanged(debts.length);
-    }, [debts, onDebtsChanged])
+    }, [debts, onDebtsChanged]);
 
-    const getHeader = () => {
-        const addButton = <AddButton buttonTitle={t("debts_page_add_debt")} 
-            onClick={onAddClicked}/>
-
-        return debts.length > 0 ?
-            <Flex justifyContent="space-between">
-                <SwitchButton active={onlyActive} title={t("debts_page_only_active")} onSwitch={onOnlyActiveSwitched}/>
-                {debts.length && addButton}
-            </Flex>:
-            <Placeholder text={t("debts_page_no_debts")}>{addButton}</Placeholder>
-    }
-
-    const onOnlyActiveSwitched = (onlyActive: boolean) => {
-        setOnlyActive(onlyActive);
-    }
+    const filteredDebts = debts.filter((debt) => {
+        if (onlyActive && !debt.amount) return false;
+        if (selectedTagFilter) {
+            return debt.debtTags?.some((tag) => tag.id === selectedTagFilter);
+        }
+        return true;
+    });
 
     const onDebtSaved = async (debt: DebtEntity) => {
         if (mode === ActiveEntityMode.Add) {
@@ -77,37 +90,90 @@ const DebtsList: React.FC<Props> = ({debtsPaymentsVersion, onDebtsChanged}) => {
         } else if (mode === ActiveEntityMode.Edit) {
             await updateDebtEntity(debt);
         }
+        if (onTagCreatedOrUpdated) {
+            await onTagCreatedOrUpdated();
+        }
         onActionEnded();
-    }
-    
-	const onDeleteConfirmed = async () => {
-		if (!activeEntity) {
-            throw new Error("Deleted entity is not set")
+    };
+
+    const handleManageTagsClicked = (debt: DebtEntity) => {
+        setTagAssignDebt(debt);
+        tagAssignModalRef.current?.openModal();
+    };
+
+    const handleSaveTagsForDebt = async (debtToUpdate: DebtEntity, newTags: DebtTagEntity[]) => {
+        await assignTagsToDebt(debtToUpdate.id, newTags.map((t) => t.id));
+        await reloadDebts();
+        if (onTagCreatedOrUpdated) {
+            await onTagCreatedOrUpdated();
+        }
+    };
+
+    const onDeleteConfirmed = async () => {
+        if (!activeEntity) {
+            throw new Error("Deleted entity is not set");
         }
 
         await deleteDebtEntity(activeEntity);
-		onActionEnded();
-    }
-
-    return <Box>
-        {getHeader()}
-        <SimpleGrid pt={5} pb={5} gap={6} templateColumns='repeat(auto-fill, minmax(300px, 4fr))'>
-        {
-            debts.filter(debt => !onlyActive || debt.amount).map((debt: DebtEntity) => 
-                <Debt key={debt.id} debt={debt} 
-                    onEditClicked={onEditClicked}
-                    onDeleteClicked={onDeleteClicked}/>
-            )
+        if (onSelectDebt && selectedDebtId === activeEntity.id) {
+            onSelectDebt(null);
         }
-        </SimpleGrid>
-        <ConfirmModal onConfirmed={onDeleteConfirmed}
-            title={t("debts_delete_title")}
-            message={t("modals_delete_message")}
-            confirmActionName={t("modals_delete_button")}
-            ref={confirmModalRef}/>
-        <DebtModal debt={activeEntity} modalRef={modalRef} onSaved={onDebtSaved}/>
-    </Box>
-        
-}
+        onActionEnded();
+    };
+
+    const handleDebtClick = (debt: DebtEntity) => {
+        if (onSelectDebt) {
+            if (selectedDebtId === debt.id) {
+                onSelectDebt(null);
+            } else {
+                onSelectDebt(debt.id);
+            }
+        }
+    };
+
+    return (
+        <Box>
+            <DebtsHeader
+                hasDebts={debts.length > 0}
+                tags={tags}
+                onlyActive={onlyActive}
+                onOnlyActiveChange={setOnlyActive}
+                selectedTagFilter={selectedTagFilter}
+                onSelectedTagFilterChange={setSelectedTagFilter}
+                onAddClicked={onAddClicked}
+                onOpenTagManagerModal={onOpenTagManagerModal}
+                onOpenTagStatsModal={onOpenTagStatsModal}
+            />
+            <SimpleGrid pt={5} pb={5} gap={6} templateColumns="repeat(auto-fill, minmax(300px, 4fr))">
+                {filteredDebts.map((debt: DebtEntity) => (
+                    <Debt
+                        key={debt.id}
+                        debt={debt}
+                        isSelected={selectedDebtId === debt.id}
+                        onSelect={handleDebtClick}
+                        onEditClicked={onEditClicked}
+                        onDeleteClicked={onDeleteClicked}
+                        onManageTagsClicked={handleManageTagsClicked}
+                    />
+                ))}
+            </SimpleGrid>
+            <ConfirmModal
+                onConfirmed={onDeleteConfirmed}
+                title={t("debts_delete_title")}
+                message={t("modals_delete_message")}
+                confirmActionName={t("modals_delete_button")}
+                ref={confirmModalRef}
+            />
+            <DebtModal debt={activeEntity} modalRef={modalRef} onSaved={onDebtSaved} />
+            <DebtTagAssignModal
+                ref={tagAssignModalRef}
+                debt={tagAssignDebt}
+                availableTags={tags}
+                onSaved={handleSaveTagsForDebt}
+                onTagsReloadRequested={onTagCreatedOrUpdated || (async () => { })}
+            />
+        </Box>
+    );
+};
 
 export default DebtsList;

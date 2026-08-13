@@ -1,6 +1,6 @@
-import { Field, Input } from "@chakra-ui/react";
+import { Field, Input, Stack } from "@chakra-ui/react";
 import React, { RefObject, useCallback, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import CollectionSelect from "../../../../shared/components/CollectionSelect/CollectionSelect";
@@ -13,6 +13,7 @@ import DateSelect from "../../../../shared/components/DateSelect/DateSelect";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
 import { generateGuid } from "../../../../shared/utilities/idUtilities";
+import MoneyInput from "../../../../shared/components/MoneyInput/MoneyInput";
 
 interface Props {
 	debt?: DebtEntity | null,
@@ -42,13 +43,17 @@ const DebtModal: React.FC<Props> = (props: Props) => {
 	}, [loadData]);
 
 	const getDefaultFormState = useCallback(() => {
+		const matchedCurrency = props.debt?.currency
+			? (state.currencies.find(c => c.id === props.debt?.currency?.id) || props.debt.currency)
+			: (state.profileCurrency ?? state.currencies[0]);
+
 		return {
 			id: props.debt?.id ?? generateGuid(),
 			name: props.debt?.name ?? "",
 			amount: props.debt?.amount ?? 0,
-			currency: props.debt?.currency ?? state.profileCurrency ?? state.currencies[0],
+			currency: matchedCurrency,
 			date: props.debt?.date ?? new Date()
-		}
+		};
 	}, [props.debt, state.profileCurrency, state.currencies]);
 
 	const { register, handleSubmit, control, formState: { errors }, reset } = useForm<DebtFormInput>({
@@ -56,6 +61,8 @@ const DebtModal: React.FC<Props> = (props: Props) => {
 		mode: "onBlur",
 		defaultValues: getDefaultFormState()
 	});
+
+	const selectedCurrency = useWatch({ control, name: "currency" });
 
 	useEffect(() => {
 		reset(getDefaultFormState());
@@ -70,29 +77,34 @@ const DebtModal: React.FC<Props> = (props: Props) => {
 
 	return (
 		<BaseFormModal ref={props.modalRef} title={t("entity_debt_form_title")} submitHandler={handleSubmit(onSubmit)}>
-			<Field.Root invalid={!!errors.name}>
-				<Field.Label>{t("entity_debt_name")}</Field.Label>
-				<Input {...register("name")} autoComplete="off" placeholder='Debit card' />
-				<Field.ErrorText>{errors.name?.message}</Field.ErrorText>
-			</Field.Root>
-			<Field.Root invalid={!!errors.amount}>
-				<Field.Label>{t("entity_debt_amount")}</Field.Label>
-				<Input {...register("amount", { valueAsNumber: true })} min={0} step="0.01" autoComplete="off" type='number' placeholder='500' />
-				<Field.ErrorText>{errors.amount?.message}</Field.ErrorText>
-			</Field.Root>
-			<Field.Root mt={4} invalid={!!errors.currency}>
-				<Field.Label>{t("entity_debt_currency")}</Field.Label>
-				<CollectionSelect name="currency" control={control} placeholder="Select type"
-					collection={state.currencies} 
-					labelSelector={(currency => currency.name)} 
-					valueSelector={(currency => currency.id)} />
-				<Field.ErrorText>{errors.currency?.message}</Field.ErrorText>
-			</Field.Root>
-			<Field.Root mt={4} invalid={!!errors.date}>
-				<Field.Label>{t("entity_debt_date")}</Field.Label>
-				<DateSelect name="date" control={control} />
-				<Field.ErrorText>{errors.date?.message}</Field.ErrorText>
-			</Field.Root>
+			<Stack gap={4}>
+				<Field.Root invalid={!!errors.name}>
+					<Field.Label>{t("entity_debt_name")}</Field.Label>
+					<Input {...register("name")} autoComplete="off" placeholder='Debit card' color="text_primary" backgroundColor="background_primary" borderColor="border_primary" />
+					<Field.ErrorText>{errors.name?.message}</Field.ErrorText>
+				</Field.Root>
+				<Field.Root invalid={!!errors.amount}>
+					<Field.Label>{t("entity_debt_amount")}</Field.Label>
+					<MoneyInput
+						register={register("amount", { valueAsNumber: true })}
+						currency={selectedCurrency?.name}
+					/>
+					<Field.ErrorText>{errors.amount?.message}</Field.ErrorText>
+				</Field.Root>
+				<Field.Root invalid={!!errors.currency}>
+					<Field.Label>{t("entity_debt_currency")}</Field.Label>
+					<CollectionSelect name="currency" control={control} placeholder="Select type"
+						collection={state.currencies} 
+						labelSelector={(currency => currency.name)} 
+						valueSelector={(currency => currency.id)} />
+					<Field.ErrorText>{errors.currency?.message}</Field.ErrorText>
+				</Field.Root>
+				<Field.Root invalid={!!errors.date}>
+					<Field.Label>{t("entity_debt_date")}</Field.Label>
+					<DateSelect name="date" control={control} />
+					<Field.ErrorText>{errors.date?.message}</Field.ErrorText>
+				</Field.Root>
+			</Stack>
 		</BaseFormModal>
 	);
 }

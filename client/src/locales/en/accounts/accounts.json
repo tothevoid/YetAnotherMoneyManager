@@ -1,0 +1,20 @@
+{
+    "accounts_page_summary_title": "Current balance",
+    "accounts_page_summary_add": "Add account",
+    "accounts_list_only_active": "Only active",
+    "accounts_list_no_accounts": "No accounts",
+
+    "entity_account_name_form_title": "account",
+    "entity_account_name": "Name",
+    "entity_account_balance": "Balance",
+    "entity_account_active": "Active",
+    "entity_account_created_on": "Created on",
+    "account_delete_title": "Delete account",
+
+    "account_balance_transfer_modal_title": "Transfer balance",
+    "account_balance_transfer_modal_from": "From account",
+    "account_balance_transfer_modal_to": "To account",
+    "account_balance_transfer_modal_balance": "Balance",
+    "account_balance_transfer_modal_fee": "Transfer fee",
+    "account_balance_transfer_modal_transfer_button": "Transfer"
+}

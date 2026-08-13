@@ -1,0 +1,34 @@
+{
+    "data_title": "Справочники",
+    "currencies_data_add": "Добавить валюту",
+    "currencies_data_sync_rates": "Синхронизировать курсы",
+    "currencies_delete_title": "Удалить валюту",
+
+    "entity_currency_name_form_title": "Валюта",
+    "entity_currency_name": "Название",
+    "entity_currency_rate": "Курс",
+    "entity_currency_active": "Активна",
+
+    "entity_transaction_currency": "Валюта",
+    "entity_transaction_type": "Тип",
+    "entity_transaction_bank": "Банк",
+
+    "entity_broker_account_type_from_title": "Тип брокерского счёта",
+    "entity_broker_account_type_name": "Название",
+    "entity_broker_account_type_add": "Добавить тип счёта",
+
+    "entity_broker_from_title": "Брокер",
+    "entity_broker_name": "Название",
+    "entity_broker_add": "Добавить брокера",
+
+    "entity_bank_from_title": "Банк",
+    "entity_bank_name": "Название",
+    "entity_bank_add": "Добавить банк",
+    "banks_delete_title": "Удалить банк",
+
+    "entity_transaction_type_name_form_title": "Категория транзакции",
+    "entity_transaction_type_name": "Название",
+    "entity_transaction_type_active": "Активна",
+    "transaction_type_data_add": "Добавить категорию",
+    "transaction_type_delete_title": "Удалить категорию"
+}

@@ -1,0 +1,34 @@
+{
+    "header_accounts": "Счета",
+    "header_transactions": "Транзакции",
+    "header_deposits": "Вклады",
+    "header_data": "Справочники",
+    "header_broker_account": "Брокерские счета",
+    "header_securities": "Ценные бумаги",
+    "header_debts": "Должники",
+    "header_cryptocurrencies": "Криптовалюты",
+    "header_cryptoaccounts": "Криптосчета",
+    "header_dashboard": "Сводка",
+
+    "dashboard_title": "Сводка",
+    "dashboard_total": "Всего",
+    "dashboard_empty": "Нет данных",
+    "dashboard_cash": "Наличные",
+    "dashboard_securities": "Ценные бумаги",
+    "dashboard_total_accounts": "Счета",
+    "dashboard_deposits": "Вклады",
+    "dashboard_deposit_incomes": "Накопленные проценты",
+    "dashboard_bank_accounts": "Банковские счета",
+    "dashboard_debts": "Должники",
+    "dashboard_crypto_account": "Криптосчета",
+    "dashboard_banks": "Банки",
+
+    "dashboard_transactions_spents": "Расходы",
+    "dashboard_transactions_incomes": "Доходы",
+
+    "user_profile_settings_title": "Настройки приложения",
+    "user_profile_settings_currency": "Отображать в валюте",
+    "user_profile_settings_currency_placeholder": "Выберите валюту",
+    "user_profile_settings_language": "Язык отображения",
+    "user_profile_settings_language_placeholder": "Выберите язык"
+}

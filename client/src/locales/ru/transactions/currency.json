@@ -1,0 +1,14 @@
+{
+    "entity_currency_transaction_name": "Название",
+    "entity_currency_transaction_source_account": "Со счёта",
+    "entity_currency_transaction_destination_account": "На счёт",
+    "entity_currency_transaction_amount": "Куплено",
+    "entity_currency_transaction_rate": "Курс покупки",
+    "entity_currency_transaction_date": "Дата",
+    "currency_transaction_total": "Итого",
+    "currency_transactions_title": "Валютные операции",
+    "currency_transactions_account_delete_title": "Удалить валютную операцию",
+    "currency_transactions_account_add_button": "Добавить",
+    "currency_transactions_current_rate": "Текущий курс",
+    "currency_transactions_diff": "Разница"
+}

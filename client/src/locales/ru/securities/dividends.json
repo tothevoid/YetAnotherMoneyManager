@@ -1,0 +1,18 @@
+{
+    "entity_dividend_form_title": "Дивиденд",
+    "entity_dividend_security": "Акция",
+    "entity_dividend_declaration_date": "Дата объявления",
+    "entity_dividend_snapshot_date": "Дата фиксации реестра",
+    "entity_dividend_payment_date": "Дата выплаты",
+    "entity_dividend_security_amount": "Дивиденд на акцию",
+
+    "entity_dividend_payment_form_title": "Выплата дивидендов",
+    "entity_dividend_payment_broker_account": "Брокерский счёт",
+    "entity_dividend_payment_dividend": "Дивиденд",
+    "entity_dividend_payment_securities_quantity": "Количество акций",
+    "entity_dividend_payment_tax": "Налог",
+    "entity_dividend_received_at": "Дата получения",
+
+    "dividend_payment_form_security": "Бумага",
+    "dividend_payment_form_payment": "Выплата"
+}

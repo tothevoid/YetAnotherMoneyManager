@@ -1,0 +1,34 @@
+{
+    "data_title": "Data",
+    "currencies_data_add": "Add currency",
+    "currencies_data_sync_rates": "Sync rates",
+    "currencies_delete_title": "Delete currency",
+
+    "entity_currency_name_form_title": "Currency",
+    "entity_currency_name": "Name",
+    "entity_currency_rate": "Rate",
+    "entity_currency_active": "Active",
+
+    "entity_transaction_currency": "Currency",
+    "entity_transaction_type": "Type",
+    "entity_transaction_bank": "Bank",
+
+    "entity_broker_account_type_from_title": "Broker account type",
+    "entity_broker_account_type_name": "Name",
+    "entity_broker_account_type_add": "Add account type",
+
+    "entity_broker_from_title": "Broker",
+    "entity_broker_name": "Name",
+    "entity_broker_add": "Add broker",
+
+    "entity_bank_from_title": "Bank",
+    "entity_bank_name": "Name",
+    "entity_bank_add": "Add bank",
+    "banks_delete_title": "Delete bank",
+
+    "entity_transaction_type_name_form_title": "Transaction type",
+    "entity_transaction_type_name": "Name",
+    "entity_transaction_type_active": "Active",
+    "transaction_type_data_add": "Add type",
+    "transaction_type_delete_title": "Delete type"
+}

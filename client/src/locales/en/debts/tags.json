@@ -1,0 +1,21 @@
+{
+    "entity_debt_tags": "Tags",
+    "debt_tag_select_placeholder": "New tag name",
+    "debt_tag_create": "Add tag",
+    "debt_tag_manage_title": "Manage Tags",
+    "debt_tag_stats_total": "Total amount",
+    "debt_tag_stats_remaining": "Remaining",
+    "debt_tag_stats_paid": "Paid",
+    "debt_tag_stats_progress": "Repayment progress",
+    "debt_tag_delete_confirm_title": "Delete tag",
+    "debt_tag_delete_confirm_message": "Tag '{{name}}' is attached to {{count}} debtor(s). Are you sure you want to delete it?",
+    "debt_tag_card_manage_tags": "+ Tags",
+    "debt_tag_assign_modal_title": "Manage Tags: {{name}}",
+    "debt_tag_assign_modal_subtitle": "Select or create tags for this debtor:",
+    "debt_tag_stats_modal_title": "Tag Statistics",
+    "debt_tag_stats_btn": "Statistics",
+    "debt_tag_stats_section_title": "Tag Statistics",
+    "debt_tag_empty": "No tags created yet",
+    "debts_filter_tags": "Filter by tags",
+    "debts_all_tags": "All tags"
+}

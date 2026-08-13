@@ -1,0 +1,21 @@
+{
+    "entity_debt_tags": "Теги",
+    "debt_tag_select_placeholder": "Имя нового тега",
+    "debt_tag_create": "Добавить тег",
+    "debt_tag_manage_title": "Управление тегами",
+    "debt_tag_stats_total": "Общая сумма",
+    "debt_tag_stats_remaining": "Осталось",
+    "debt_tag_stats_paid": "Выплачено",
+    "debt_tag_stats_progress": "Прогресс погашения",
+    "debt_tag_delete_confirm_title": "Удалить тег",
+    "debt_tag_delete_confirm_message": "Тег '{{name}}' привязан к {{count}} должникам. Вы уверены, что хотите удалить его?",
+    "debt_tag_card_manage_tags": "+ Теги",
+    "debt_tag_assign_modal_title": "Управление тегами: {{name}}",
+    "debt_tag_assign_modal_subtitle": "Выберите или создайте теги для этого должника:",
+    "debt_tag_stats_modal_title": "Статистика по тегам",
+    "debt_tag_stats_btn": "Статистика",
+    "debt_tag_stats_section_title": "Статистика по тегам",
+    "debt_tag_empty": "Теги ещё не созданы",
+    "debts_filter_tags": "Фильтр по тегам",
+    "debts_all_tags": "Все теги"
+}

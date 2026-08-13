@@ -1,0 +1,27 @@
+{
+    "manager_transactions_title": "Transactions",
+    "manager_transactions_add_transaction": "Add transaction",
+    "manager_transactions_no_transactions": "No transactions in current period",
+    "manager_transactions_empty": "No transactions",
+    "manager_stats_title": "Stats",
+    "manager_stats_by_source": "By account",
+    "manager_stats_by_type": "By type",
+    "manager_transactions_show_system": "Show system",
+
+    "new_transaction_form_title": "Add transaction",
+    "new_transaction_account_transaction_title": "Account transaction",
+    "new_transaction_account_currency_title": "Currency transaction",
+
+    "entity_transaction_name_form_title": "Transaction",
+    "entity_transaction_name": "Name",
+    "entity_transaction_date": "Date",
+    "entity_transaction_money_quantity": "Amount",
+    "entity_transaction_account": "Account",
+    "entity_transaction_transaction_type": "Transaction type",
+    "entity_transaction_direction": "Direction",
+    "entity_transaction_cashback": "Cashback",
+    "entity_transaction_direction_income": "Income",
+    "entity_transaction_direction_outcome": "Outcome",
+
+    "transaction_delete_title": "Delete transaction"
+}

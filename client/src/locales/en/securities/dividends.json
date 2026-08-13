@@ -1,0 +1,18 @@
+{
+    "entity_dividend_form_title": "Dividend",
+    "entity_dividend_security": "Stock",
+    "entity_dividend_declaration_date": "Declaration date",
+    "entity_dividend_snapshot_date": "Snapshot date",
+    "entity_dividend_payment_date": "Payment date",
+    "entity_dividend_security_amount": "Dividend",
+
+    "entity_dividend_payment_form_title": "Dividend payment",
+    "entity_dividend_payment_broker_account": "Broker account",
+    "entity_dividend_payment_dividend": "Dividend",
+    "entity_dividend_payment_securities_quantity": "Securities quantity",
+    "entity_dividend_payment_tax": "Tax",
+    "entity_dividend_received_at": "Received at",
+
+    "dividend_payment_form_security": "Security",
+    "dividend_payment_form_payment": "Payment"
+}

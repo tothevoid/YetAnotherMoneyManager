@@ -1,0 +1,16 @@
+{
+    "entity_broker_account_fund_transfer_delete_title": "Delete fund transfer",
+    "broker_account_transfer_modal_title": "Transfer funds",
+    "broker_account_transfer_modal_account_from": "From account",
+    "broker_account_transfer_modal_account_to": "To account",
+    "broker_account_transfer_modal_amount": "Amount",
+    "broker_account_transfer_modal_date": "Date",
+    "broker_account_transfer_modal_transfer_button": "Transfer",
+    "broker_account_transfer_modal_operation": "Operation",
+    "broker_account_transfer_modal_broker_account": "Broker account",
+    "broker_account_transfer_modal_operation_deposit": "Deposit",
+    "broker_account_transfer_modal_operation_withdraw": "Withdraw",
+
+    "transfers_history_chart_range_year": "Year",
+    "transfers_history_chart_range_month": "Month"
+}

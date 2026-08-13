@@ -1,0 +1,25 @@
+{
+    "entity_crypto_account_form_title": "Криптосчёт",
+    "entity_crypto_account_crypto_name": "Название",
+    "entity_crypto_account_crypto_provider": "Провайдер",
+
+    "entity_crypto_provider_form_title": "Крипто-провайдер",
+    "entity_crypto_provider_name": "Название",
+
+    "crypto_accounts_page_add": "Добавить счёт",
+    "crypto_accounts_page_no_crypto_accounts": "Нет криптосчетов",
+
+    "cryptocurrency_form_title": "Криптовалюта",
+    "cryptocurrency_form_symbol": "Символ",
+    "cryptocurrency_form_name": "Название",
+    "cryptocurrency_form_price": "Цена",
+    "cryptocurrency_delete_title": "Удалить криптовалюту",
+
+    "cryptocurrencies_page_no_cryptocurrencies": "Нет криптовалют",
+
+    "crypto_account_cryptocurrency_quantity": "Количество",
+    "crypto_account_cryptocurrency_modal_title": "Добавить криптовалюту",
+    "add_crypto_account_cryptocurrency_title": "Добавить",
+    "crypto_account_cryptocurrency_delete_title": "Удалить криптовалюту",
+    "crypto_account_cryptocurrency_cryptocurrency": "Криптовалюта"
+}

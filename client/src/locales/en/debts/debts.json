@@ -1,0 +1,27 @@
+{
+    "entity_debt_form_title": "Debt",
+    "entity_debt_name": "Name",
+    "entity_debt_amount": "Amount",
+    "entity_debt_currency": "Currency",
+    "entity_debt_date": "Date",
+    "entity_debt_paid_on": "Payment date",
+
+    "debts_page_only_active": "Only active",
+    "debts_page_add_debt": "Add debt",
+    "debts_page_no_debts": "No debts",
+    "debts_page_add_payment": "Add payment",
+    "debts_delete_title": "Delete debt",
+
+    "debt_payment_title": "Paid \"{{amount}}\" of \"{{debt}}\" on \"{{account}}\"",
+    "debt_payment_modal_title": "Debt payment",
+    "entity_debt_payment_form_title": "Debt payment",
+    "entity_debt_payment_amount": "Amount",
+    "entity_debt_payment_target_account": "Account",
+    "entity_debt_payment_transaction": "Transaction",
+    "entity_debt_payment_debt": "Debt",
+    "entity_debt_payment_date": "Date",
+    "entity_debt_payment_is_percentage_payment": "Is percentage payment",
+
+    "debts_payments_filter_debt": "Showing payments for: {{name}}",
+    "debts_payments_filter_clear": "Reset filter"
+}

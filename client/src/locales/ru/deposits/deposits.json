@@ -1,0 +1,22 @@
+{
+    "entity_deposit_name_form_title": "Вклад",
+    "entity_deposit_name": "Название",
+    "entity_deposit_bank": "Банк",
+    "entity_deposit_from": "С даты",
+    "entity_deposit_to": "По дату",
+    "entity_deposit_percentage": "Процентная ставка",
+    "entity_deposit_initial_amount": "Начальная сумма",
+    "entity_deposit_estimated_earn": "Ожидаемый доход",
+    "entity_deposit_dates": "Сроки",
+    "entity_deposit_earned": "Начислено",
+    "entity_deposit_already_earned": "Уже заработано",
+    "deposit_delete_title": "Удалить вклад",
+
+    "deposits_page_no_deposits": "Нет вкладов в выбранном диапазоне",
+    "deposits_chart_type_earnings": "Общий доход по месяцам",
+    "deposits_chart_type_stacked": "Доходность вкладов по месяцам",
+    "earnings_chart_data_title": "Доходность вкладов",
+
+    "deposits_list_only_active": "Только активные",
+    "deposits_list_add_button": "Добавить вклад"
+}

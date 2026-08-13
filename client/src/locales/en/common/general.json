@@ -1,0 +1,34 @@
+{
+    "header_accounts": "Accounts",
+    "header_transactions": "Transactions",
+    "header_deposits": "Deposits",
+    "header_data": "Data",
+    "header_broker_account": "Broker accounts",
+    "header_securities": "Securities",
+    "header_debts": "Debtors",
+    "header_cryptocurrencies": "Cryptocurrencies",
+    "header_cryptoaccounts": "Crypto accounts",
+    "header_dashboard": "Dashboard",
+
+    "dashboard_title": "Summaries",
+    "dashboard_total": "Total",
+    "dashboard_empty": "No data",
+    "dashboard_cash": "Cash",
+    "dashboard_securities": "Securities",
+    "dashboard_total_accounts": "Accounts",
+    "dashboard_deposits": "Deposits",
+    "dashboard_deposit_incomes": "Deposit locked incomes",
+    "dashboard_bank_accounts": "Bank accounts",
+    "dashboard_debts": "Debtors",
+    "dashboard_crypto_account": "Crypto accounts",
+    "dashboard_banks": "Banks",
+
+    "dashboard_transactions_spents": "Spents",
+    "dashboard_transactions_incomes": "Incomes",
+
+    "user_profile_settings_title": "Application configuration",
+    "user_profile_settings_currency": "Display in currency",
+    "user_profile_settings_currency_placeholder": "Select currency",
+    "user_profile_settings_language": "Display in language",
+    "user_profile_settings_language_placeholder": "Select language"
+}

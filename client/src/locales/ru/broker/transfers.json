@@ -1,0 +1,16 @@
+{
+    "entity_broker_account_fund_transfer_delete_title": "Удалить перевод средств",
+    "broker_account_transfer_modal_title": "Перевод средств",
+    "broker_account_transfer_modal_account_from": "Со счёта",
+    "broker_account_transfer_modal_account_to": "На счёт",
+    "broker_account_transfer_modal_amount": "Сумма",
+    "broker_account_transfer_modal_date": "Дата",
+    "broker_account_transfer_modal_transfer_button": "Перевести",
+    "broker_account_transfer_modal_operation": "Операция",
+    "broker_account_transfer_modal_broker_account": "Брокерский счёт",
+    "broker_account_transfer_modal_operation_deposit": "Пополнение",
+    "broker_account_transfer_modal_operation_withdraw": "Вывод",
+
+    "transfers_history_chart_range_year": "Год",
+    "transfers_history_chart_range_month": "Месяц"
+}

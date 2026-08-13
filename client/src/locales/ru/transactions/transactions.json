@@ -1,0 +1,27 @@
+{
+    "manager_transactions_title": "Транзакции",
+    "manager_transactions_add_transaction": "Добавить транзакцию",
+    "manager_transactions_no_transactions": "Нет транзакций в выбранном периоде",
+    "manager_transactions_empty": "Нет транзакций",
+    "manager_stats_title": "Статистика",
+    "manager_stats_by_source": "По счёту",
+    "manager_stats_by_type": "По категории",
+    "manager_transactions_show_system": "Показывать системные",
+
+    "new_transaction_form_title": "Добавить транзакцию",
+    "new_transaction_account_transaction_title": "Транзакция по счёту",
+    "new_transaction_account_currency_title": "Валютная операция",
+
+    "entity_transaction_name_form_title": "Транзакция",
+    "entity_transaction_name": "Название",
+    "entity_transaction_date": "Дата",
+    "entity_transaction_money_quantity": "Сумма",
+    "entity_transaction_account": "Счёт",
+    "entity_transaction_transaction_type": "Категория",
+    "entity_transaction_direction": "Направление",
+    "entity_transaction_cashback": "Кэшбэк",
+    "entity_transaction_direction_income": "Доход",
+    "entity_transaction_direction_outcome": "Расход",
+
+    "transaction_delete_title": "Удалить транзакцию"
+}

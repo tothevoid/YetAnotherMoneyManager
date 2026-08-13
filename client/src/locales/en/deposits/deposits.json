@@ -1,0 +1,22 @@
+{
+    "entity_deposit_name_form_title": "Deposit",
+    "entity_deposit_name": "Name",
+    "entity_deposit_bank": "Bank",
+    "entity_deposit_from": "From",
+    "entity_deposit_to": "To",
+    "entity_deposit_percentage": "Percentage",
+    "entity_deposit_initial_amount": "Initial amount",
+    "entity_deposit_estimated_earn": "Estimated earn",
+    "entity_deposit_dates": "Dates",
+    "entity_deposit_earned": "Earned",
+    "entity_deposit_already_earned": "Already earned",
+    "deposit_delete_title": "Delete deposit",
+
+    "deposits_page_no_deposits": "No deposits in current range",
+    "deposits_chart_type_earnings": "Total earnings by months",
+    "deposits_chart_type_stacked": "Deposits earnings by months",
+    "earnings_chart_data_title": "Deposits earnings",
+
+    "deposits_list_only_active": "Only active",
+    "deposits_list_add_button": "Add deposit"
+}

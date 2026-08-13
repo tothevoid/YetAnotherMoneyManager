@@ -1,0 +1,20 @@
+{
+    "accounts_page_summary_title": "Текущий баланс",
+    "accounts_page_summary_add": "Добавить счёт",
+    "accounts_list_only_active": "Только активные",
+    "accounts_list_no_accounts": "Нет счетов",
+
+    "entity_account_name_form_title": "Счёт",
+    "entity_account_name": "Название",
+    "entity_account_balance": "Баланс",
+    "entity_account_active": "Активен",
+    "entity_account_created_on": "Дата создания",
+    "account_delete_title": "Удалить счёт",
+
+    "account_balance_transfer_modal_title": "Перевод между счетами",
+    "account_balance_transfer_modal_from": "Со счёта",
+    "account_balance_transfer_modal_to": "На счёт",
+    "account_balance_transfer_modal_balance": "Сумма",
+    "account_balance_transfer_modal_fee": "Комиссия за перевод",
+    "account_balance_transfer_modal_transfer_button": "Перевести"
+}

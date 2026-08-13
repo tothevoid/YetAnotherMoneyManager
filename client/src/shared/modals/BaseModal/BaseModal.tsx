@@ -20,7 +20,7 @@ export const BaseModal = forwardRef<BaseModalRef, BaseModalProps>(
         }));
 
         return (
-            <Dialog.Root onEscapeKeyDown={onClose} placement="center" open={open}>
+            <Dialog.Root onEscapeKeyDown={onClose} onOpenChange={(e) => { if (!e.open) onClose(); }} placement="center" open={open}>
                 <Portal>
                     <Dialog.Backdrop />
                     <Dialog.Positioner>

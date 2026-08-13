@@ -29,23 +29,29 @@ const BaseFormModal = forwardRef<BaseModalRef, BaseFormModalProps>((props: BaseF
     const { t } = useTranslation();
 
     return (
-        <Dialog.Root placement="center" open={open} onEscapeKeyDown={onClose}>
+        <Dialog.Root placement="center" open={open} onEscapeKeyDown={onClose} onOpenChange={(e) => { if (!e.open) onClose(); }}>
           <Portal>
             <Dialog.Backdrop/>
             <Dialog.Positioner>
-                <Dialog.Content as="form" onSubmit={props.submitHandler}>
+                <Dialog.Content
+                    as="form"
+                    onSubmit={props.submitHandler}
+                    backgroundColor="background_primary"
+                    borderColor="border_primary"
+                    color="text_primary"
+                >
                     <Dialog.Header>
-                        <Dialog.Title>{props.title}</Dialog.Title>
+                        <Dialog.Title color="text_primary">{props.title}</Dialog.Title>
                     </Dialog.Header>
                     <Dialog.Body pb={6}>
                         {props.children}
                     </Dialog.Body>
-                    <Dialog.Footer>
-                        <Button type="submit" background='action_primary' mr={3}>{props.saveButtonTitle ?? t("modals_save_button")}</Button>
-                        <Button onClick={onClose}>{t("modals_cancel_button")}</Button>
+                    <Dialog.Footer gap={3}>
+                        <Button type="submit" background='action_primary'>{props.saveButtonTitle ?? t("modals_save_button")}</Button>
+                        <Button onClick={onClose} variant="outline" color="text_primary" borderColor="border_primary" _hover={{ backgroundColor: "background_secondary" }}>{t("modals_cancel_button")}</Button>
                     </Dialog.Footer>
                     <Dialog.CloseTrigger asChild>
-                        <CloseButton onClick={onClose} size="sm" />
+                        <CloseButton onClick={onClose} size="sm" color="text_primary" />
                     </Dialog.CloseTrigger>
                 </Dialog.Content>
             </Dialog.Positioner>

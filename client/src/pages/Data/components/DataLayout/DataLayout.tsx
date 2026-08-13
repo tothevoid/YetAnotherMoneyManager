@@ -3,9 +3,9 @@ import DataSidebar from "../DataSidebar/DataSidebar";
 
 export default function DataLayout({ children }: { children: React.ReactNode }) {
 	return (
-		<Flex>
+		<Flex gap={6} align="flex-start">
 			<DataSidebar />
-			<Box flex={1} p={6} ml={{ base: 0, md: 60 }}>
+			<Box flex={1} minW={0}>
 				{children}
 			</Box>
 		</Flex>

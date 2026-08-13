@@ -1,28 +1,50 @@
-import { Box, Stack, Link, Text } from "@chakra-ui/react";
-import { useParams } from "react-router-dom";
+import { Box, Stack, Text } from "@chakra-ui/react";
+import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { getDataTablesConfig } from "../../dataTablesUtilities";
 
-const dataTablesConfig = getDataTablesConfig();
-
-export default function SettingsSidebar() {
-	const { tab = dataTablesConfig[0].id } = useParams();
+export default function DataSidebar() {
 	const { t } = useTranslation();
+	const dataTablesConfig = getDataTablesConfig(t);
 
 	return (
-		<Box color={"text_primary"} bg="background_primary" w="60px" height="100%"
-			borderRight="1px" borderColor={"white"}>
-			<Stack height="100%" pos="fixed" gap={4} p={4}>
-				<Text fontSize="xl" fontWeight="bold" p={2}>
+		<Box
+			as="aside"
+			w="240px"
+			minW="240px"
+			bg="background_primary"
+			borderRadius="lg"
+			border="1px solid"
+			borderColor="border_primary"
+			p={3}
+			position="sticky"
+			top="74px"
+		>
+			<Stack gap={2}>
+				<Text fontSize="lg" fontWeight="bold" px={3} py={2} color="text_primary">
 					{t("data_title")}
 				</Text>
 				{dataTablesConfig.map((menuItem) => (
-					<Link key={menuItem.id} href={menuItem.href} p={2} borderRadius="md"
-						bg={tab === menuItem.id ? "button_primary" : "transparent"}
-						color="text_primary"
-						_hover={{bg: "button_primary"}}>
-						{menuItem.label}
-					</Link>
+					<NavLink
+						key={menuItem.id}
+						to={menuItem.href}
+						style={{ textDecoration: "none" }}
+					>
+						{({ isActive }) => (
+							<Box
+								px={3}
+								py={2}
+								borderRadius="md"
+								bg={isActive ? "background_secondary" : "transparent"}
+								color={isActive ? "action_primary" : "text_primary"}
+								fontWeight={isActive ? "semibold" : "normal"}
+								_hover={{ bg: "background_secondary" }}
+								transition="all 0.15s ease"
+							>
+								{menuItem.label}
+							</Box>
+						)}
+					</NavLink>
 				))}
 			</Stack>
 		</Box>

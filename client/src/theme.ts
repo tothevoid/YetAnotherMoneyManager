@@ -1,4 +1,23 @@
-import { createSystem, defaultConfig } from "@chakra-ui/react"
+import { createSystem, defaultConfig, defineRecipe } from "@chakra-ui/react"
+
+const inputRecipe = defineRecipe({
+    variants: {
+        variant: {
+            outline: {
+                borderColor: "border_primary",
+                backgroundColor: "background_primary",
+                color: "text_primary",
+                _hover: {
+                    borderColor: "border_primary",
+                },
+                _focusVisible: {
+                    borderColor: "action_primary",
+                    boxShadow: "0 0 0 1px {colors.action_primary}",
+                },
+            },
+        },
+    },
+})
 
 export const darkTheme = createSystem(defaultConfig, {
     theme: {
@@ -32,6 +51,16 @@ export const darkTheme = createSystem(defaultConfig, {
                 pnl_negative_bg: { value: "rgba(239, 68, 68, 0.12)" },
                 pnl_negative_border: { value: "rgba(239, 68, 68, 0.3)" },
             },
+        },
+        semanticTokens: {
+            colors: {
+                border: {
+                    value: "{colors.border_primary}",
+                },
+            },
+        },
+        recipes: {
+            input: inputRecipe,
         },
     },
 })

@@ -36,18 +36,21 @@ export const DebtTagBadge: React.FC<DebtTagBadgeProps> = ({
         ? (isSelected !== undefined
             ? `1px solid ${colorHex}${isSelected ? "80" : "40"}`
             : `1px solid ${colorHex}50`)
-        : "1px solid var(--chakra-colors-border_primary)";
+        : (isSelected
+            ? "1px solid var(--chakra-colors-action_primary)"
+            : "1px solid var(--chakra-colors-border_primary)");
 
     const defaultOutline = isSelected
-        ? (colorHex ? `2px solid ${colorHex}` : "2px solid #FFF")
+        ? (colorHex ? `2px solid ${colorHex}` : "1px solid var(--chakra-colors-action_primary)")
         : "none";
 
-    const defaultOpacity = colorHex ? undefined : (isSelected ? 1 : 0.6);
+    const defaultOpacity = colorHex ? undefined : (isSelected ? 1 : 0.85);
 
     const defaultFontWeight = fontWeight || (isSelected !== undefined ? (isSelected ? "bold" : "normal") : "semibold");
 
     return (
         <Badge
+            variant="plain"
             style={{
                 backgroundColor: defaultBg,
                 color: defaultColor,

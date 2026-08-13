@@ -1,7 +1,7 @@
 import React from "react";
 import { Stack, Flex, Button } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
-import { MdSettings } from "react-icons/md";
+import { MdSettings, MdBarChart } from "react-icons/md";
 import AddButton from "../../../../shared/components/AddButton/AddButton";
 import SwitchButton from "../../../../shared/components/SwitchButton/SwitchButton";
 import Placeholder from "../../../../shared/components/Placeholder/Placeholder";
@@ -17,6 +17,7 @@ interface Props {
     onSelectedTagFilterChange: (tagId: string | null) => void;
     onAddClicked: () => void;
     onOpenTagManagerModal?: () => void;
+    onOpenTagStatsModal?: () => void;
 }
 
 export const DebtsHeader: React.FC<Props> = ({
@@ -28,6 +29,7 @@ export const DebtsHeader: React.FC<Props> = ({
     onSelectedTagFilterChange,
     onAddClicked,
     onOpenTagManagerModal,
+    onOpenTagStatsModal,
 }) => {
     const { t } = useTranslation();
 
@@ -41,6 +43,23 @@ export const DebtsHeader: React.FC<Props> = ({
         <Stack gap={3}>
             <Flex justifyContent="flex-start" alignItems="center" wrap="wrap" gap={3}>
                 {addButton}
+
+                {onOpenTagStatsModal && (
+                    <Button
+                        size="xs"
+                        variant="outline"
+                        onClick={onOpenTagStatsModal}
+                        color="text_primary"
+                        borderColor="border_primary"
+                        _hover={{
+                            backgroundColor: "background_secondary",
+                            borderColor: "action_primary",
+                            color: "text_primary",
+                        }}
+                    >
+                        <MdBarChart /> {t("debt_tag_stats_btn")}
+                    </Button>
+                )}
 
                 {onOpenTagManagerModal && (
                     <Button

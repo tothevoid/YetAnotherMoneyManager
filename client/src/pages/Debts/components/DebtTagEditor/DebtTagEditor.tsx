@@ -117,7 +117,17 @@ export const DebtTagEditor: React.FC<Props> = ({
             </Button>
 
             {onCancel && (
-                <IconButton size="sm" variant="ghost" onClick={onCancel} h="36px" w="36px">
+                <IconButton
+                    size="sm"
+                    variant="ghost"
+                    color="text_primary"
+                    backgroundColor="transparent"
+                    onClick={onCancel}
+                    h="36px"
+                    w="36px"
+                    _hover={{ backgroundColor: "background_secondary", color: "red.500" }}
+                    title={t("modals_cancel_button")}
+                >
                     <MdClose />
                 </IconButton>
             )}

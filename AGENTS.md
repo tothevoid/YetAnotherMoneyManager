@@ -78,9 +78,40 @@ This document contains guidelines, coding standards, and architectural patterns 
 
 ### Localization Rules (i18n)
 - **Dual Translations Mandatory**: Every user-facing string MUST be added to **both** `client/src/locales/en.json` and `client/src/locales/ru.json`.
-- **Key Format**: Use `snake_case` keys categorized by domain/feature (e.g. `broker_account_page_*`, `entity_*`).
+- **Key Format**: Use `snake_case` keys categorized by domain/feature (e.g. `broker_account_page_*`, `entity_*`, `validation_*`).
 - **Hook**: Access strings via `const { t } = useTranslation()`.
 - **Preserve Blank Lines**: Keep blank lines in `ru.json` and `en.json` between logical key blocks for semantic grouping. Do NOT delete or format away empty lines.
+
+### Zod Validation Schemas & Localization
+- **Factory Function Pattern**: ALL Zod validation schemas MUST be defined as factory functions accepting `t: TFunction` from `i18next` and returning `z.ZodObject`:
+  ```ts
+  import { z } from 'zod';
+  import { TFunction } from 'i18next';
+
+  export const getDebtValidationSchema = (t: TFunction) => z.object({
+      id: z.string().optional(),
+      name: z.string().min(1, t("validation_field_required")),
+      amount: z.number().gt(0, t("validation_positive_number")),
+      account: z.object({
+          id: z.string().min(1, t("validation_account_required")),
+          name: z.string()
+      }, { message: t("validation_account_required") })
+  });
+
+  export type DebtFormInput = z.infer<ReturnType<typeof getDebtValidationSchema>>;
+  ```
+- **Validation Key Prefix**: All validation error message keys in `ru.json` and `en.json` MUST use the `validation_*` prefix (e.g. `validation_field_required`, `validation_positive_number`, `validation_date_required`, `validation_<entity>_required`).
+- **Form Component Integration**: In modals/forms, instantiate the schema with `useMemo(() => get*ValidationSchema(t), [t])` so validation errors dynamically update on language switches:
+  ```tsx
+  const { t } = useTranslation();
+  const validationSchema = useMemo(() => getDebtValidationSchema(t), [t]);
+
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<DebtFormInput>({
+      resolver: zodResolver(validationSchema),
+      mode: "onBlur",
+      defaultValues: getDefaultFormState()
+  });
+  ```
 
 ### UI/UX & Component Guidelines
 - **Loading & Empty States**: Pages MUST use Skeleton loaders (`CardSkeleton`, `TableSkeleton`) during data fetches and `<EmptyStatePlaceholder>` when entity collections are empty.

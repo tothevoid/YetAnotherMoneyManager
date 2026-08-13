@@ -1,12 +1,12 @@
-# Development Guidelines for YetAnotherMoneyManager
+# Development Guidelines & Conventions for YetAnotherMoneyManager
 
 This document contains guidelines, coding standards, and architectural patterns for developing features in YetAnotherMoneyManager.
 
 ---
 
-## 🛠️ Server (Backend) Guidelines
+## 🛠️ Server (Backend) Rules & Architecture
 
-### Stack & Architecture
+### Stack & Solution Structure
 - **Framework**: .NET 10 Web API
 - **Layering**:
   - `server/WebApi`: ASP.NET Core Controllers and DTO models. Controllers must remain thin and delegate logic to application services.
@@ -21,6 +21,7 @@ This document contains guidelines, coding standards, and architectural patterns 
 - **Entity Identification**: Every entity uses `Guid Id` inherited from `BaseEntity` as its primary key. Do NOT use composite keys or explicit `builder.HasKey(...)` in entity configurations, as EF Core automatically configures `Id` by convention.
 - **Assigning Entity Ids**: When creating entity instances (including join entities) in application services, explicitly assign `Id = Guid.NewGuid()`.
 - **Navigation Property Includes (`GetFullHierarchyColumns`)**: In application services, encapsulate Entity Framework `.Include()` / `.ThenInclude()` navigation loadings inside a private helper method `GetFullHierarchyColumns(IQueryable<TEntity> query)` passed as the `include` parameter to `GetAll` and `GetById`.
+- **Join Entity Synchronization (Differential Sync)**: When updating an entity with join entity collections (e.g. `debt.DebtTags`), do NOT use `.Clear()` and re-add all items. Implement differential synchronization: remove only associations whose target IDs are missing from the request, and add new join entities only for target IDs not already associated. This avoids `DbUpdateConcurrencyException` and unnecessary DB deletes/inserts.
 - **Read Query Optimization**: All read-only queries in services MUST use `.AsNoTracking()` to avoid unnecessary change-tracking memory allocations.
 - **Batch Async Execution**: Avoid sequential `await` inside `foreach` loops for multi-account computations. Use `Task.WhenAll` or aggregated SQL queries.
 - **Direct Bulk Deletes**: Prefer EF Core `ExecuteDeleteAsync()` for primary-key deletions rather than fetching detached entity instances prior to deletion.
@@ -44,43 +45,73 @@ This document contains guidelines, coding standards, and architectural patterns 
 
 ---
 
-## 🎨 Client (Frontend) Guidelines
+## 🎨 Client (Frontend) Rules & Architecture
 
-### Stack & Architecture
-- **Framework**: React 18 + TypeScript + Vite
-- **UI & Styling**: Chakra UI v3, `react-icons`
-- **i18n**: `react-i18next`
+### Stack & Structure
+- **Framework**: React 18 + TypeScript + Vite (`client/src`).
+- **UI & Styling**: Chakra UI v3, `react-icons`.
+- **i18n**: `react-i18next`.
 - **Directory Scope**: ALL client source files (components, features, pages, hooks) MUST reside under `client/src/`. Do NOT create feature folders at `client/features`.
 - **Structure**:
   - `client/src/features`: Shared domain feature modules (e.g. Navigation, UserProfileSettingsModal).
-  - `client/src/models/<domain>`: Domain interfaces, requests, responses.
+  - `client/src/models/<domain>`: Domain interfaces, requests (`*EntityRequest`), responses (`*EntityResponse`).
   - `client/src/api/<domain>`: API client functions and response/request mappers.
   - `client/src/pages`: Feature pages (`BrokerAccount`, `BrokerAccounts`, `SecurityPage`, `Transactions`, etc.).
   - `client/src/shared`: Reusable components (`MoneyCard`, `DateSelect`), hooks, utilities.
   - `client/src/locales`: Localization files (`en.json`, `ru.json`).
 
 ### File Placement & Naming Rules (Models, APIs & Mappers)
-
-1. **Entities & Models**:
-   - **Path**: `client/src/models/<domain>/` (grouped by domain folder: `brokers/`, `accounts/`, `securities/`, `transactions/`, `deposits/`, `debts/`, `crypto/`).
+1. **Entities & DTO Models**:
+   - **Path**: `client/src/models/<domain>/` (e.g. `brokers/`, `accounts/`, `securities/`, `transactions/`, `deposits/`, `debts/`, `crypto/`).
    - **Naming**: `<EntityName>.ts` or `<EntityName>Entity.ts` (e.g. `BrokerAccountPortfolioHistoryEntity.ts`, `BrokerAccountEntity.ts`).
-   - Defines TypeScript interfaces for entities, request payloads (`*EntityRequest`), and raw API responses (`*EntityResponse`).
+   - Include domain entities, request payloads (`*EntityRequest`), and raw API responses (`*EntityResponse`).
 
 2. **API Clients**:
-   - **Path**: `client/src/api/<domain>/` (in domain subfolder: `api/brokers/`, `api/accounts/`, etc.).
+   - **Path**: `client/src/api/<domain>/` (e.g. `api/brokers/`, `api/accounts/`).
    - **Naming**: `<camelCaseEntity>Api.ts` (e.g. `brokerAccountPortfolioHistoryApi.ts`, `brokerAccountSummaryApi.ts`).
-   - Uses basic HTTP helpers from `client/src/api/basicApi.ts` (`getEntity`, `getAllEntities`, `postEntity`, etc.).
+   - Use standard HTTP wrappers from `client/src/api/basicApi.ts` (`getEntity`, `getAllEntities`, `postEntity`, etc.).
 
 3. **Mappers (API Mapping)**:
-   - **Path**: `client/src/api/<domain>/` (placed next to the API file).
+   - **Path**: `client/src/api/<domain>/` (placed next to the corresponding API file).
    - **Naming**: `<camelCaseEntity>ApiMapping.ts` or `<EntityName>Mapping.ts` (e.g. `brokerAccountApiMapping.ts`, `BrokerAccountFundsTransferMapping.ts`).
    - **Functions**: Use shared helpers (`parseEntityDates`, `formatRequestDates`) to avoid duplicated mapping boilerplate.
 
 ### Localization Rules (i18n)
 - **Dual Translations Mandatory**: Every user-facing string MUST be added to **both** `client/src/locales/en.json` and `client/src/locales/ru.json`.
-- **Key Format**: Use `snake_case` keys categorized by domain/feature (e.g., `broker_account_page_*`, `entity_*`).
+- **Key Format**: Use `snake_case` keys categorized by domain/feature (e.g. `broker_account_page_*`, `entity_*`, `validation_*`).
 - **Hook**: Access strings via `const { t } = useTranslation()`.
 - **Preserve Blank Lines**: Keep blank lines in `ru.json` and `en.json` between logical key blocks for semantic grouping. Do NOT delete or format away empty lines.
+
+### Zod Validation Schemas & Localization
+- **Factory Function Pattern**: ALL Zod validation schemas MUST be defined as factory functions accepting `t: TFunction` from `i18next` and returning `z.ZodObject`:
+  ```ts
+  import { z } from 'zod';
+  import { TFunction } from 'i18next';
+
+  export const getDebtValidationSchema = (t: TFunction) => z.object({
+      id: z.string().optional(),
+      name: z.string().min(1, t("validation_field_required")),
+      amount: z.number().gt(0, t("validation_positive_number")),
+      account: z.object({
+          id: z.string().min(1, t("validation_account_required")),
+          name: z.string()
+      }, { message: t("validation_account_required") })
+  });
+
+  export type DebtFormInput = z.infer<ReturnType<typeof getDebtValidationSchema>>;
+  ```
+- **Validation Key Prefix**: All validation error message keys in `ru.json` and `en.json` MUST use the `validation_*` prefix (e.g. `validation_field_required`, `validation_positive_number`, `validation_date_required`, `validation_<entity>_required`).
+- **Form Component Integration**: In modals/forms, instantiate the schema with `useMemo(() => get*ValidationSchema(t), [t])` so validation errors dynamically update on language switches:
+  ```tsx
+  const { t } = useTranslation();
+  const validationSchema = useMemo(() => getDebtValidationSchema(t), [t]);
+
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<DebtFormInput>({
+      resolver: zodResolver(validationSchema),
+      mode: "onBlur",
+      defaultValues: getDefaultFormState()
+  });
+  ```
 
 ### UI/UX & Component Guidelines
 - **Loading & Empty States**: Pages MUST use Skeleton loaders (`CardSkeleton`, `TableSkeleton`) during data fetches and `<EmptyStatePlaceholder>` when entity collections are empty.

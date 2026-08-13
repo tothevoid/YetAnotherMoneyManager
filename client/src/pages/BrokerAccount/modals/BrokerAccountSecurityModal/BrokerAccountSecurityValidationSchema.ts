@@ -1,17 +1,18 @@
-import {  z } from 'zod';
+import { z } from 'zod';
+import { TFunction } from 'i18next';
 
-export type BrokerAccountSecurityFormInput = z.infer<typeof BrokerAccountSecurityValidationSchema>;
-
-export const BrokerAccountSecurityValidationSchema = z.object({
+export const getBrokerAccountSecurityValidationSchema = (t: TFunction) => z.object({
     id: z.string().optional(),
     brokerAccount: z.object({
-        id: z.string().nonempty({message: "Broker account is not selected"}),
+        id: z.string().min(1, t("validation_broker_account_required")),
         name: z.string()
-    }, {message: "Broker account is not selected"}),
+    }, { message: t("validation_broker_account_required") }),
     security: z.object({
-        id: z.string().nonempty({message: "Security is not selected"}),
+        id: z.string().min(1, t("validation_security_required")),
         name: z.string()
-    }, {message: "Security is not selected"}),
-    quantity: z.number().gt(0),
-    price: z.number().gt(0)
-})
+    }, { message: t("validation_security_required") }),
+    quantity: z.number().gt(0, t("validation_positive_number")),
+    price: z.number().gt(0, t("validation_positive_number"))
+});
+
+export type BrokerAccountSecurityFormInput = z.infer<ReturnType<typeof getBrokerAccountSecurityValidationSchema>>;

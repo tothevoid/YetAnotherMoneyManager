@@ -1,8 +1,8 @@
 import { Field, Input} from "@chakra-ui/react"
-import React, { RefObject, useCallback, useEffect, useState } from "react"
+import React, { RefObject, useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AccountFormInput, AccountValidationSchema } from "./AccountValidationSchema";
+import { AccountFormInput, getAccountValidationSchema } from "./AccountValidationSchema";
 import { useTranslation } from "react-i18next";
 import { getAccountTypes } from "../../../../api/accounts/accountTypeApi";
 import { getCurrencies } from "../../../../api/currencies/currencyApi";
@@ -80,8 +80,11 @@ const AccountModal: React.FC<ModalProps> = (props: ModalProps) => {
 		}
 	}, [props.account]);
 
+	const { t } = useTranslation();
+	const validationSchema = useMemo(() => getAccountValidationSchema(t), [t]);
+
 	const { register, handleSubmit, control, formState: { errors }, reset, watch} = useForm<AccountFormInput>({
-		resolver: zodResolver(AccountValidationSchema),
+		resolver: zodResolver(validationSchema),
 		mode: "onBlur",
 		defaultValues: getFormDefaultValues()
 	});
@@ -108,8 +111,6 @@ const AccountModal: React.FC<ModalProps> = (props: ModalProps) => {
 		props.onSaved(accountEntity);
 		props.modalRef?.current?.closeModal();
 	}
-
-	const {t} = useTranslation()
 
 	return <BaseFormModal ref={props.modalRef} title={t("entity_account_name_form_title")} submitHandler={handleSubmit(onSubmit)}>
 		<Field.Root invalid={!!errors.name}>

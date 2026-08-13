@@ -1,11 +1,11 @@
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Box, Button, Input, Field } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { changePassword } from "../../../../api/auth/authApi";
-import { ChangePasswordFormInput, ChangePasswordValidationSchema } from "./ChangePasswordFormValidationSchema";
+import { ChangePasswordFormInput, getChangePasswordValidationSchema } from "./ChangePasswordFormValidationSchema";
 import { Nullable } from "../../../../shared/utilities/nullable";
 
 
@@ -26,8 +26,11 @@ const ChangePasswordForm: React.FC<Props> = ({defaultPasswordResetValues, onToke
         }
     }, [defaultPasswordResetValues])
 
+    const { t } = useTranslation();
+    const validationSchema = useMemo(() => getChangePasswordValidationSchema(t), [t]);
+
     const { register, handleSubmit, formState: { errors }, reset} = useForm<ChangePasswordFormInput>({
-        resolver: zodResolver(ChangePasswordValidationSchema),
+        resolver: zodResolver(validationSchema),
         mode: "onBlur",
         defaultValues: getDefaultValues()
     });
@@ -60,8 +63,6 @@ const ChangePasswordForm: React.FC<Props> = ({defaultPasswordResetValues, onToke
             setLoading(false);
         }
     }
-
-    const {t} = useTranslation();
 
     return (
         <Box as="form" onSubmit={handleSubmit(onSubmit)}>

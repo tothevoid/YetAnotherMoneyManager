@@ -1,8 +1,8 @@
 import { Field, Input} from "@chakra-ui/react"
-import React, { RefObject, useCallback, useEffect, useState } from "react"
+import React, { RefObject, useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AccountBalanceTransferFormInput, AccountBalanceTransferModalValidationSchema } from "./AccountBalanceTransferModalValidationSchema";
+import { AccountBalanceTransferFormInput, getAccountBalanceTransferValidationSchema } from "./AccountBalanceTransferModalValidationSchema";
 import { useTranslation } from "react-i18next";
 import { getAccounts, transferBalance } from "../../../../api/accounts/accountApi";
 import { AccountEntity } from "../../../../models/accounts/AccountEntity";
@@ -53,8 +53,11 @@ const AccountBalanceTransferModal: React.FC<ModalProps> = (props: ModalProps) =>
 		}
 	}, [props.from]);
 
-	const { register, handleSubmit, control, formState: { errors }, reset} = useForm<AccountBalanceTransferFormInput>({
-		resolver: zodResolver(AccountBalanceTransferModalValidationSchema),
+	const { t } = useTranslation();
+	const validationSchema = useMemo(() => getAccountBalanceTransferValidationSchema(t), [t]);
+
+	const { register, handleSubmit, control, formState: { errors }, reset } = useForm<AccountBalanceTransferFormInput>({
+		resolver: zodResolver(validationSchema),
 		mode: "onBlur",
 		defaultValues: getFormDefaultValues()
 	});
@@ -76,8 +79,6 @@ const AccountBalanceTransferModal: React.FC<ModalProps> = (props: ModalProps) =>
 		props.onTransferred();
 		props.modalRef?.current?.closeModal();
 	}
-
-	const {t} = useTranslation()
 
 	return <BaseFormModal ref={props.modalRef} title={t("account_balance_transfer_modal_title")} submitHandler={handleSubmit(onSubmit)}>
 		<Field.Root mt={4} invalid={!!errors.from}>

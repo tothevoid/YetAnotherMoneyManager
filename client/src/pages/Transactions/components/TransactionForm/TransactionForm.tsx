@@ -1,7 +1,7 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { Field, Input} from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { TransactionFormInput, TransactionValidationSchema } from './TransactionValidationSchema';
+import { getTransactionValidationSchema, TransactionFormInput } from './TransactionValidationSchema';
 import { useForm, } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { getTransactionTypes } from '../../../../api/transactions/transactionTypeApi';
@@ -67,8 +67,10 @@ const TransactionForm: React.FC<ModalProps> = (props: ModalProps) => {
 		}
 	}, [props.transaction]);
 
+	const validationSchema = useMemo(() => getTransactionValidationSchema(t), [t]);
+
 	const { register, handleSubmit, watch, control, formState: { errors }, reset} = useForm<TransactionFormInput>({
-		resolver: zodResolver(TransactionValidationSchema),
+		resolver: zodResolver(validationSchema),
 		mode: "onBlur",
 		defaultValues: getDefaultTransactionFormValues()
 	});

@@ -1,5 +1,5 @@
 import { Field, Input, Stack } from "@chakra-ui/react";
-import React, { RefObject, useCallback, useEffect, useState } from "react";
+import React, { RefObject, useCallback, useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
@@ -7,7 +7,7 @@ import CollectionSelect from "../../../../shared/components/CollectionSelect/Col
 import { getCurrencies } from "../../../../api/currencies/currencyApi";
 import { getUserProfile } from "../../../../api/user/userProfileApi";
 import { CurrencyEntity } from "../../../../models/currencies/CurrencyEntity";
-import { DebtFormInput, DebtValidationSchema } from "./DebtValidationSchema";
+import { DebtFormInput, getDebtValidationSchema } from "./DebtValidationSchema";
 import { DebtEntity } from "../../../../models/debts/DebtEntity";
 import DateSelect from "../../../../shared/components/DateSelect/DateSelect";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
@@ -56,8 +56,11 @@ const DebtModal: React.FC<Props> = (props: Props) => {
 		};
 	}, [props.debt, state.profileCurrency, state.currencies]);
 
+	const { t } = useTranslation();
+	const validationSchema = useMemo(() => getDebtValidationSchema(t), [t]);
+
 	const { register, handleSubmit, control, formState: { errors }, reset } = useForm<DebtFormInput>({
-		resolver: zodResolver(DebtValidationSchema),
+		resolver: zodResolver(validationSchema),
 		mode: "onBlur",
 		defaultValues: getDefaultFormState()
 	});
@@ -72,8 +75,6 @@ const DebtModal: React.FC<Props> = (props: Props) => {
 		props.onSaved(debt as DebtEntity);
 		props.modalRef.current?.closeModal();
 	}
-
-	const { t } = useTranslation();
 
 	return (
 		<BaseFormModal ref={props.modalRef} title={t("entity_debt_form_title")} submitHandler={handleSubmit(onSubmit)}>

@@ -1,5 +1,5 @@
 import { Field, Input } from "@chakra-ui/react";
-import React, { RefObject, useCallback, useEffect, useState } from "react";
+import React, { RefObject, useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
@@ -7,7 +7,7 @@ import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal
 import { useTranslation } from "react-i18next";
 import { generateGuid } from "../../../../shared/utilities/idUtilities";
 import DateSelect from "../../../../shared/components/DateSelect/DateSelect";
-import { BrokerAccountTaxDeductionFormInput, BrokerAccountTaxDeductionValidationSchema } from "./BrokerAccountTaxDeductionValidationSchema";
+import { BrokerAccountTaxDeductionFormInput, getBrokerAccountTaxDeductionValidationSchema } from "./BrokerAccountTaxDeductionValidationSchema";
 import { BrokerAccountTaxDeductionEntity } from "../../../../models/brokers/BrokerAccountTaxDeductionEntity";
 import { getBrokerAccounts } from "../../../../api/brokers/brokerAccountApi";
 import { BrokerAccountEntity } from "../../../../models/brokers/BrokerAccountEntity";
@@ -48,8 +48,10 @@ const BrokerAccountTaxDeductionModal: React.FC<ModalProps> = (props: ModalProps)
         }
     }, [props.context]);
 
+    const validationSchema = useMemo(() => getBrokerAccountTaxDeductionValidationSchema(t), [t]);
+
     const { register, handleSubmit, control, formState: { errors }, reset } = useForm<BrokerAccountTaxDeductionFormInput>({
-        resolver: zodResolver(BrokerAccountTaxDeductionValidationSchema),
+        resolver: zodResolver(validationSchema),
         defaultValues: getDefaultValues()
     });
 

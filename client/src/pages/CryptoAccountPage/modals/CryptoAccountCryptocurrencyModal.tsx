@@ -1,5 +1,5 @@
 import { Field, Input, Stack } from "@chakra-ui/react";
-import React, { RefObject, useCallback, useEffect, useState } from "react";
+import React, { RefObject, useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
@@ -7,7 +7,7 @@ import CollectionSelect from "../../../shared/components/CollectionSelect/Collec
 import { BaseModalRef } from "../../../shared/utilities/modalUtilities";
 import BaseFormModal from "../../../shared/modals/BaseFormModal/BaseFormModal";
 import { CryptoAccountCryptocurrencyEntity } from "../../../models/crypto/CryptoAccountCryptocurrencyEntity";
-import { CryptoAccountCryptocurrencyFormInput, CryptoAccountCryptocurrencyValidationSchema,  } from "./CryptoAccountCryptocurrencyValidationSchema";
+import { CryptoAccountCryptocurrencyFormInput, getCryptoAccountCryptocurrencyValidationSchema } from "./CryptoAccountCryptocurrencyValidationSchema";
 import { getCryptocurrencies } from "../../../api/crypto/cryptocurrencyApi";
 import { CryptocurrencyEntity } from "../../../models/crypto/CryptocurrencyEntity";
 
@@ -45,8 +45,10 @@ const CryptoAccountCryptocurrencyModal: React.FC<ModalProps> = (props: ModalProp
         initCryptocurrencies();
     }, []);
 
+    const validationSchema = useMemo(() => getCryptoAccountCryptocurrencyValidationSchema(t), [t]);
+
     const { register, handleSubmit, formState: { errors }, reset, control } = useForm<CryptoAccountCryptocurrencyFormInput>({
-        resolver: zodResolver(CryptoAccountCryptocurrencyValidationSchema),
+        resolver: zodResolver(validationSchema),
         mode: "onBlur",
         defaultValues: getDefaultValues()
     });

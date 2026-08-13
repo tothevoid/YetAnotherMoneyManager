@@ -1,9 +1,9 @@
 import { Field, Input } from "@chakra-ui/react"
-import React, { RefObject, useEffect, useState } from "react"
+import React, { RefObject, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
-import { TransactionTypeFormInput, TransactionTypeValidationSchema } from "./TransactionTypeValidationSchema";
+import { getTransactionTypeValidationSchema, TransactionTypeFormInput } from "./TransactionTypeValidationSchema";
 import { getTransactionTypeIconUrl } from "../../../../api/transactions/transactionTypeApi";
 import { TransactionTypeEntity } from "../../../../models/transactions/TransactionTypeEntity";
 import CheckboxInput from "../../../../shared/components/CheckboxInput/CheckboxInput";
@@ -20,11 +20,11 @@ interface ModalProps {
 };
 
 const TransactionTypeModal: React.FC<ModalProps> = (props: ModalProps) => {
-	
 	const {t} = useTranslation();
+	const validationSchema = useMemo(() => getTransactionTypeValidationSchema(t), [t]);
 
 	const { register, reset, handleSubmit, control, formState: { errors }} = useForm<TransactionTypeFormInput>({
-		resolver: zodResolver(TransactionTypeValidationSchema),
+		resolver: zodResolver(validationSchema),
 		mode: "onBlur",
 		defaultValues: {
 			id: props.transactionType?.id ?? generateGuid(),

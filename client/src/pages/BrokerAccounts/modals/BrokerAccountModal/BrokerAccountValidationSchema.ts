@@ -1,23 +1,24 @@
-import {  z } from 'zod';
-import { CurrencyValidationSchema } from '../../../../validation/CurrencyValidationSchema';
+import { z } from 'zod';
+import { TFunction } from 'i18next';
+import { getCurrencyValidationSchema } from '../../../../validation/CurrencyValidationSchema';
 
-export type BrokerAccountFormInput = z.infer<typeof BrokerAccountValidationSchema>;
-
-export const BrokerAccountValidationSchema = z.object({
+export const getBrokerAccountValidationSchema = (t: TFunction) => z.object({
     id: z.string().optional(),
-    name: z.string().min(1),
+    name: z.string().min(1, t("validation_field_required")),
     bank: z.object({
         id: z.string(),
         name: z.string()
     }).optional(),
     type: z.object({
-        id: z.string().nonempty({message: "Broker account type is not selected"}),
+        id: z.string().min(1, t("validation_broker_account_type_required")),
         name: z.string()
-    }, {message: "Broker account type is not selected"}),
-    currency: CurrencyValidationSchema,
+    }, { message: t("validation_broker_account_type_required") }),
+    currency: getCurrencyValidationSchema(t),
     broker: z.object({
-        id: z.string().nonempty({message: "Broker is not selected"}),
+        id: z.string().min(1, t("validation_broker_required")),
         name: z.string()
-    }, {message: "Broker is not selected"}),
-    mainCurrencyAmount: z.number().gte(0)
-})
+    }, { message: t("validation_broker_required") }),
+    mainCurrencyAmount: z.number().gte(0, t("validation_non_negative_number"))
+});
+
+export type BrokerAccountFormInput = z.infer<ReturnType<typeof getBrokerAccountValidationSchema>>;

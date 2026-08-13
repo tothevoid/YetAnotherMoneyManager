@@ -1,14 +1,15 @@
 import { z } from 'zod';
+import { TFunction } from 'i18next';
 
-export type DebtFormInput = z.infer<typeof DebtValidationSchema>;
-
-export const DebtValidationSchema = z.object({
+export const getDebtValidationSchema = (t: TFunction) => z.object({
     id: z.string().optional(),
-    name: z.string().min(1),
-    amount: z.number().gt(0),
+    name: z.string().min(1, t("validation_field_required")),
+    amount: z.number().gt(0, t("validation_positive_number")),
     currency: z.object({
-        id: z.string().nonempty({message: "Currency is not selected"}),
+        id: z.string().min(1, t("validation_currency_required")),
         name: z.string()
-    }, {message: "Currency is not selected"}),
-    date: z.date()
-})
+    }, { message: t("validation_currency_required") }),
+    date: z.date({ message: t("validation_date_required") })
+});
+
+export type DebtFormInput = z.infer<ReturnType<typeof getDebtValidationSchema>>;

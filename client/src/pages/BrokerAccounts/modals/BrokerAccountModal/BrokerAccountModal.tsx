@@ -1,5 +1,5 @@
 import { Field, Input} from "@chakra-ui/react"
-import { RefObject, useCallback, useEffect, useState } from "react"
+import { RefObject, useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
@@ -10,7 +10,7 @@ import { BrokerAccountTypeEntity } from "../../../../models/brokers/BrokerAccoun
 import { BrokerEntity } from "../../../../models/brokers/BrokerEntity";
 import { getCurrencies } from "../../../../api/currencies/currencyApi";
 import CollectionSelect from "../../../../shared/components/CollectionSelect/CollectionSelect";
-import { BrokerAccountFormInput, BrokerAccountValidationSchema } from "./BrokerAccountValidationSchema";
+import { BrokerAccountFormInput, getBrokerAccountValidationSchema } from "./BrokerAccountValidationSchema";
 import { getBrokerAccountTypes } from "../../../../api/brokers/brokerAccountTypeApi";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
@@ -64,8 +64,11 @@ const BrokerAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
         }
     }, [props.brokerAccount]);
 
+    const { t } = useTranslation();
+    const validationSchema = useMemo(() => getBrokerAccountValidationSchema(t), [t]);
+
     const { register, handleSubmit, control, formState: { errors }, reset} = useForm<BrokerAccountFormInput>({
-        resolver: zodResolver(BrokerAccountValidationSchema),
+        resolver: zodResolver(validationSchema),
         mode: "onBlur",
         defaultValues: getFormDefaultValues()
     });
@@ -78,8 +81,6 @@ const BrokerAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
     useEffect(() => {
         reset(getFormDefaultValues());
     }, [reset, getFormDefaultValues, props.brokerAccount]);
-
-    const {t} = useTranslation()
 
     return <BaseFormModal ref={props.modalRef} title={t("entity_broker_name_form_title")} submitHandler={handleSubmit(onSubmit)}>
         <Field.Root invalid={!!errors.name}>

@@ -1,21 +1,22 @@
-import { string, z } from 'zod';
+import { z } from 'zod';
+import { TFunction } from 'i18next';
 
-export type AccountBalanceTransferFormInput = z.infer<typeof AccountBalanceTransferModalValidationSchema>;
-
-export const AccountBalanceTransferModalValidationSchema = z.object({
-	id: string().optional(),
+export const getAccountBalanceTransferValidationSchema = (t: TFunction) => z.object({
+	id: z.string().optional(),
 	from: z.object({
-		id: string().nonempty({message: "From account is not selected"}),
-		name: string()
-	}, {message: "From account is not selected"}),
-    to: z.object({
-		id: string().nonempty({message: "To account is not selected"}),
-		name: string()
-	}, {message: "To account is not selected"}),
-    balance: z.number().gt(0),
-    fee: z.number().gte(0),
+		id: z.string().min(1, t("validation_source_account_required")),
+		name: z.string()
+	}, { message: t("validation_source_account_required") }),
+	to: z.object({
+		id: z.string().min(1, t("validation_destination_account_required")),
+		name: z.string()
+	}, { message: t("validation_destination_account_required") }),
+	balance: z.number().gt(0, t("validation_positive_number")),
+	fee: z.number().gte(0, t("validation_non_negative_number")),
 })
-.refine(({from, to}) => from.id !== to.id, {
-    message: "From acount is the same as the to account",
-    path: ["from"],
-})
+.refine(({ from, to }) => from.id !== to.id, {
+	message: t("validation_same_account"),
+	path: ["from"],
+});
+
+export type AccountBalanceTransferFormInput = z.infer<ReturnType<typeof getAccountBalanceTransferValidationSchema>>;

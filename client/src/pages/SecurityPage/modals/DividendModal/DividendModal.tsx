@@ -1,11 +1,11 @@
-import React, { RefObject, useCallback, useEffect } from 'react'
+import React, { RefObject, useCallback, useEffect, useMemo } from 'react'
 import { Field, Input} from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import DateSelect from "../../../../shared/components/DateSelect/DateSelect";
 import { DividendEntity } from '../../../../models/securities/DividendEntity';
-import { DividendFormInput, DividendValidationSchema } from './DividendValidationSchema';
+import { DividendFormInput, getDividendValidationSchema } from './DividendValidationSchema';
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 import BaseFormModal from '../../../../shared/modals/BaseFormModal/BaseFormModal';
 import { generateGuid } from '../../../../shared/utilities/idUtilities';
@@ -40,8 +40,10 @@ const DividendModal: React.FC<ModalProps> = (props: ModalProps) => {
 		}
 	}, [props.context])
 
+	const validationSchema = useMemo(() => getDividendValidationSchema(t), [t]);
+
 	const { register, control, handleSubmit, formState: { errors }, reset} = useForm<DividendFormInput>({
-		resolver: zodResolver(DividendValidationSchema),
+		resolver: zodResolver(validationSchema),
 		mode: "onBlur",
 		defaultValues: getDefaultFormValues()
 	});

@@ -1,9 +1,9 @@
 import { Field, Input, Stack} from "@chakra-ui/react"
-import React, { RefObject, useEffect, useState } from "react"
+import React, { RefObject, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
-import { SecurityFormInput, SecurityValidationSchema } from "./SecurityValidationSchema";
+import { getSecurityValidationSchema, SecurityFormInput } from "./SecurityValidationSchema";
 import { SecurityEntity } from "../../../../models/securities/SecurityEntity";
 import CollectionSelect from "../../../../shared/components/CollectionSelect/CollectionSelect";
 import { getSecurityTypes } from "../../../../api/securities/securityTypeApi";
@@ -53,8 +53,11 @@ const SecurityModal: React.FC<ModalProps> = (props: ModalProps) => {
         })
     };
 
+    const { t } = useTranslation();
+    const validationSchema = useMemo(() => getSecurityValidationSchema(t), [t]);
+
     const { register, handleSubmit, control, formState: { errors }, reset} = useForm<SecurityFormInput>({
-        resolver: zodResolver(SecurityValidationSchema),
+        resolver: zodResolver(validationSchema),
         mode: "onBlur",
         defaultValues: {
             id: props.security?.id ?? generateGuid(),
@@ -91,8 +94,6 @@ const SecurityModal: React.FC<ModalProps> = (props: ModalProps) => {
             setIconUrl(null);
         }
     }
-
-    const {t} = useTranslation()
 
     return <BaseFormModal visibilityChanged={onVisibilityChanged} ref={props.modalRef} title={t("entity_security_from_title")} submitHandler={handleSubmit(onSubmit)}>
         <Stack marginBlock={2} gapX={4} alignItems={"center"} direction={"row"}>

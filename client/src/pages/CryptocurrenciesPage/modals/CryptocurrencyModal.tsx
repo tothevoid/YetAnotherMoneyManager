@@ -1,9 +1,9 @@
 import { Field, Input, Stack} from "@chakra-ui/react"
-import React, { RefObject, useCallback, useEffect, useState } from "react"
+import React, { RefObject, useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
-import { CryptocurrencyFormInput, CryptocurrencyValidationSchema } from "./CryptocurrencyValidationSchema";
+import { CryptocurrencyFormInput, getCryptocurrencyValidationSchema } from "./CryptocurrencyValidationSchema";
 import BaseFormModal from "../../../shared/modals/BaseFormModal/BaseFormModal";
 import { BaseModalRef } from "../../../shared/utilities/modalUtilities";
 import { CryptocurrencyEntity } from "../../../models/crypto/CryptocurrencyEntity";
@@ -31,8 +31,11 @@ const CryptocurrencyModal: React.FC<ModalProps> = (props: ModalProps) => {
         }
     }, [props.cryptocurrency])
 
+    const { t } = useTranslation();
+    const validationSchema = useMemo(() => getCryptocurrencyValidationSchema(t), [t]);
+
     const { register, handleSubmit, formState: { errors }, reset} = useForm<CryptocurrencyFormInput>({
-        resolver: zodResolver(CryptocurrencyValidationSchema),
+        resolver: zodResolver(validationSchema),
         mode: "onBlur",
         defaultValues: getDefaultValues()
     });
@@ -67,8 +70,6 @@ const CryptocurrencyModal: React.FC<ModalProps> = (props: ModalProps) => {
             props.onModalClosed();
         }
     }
-
-    const {t} = useTranslation()
 
     return <BaseFormModal visibilityChanged={onVisibilityChanged} ref={props.modalRef} title={t("cryptocurrency_form_title")} submitHandler={handleSubmit(onSubmit)}>
         <Stack marginBlock={2} gapX={4} alignItems={"center"} direction={"row"}>

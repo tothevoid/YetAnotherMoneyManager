@@ -1,5 +1,5 @@
 import { Field, Input} from "@chakra-ui/react"
-import React, { RefObject, useCallback, useEffect, useState } from "react"
+import React, { RefObject, useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
@@ -8,7 +8,7 @@ import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
 import { getCryptoProviders } from "../../../../api/crypto/cryptoProviderApi";
 import { CryptoProviderEntity } from "../../../../models/crypto/CryptoProviderEntity";
-import { CryptoAccountFormInput, CryptoAccountValidationSchema } from "./CryptoAccountValidationSchema";
+import { CryptoAccountFormInput, getCryptoAccountValidationSchema } from "./CryptoAccountValidationSchema";
 import { CryptoAccountEntity } from "../../../../models/crypto/CryptoAccountEntity";
 import { generateGuid } from "../../../../shared/utilities/idUtilities";
 
@@ -48,8 +48,11 @@ const CryptoAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
         }
     }, [props.cryptoAccount]);
 
+    const { t } = useTranslation();
+    const validationSchema = useMemo(() => getCryptoAccountValidationSchema(t), [t]);
+
     const { register, handleSubmit, control, formState: { errors }, reset} = useForm<CryptoAccountFormInput>({
-        resolver: zodResolver(CryptoAccountValidationSchema),
+        resolver: zodResolver(validationSchema),
         mode: "onBlur",
         defaultValues: getFormDefaultValues()
     });
@@ -62,8 +65,6 @@ const CryptoAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
         props.onSaved(cryptoAccount as CryptoAccountEntity);
         props.modalRef?.current?.closeModal();
     }
-
-    const {t} = useTranslation();
 
     return <BaseFormModal ref={props.modalRef} title={t("entity_crypto_account_form_title")} submitHandler={handleSubmit(onSubmit)}>
         <Field.Root invalid={!!errors.name}>

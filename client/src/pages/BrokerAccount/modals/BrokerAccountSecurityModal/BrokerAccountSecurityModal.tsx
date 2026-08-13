@@ -1,5 +1,5 @@
 import {Field, Input, } from "@chakra-ui/react"
-import React, { RefObject, useEffect, useState } from "react"
+import React, { RefObject, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
@@ -9,7 +9,7 @@ import { getSecurities } from "../../../../api/securities/securityApi";
 import { getBrokerAccounts } from "../../../../api/brokers/brokerAccountApi";
 import { BrokerAccountEntity } from "../../../../models/brokers/BrokerAccountEntity";
 import { SecurityEntity } from "../../../../models/securities/SecurityEntity";
-import { BrokerAccountSecurityFormInput, BrokerAccountSecurityValidationSchema } from "./BrokerAccountSecurityValidationSchema";
+import { BrokerAccountSecurityFormInput, getBrokerAccountSecurityValidationSchema } from "./BrokerAccountSecurityValidationSchema";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
 import { generateGuid } from "../../../../shared/utilities/idUtilities";
@@ -45,8 +45,11 @@ const BrokerAccountSecurityModal: React.FC<ModalProps> = (props: ModalProps) => 
     };
 
 
+    const { t } = useTranslation();
+    const validationSchema = useMemo(() => getBrokerAccountSecurityValidationSchema(t), [t]);
+
     const { register, handleSubmit, control, formState: { errors }} = useForm<BrokerAccountSecurityFormInput>({
-        resolver: zodResolver(BrokerAccountSecurityValidationSchema),
+        resolver: zodResolver(validationSchema),
         mode: "onBlur",
         defaultValues: {
             id: props.brokerAccountSecurity?.id ?? generateGuid(),
@@ -62,8 +65,6 @@ const BrokerAccountSecurityModal: React.FC<ModalProps> = (props: ModalProps) => 
         props.onSaved(brokerAccountSecurity as BrokerAccountSecurityEntity);
         props.modalRef?.current?.closeModal();
     }
-
-    const {t} = useTranslation()
 
     return <BaseFormModal ref={props.modalRef} title={t("entity_broker_account_security_form_title")} submitHandler={handleSubmit(onSubmit)}>
         <Field.Root mt={4} invalid={!!errors.brokerAccount}>

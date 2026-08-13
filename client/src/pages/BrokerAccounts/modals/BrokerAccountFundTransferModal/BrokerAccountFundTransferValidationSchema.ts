@@ -1,20 +1,21 @@
 import { z } from "zod";
+import { TFunction } from "i18next";
 
-export const BrokerAccountFundTransferValidationSchema = z.object({
-    id: z.string(),
-    date: z.date(),
+export const getBrokerAccountFundTransferValidationSchema = (t: TFunction) => z.object({
+    id: z.string().optional(),
+    date: z.date({ message: t("validation_date_required") }),
     brokerAccount: z.object({
-        id: z.string().nonempty({message: "Broker account is not selected"})
-    }, {message: "Broker account is not selected"}),
+        id: z.string().min(1, t("validation_broker_account_required"))
+    }, { message: t("validation_broker_account_required") }),
     account: z.object({
-        id: z.string().nonempty({message: "Account is not selected"}),
+        id: z.string().min(1, t("validation_account_required")),
         name: z.string()
-    }, {message: "Account is not selected"}),
-    amount: z.number().min(0.01, "Enter amount"),
+    }, { message: t("validation_account_required") }),
+    amount: z.number().gt(0, t("validation_positive_number")),
     income: z.object({
         label: z.string(),
         value: z.boolean()
-    }, {message: "Transfer type is not selected"})
+    }, { message: t("validation_direction_required") })
 });
 
-export type BrokerAccountFundTransferFormInput = z.infer<typeof BrokerAccountFundTransferValidationSchema>;
+export type BrokerAccountFundTransferFormInput = z.infer<ReturnType<typeof getBrokerAccountFundTransferValidationSchema>>;

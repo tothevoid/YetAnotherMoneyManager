@@ -1,6 +1,6 @@
 import { Field, Input} from "@chakra-ui/react"
 import { Select } from "chakra-react-select";
-import { RefObject, useCallback, useEffect, useState } from "react"
+import { RefObject, useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
@@ -8,7 +8,7 @@ import CollectionSelect from "../../../../shared/components/CollectionSelect/Col
 import DateSelect from "../../../../shared/components/DateSelect/DateSelect";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
-import { DividendPaymentFormInput, DividendPaymentValidationSchema } from "./DividendPaymentValidationSchema";
+import { DividendPaymentFormInput, getDividendPaymentValidationSchema } from "./DividendPaymentValidationSchema";
 import { DividendPaymentEntity } from "../../../../models/brokers/DividendPaymentEntity";
 import { getAvailableDividends } from "../../../../api/securities/dividendApi";
 import { DividendEntity } from "../../../../models/securities/DividendEntity";
@@ -58,8 +58,10 @@ const DividendPaymentModal: React.FC<ModalProps> = (props: ModalProps) => {
 		}
 	}, [props.context]);
 
+	const validationSchema = useMemo(() => getDividendPaymentValidationSchema(t), [t]);
+
 	const { register, reset, handleSubmit, watch, control, formState: { errors }} = useForm<DividendPaymentFormInput>({
-		resolver: zodResolver(DividendPaymentValidationSchema),
+		resolver: zodResolver(validationSchema),
 		mode: "onBlur",
 		defaultValues: getFormDefaultValues()
 	});

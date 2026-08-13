@@ -1,23 +1,24 @@
-import {  z } from 'zod';
+import { z } from 'zod';
+import { TFunction } from 'i18next';
 
-export type AccountFormInput = z.infer<typeof AccountValidationSchema>;
-
-export const AccountValidationSchema = z.object({
+export const getAccountValidationSchema = (t: TFunction) => z.object({
 	id: z.string().optional(),
-	name: z.string().min(1),
+	name: z.string().min(1, t("validation_field_required")),
 	bank: z.object({
-        id: z.string(),
-        name: z.string()
-    }).nullable().optional(),
+		id: z.string(),
+		name: z.string()
+	}).nullable().optional(),
 	balance: z.number(),
 	active: z.boolean(),
-	createdOn: z.date(),
+	createdOn: z.date({ message: t("validation_date_required") }),
 	accountType: z.object({
-		id: z.string().nonempty({message: "Account type is not selected"}),
+		id: z.string().min(1, t("validation_account_type_required")),
 		name: z.string()
-	}, {message: "Account type is not selected"}),
+	}, { message: t("validation_account_type_required") }),
 	currency: z.object({
-		id: z.string().nonempty({message: "Currency is not selected"}),
+		id: z.string().min(1, t("validation_currency_required")),
 		name: z.string()
-	}, {message: "Currency is not selected"}),
-})
+	}, { message: t("validation_currency_required") }),
+});
+
+export type AccountFormInput = z.infer<ReturnType<typeof getAccountValidationSchema>>;

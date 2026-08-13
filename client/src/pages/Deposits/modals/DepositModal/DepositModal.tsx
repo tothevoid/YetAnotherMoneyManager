@@ -1,8 +1,8 @@
-import { RefObject, useCallback, useEffect, useState } from 'react'
+import { RefObject, useCallback, useEffect, useMemo, useState } from 'react'
 import { Field, Input, Flex} from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from "react-hook-form";
-import { DepositValidationSchema, DepositFormInput } from "./DepositValidationSchema";
+import { getDepositValidationSchema, DepositFormInput } from "./DepositValidationSchema";
 import { useTranslation } from "react-i18next";
 import { getCurrencies } from '../../../../api/currencies/currencyApi';
 import { CurrencyEntity } from '../../../../models/currencies/CurrencyEntity';
@@ -65,8 +65,11 @@ const DepositModal: React.FC<ModalProps> = (props: ModalProps) => {
 		}
 	}, [props.deposit])
 
+	const { t } = useTranslation();
+	const validationSchema = useMemo(() => getDepositValidationSchema(t), [t]);
+
 	const { register, control, handleSubmit, formState: { errors }, reset} = useForm<DepositFormInput>({
-		resolver: zodResolver(DepositValidationSchema),
+		resolver: zodResolver(validationSchema),
 		mode: "onBlur",
 		defaultValues: getDefaultFormState()
 	});
@@ -79,8 +82,6 @@ const DepositModal: React.FC<ModalProps> = (props: ModalProps) => {
 		props.onSaved(deposit as DepositEntity);
 		props.modalRef?.current?.closeModal();
 	}
-
-	const {t} = useTranslation();
 
 	return <BaseFormModal ref={props.modalRef} title={t("entity_deposit_name_form_title")} submitHandler={handleSubmit(onSubmit)}>
 		<Field.Root invalid={!!errors.name}>

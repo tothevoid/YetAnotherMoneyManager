@@ -1,12 +1,12 @@
 import { Field, Input} from "@chakra-ui/react"
-import React, { RefObject } from "react"
+import React, { RefObject, useMemo } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
 import { CryptoProviderEntity } from "../../../../models/crypto/CryptoProviderEntity";
-import { CryptoProviderFormInput, CryptoProviderValidationSchema } from "./CryptoProviderValidationSchema";
+import { CryptoProviderFormInput, getCryptoProviderValidationSchema } from "./CryptoProviderValidationSchema";
 import { generateGuid } from "../../../../shared/utilities/idUtilities";
 
 interface ModalProps {
@@ -16,8 +16,11 @@ interface ModalProps {
 };
 
 const CryptoProviderModal: React.FC<ModalProps> = (props: ModalProps) => {
+    const { t } = useTranslation();
+    const validationSchema = useMemo(() => getCryptoProviderValidationSchema(t), [t]);
+
     const { register, handleSubmit, formState: { errors }} = useForm<CryptoProviderFormInput>({
-        resolver: zodResolver(CryptoProviderValidationSchema),
+        resolver: zodResolver(validationSchema),
         mode: "onBlur",
         defaultValues: {
             id: props.cryptoProvider?.id ?? generateGuid(),
@@ -30,15 +33,13 @@ const CryptoProviderModal: React.FC<ModalProps> = (props: ModalProps) => {
         props.modalRef?.current?.closeModal();
     }
 
-    const {t} = useTranslation()
-
-    return <BaseFormModal ref={props.modalRef} title={t("entity_broker_account_type_from_title")} submitHandler={handleSubmit(onSubmit)}>
+    return <BaseFormModal ref={props.modalRef} title={t("entity_crypto_provider_form_title")} submitHandler={handleSubmit(onSubmit)}>
         <Field.Root invalid={!!errors.name}>
-            <Field.Label>{t("entity_broker_account_type_name")}</Field.Label>
-            <Input {...register("name")} autoComplete="off" placeholder='Debit card' />
+            <Field.Label>{t("entity_crypto_provider_name")}</Field.Label>
+            <Input {...register("name")} autoComplete="off" placeholder="Binance" />
             <Field.ErrorText>{errors.name?.message}</Field.ErrorText>
         </Field.Root>
     </BaseFormModal>
-    
 }
-export default CryptoProviderModal
+
+export default CryptoProviderModal;

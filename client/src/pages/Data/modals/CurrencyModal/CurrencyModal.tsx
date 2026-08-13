@@ -1,8 +1,8 @@
 import { Field, Input} from "@chakra-ui/react"
-import { RefObject } from "react"
+import { RefObject, useMemo } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CurrencyValidationSchema, CurrencyFormInput } from "./CurrencyValidationSchema";
+import { getCurrencyModalValidationSchema, CurrencyFormInput } from "./CurrencyValidationSchema";
 import { useTranslation } from "react-i18next";
 import { CurrencyEntity } from "../../../../models/currencies/CurrencyEntity";
 import CheckboxInput from "../../../../shared/components/CheckboxInput/CheckboxInput";
@@ -17,8 +17,11 @@ interface ModalProps {
 };
 
 const CurrencyModal: React.FC<ModalProps> = (props: ModalProps) => {
+	const { t } = useTranslation();
+	const validationSchema = useMemo(() => getCurrencyModalValidationSchema(t), [t]);
+
 	const { register, handleSubmit, control, formState: { errors }} = useForm<CurrencyFormInput>({
-		resolver: zodResolver(CurrencyValidationSchema),
+		resolver: zodResolver(validationSchema),
 		mode: "onBlur",
 		defaultValues: {
 			id: props.currency?.id ?? generateGuid(),
@@ -31,8 +34,6 @@ const CurrencyModal: React.FC<ModalProps> = (props: ModalProps) => {
 		props.onSaved(currency as CurrencyEntity);
 		props.modalRef?.current?.closeModal();
 	}
-
-	const {t} = useTranslation()
 
 	return <BaseFormModal ref={props.modalRef} title={t("entity_currency_name_form_title")} submitHandler={handleSubmit(onSubmit)}>
 		<Field.Root invalid={!!errors.name}>

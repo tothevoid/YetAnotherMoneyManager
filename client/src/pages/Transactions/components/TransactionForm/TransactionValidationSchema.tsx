@@ -1,28 +1,25 @@
-import { string, z } from 'zod';
+import { z } from 'zod';
+import { TFunction } from 'i18next';
 
-export type TransactionFormInput = z.infer<typeof TransactionValidationSchema>;
-
-export const TransactionValidationSchema = z.object({
-  id: string().optional(),
-  name: z.string().min(1),
-  date: z.date(),
-  amount: z.number()
-    .nonnegative()
-    .gt(0),
+export const getTransactionValidationSchema = (t: TFunction) => z.object({
+  id: z.string().optional(),
+  name: z.string().min(1, t("validation_field_required")),
+  date: z.date({ message: t("validation_date_required") }),
+  amount: z.number().gt(0, t("validation_positive_number")),
   account: z.object({
-    id: string().nonempty({message: "Account is not selected"}),
-    name: string()
-  }, {message: "Account is not selected"}),
-  transactionType: z.object({
-    id: z.string().nonempty({message: "Transaction type is not selected"}),
+    id: z.string().min(1, t("validation_account_required")),
     name: z.string()
-  }, {message: "Transaction type is not selected"}),
+  }, { message: t("validation_account_required") }),
+  transactionType: z.object({
+    id: z.string().min(1, t("validation_transaction_type_required")),
+    name: z.string()
+  }, { message: t("validation_transaction_type_required") }),
   direction: z.object({
-    label: string(),
-    value: string()
-  }),
-  cashback: z.number()
-    .nonnegative()
-    .gte(0),
+    label: z.string(),
+    value: z.string().min(1, t("validation_direction_required"))
+  }, { message: t("validation_direction_required") }),
+  cashback: z.number().gte(0, t("validation_non_negative_number")),
   isSystem: z.boolean()
-})
+});
+
+export type TransactionFormInput = z.infer<ReturnType<typeof getTransactionValidationSchema>>;

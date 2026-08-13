@@ -320,6 +320,9 @@
     "entity_crypto_account_crypto_name": "Название",
     "entity_crypto_account_crypto_provider": "Провайдер",
 
+    "entity_crypto_provider_form_title": "Крипто-провайдер",
+    "entity_crypto_provider_name": "Название",
+
     "crypto_accounts_page_add": "Добавить счёт",
     "crypto_accounts_page_no_crypto_accounts": "Нет криптосчетов",
 
@@ -396,5 +399,36 @@
     "crypto_account_cryptocurrency_modal_title": "Добавить криптовалюту",
     "add_crypto_account_cryptocurrency_title": "Добавить",
     "crypto_account_cryptocurrency_delete_title": "Удалить криптовалюту",
-    "crypto_account_cryptocurrency_cryptocurrency": "Криптовалюта"
+    "crypto_account_cryptocurrency_cryptocurrency": "Криптовалюта",
+
+    "validation_field_required": "Поле обязательно для заполнения",
+    "validation_positive_number": "Значение должно быть больше 0",
+    "validation_non_negative_number": "Значение не может быть отрицательным",
+    "validation_date_required": "Выберите дату",
+    "validation_end_date_after_start": "Дата окончания должна быть позже даты начала",
+    "validation_start_date_before_end": "Дата начала должна быть раньше даты окончания",
+    "validation_currency_required": "Выберите валюту",
+    "validation_account_required": "Выберите счёт",
+    "validation_target_account_required": "Выберите целевой счёт",
+    "validation_source_account_required": "Выберите исходный счёт",
+    "validation_destination_account_required": "Выберите счёт зачисления",
+    "validation_bank_required": "Выберите банк",
+    "validation_broker_required": "Выберите брокера",
+    "validation_broker_account_required": "Выберите брокерский счёт",
+    "validation_broker_account_type_required": "Выберите тип брокерского счёта",
+    "validation_account_type_required": "Выберите тип счёта",
+    "validation_security_required": "Выберите ценную бумагу",
+    "validation_operation_required": "Выберите тип операции",
+    "validation_transaction_type_required": "Выберите категорию транзакции",
+    "validation_direction_required": "Выберите направление транзакции",
+    "validation_crypto_provider_required": "Выберите крипто-провайдера",
+    "validation_cryptocurrency_required": "Выберите криптовалюту",
+    "validation_crypto_account_required": "Выберите криптосчёт",
+    "validation_debt_required": "Выберите долг",
+    "validation_dividend_required": "Выберите дивиденд",
+    "validation_login_required": "Введите логин",
+    "validation_password_required": "Введите пароль",
+    "validation_password_min_length": "Пароль должен содержать минимум 6 символов",
+    "validation_same_account": "Исходный счёт и счёт зачисления не могут совпадать",
+    "validation_percentage_range": "Процентная ставка должна быть от 0 до 100"
 }

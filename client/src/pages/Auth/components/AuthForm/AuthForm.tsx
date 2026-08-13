@@ -1,11 +1,10 @@
-
-import { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Box, Button, Input, Field } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { auth } from "../../../../api/auth/authApi";
-import { AuthFormInput, AuthValidationSchema } from "./AuthValidationSchema";
+import { AuthFormInput, getAuthValidationSchema } from "./AuthValidationSchema";
 import { Nullable } from "../../../../shared/utilities/nullable";
 
 interface Props {
@@ -16,9 +15,11 @@ interface Props {
 const AuthPage: React.FC<Props> = ({ onPasswordChangeRequired, onTokenReceived }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-   
+    const { t } = useTranslation();
+    const validationSchema = useMemo(() => getAuthValidationSchema(t), [t]);
+
     const { register, handleSubmit, watch, formState: { errors }} = useForm<AuthFormInput>({
-        resolver: zodResolver(AuthValidationSchema),
+        resolver: zodResolver(validationSchema),
         mode: "onBlur",
         defaultValues: {
             userName: "",
@@ -31,11 +32,11 @@ const AuthPage: React.FC<Props> = ({ onPasswordChangeRequired, onTokenReceived }
 
     const onSubmit = async (authData: AuthFormInput) => {
         setError("");
+        setLoading(true);
         try {
             const authInfo = await auth(authData.userName, authData.password);
 
             if (authInfo) {
-                
                 if (authInfo.passwordChangeRequired) {
                     onPasswordChangeRequired(userName, password);
                     return;
@@ -57,8 +58,6 @@ const AuthPage: React.FC<Props> = ({ onPasswordChangeRequired, onTokenReceived }
             setLoading(false);
         }
     }
-
-    const {t} = useTranslation();
 
     return (
        <Box as="form" onSubmit={handleSubmit(onSubmit)}>

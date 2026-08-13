@@ -1,17 +1,18 @@
 import { z } from 'zod';
+import { TFunction } from 'i18next';
 
-export type SecurityFormInput = z.infer<typeof SecurityValidationSchema>;
-
-export const SecurityValidationSchema = z.object({
+export const getSecurityValidationSchema = (t: TFunction) => z.object({
     id: z.string().optional(),
-    name: z.string().min(1),
-    ticker: z.string().min(1),
+    name: z.string().min(1, t("validation_field_required")),
+    ticker: z.string().min(1, t("validation_field_required")),
     type: z.object({
-        id: z.string().nonempty({message: "Type is not selected"}),
+        id: z.string().min(1, t("validation_field_required")),
         name: z.string()
-    }, {message: "Type is not selected"}),
+    }, { message: t("validation_field_required") }),
     currency: z.object({
-        id: z.string().nonempty({message: "Currency is not selected"}),
+        id: z.string().min(1, t("validation_currency_required")),
         name: z.string()
-    }, {message: "Currency is not selected"}),
-})
+    }, { message: t("validation_currency_required") }),
+});
+
+export type SecurityFormInput = z.infer<ReturnType<typeof getSecurityValidationSchema>>;

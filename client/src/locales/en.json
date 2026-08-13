@@ -320,6 +320,9 @@
     "entity_crypto_account_crypto_name": "Name",
     "entity_crypto_account_crypto_provider": "Provider",
 
+    "entity_crypto_provider_form_title": "Crypto provider",
+    "entity_crypto_provider_name": "Name",
+
     "crypto_accounts_page_add": "Add account",
     "crypto_accounts_page_no_crypto_accounts": "No crypto accounts",
 
@@ -395,5 +398,36 @@
     "crypto_account_cryptocurrency_modal_title": "Add cryptocurrency",
     "add_crypto_account_cryptocurrency_title": "Add",
     "crypto_account_cryptocurrency_delete_title": "Delete cryptocurrency",
-    "crypto_account_cryptocurrency_cryptocurrency": "Cryptocurrency"
+    "crypto_account_cryptocurrency_cryptocurrency": "Cryptocurrency",
+
+    "validation_field_required": "This field is required",
+    "validation_positive_number": "Value must be greater than 0",
+    "validation_non_negative_number": "Value cannot be negative",
+    "validation_date_required": "Date is required",
+    "validation_end_date_after_start": "End date must be later than start date",
+    "validation_start_date_before_end": "Start date must be earlier than end date",
+    "validation_currency_required": "Currency is not selected",
+    "validation_account_required": "Account is not selected",
+    "validation_target_account_required": "Target account is not selected",
+    "validation_source_account_required": "Source account is not selected",
+    "validation_destination_account_required": "Destination account is not selected",
+    "validation_bank_required": "Bank is not selected",
+    "validation_broker_required": "Broker is not selected",
+    "validation_broker_account_required": "Broker account is not selected",
+    "validation_broker_account_type_required": "Broker account type is not selected",
+    "validation_account_type_required": "Account type is not selected",
+    "validation_security_required": "Security is not selected",
+    "validation_operation_required": "Operation is not selected",
+    "validation_transaction_type_required": "Transaction category is not selected",
+    "validation_direction_required": "Direction is not selected",
+    "validation_crypto_provider_required": "Crypto provider is not selected",
+    "validation_cryptocurrency_required": "Cryptocurrency is not selected",
+    "validation_crypto_account_required": "Crypto account is not selected",
+    "validation_debt_required": "Debt is not selected",
+    "validation_dividend_required": "Dividend is not selected",
+    "validation_login_required": "Login is required",
+    "validation_password_required": "Password is required",
+    "validation_password_min_length": "Password must be at least 6 characters",
+    "validation_same_account": "Source and destination accounts cannot be the same",
+    "validation_percentage_range": "Percentage must be between 0 and 100"
 }

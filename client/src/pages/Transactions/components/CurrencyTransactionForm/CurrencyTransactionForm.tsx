@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { Field, Input} from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { AccountEntity } from '../../../../models/accounts/AccountEntity';
 import CollectionSelect from '../../../../shared/components/CollectionSelect/CollectionSelect';
 import DateSelect from '../../../../shared/components/DateSelect/DateSelect';
-import { CurrencyTransactionFormInput, CurrencyTransactionValidationSchema } from './CurrencyTransactionValidationSchema';
+import { CurrencyTransactionFormInput, getCurrencyTransactionValidationSchema } from './CurrencyTransactionValidationSchema';
 import { getAccounts } from '../../../../api/accounts/accountApi';
 import { CurrencyTransactionEntity } from '../../../../models/transactions/CurrencyTransactionEntity';
 import { generateGuid } from '../../../../shared/utilities/idUtilities';
@@ -37,8 +37,10 @@ const CurrencyTransactionForm: React.FC<Props> = (props: Props) => {
         }
     }, [props.currencyTransaction]);
 
+    const validationSchema = useMemo(() => getCurrencyTransactionValidationSchema(t), [t]);
+
     const { register, handleSubmit, control, formState: { errors }, reset} = useForm<CurrencyTransactionFormInput>({
-        resolver: zodResolver(CurrencyTransactionValidationSchema),
+        resolver: zodResolver(validationSchema),
         mode: "onBlur",
         defaultValues: getDefaultTransactionFormState()
     });

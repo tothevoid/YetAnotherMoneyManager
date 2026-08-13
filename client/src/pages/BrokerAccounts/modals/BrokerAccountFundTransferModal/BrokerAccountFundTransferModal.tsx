@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 import { BrokerAccountFundTransferEntity } from "../../../../models/brokers/BrokerAccountFundTransfer";
 import { generateGuid } from "../../../../shared/utilities/idUtilities";
 import DateSelect from "../../../../shared/components/DateSelect/DateSelect";
-import { BrokerAccountFundTransferFormInput, BrokerAccountFundTransferValidationSchema } from "./BrokerAccountFundTransferValidationSchema";
+import { BrokerAccountFundTransferFormInput, getBrokerAccountFundTransferValidationSchema } from "./BrokerAccountFundTransferValidationSchema";
 import { getBrokerAccounts } from "../../../../api/brokers/brokerAccountApi";
 import { BrokerAccountEntity } from "../../../../models/brokers/BrokerAccountEntity";
 
@@ -82,8 +82,11 @@ const BrokerAccountFundTransferModal: React.FC<ModalProps> = (props: ModalProps)
         fetchData()
     }, [])
 
+    const validationSchema = useMemo(() => getBrokerAccountFundTransferValidationSchema(t), [t]);
+
     const { register, handleSubmit, control, formState: { errors }, reset, watch } = useForm<BrokerAccountFundTransferFormInput>({
-        resolver: zodResolver(BrokerAccountFundTransferValidationSchema),
+        resolver: zodResolver(validationSchema),
+        mode: "onBlur",
         defaultValues: getDefaultValues()
     });
 

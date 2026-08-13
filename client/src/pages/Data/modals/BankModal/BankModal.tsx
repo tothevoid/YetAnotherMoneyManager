@@ -3,10 +3,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
-import { RefObject, useCallback, useEffect, useState } from "react";
+import { RefObject, useCallback, useEffect, useMemo, useState } from "react";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
 import { generateGuid } from "../../../../shared/utilities/idUtilities";
-import { BankFormInput, BankValidationSchema } from "./BankValidationSchema";
+import { BankFormInput, getBankValidationSchema } from "./BankValidationSchema";
 import { BankEntity } from "../../../../models/banks/BankEntity";
 import { Nullable } from "../../../../shared/utilities/nullable";
 import { getBankIconUrl } from "../../../../api/banks/bankApi";
@@ -27,8 +27,11 @@ const BankModal: React.FC<ModalProps> = (props: ModalProps) => {
         }
     }, [props.bank]);
 
+    const { t } = useTranslation();
+    const validationSchema = useMemo(() => getBankValidationSchema(t), [t]);
+
     const { register, handleSubmit, formState: { errors }, reset} = useForm<BankFormInput>({
-        resolver: zodResolver(BankValidationSchema),
+        resolver: zodResolver(validationSchema),
         mode: "onBlur",
         defaultValues: setDefaultValues()
     });
@@ -60,8 +63,6 @@ const BankModal: React.FC<ModalProps> = (props: ModalProps) => {
         setIcon(image);
         setIconUrl(url);
     }
-    
-    const {t} = useTranslation();
 
     return <BaseFormModal visibilityChanged={onModalVisibilityChanged} ref={props.modalRef} title={t("entity_bank_from_title")} submitHandler={handleSubmit(onSubmit)}>
         <ImageInput imageUrl={iconUrl} onImageSelected={onImageSelected}/>

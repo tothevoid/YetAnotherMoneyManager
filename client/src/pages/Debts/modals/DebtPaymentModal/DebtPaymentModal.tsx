@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import CollectionSelect from "../../../../shared/components/CollectionSelect/CollectionSelect";
 import { DebtEntity } from "../../../../models/debts/DebtEntity";
 import DateSelect from "../../../../shared/components/DateSelect/DateSelect";
-import { DebtPaymentFormInput, DebtPaymentValidationSchema } from "./DebtPaymentValidationSchema";
+import { DebtPaymentFormInput, getDebtPaymentValidationSchema } from "./DebtPaymentValidationSchema";
 import { DebtPaymentEntity } from "../../../../models/debts/DebtPaymentEntity";
 import { AccountEntity } from "../../../../models/accounts/AccountEntity";
 import { getDebts } from "../../../../api/debts/debtApi";
@@ -67,8 +67,11 @@ const DebtPaymentModal: React.FC<Props> = (props: Props) => {
 		};
 	}, [props.debtPayment, state.debts, state.accounts]);
 
+	const { t } = useTranslation();
+	const validationSchema = useMemo(() => getDebtPaymentValidationSchema(t), [t]);
+
 	const { register, handleSubmit, control, formState: { errors }, reset, setValue } = useForm<DebtPaymentFormInput>({
-		resolver: zodResolver(DebtPaymentValidationSchema),
+		resolver: zodResolver(validationSchema),
 		mode: "onBlur",
 		defaultValues: getDefaultFormState()
 	});
@@ -107,8 +110,6 @@ const DebtPaymentModal: React.FC<Props> = (props: Props) => {
 		props.onSaved(debt as DebtPaymentEntity);
 		props.modalRef?.current?.closeModal();
 	};
-
-	const { t } = useTranslation();
 
 	return (
 		<BaseFormModal ref={props.modalRef} title={t("entity_debt_payment_form_title")} submitHandler={handleSubmit(onSubmit)}>

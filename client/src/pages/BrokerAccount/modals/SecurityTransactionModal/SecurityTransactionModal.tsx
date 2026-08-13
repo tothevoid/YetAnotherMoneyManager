@@ -1,5 +1,5 @@
 import { Field, Input} from "@chakra-ui/react"
-import { RefObject, useCallback, useEffect, useState } from "react"
+import { RefObject, useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
@@ -8,7 +8,7 @@ import { getSecurities } from "../../../../api/securities/securityApi";
 import { getBrokerAccounts } from "../../../../api/brokers/brokerAccountApi";
 import { BrokerAccountEntity } from "../../../../models/brokers/BrokerAccountEntity";
 import { SecurityEntity } from "../../../../models/securities/SecurityEntity";
-import { SecurityTransactionFormInput, SecurityTransactionValidationSchema } from "./SecurityTransactionValidationSchema";
+import { SecurityTransactionFormInput, getSecurityTransactionValidationSchema } from "./SecurityTransactionValidationSchema";
 import DateSelect from "../../../../shared/components/DateSelect/DateSelect";
 import { SecurityTransactionEntity, SecurityTransactionEntityRequest } from "../../../../models/securities/SecurityTransactionEntity";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
@@ -86,8 +86,10 @@ const SecurityTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
 		}
 	}, [props.context])
 
+	const validationSchema = useMemo(() => getSecurityTransactionValidationSchema(t), [t]);
+
 	const { register, handleSubmit, control, formState: { errors }, reset} = useForm<SecurityTransactionFormInput>({
-		resolver: zodResolver(SecurityTransactionValidationSchema),
+		resolver: zodResolver(validationSchema),
 		mode: "onBlur",
 		defaultValues: getFormDefaultValues()
 	});
@@ -100,7 +102,7 @@ const SecurityTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
 		const isSell = securityTransaction.operation.value === SecurityTransactionOperation.Sell;
 
 		const transaction: SecurityTransactionEntityRequest = {
-			id: securityTransaction.id,
+			id: securityTransaction.id ?? generateGuid(),
 			quantity: securityTransaction.quantity,
 			price: securityTransaction.price,
 			brokerCommission: securityTransaction.brokerCommission,

@@ -34,8 +34,8 @@ export const BaseModal = forwardRef<BaseModalRef, BaseModalProps>(
                                 fontSize="lg"
                                 fontWeight="bold"
                                 display="flex"
-                                justifyContent="space-between"
                                 alignItems="center"
+                                gap={2}
                                 pr={10}
                             >
                                 <div>{title}</div>

@@ -1,9 +1,9 @@
-import { Box, Button, Icon, Input } from "@chakra-ui/react";
+import { Box, Button, Icon, Text } from "@chakra-ui/react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { MdAdd, MdDelete } from "react-icons/md";
+import { MdAdd, MdDelete, MdEdit } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { ConfirmModal } from "../../../../shared/modals/ConfirmModal/ConfirmModal";
-import BrokerAccountTypeTypeModal from "../../modals/BrokerAccountTypeModal/BrokerAccountTypeModal";
+import BrokerAccountTypeModal from "../../modals/BrokerAccountTypeModal/BrokerAccountTypeModal";
 import { createBrokerAccountType, deleteBrokerAccountType, getBrokerAccountTypes, updateBrokerAccountType } from "../../../../api/brokers/brokerAccountTypeApi";
 import { BrokerAccountTypeEntity } from "../../../../models/brokers/BrokerAccountTypeEntity";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
@@ -11,13 +11,13 @@ import DataTable, { ColumnDef } from "../../../../shared/components/DataTable/Da
 
 interface State {
     brokerAccountTypes: BrokerAccountTypeEntity[],
-    hasChanges: boolean,
     currentBrokerAccountId: string | null
 }
 
 const BrokerAccountTypesTable: React.FC = () => {
-    const [state, setState] = useState<State>({brokerAccountTypes: [], hasChanges: false, currentBrokerAccountId: null});
+    const [state, setState] = useState<State>({brokerAccountTypes: [], currentBrokerAccountId: null});
     const [isLoading, setIsLoading] = useState(true);
+    const [updatedBrokerAccountType, setUpdatedBrokerAccountType] = useState<BrokerAccountTypeEntity | null>(null);
     const { t } = useTranslation();
 
     const modalRef = useRef<BaseModalRef>(null);
@@ -39,55 +39,43 @@ const BrokerAccountTypesTable: React.FC = () => {
         initData();
     }, []);
 
-    const onNameChanged = (brokerAccountTypeId: string, newValue: string) => {
-        let hasChanges = false;
-
-        const updatedBrokerAccountTypes = state.brokerAccountTypes.map((brokerAccountType: BrokerAccountTypeEntity) => {
-            if (brokerAccountType.id !== brokerAccountTypeId || brokerAccountType.name === newValue) {
-                return brokerAccountType;
-            }
-
-            hasChanges = true;
-            return {...brokerAccountType, name: newValue};
-        });
-
-        if (!hasChanges) {
-            return;
+    useEffect(() => {
+        if (updatedBrokerAccountType) {
+            modalRef.current?.openModal();
         }
-
-        setState((currentState) => {
-            return {...currentState, brokerAccountTypes: updatedBrokerAccountTypes, hasChanges: true}
-        })
-    }
-
-    const onCellBlur = async (brokerAccountTypeId: string) => {
-        if (!state.hasChanges){
-            return;
-        }
-
-        const brokerAccountType = state.brokerAccountTypes.find((brokerAccountType: BrokerAccountTypeEntity) => {
-            return brokerAccountType.id === brokerAccountTypeId;
-        });
-        if (!brokerAccountType) {
-            return;
-        }
-
-        await updateBrokerAccountType({...brokerAccountType});
-    }
+    }, [updatedBrokerAccountType]);
     
     const onAdd = () => {
         modalRef.current?.openModal()
     };
 
-    const onBrokerAccountTypeAdded = async (brokerAccountType: BrokerAccountTypeEntity) => {
-        const brokerAccount = await createBrokerAccountType(brokerAccountType);
-        if (!brokerAccount) {
-            return;
-        }
+    const onEditClicked = (brokerAccountType: BrokerAccountTypeEntity) => {
+        setUpdatedBrokerAccountType(brokerAccountType);
+    };
 
-        setState((currentState) => {
-            return {...currentState, brokerAccountTypes: [...currentState.brokerAccountTypes, brokerAccountType]}
-        })
+    const onModalClosed = () => {
+        setUpdatedBrokerAccountType(null);
+    };
+
+    const onBrokerAccountTypeSaved = async (savedAccountType: BrokerAccountTypeEntity) => {
+        const isModified = state.brokerAccountTypes.some(b => b.id === savedAccountType.id);
+
+        if (isModified) {
+            await updateBrokerAccountType(savedAccountType);
+            setState((currentState) => ({
+                ...currentState,
+                brokerAccountTypes: currentState.brokerAccountTypes.map(b => b.id === savedAccountType.id ? savedAccountType : b)
+            }));
+        } else {
+            const createdBrokerAccountType = await createBrokerAccountType(savedAccountType);
+            if (!createdBrokerAccountType) {
+                return;
+            }
+            setState((currentState) => ({
+                ...currentState,
+                brokerAccountTypes: [...currentState.brokerAccountTypes, createdBrokerAccountType]
+            }));
+        }
     };
 
     const onDeleteClicked = async (brokerAccountType: BrokerAccountTypeEntity) => {
@@ -122,13 +110,21 @@ const BrokerAccountTypesTable: React.FC = () => {
     const columns: ColumnDef<BrokerAccountTypeEntity>[] = useMemo(() => [
         {
             header: t("entity_broker_account_type_name"),
+            render: (brokerAccountType) => <Text>{brokerAccountType.name}</Text>
+        },
+        {
+            width: 10,
             render: (brokerAccountType) => (
-                <Input
-                    onBlur={() => onCellBlur(brokerAccountType.id)}
-                    type="text"
-                    value={brokerAccountType.name}
-                    onChange={(handler) => onNameChanged(brokerAccountType.id, handler.target.value)}
-                />
+                <Button
+                    borderColor="background_secondary"
+                    background="button_background_secondary"
+                    size={'sm'}
+                    onClick={() => onEditClicked(brokerAccountType)}
+                >
+                    <Icon color="card_action_icon_primary">
+                        <MdEdit/>
+                    </Icon>
+                </Button>
             )
         },
         {
@@ -164,7 +160,12 @@ const BrokerAccountTypesTable: React.FC = () => {
             isLoading={isLoading}
             skeletonRows={5}
         />
-        <BrokerAccountTypeTypeModal modalRef={modalRef} onSaved={onBrokerAccountTypeAdded}/>
+        <BrokerAccountTypeModal
+            onModalClosed={onModalClosed}
+            brokerAccountType={updatedBrokerAccountType}
+            modalRef={modalRef}
+            onSaved={onBrokerAccountTypeSaved}
+        />
         <ConfirmModal onConfirmed={onDeleteConfirmed}
             title={t("broker_account_types_delete_title")}
             message={t("modals_delete_message")}

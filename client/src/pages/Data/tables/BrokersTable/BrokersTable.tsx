@@ -1,6 +1,6 @@
-import { Box, Button, Icon, Input } from "@chakra-ui/react";
+import { Box, Button, Icon, Text } from "@chakra-ui/react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { MdAdd, MdDelete } from "react-icons/md";
+import { MdAdd, MdDelete, MdEdit } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { ConfirmModal } from "../../../../shared/modals/ConfirmModal/ConfirmModal";
 import { BrokerEntity } from "../../../../models/brokers/BrokerEntity";
@@ -11,13 +11,13 @@ import DataTable, { ColumnDef } from "../../../../shared/components/DataTable/Da
 
 interface State {
     brokers: BrokerEntity[],
-    hasChanges: boolean,
     currentBrokerId: string | null
 }
 
 const BrokersTable: React.FC = () => {
-    const [state, setState] = useState<State>({brokers: [], hasChanges: false, currentBrokerId: null});
+    const [state, setState] = useState<State>({brokers: [], currentBrokerId: null});
     const [isLoading, setIsLoading] = useState(true);
+    const [updatedBroker, setUpdatedBroker] = useState<BrokerEntity | null>(null);
     const { t } = useTranslation();
 
     const modalRef = useRef<BaseModalRef>(null);
@@ -39,55 +39,43 @@ const BrokersTable: React.FC = () => {
         initData();
     }, []);
 
-    const onNameChanged = (brokerId: string, newValue: string) => {
-        let hasChanges = false;
-
-        const updatedBrokers = state.brokers.map((broker: BrokerEntity) => {
-            if (broker.id !== brokerId || broker.name === newValue) {
-                return broker;
-            }
-
-            hasChanges = true;
-            return {...broker, name: newValue};
-        });
-
-        if (!hasChanges) {
-            return;
+    useEffect(() => {
+        if (updatedBroker) {
+            modalRef.current?.openModal();
         }
-
-        setState((currentState) => {
-            return {...currentState, brokers: updatedBrokers, hasChanges: true}
-        })
-    }
-
-    const onCellBlur = async (brokerId: string) => {
-        if (!state.hasChanges){
-            return;
-        }
-
-        const broker = state.brokers.find((broker: BrokerEntity) => {
-            return broker.id === brokerId;
-        });
-        if (!broker) {
-            return;
-        }
-
-        await updateBroker({...broker});
-    }
+    }, [updatedBroker]);
     
     const onAdd = () => {
         modalRef.current?.openModal()
     };
 
-    const onBrokerAdded = async (broker: BrokerEntity) => {
-        const createdBroker = await createBroker(broker);
-        if (!createdBroker) {
-            return;
-        }
+    const onEditClicked = (broker: BrokerEntity) => {
+        setUpdatedBroker(broker);
+    };
 
-        setState((currentState) => {
-            return {...currentState, brokers: [...currentState.brokers, createdBroker]}
-        })
+    const onModalClosed = () => {
+        setUpdatedBroker(null);
+    };
+
+    const onBrokerSaved = async (savedBroker: BrokerEntity) => {
+        const isModified = state.brokers.some(b => b.id === savedBroker.id);
+
+        if (isModified) {
+            await updateBroker(savedBroker);
+            setState((currentState) => ({
+                ...currentState,
+                brokers: currentState.brokers.map(b => b.id === savedBroker.id ? savedBroker : b)
+            }));
+        } else {
+            const createdBroker = await createBroker(savedBroker);
+            if (!createdBroker) {
+                return;
+            }
+            setState((currentState) => ({
+                ...currentState,
+                brokers: [...currentState.brokers, createdBroker]
+            }));
+        }
     };
 
     const onDeleteClicked = async (broker: BrokerEntity) => {
@@ -122,13 +110,21 @@ const BrokersTable: React.FC = () => {
     const columns: ColumnDef<BrokerEntity>[] = useMemo(() => [
         {
             header: t("entity_broker_name"),
+            render: (broker) => <Text>{broker.name}</Text>
+        },
+        {
+            width: 10,
             render: (broker) => (
-                <Input
-                    onBlur={() => onCellBlur(broker.id)}
-                    type="text"
-                    value={broker.name}
-                    onChange={(handler) => onNameChanged(broker.id, handler.target.value)}
-                />
+                <Button
+                    borderColor="background_secondary"
+                    background="button_background_secondary"
+                    size={'sm'}
+                    onClick={() => onEditClicked(broker)}
+                >
+                    <Icon color="card_action_icon_primary">
+                        <MdEdit/>
+                    </Icon>
+                </Button>
             )
         },
         {
@@ -164,7 +160,12 @@ const BrokersTable: React.FC = () => {
             isLoading={isLoading}
             skeletonRows={5}
         />
-        <BrokerModal modalRef={modalRef} onSaved={onBrokerAdded}/>
+        <BrokerModal
+            onModalClosed={onModalClosed}
+            broker={updatedBroker}
+            modalRef={modalRef}
+            onSaved={onBrokerSaved}
+        />
         <ConfirmModal onConfirmed={onDeleteConfirmed}
             title={t("brokers_delete_title")}
             message={t("modals_delete_message")}

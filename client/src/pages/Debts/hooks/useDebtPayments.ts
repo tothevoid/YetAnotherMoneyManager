@@ -5,7 +5,8 @@ import { createDebtPayment, deleteDebtPayment, getDebtPayments, updateDebtPaymen
 export interface DebtPaymentsQuery {
 	pageIndex: number,
 	recordsQuantity: number,
-	debtId?: string
+	debtId?: string,
+	tagId?: string
 }
 
 export const useDebtPayments = (queryParameters: DebtPaymentsQuery) => {

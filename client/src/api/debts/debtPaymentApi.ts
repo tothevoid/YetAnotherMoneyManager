@@ -13,8 +13,12 @@ export const getDebtPayments = async (query: DebtPaymentsQuery): Promise<DebtPay
         });
 }
 
-export const getDebtPaymentsPagination = async (debtId?: string): Promise<PaginationConfig | void> => {
-    const url = debtId ? `${basicUrl}/GetPagination?debtId=${debtId}` : `${basicUrl}/GetPagination`;
+export const getDebtPaymentsPagination = async (debtId?: string, tagId?: string): Promise<PaginationConfig | void> => {
+    const params = new URLSearchParams();
+    if (debtId) params.append("debtId", debtId);
+    if (tagId) params.append("tagId", tagId);
+    const queryString = params.toString();
+    const url = queryString ? `${basicUrl}/GetPagination?${queryString}` : `${basicUrl}/GetPagination`;
     return await getPagination(url);
 };
 

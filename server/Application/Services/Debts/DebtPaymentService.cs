@@ -40,13 +40,18 @@ namespace MoneyManager.Application.Services.Debts
             return _mapper.Map(debtPayment);
         }
 
-        public async Task<IEnumerable<DebtPaymentDto>> GetAll(int pageIndex, int recordsQuantity, Guid? debtId = null)
+        public async Task<IEnumerable<DebtPaymentDto>> GetAll(int pageIndex, int recordsQuantity, Guid? debtId = null, Guid? tagId = null)
         {
             var builder = new ComplexQueryBuilder<DebtPayment>();
 
             if (debtId.HasValue && debtId.Value != Guid.Empty)
             {
                 builder.AddFilter(payment => payment.DebtId == debtId.Value);
+            }
+
+            if (tagId.HasValue && tagId.Value != Guid.Empty)
+            {
+                builder.AddFilter(payment => payment.Debt.DebtTags.Any(dt => dt.DebtTagId == tagId.Value));
             }
 
             var query = builder
@@ -59,12 +64,30 @@ namespace MoneyManager.Application.Services.Debts
             return _mapper.Map(debtPayments);
         }
 
-        public async Task<PaginationConfigDto> GetPagination(Guid? debtId = null)
+        public async Task<PaginationConfigDto> GetPagination(Guid? debtId = null, Guid? tagId = null)
         {
             int pageSize = 10;
-            int recordsQuantity = debtId.HasValue && debtId.Value != Guid.Empty ? 
-                await _debtPaymentRepo.GetCount(p => p.DebtId == debtId.Value): 
-                await _debtPaymentRepo.GetCount();
+            int recordsQuantity;
+
+            var hasDebtId = debtId.HasValue && debtId.Value != Guid.Empty;
+            var hasTagId = tagId.HasValue && tagId.Value != Guid.Empty;
+
+            if (hasDebtId && hasTagId)
+            {
+                recordsQuantity = await _debtPaymentRepo.GetCount(p => p.DebtId == debtId.Value && p.Debt.DebtTags.Any(dt => dt.DebtTagId == tagId.Value));
+            }
+            else if (hasDebtId)
+            {
+                recordsQuantity = await _debtPaymentRepo.GetCount(p => p.DebtId == debtId.Value);
+            }
+            else if (hasTagId)
+            {
+                recordsQuantity = await _debtPaymentRepo.GetCount(p => p.Debt.DebtTags.Any(dt => dt.DebtTagId == tagId.Value));
+            }
+            else
+            {
+                recordsQuantity = await _debtPaymentRepo.GetCount();
+            }
 
             return new PaginationConfigDto()
             {

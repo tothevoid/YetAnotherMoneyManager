@@ -9,8 +9,8 @@ namespace MoneyManager.Application.Interfaces.Debts
     public interface IDebtPaymentService
     {
         Task<DebtPaymentDto> GetById(Guid id);
-        Task<IEnumerable<DebtPaymentDto>> GetAll(int pageIndex, int recordsQuantity, Guid? debtId = null);
-        Task<PaginationConfigDto> GetPagination(Guid? debtId = null);
+        Task<IEnumerable<DebtPaymentDto>> GetAll(int pageIndex, int recordsQuantity, Guid? debtId = null, Guid? tagId = null);
+        Task<PaginationConfigDto> GetPagination(Guid? debtId = null, Guid? tagId = null);
         Task<Guid> Add(DebtPaymentDto debtPayment);
         Task Update(DebtPaymentDto updatedPaymentDto);
         Task Delete(Guid id);

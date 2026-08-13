@@ -18,6 +18,7 @@ const DebtsPage: React.FC = () => {
 	
 	const [selectedDebtId, setSelectedDebtId] = useState<string | null>(null);
 	const [selectedDebtName, setSelectedDebtName] = useState<string | null>(null);
+	const [selectedTagFilter, setSelectedTagFilter] = useState<string | null>(null);
 
 	const tagManagerModalRef = useRef<BaseModalRef>(null);
 	const tagStatsModalRef = useRef<BaseModalRef>(null);
@@ -71,6 +72,8 @@ const DebtsPage: React.FC = () => {
 				tags={tags}
 				selectedDebtId={selectedDebtId}
 				onSelectDebt={handleSelectDebt}
+				selectedTagFilter={selectedTagFilter}
+				onSelectedTagFilterChange={setSelectedTagFilter}
 				onTagCreatedOrUpdated={handleTagCreatedOrUpdated}
 				onOpenTagManagerModal={() => tagManagerModalRef.current?.openModal()}
 				onOpenTagStatsModal={() => tagStatsModalRef.current?.openModal()}
@@ -81,6 +84,7 @@ const DebtsPage: React.FC = () => {
 					onDebtPaymentsChanged={onDebtPaymentsChanged}
 					selectedDebtId={selectedDebtId}
 					selectedDebtName={selectedDebtName}
+					selectedTagId={selectedTagFilter}
 					onClearDebtFilter={() => handleSelectDebt(null)}
 				/>
 			)}

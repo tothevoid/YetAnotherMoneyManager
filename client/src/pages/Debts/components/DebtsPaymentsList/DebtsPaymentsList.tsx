@@ -17,6 +17,7 @@ interface Props {
     onDebtPaymentsChanged: () => void;
     selectedDebtId?: string | null;
     selectedDebtName?: string | null;
+    selectedTagId?: string | null;
     onClearDebtFilter?: () => void;
 }
 
@@ -24,6 +25,7 @@ const DebtsPaymentsList: React.FC<Props> = ({
     onDebtPaymentsChanged,
     selectedDebtId,
     selectedDebtName,
+    selectedTagId,
     onClearDebtFilter
 }) => {
     const { t } = useTranslation();
@@ -45,15 +47,16 @@ const DebtsPaymentsList: React.FC<Props> = ({
         updateDebtPaymentEntity,
         deleteDebtPaymentEntity,
         setDebtPaymentsQueryParameters
-    } = useDebtPayments({ pageIndex: 1, recordsQuantity: -1, debtId: selectedDebtId || undefined });
+    } = useDebtPayments({ pageIndex: 1, recordsQuantity: -1, debtId: selectedDebtId || undefined, tagId: selectedTagId || undefined });
 
     useEffect(() => {
         setDebtPaymentsQueryParameters((prev) => ({
             ...prev,
             pageIndex: 1,
-            debtId: selectedDebtId || undefined
+            debtId: selectedDebtId || undefined,
+            tagId: selectedTagId || undefined
         }));
-    }, [selectedDebtId, setDebtPaymentsQueryParameters]);
+    }, [selectedDebtId, selectedTagId, setDebtPaymentsQueryParameters]);
 
     const onDebtPaymentSaved = async (createdDebtPayment: DebtPaymentEntity) => {
         if (mode === ActiveEntityMode.Add) {
@@ -76,11 +79,11 @@ const DebtsPaymentsList: React.FC<Props> = ({
     };
 
     const getPagination = useCallback(() => {
-        return getDebtPaymentsPagination(selectedDebtId || undefined);
-    }, [selectedDebtId]);
+        return getDebtPaymentsPagination(selectedDebtId || undefined, selectedTagId || undefined);
+    }, [selectedDebtId, selectedTagId]);
 
     const onPageChanged = async (recordsQuantity: number, pageIndex: number) => {
-		setDebtPaymentsQueryParameters({ recordsQuantity, pageIndex, debtId: selectedDebtId || undefined });
+		setDebtPaymentsQueryParameters({ recordsQuantity, pageIndex, debtId: selectedDebtId || undefined, tagId: selectedTagId || undefined });
 	};
 
     return (
@@ -113,7 +116,7 @@ const DebtsPaymentsList: React.FC<Props> = ({
                 ))}
             </Box>
 
-            <CollectionPagination key={selectedDebtId || "all"} getPaginationConfig={getPagination} onPageChanged={onPageChanged} />
+            <CollectionPagination key={`${selectedDebtId || "all"}-${selectedTagId || "all"}`} getPaginationConfig={getPagination} onPageChanged={onPageChanged} />
 
             <ConfirmModal
                 onConfirmed={onDeleteConfirmed}

@@ -28,14 +28,14 @@ namespace MoneyManager.WebApi.Controllers.Debts
         [HttpPost(nameof(GetAll))]
         public async Task<IEnumerable<DebtPaymentModel>> GetAll(GetAllDebtPaymentsQuery query)
         {
-            var debtPayments = await _debtPaymentService.GetAll(query.PageIndex, query.RecordsQuantity, query.DebtId);
+            var debtPayments = await _debtPaymentService.GetAll(query.PageIndex, query.RecordsQuantity, query.DebtId, query.TagId);
             return _mapper.Map(debtPayments);
         }
 
         [HttpGet(nameof(GetPagination))]
-        public async Task<PaginationConfigModel> GetPagination([FromQuery] Guid? debtId)
+        public async Task<PaginationConfigModel> GetPagination([FromQuery] Guid? debtId, [FromQuery] Guid? tagId)
         {
-            var pagination = await _debtPaymentService.GetPagination(debtId);
+            var pagination = await _debtPaymentService.GetPagination(debtId, tagId);
             return _mapper.Map(pagination);
         }
 

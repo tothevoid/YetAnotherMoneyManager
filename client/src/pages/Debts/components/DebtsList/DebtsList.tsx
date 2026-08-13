@@ -20,6 +20,8 @@ interface Props {
     tags: DebtTagEntity[];
     selectedDebtId?: string | null;
     onSelectDebt: (debtId: string | null) => void;
+    selectedTagFilter?: string | null;
+    onSelectedTagFilterChange?: (tagId: string | null) => void;
     onTagCreatedOrUpdated?: () => Promise<void>;
     onOpenTagManagerModal?: () => void;
     onOpenTagStatsModal?: () => void;
@@ -31,6 +33,8 @@ const DebtsList: React.FC<Props> = ({
     tags,
     selectedDebtId,
     onSelectDebt,
+    selectedTagFilter: externalTagFilter,
+    onSelectedTagFilterChange: externalOnTagFilterChange,
     onTagCreatedOrUpdated,
     onOpenTagManagerModal,
     onOpenTagStatsModal
@@ -38,7 +42,9 @@ const DebtsList: React.FC<Props> = ({
     const { t } = useTranslation();
 
     const [onlyActive, setOnlyActive] = useState(true);
-    const [selectedTagFilter, setSelectedTagFilter] = useState<string | null>(null);
+    const [internalTagFilter, setInternalTagFilter] = useState<string | null>(null);
+    const selectedTagFilter = externalTagFilter !== undefined ? externalTagFilter : internalTagFilter;
+    const setSelectedTagFilter = externalOnTagFilterChange || setInternalTagFilter;
     const [tagAssignDebt, setTagAssignDebt] = useState<DebtEntity | null>(null);
 
     const tagAssignModalRef = useRef<BaseModalRef>(null);

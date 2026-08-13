@@ -341,6 +341,54 @@ namespace MoneyManager.Application.Tests.Services.Debts
             });
         }
 
+        [Fact]
+        public async Task TestGetAll_And_GetPagination_FilterByTagId()
+        {
+            var (debt1Id, accountId) = await SetupDependencies(1000m, 500m);
+            var (debt2Id, _) = await SetupDependencies(2000m, 500m);
+
+            var tagId = await ExecuteScopeAsync(async sp =>
+            {
+                var tagService = sp.GetRequiredService<IDebtTagService>();
+                var newTagId = await tagService.Add(new DebtTagDto { Name = $"Tag_{Guid.NewGuid()}", ColorHex = "#FF0000" });
+                await tagService.AssignTagsToDebt(debt1Id, new List<Guid> { newTagId });
+                return newTagId;
+            });
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IDebtPaymentService>();
+                await service.Add(new DebtPaymentDto
+                {
+                    DebtId = debt1Id,
+                    TargetAccountId = accountId,
+                    Amount = 100m,
+                    Date = DateOnly.FromDateTime(DateTime.Now)
+                });
+                await service.Add(new DebtPaymentDto
+                {
+                    DebtId = debt2Id,
+                    TargetAccountId = accountId,
+                    Amount = 200m,
+                    Date = DateOnly.FromDateTime(DateTime.Now)
+                });
+            });
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IDebtPaymentService>();
+
+                var pagination = await service.GetPagination(tagId: tagId);
+                Assert.NotNull(pagination);
+                Assert.Equal(1, pagination.RecordsQuantity);
+
+                var payments = (await service.GetAll(1, 10, tagId: tagId)).ToList();
+                Assert.Single(payments);
+                Assert.Equal(debt1Id, payments[0].DebtId);
+                Assert.Equal(100m, payments[0].Amount);
+            });
+        }
+
         private async Task<Guid> CreateAccount(decimal initialBalance)
         {
             var bank = await ExecuteScopeAsync(async sp =>

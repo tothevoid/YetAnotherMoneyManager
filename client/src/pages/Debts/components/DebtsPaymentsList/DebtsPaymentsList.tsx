@@ -113,7 +113,7 @@ const DebtsPaymentsList: React.FC<Props> = ({
                 ))}
             </Box>
 
-            <CollectionPagination getPaginationConfig={getPagination} onPageChanged={onPageChanged} />
+            <CollectionPagination key={selectedDebtId || "all"} getPaginationConfig={getPagination} onPageChanged={onPageChanged} />
 
             <ConfirmModal
                 onConfirmed={onDeleteConfirmed}

@@ -22,7 +22,7 @@ const CollectionPagination: React.FC<Props> = ({ getPaginationConfig, onPageChan
 			await requestPaginationConfig();
 		}
 		initData();
-	}, []);
+	}, [getPaginationConfig]);
 
 	const requestPaginationConfig = async () => {
 		const paginationConfig = await getPaginationConfig();

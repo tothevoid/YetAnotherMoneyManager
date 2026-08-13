@@ -29,10 +29,24 @@ export const DebtTagItem: React.FC<DebtTagItemProps> = ({ tag, onEdit, onDelete 
                 )}
             </Flex>
             <Flex gap={1}>
-                <IconButton size="xs" variant="ghost" onClick={onEdit}>
+                <IconButton
+                    size="xs"
+                    variant="ghost"
+                    color="text_primary"
+                    backgroundColor="transparent"
+                    _hover={{ backgroundColor: "background_secondary", color: "action_primary" }}
+                    onClick={onEdit}
+                >
                     <MdEdit />
                 </IconButton>
-                <IconButton size="xs" variant="ghost" colorPalette="red" onClick={onDelete}>
+                <IconButton
+                    size="xs"
+                    variant="ghost"
+                    color="red.500"
+                    backgroundColor="transparent"
+                    _hover={{ backgroundColor: "background_secondary" }}
+                    onClick={onDelete}
+                >
                     <MdDelete />
                 </IconButton>
             </Flex>

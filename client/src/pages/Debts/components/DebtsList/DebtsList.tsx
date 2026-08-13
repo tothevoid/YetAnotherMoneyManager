@@ -19,7 +19,7 @@ interface Props {
     onDebtsChanged: (debts: number) => void;
     tags: DebtTagEntity[];
     selectedDebtId?: string | null;
-    onSelectDebt?: (debtId: string | null) => void;
+    onSelectDebt: (debtId: string | null) => void;
     onTagCreatedOrUpdated?: () => Promise<void>;
     onOpenTagManagerModal?: () => void;
     onOpenTagStatsModal?: () => void;
@@ -76,6 +76,17 @@ const DebtsList: React.FC<Props> = ({
         onDebtsChanged(debts.length);
     }, [debts, onDebtsChanged]);
 
+    const availableFilterTags = React.useMemo(() => {
+        const candidateDebts = onlyActive ? debts.filter((d) => Boolean(d.amount)) : debts;
+        return tags.filter((tag) => candidateDebts.some((d) => d.debtTags?.some((dt) => dt.id === tag.id)));
+    }, [tags, debts, onlyActive]);
+
+    useEffect(() => {
+        if (selectedTagFilter && !availableFilterTags.some((t) => t.id === selectedTagFilter)) {
+            setSelectedTagFilter(null);
+        }
+    }, [availableFilterTags, selectedTagFilter]);
+
     const filteredDebts = debts.filter((debt) => {
         if (onlyActive && !debt.amount) return false;
         if (selectedTagFilter) {
@@ -83,6 +94,12 @@ const DebtsList: React.FC<Props> = ({
         }
         return true;
     });
+
+    useEffect(() => {
+        if (selectedDebtId && !filteredDebts.some((d) => d.id === selectedDebtId)) {
+            onSelectDebt(null);
+        }
+    }, [filteredDebts, selectedDebtId, onSelectDebt]);
 
     const onDebtSaved = async (debt: DebtEntity) => {
         if (mode === ActiveEntityMode.Add) {
@@ -135,7 +152,7 @@ const DebtsList: React.FC<Props> = ({
         <Box>
             <DebtsHeader
                 hasDebts={debts.length > 0}
-                tags={tags}
+                tags={availableFilterTags}
                 onlyActive={onlyActive}
                 onOnlyActiveChange={setOnlyActive}
                 selectedTagFilter={selectedTagFilter}

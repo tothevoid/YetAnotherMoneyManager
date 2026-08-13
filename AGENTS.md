@@ -77,10 +77,22 @@ This document contains guidelines, coding standards, and architectural patterns 
    - **Functions**: Use shared helpers (`parseEntityDates`, `formatRequestDates`) to avoid duplicated mapping boilerplate.
 
 ### Localization Rules (i18n)
-- **Dual Translations Mandatory**: Every user-facing string MUST be added to **both** `client/src/locales/en.json` and `client/src/locales/ru.json`.
+- **Modular Directory Structure**: Locales are organized semantically into domain folders under `client/src/locales/en/` and `client/src/locales/ru/`, aggregated via `index.ts`:
+  - `common/`: `general.json` (headers, dashboard, settings), `modals.json` (action buttons, confirm dialogs).
+  - `accounts/`: `accounts.json` (balances, accounts page, transfer modal).
+  - `broker/`: `broker.json` (broker accounts, cards, stats), `transfers.json` (fund transfers), `taxes.json` (tax deductions).
+  - `securities/`: `securities.json` (securities, transactions, quotes), `dividends.json` (dividends, payments).
+  - `debts/`: `debts.json` (debtors, payments), `tags.json` (tags system, tag statistics).
+  - `deposits/`: `deposits.json` (deposits, earnings charts).
+  - `crypto/`: `crypto.json` (cryptocurrencies, providers, crypto accounts).
+  - `transactions/`: `transactions.json` (transactions, stats), `currency.json` (currency transactions).
+  - `data/`: `data.json` (reference tables: banks, brokers, currencies, types).
+  - `validation/`: `validation.json` (all `validation_*` error messages).
+  - `auth/`: `auth.json` (login, change password).
+- **Dual Translations Mandatory**: Every user-facing string MUST be added to **both** the corresponding English (`client/src/locales/en/<domain>/<file>.json`) and Russian (`client/src/locales/ru/<domain>/<file>.json`) files.
 - **Key Format**: Use `snake_case` keys categorized by domain/feature (e.g. `broker_account_page_*`, `entity_*`, `validation_*`).
 - **Hook**: Access strings via `const { t } = useTranslation()`.
-- **Preserve Blank Lines**: Keep blank lines in `ru.json` and `en.json` between logical key blocks for semantic grouping. Do NOT delete or format away empty lines.
+- **Preserve Blank Lines**: Keep blank lines in JSON files between logical key blocks for semantic grouping. Do NOT delete or format away empty lines.
 
 ### Zod Validation Schemas & Localization
 - **Factory Function Pattern**: ALL Zod validation schemas MUST be defined as factory functions accepting `t: TFunction` from `i18next` and returning `z.ZodObject`:

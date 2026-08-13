@@ -1,5 +1,5 @@
-import { Box, Button, Icon, Table, Text, Image } from "@chakra-ui/react";
-import { useEffect, useRef, useState } from "react";
+import { Box, Button, Icon, Text, Image } from "@chakra-ui/react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { ConfirmModal } from "../../../../shared/modals/ConfirmModal/ConfirmModal";
@@ -10,6 +10,7 @@ import { BankEntity } from "../../../../models/banks/BankEntity";
 import BankModal from "../../modals/BankModal/BankModal";
 import { BsBank } from "react-icons/bs";
 import AddButton from "../../../../shared/components/AddButton/AddButton";
+import DataTable, { ColumnDef } from "../../../../shared/components/DataTable/DataTable";
 
 interface State {
     banks: BankEntity[]
@@ -18,6 +19,7 @@ interface State {
 const BanksTable: React.FC = () => {
     const [state, setState] = useState<State>({
         banks: []});
+    const [isLoading, setIsLoading] = useState(true);
 
     const [bankToDeletedId, setBankToDeleteId] = useState<Nullable<string>>();
     const [updatedBank, setUpdatedBank] = useState<BankEntity | null>();
@@ -27,10 +29,15 @@ const BanksTable: React.FC = () => {
     const confirmModalRef = useRef<BaseModalRef>(null);
 
     const fetchBanks = async () => { 
-        const banks = await getBanks();
-        setState((currentState) => {
-            return {...currentState, banks}
-        })
+        setIsLoading(true);
+        try {
+            const banks = await getBanks();
+            setState((currentState) => {
+                return {...currentState, banks}
+            });
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     useEffect(() => {
@@ -123,63 +130,73 @@ const BanksTable: React.FC = () => {
         setBankToDeleteId(null);
     }
 
+    const columns: ColumnDef<BankEntity>[] = useMemo(() => [
+        {
+            width: "50px",
+            render: (bank) => (
+                bank.iconKey ? (
+                    <Image
+                        h={8}
+                        w={8}
+                        rounded={16}
+                        src={getBankIconUrl(bank?.iconKey)}
+                        objectFit="contain"
+                    />
+                ) : (
+                    <BsBank size={32} color="#aaa" />
+                )
+            )
+        },
+        {
+            header: t("entity_bank_name"),
+            render: (bank) => <Text>{bank.name}</Text>
+        },
+        {
+            width: 10,
+            render: (bank) => (
+                <Button
+                    borderColor="background_secondary"
+                    background="button_background_secondary"
+                    size={'sm'}
+                    onClick={() => onEditClicked(bank)}
+                >
+                    <Icon color="card_action_icon_primary">
+                        <MdEdit/>
+                    </Icon>
+                </Button>
+            )
+        },
+        {
+            width: 10,
+            render: (bank) => (
+                <Button
+                    borderColor="background_secondary"
+                    background="button_background_secondary"
+                    size={'sm'}
+                    onClick={() => onDeleteClicked(bank)}
+                >
+                    <Icon color="card_action_icon_danger">
+                        <MdDelete/>
+                    </Icon>
+                </Button>
+            )
+        }
+    ], [t, state.banks]);
+
     return <Box color="text_primary">
-        <AddButton buttonTitle={t("entity_bank_add")} onClick={onAdd}/>
-        <Table.Root>
-            <Table.Header>
-                <Table.Row border="none" bg="none" color="text_primary">
-                    <Table.ColumnHeader w={"50px"}/>
-                    <Table.ColumnHeader color="text_primary">Name</Table.ColumnHeader>
-                    <Table.ColumnHeader/>
-                    <Table.ColumnHeader/>
-                </Table.Row>
-            </Table.Header>
-            <Table.Body>
-                {
-                    state.banks.map((bank: BankEntity) => {
-                        return <Table.Row border="none" bg="none" color="text_primary" key={bank.id}>
-                            <Table.Cell>
-                                {
-                                    bank.iconKey ?
-                                        <Image h={8} w={8} rounded={16} src={getBankIconUrl(bank?.iconKey)}
-                                            objectFit="contain"
-                                            borderColor="gray.200"
-                                            borderRadius="md">
-                                        </Image>:
-                                        <BsBank size={32} color="#aaa"/>
-                                }
-                            </Table.Cell>
-                            <Table.Cell>
-                                <Text>
-                                    {bank.name}
-                                </Text>
-                            </Table.Cell>
-                            <Table.Cell width={10}>
-                                <Button borderColor="background_secondary" 
-                                    background="button_background_secondary" size={'sm'} 
-                                    onClick={() => onEditClicked(bank)}>
-                                    <Icon color="card_action_icon_primary">
-                                        <MdEdit/>
-                                    </Icon>
-                                </Button>
-                            </Table.Cell>
-                            <Table.Cell width={10}>
-                                <Button borderColor="background_secondary" 
-                                    background="button_background_secondary" size={'sm'} 
-                                    onClick={() => onDeleteClicked(bank)}>
-                                    <Icon color="card_action_icon_danger">
-                                        <MdDelete/>
-                                    </Icon>
-                                </Button>
-                            </Table.Cell>
-                        </Table.Row>
-                    })
-                }
-            </Table.Body>
-        </Table.Root>
+        <Box mb={4}>
+            <AddButton buttonTitle={t("entity_bank_add")} onClick={onAdd}/>
+        </Box>
+        <DataTable
+            data={state.banks}
+            columns={columns}
+            keyExtractor={(item) => item.id}
+            isLoading={isLoading}
+            skeletonRows={5}
+        />
         <BankModal onModalClosed={onModalClosed} bank={updatedBank} modalRef={modalRef} onSaved={onBankSaved}/>
         <ConfirmModal onConfirmed={onDeleteConfirmed}
-            title={t("transaction_type_delete_title")}
+            title={t("banks_delete_title")}
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
             ref={confirmModalRef}/>

@@ -1,5 +1,5 @@
-import { Box, Button, Icon, Input, Table } from "@chakra-ui/react";
-import { useEffect, useRef, useState } from "react";
+import { Box, Button, Icon, Input } from "@chakra-ui/react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { MdAdd, MdDelete } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { ConfirmModal } from "../../../../shared/modals/ConfirmModal/ConfirmModal";
@@ -7,6 +7,7 @@ import BrokerAccountTypeTypeModal from "../../modals/BrokerAccountTypeModal/Brok
 import { createBrokerAccountType, deleteBrokerAccountType, getBrokerAccountTypes, updateBrokerAccountType } from "../../../../api/brokers/brokerAccountTypeApi";
 import { BrokerAccountTypeEntity } from "../../../../models/brokers/BrokerAccountTypeEntity";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
+import DataTable, { ColumnDef } from "../../../../shared/components/DataTable/DataTable";
 
 interface State {
     brokerAccountTypes: BrokerAccountTypeEntity[],
@@ -16,6 +17,7 @@ interface State {
 
 const BrokerAccountTypesTable: React.FC = () => {
     const [state, setState] = useState<State>({brokerAccountTypes: [], hasChanges: false, currentBrokerAccountId: null});
+    const [isLoading, setIsLoading] = useState(true);
     const { t } = useTranslation();
 
     const modalRef = useRef<BaseModalRef>(null);
@@ -23,10 +25,15 @@ const BrokerAccountTypesTable: React.FC = () => {
 
     useEffect(() => {
         const initData = async () => { 
-            const brokerAccountTypes = await getBrokerAccountTypes();
-            setState((currentState) => {
-                return {...currentState, brokerAccountTypes}
-            })
+            setIsLoading(true);
+            try {
+                const brokerAccountTypes = await getBrokerAccountTypes();
+                setState((currentState) => {
+                    return {...currentState, brokerAccountTypes}
+                });
+            } finally {
+                setIsLoading(false);
+            }
         }
 
         initData();
@@ -112,36 +119,37 @@ const BrokerAccountTypesTable: React.FC = () => {
         })
     }
 
+    const columns: ColumnDef<BrokerAccountTypeEntity>[] = useMemo(() => [
+        {
+            header: t("entity_broker_account_type_name"),
+            render: (brokerAccountType) => (
+                <Input
+                    onBlur={() => onCellBlur(brokerAccountType.id)}
+                    type="text"
+                    value={brokerAccountType.name}
+                    onChange={(handler) => onNameChanged(brokerAccountType.id, handler.target.value)}
+                />
+            )
+        },
+        {
+            width: 10,
+            render: (brokerAccountType) => (
+                <Button
+                    borderColor="background_secondary"
+                    background="button_background_secondary"
+                    size={'sm'}
+                    onClick={() => onDeleteClicked(brokerAccountType)}
+                >
+                    <Icon color="card_action_icon_danger">
+                        <MdDelete/>
+                    </Icon>
+                </Button>
+            )
+        }
+    ], [t, state.brokerAccountTypes]);
+
     return <Box color="text_primary">
-        <Table.Root>
-            <Table.Header>
-                <Table.Row border="none" bg="none" color="text_primary">
-                    <Table.ColumnHeader color="text_primary">Name</Table.ColumnHeader>
-                    <Table.ColumnHeader color="text_primary">Delete</Table.ColumnHeader>
-                </Table.Row>
-            </Table.Header>
-            <Table.Body>
-                {
-                    state.brokerAccountTypes.map((brokerAccountType: BrokerAccountTypeEntity) => {
-                        return <Table.Row border="none" bg="none" color="text_primary" key={brokerAccountType.id}>
-                            <Table.Cell>
-                                <Input onBlur={() => onCellBlur(brokerAccountType.id)} type="text" value={brokerAccountType.name}
-                                    onChange={(handler) => onNameChanged(brokerAccountType.id, handler.target.value)}>
-                                </Input>
-                            </Table.Cell>
-                            <Table.Cell width={10}>
-                                <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={() => onDeleteClicked(brokerAccountType)}>
-                                    <Icon color="card_action_icon_danger">
-                                        <MdDelete/>
-                                    </Icon>
-                                </Button>
-                            </Table.Cell>
-                        </Table.Row>
-                    })
-                }
-            </Table.Body>
-        </Table.Root>
-        <Box padding={4}>
+        <Box mb={4}>
             <Button background="action_primary" onClick={onAdd}>
                 <Icon size='md'>
                     <MdAdd/>
@@ -149,9 +157,16 @@ const BrokerAccountTypesTable: React.FC = () => {
                 {t("entity_broker_account_type_add")}
             </Button>
         </Box>
+        <DataTable
+            data={state.brokerAccountTypes}
+            columns={columns}
+            keyExtractor={(item) => item.id}
+            isLoading={isLoading}
+            skeletonRows={5}
+        />
         <BrokerAccountTypeTypeModal modalRef={modalRef} onSaved={onBrokerAccountTypeAdded}/>
         <ConfirmModal onConfirmed={onDeleteConfirmed}
-            title={t("brokerAccountTypes_delete_title")}
+            title={t("broker_account_types_delete_title")}
             message={t("modals_delete_message")}
             confirmActionName={t("modals_delete_button")}
             ref={confirmModalRef}/>

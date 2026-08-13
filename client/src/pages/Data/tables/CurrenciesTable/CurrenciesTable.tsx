@@ -1,6 +1,6 @@
-import { Box, Button, Checkbox, Icon, Stack, Table, Text } from "@chakra-ui/react";
+import { Box, Button, Checkbox, Icon, Stack, Text } from "@chakra-ui/react";
 import { CurrencyEntity } from "../../../../models/currencies/CurrencyEntity";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { MdAdd, MdDelete } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { ConfirmModal } from "../../../../shared/modals/ConfirmModal/ConfirmModal";
@@ -10,6 +10,7 @@ import CurrencyModal from "../../modals/CurrencyModal/CurrencyModal";
 import { useUserProfile } from "../../../../../features/UserProfileSettingsModal/hooks/UserProfileContext";
 import { formatMoneyByCurrencyCulture } from "../../../../shared/utilities/formatters/moneyFormatter";
 import RefreshButton from "../../../../shared/components/RefreshButton/RefreshButton";
+import DataTable, { ColumnDef } from "../../../../shared/components/DataTable/DataTable";
 
 interface State {
     currencies: CurrencyEntity[],
@@ -19,9 +20,10 @@ interface State {
 
 const CurrenciesTable: React.FC = () => {
     const [state, setState] = useState<State>({currencies: [], hasChanges: false, currentCurrencyId: null});
+    const [isLoading, setIsLoading] = useState(true);
     const { t } = useTranslation();
     
-    const { user } = useUserProfile()
+    const { user } = useUserProfile();
 
     const [isSyncing, setSyncing] = useState(false);
 
@@ -32,11 +34,16 @@ const CurrenciesTable: React.FC = () => {
         fetchCurrencies();
     }, []);
 
-     const fetchCurrencies = async () => { 
-        const currencies = await getCurrencies();
-        setState((currentState) => {
-            return {...currentState, currencies}
-        })
+    const fetchCurrencies = async () => { 
+        setIsLoading(true);
+        try {
+            const currencies = await getCurrencies();
+            setState((currentState) => {
+                return {...currentState, currencies}
+            });
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     const onActiveChanged = (currencyId: string, newValue: boolean) => {
@@ -128,46 +135,42 @@ const CurrenciesTable: React.FC = () => {
         setSyncing(false);
     }
 
+    const columns: ColumnDef<CurrencyEntity>[] = useMemo(() => [
+        {
+            header: t("entity_currency_name"),
+            render: (currency) => <Text>{currency.name}</Text>
+        },
+        {
+            header: t("entity_currency_rate"),
+            render: (currency) => (
+                <Text>{formatMoneyByCurrencyCulture(1, currency.name)} = {formatMoneyByCurrencyCulture(currency.rate, user?.currency.name, 3)}</Text>
+            )
+        },
+        {
+            header: t("entity_currency_active"),
+            width: 10,
+            render: (currency) => (
+                <Checkbox.Root onBlur={() => onCellBlur(currency.id)} checked={currency.active} variant="subtle"
+                    onCheckedChange={(data) => {onActiveChanged(currency.id, !!data.checked)}}>
+                    <Checkbox.HiddenInput />
+                    <Checkbox.Control />
+                </Checkbox.Root>
+            )
+        },
+        {
+            width: 10,
+            render: (currency) => (
+                <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={() => onDeleteClicked(currency)}>
+                    <Icon color="card_action_icon_danger">
+                        <MdDelete/>
+                    </Icon>
+                </Button>
+            )
+        }
+    ], [t, user, state.currencies]);
+
     return <Box color="text_primary">
-        <Table.Root>
-            <Table.Header>
-                <Table.Row border="none" bg="none" color="text_primary">
-                    <Table.ColumnHeader color="text_primary">{t("entity_currency_name")}</Table.ColumnHeader>
-                    <Table.ColumnHeader color="text_primary">{t("entity_currency_rate")}</Table.ColumnHeader>
-                    <Table.ColumnHeader color="text_primary">{t("entity_currency_active")}</Table.ColumnHeader>
-                    <Table.ColumnHeader color="text_primary"></Table.ColumnHeader>
-                </Table.Row>
-            </Table.Header>
-            <Table.Body>
-                {
-                    state.currencies.map((currency: CurrencyEntity) => {
-                        return <Table.Row border="none" bg="none" color="text_primary" key={currency.id}>
-                            <Table.Cell>
-                                <Text>{currency.name}</Text>
-                            </Table.Cell>
-                            <Table.Cell>
-                                <Text>{formatMoneyByCurrencyCulture(1, currency.name)} = {formatMoneyByCurrencyCulture(currency.rate, user?.currency.name, 3)}</Text>
-                            </Table.Cell>
-                            <Table.Cell width={10}>
-                                <Checkbox.Root onBlur={() => onCellBlur(currency.id)} checked={currency.active} variant="subtle"
-                                    onCheckedChange={(data) => {onActiveChanged(currency.id, !!data.checked)}}>
-                                    <Checkbox.HiddenInput />
-                                    <Checkbox.Control />
-                                </Checkbox.Root>
-                            </Table.Cell>
-                            <Table.Cell width={10}>
-                                <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={() => onDeleteClicked(currency)}>
-                                    <Icon color="card_action_icon_danger">
-                                        <MdDelete/>
-                                    </Icon>
-                                </Button>
-                            </Table.Cell>
-                        </Table.Row>
-                    })
-                }
-            </Table.Body>
-        </Table.Root>
-        <Stack direction={"row"} padding={4} gapX={2}>
+        <Stack direction="row" mb={4} gapX={2}>
             <Button background="action_primary" onClick={onAdd}>
                 <Icon size='md'>
                     <MdAdd/>
@@ -176,6 +179,13 @@ const CurrenciesTable: React.FC = () => {
             </Button>
             <RefreshButton isRefreshing={isSyncing} title={t("currencies_data_sync_rates")} onClick={onSyncRates} />
         </Stack>
+        <DataTable
+            data={state.currencies}
+            columns={columns}
+            keyExtractor={(item) => item.id}
+            isLoading={isLoading}
+            skeletonRows={5}
+        />
         <CurrencyModal modalRef={modalRef} onSaved={onCurrencyAdded}/>
         <ConfirmModal onConfirmed={onDeleteConfirmed}
             title={t("currencies_delete_title")}

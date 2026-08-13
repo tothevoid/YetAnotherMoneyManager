@@ -1,5 +1,5 @@
-import { Box, Button, Checkbox, Icon, Table, Text, Image } from "@chakra-ui/react";
-import { useEffect, useRef, useState } from "react";
+import { Box, Button, Checkbox, Icon, Text, Image } from "@chakra-ui/react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { MdDelete, MdEdit, MdOutlinePayment } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { ConfirmModal } from "../../../../shared/modals/ConfirmModal/ConfirmModal";
@@ -8,6 +8,7 @@ import { createTransactionType, deleteTransactionType, getTransactionTypeIconUrl
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import TransactionTypeModal from "../../modals/TransactionTypeModal/TransactionTypeModal";
 import AddButton from "../../../../shared/components/AddButton/AddButton";
+import DataTable, { ColumnDef } from "../../../../shared/components/DataTable/DataTable";
 
 interface State {
     transactionTypes: TransactionTypeEntity[]
@@ -16,6 +17,7 @@ interface State {
 const TransactionTypesTable: React.FC = () => {
     const [state, setState] = useState<State>({
         transactionTypes: []});
+    const [isLoading, setIsLoading] = useState(true);
 
     const [transactionTypeToDeleteId, setTransactionTypeToDeleteId] = useState<string | null>();
     const [updatedTransactionType, setUpdatedTransactionType] = useState<TransactionTypeEntity | null>();
@@ -26,10 +28,15 @@ const TransactionTypesTable: React.FC = () => {
 
     useEffect(() => {
         const initData = async () => { 
-            const transactionTypes = await getTransactionTypes();
-            setState((currentState) => {
-                return {...currentState, transactionTypes}
-            })
+            setIsLoading(true);
+            try {
+                const transactionTypes = await getTransactionTypes();
+                setState((currentState) => {
+                    return {...currentState, transactionTypes}
+                });
+            } finally {
+                setIsLoading(false);
+            }
         }
 
         initData();
@@ -121,65 +128,70 @@ const TransactionTypesTable: React.FC = () => {
         setUpdatedTransactionType(null);
     }
 
+    const columns: ColumnDef<TransactionTypeEntity>[] = useMemo(() => [
+        {
+            width: "40px",
+            render: (transactionType) => (
+                transactionType.iconKey ? (
+                    <Image
+                        h={8}
+                        w={8}
+                        rounded={16}
+                        src={getTransactionTypeIconUrl(transactionType?.iconKey)}
+                        objectFit="contain"
+                    />
+                ) : (
+                    <MdOutlinePayment size={32} color="#aaa" />
+                )
+            )
+        },
+        {
+            header: t("entity_transaction_type_name"),
+            render: (transactionType) => <Text>{transactionType.name}</Text>
+        },
+        {
+            header: t("entity_transaction_type_active"),
+            width: 10,
+            render: (transactionType) => (
+                <Checkbox.Root disabled checked={transactionType.active} variant="subtle">
+                    <Checkbox.HiddenInput />
+                    <Checkbox.Control />
+                </Checkbox.Root>
+            )
+        },
+        {
+            width: 10,
+            render: (transactionType) => (
+                <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={() => onEditClicked(transactionType)}>
+                    <Icon color="card_action_icon_primary">
+                        <MdEdit/>
+                    </Icon>
+                </Button>
+            )
+        },
+        {
+            width: 10,
+            render: (transactionType) => (
+                <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={() => onDeleteClicked(transactionType)}>
+                    <Icon color="card_action_icon_danger">
+                        <MdDelete/>
+                    </Icon>
+                </Button>
+            )
+        }
+    ], [t, state.transactionTypes]);
+
     return <Box color="text_primary">
-        <Box>
+        <Box mb={4}>
             <AddButton buttonTitle={t("transaction_type_data_add")} onClick={onAdd}/>
         </Box>
-        <Table.Root>
-            <Table.Header>
-                <Table.Row border="none" bg="none" color="text_primary">
-                    <Table.ColumnHeader w={"10px"}/>
-                    <Table.ColumnHeader color="text_primary">Name</Table.ColumnHeader>
-                    <Table.ColumnHeader color="text_primary">Active</Table.ColumnHeader>
-                    <Table.ColumnHeader/>
-                    <Table.ColumnHeader/>
-                </Table.Row>
-            </Table.Header>
-            <Table.Body>
-                {
-                    state.transactionTypes.map((transactionType: TransactionTypeEntity) => {
-                        return <Table.Row border="none" bg="none" color="text_primary" key={transactionType.id}>
-                            <Table.Cell>
-                                {
-                                    transactionType.iconKey ?
-                                        <Image h={8} w={8} rounded={16} src={getTransactionTypeIconUrl(transactionType?.iconKey)}
-                                            objectFit="contain"
-                                            borderColor="gray.200"
-                                            borderRadius="md">
-                                        </Image>:
-                                        <MdOutlinePayment size={32} color="#aaa"/>
-                                }
-                            </Table.Cell>
-                            <Table.Cell>
-                                <Text>
-                                    {transactionType.name}
-                                </Text>
-                            </Table.Cell>
-                            <Table.Cell width={10}>
-                                <Checkbox.Root disabled checked={transactionType.active} variant="subtle">
-                                    <Checkbox.HiddenInput />
-                                    <Checkbox.Control />
-                                </Checkbox.Root>
-                            </Table.Cell>
-                            <Table.Cell width={10}>
-                                <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={() => onEditClicked(transactionType)}>
-                                    <Icon color="card_action_icon_primary">
-                                        <MdEdit/>
-                                    </Icon>
-                                </Button>
-                            </Table.Cell>
-                            <Table.Cell width={10}>
-                                <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={() => onDeleteClicked(transactionType)}>
-                                    <Icon color="card_action_icon_danger">
-                                        <MdDelete/>
-                                    </Icon>
-                                </Button>
-                            </Table.Cell>
-                        </Table.Row>
-                    })
-                }
-            </Table.Body>
-        </Table.Root>
+        <DataTable
+            data={state.transactionTypes}
+            columns={columns}
+            keyExtractor={(item) => item.id}
+            isLoading={isLoading}
+            skeletonRows={5}
+        />
         <TransactionTypeModal onModalClosed={onModalClosed} transactionType={updatedTransactionType} modalRef={modalRef} onSaved={onTransactionTypeSaved}/>
         <ConfirmModal onConfirmed={onDeleteConfirmed}
             title={t("transaction_type_delete_title")}

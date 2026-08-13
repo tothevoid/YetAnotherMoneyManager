@@ -1,5 +1,5 @@
-import { Box, Button, Icon, Input, Table } from "@chakra-ui/react";
-import { useEffect, useRef, useState } from "react";
+import { Box, Button, Icon, Input } from "@chakra-ui/react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { MdAdd, MdDelete } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { ConfirmModal } from "../../../../shared/modals/ConfirmModal/ConfirmModal";
@@ -7,6 +7,7 @@ import { BrokerEntity } from "../../../../models/brokers/BrokerEntity";
 import { createBroker, deleteBroker, getBrokers, updateBroker } from "../../../../api/brokers/brokerApi";
 import BrokerModal from "../../modals/BrokerModal/BrokerModal";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
+import DataTable, { ColumnDef } from "../../../../shared/components/DataTable/DataTable";
 
 interface State {
     brokers: BrokerEntity[],
@@ -16,6 +17,7 @@ interface State {
 
 const BrokersTable: React.FC = () => {
     const [state, setState] = useState<State>({brokers: [], hasChanges: false, currentBrokerId: null});
+    const [isLoading, setIsLoading] = useState(true);
     const { t } = useTranslation();
 
     const modalRef = useRef<BaseModalRef>(null);
@@ -23,10 +25,15 @@ const BrokersTable: React.FC = () => {
 
     useEffect(() => {
         const initData = async () => { 
-            const brokers = await getBrokers();
-            setState((currentState) => {
-                return {...currentState, brokers}
-            })
+            setIsLoading(true);
+            try {
+                const brokers = await getBrokers();
+                setState((currentState) => {
+                    return {...currentState, brokers}
+                });
+            } finally {
+                setIsLoading(false);
+            }
         }
 
         initData();
@@ -112,36 +119,37 @@ const BrokersTable: React.FC = () => {
         })
     }
 
+    const columns: ColumnDef<BrokerEntity>[] = useMemo(() => [
+        {
+            header: t("entity_broker_name"),
+            render: (broker) => (
+                <Input
+                    onBlur={() => onCellBlur(broker.id)}
+                    type="text"
+                    value={broker.name}
+                    onChange={(handler) => onNameChanged(broker.id, handler.target.value)}
+                />
+            )
+        },
+        {
+            width: 10,
+            render: (broker) => (
+                <Button
+                    borderColor="background_secondary"
+                    background="button_background_secondary"
+                    size={'sm'}
+                    onClick={() => onDeleteClicked(broker)}
+                >
+                    <Icon color="card_action_icon_danger">
+                        <MdDelete/>
+                    </Icon>
+                </Button>
+            )
+        }
+    ], [t, state.brokers]);
+
     return <Box color="text_primary">
-        <Table.Root>
-            <Table.Header>
-                <Table.Row border="none" bg="none" color="text_primary">
-                    <Table.ColumnHeader color="text_primary">Name</Table.ColumnHeader>
-                    <Table.ColumnHeader color="text_primary">Delete</Table.ColumnHeader>
-                </Table.Row>
-            </Table.Header>
-            <Table.Body>
-                {
-                    state.brokers.map((broker: BrokerEntity) => {
-                        return <Table.Row border="none" bg="none" color="text_primary" key={broker.id}>
-                            <Table.Cell>
-                                <Input onBlur={() => onCellBlur(broker.id)} type="text" value={broker.name}
-                                    onChange={(handler) => onNameChanged(broker.id, handler.target.value)}>
-                                </Input>
-                            </Table.Cell>
-                            <Table.Cell width={10}>
-                                <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={() => onDeleteClicked(broker)}>
-                                    <Icon color="card_action_icon_danger">
-                                        <MdDelete/>
-                                    </Icon>
-                                </Button>
-                            </Table.Cell>
-                        </Table.Row>
-                    })
-                }
-            </Table.Body>
-        </Table.Root>
-        <Box padding={4}>
+        <Box mb={4}>
             <Button background="action_primary" onClick={onAdd}>
                 <Icon size='md'>
                     <MdAdd/>
@@ -149,6 +157,13 @@ const BrokersTable: React.FC = () => {
                 {t("entity_broker_add")}
             </Button>
         </Box>
+        <DataTable
+            data={state.brokers}
+            columns={columns}
+            keyExtractor={(item) => item.id}
+            isLoading={isLoading}
+            skeletonRows={5}
+        />
         <BrokerModal modalRef={modalRef} onSaved={onBrokerAdded}/>
         <ConfirmModal onConfirmed={onDeleteConfirmed}
             title={t("brokers_delete_title")}

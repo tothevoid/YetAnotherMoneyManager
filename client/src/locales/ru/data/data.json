@@ -1,5 +1,11 @@
 {
     "data_title": "Справочники",
+    "data_tab_transaction_types": "Типы транзакций",
+    "data_tab_currencies": "Валюты",
+    "data_tab_banks": "Банки",
+    "data_tab_broker_account_types": "Типы брокерских счетов",
+    "data_tab_brokers": "Брокеры",
+    "data_tab_crypto_providers": "Крипто провайдеры",
     "currencies_data_add": "Добавить валюту",
     "currencies_data_sync_rates": "Синхронизировать курсы",
     "currencies_delete_title": "Удалить валюту",

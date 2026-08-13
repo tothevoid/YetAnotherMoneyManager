@@ -1,5 +1,11 @@
 {
     "data_title": "Data",
+    "data_tab_transaction_types": "Transaction types",
+    "data_tab_currencies": "Currencies",
+    "data_tab_banks": "Banks",
+    "data_tab_broker_account_types": "Broker account types",
+    "data_tab_brokers": "Brokers",
+    "data_tab_crypto_providers": "Crypto providers",
     "currencies_data_add": "Add currency",
     "currencies_data_sync_rates": "Sync rates",
     "currencies_delete_title": "Delete currency",

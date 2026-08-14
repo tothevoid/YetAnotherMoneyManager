@@ -57,7 +57,7 @@ const DashboardPage: React.FC = () => {
 		{ name: t("dashboard_bank_accounts"), convertedAmount: dashboard.accountsGlobalDashboard.totalBankAccount, currency, amount: dashboard.accountsGlobalDashboard.totalBankAccount },
 		{ name: t("dashboard_debts"), convertedAmount: dashboard.debtsGlobalDashboard.total, currency, amount: dashboard.debtsGlobalDashboard.total },
 		{ name: t("dashboard_crypto_account"), convertedAmount: dashboard.cryptoAccountsGlobalDashboard.total, currency, amount: dashboard.cryptoAccountsGlobalDashboard.total }
-	].filter(({amount}) => amount)
+	].filter(item => (item.convertedAmount ?? 0) > 0);
 
 	const formatDistributionCard = (title: string, total: Nullable<number>, distribution: DistributionModel[]) => {
 		if (!distribution.length) {

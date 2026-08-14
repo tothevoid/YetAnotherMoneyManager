@@ -38,28 +38,32 @@ const DistributionChart = (props: Props) => {
             convertedValue;
     }
 
+    const chartData = props.data.filter(item => (item.convertedAmount ?? 0) > 0);
+    const totalAmount = chartData.reduce((sum, item) => sum + item.convertedAmount, 0);
+
     return <Stack>
         <div style={{ width: '100%', height: 400 }}>
             <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                    <Pie data={props.data} cx="50%" cy="50%" outerRadius={100} dataKey="convertedAmount">
+                    <Pie data={chartData} cx="50%" cy="50%" outerRadius={100} dataKey="convertedAmount" nameKey="name">
                     {
-                        props.data.map((_, index) => (
+                        chartData.map((_, index) => (
                             <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
                         )) 
                     }
                     </Pie>
                     <Tooltip contentStyle={getChartLabelConfig()} itemStyle={{ color: "#E0E0E0" }} formatter={formatLabel}/>
                     <Legend
-                        formatter={(value, _, index) => {
-                            const total = props.data.reduce((sum, item) => sum + item.convertedAmount, 0);
-                            const currentValue = props.data[index].convertedAmount;
+                        formatter={(value, entry) => {
+                            const payload = entry?.payload as (DistributionModel & { value?: number, payload?: DistributionModel }) | undefined;
+                            const item = payload?.payload ?? chartData.find(d => d.name === value);
+                            const currentValue = item?.convertedAmount ?? payload?.value ?? 0;
 
-                            if (!currentValue || !total) {
+                            if (!currentValue || !totalAmount) {
                                 return value;
                             }
 
-                            const percent = ((currentValue / total) * 100).toFixed(1);
+                            const percent = ((currentValue / totalAmount) * 100).toFixed(1);
                             return `${value} (${percent}%)`;
                         }}
                     />

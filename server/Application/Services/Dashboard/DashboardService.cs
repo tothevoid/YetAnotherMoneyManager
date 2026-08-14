@@ -295,7 +295,7 @@ namespace MoneyManager.Application.Services.Dashboard
                 var earnedAmount = CalculateDepositEarnings(deposit);
                 var convertedEarnedAmount = earnedAmount * deposit.Currency.Rate;
 
-                totalStartedAmount += startedAmount;
+                totalStartedAmount += convertedStartedAmount;
                 totalEarned += convertedEarnedAmount;
 
                 startedAmountDistribution.Add(new DistributionDto()

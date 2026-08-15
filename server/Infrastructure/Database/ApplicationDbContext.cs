@@ -5,6 +5,7 @@ using MoneyManager.Infrastructure.Configurations.Brokers;
 using MoneyManager.Infrastructure.Configurations.Currencies;
 using MoneyManager.Infrastructure.Configurations.Debts;
 using MoneyManager.Infrastructure.Configurations.Deposits;
+using MoneyManager.Infrastructure.Configurations.Notifications;
 using MoneyManager.Infrastructure.Configurations.Securities;
 using MoneyManager.Infrastructure.Configurations.Transactions;
 using MoneyManager.Infrastructure.Configurations.User;
@@ -63,6 +64,7 @@ namespace MoneyManager.Infrastructure.Database
             modelBuilder.ApplyConfiguration(new CurrencyTransactionConfiguration());
 
             modelBuilder.ApplyConfiguration(new BankConfiguration());
+            modelBuilder.ApplyConfiguration(new NotificationConfiguration());
 
             InitializeDefaultData(modelBuilder);
 

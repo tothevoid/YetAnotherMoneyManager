@@ -37,8 +37,6 @@ namespace MoneyManager.Application.Services.Securities
         }
         public async Task<SecurityDTO> FindByTicker(string ticker)
         {
-            var securities = await _securityRepo
-                .GetAll(filter: security => string.Equals(security.Ticker, ticker, StringComparison.OrdinalIgnoreCase), include: GetFullHierarchyColumns);
             return (await FindByTickers([ticker])).FirstOrDefault();
         }
 

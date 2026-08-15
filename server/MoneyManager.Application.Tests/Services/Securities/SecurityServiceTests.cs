@@ -91,6 +91,45 @@ namespace MoneyManager.Application.Tests.Services.Securities
             Assert.DoesNotContain(allAfterDelete, s => s.Id == added.Id);
         }
 
+        [Fact]
+        public async Task TestFindByTickerAndFindByTickers()
+        {
+            var typeId = await CreateSecurityType("Equity");
+
+            var dto = new SecurityDTO
+            {
+                Name = "Microsoft Corp.",
+                Ticker = "MSFT",
+                TypeId = typeId,
+                CurrencyId = CurrencyConstants.USD,
+                ActualPrice = 400m
+            };
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISecurityService>();
+                await service.Add(dto, null);
+            });
+
+            var found = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISecurityService>();
+                return await service.FindByTicker("msft");
+            });
+
+            Assert.NotNull(found);
+            Assert.Equal("MSFT", found.Ticker);
+
+            var foundList = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISecurityService>();
+                return await service.FindByTickers(["MSFT", "NONEXISTENT"]);
+            });
+
+            Assert.Single(foundList);
+            Assert.Equal("MSFT", foundList.First().Ticker);
+        }
+
         private async Task<Guid> CreateSecurityType(string name)
         {
             return await ExecuteScopeAsync(async sp =>

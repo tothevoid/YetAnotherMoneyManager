@@ -1,5 +1,5 @@
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
-import { Field, Input} from '@chakra-ui/react';
+import { Field, Input } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { getTransactionValidationSchema, TransactionFormInput } from './TransactionValidationSchema';
 import { useForm, } from 'react-hook-form';
@@ -10,6 +10,7 @@ import { TransactionEntity } from '../../../../models/transactions/TransactionEn
 import { TransactionTypeEntity } from '../../../../models/transactions/TransactionTypeEntity';
 import CollectionSelect from '../../../../shared/components/CollectionSelect/CollectionSelect';
 import DateSelect from '../../../../shared/components/DateSelect/DateSelect';
+import MoneyInput from '../../../../shared/components/MoneyInput/MoneyInput';
 import { getAccounts } from '../../../../api/accounts/accountApi';
 import { generateGuid } from '../../../../shared/utilities/idUtilities';
 import { Nullable } from '../../../../shared/utilities/nullable';
@@ -120,6 +121,8 @@ const TransactionForm: React.FC<ModalProps> = (props: ModalProps) => {
 	}, [state]);
 
 	const selectedDirection = watch("direction");
+	const selectedAccount = watch("account");
+	const currentCurrency = state.accounts.find(account => account.id === selectedAccount?.id)?.currency?.name ?? '';
 
 	return <Fragment>
 		<Field.Root invalid={!!errors.name}>
@@ -135,14 +138,14 @@ const TransactionForm: React.FC<ModalProps> = (props: ModalProps) => {
 		</Field.Root>
 		<Field.Root mt={4} invalid={!!errors.amount}>
 			<Field.Label>{t("entity_transaction_money_quantity")}</Field.Label>
-			<Input {...register("amount", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='500' />
+			<MoneyInput name="amount" control={control} currency={currentCurrency} placeholder='500' />
 			<Field.ErrorText>{errors.amount?.message}</Field.ErrorText>
 		</Field.Root>
 		{
 			selectedDirection.value === TransactionDirection.Spent ?
 				<Field.Root mt={4} invalid={!!errors.cashback}>
 					<Field.Label>{t("entity_transaction_cashback")}</Field.Label>
-					<Input {...register("cashback", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='100' />
+					<MoneyInput name="cashback" control={control} currency={currentCurrency} placeholder='100' />
 					<Field.ErrorText>{errors.cashback?.message}</Field.ErrorText>
 				</Field.Root>:
 				<Fragment/>

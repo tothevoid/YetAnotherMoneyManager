@@ -24,7 +24,7 @@ namespace MoneyManager.Infrastructure.Tests.Messages
             await mockClientProxy.Received(1).SendCoreAsync(
                 "ReceiveServerMessage",
                 Arg.Is<object?[]>(args => args.Length == 1 && (string?)args[0] == "Test Message"),
-                default
+                Arg.Any<CancellationToken>()
             );
         }
     }

@@ -30,5 +30,9 @@
     "user_profile_settings_currency": "Display in currency",
     "user_profile_settings_currency_placeholder": "Select currency",
     "user_profile_settings_language": "Display in language",
-    "user_profile_settings_language_placeholder": "Select language"
+    "user_profile_settings_language_placeholder": "Select language",
+
+    "number_unit_thousand": "k",
+    "number_unit_million": "M",
+    "number_unit_billion": "B"
 }

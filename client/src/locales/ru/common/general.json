@@ -30,5 +30,9 @@
     "user_profile_settings_currency": "Отображать в валюте",
     "user_profile_settings_currency_placeholder": "Выберите валюту",
     "user_profile_settings_language": "Язык отображения",
-    "user_profile_settings_language_placeholder": "Выберите язык"
+    "user_profile_settings_language_placeholder": "Выберите язык",
+
+    "number_unit_thousand": "тыс.",
+    "number_unit_million": "млн",
+    "number_unit_billion": "млрд"
 }

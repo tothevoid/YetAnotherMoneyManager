@@ -27,7 +27,7 @@ export const MoneyInput = <T extends FieldValues>({
     disabled = false,
     ...rest
 }: MoneyInputProps<T>) => {
-    const { i18n } = useTranslation();
+    const { t } = useTranslation();
 
     return (
         <Controller
@@ -80,7 +80,7 @@ export const MoneyInput = <T extends FieldValues>({
                         </Box>
                         {showWordsHelper && numericValue >= 1000 && (
                             <Text fontSize="xs" color="gray.400" mt={1}>
-                                💡 {formatNumberToWords(numericValue, i18n.language)} {currency}
+                                💡 {formatNumberToWords(numericValue, t)} {currency}
                             </Text>
                         )}
                     </Box>

@@ -1,18 +1,20 @@
-export const formatNumberToWords = (num: number, locale: string = 'ru-RU'): string => {
+import i18n, { TFunction } from 'i18next';
+
+export const formatNumberToWords = (num: number, t: TFunction): string => {
     if (!num || isNaN(num)) return '';
-    const isEn = locale.startsWith('en');
+    const locale = i18n.language || 'en-US';
 
     if (num >= 1_000_000_000) {
         const value = (num / 1_000_000_000).toLocaleString(locale, { maximumFractionDigits: 2 });
-        return isEn ? `${value}B` : `${value} млрд`;
+        return `${value} ${t('number_unit_billion')}`.trim();
     }
     if (num >= 1_000_000) {
         const value = (num / 1_000_000).toLocaleString(locale, { maximumFractionDigits: 2 });
-        return isEn ? `${value}M` : `${value} млн`;
+        return `${value} ${t('number_unit_million')}`.trim();
     }
     if (num >= 1_000) {
         const value = (num / 1_000).toLocaleString(locale, { maximumFractionDigits: 1 });
-        return isEn ? `${value}k` : `${value} тыс.`;
+        return `${value} ${t('number_unit_thousand')}`.trim();
     }
     return num.toString();
 };

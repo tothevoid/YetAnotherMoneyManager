@@ -1,5 +1,5 @@
 import React, { RefObject, useCallback, useEffect, useMemo } from 'react'
-import { Field, Input} from '@chakra-ui/react';
+import { Field } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -8,6 +8,7 @@ import { DividendEntity } from '../../../../models/securities/DividendEntity';
 import { DividendFormInput, getDividendValidationSchema } from './DividendValidationSchema';
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 import BaseFormModal from '../../../../shared/modals/BaseFormModal/BaseFormModal';
+import MoneyInput from '../../../../shared/components/MoneyInput/MoneyInput';
 import { generateGuid } from '../../../../shared/utilities/idUtilities';
 
 export interface CreateDividendContext {
@@ -21,7 +22,8 @@ export interface EditDividendContext {
 interface ModalProps {
 	modalRef: RefObject<BaseModalRef | null>,
 	onSaved: (dividend: DividendEntity) => void,
-	context: CreateDividendContext | EditDividendContext
+	context: CreateDividendContext | EditDividendContext,
+	currencyName?: string
 }
 
 const DividendModal: React.FC<ModalProps> = (props: ModalProps) => {
@@ -42,7 +44,7 @@ const DividendModal: React.FC<ModalProps> = (props: ModalProps) => {
 
 	const validationSchema = useMemo(() => getDividendValidationSchema(t), [t]);
 
-	const { register, control, handleSubmit, formState: { errors }, reset} = useForm<DividendFormInput>({
+	const { control, handleSubmit, formState: { errors }, reset} = useForm<DividendFormInput>({
 		resolver: zodResolver(validationSchema),
 		mode: "onBlur",
 		defaultValues: getDefaultFormValues()
@@ -60,7 +62,12 @@ const DividendModal: React.FC<ModalProps> = (props: ModalProps) => {
 	return <BaseFormModal ref={props.modalRef} title={t("entity_dividend_form_title")} submitHandler={handleSubmit(onSubmit)}>
 		<Field.Root invalid={!!errors.amount} mt={4}>
 			<Field.Label>{t("entity_dividend_security_amount")}</Field.Label>
-			<Input {...register("amount", { valueAsNumber: true })} type="number" step="0.01" placeholder='10' />
+			<MoneyInput
+				name="amount"
+				control={control}
+				placeholder="10"
+				currency={props.currencyName ?? ''}
+			/>
 			<Field.ErrorText>{errors.amount?.message}</Field.ErrorText>
 		</Field.Root>
 		<Field.Root invalid={!!errors.declarationDate} mt={4}>

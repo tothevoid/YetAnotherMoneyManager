@@ -1,9 +1,10 @@
-import { Field, Input} from "@chakra-ui/react"
+import { Field } from "@chakra-ui/react"
 import { RefObject, useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import CollectionSelect from "../../../../shared/components/CollectionSelect/CollectionSelect";
+import MoneyInput from "../../../../shared/components/MoneyInput/MoneyInput";
 import { getSecurities } from "../../../../api/securities/securityApi";
 import { getBrokerAccounts } from "../../../../api/brokers/brokerAccountApi";
 import { BrokerAccountEntity } from "../../../../models/brokers/BrokerAccountEntity";
@@ -15,6 +16,11 @@ import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
 import { generateGuid } from "../../../../shared/utilities/idUtilities";
 
+enum SecurityTransactionOperation {
+	Buy = "buy",
+	Sell = "sell",
+}
+
 export interface CreateSecurityTransactionContext {
 	brokerAccountId: string
 }
@@ -23,59 +29,36 @@ export interface EditSecurityTransactionContext {
 	securityTransaction: SecurityTransactionEntity
 }
 
-enum SecurityTransactionOperation {
-	Buy = "buy",
-	Sell = "sell",
+interface ModalProps {
+	modalRef: RefObject<BaseModalRef | null>,
+	onSaved: (securityTransaction: SecurityTransactionEntityRequest) => void,
+	context: CreateSecurityTransactionContext | EditSecurityTransactionContext,
+	isGlobalBrokerAccount: boolean
 }
 
-interface ModalProps {
-	isGlobalBrokerAccount: boolean
-	modalRef: RefObject<BaseModalRef | null>
-	onSaved: (transaction: SecurityTransactionEntityRequest) => void
-	context: CreateSecurityTransactionContext | EditSecurityTransactionContext
-};
-
 interface State {
+	securities: SecurityEntity[],
 	brokerAccounts: BrokerAccountEntity[]
-	securities: SecurityEntity[]
 }
 
 const SecurityTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
-	const [state, setState] = useState<State>({ brokerAccounts: [], securities: []});
-	const { t } = useTranslation()
+	const { t } = useTranslation();
+	const [state, setState] = useState<State>({ securities: [], brokerAccounts: []});
 
-	const operations = {
-		[SecurityTransactionOperation.Buy]: { label: t("entity_security_transaction_operation_buy"), value: SecurityTransactionOperation.Buy },
-		[SecurityTransactionOperation.Sell]: { label: t("entity_security_transaction_operation_sell"), value: SecurityTransactionOperation.Sell },
-	} as const;
-
-	useEffect(() => {
-		const initData = async () => {
-			await requestData();
-		}
-		initData();
-	}, []);
-
-	const requestData = async () => {
-		const brokerAccounts = await getBrokerAccounts();
-		const securities = await getSecurities();
-		setState((currentState) => {
-			return {...currentState, brokerAccounts, securities}
-		})
-	};
+	const operations = useMemo(() => [
+		{ label: t("entity_security_transaction_operation_buy"), value: SecurityTransactionOperation.Buy },
+		{ label: t("entity_security_transaction_operation_sell"), value: SecurityTransactionOperation.Sell }
+	], [t]);
 
 	const getFormDefaultValues = useCallback(() => {
-		const securityTransaction = "securityTransaction" in props.context ? props.context.securityTransaction: null;
-		const brokerAccount = "brokerAccountId" in props.context ? { id: props.context.brokerAccountId }: { id: undefined};
-
-		const operation = securityTransaction?.isSell ?
-			operations[SecurityTransactionOperation.Sell]:
-			operations[SecurityTransactionOperation.Buy];
+		const securityTransaction = "securityTransaction" in props.context ? props.context.securityTransaction : null;
+		const brokerAccount = "brokerAccountId" in props.context ? { id: props.context.brokerAccountId } : { id: undefined };
+		const operation = securityTransaction?.isSell ? operations[1] : operations[0];
 
 		return {
 			id: securityTransaction?.id ?? generateGuid(),
-			brokerAccount: securityTransaction?.brokerAccount ?? brokerAccount,
 			security: securityTransaction?.security,
+			brokerAccount: securityTransaction?.brokerAccount ?? brokerAccount,
 			brokerCommission: securityTransaction?.brokerCommission ?? 0,
 			stockExchangeCommission: securityTransaction?.stockExchangeCommission ?? 0,
 			date: securityTransaction?.date ?? new Date(),
@@ -84,11 +67,11 @@ const SecurityTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
 			quantity: securityTransaction?.quantity ?? 0,
 			operation
 		}
-	}, [props.context])
+	}, [props.context, operations]);
 
 	const validationSchema = useMemo(() => getSecurityTransactionValidationSchema(t), [t]);
 
-	const { register, handleSubmit, control, formState: { errors }, reset} = useForm<SecurityTransactionFormInput>({
+	const { control, handleSubmit, watch, formState: { errors }, reset} = useForm<SecurityTransactionFormInput>({
 		resolver: zodResolver(validationSchema),
 		mode: "onBlur",
 		defaultValues: getFormDefaultValues()
@@ -97,6 +80,23 @@ const SecurityTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
 	useEffect(() => {
 		reset(getFormDefaultValues());
 	}, [reset, getFormDefaultValues, props.context]);
+
+	const selectedSecurity = watch("security");
+	const securityCurrency = state.securities.find(s => s.id === selectedSecurity?.id)?.currency?.name ?? '';
+
+	const initData = async () => {
+		const securities = await getSecurities();
+		const brokerAccounts = await getBrokerAccounts();
+
+		setState({ securities, brokerAccounts });
+	}
+
+	useEffect(() => {
+		const loadData = async () => {
+			await initData();
+		}
+		loadData();
+	}, []);
 
 	const onSubmit = (securityTransaction: SecurityTransactionFormInput) => {
 		const isSell = securityTransaction.operation.value === SecurityTransactionOperation.Sell;
@@ -132,7 +132,7 @@ const SecurityTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
 		<Field.Root mt={4}>
 			<Field.Label>{t("entity_security_transaction_operation")}</Field.Label>
 			<CollectionSelect name="operation" control={control} placeholder="Select operation"
-				collection={Object.values(operations)} 
+				collection={operations} 
 				labelSelector={(operation => operation.label)} 
 				valueSelector={(operation => operation.value)}/>
 		</Field.Root>
@@ -151,27 +151,27 @@ const SecurityTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
 		</Field.Root>
 		<Field.Root mt={4} invalid={!!errors.price}>
 			<Field.Label>{t("entity_security_transaction_price")}</Field.Label>
-			<Input {...register("price", {valueAsNumber: true})} min={0} step="0.01" autoComplete="off" type='number' placeholder='100' />
+			<MoneyInput name="price" control={control} currency={securityCurrency} placeholder='100' />
 			<Field.ErrorText>{errors.price?.message}</Field.ErrorText>
 		</Field.Root>
 		<Field.Root mt={4} invalid={!!errors.quantity}>
 			<Field.Label>{t("entity_security_transaction_quantity")}</Field.Label>
-			<Input {...register("quantity", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='100' />
+			<MoneyInput name="quantity" control={control} currency="шт." decimalScale={0} showWordsHelper={false} placeholder='100' />
 			<Field.ErrorText>{errors.quantity?.message}</Field.ErrorText>
 		</Field.Root>
 		<Field.Root mt={4} invalid={!!errors.brokerCommission}>
 			<Field.Label>{t("entity_security_transaction_broker_commission")}</Field.Label>
-			<Input {...register("brokerCommission", {valueAsNumber: true})} min={0} step="0.01" autoComplete="off" type='number' placeholder='500' />
+			<MoneyInput name="brokerCommission" control={control} currency={securityCurrency} placeholder='0' />
 			<Field.ErrorText>{errors.brokerCommission?.message}</Field.ErrorText>
 		</Field.Root>
 		<Field.Root mt={4} invalid={!!errors.stockExchangeCommission}>
 			<Field.Label>{t("entity_security_transaction_stock_exchange_commission")}</Field.Label>
-			<Input {...register("stockExchangeCommission", {valueAsNumber: true})} min={0} step="0.01" autoComplete="off" type='number' placeholder='500' />
+			<MoneyInput name="stockExchangeCommission" control={control} currency={securityCurrency} placeholder='0' />
 			<Field.ErrorText>{errors.stockExchangeCommission?.message}</Field.ErrorText>
 		</Field.Root>
 		<Field.Root mt={4} invalid={!!errors.tax}>
 			<Field.Label>{t("entity_security_transaction_tax")}</Field.Label>
-			<Input {...register("tax", {valueAsNumber: true})} min={0} step="0.01" autoComplete="off" type='number' placeholder='500' />
+			<MoneyInput name="tax" control={control} currency={securityCurrency} placeholder='0' />
 			<Field.ErrorText>{errors.tax?.message}</Field.ErrorText>
 		</Field.Root>
 	</BaseFormModal>

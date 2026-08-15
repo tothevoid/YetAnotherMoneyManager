@@ -1,4 +1,4 @@
-import { Field, Input } from "@chakra-ui/react";
+import { Field } from "@chakra-ui/react";
 import React, { RefObject, useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { BrokerAccountFundTransferEntity } from "../../../../models/brokers/BrokerAccountFundTransfer";
 import { generateGuid } from "../../../../shared/utilities/idUtilities";
 import DateSelect from "../../../../shared/components/DateSelect/DateSelect";
+import MoneyInput from "../../../../shared/components/MoneyInput/MoneyInput";
 import { BrokerAccountFundTransferFormInput, getBrokerAccountFundTransferValidationSchema } from "./BrokerAccountFundTransferValidationSchema";
 import { getBrokerAccounts } from "../../../../api/brokers/brokerAccountApi";
 import { BrokerAccountEntity } from "../../../../models/brokers/BrokerAccountEntity";
@@ -84,13 +85,17 @@ const BrokerAccountFundTransferModal: React.FC<ModalProps> = (props: ModalProps)
 
     const validationSchema = useMemo(() => getBrokerAccountFundTransferValidationSchema(t), [t]);
 
-    const { register, handleSubmit, control, formState: { errors }, reset, watch } = useForm<BrokerAccountFundTransferFormInput>({
+    const { handleSubmit, control, formState: { errors }, reset, watch } = useForm<BrokerAccountFundTransferFormInput>({
         resolver: zodResolver(validationSchema),
         mode: "onBlur",
         defaultValues: getDefaultValues()
     });
 
     const incomeValue = watch("income"); 
+    const selectedBrokerAccount = watch("brokerAccount");
+    const selectedAccount = watch("account");
+    const transferCurrency = brokerAccounts.find(ba => ba.id === selectedBrokerAccount?.id)?.currency?.name ?? accounts.find(a => a.id === selectedAccount?.id)?.currency?.name ?? '';
+
     const [accountLabel, setAccountLabel] = useState<string>("");
     useEffect(() => {
         setAccountLabel(incomeValue.value ? t("broker_account_transfer_modal_account_from") : t("broker_account_transfer_modal_account_to"));
@@ -153,7 +158,7 @@ const BrokerAccountFundTransferModal: React.FC<ModalProps> = (props: ModalProps)
             </Field.Root>
             <Field.Root mt={4} invalid={!!errors.amount}>
                 <Field.Label>{t("broker_account_transfer_modal_amount")}</Field.Label>
-                <Input {...register("amount", { valueAsNumber: true })} name="amount" type="number" placeholder="10000" />
+                <MoneyInput name="amount" control={control} currency={transferCurrency} placeholder="10000" />
                 <Field.ErrorText>{errors.amount?.message}</Field.ErrorText>
             </Field.Root>
         </BaseFormModal>

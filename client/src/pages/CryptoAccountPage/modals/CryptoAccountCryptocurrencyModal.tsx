@@ -1,9 +1,10 @@
-import { Field, Input, Stack } from "@chakra-ui/react";
+import { Field, Stack } from "@chakra-ui/react";
 import React, { RefObject, useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import CollectionSelect from "../../../shared/components/CollectionSelect/CollectionSelect";
+import MoneyInput from "../../../shared/components/MoneyInput/MoneyInput";
 import { BaseModalRef } from "../../../shared/utilities/modalUtilities";
 import BaseFormModal from "../../../shared/modals/BaseFormModal/BaseFormModal";
 import { CryptoAccountCryptocurrencyEntity } from "../../../models/crypto/CryptoAccountCryptocurrencyEntity";
@@ -47,7 +48,7 @@ const CryptoAccountCryptocurrencyModal: React.FC<ModalProps> = (props: ModalProp
 
     const validationSchema = useMemo(() => getCryptoAccountCryptocurrencyValidationSchema(t), [t]);
 
-    const { register, handleSubmit, formState: { errors }, reset, control } = useForm<CryptoAccountCryptocurrencyFormInput>({
+    const { handleSubmit, formState: { errors }, reset, control, watch } = useForm<CryptoAccountCryptocurrencyFormInput>({
         resolver: zodResolver(validationSchema),
         mode: "onBlur",
         defaultValues: getDefaultValues()
@@ -56,6 +57,9 @@ const CryptoAccountCryptocurrencyModal: React.FC<ModalProps> = (props: ModalProp
     useEffect(() => {
         reset(getDefaultValues());
     }, [props.cryptoAccountCryptocurrency, reset, getDefaultValues]);
+
+    const selectedCrypto = watch("cryptocurrency");
+    const cryptoSymbol = state.cryptocurrencies.find(c => c.id === selectedCrypto?.id)?.symbol ?? '';
 
     const onSubmit = (data: CryptoAccountCryptocurrencyFormInput) => {
         props.onSaved(data as CryptoAccountCryptocurrencyEntity);
@@ -74,7 +78,7 @@ const CryptoAccountCryptocurrencyModal: React.FC<ModalProps> = (props: ModalProp
                 </Field.Root>
                 <Field.Root invalid={!!errors.quantity} mt={4}>
                     <Field.Label>{t("crypto_account_cryptocurrency_quantity")}</Field.Label>
-                    <Input {...register("quantity", { valueAsNumber: true })} type='number' step="0.01" placeholder='10' />
+                    <MoneyInput name="quantity" control={control} currency={cryptoSymbol} decimalScale={8} showWordsHelper={false} placeholder='1.00' />
                     <Field.ErrorText>{errors.quantity?.message}</Field.ErrorText>
                 </Field.Root>
             </Stack>

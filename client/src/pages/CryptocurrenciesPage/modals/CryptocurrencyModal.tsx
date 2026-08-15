@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { CryptocurrencyFormInput, getCryptocurrencyValidationSchema } from "./CryptocurrencyValidationSchema";
 import BaseFormModal from "../../../shared/modals/BaseFormModal/BaseFormModal";
+import MoneyInput from "../../../shared/components/MoneyInput/MoneyInput";
 import { BaseModalRef } from "../../../shared/utilities/modalUtilities";
 import { CryptocurrencyEntity } from "../../../models/crypto/CryptocurrencyEntity";
 import { getIconUrl } from "../../../api/crypto/cryptocurrencyApi";
@@ -34,7 +35,7 @@ const CryptocurrencyModal: React.FC<ModalProps> = (props: ModalProps) => {
     const { t } = useTranslation();
     const validationSchema = useMemo(() => getCryptocurrencyValidationSchema(t), [t]);
 
-    const { register, handleSubmit, formState: { errors }, reset} = useForm<CryptocurrencyFormInput>({
+    const { register, control, handleSubmit, formState: { errors }, reset} = useForm<CryptocurrencyFormInput>({
         resolver: zodResolver(validationSchema),
         mode: "onBlur",
         defaultValues: getDefaultValues()
@@ -87,7 +88,7 @@ const CryptocurrencyModal: React.FC<ModalProps> = (props: ModalProps) => {
         </Field.Root>
         <Field.Root invalid={!!errors.price} mt={4}>
             <Field.Label>{t("cryptocurrency_form_price")}</Field.Label>
-            <Input {...register("price", { valueAsNumber: true })} type="number" step="0.01" placeholder='10' />
+            <MoneyInput name="price" control={control} currency="USD" decimalScale={4} placeholder='10' />
             <Field.ErrorText>{errors.price?.message}</Field.ErrorText>
         </Field.Root>
     </BaseFormModal>

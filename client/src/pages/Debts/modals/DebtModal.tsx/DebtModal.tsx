@@ -87,8 +87,9 @@ const DebtModal: React.FC<Props> = (props: Props) => {
 				<Field.Root invalid={!!errors.amount}>
 					<Field.Label>{t("entity_debt_amount")}</Field.Label>
 					<MoneyInput
-						register={register("amount", { valueAsNumber: true })}
-						currency={selectedCurrency?.name}
+						name="amount"
+						control={control}
+						currency={selectedCurrency?.name ?? ''}
 					/>
 					<Field.ErrorText>{errors.amount?.message}</Field.ErrorText>
 				</Field.Root>

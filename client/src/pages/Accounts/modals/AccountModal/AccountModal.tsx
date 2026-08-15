@@ -12,6 +12,7 @@ import { CurrencyEntity } from "../../../../models/currencies/CurrencyEntity";
 import CheckboxInput from "../../../../shared/components/CheckboxInput/CheckboxInput";
 import CollectionSelect from "../../../../shared/components/CollectionSelect/CollectionSelect";
 import DateSelect from "../../../../shared/components/DateSelect/DateSelect";
+import MoneyInput from "../../../../shared/components/MoneyInput/MoneyInput";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import { generateGuid } from "../../../../shared/utilities/idUtilities";
@@ -89,7 +90,9 @@ const AccountModal: React.FC<ModalProps> = (props: ModalProps) => {
 		defaultValues: getFormDefaultValues()
 	});
 
-	const accountType = watch("accountType")
+	const accountType = watch("accountType");
+	const selectedCurrency = watch("currency");
+	const currentCurrency = state.currencies.find(c => c.id === selectedCurrency?.id)?.name ?? '';
 
 	useEffect(() => {
 		const visible = accountType?.id === ACCOUNT_TYPE.DEBIT_CARD || 
@@ -146,7 +149,7 @@ const AccountModal: React.FC<ModalProps> = (props: ModalProps) => {
 		</Field.Root>
 		<Field.Root invalid={!!errors.balance} mt={4}>
 			<Field.Label>{t("entity_account_balance")}</Field.Label>
-			<Input {...register("balance", { valueAsNumber: true })} name="balance" type='number' step="0.01" placeholder='1000' />
+			<MoneyInput name="balance" control={control} currency={currentCurrency} placeholder='1000' />
 			<Field.ErrorText>{errors.balance?.message}</Field.ErrorText>
 		</Field.Root>
 		<Field.Root invalid={!!errors.createdOn} mt={4}>

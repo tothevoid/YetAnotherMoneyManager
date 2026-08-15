@@ -14,6 +14,7 @@ import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 import { generateGuid } from '../../../../shared/utilities/idUtilities';
 import { BankEntity } from '../../../../models/banks/BankEntity';
 import { getBanks } from '../../../../api/banks/bankApi';
+import MoneyInput from '../../../../shared/components/MoneyInput/MoneyInput';
 
 interface ModalProps {
 	modalRef: RefObject<BaseModalRef | null>,
@@ -68,7 +69,7 @@ const DepositModal: React.FC<ModalProps> = (props: ModalProps) => {
 	const { t } = useTranslation();
 	const validationSchema = useMemo(() => getDepositValidationSchema(t), [t]);
 
-	const { register, control, handleSubmit, formState: { errors }, reset} = useForm<DepositFormInput>({
+	const { register, control, handleSubmit, watch, formState: { errors }, reset} = useForm<DepositFormInput>({
 		resolver: zodResolver(validationSchema),
 		mode: "onBlur",
 		defaultValues: getDefaultFormState()
@@ -77,6 +78,9 @@ const DepositModal: React.FC<ModalProps> = (props: ModalProps) => {
 	useEffect(() => {
 		reset(getDefaultFormState())
 	}, [reset, getDefaultFormState, props.deposit])
+
+	const selectedCurrencyForm = watch("currency");
+	const depositCurrency = state.currencies.find(c => c.id === selectedCurrencyForm?.id)?.name ?? '';
 
 	const onSubmit = (deposit: DepositFormInput) => {
 		props.onSaved(deposit as DepositEntity);
@@ -99,7 +103,7 @@ const DepositModal: React.FC<ModalProps> = (props: ModalProps) => {
 		</Field.Root>
 		<Field.Root invalid={!!errors.percentage} mt={4}>
 			<Field.Label>{t("entity_deposit_percentage")}</Field.Label>
-			<Input {...register("percentage", { valueAsNumber: true })} type="number" step="0.01" placeholder='10' />
+			<MoneyInput name="percentage" control={control} currency="%" showWordsHelper={false} placeholder='10' />
 			<Field.ErrorText>{errors.percentage?.message}</Field.ErrorText>
 		</Field.Root>
 		<Field.Root mt={4} invalid={!!errors.currency}>
@@ -112,12 +116,12 @@ const DepositModal: React.FC<ModalProps> = (props: ModalProps) => {
 		</Field.Root>
 		<Field.Root invalid={!!errors.initialAmount} mt={4}>
 			<Field.Label>{t("entity_deposit_initial_amount")}</Field.Label>
-			<Input {...register("initialAmount", { valueAsNumber: true })} type='number' step="0.01" placeholder='10' />
+			<MoneyInput name="initialAmount" control={control} currency={depositCurrency} placeholder='10' />
 			<Field.ErrorText>{errors.initialAmount?.message}</Field.ErrorText>
 		</Field.Root>
 		<Field.Root invalid={!!errors.estimatedEarn} mt={4}>
 			<Field.Label>{t("entity_deposit_estimated_earn")}</Field.Label>
-			<Input {...register("estimatedEarn", { valueAsNumber: true })} type='number' step="0.01" placeholder='10' />
+			<MoneyInput name="estimatedEarn" control={control} currency={depositCurrency} placeholder='10' />
 			<Field.ErrorText>{errors.estimatedEarn?.message}</Field.ErrorText>
 		</Field.Root>
 		<Flex gap={4} direction="row">

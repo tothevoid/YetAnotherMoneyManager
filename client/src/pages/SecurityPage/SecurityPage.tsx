@@ -107,7 +107,7 @@ const SecurityPage: React.FC = () => {
 				<SecurityTransactionsChart currentPrice={actualPrice} securityId={securityId} currencyName={currency.name}/>
 			</Tabs.Content>
 			<Tabs.Content value="dividends">
-				<DividendList securityId={securityId}/>
+				<DividendList securityId={securityId} currencyName={currency.name}/>
 			</Tabs.Content>
 		</Tabs.Root>
 	</Stack>

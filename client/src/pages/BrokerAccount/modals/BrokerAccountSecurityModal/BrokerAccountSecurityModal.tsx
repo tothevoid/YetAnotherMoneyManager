@@ -1,10 +1,11 @@
-import {Field, Input, } from "@chakra-ui/react"
+import { Field } from "@chakra-ui/react"
 import React, { RefObject, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { BrokerAccountSecurityEntity } from "../../../../models/brokers/BrokerAccountSecurityEntity";
 import CollectionSelect from "../../../../shared/components/CollectionSelect/CollectionSelect";
+import MoneyInput from "../../../../shared/components/MoneyInput/MoneyInput";
 import { getSecurities } from "../../../../api/securities/securityApi";
 import { getBrokerAccounts } from "../../../../api/brokers/brokerAccountApi";
 import { BrokerAccountEntity } from "../../../../models/brokers/BrokerAccountEntity";
@@ -48,7 +49,7 @@ const BrokerAccountSecurityModal: React.FC<ModalProps> = (props: ModalProps) => 
     const { t } = useTranslation();
     const validationSchema = useMemo(() => getBrokerAccountSecurityValidationSchema(t), [t]);
 
-    const { register, handleSubmit, control, formState: { errors }} = useForm<BrokerAccountSecurityFormInput>({
+    const { handleSubmit, control, watch, formState: { errors }} = useForm<BrokerAccountSecurityFormInput>({
         resolver: zodResolver(validationSchema),
         mode: "onBlur",
         defaultValues: {
@@ -60,6 +61,8 @@ const BrokerAccountSecurityModal: React.FC<ModalProps> = (props: ModalProps) => 
         }
     });
 
+    const selectedSecurity = watch("security");
+    const securityCurrency = state.securities.find(s => s.id === selectedSecurity?.id)?.currency?.name ?? '';
 
     const onSubmit = (brokerAccountSecurity: BrokerAccountSecurityFormInput) => {
         props.onSaved(brokerAccountSecurity as BrokerAccountSecurityEntity);
@@ -85,12 +88,12 @@ const BrokerAccountSecurityModal: React.FC<ModalProps> = (props: ModalProps) => 
         </Field.Root>
         <Field.Root mt={4} invalid={!!errors.price}>
             <Field.Label>{t("entity_broker_initial_price")}</Field.Label>
-            <Input {...register("price", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='500' />
+            <MoneyInput name="price" control={control} currency={securityCurrency} placeholder='500' />
             <Field.ErrorText>{errors.price?.message}</Field.ErrorText>
         </Field.Root>
         <Field.Root mt={4} invalid={!!errors.quantity}>
             <Field.Label>{t("entity_broker_quantity")}</Field.Label>
-            <Input {...register("quantity", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='500' />
+            <MoneyInput name="quantity" control={control} currency="шт." decimalScale={0} showWordsHelper={false} placeholder='500' />
             <Field.ErrorText>{errors.quantity?.message}</Field.ErrorText>
         </Field.Root>
     </BaseFormModal>

@@ -14,7 +14,8 @@ import CollectionPagination from '../../../../shared/components/CollectionPagina
 import { getDividendsPagination } from '../../../../api/securities/dividendApi';
 
 interface Props {
-	securityId: string
+	securityId: string,
+	currencyName?: string
 }
 
 const DividendList: React.FC<Props> = (props) => {
@@ -93,7 +94,7 @@ const DividendList: React.FC<Props> = (props) => {
 				message={t("modals_delete_message")}
 				confirmActionName={t("modals_delete_button")}
 				ref={confirmModalRef}/>
-			{context && <DividendModal context={context} modalRef={modalRef} onSaved={onDividendSaved}/>}
+			{context && <DividendModal context={context} currencyName={props.currencyName} modalRef={modalRef} onSaved={onDividendSaved}/>}
 		</Fragment>
 	);
 }

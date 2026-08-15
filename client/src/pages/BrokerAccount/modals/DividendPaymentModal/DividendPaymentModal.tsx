@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import CollectionSelect from "../../../../shared/components/CollectionSelect/CollectionSelect";
 import DateSelect from "../../../../shared/components/DateSelect/DateSelect";
+import MoneyInput from "../../../../shared/components/MoneyInput/MoneyInput";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
 import { DividendPaymentFormInput, getDividendPaymentValidationSchema } from "./DividendPaymentValidationSchema";
@@ -60,7 +61,7 @@ const DividendPaymentModal: React.FC<ModalProps> = (props: ModalProps) => {
 
 	const validationSchema = useMemo(() => getDividendPaymentValidationSchema(t), [t]);
 
-	const { register, reset, handleSubmit, watch, control, formState: { errors }} = useForm<DividendPaymentFormInput>({
+	const { reset, handleSubmit, watch, control, formState: { errors }} = useForm<DividendPaymentFormInput>({
 		resolver: zodResolver(validationSchema),
 		mode: "onBlur",
 		defaultValues: getFormDefaultValues()
@@ -209,12 +210,12 @@ const DividendPaymentModal: React.FC<ModalProps> = (props: ModalProps) => {
 		</Field.Root>
 		<Field.Root mt={4} invalid={!!errors.securitiesQuantity}>
 			<Field.Label>{t("entity_dividend_payment_securities_quantity")}</Field.Label>
-			<Input {...register("securitiesQuantity", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='100' />
+			<MoneyInput name="securitiesQuantity" control={control} currency="шт." decimalScale={0} showWordsHelper={false} placeholder='100' />
 			<Field.ErrorText>{errors.securitiesQuantity?.message}</Field.ErrorText>
 		</Field.Root>
 		<Field.Root mt={4} invalid={!!errors.tax}>
 			<Field.Label>{t("entity_dividend_payment_tax")}</Field.Label>
-			<Input {...register("tax", {valueAsNumber: true})} min={0} step="0.01" autoComplete="off" type='number' placeholder='500' />
+			<MoneyInput name="tax" control={control} currency={selectedSecurity?.currency.name ?? ''} placeholder='0' />
 			<Field.ErrorText>{errors.tax?.message}</Field.ErrorText>
 		</Field.Root>
 		<Field.Root mt={4} invalid={!!errors.receivedAt}>

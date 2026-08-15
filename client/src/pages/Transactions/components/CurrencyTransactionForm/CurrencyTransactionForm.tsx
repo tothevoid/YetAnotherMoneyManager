@@ -1,11 +1,12 @@
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
-import { Field, Input} from '@chakra-ui/react';
+import { Field, Input } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { AccountEntity } from '../../../../models/accounts/AccountEntity';
 import CollectionSelect from '../../../../shared/components/CollectionSelect/CollectionSelect';
 import DateSelect from '../../../../shared/components/DateSelect/DateSelect';
+import MoneyInput from '../../../../shared/components/MoneyInput/MoneyInput';
 import { CurrencyTransactionFormInput, getCurrencyTransactionValidationSchema } from './CurrencyTransactionValidationSchema';
 import { getAccounts } from '../../../../api/accounts/accountApi';
 import { CurrencyTransactionEntity } from '../../../../models/transactions/CurrencyTransactionEntity';
@@ -39,7 +40,7 @@ const CurrencyTransactionForm: React.FC<Props> = (props: Props) => {
 
     const validationSchema = useMemo(() => getCurrencyTransactionValidationSchema(t), [t]);
 
-    const { register, handleSubmit, control, formState: { errors }, reset} = useForm<CurrencyTransactionFormInput>({
+    const { register, handleSubmit, control, watch, formState: { errors }, reset} = useForm<CurrencyTransactionFormInput>({
         resolver: zodResolver(validationSchema),
         mode: "onBlur",
         defaultValues: getDefaultTransactionFormState()
@@ -74,6 +75,11 @@ const CurrencyTransactionForm: React.FC<Props> = (props: Props) => {
         props.setSubmitHandler(handleSubmit, onCurrencyTransactionSaveClick);
     }, [state]);
 
+    const selectedSourceAccount = watch("sourceAccount");
+    const sourceCurrency = state.accounts.find(a => a.id === selectedSourceAccount?.id)?.currency?.name ?? '';
+    const selectedDestAccount = watch("destinationAccount");
+    const destCurrency = state.accounts.find(a => a.id === selectedDestAccount?.id)?.currency?.name ?? '';
+
     return <Fragment>
         <Field.Root mt={4} invalid={!!errors.name}>
             <Field.Label>{t("entity_currency_transaction_name")}</Field.Label>
@@ -98,12 +104,12 @@ const CurrencyTransactionForm: React.FC<Props> = (props: Props) => {
         </Field.Root>
         <Field.Root mt={4} invalid={!!errors.rate}>
             <Field.Label>{t("entity_currency_transaction_rate")}</Field.Label>
-            <Input {...register("rate", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='500' step="0.01"/>
+            <MoneyInput name="rate" control={control} currency={destCurrency || sourceCurrency} decimalScale={4} placeholder='1.00'/>
             <Field.ErrorText>{errors.rate?.message}</Field.ErrorText>
         </Field.Root>
         <Field.Root mt={4} invalid={!!errors.amount}>
             <Field.Label>{t("entity_currency_transaction_amount")}</Field.Label>
-            <Input {...register("amount", {valueAsNumber: true})} min={0} autoComplete="off" type='number' placeholder='500' step="0.01"/>
+            <MoneyInput name="amount" control={control} currency={sourceCurrency} placeholder='500'/>
             <Field.ErrorText>{errors.amount?.message}</Field.ErrorText>
         </Field.Root>
         <Field.Root mt={4} invalid={!!errors.date}>

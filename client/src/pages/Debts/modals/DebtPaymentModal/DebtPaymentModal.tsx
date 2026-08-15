@@ -70,7 +70,7 @@ const DebtPaymentModal: React.FC<Props> = (props: Props) => {
 	const { t } = useTranslation();
 	const validationSchema = useMemo(() => getDebtPaymentValidationSchema(t), [t]);
 
-	const { register, handleSubmit, control, formState: { errors }, reset, setValue } = useForm<DebtPaymentFormInput>({
+	const { handleSubmit, control, formState: { errors }, reset, setValue } = useForm<DebtPaymentFormInput>({
 		resolver: zodResolver(validationSchema),
 		mode: "onBlur",
 		defaultValues: getDefaultFormState()
@@ -125,8 +125,9 @@ const DebtPaymentModal: React.FC<Props> = (props: Props) => {
 				<Field.Root invalid={!!errors.amount}>
 					<Field.Label>{t("entity_debt_payment_amount")}</Field.Label>
 					<MoneyInput
-						register={register("amount", { valueAsNumber: true })}
-						currency={selectedDebtEntity?.currency?.name}
+						name="amount"
+						control={control}
+						currency={selectedDebtEntity?.currency?.name ?? ''}
 					/>
 					<Field.ErrorText>{errors.amount?.message}</Field.ErrorText>
 				</Field.Root>

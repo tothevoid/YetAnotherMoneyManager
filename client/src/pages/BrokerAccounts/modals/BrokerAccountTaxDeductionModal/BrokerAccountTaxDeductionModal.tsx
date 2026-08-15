@@ -12,6 +12,7 @@ import { BrokerAccountTaxDeductionEntity } from "../../../../models/brokers/Brok
 import { getBrokerAccounts } from "../../../../api/brokers/brokerAccountApi";
 import { BrokerAccountEntity } from "../../../../models/brokers/BrokerAccountEntity";
 import CollectionSelect from "../../../../shared/components/CollectionSelect/CollectionSelect";
+import MoneyInput from "../../../../shared/components/MoneyInput/MoneyInput";
 
 export interface CreateBrokerAccountTaxDeductionContext {
     brokerAccountId: string
@@ -50,7 +51,7 @@ const BrokerAccountTaxDeductionModal: React.FC<ModalProps> = (props: ModalProps)
 
     const validationSchema = useMemo(() => getBrokerAccountTaxDeductionValidationSchema(t), [t]);
 
-    const { register, handleSubmit, control, formState: { errors }, reset } = useForm<BrokerAccountTaxDeductionFormInput>({
+    const { register, handleSubmit, control, watch, formState: { errors }, reset } = useForm<BrokerAccountTaxDeductionFormInput>({
         resolver: zodResolver(validationSchema),
         defaultValues: getDefaultValues()
     });
@@ -58,6 +59,9 @@ const BrokerAccountTaxDeductionModal: React.FC<ModalProps> = (props: ModalProps)
     useEffect(() => {
         reset(getDefaultValues());
     }, [reset, getDefaultValues, props.context]);
+
+    const selectedBrokerAccount = watch("brokerAccount");
+    const brokerAccountCurrency = brokerAccounts.find(ba => ba.id === selectedBrokerAccount?.id)?.currency?.name ?? '';
 
     const onSubmit = async (formData: BrokerAccountTaxDeductionFormInput) => {
         props.onSaved(formData as BrokerAccountTaxDeductionEntity);
@@ -112,7 +116,7 @@ const BrokerAccountTaxDeductionModal: React.FC<ModalProps> = (props: ModalProps)
             </Field.Root>
             <Field.Root mt={4} invalid={!!errors.amount}>
                 <Field.Label>{t("broker_account_tax_deduction_modal_amount")}</Field.Label>
-                <Input {...register("amount", { valueAsNumber: true })} name="amount" type="number" placeholder="10000" />
+                <MoneyInput name="amount" control={control} currency={brokerAccountCurrency} placeholder="10000" />
                 <Field.ErrorText>{errors.amount?.message}</Field.ErrorText>
             </Field.Root>
         </BaseFormModal>

@@ -1,4 +1,4 @@
-import { Field, Input} from "@chakra-ui/react"
+import { Field, Input } from "@chakra-ui/react"
 import { RefObject, useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,6 +10,7 @@ import { BrokerAccountTypeEntity } from "../../../../models/brokers/BrokerAccoun
 import { BrokerEntity } from "../../../../models/brokers/BrokerEntity";
 import { getCurrencies } from "../../../../api/currencies/currencyApi";
 import CollectionSelect from "../../../../shared/components/CollectionSelect/CollectionSelect";
+import MoneyInput from "../../../../shared/components/MoneyInput/MoneyInput";
 import { BrokerAccountFormInput, getBrokerAccountValidationSchema } from "./BrokerAccountValidationSchema";
 import { getBrokerAccountTypes } from "../../../../api/brokers/brokerAccountTypeApi";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
@@ -32,7 +33,7 @@ interface State {
 }
 
 const BrokerAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
-    const [state, setState] = useState<State>({currencies: [], accountTypes: [], brokers: [], banks: []})
+    const [state, setState] = useState<State>({ currencies: [], accountTypes: [], brokers: [], banks: [] })
 
     useEffect(() => {
         const initData = async () => {
@@ -48,12 +49,12 @@ const BrokerAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
         const banks = await getBanks();
 
         setState((currentState) => {
-            return {...currentState, currencies, accountTypes, brokers, banks}
+            return { ...currentState, currencies, accountTypes, brokers, banks }
         })
     };
 
     const getFormDefaultValues = useCallback(() => {
-        return  {
+        return {
             id: props.brokerAccount?.id ?? generateGuid(),
             name: props.brokerAccount?.name ?? "",
             type: props.brokerAccount?.type,
@@ -67,62 +68,65 @@ const BrokerAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
     const { t } = useTranslation();
     const validationSchema = useMemo(() => getBrokerAccountValidationSchema(t), [t]);
 
-    const { register, handleSubmit, control, formState: { errors }, reset} = useForm<BrokerAccountFormInput>({
+    const { register, handleSubmit, control, watch, formState: { errors }, reset } = useForm<BrokerAccountFormInput>({
         resolver: zodResolver(validationSchema),
         mode: "onBlur",
         defaultValues: getFormDefaultValues()
     });
+
+    useEffect(() => {
+        reset(getFormDefaultValues());
+    }, [reset, getFormDefaultValues, props.brokerAccount]);
+
+    const selectedCurrency = watch("currency");
+    const currentCurrency = state.currencies.find(c => c.id === selectedCurrency?.id)?.name ?? '';
 
     const onSubmit = (brokerAccount: BrokerAccountFormInput) => {
         props.onSaved(brokerAccount as BrokerAccountEntity);
         props.modalRef?.current?.closeModal();
     }
 
-    useEffect(() => {
-        reset(getFormDefaultValues());
-    }, [reset, getFormDefaultValues, props.brokerAccount]);
-
-    return <BaseFormModal ref={props.modalRef} title={t("entity_broker_name_form_title")} submitHandler={handleSubmit(onSubmit)}>
-        <Field.Root invalid={!!errors.name}>
+    return <BaseFormModal ref={props.modalRef} title={t("entity_broker_account_form_title")} submitHandler={handleSubmit(onSubmit)}>
+        <Field.Root mt={4} invalid={!!errors.name}>
             <Field.Label>{t("entity_broker_account_name")}</Field.Label>
-            <Input {...register("name")} autoComplete="off" placeholder='Debit card' />
+            <Input {...register("name")} placeholder="Broker" />
             <Field.ErrorText>{errors.name?.message}</Field.ErrorText>
         </Field.Root>
         <Field.Root mt={4} invalid={!!errors.type}>
             <Field.Label>{t("entity_broker_account_type")}</Field.Label>
-            <CollectionSelect name="type" control={control} placeholder="Select broker account type"
-                collection={state.accountTypes} 
-                labelSelector={(accountType => accountType.name)} 
-                valueSelector={(accountType => accountType.id)}/>
+            <CollectionSelect name="type" control={control} placeholder="Select account type"
+                collection={state.accountTypes}
+                labelSelector={(accountType => accountType.name)}
+                valueSelector={(accountType => accountType.id)} />
             <Field.ErrorText>{errors.type?.message}</Field.ErrorText>
         </Field.Root>
         <Field.Root mt={4} invalid={!!errors.currency}>
             <Field.Label>{t("entity_broker_account_currency")}</Field.Label>
             <CollectionSelect name="currency" control={control} placeholder="Select currency"
-                collection={state.currencies} 
-                labelSelector={(currency => currency.name)} 
-                valueSelector={(currency => currency.id)}/>
+                collection={state.currencies}
+                labelSelector={(currency => currency.name)}
+                valueSelector={(currency => currency.id)} />
             <Field.ErrorText>{errors.currency?.message}</Field.ErrorText>
         </Field.Root>
         <Field.Root mt={4} invalid={!!errors.bank}>
             <Field.Label>{t("entity_broker_account_bank")}</Field.Label>
             <CollectionSelect name="bank" control={control} placeholder="Select bank"
-                collection={state.banks} 
-                labelSelector={(bank => bank.name)} 
-                valueSelector={(bank => bank.id)}/>
+                collection={state.banks}
+                labelSelector={(bank => bank.name)}
+                valueSelector={(bank => bank.id)} />
             <Field.ErrorText>{errors.bank?.message}</Field.ErrorText>
         </Field.Root>
         <Field.Root mt={4} invalid={!!errors.mainCurrencyAmount}>
             <Field.Label>{t("entity_broker_account_main_currency_amount")}</Field.Label>
-            <Input {...register("mainCurrencyAmount", { valueAsNumber: true })} type='number' step="0.01" placeholder='10' />
+            <MoneyInput name="mainCurrencyAmount" control={control} currency={currentCurrency} placeholder='10' />
             <Field.ErrorText>{errors.mainCurrencyAmount?.message}</Field.ErrorText>
         </Field.Root>
         <Field.Root mt={4} invalid={!!errors.broker}>
             <Field.Label>{t("entity_broker_account_broker")}</Field.Label>
             <CollectionSelect name="broker" control={control} placeholder="Select broker"
-                collection={state.brokers} 
-                labelSelector={(broker => broker.name)} 
-                valueSelector={(broker => broker.id)}/>
+                collection={state.brokers}
+                labelSelector={(broker => broker.name)}
+                valueSelector={(broker => broker.id)} />
             <Field.ErrorText>{errors.broker?.message}</Field.ErrorText>
         </Field.Root>
     </BaseFormModal>

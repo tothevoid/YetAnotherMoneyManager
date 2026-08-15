@@ -1,4 +1,4 @@
-import { Field, Input} from "@chakra-ui/react"
+import { Field } from "@chakra-ui/react"
 import React, { RefObject, useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { getAccounts, transferBalance } from "../../../../api/accounts/accountApi";
 import { AccountEntity } from "../../../../models/accounts/AccountEntity";
 import CollectionSelect from "../../../../shared/components/CollectionSelect/CollectionSelect";
+import MoneyInput from "../../../../shared/components/MoneyInput/MoneyInput";
 import BaseFormModal from "../../../../shared/modals/BaseFormModal/BaseFormModal";
 import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 
@@ -56,25 +57,23 @@ const AccountBalanceTransferModal: React.FC<ModalProps> = (props: ModalProps) =>
 	const { t } = useTranslation();
 	const validationSchema = useMemo(() => getAccountBalanceTransferValidationSchema(t), [t]);
 
-	const { register, handleSubmit, control, formState: { errors }, reset } = useForm<AccountBalanceTransferFormInput>({
+	const { handleSubmit, control, watch, formState: { errors }, reset } = useForm<AccountBalanceTransferFormInput>({
 		resolver: zodResolver(validationSchema),
 		mode: "onBlur",
 		defaultValues: getFormDefaultValues()
 	});
 
+	const fromAccount = watch("from");
+	const fromCurrency = state.accounts.find(a => a.id === fromAccount?.id)?.currency?.name ?? props.from?.currency?.name ?? '';
+
 	useEffect(() => {
-		if (props.from) {
-			reset(getFormDefaultValues());
-		}
+		reset(getFormDefaultValues());
 	}, [reset, getFormDefaultValues, props.from])
 
 
 	const onSubmit = async (transfer: AccountBalanceTransferFormInput) => {
-		const isTransferred = await transferBalance(transfer as Transfer)
-
-		if (!isTransferred) {
-			return;
-		}
+		const formData = transfer as unknown as Transfer;
+		await transferBalance(formData);
 		
 		props.onTransferred();
 		props.modalRef?.current?.closeModal();
@@ -99,12 +98,12 @@ const AccountBalanceTransferModal: React.FC<ModalProps> = (props: ModalProps) =>
 		</Field.Root>
 		<Field.Root invalid={!!errors.balance} mt={4}>
 			<Field.Label>{t("account_balance_transfer_modal_balance")}</Field.Label>
-			<Input {...register("balance", { valueAsNumber: true })} name="balance" type="number" placeholder='10000' />
+			<MoneyInput name="balance" control={control} currency={fromCurrency} placeholder='10000' />
 			<Field.ErrorText>{errors.balance?.message}</Field.ErrorText>
 		</Field.Root>
 		<Field.Root invalid={!!errors.fee} mt={4}>
 			<Field.Label>{t("account_balance_transfer_modal_fee")}</Field.Label>
-			<Input {...register("fee", { valueAsNumber: true })} name="fee" type="number" placeholder='0' />
+			<MoneyInput name="fee" control={control} currency={fromCurrency} placeholder='0' />
 			<Field.ErrorText>{errors.fee?.message}</Field.ErrorText>
 		</Field.Root>
 	</BaseFormModal>

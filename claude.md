@@ -2,6 +2,8 @@
 
 This document contains guidelines, coding standards, and architectural patterns for developing features in YetAnotherMoneyManager.
 
+> **Important**: This document (`claude.md`) and `AGENTS.md` must ALWAYS be updated synchronously whenever development rules, guidelines, or patterns are modified.
+
 ---
 
 ## 🛠️ Server (Backend) Rules & Architecture
@@ -126,6 +128,18 @@ This document contains guidelines, coding standards, and architectural patterns 
   ```
 
 ### UI/UX & Component Guidelines
+- **Money & Numeric Inputs (`MoneyInput`)**: ALL monetary amounts, currency rates, prices, percentages, and quantities in forms and modals MUST use the shared `<MoneyInput />` component (`client/src/shared/components/MoneyInput/MoneyInput.tsx`). Do NOT use native `<Input type="number">` or `{ valueAsNumber: true }`.
+  - **Required `currency` Prop**: Always pass `currency: string` (e.g. `currency="RUB"`, `currency={selectedCurrency?.name ?? ''}`, `currency="%"`, or `currency="шт."`).
+  - **Precision (`decimalScale`)**: Defaults to `2` (monetary amounts). Use `decimalScale={4}` for currency exchange rates / crypto prices, `decimalScale={8}` for crypto quantities, and `decimalScale={0}` for integer units/shares.
+  - **Words Helper (`showWordsHelper`)**: Automatically shows a human-readable words preview for amounts $\ge 1\,000$ (e.g. `💡 10 млн ₽` / `💡 10M USD`). Set `showWordsHelper={false}` for percentages and non-monetary quantities.
+  - **Usage Example**:
+    ```tsx
+    <Field.Root invalid={!!errors.amount}>
+        <Field.Label>{t("entity_transaction_money_quantity")}</Field.Label>
+        <MoneyInput name="amount" control={control} currency={currentCurrency} placeholder="500" />
+        <Field.ErrorText>{errors.amount?.message}</Field.ErrorText>
+    </Field.Root>
+    ```
 - **Loading & Empty States**: Pages MUST use Skeleton loaders (`CardSkeleton`, `TableSkeleton`) during data fetches and `<EmptyStatePlaceholder>` when entity collections are empty.
 - **Date Picker**: Use `react-datepicker` (`DatePicker`) with Chakra UI `<Input width="200px" color="text_primary" backgroundColor="background_primary" borderColor="border_primary" />`.
 - **Default Date**: Default to today (`new Date()`). Display as `dd.MM.yyyy` to the user, and format as ISO date `YYYY-MM-DD` for API queries.

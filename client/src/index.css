@@ -37,3 +37,14 @@ input[type="number"] {
   animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* Prevent blue/yellow autofill background in dark theme */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #1E1E1E inset !important;
+  -webkit-text-fill-color: #E0E0E0 !important;
+  caret-color: #E0E0E0 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+

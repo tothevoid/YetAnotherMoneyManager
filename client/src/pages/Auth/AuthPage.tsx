@@ -1,15 +1,14 @@
 
-import { useState } from "react";
-import { Box, Flex } from "@chakra-ui/react";
-import "./AuthPage.scss";
+import React, { useState } from "react";
+import { Box, Flex, VStack } from "@chakra-ui/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import AuthForm from "./components/AuthForm/AuthForm";
 import ChangePasswordForm from "./components/ChangePasswordForm/ChangePasswordForm";
 import { Nullable } from "../../shared/utilities/nullable";
 
 enum FormType {
-	Auth,
-	ChangePassword
+    Auth,
+    ChangePassword
 }
 
 const AuthPage: React.FC = () => {
@@ -22,29 +21,56 @@ const AuthPage: React.FC = () => {
     const onTokenReceived = (token: string) => {
         localStorage.setItem("auth_token", token);
         navigate(from, { replace: true });
-    }
+    };
 
-    const [defaultPasswordResetValues, setDefaultPasswordResetValues] = 
-        useState<{userName: string, currentPassword: Nullable<string>}>({userName: "", currentPassword: null});
+    const [defaultPasswordResetValues, setDefaultPasswordResetValues] =
+        useState<{ userName: string; currentPassword: Nullable<string> }>({ userName: "", currentPassword: null });
 
     const onPasswordChangeRequired = (userName: string, currentPassword: Nullable<string>) => {
         setDefaultPasswordResetValues({ userName, currentPassword });
         setFormType(FormType.ChangePassword);
-    }
+    };
+
+    const onBackToAuth = () => {
+        setFormType(FormType.Auth);
+    };
 
     return (
-        <Flex minH="100vh" w="100vw" align="center" justify="center" 
-            bgGradient="linear(120deg, #e0eafc 0%, #cfdef3 100%)">
+        <Flex
+            minH="100vh"
+            w="100vw"
+            align="center"
+            justify="center"
+            backgroundColor="background_main"
+            backgroundImage="radial-gradient(ellipse at 50% 15%, rgba(10, 142, 58, 0.12), transparent 50%), radial-gradient(ellipse at 80% 85%, rgba(117, 0, 175, 0.08), transparent 45%)"
+            p={4}
+        >
             <Box
-                maxW="sm"
+                maxW="420px"
                 w="100%"
-                p={8}
-                borderRadius="xl"
-                boxShadow="lg"
-                bg="white"
+                p={{ base: 6, sm: 8 }}
+                borderRadius="2xl"
+                backgroundColor="background_primary"
+                borderColor="border_primary"
+                borderWidth="1px"
+                boxShadow="0 8px 32px rgba(0, 0, 0, 0.45)"
             >
-            {formType === FormType.Auth && <AuthForm onPasswordChangeRequired={onPasswordChangeRequired} onTokenReceived={onTokenReceived} />}
-            {formType === FormType.ChangePassword && <ChangePasswordForm defaultPasswordResetValues={defaultPasswordResetValues} onTokenReceived={onTokenReceived} />}
+                <VStack gap={4} align="stretch">
+                    {formType === FormType.Auth && (
+                        <AuthForm
+                            onPasswordChangeRequired={onPasswordChangeRequired}
+                            onTokenReceived={onTokenReceived}
+                        />
+                    )}
+
+                    {formType === FormType.ChangePassword && (
+                        <ChangePasswordForm
+                            defaultPasswordResetValues={defaultPasswordResetValues}
+                            onTokenReceived={onTokenReceived}
+                            onBackToAuth={onBackToAuth}
+                        />
+                    )}
+                </VStack>
             </Box>
         </Flex>
     );

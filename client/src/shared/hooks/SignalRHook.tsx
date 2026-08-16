@@ -6,6 +6,8 @@ const HANDLER_NAME = "ReceiveServerMessage"
 
 export const useSignalR = (onMessage: (message: string) => Promise<void>) => {
 	const connectionRef = useRef<signalR.HubConnection | null>(null);
+	const onMessageRef = useRef(onMessage);
+	onMessageRef.current = onMessage;
 
 	useEffect(() => {
 		return () => {
@@ -14,11 +16,11 @@ export const useSignalR = (onMessage: (message: string) => Promise<void>) => {
 			}
 			
 			const connection = connectionRef?.current;
-			connection.off(HANDLER_NAME)
+			connection.off(HANDLER_NAME);
 			connection.stop();
 			connectionRef.current = null;
-		}
-	}, [])
+		};
+	}, []);
 
 	useEffect(() => {
 		if (connectionRef.current) {
@@ -33,10 +35,14 @@ export const useSignalR = (onMessage: (message: string) => Promise<void>) => {
 		connection
 			.start()
 			.then(() => {
-				connection.on(HANDLER_NAME, onMessage);
+				connection.on(HANDLER_NAME, (msg: string) => {
+					if (onMessageRef.current) {
+						onMessageRef.current(msg);
+					}
+				});
 			})
 			.catch(console.error);
 
 		connectionRef.current = connection;
-	}, [onMessage]);
+	}, []);
 };

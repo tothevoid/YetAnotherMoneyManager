@@ -39,7 +39,7 @@ export const useNotifications = () => {
 
     const handleSignalRMessage = useCallback(async (rawMessage: string) => {
         try {
-            const data = JSON.parse(rawMessage);
+            const data = typeof rawMessage === "string" ? JSON.parse(rawMessage) : rawMessage;
             if (data?.type === "NotificationReceived" && data.payload) {
                 const newNotification = prepareNotification(data.payload);
                 setNotifications(prev => [newNotification, ...prev.filter(n => n.id !== newNotification.id)]);

@@ -6,7 +6,6 @@ import {
     Flex,
     HStack,
     Icon,
-    IconButton,
     Popover,
     Stack,
     Text,
@@ -62,8 +61,10 @@ export const HeaderNotificationBell: React.FC = () => {
         }
     };
 
-    const formatTimeAgo = (date: Date) => {
-        const diffMs = Date.now() - new Date(date).getTime();
+    const formatTimeAgo = (date: Date | string) => {
+        const d = new Date(date);
+        if (isNaN(d.getTime())) return t("notifications_just_now");
+        const diffMs = Date.now() - d.getTime();
         const diffMinutes = Math.floor(diffMs / 60000);
         if (diffMinutes < 1) return t("notifications_just_now");
         if (diffMinutes < 60) return t("notifications_minutes_ago", { count: diffMinutes });
@@ -91,17 +92,16 @@ export const HeaderNotificationBell: React.FC = () => {
         <Popover.Root open={open} onOpenChange={e => setOpen(e.open)} positioning={{ placement: "bottom-end" }}>
             <Popover.Trigger asChild>
                 <Box position="relative" display="inline-block">
-                    <IconButton
+                    <Button
                         aria-label="Notifications"
                         size="md"
                         borderColor="background_secondary"
                         background="button_background_secondary"
-                        variant="outline"
                     >
                         <Icon color="card_action_icon_primary">
                             <MdNotifications />
                         </Icon>
-                    </IconButton>
+                    </Button>
                     {unreadCount > 0 && (
                         <Badge
                             position="absolute"
@@ -138,7 +138,6 @@ export const HeaderNotificationBell: React.FC = () => {
                     color="text_primary"
                     zIndex={1500}
                 >
-                    <Popover.Arrow backgroundColor="background_primary" />
                     <Box p={3} borderBottomWidth="1px" borderColor="border_primary">
                         <Flex justify="space-between" align="center">
                             <HStack gap={2}>

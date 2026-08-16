@@ -1,14 +1,13 @@
 import { NotificationEntity, NotificationEntityResponse } from "../../models/notifications/NotificationEntity";
-import { deleteEntity, getAllEntitiesByConfig, getEntity, postAction } from "../basicApi";
+import { deleteEntity, getAllEntities, getEntity, postAction } from "../basicApi";
 import { prepareNotification } from "./notificationApiMapping";
 
 const basicUrl = "Notification";
 
-export const getNotifications = async (onlyUnread?: boolean): Promise<NotificationEntity[]> => {
-    return await getAllEntitiesByConfig<unknown, NotificationEntityResponse>(
-        basicUrl,
-        onlyUnread !== undefined ? { onlyUnread } : {}
-    ).then((responses: NotificationEntityResponse[]) => responses.map(prepareNotification));
+export const getNotifications = async (onlyUnread: boolean = false): Promise<NotificationEntity[]> => {
+    const url = onlyUnread ? `${basicUrl}?onlyUnread=${onlyUnread}` : basicUrl;
+    return await getAllEntities<NotificationEntityResponse>(url)
+        .then((responses: NotificationEntityResponse[]) => (responses || []).map(prepareNotification));
 };
 
 export const getUnreadNotificationCount = async (): Promise<number> => {

@@ -232,7 +232,8 @@ _Pvt_Extensions
 # FAKE - F# Make
 .fake/
 
-
+.DS_Store
+dotnet-tools.json
 **/node_modules
 
 **/.vs/MoneyManager

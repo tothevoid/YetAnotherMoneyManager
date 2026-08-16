@@ -17,6 +17,7 @@ import CryptoAccountsPage from './pages/CryptoAccountsPage/CryptoAccountsPage';
 import CryptoAccountPage from './pages/CryptoAccountPage/CryptoAccountPage';
 import AuthPage from './pages/Auth/AuthPage';
 import { UserProvider } from '../features/UserProfileSettingsModal/hooks/UserProfileContext.tsx';
+import NotificationsPage from './pages/Notifications/NotificationsPage';
 import CashAccountPage from './pages/CashAccountPage/CashAccountPage.tsx';
 
 
@@ -60,6 +61,7 @@ const App = () => {
 						<Route path="/broker_account/:brokerAccountId" element={<BrokerAccountPage />} />
 						<Route path="/security/:securityId" element={<SecurityPage />} />
 						<Route path="/cash_account/:cashAccountId" element={<CashAccountPage />} />
+						<Route path="/notifications" element={<NotificationsPage />} />
 					</Route>
 				</Route>
 			</Routes>

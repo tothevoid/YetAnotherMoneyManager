@@ -1,13 +1,33 @@
 import { NotificationEntity, NotificationEntityResponse } from "../../models/notifications/NotificationEntity";
-import { deleteEntity, getAllEntities, getEntity, postAction } from "../basicApi";
+import { deleteEntity, getAllEntitiesByConfig, getEntity, getPagination, postAction } from "../basicApi";
+import { PaginationConfig } from "../../shared/models/PaginationConfig";
 import { prepareNotification } from "./notificationApiMapping";
 
 const basicUrl = "Notification";
 
-export const getNotifications = async (onlyUnread: boolean = false): Promise<NotificationEntity[]> => {
-    const url = onlyUnread ? `${basicUrl}?onlyUnread=${onlyUnread}` : basicUrl;
-    return await getAllEntities<NotificationEntityResponse>(url)
+export interface NotificationsQuery {
+    pageIndex: number;
+    recordsQuantity: number;
+    onlyUnread?: boolean;
+    category?: string;
+}
+
+export const getNotifications = async (query: NotificationsQuery): Promise<NotificationEntity[]> => {
+    return await getAllEntitiesByConfig<NotificationsQuery, NotificationEntityResponse>(`${basicUrl}/GetAll`, query)
         .then((responses: NotificationEntityResponse[]) => (responses || []).map(prepareNotification));
+};
+
+export const getNotificationsPagination = async (
+    onlyUnread: boolean = false,
+    category?: string
+): Promise<PaginationConfig | void> => {
+    const params = new URLSearchParams();
+    if (onlyUnread) params.append("onlyUnread", "true");
+    if (category && category !== "All") params.append("category", category);
+
+    const queryString = params.toString();
+    const url = queryString ? `${basicUrl}/GetPagination?${queryString}` : `${basicUrl}/GetPagination`;
+    return await getPagination(url);
 };
 
 export const getUnreadNotificationCount = async (): Promise<number> => {

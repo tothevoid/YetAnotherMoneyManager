@@ -8,5 +8,16 @@
     "notifications_hours_ago": "{{count}} ч назад",
     "notifications_days_ago": "{{count}} д назад",
     "notifications_filter_all": "Все",
-    "notifications_filter_unread": "Только непрочитанные"
+    "notifications_filter_recent": "Актуальные",
+    "notifications_filter_unread": "Непрочитанные",
+    "notifications_load_more": "Загрузить еще",
+    "notifications_page_title": "История уведомлений",
+    "notifications_open_full_page": "Посмотреть всю историю",
+    "notifications_delete": "Удалить",
+    "notifications_category_all": "Все категории",
+    "notifications_mark_as_read": "Отметить прочитанным",
+    "notifications_go_to": "Перейти",
+    "notifications_no_history": "У вас пока нет уведомлений",
+    "notifications_delete_confirm_title": "Удаление уведомления",
+    "notifications_delete_confirm_message": "Вы уверены, что хотите удалить это уведомление?"
 }

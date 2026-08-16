@@ -22,13 +22,13 @@ import {
 } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { useNotifications } from "./useNotifications";
+import { useNotifications } from "../../../src/shared/hooks/useNotifications";
 import { NotificationEntity, NotificationSeverity } from "../../../src/models/notifications/NotificationEntity";
 
 export const HeaderNotificationBell: React.FC = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+    const { notifications, unreadCount, markAsRead, markAllAsRead, hasMore, isLoadingMore, loadMore } = useNotifications();
     const [open, setOpen] = useState(false);
     const [onlyUnreadFilter, setOnlyUnreadFilter] = useState(false);
 
@@ -172,7 +172,7 @@ export const HeaderNotificationBell: React.FC = () => {
                                 color="text_primary"
                                 onClick={() => setOnlyUnreadFilter(false)}
                             >
-                                {t("notifications_filter_all")} ({notifications.length})
+                                {t("notifications_filter_recent")} ({notifications.length})
                             </Button>
                             <Button
                                 size="xs"
@@ -236,9 +236,36 @@ export const HeaderNotificationBell: React.FC = () => {
                                         </Flex>
                                     </Box>
                                 ))}
+                                {!onlyUnreadFilter && hasMore && (
+                                    <Button
+                                        size="xs"
+                                        variant="ghost"
+                                        color="action_primary"
+                                        onClick={loadMore}
+                                        loading={isLoadingMore}
+                                        mt={1}
+                                        width="100%"
+                                    >
+                                        {t("notifications_load_more")}
+                                    </Button>
+                                )}
                             </VStack>
                         )}
                     </Popover.Body>
+                    <Box p={2} borderTopWidth="1px" borderColor="border_primary" textAlign="center">
+                        <Button
+                            size="xs"
+                            variant="ghost"
+                            color="action_primary"
+                            width="100%"
+                            onClick={() => {
+                                setOpen(false);
+                                navigate("/notifications");
+                            }}
+                        >
+                            {t("notifications_open_full_page")}
+                        </Button>
+                    </Box>
                 </Popover.Content>
             </Popover.Positioner>
         </Popover.Root>

@@ -10,6 +10,7 @@ using MoneyManager.Application.DTO.Currencies;
 using MoneyManager.Application.DTO.Dashboard;
 using MoneyManager.Application.DTO.Debts;
 using MoneyManager.Application.DTO.Deposits;
+using MoneyManager.Application.DTO.Notifications;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.DTO.Transactions;
 using MoneyManager.WebApi.Models.Accounts;
@@ -23,6 +24,7 @@ using MoneyManager.WebApi.Models.Dashboard;
 using MoneyManager.WebApi.Models.Debts;
 using MoneyManager.WebApi.Models.Deposits;
 using MoneyManager.WebApi.Models.Deposits.Charts;
+using MoneyManager.WebApi.Models.Notifications;
 using MoneyManager.WebApi.Models.Securities;
 using MoneyManager.WebApi.Models.Transactions;
 using MoneyManager.WebApi.Models.User;
@@ -210,5 +212,9 @@ namespace MoneyManager.WebApi.Mappings
         public partial IEnumerable<BrokerAccountTaxDeductionModel> Map(IEnumerable<BrokerAccountTaxDeductionDto> dtos);
 
         public partial BrokerAccountPortfolioModel Map(BrokerAccountPortfolioDto dto);
+
+        public partial NotificationDto Map(NotificationModel model);
+        public partial NotificationModel Map(NotificationDto dto);
+        public partial IEnumerable<NotificationModel> Map(IEnumerable<NotificationDto> dtos);
     }
 }

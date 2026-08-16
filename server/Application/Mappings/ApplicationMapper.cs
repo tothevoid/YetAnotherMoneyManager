@@ -8,6 +8,7 @@ using MoneyManager.Application.DTO.Currencies;
 using MoneyManager.Application.DTO.Crypto;
 using MoneyManager.Application.DTO.Debts;
 using MoneyManager.Application.DTO.Deposits;
+using MoneyManager.Application.DTO.Notifications;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.DTO.Transactions;
 using MoneyManager.Infrastructure.Entities.Accounts;
@@ -17,6 +18,7 @@ using MoneyManager.Infrastructure.Entities.Crypto;
 using MoneyManager.Infrastructure.Entities.Currencies;
 using MoneyManager.Infrastructure.Entities.Debts;
 using MoneyManager.Infrastructure.Entities.Deposits;
+using MoneyManager.Infrastructure.Entities.Notifications;
 using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Infrastructure.Entities.Transactions;
 using MoneyManager.Infrastructure.Entities.User;
@@ -135,5 +137,9 @@ namespace MoneyManager.Application.Mappings
         public partial BrokerAccountTaxDeduction Map(BrokerAccountTaxDeductionDto dto);
         public partial BrokerAccountTaxDeductionDto Map(BrokerAccountTaxDeduction entity);
         public partial IEnumerable<BrokerAccountTaxDeductionDto> Map(IEnumerable<BrokerAccountTaxDeduction> entities);
+
+        public partial Notification Map(NotificationDto dto);
+        public partial NotificationDto Map(Notification entity);
+        public partial IEnumerable<NotificationDto> Map(IEnumerable<Notification> entities);
     }
 }

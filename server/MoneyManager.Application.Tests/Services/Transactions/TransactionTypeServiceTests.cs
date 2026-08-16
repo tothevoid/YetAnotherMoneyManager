@@ -144,5 +144,66 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             Assert.Contains(onlyActive, t => t.Id == activeType.Id);
             Assert.DoesNotContain(onlyActive, t => t.Id == inactiveType.Id);
         }
+
+        [Fact]
+        public async Task TestDelete_WithIcon()
+        {
+            var dto = new TransactionTypeDTO
+            {
+                Id = Guid.NewGuid(),
+                Name = "Type With Icon",
+                Active = true,
+                IconKey = "type-sample-icon"
+            };
+
+            var added = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ITransactionTypeService>();
+                return await service.Add(dto, null);
+            });
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ITransactionTypeService>();
+                await service.Delete(added.Id);
+            });
+
+            var all = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ITransactionTypeService>();
+                return await service.GetAll(false);
+            });
+
+            Assert.DoesNotContain(all, t => t.Id == added.Id);
+        }
+
+        [Fact]
+        public async Task TestUpdate_RemoveIcon()
+        {
+            var dto = new TransactionTypeDTO
+            {
+                Id = Guid.NewGuid(),
+                Name = "Type To Remove Icon",
+                Active = true,
+                IconKey = "type-initial-icon"
+            };
+
+            var added = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ITransactionTypeService>();
+                return await service.Add(dto, null);
+            });
+
+            added.IconKey = null;
+
+            var updated = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ITransactionTypeService>();
+                return await service.Update(added, null);
+            });
+
+            Assert.NotNull(updated);
+            Assert.Null(updated.IconKey);
+        }
     }
 }

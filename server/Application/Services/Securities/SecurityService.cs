@@ -143,6 +143,7 @@ namespace MoneyManager.Application.Services.Securities
 
         public async Task<SecurityDTO> Update(SecurityDTO securityTypeDto, IFormFile securityIcon)
         {
+            var existingSecurity = await _securityRepo.GetById(securityTypeDto.Id);
             var security = _mapper.Map(securityTypeDto);
 
             if (securityIcon != null)
@@ -150,6 +151,11 @@ namespace MoneyManager.Application.Services.Securities
                 var key = security.Id.ToString();
                 await _fileStorageService.UploadFile(_iconsBucket, securityIcon, key);
                 security.IconKey = key;
+            }
+            else if (string.IsNullOrEmpty(securityTypeDto.IconKey) && existingSecurity != null && !string.IsNullOrEmpty(existingSecurity.IconKey))
+            {
+                await _fileStorageService.DeleteFile(_iconsBucket, existingSecurity.IconKey);
+                security.IconKey = null;
             }
 
             _securityRepo.Update(security);
@@ -160,6 +166,12 @@ namespace MoneyManager.Application.Services.Securities
 
         public async Task Delete(Guid id)
         {
+            var security = await _securityRepo.GetById(id);
+            if (security != null && !string.IsNullOrEmpty(security.IconKey))
+            {
+                await _fileStorageService.DeleteFile(_iconsBucket, security.IconKey);
+            }
+
             await _securityRepo.Delete(id);
             await _db.Commit();
         }

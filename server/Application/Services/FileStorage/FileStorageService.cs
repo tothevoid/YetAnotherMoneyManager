@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using MoneyManager.Application.Interfaces.FileStorage;
 using System;
 using System.Linq;
@@ -46,6 +46,25 @@ namespace MoneyManager.Application.Services.FileStorage
                 .WithBucket(bucketName)
                 .WithObject(key)
                 .WithExpiry(60 * 60));
+        }
+
+        public async Task DeleteFile(string bucketName, string key)
+        {
+            if (string.IsNullOrEmpty(bucketName) || string.IsNullOrEmpty(key))
+            {
+                return;
+            }
+
+            var existsArgs = new BucketExistsArgs().WithBucket(bucketName);
+            var hasBucket = await _minio.BucketExistsAsync(existsArgs);
+            if (!hasBucket)
+            {
+                return;
+            }
+
+            await _minio.RemoveObjectAsync(new RemoveObjectArgs()
+                .WithBucket(bucketName)
+                .WithObject(key));
         }
     }
 }

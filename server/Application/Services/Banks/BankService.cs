@@ -61,6 +61,7 @@ namespace MoneyManager.Application.Services.Banks
 
         public async Task<BankDto> Update(BankDto bankDto, IFormFile bankIcon)
         {
+            var existingBank = await _bankRepo.GetById(bankDto.Id);
             var bank = _mapper.Map(bankDto);
 
             if (bankIcon != null)
@@ -68,6 +69,11 @@ namespace MoneyManager.Application.Services.Banks
                 var key = bank.Id.ToString();
                 await _fileStorageService.UploadFile(IconsBucket, bankIcon, key);
                 bank.IconKey = key;
+            }
+            else if (string.IsNullOrEmpty(bankDto.IconKey) && existingBank != null && !string.IsNullOrEmpty(existingBank.IconKey))
+            {
+                await _fileStorageService.DeleteFile(IconsBucket, existingBank.IconKey);
+                bank.IconKey = null;
             }
             
             _bankRepo.Update(bank);
@@ -78,6 +84,10 @@ namespace MoneyManager.Application.Services.Banks
         public async Task<bool> Delete(Guid id)
         {
             var bank = await _bankRepo.GetById(id);
+            if (bank != null && !string.IsNullOrEmpty(bank.IconKey))
+            {
+                await _fileStorageService.DeleteFile(IconsBucket, bank.IconKey);
+            }
 
             await _bankRepo.Delete(id);
             await _db.Commit();

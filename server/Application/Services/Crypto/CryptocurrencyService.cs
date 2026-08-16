@@ -53,6 +53,7 @@ namespace MoneyManager.Application.Services.Crypto
 
         public async Task<CryptocurrencyDto> Update(CryptocurrencyDto cryptocurrencyDto, IFormFile cryptocurrencyIcon)
         {
+            var existingCrypto = await _cryptocurrencyRepo.GetById(cryptocurrencyDto.Id);
             var cryptocurrency = _mapper.Map(cryptocurrencyDto);
 
             if (cryptocurrencyIcon != null)
@@ -60,6 +61,11 @@ namespace MoneyManager.Application.Services.Crypto
                 var key = cryptocurrency.Id.ToString();
                 await _fileStorageService.UploadFile(_iconsBucket, cryptocurrencyIcon, key);
                 cryptocurrency.IconKey = key;
+            }
+            else if (string.IsNullOrEmpty(cryptocurrencyDto.IconKey) && existingCrypto != null && !string.IsNullOrEmpty(existingCrypto.IconKey))
+            {
+                await _fileStorageService.DeleteFile(_iconsBucket, existingCrypto.IconKey);
+                cryptocurrency.IconKey = null;
             }
 
             _cryptocurrencyRepo.Update(cryptocurrency);
@@ -69,6 +75,12 @@ namespace MoneyManager.Application.Services.Crypto
 
         public async Task Delete(Guid id)
         {
+            var crypto = await _cryptocurrencyRepo.GetById(id);
+            if (crypto != null && !string.IsNullOrEmpty(crypto.IconKey))
+            {
+                await _fileStorageService.DeleteFile(_iconsBucket, crypto.IconKey);
+            }
+
             await _cryptocurrencyRepo.Delete(id);
             await _db.Commit();
         }

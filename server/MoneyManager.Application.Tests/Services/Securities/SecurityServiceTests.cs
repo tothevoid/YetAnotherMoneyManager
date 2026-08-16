@@ -130,6 +130,75 @@ namespace MoneyManager.Application.Tests.Services.Securities
             Assert.Equal("MSFT", foundList.First().Ticker);
         }
 
+        [Fact]
+        public async Task TestDelete_WithIcon()
+        {
+            var typeId = await CreateSecurityType("EquityIcon");
+
+            var dto = new SecurityDTO
+            {
+                Name = "Security With Icon",
+                Ticker = "SWI",
+                TypeId = typeId,
+                CurrencyId = CurrencyConstants.USD,
+                ActualPrice = 100m,
+                IconKey = "security-sample-icon"
+            };
+
+            var added = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISecurityService>();
+                return await service.Add(dto, null);
+            });
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISecurityService>();
+                await service.Delete(added.Id);
+            });
+
+            var all = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISecurityService>();
+                return await service.GetAll();
+            });
+
+            Assert.DoesNotContain(all, s => s.Id == added.Id);
+        }
+
+        [Fact]
+        public async Task TestUpdate_RemoveIcon()
+        {
+            var typeId = await CreateSecurityType("EquityIcon2");
+
+            var dto = new SecurityDTO
+            {
+                Name = "Security To Remove Icon",
+                Ticker = "SRI",
+                TypeId = typeId,
+                CurrencyId = CurrencyConstants.USD,
+                ActualPrice = 150m,
+                IconKey = "security-initial-icon"
+            };
+
+            var added = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISecurityService>();
+                return await service.Add(dto, null);
+            });
+
+            added.IconKey = null;
+
+            var updated = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISecurityService>();
+                return await service.Update(added, null);
+            });
+
+            Assert.NotNull(updated);
+            Assert.Null(updated.IconKey);
+        }
+
         private async Task<Guid> CreateSecurityType(string name)
         {
             return await ExecuteScopeAsync(async sp =>

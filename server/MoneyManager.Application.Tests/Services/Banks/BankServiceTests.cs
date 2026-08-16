@@ -119,5 +119,58 @@ namespace MoneyManager.Application.Tests.Services.Banks
 
             Assert.Null(deleted);
         }
+
+        [Fact]
+        public async Task TestDelete_WithIcon()
+        {
+            var bankId = Guid.NewGuid();
+            await ExecuteScopeAsync(async sp =>
+            {
+                var bankService = sp.GetRequiredService<IBankService>();
+                await bankService.Add(new BankDto { Id = bankId, Name = "Bank With Icon", IconKey = "sample-icon-key" }, null);
+            });
+
+            var result = await ExecuteScopeAsync(async sp =>
+            {
+                var bankService = sp.GetRequiredService<IBankService>();
+                return await bankService.Delete(bankId);
+            });
+
+            Assert.True(result);
+
+            var deleted = await ExecuteScopeAsync(async sp =>
+            {
+                var bankService = sp.GetRequiredService<IBankService>();
+                return await bankService.GetById(bankId);
+            });
+
+            Assert.Null(deleted);
+        }
+
+        [Fact]
+        public async Task TestUpdate_RemoveIcon()
+        {
+            var bankId = Guid.NewGuid();
+            await ExecuteScopeAsync(async sp =>
+            {
+                var bankService = sp.GetRequiredService<IBankService>();
+                await bankService.Add(new BankDto { Id = bankId, Name = "Bank To Remove Icon", IconKey = "initial-icon-key" }, null);
+            });
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var bankService = sp.GetRequiredService<IBankService>();
+                await bankService.Update(new BankDto { Id = bankId, Name = "Bank To Remove Icon", IconKey = null }, null);
+            });
+
+            var updated = await ExecuteScopeAsync(async sp =>
+            {
+                var bankService = sp.GetRequiredService<IBankService>();
+                return await bankService.GetById(bankId);
+            });
+
+            Assert.NotNull(updated);
+            Assert.Null(updated.IconKey);
+        }
     }
 }

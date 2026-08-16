@@ -15,5 +15,10 @@ namespace MoneyManager.Application.Tests.Fixtures
         {
             return Task.FromResult($"https://localhost/{bucketName}/{key}");
         }
+
+        public Task DeleteFile(string bucketName, string key)
+        {
+            return Task.CompletedTask;
+        }
     }
 }

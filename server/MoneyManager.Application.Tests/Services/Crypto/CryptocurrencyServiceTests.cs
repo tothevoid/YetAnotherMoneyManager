@@ -82,5 +82,66 @@ namespace MoneyManager.Application.Tests.Services.Crypto
 
             Assert.DoesNotContain(allAfterDelete, c => c.Id == added.Id);
         }
+
+        [Fact]
+        public async Task TestDelete_WithIcon()
+        {
+            var dto = new CryptocurrencyDto
+            {
+                Name = "Solana",
+                Symbol = "SOL",
+                Price = 150m,
+                IconKey = "sol-sample-icon"
+            };
+
+            var added = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ICryptocurrencyService>();
+                return await service.Add(dto, null);
+            });
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ICryptocurrencyService>();
+                await service.Delete(added.Id);
+            });
+
+            var all = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ICryptocurrencyService>();
+                return await service.GetAll();
+            });
+
+            Assert.DoesNotContain(all, c => c.Id == added.Id);
+        }
+
+        [Fact]
+        public async Task TestUpdate_RemoveIcon()
+        {
+            var dto = new CryptocurrencyDto
+            {
+                Name = "Cardano",
+                Symbol = "ADA",
+                Price = 0.5m,
+                IconKey = "ada-initial-icon"
+            };
+
+            var added = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ICryptocurrencyService>();
+                return await service.Add(dto, null);
+            });
+
+            added.IconKey = null;
+
+            var updated = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ICryptocurrencyService>();
+                return await service.Update(added, null);
+            });
+
+            Assert.NotNull(updated);
+            Assert.Null(updated.IconKey);
+        }
     }
 }

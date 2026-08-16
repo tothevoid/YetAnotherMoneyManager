@@ -62,6 +62,7 @@ namespace MoneyManager.Application.Services.Transactions
 
         public async Task<TransactionTypeDTO> Update(TransactionTypeDTO transactionTypeDto, IFormFile transactionTypeIcon)
         {
+            var existingTransactionType = await _transactionTypeRepo.GetById(transactionTypeDto.Id);
             var transactionType = _mapper.Map(transactionTypeDto);
 
             if (transactionTypeIcon != null)
@@ -69,6 +70,11 @@ namespace MoneyManager.Application.Services.Transactions
                 var key = transactionTypeDto.Id.ToString();
                 await _fileStorageService.UploadFile(_iconsBucket, transactionTypeIcon, key);
                 transactionType.IconKey = key;
+            }
+            else if (string.IsNullOrEmpty(transactionTypeDto.IconKey) && existingTransactionType != null && !string.IsNullOrEmpty(existingTransactionType.IconKey))
+            {
+                await _fileStorageService.DeleteFile(_iconsBucket, existingTransactionType.IconKey);
+                transactionType.IconKey = null;
             }
 
             _transactionTypeRepo.Update(transactionType);
@@ -79,6 +85,12 @@ namespace MoneyManager.Application.Services.Transactions
 
         public async Task Delete(Guid id)
         {
+            var transactionType = await _transactionTypeRepo.GetById(id);
+            if (transactionType != null && !string.IsNullOrEmpty(transactionType.IconKey))
+            {
+                await _fileStorageService.DeleteFile(_iconsBucket, transactionType.IconKey);
+            }
+
             await _transactionTypeRepo.Delete(id);
             await _db.Commit();
         }

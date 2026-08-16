@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
 namespace MoneyManager.Application.Interfaces.FileStorage
@@ -8,5 +8,7 @@ namespace MoneyManager.Application.Interfaces.FileStorage
         Task UploadFile(string bucketName, IFormFile file, string key);
 
         Task<string> GetFileUrl(string bucketName, string key);
+
+        Task DeleteFile(string bucketName, string key);
     }
 }

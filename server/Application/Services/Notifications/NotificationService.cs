@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text.Json;
 using System.Threading.Tasks;
+using MoneyManager.Application.DTO.Common;
 using MoneyManager.Application.DTO.Notifications;
 using MoneyManager.Application.Interfaces.Notifications;
 using MoneyManager.Application.Mappings;
@@ -10,6 +12,7 @@ using MoneyManager.Infrastructure.Constants;
 using MoneyManager.Infrastructure.Entities.Notifications;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using MoneyManager.Infrastructure.Interfaces.Messages;
+using MoneyManager.Infrastructure.Queries;
 
 namespace MoneyManager.Application.Services.Notifications
 {
@@ -23,14 +26,46 @@ namespace MoneyManager.Application.Services.Notifications
         private readonly ApplicationMapper _mapper = mapper;
         private readonly IServerNotifier _serverNotifier = serverNotifier;
 
-        public async Task<IEnumerable<NotificationDto>> GetAll(bool? onlyUnread = null)
+        private static Expression<Func<Notification, bool>> GetNotificationFilter(bool onlyUnread, string category)
         {
-            var notifications = await _notificationRepo.GetAll(
-                filter: n => n.UserProfileId == UserProfileConstants.UserProfileId && (!onlyUnread.HasValue || !onlyUnread.Value || !n.IsRead),
-                disableTracking: true);
+            var hasCategory = !string.IsNullOrEmpty(category) && category != "All";
+            return n => n.UserProfileId == UserProfileConstants.UserProfileId &&
+                        (!onlyUnread || !n.IsRead) &&
+                        (!hasCategory || n.Category == category);
+        }
 
-            var ordered = notifications.OrderByDescending(n => n.CreatedAt);
-            return _mapper.Map(ordered);
+        public async Task<IEnumerable<NotificationDto>> GetAll(int pageIndex = 1, int recordsQuantity = 15, bool onlyUnread = false, string category = null)
+        {
+            var builder = new ComplexQueryBuilder<Notification>()
+                .AddFilter(GetNotificationFilter(onlyUnread, category))
+                .DisableTracking();
+
+            if (pageIndex > 0 && recordsQuantity > 0)
+            {
+                builder.AddPagination(pageIndex, recordsQuantity, n => n.CreatedAt, isDescending: true);
+            }
+            else
+            {
+                builder.AddOrder(n => n.CreatedAt, isDescending: true);
+                if (recordsQuantity > 0)
+                {
+                    var query = builder.GetQuery();
+                    query.RecordsLimit = recordsQuantity;
+                }
+            }
+
+            var notifications = await _notificationRepo.GetAll(builder.GetQuery());
+            return _mapper.Map(notifications);
+        }
+
+        public async Task<PaginationConfigDto> GetPagination(bool onlyUnread = false, string category = null)
+        {
+            var recordsQuantity = await _notificationRepo.GetCount(GetNotificationFilter(onlyUnread, category));
+            return new PaginationConfigDto
+            {
+                PageSize = 15,
+                RecordsQuantity = recordsQuantity
+            };
         }
 
         public async Task<int> GetUnreadCount()
@@ -40,6 +75,23 @@ namespace MoneyManager.Application.Services.Notifications
                 disableTracking: true);
 
             return unread.Count();
+        }
+
+        public async Task CleanUpOldNotifications(int olderThanDays = 90)
+        {
+            var threshold = DateTime.UtcNow.AddDays(-olderThanDays);
+            var oldReadNotifications = (await _notificationRepo.GetAll(
+                filter: n => n.UserProfileId == UserProfileConstants.UserProfileId && n.IsRead && n.CreatedAt < threshold,
+                disableTracking: false)).ToList();
+
+            if (oldReadNotifications.Count == 0) return;
+
+            foreach (var item in oldReadNotifications)
+            {
+                await _notificationRepo.Delete(item.Id);
+            }
+
+            await _db.Commit();
         }
 
         private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };

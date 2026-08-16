@@ -131,5 +131,52 @@ namespace MoneyManager.Application.Tests.Services.Notifications
 
             Assert.DoesNotContain(all, n => n.Id == notification.Id);
         }
+
+        [Fact]
+        public async Task TestCleanUpOldNotifications_RemovesOnlyOldReadNotifications()
+        {
+            var notification = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<INotificationService>();
+                var created = await service.Create("Old Notification", "To be cleaned", NotificationSeverity.Info);
+                await service.MarkAsRead(created.Id);
+                return created;
+            });
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<INotificationService>();
+                // Clean with olderThanDays: -1 (all read notifications before tomorrow)
+                await service.CleanUpOldNotifications(olderThanDays: -1);
+            });
+
+            var all = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<INotificationService>();
+                return (await service.GetAll(recordsQuantity: 100)).ToList();
+            });
+
+            Assert.DoesNotContain(all, n => n.Id == notification.Id);
+        }
+
+        [Fact]
+        public async Task TestGetPagination_ReturnsCorrectConfig()
+        {
+            var notification = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<INotificationService>();
+                return await service.Create("Paginated Notification", "Msg", NotificationSeverity.Info, category: "TestCategory");
+            });
+
+            var pagination = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<INotificationService>();
+                return await service.GetPagination(category: "TestCategory");
+            });
+
+            Assert.NotNull(pagination);
+            Assert.Equal(15, pagination.PageSize);
+            Assert.True(pagination.RecordsQuantity >= 1);
+        }
     }
 }

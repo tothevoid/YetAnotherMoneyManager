@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoneyManager.Application.Interfaces.Notifications;
 using MoneyManager.WebApi.Mappings;
+using MoneyManager.WebApi.Models.Common;
 using MoneyManager.WebApi.Models.Notifications;
 
 namespace MoneyManager.WebApi.Controllers.Notifications
@@ -24,11 +25,20 @@ namespace MoneyManager.WebApi.Controllers.Notifications
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<NotificationModel>> GetAll([FromQuery] bool? onlyUnread = null)
+        [HttpPost(nameof(GetAll))]
+        public async Task<IEnumerable<NotificationModel>> GetAll(GetAllNotificationsQuery query)
         {
-            var notifications = await _notificationService.GetAll(onlyUnread);
+            var notifications = await _notificationService.GetAll(query.PageIndex, query.RecordsQuantity, query.OnlyUnread, query.Category);
             return _mapper.Map(notifications);
+        }
+
+        [HttpGet(nameof(GetPagination))]
+        public async Task<PaginationConfigModel> GetPagination(
+            [FromQuery] bool onlyUnread = false,
+            [FromQuery] string category = null)
+        {
+            var pagination = await _notificationService.GetPagination(onlyUnread, category);
+            return _mapper.Map(pagination);
         }
 
         [HttpGet("unread-count")]

@@ -49,7 +49,7 @@ namespace MoneyManager.WebApi.Controllers.Notifications
             await _notificationService.MarkAllAsRead();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete]
         public async Task Delete(Guid id)
         {
             await _notificationService.Delete(id);

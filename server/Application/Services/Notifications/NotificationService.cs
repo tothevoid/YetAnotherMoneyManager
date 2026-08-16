@@ -42,6 +42,17 @@ namespace MoneyManager.Application.Services.Notifications
             return unread.Count();
         }
 
+        private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+
+        private static string BuildNotificationReceivedMessage(NotificationDto dto) =>
+            $"{{\"type\":\"NotificationReceived\",\"payload\":{JsonSerializer.Serialize(dto, JsonOptions)}}}";
+
+        private static string BuildNotificationReadMessage(Guid notificationId) =>
+            $"{{\"type\":\"NotificationRead\",\"notificationId\":\"{notificationId}\"}}";
+
+        private static string BuildAllNotificationsReadMessage() =>
+            "{\"type\":\"AllNotificationsRead\"}";
+
         public async Task<NotificationDto> Create(
             string title,
             string message,
@@ -67,7 +78,7 @@ namespace MoneyManager.Application.Services.Notifications
             await _db.Commit();
 
             var dto = _mapper.Map(entity);
-            await _serverNotifier.SendToAll(JsonSerializer.Serialize(new { type = "NotificationReceived", payload = dto }));
+            await _serverNotifier.SendToAll(BuildNotificationReceivedMessage(dto));
             return dto;
         }
 
@@ -81,7 +92,7 @@ namespace MoneyManager.Application.Services.Notifications
                 _notificationRepo.Update(item);
                 await _db.Commit();
 
-                await _serverNotifier.SendToAll(JsonSerializer.Serialize(new { type = "NotificationRead", notificationId }));
+                await _serverNotifier.SendToAll(BuildNotificationReadMessage(notificationId));
             }
         }
 
@@ -102,7 +113,7 @@ namespace MoneyManager.Application.Services.Notifications
             }
 
             await _db.Commit();
-            await _serverNotifier.SendToAll(JsonSerializer.Serialize(new { type = "AllNotificationsRead" }));
+            await _serverNotifier.SendToAll(BuildAllNotificationsReadMessage());
         }
 
         public async Task Delete(Guid notificationId)

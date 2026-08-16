@@ -1,0 +1,12 @@
+{
+    "notifications_title": "Notifications",
+    "notifications_mark_all_as_read": "Mark all as read",
+    "notifications_empty": "No new notifications",
+    "notifications_unread_count": "Unread",
+    "notifications_just_now": "Just now",
+    "notifications_minutes_ago": "{{count}}m ago",
+    "notifications_hours_ago": "{{count}}h ago",
+    "notifications_days_ago": "{{count}}d ago",
+    "notifications_filter_all": "All",
+    "notifications_filter_unread": "Unread only"
+}

@@ -1,0 +1,12 @@
+{
+    "notifications_title": "Уведомления",
+    "notifications_mark_all_as_read": "Прочитать все",
+    "notifications_empty": "Нет новых уведомлений",
+    "notifications_unread_count": "Непрочитанные",
+    "notifications_just_now": "Только что",
+    "notifications_minutes_ago": "{{count}} мин назад",
+    "notifications_hours_ago": "{{count}} ч назад",
+    "notifications_days_ago": "{{count}} д назад",
+    "notifications_filter_all": "Все",
+    "notifications_filter_unread": "Только непрочитанные"
+}

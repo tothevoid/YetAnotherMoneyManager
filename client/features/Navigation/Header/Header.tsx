@@ -9,6 +9,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { BaseModalRef } from '../../../src/shared/utilities/modalUtilities';
 import { MdOutlineExitToApp } from "react-icons/md";
 
+import { HeaderNotificationBell } from './HeaderNotificationBell';
 import appIcon from './AppIcon.svg';
 import { downloadAllAssetsReportXlsx } from '../../../src/api/reports/allAssetsReport';
 
@@ -79,6 +80,7 @@ const Header = () => {
                     </Flex>
                 </Flex>
                 <Flex width="auto" justify="flex-end" direction="row" gap={2}>
+                    <HeaderNotificationBell />
                     <Button borderColor="background_secondary" background="button_background_secondary" size={'md'} onClick={onDownloadReportClick}>
                         <Icon color="card_action_icon_primary">
                             <MdDownload/>

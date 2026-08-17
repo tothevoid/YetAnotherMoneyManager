@@ -12,17 +12,27 @@ This document contains guidelines, coding standards, and architectural patterns 
 - **Framework**: .NET 10 Web API
 - **Layering**:
   - `server/WebApi`: ASP.NET Core Controllers and DTO models. Controllers must remain thin and delegate logic to application services.
-  - `server/Application`: Core business logic, services (`MoneyManager.Application.Services`), interfaces (`MoneyManager.Application.Interfaces`), and DTOs.
+  - `server/Application`: Core business logic, services (`MoneyManager.Application.Services`), interfaces (`MoneyManager.Application.Interfaces`), and DTOs (`MoneyManager.Application.DTO`).
   - `server/Infrastructure`: EF Core DbContext, entity configurations, and migrations.
   - `server/Shared`: Common constants and helper models.
   - `server/MoneyManager.Application.Tests`: Unit tests for application services.
 - **Orphan Directory Prohibition**: Do NOT create or restore legacy directories (`server/BLL`, `server/DAL`, `server/Common`, `server/MoneyManager`, `server/server`). Only project folders in `MoneyManager.sln` are valid.
 
+### DTO Naming Conventions
+- **PascalCase with `Dto` Suffix**: All Data Transfer Object classes and files MUST use PascalCase with the `Dto` suffix (e.g. `AccountDto.cs`, `SecurityTransactionDto.cs`, `BrokerAccountSummaryDto.cs`, `UserProfileDto.cs`). Do NOT use `*DTO` all-caps suffix.
+
+### Async Method Suffix (`*Async`)
+- **Mandatory `Async` Suffix**: ALL asynchronous methods returning `Task` or `Task<T>` across all server layers MUST end with the `Async` suffix:
+  - **Infrastructure**: Repositories (`AddAsync`, `GetByIdAsync`, `GetAllAsync`, `GroupAsync`, `GetCountAsync`, `FindAsync`, `DeleteAsync`, `GetMinAsync`, `GetMaxAsync`, `GetSumAsync`, `SaveChangesAsync`), Unit of Work (`CommitAsync`), Notifiers (`SendToAllAsync`).
+  - **Application Services**: All service interfaces and implementations (`AddAsync`, `GetByIdAsync`, `GetAllAsync`, `GetPaginationAsync`, `UpdateAsync`, `DeleteAsync`, `GetSummaryAsync`, etc.).
+  - **Integrations & Jobs**: External providers (`GetCandlesAsync`, `PullRatesAsync`) and background jobs (`PullQuotationsAsync`, `CleanUpOldNotificationsAsync`).
+  - **WebApi Controllers**: Controller action methods must call these `*Async` methods with `await`.
+
 ### EF Core & Service Layer Performance Guidelines
 - **BaseEntity Inheritance**: ALL database entities in `server/Infrastructure/Entities` (including domain entities, join entities, and lookup tables) MUST inherit from `BaseEntity`.
 - **Entity Identification**: Every entity uses `Guid Id` inherited from `BaseEntity` as its primary key. Do NOT use composite keys or explicit `builder.HasKey(...)` in entity configurations, as EF Core automatically configures `Id` by convention.
 - **Assigning Entity Ids**: When creating entity instances (including join entities) in application services, explicitly assign `Id = Guid.NewGuid()`.
-- **Navigation Property Includes (`GetFullHierarchyColumns`)**: In application services, encapsulate Entity Framework `.Include()` / `.ThenInclude()` navigation loadings inside a private helper method `GetFullHierarchyColumns(IQueryable<TEntity> query)` passed as the `include` parameter to `GetAll` and `GetById`.
+- **Navigation Property Includes (`GetFullHierarchyColumns`)**: In application services, encapsulate Entity Framework `.Include()` / `.ThenInclude()` navigation loadings inside a private helper method `GetFullHierarchyColumns(IQueryable<TEntity> query)` passed as the `include` parameter to `GetAllAsync` and `GetByIdAsync`.
 - **Join Entity Synchronization (Differential Sync)**: When updating an entity with join entity collections (e.g. `debt.DebtTags`), do NOT use `.Clear()` and re-add all items. Implement differential synchronization: remove only associations whose target IDs are missing from the request, and add new join entities only for target IDs not already associated. This avoids `DbUpdateConcurrencyException` and unnecessary DB deletes/inserts.
 - **Read Query Optimization**: All read-only queries in services MUST use `.AsNoTracking()` to avoid unnecessary change-tracking memory allocations.
 - **Batch Async Execution**: Avoid sequential `await` inside `foreach` loops for multi-account computations. Use `Task.WhenAll` or aggregated SQL queries.
@@ -59,7 +69,7 @@ This document contains guidelines, coding standards, and architectural patterns 
   - `client/src/models/<domain>`: Domain interfaces, requests (`*EntityRequest`), responses (`*EntityResponse`).
   - `client/src/api/<domain>`: API client functions and response/request mappers.
   - `client/src/pages`: Feature pages (`BrokerAccount`, `BrokerAccounts`, `SecurityPage`, `Transactions`, etc.).
-  - `client/src/shared`: Reusable components (`MoneyCard`, `DateSelect`), hooks, utilities.
+  - `client/src/shared`: Reusable components (`MoneyCard`, `DateSelect`), hooks (`shared/hooks/`), utilities.
   - `client/src/locales`: Localization files (`en.json`, `ru.json`).
 
 ### File Placement & Naming Rules (Models, APIs & Mappers)
@@ -69,14 +79,18 @@ This document contains guidelines, coding standards, and architectural patterns 
    - Include domain entities, request payloads (`*EntityRequest`), and raw API responses (`*EntityResponse`).
 
 2. **API Clients**:
-   - **Path**: `client/src/api/<domain>/` (e.g. `api/brokers/`, `api/accounts/`).
-   - **Naming**: `<camelCaseEntity>Api.ts` (e.g. `brokerAccountPortfolioHistoryApi.ts`, `brokerAccountSummaryApi.ts`).
+   - **Path**: `client/src/api/<domain>/` (e.g. `api/brokers/`, `api/accounts/`, `api/dashboard/`).
+   - **Naming**: `<camelCaseEntity>Api.ts` (e.g. `brokerAccountPortfolioHistoryApi.ts`, `brokerAccountSummaryApi.ts`, `brokerAccountFundsTransferApi.ts`, `dashboardApi.ts`).
    - Use standard HTTP wrappers from `client/src/api/basicApi.ts` (`getEntity`, `getAllEntities`, `postEntity`, etc.).
 
 3. **Mappers (API Mapping)**:
    - **Path**: `client/src/api/<domain>/` (placed next to the corresponding API file).
-   - **Naming**: `<camelCaseEntity>ApiMapping.ts` or `<EntityName>Mapping.ts` (e.g. `brokerAccountApiMapping.ts`, `BrokerAccountFundsTransferMapping.ts`).
+   - **Naming**: `<camelCaseEntity>ApiMapping.ts` or `<camelCaseEntity>Mapping.ts` (e.g. `brokerAccountApiMapping.ts`, `brokerAccountFundsTransferMapping.ts`).
    - **Functions**: Use shared helpers (`parseEntityDates`, `formatRequestDates`) to avoid duplicated mapping boilerplate.
+
+4. **Hooks**:
+   - **Path**: `client/src/shared/hooks/` or domain-specific hooks.
+   - **Naming**: `use<PascalCaseName>.ts` (e.g. `useSignalR.ts`, `useEntityData.ts`).
 
 ### Localization Rules (i18n)
 - **Modular Directory Structure**: Locales are organized semantically into domain folders under `client/src/locales/en/` and `client/src/locales/ru/`, aggregated via `index.ts`:

@@ -9,7 +9,7 @@ namespace MoneyManager.Infrastructure.Tests.Database
 {
     public class RepositoryTests : TestBase
     {
-        public RepositoryTests(PostgresDbFixture fixture) : base(fixture)
+        public RepositoryTests(ServiceProviderFixture fixture) : base(fixture)
         {
         }
 

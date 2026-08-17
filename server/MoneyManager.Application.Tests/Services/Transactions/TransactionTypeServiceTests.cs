@@ -7,7 +7,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
 {
     public class TransactionTypeServiceTests : TestBase
     {
-        public TransactionTypeServiceTests(ServiceCollectionFixture serviceCollectionFixture) : base(serviceCollectionFixture)
+        public TransactionTypeServiceTests(ServiceProviderFixture serviceProviderFixture) : base(serviceProviderFixture)
         {
         }
 
@@ -146,6 +146,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
         }
 
         [Fact]
+        [Trait("Category", "S3")]
         public async Task TestDelete_WithIcon()
         {
             var dto = new TransactionTypeDto
@@ -178,6 +179,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
         }
 
         [Fact]
+        [Trait("Category", "S3")]
         public async Task TestUpdate_RemoveIcon()
         {
             var dto = new TransactionTypeDto
@@ -207,6 +209,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
         }
 
         [Fact]
+        [Trait("Category", "S3")]
         public async Task TestAdd_WithIcon_GeneratesVersionedKey()
         {
             var formFile = CreateDummyFormFile();
@@ -229,6 +232,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
         }
 
         [Fact]
+        [Trait("Category", "S3")]
         public async Task TestUpdate_ReplaceIcon_GeneratesNewKey()
         {
             var formFile1 = CreateDummyFormFile();
@@ -264,7 +268,11 @@ namespace MoneyManager.Application.Tests.Services.Transactions
         private static Microsoft.AspNetCore.Http.IFormFile CreateDummyFormFile()
         {
             var content = System.Text.Encoding.UTF8.GetBytes("dummy transaction type image");
-            return new Microsoft.AspNetCore.Http.FormFile(new System.IO.MemoryStream(content), 0, content.Length, "icon", "icon.png");
+            return new Microsoft.AspNetCore.Http.FormFile(new System.IO.MemoryStream(content), 0, content.Length, "icon", "icon.png")
+            {
+                Headers = new Microsoft.AspNetCore.Http.HeaderDictionary(),
+                ContentType = "image/png"
+            };
         }
     }
 }

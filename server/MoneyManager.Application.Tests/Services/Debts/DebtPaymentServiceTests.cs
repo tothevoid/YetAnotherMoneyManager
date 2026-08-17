@@ -13,7 +13,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
     //TODO: add update variations tests
     public class DebtPaymentServiceTests : TestBase
     {
-        public DebtPaymentServiceTests(ServiceCollectionFixture serviceCollectionFixture) : base(serviceCollectionFixture)
+        public DebtPaymentServiceTests(ServiceProviderFixture serviceProviderFixture) : base(serviceProviderFixture)
         {
         }
 

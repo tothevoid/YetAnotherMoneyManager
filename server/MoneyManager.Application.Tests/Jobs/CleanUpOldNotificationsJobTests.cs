@@ -9,7 +9,7 @@ namespace MoneyManager.Application.Tests.Jobs
 {
     public class CleanUpOldNotificationsJobTests : TestBase
     {
-        public CleanUpOldNotificationsJobTests(ServiceCollectionFixture serviceCollectionFixture) : base(serviceCollectionFixture)
+        public CleanUpOldNotificationsJobTests(ServiceProviderFixture serviceProviderFixture) : base(serviceProviderFixture)
         {
         }
 

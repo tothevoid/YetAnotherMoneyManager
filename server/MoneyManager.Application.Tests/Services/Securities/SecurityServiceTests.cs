@@ -8,7 +8,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
 {
     public class SecurityServiceTests : TestBase
     {
-        public SecurityServiceTests(ServiceCollectionFixture serviceCollectionFixture) : base(serviceCollectionFixture)
+        public SecurityServiceTests(ServiceProviderFixture serviceProviderFixture) : base(serviceProviderFixture)
         {
         }
 
@@ -131,6 +131,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
         }
 
         [Fact]
+        [Trait("Category", "S3")]
         public async Task TestDelete_WithIcon()
         {
             var typeId = await CreateSecurityType("EquityIcon");
@@ -167,6 +168,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
         }
 
         [Fact]
+        [Trait("Category", "S3")]
         public async Task TestUpdate_RemoveIcon()
         {
             var typeId = await CreateSecurityType("EquityIcon2");
@@ -200,6 +202,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
         }
 
         [Fact]
+        [Trait("Category", "S3")]
         public async Task TestAdd_WithIcon_GeneratesVersionedKey()
         {
             var typeId = await CreateSecurityType("EquityIcon3");
@@ -226,6 +229,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
         }
 
         [Fact]
+        [Trait("Category", "S3")]
         public async Task TestUpdate_ReplaceIcon_GeneratesNewKey()
         {
             var typeId = await CreateSecurityType("EquityIcon4");
@@ -264,7 +268,11 @@ namespace MoneyManager.Application.Tests.Services.Securities
         private static Microsoft.AspNetCore.Http.IFormFile CreateDummyFormFile()
         {
             var content = System.Text.Encoding.UTF8.GetBytes("dummy security image");
-            return new Microsoft.AspNetCore.Http.FormFile(new System.IO.MemoryStream(content), 0, content.Length, "icon", "icon.png");
+            return new Microsoft.AspNetCore.Http.FormFile(new System.IO.MemoryStream(content), 0, content.Length, "icon", "icon.png")
+            {
+                Headers = new Microsoft.AspNetCore.Http.HeaderDictionary(),
+                ContentType = "image/png"
+            };
         }
 
         private async Task<Guid> CreateSecurityType(string name)

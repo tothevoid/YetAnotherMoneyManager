@@ -7,7 +7,7 @@ namespace MoneyManager.Application.Tests.Services.Accounts
 {
     public class AccountTypeServiceTests: TestBase
     {
-        public AccountTypeServiceTests(ServiceCollectionFixture serviceCollectionFixture): base(serviceCollectionFixture)
+        public AccountTypeServiceTests(ServiceProviderFixture serviceProviderFixture): base(serviceProviderFixture)
         {
         }
 

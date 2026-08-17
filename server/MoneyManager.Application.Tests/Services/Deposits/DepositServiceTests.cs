@@ -8,7 +8,7 @@ namespace MoneyManager.Application.Tests.Services.Deposits
 {
     public class DepositServiceTests : TestBase
     {
-        public DepositServiceTests(ServiceCollectionFixture serviceCollectionFixture) : base(serviceCollectionFixture)
+        public DepositServiceTests(ServiceProviderFixture serviceProviderFixture) : base(serviceProviderFixture)
         {
         }
 

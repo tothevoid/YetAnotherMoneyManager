@@ -42,6 +42,7 @@ This document contains guidelines, coding standards, and architectural patterns 
 - **100% Service Coverage**: Every application service in `MoneyManager.Application` MUST have comprehensive unit test coverage in `MoneyManager.Application.Tests`.
 - **Directory Hierarchy**: Test file structure under `MoneyManager.Application.Tests` must mirror `MoneyManager.Application`.
 - **Test Style**: xUnit, NSubstitute / Moq, AutoFixture using the AAA (Arrange-Act-Assert) pattern.
+- **S3 / File Storage Testing (`[Trait("Category", "S3")]`)**: All test classes or methods interacting with `IFileStorageService` / MinIO (e.g. `FileStorageServiceTests`, icon uploads/deletions in `BankServiceTests`, `SecurityServiceTests`, `TransactionTypeServiceTests`, `CryptocurrencyServiceTests`) MUST be tagged with `[Trait("Category", "S3")]`. Use `ServiceProviderFixture` for isolated container management.
 
 ### API Controllers & Dual Endpoint Pattern
 - **Date Parameters**: Use `DateOnly` (`YYYY-MM-DD`) for API query parameters.
@@ -53,7 +54,8 @@ This document contains guidelines, coding standards, and architectural patterns 
 
 ### Server Commands
 - **Build**: `cd server && dotnet build`
-- **Run Tests**: `cd server && dotnet test`
+- **Run All Tests**: `cd server && dotnet test`
+- **Run S3 Tests**: `cd server && dotnet test --filter "Category=S3"`
 
 ---
 
@@ -178,6 +180,7 @@ Execute verification commands selectively based on the scope of changes made dur
 
 - **Client Changes (`client/`)**: Run `npm run build` in `client/`.
 - **Server Changes (`server/`)**: Run `dotnet build` and `dotnet test` in `server/`.
+- **S3 / File Storage Changes**: Run `dotnet test --filter "Category=S3"` (or full `dotnet test`) in `server/`.
 - **Both / Full-Stack Changes**: Run both client build and server build/tests.
 
 Do NOT run verification commands for a component (client or server) if no changes were made to that component.

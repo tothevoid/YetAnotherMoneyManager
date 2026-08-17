@@ -10,7 +10,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
 {
     public class BrokerAccountFundsTransferServiceTests : TestBase
     {
-        public BrokerAccountFundsTransferServiceTests(ServiceCollectionFixture serviceCollectionFixture) : base(serviceCollectionFixture)
+        public BrokerAccountFundsTransferServiceTests(ServiceProviderFixture serviceProviderFixture) : base(serviceProviderFixture)
         {
         }
 

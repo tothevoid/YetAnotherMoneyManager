@@ -26,6 +26,8 @@
 
   <ItemGroup>
     <Using Include="Xunit" />
+    <Using Include="MoneyManager.Tests.Shared" />
+    <Using Include="MoneyManager.Tests.Shared.Fixtures" />
   </ItemGroup>
 
 </Project>

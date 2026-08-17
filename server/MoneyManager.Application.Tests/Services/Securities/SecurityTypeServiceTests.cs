@@ -7,7 +7,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
 {
     public class SecurityTypeServiceTests : TestBase
     {
-        public SecurityTypeServiceTests(ServiceCollectionFixture serviceCollectionFixture) : base(serviceCollectionFixture)
+        public SecurityTypeServiceTests(ServiceProviderFixture serviceProviderFixture) : base(serviceProviderFixture)
         {
         }
 

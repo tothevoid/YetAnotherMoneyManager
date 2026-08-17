@@ -10,7 +10,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
 {
     public class DividendPaymentServiceTests : TestBase
     {
-        public DividendPaymentServiceTests(ServiceCollectionFixture serviceCollectionFixture) : base(serviceCollectionFixture)
+        public DividendPaymentServiceTests(ServiceProviderFixture serviceProviderFixture) : base(serviceProviderFixture)
         {
         }
 

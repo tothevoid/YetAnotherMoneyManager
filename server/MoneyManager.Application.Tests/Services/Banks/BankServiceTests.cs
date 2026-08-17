@@ -7,7 +7,7 @@ namespace MoneyManager.Application.Tests.Services.Banks
 {
     public class BankServiceTests : TestBase
     {
-        public BankServiceTests(ServiceCollectionFixture serviceCollectionFixture) : base(serviceCollectionFixture)
+        public BankServiceTests(ServiceProviderFixture serviceProviderFixture) : base(serviceProviderFixture)
         {
         }
 
@@ -121,6 +121,7 @@ namespace MoneyManager.Application.Tests.Services.Banks
         }
 
         [Fact]
+        [Trait("Category", "S3")]
         public async Task TestDelete_WithIcon()
         {
             var bankId = Guid.NewGuid();
@@ -148,6 +149,7 @@ namespace MoneyManager.Application.Tests.Services.Banks
         }
 
         [Fact]
+        [Trait("Category", "S3")]
         public async Task TestUpdate_RemoveIcon()
         {
             var bankId = Guid.NewGuid();
@@ -174,6 +176,7 @@ namespace MoneyManager.Application.Tests.Services.Banks
         }
 
         [Fact]
+        [Trait("Category", "S3")]
         public async Task TestAdd_WithIcon_GeneratesVersionedKey()
         {
             var bankId = Guid.NewGuid();
@@ -191,6 +194,7 @@ namespace MoneyManager.Application.Tests.Services.Banks
         }
 
         [Fact]
+        [Trait("Category", "S3")]
         public async Task TestUpdate_ReplaceIcon_GeneratesNewKey()
         {
             var bankId = Guid.NewGuid();
@@ -220,7 +224,11 @@ namespace MoneyManager.Application.Tests.Services.Banks
         private static Microsoft.AspNetCore.Http.IFormFile CreateDummyFormFile()
         {
             var content = System.Text.Encoding.UTF8.GetBytes("dummy image content");
-            return new Microsoft.AspNetCore.Http.FormFile(new System.IO.MemoryStream(content), 0, content.Length, "icon", "icon.png");
+            return new Microsoft.AspNetCore.Http.FormFile(new System.IO.MemoryStream(content), 0, content.Length, "icon", "icon.png")
+            {
+                Headers = new Microsoft.AspNetCore.Http.HeaderDictionary(),
+                ContentType = "image/png"
+            };
         }
     }
 }

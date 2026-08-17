@@ -6,7 +6,7 @@ namespace MoneyManager.Application.Tests.Services.Dashboard
 {
     public class DashboardServiceTests : TestBase
     {
-        public DashboardServiceTests(ServiceCollectionFixture serviceCollectionFixture) : base(serviceCollectionFixture)
+        public DashboardServiceTests(ServiceProviderFixture serviceProviderFixture) : base(serviceProviderFixture)
         {
         }
 

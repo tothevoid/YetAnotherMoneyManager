@@ -8,7 +8,7 @@ namespace MoneyManager.Application.Tests.Services.Auth
 {
     public class AuthServiceTests : TestBase
     {
-        public AuthServiceTests(ServiceCollectionFixture serviceCollectionFixture) : base(serviceCollectionFixture)
+        public AuthServiceTests(ServiceProviderFixture serviceProviderFixture) : base(serviceProviderFixture)
         {
         }
 

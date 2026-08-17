@@ -8,7 +8,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
 {
     public class BrokerAccountTaxDeductionServiceTests : TestBase
     {
-        public BrokerAccountTaxDeductionServiceTests(ServiceCollectionFixture serviceCollectionFixture) : base(serviceCollectionFixture)
+        public BrokerAccountTaxDeductionServiceTests(ServiceProviderFixture serviceProviderFixture) : base(serviceProviderFixture)
         {
         }
 

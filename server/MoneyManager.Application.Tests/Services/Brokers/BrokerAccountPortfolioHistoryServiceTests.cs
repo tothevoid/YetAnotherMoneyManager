@@ -13,7 +13,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
 {
     public class BrokerAccountPortfolioHistoryServiceTests : TestBase
     {
-        public BrokerAccountPortfolioHistoryServiceTests(ServiceCollectionFixture serviceCollectionFixture) : base(serviceCollectionFixture)
+        public BrokerAccountPortfolioHistoryServiceTests(ServiceProviderFixture serviceProviderFixture) : base(serviceProviderFixture)
         {
         }
 

@@ -6,7 +6,7 @@ namespace MoneyManager.Application.Tests.Services.Reports
 {
     public class AllAssetsReportServiceTests : TestBase
     {
-        public AllAssetsReportServiceTests(ServiceCollectionFixture serviceCollectionFixture) : base(serviceCollectionFixture)
+        public AllAssetsReportServiceTests(ServiceProviderFixture serviceProviderFixture) : base(serviceProviderFixture)
         {
         }
 

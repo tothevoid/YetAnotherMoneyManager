@@ -11,7 +11,7 @@ namespace MoneyManager.Application.Tests.Services.Notifications
 {
     public class NotificationServiceTests : TestBase
     {
-        public NotificationServiceTests(ServiceCollectionFixture serviceCollectionFixture) : base(serviceCollectionFixture)
+        public NotificationServiceTests(ServiceProviderFixture serviceProviderFixture) : base(serviceProviderFixture)
         {
         }
 

@@ -13,7 +13,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
 {
     public class DebtServiceTests : TestBase
     {
-        public DebtServiceTests(ServiceCollectionFixture serviceCollectionFixture) : base(serviceCollectionFixture)
+        public DebtServiceTests(ServiceProviderFixture serviceProviderFixture) : base(serviceProviderFixture)
         {
         }
 

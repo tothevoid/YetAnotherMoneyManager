@@ -8,7 +8,7 @@ namespace MoneyManager.Application.Tests.Services.Currencies
 {
     public class CurrencyServiceTests : TestBase
     {
-        public CurrencyServiceTests(ServiceCollectionFixture serviceCollectionFixture) : base(serviceCollectionFixture)
+        public CurrencyServiceTests(ServiceProviderFixture serviceProviderFixture) : base(serviceProviderFixture)
         {
         }
 

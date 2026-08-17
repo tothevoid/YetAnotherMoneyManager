@@ -8,7 +8,7 @@ namespace MoneyManager.Application.Tests.Services.User
 {
     public class UserProfileServiceTests : TestBase
     {
-        public UserProfileServiceTests(ServiceCollectionFixture serviceCollectionFixture) : base(serviceCollectionFixture)
+        public UserProfileServiceTests(ServiceProviderFixture serviceProviderFixture) : base(serviceProviderFixture)
         {
         }
 

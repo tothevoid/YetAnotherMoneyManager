@@ -8,7 +8,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
 {
     public class CryptoAccountServiceTests : TestBase
     {
-        public CryptoAccountServiceTests(ServiceCollectionFixture serviceCollectionFixture) : base(serviceCollectionFixture)
+        public CryptoAccountServiceTests(ServiceProviderFixture serviceProviderFixture) : base(serviceProviderFixture)
         {
         }
 

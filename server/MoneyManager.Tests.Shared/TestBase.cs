@@ -5,11 +5,11 @@ using Xunit;
 
 namespace MoneyManager.Tests.Shared
 {
-    public abstract class TestBase : IClassFixture<PostgresDbFixture>
+    public abstract class TestBase : IClassFixture<ServiceProviderFixture>
     {
-        protected readonly PostgresDbFixture Fixture;
+        protected readonly ServiceProviderFixture Fixture;
 
-        protected TestBase(PostgresDbFixture fixture)
+        protected TestBase(ServiceProviderFixture fixture)
         {
             Fixture = fixture;
         }

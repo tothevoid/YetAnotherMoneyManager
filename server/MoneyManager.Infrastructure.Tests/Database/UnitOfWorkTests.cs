@@ -9,7 +9,7 @@ namespace MoneyManager.Infrastructure.Tests.Database
 {
     public class UnitOfWorkTests : TestBase
     {
-        public UnitOfWorkTests(PostgresDbFixture fixture) : base(fixture)
+        public UnitOfWorkTests(ServiceProviderFixture fixture) : base(fixture)
         {
         }
 

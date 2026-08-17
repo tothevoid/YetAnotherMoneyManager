@@ -6,7 +6,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
 {
     public class PullQuotationsServiceTests : TestBase
     {
-        public PullQuotationsServiceTests(ServiceCollectionFixture serviceCollectionFixture) : base(serviceCollectionFixture)
+        public PullQuotationsServiceTests(ServiceProviderFixture serviceProviderFixture) : base(serviceProviderFixture)
         {
         }
 

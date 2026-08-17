@@ -1,15 +1,13 @@
 using Microsoft.AspNetCore.Http;
 using MoneyManager.Application.Interfaces.FileStorage;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Minio;
 using Minio.DataModel.Args;
-using MoneyManager.Infrastructure.Migrations;
 
 namespace MoneyManager.Application.Services.FileStorage
 {
-    public class FileStorageService: IFileStorageService
+    public class FileStorageService : IFileStorageService
     {
         private readonly IMinioClient _minio;
 
@@ -20,6 +18,11 @@ namespace MoneyManager.Application.Services.FileStorage
 
         public async Task UploadFileAsync(string bucketName, IFormFile file, string key)
         {
+            if (file == null)
+            {
+                return;
+            }
+
             var existsArgs = new BucketExistsArgs().WithBucket(bucketName);
             var hasBucket = await _minio.BucketExistsAsync(existsArgs);
 
@@ -30,12 +33,22 @@ namespace MoneyManager.Application.Services.FileStorage
 
             using var stream = file.OpenReadStream();
 
+            string contentType;
+            try
+            {
+                contentType = string.IsNullOrWhiteSpace(file.ContentType) ? "application/octet-stream" : file.ContentType;
+            }
+            catch
+            {
+                contentType = "application/octet-stream";
+            }
+
             await _minio.PutObjectAsync(new PutObjectArgs()
                 .WithBucket(bucketName)
                 .WithObject(key)
                 .WithStreamData(stream)
                 .WithObjectSize(file.Length)
-                .WithContentType(file.ContentType));
+                .WithContentType(contentType));
         }
 
         public async Task<string> GetFileUrlAsync(string bucketName, string key)

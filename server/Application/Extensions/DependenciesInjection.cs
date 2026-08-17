@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MoneyManager.Application.Integrations.Currency;
 using MoneyManager.Application.Integrations.Stock.Moex;
 using MoneyManager.Application.Interfaces.Accounts;
+using MoneyManager.Application.Interfaces.Auth;
 using MoneyManager.Application.Interfaces.Banks;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Application.Interfaces.Crypto;

@@ -50,6 +50,7 @@ namespace MoneyManager.Infrastructure.Database
             modelBuilder.ApplyConfiguration(new TransactionConfiguration());
             modelBuilder.ApplyConfiguration(new TransactionTypeConfiguration());
             modelBuilder.ApplyConfiguration(new UserProfileConfiguration());
+            modelBuilder.ApplyConfiguration(new UserRefreshTokenConfiguration());
             modelBuilder.ApplyConfiguration(new DebtConfiguration());
             modelBuilder.ApplyConfiguration(new DebtTagConfiguration());
             modelBuilder.ApplyConfiguration(new DebtToDebtTagConfiguration());

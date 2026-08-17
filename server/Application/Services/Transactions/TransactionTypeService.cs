@@ -29,20 +29,20 @@ namespace MoneyManager.Application.Services.Transactions
             _fileStorageService = fileStorageService;
         }
 
-        public async Task<IEnumerable<TransactionTypeDTO>> GetAll(bool onlyActive = false)
+        public async Task<IEnumerable<TransactionTypeDto>> GetAllAsync(bool onlyActive = false)
         {
             var result = onlyActive
-                ? await _transactionTypeRepo.GetAll(transaction => transaction.Active)
-                : await _transactionTypeRepo.GetAll();
+                ? await _transactionTypeRepo.GetAllAsync(transaction => transaction.Active)
+                : await _transactionTypeRepo.GetAllAsync();
             return _mapper.Map(result);
         }
 
-        public async Task<string> GetIconUrl(string iconKey)
+        public async Task<string> GetIconUrlAsync(string iconKey)
         {
-            return await _fileStorageService.GetFileUrl(_iconsBucket, iconKey);
+            return await _fileStorageService.GetFileUrlAsync(_iconsBucket, iconKey);
         }
 
-        public async Task<TransactionTypeDTO> Add(TransactionTypeDTO transactionTypeDto, IFormFile transactionTypeIcon)
+        public async Task<TransactionTypeDto> AddAsync(TransactionTypeDto transactionTypeDto, IFormFile transactionTypeIcon)
         {
             var transactionType = _mapper.Map(transactionTypeDto);
             transactionType.Id = Guid.NewGuid();
@@ -50,25 +50,25 @@ namespace MoneyManager.Application.Services.Transactions
             if (transactionTypeIcon != null)
             {
                 var key = $"{transactionType.Id}_{Guid.NewGuid():N}";
-                await _fileStorageService.UploadFile(_iconsBucket, transactionTypeIcon, key);
+                await _fileStorageService.UploadFileAsync(_iconsBucket, transactionTypeIcon, key);
                 transactionType.IconKey = key;
             }
 
-            await _transactionTypeRepo.Add(transactionType);
-            await _db.Commit();
+            await _transactionTypeRepo.AddAsync(transactionType);
+            await _db.CommitAsync();
             
             return _mapper.Map(transactionType);
         }
 
-        public async Task<TransactionTypeDTO> Update(TransactionTypeDTO transactionTypeDto, IFormFile transactionTypeIcon)
+        public async Task<TransactionTypeDto> UpdateAsync(TransactionTypeDto transactionTypeDto, IFormFile transactionTypeIcon)
         {
-            var existingTransactionType = await _transactionTypeRepo.GetById(transactionTypeDto.Id);
+            var existingTransactionType = await _transactionTypeRepo.GetByIdAsync(transactionTypeDto.Id);
             var transactionType = _mapper.Map(transactionTypeDto);
 
             if (transactionTypeIcon != null)
             {
                 transactionType.IconKey = $"{transactionType.Id}_{Guid.NewGuid():N}";
-                await _fileStorageService.UploadFile(_iconsBucket, transactionTypeIcon, transactionType.IconKey);
+                await _fileStorageService.UploadFileAsync(_iconsBucket, transactionTypeIcon, transactionType.IconKey);
             }
             else if (string.IsNullOrEmpty(transactionTypeDto.IconKey))
             {
@@ -77,25 +77,25 @@ namespace MoneyManager.Application.Services.Transactions
 
             if (!string.IsNullOrEmpty(existingTransactionType?.IconKey) && existingTransactionType.IconKey != transactionType.IconKey)
             {
-                await _fileStorageService.DeleteFile(_iconsBucket, existingTransactionType.IconKey);
+                await _fileStorageService.DeleteFileAsync(_iconsBucket, existingTransactionType.IconKey);
             }
 
             _transactionTypeRepo.Update(transactionType);
-            await _db.Commit();
+            await _db.CommitAsync();
 
             return _mapper.Map(transactionType);
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            var transactionType = await _transactionTypeRepo.GetById(id);
+            var transactionType = await _transactionTypeRepo.GetByIdAsync(id);
             if (transactionType != null && !string.IsNullOrEmpty(transactionType.IconKey))
             {
-                await _fileStorageService.DeleteFile(_iconsBucket, transactionType.IconKey);
+                await _fileStorageService.DeleteFileAsync(_iconsBucket, transactionType.IconKey);
             }
 
-            await _transactionTypeRepo.Delete(id);
-            await _db.Commit();
+            await _transactionTypeRepo.DeleteAsync(id);
+            await _db.CommitAsync();
         }
     }
 }

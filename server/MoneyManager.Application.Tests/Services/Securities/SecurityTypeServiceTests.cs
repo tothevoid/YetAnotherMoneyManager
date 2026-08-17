@@ -17,7 +17,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var typeId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTypeService>();
-                return await service.Add(new SecurityTypeDTO { Name = "Stock" });
+                return await service.AddAsync(new SecurityTypeDto { Name = "Stock" });
             });
 
             Assert.NotEqual(Guid.Empty, typeId);
@@ -25,7 +25,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTypeService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             Assert.NotNull(all);
@@ -40,19 +40,19 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var typeId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTypeService>();
-                return await service.Add(new SecurityTypeDTO { Name = "Bond Initial" });
+                return await service.AddAsync(new SecurityTypeDto { Name = "Bond Initial" });
             });
 
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTypeService>();
-                await service.Update(new SecurityTypeDTO { Id = typeId, Name = actualName });
+                await service.UpdateAsync(new SecurityTypeDto { Id = typeId, Name = actualName });
             });
 
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTypeService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             var updated = all.FirstOrDefault(t => t.Id == typeId);
@@ -66,13 +66,13 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var typeId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTypeService>();
-                return await service.Add(new SecurityTypeDTO { Name = "Bond to delete" });
+                return await service.AddAsync(new SecurityTypeDto { Name = "Bond to delete" });
             });
 
             var typesInDatabase = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTypeService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             Assert.Contains(typesInDatabase, t => t.Id == typeId);
@@ -80,13 +80,13 @@ namespace MoneyManager.Application.Tests.Services.Securities
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTypeService>();
-                await service.Delete(typeId);
+                await service.DeleteAsync(typeId);
             });
 
             var allAfterDelete = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTypeService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             Assert.DoesNotContain(allAfterDelete, t => t.Id == typeId);

@@ -7,12 +7,12 @@ namespace MoneyManager.Application.Interfaces.Debts
 {
     public interface IDebtTagService
     {
-        Task<IEnumerable<DebtTagDto>> GetAll();
-        Task<IEnumerable<DebtTagStatsDto>> GetStats();
-        Task<DebtTagDto> GetById(Guid id);
-        Task<Guid> Add(DebtTagDto debtTag);
-        Task Update(DebtTagDto debtTag);
-        Task Delete(Guid id);
-        Task AssignTagsToDebt(Guid debtId, IEnumerable<Guid> tagIds);
+        Task<IEnumerable<DebtTagDto>> GetAllAsync();
+        Task<IEnumerable<DebtTagStatsDto>> GetStatsAsync();
+        Task<DebtTagDto> GetByIdAsync(Guid id);
+        Task<Guid> AddAsync(DebtTagDto debtTag);
+        Task UpdateAsync(DebtTagDto debtTag);
+        Task DeleteAsync(Guid id);
+        Task AssignTagsToDebtAsync(Guid debtId, IEnumerable<Guid> tagIds);
     }
 }

@@ -12,7 +12,7 @@ namespace MoneyManager.Application.DTO.Debts
     {
         public string Name { get; set; }
 
-        public CurrencyDTO Currency { get; set; }
+        public CurrencyDto Currency { get; set; }
 
         public Guid CurrencyId { get; set; }
 

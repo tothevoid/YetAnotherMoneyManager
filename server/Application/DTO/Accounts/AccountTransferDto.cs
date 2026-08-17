@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 
 namespace MoneyManager.Application.DTO.Accounts
 {
-    public class AccountTransferDTO
+    public class AccountTransferDto
     {
         public Guid From { get; set; }
 

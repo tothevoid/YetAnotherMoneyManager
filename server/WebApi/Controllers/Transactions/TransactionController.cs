@@ -27,7 +27,7 @@ namespace MoneyManager.WebApi.Controllers.Transactions
         [HttpGet]
         public async Task<IEnumerable<TransactionModel>> GetAll(int month, int year, bool showSystem)
         {
-            var transactions = await _transactionService.GetAll(month, year, showSystem);
+            var transactions = await _transactionService.GetAllAsync(month, year, showSystem);
             return _mapper.Map(transactions);
         }
 
@@ -35,7 +35,7 @@ namespace MoneyManager.WebApi.Controllers.Transactions
         public async Task<TransactionModel> Add(TransactionModel transaction)
         {
             var transactionDto = _mapper.Map(transaction);
-            var addedTransaction = await _transactionService.Add(transactionDto);
+            var addedTransaction = await _transactionService.AddAsync(transactionDto);
             return _mapper.Map(addedTransaction);
         }
 
@@ -43,13 +43,13 @@ namespace MoneyManager.WebApi.Controllers.Transactions
         public async Task Update(TransactionModel updatedTransaction)
         {
             var transactionDto = _mapper.Map(updatedTransaction);
-            await _transactionService.Update(transactionDto);
+            await _transactionService.UpdateAsync(transactionDto);
         }
 
         [HttpDelete]
         public async Task Delete(Guid id)
         {
-            await _transactionService.Delete(id);
+            await _transactionService.DeleteAsync(id);
         }
     }
 }

@@ -1,23 +1,23 @@
-﻿using MoneyManager.Application.DTO.Currencies;
+using MoneyManager.Application.DTO.Currencies;
 using MoneyManager.Shared.Entities;
 using System;
 using MoneyManager.Application.DTO.Banks;
 
 namespace MoneyManager.Application.DTO.Brokers
 {
-    public class BrokerAccountDTO: BaseEntity
+    public class BrokerAccountDto: BaseEntity
     {
         public string Name { get; set; }
 
-        public BrokerAccountTypeDTO Type { get; set; }
+        public BrokerAccountTypeDto Type { get; set; }
 
         public Guid TypeId { get; set; }
 
-        public CurrencyDTO Currency { get; set; }
+        public CurrencyDto Currency { get; set; }
 
         public Guid CurrencyId { get; set; }
 
-        public BrokerDTO Broker { get; set; }
+        public BrokerDto Broker { get; set; }
 
         public Guid BrokerId { get; set; }
 

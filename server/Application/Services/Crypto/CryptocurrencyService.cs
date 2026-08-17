@@ -28,13 +28,13 @@ namespace MoneyManager.Application.Services.Crypto
             _fileStorageService = fileStorageService;
         }
 
-        public async Task<IEnumerable<CryptocurrencyDto>> GetAll()
+        public async Task<IEnumerable<CryptocurrencyDto>> GetAllAsync()
         {
-            var cryptocurrencies = await _cryptocurrencyRepo.GetAll();
+            var cryptocurrencies = await _cryptocurrencyRepo.GetAllAsync();
             return _mapper.Map(cryptocurrencies);
         }
 
-        public async Task<CryptocurrencyDto> Add(CryptocurrencyDto cryptocurrencyDto, IFormFile cryptocurrencyIcon)
+        public async Task<CryptocurrencyDto> AddAsync(CryptocurrencyDto cryptocurrencyDto, IFormFile cryptocurrencyIcon)
         {
             var cryptocurrency = _mapper.Map(cryptocurrencyDto);
             cryptocurrency.Id = Guid.NewGuid();
@@ -42,24 +42,24 @@ namespace MoneyManager.Application.Services.Crypto
             if (cryptocurrencyIcon != null)
             {
                 var key = $"{cryptocurrency.Id}_{Guid.NewGuid():N}";
-                await _fileStorageService.UploadFile(_iconsBucket, cryptocurrencyIcon, key);
+                await _fileStorageService.UploadFileAsync(_iconsBucket, cryptocurrencyIcon, key);
                 cryptocurrency.IconKey = key;
             }
 
-            await _cryptocurrencyRepo.Add(cryptocurrency);
-            await _db.Commit();
+            await _cryptocurrencyRepo.AddAsync(cryptocurrency);
+            await _db.CommitAsync();
             return _mapper.Map(cryptocurrency);
         }
 
-        public async Task<CryptocurrencyDto> Update(CryptocurrencyDto cryptocurrencyDto, IFormFile cryptocurrencyIcon)
+        public async Task<CryptocurrencyDto> UpdateAsync(CryptocurrencyDto cryptocurrencyDto, IFormFile cryptocurrencyIcon)
         {
-            var existingCrypto = await _cryptocurrencyRepo.GetById(cryptocurrencyDto.Id);
+            var existingCrypto = await _cryptocurrencyRepo.GetByIdAsync(cryptocurrencyDto.Id);
             var cryptocurrency = _mapper.Map(cryptocurrencyDto);
 
             if (cryptocurrencyIcon != null)
             {
                 cryptocurrency.IconKey = $"{cryptocurrency.Id}_{Guid.NewGuid():N}";
-                await _fileStorageService.UploadFile(_iconsBucket, cryptocurrencyIcon, cryptocurrency.IconKey);
+                await _fileStorageService.UploadFileAsync(_iconsBucket, cryptocurrencyIcon, cryptocurrency.IconKey);
             }
             else if (string.IsNullOrEmpty(cryptocurrencyDto.IconKey))
             {
@@ -68,29 +68,29 @@ namespace MoneyManager.Application.Services.Crypto
 
             if (!string.IsNullOrEmpty(existingCrypto?.IconKey) && existingCrypto.IconKey != cryptocurrency.IconKey)
             {
-                await _fileStorageService.DeleteFile(_iconsBucket, existingCrypto.IconKey);
+                await _fileStorageService.DeleteFileAsync(_iconsBucket, existingCrypto.IconKey);
             }
 
             _cryptocurrencyRepo.Update(cryptocurrency);
-            await _db.Commit();
+            await _db.CommitAsync();
             return _mapper.Map(cryptocurrency);
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            var crypto = await _cryptocurrencyRepo.GetById(id);
+            var crypto = await _cryptocurrencyRepo.GetByIdAsync(id);
             if (crypto != null && !string.IsNullOrEmpty(crypto.IconKey))
             {
-                await _fileStorageService.DeleteFile(_iconsBucket, crypto.IconKey);
+                await _fileStorageService.DeleteFileAsync(_iconsBucket, crypto.IconKey);
             }
 
-            await _cryptocurrencyRepo.Delete(id);
-            await _db.Commit();
+            await _cryptocurrencyRepo.DeleteAsync(id);
+            await _db.CommitAsync();
         }
 
-        public async Task<string> GetIconUrl(string iconKey)
+        public async Task<string> GetIconUrlAsync(string iconKey)
         {
-            return await _fileStorageService.GetFileUrl(_iconsBucket, iconKey);
+            return await _fileStorageService.GetFileUrlAsync(_iconsBucket, iconKey);
         }
     }
 }

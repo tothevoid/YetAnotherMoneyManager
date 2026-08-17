@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +16,7 @@ namespace MoneyManager.Application.DTO
 
         public Guid CurrencyId { get; set; }
 
-        public CurrencyDTO Currency { get; set; }
+        public CurrencyDto Currency { get; set; }
 
         public string LanguageCode { get; set; }
 

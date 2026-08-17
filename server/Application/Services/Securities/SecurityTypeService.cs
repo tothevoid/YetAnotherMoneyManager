@@ -21,32 +21,32 @@ namespace MoneyManager.Application.Services.Securities
             _securityTypeRepo = uow.CreateRepository<SecurityType>();
         }
 
-        public async Task<IEnumerable<SecurityTypeDTO>> GetAll()
+        public async Task<IEnumerable<SecurityTypeDto>> GetAllAsync()
         {
-            var securityTypes = await _securityTypeRepo.GetAll();
+            var securityTypes = await _securityTypeRepo.GetAllAsync();
             return _mapper.Map(securityTypes);
         }
 
-        public async Task Update(SecurityTypeDTO securityTypeDto)
+        public async Task UpdateAsync(SecurityTypeDto securityTypeDto)
         {
             var securityType = _mapper.Map(securityTypeDto);
             _securityTypeRepo.Update(securityType);
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
-        public async Task<Guid> Add(SecurityTypeDTO securityTypeDto)
+        public async Task<Guid> AddAsync(SecurityTypeDto securityTypeDto)
         {
             var securityType = _mapper.Map(securityTypeDto);
             securityType.Id = Guid.NewGuid();
-            await _securityTypeRepo.Add(securityType);
-            await _db.Commit();
+            await _securityTypeRepo.AddAsync(securityType);
+            await _db.CommitAsync();
             return securityType.Id;
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            await _securityTypeRepo.Delete(id);
-            await _db.Commit();
+            await _securityTypeRepo.DeleteAsync(id);
+            await _db.CommitAsync();
         }
     }
 }

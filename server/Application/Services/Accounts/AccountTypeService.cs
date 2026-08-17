@@ -22,20 +22,20 @@ namespace MoneyManager.Application.Services.Accounts
             _accountTypeRepo = uow.CreateRepository<AccountType>();
         }
 
-        public async Task<IEnumerable<AccountTypeDTO>> GetAll()
+        public async Task<IEnumerable<AccountTypeDto>> GetAllAsync()
         {
-            var transactions = await _accountTypeRepo.GetAll();
+            var transactions = await _accountTypeRepo.GetAllAsync();
             return _mapper.Map(transactions);
         }
 
-        public async Task Update(AccountTypeDTO accountTypeDto)
+        public async Task UpdateAsync(AccountTypeDto accountTypeDto)
         {
             var accountType = _mapper.Map(accountTypeDto);
             _accountTypeRepo.Update(accountType);
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
-        public async Task<Guid> Add(AccountTypeDTO accountTypeDto)
+        public async Task<Guid> AddAsync(AccountTypeDto accountTypeDto)
         {
             var accountType = _mapper.Map(accountTypeDto);
 
@@ -44,15 +44,15 @@ namespace MoneyManager.Application.Services.Accounts
                 accountType.Id = Guid.NewGuid();
             }
 
-            await _accountTypeRepo.Add(accountType);
-            await _db.Commit();
+            await _accountTypeRepo.AddAsync(accountType);
+            await _db.CommitAsync();
             return accountType.Id;
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            await _accountTypeRepo.Delete(id);
-            await _db.Commit();
+            await _accountTypeRepo.DeleteAsync(id);
+            await _db.CommitAsync();
         }
     }
 }

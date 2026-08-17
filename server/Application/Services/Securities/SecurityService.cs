@@ -30,29 +30,29 @@ namespace MoneyManager.Application.Services.Securities
         private readonly IFileStorageService _fileStorageService = fileStorageService;
         private const string _iconsBucket = "security";
 
-        public async Task<IEnumerable<SecurityDTO>> GetAll(bool disableTracking = true)
+        public async Task<IEnumerable<SecurityDto>> GetAllAsync(bool disableTracking = true)
         {
-            var securities = await _securityRepo.GetAll(include: GetFullHierarchyColumns, disableTracking: disableTracking);
+            var securities = await _securityRepo.GetAllAsync(include: GetFullHierarchyColumns, disableTracking: disableTracking);
             return _mapper.Map(securities);
         }
-        public async Task<SecurityDTO> FindByTicker(string ticker)
+        public async Task<SecurityDto> FindByTickerAsync(string ticker)
         {
-            return (await FindByTickers([ticker])).FirstOrDefault();
+            return (await FindByTickersAsync([ticker])).FirstOrDefault();
         }
 
-        public async Task<IEnumerable<SecurityDTO>> FindByTickers(IEnumerable<string> tickers)
+        public async Task<IEnumerable<SecurityDto>> FindByTickersAsync(IEnumerable<string> tickers)
         {
             var lowerTickers = tickers.Select(ticker => ticker.ToLower()).ToArray();
 
             var securities = await _securityRepo
-                .GetAll(filter: security => lowerTickers.Contains(security.Ticker.ToLower()), include: GetFullHierarchyColumns);
+                .GetAllAsync(filter: security => lowerTickers.Contains(security.Ticker.ToLower()), include: GetFullHierarchyColumns);
             return _mapper.Map(securities);
         }
 
-        public async Task<SecurityStatsDto> GetStats(Guid securityId)
+        public async Task<SecurityStatsDto> GetStatsAsync(Guid securityId)
         {
             // TODO: compare performance between db calls and linq calls
-            var securityTransactionsPrices = (await _securityTransactionsRepo.GetAll(transaction => transaction.SecurityId == securityId))
+            var securityTransactionsPrices = (await _securityTransactionsRepo.GetAllAsync(transaction => transaction.SecurityId == securityId))
                .ToArray();
 
             if (securityTransactionsPrices.Length == 0)
@@ -83,10 +83,10 @@ namespace MoneyManager.Application.Services.Securities
                 totalSum += transactionPrice * transaction.Quantity;
             }
         
-            var hasOnBrokerAccounts = await _brokerAccountSecurityRepo.GetSum(brokerAccountSecurity => brokerAccountSecurity.Quantity,
+            var hasOnBrokerAccounts = await _brokerAccountSecurityRepo.GetSumAsync(brokerAccountSecurity => brokerAccountSecurity.Quantity,
                 brokerAccountSecurity => brokerAccountSecurity.SecurityId == securityId);
 
-            var dividendsIncome = await _dividendPaymentRepo.GetSum(dividendPayment => dividendPayment.SecuritiesQuantity * dividendPayment.Dividend.Amount - dividendPayment.Tax, 
+            var dividendsIncome = await _dividendPaymentRepo.GetSumAsync(dividendPayment => dividendPayment.SecuritiesQuantity * dividendPayment.Dividend.Amount - dividendPayment.Tax, 
                 dividendPayment => dividendPayment.Dividend.SecurityId == securityId);
 
             return new SecurityStatsDto
@@ -101,29 +101,29 @@ namespace MoneyManager.Application.Services.Securities
             };
         }
 
-        public async Task<SecurityDTO> GetById(Guid id, bool loadHierarchy = true, bool disableTracking = true)
+        public async Task<SecurityDto> GetByIdAsync(Guid id, bool loadHierarchy = true, bool disableTracking = true)
         {
-            var security = await _securityRepo.GetById(id, loadHierarchy ? GetFullHierarchyColumns: null, disableTracking);
+            var security = await _securityRepo.GetByIdAsync(id, loadHierarchy ? GetFullHierarchyColumns: null, disableTracking);
             var securityDto = _mapper.Map(security);
             return securityDto;
         }
 
-        public async Task<IEnumerable<SecurityHistoryValueDto>> GetTickerHistory(string ticker)
+        public async Task<IEnumerable<SecurityHistoryValueDto>> GetTickerHistoryAsync(string ticker)
         {
             var to = DateOnly.FromDateTime(DateTime.Now);
             var from = to.AddMonths(-3);
 
-            var security = await FindByTicker(ticker);
+            var security = await FindByTickerAsync(ticker);
                 
             if (security == null)
             {
                 return [];
             }
 
-            return await _stockConnector.GetTickerHistory(security, from, to);
+            return await _stockConnector.GetTickerHistoryAsync(security, from, to);
         }
 
-        public async Task<SecurityDTO> Add(SecurityDTO securityDto, IFormFile securityIcon)
+        public async Task<SecurityDto> AddAsync(SecurityDto securityDto, IFormFile securityIcon)
         {
             var security = _mapper.Map(securityDto);
             security.Id = Guid.NewGuid();
@@ -131,25 +131,25 @@ namespace MoneyManager.Application.Services.Securities
             if (securityIcon != null)
             {
                 var key = $"{security.Id}_{Guid.NewGuid():N}";
-                await _fileStorageService.UploadFile(_iconsBucket, securityIcon, key);
+                await _fileStorageService.UploadFileAsync(_iconsBucket, securityIcon, key);
                 security.IconKey = key;
             }
 
-            await _securityRepo.Add(security);
-            await _db.Commit();
+            await _securityRepo.AddAsync(security);
+            await _db.CommitAsync();
 
-            return await GetById(security.Id);
+            return await GetByIdAsync(security.Id);
         }
 
-        public async Task<SecurityDTO> Update(SecurityDTO securityTypeDto, IFormFile securityIcon)
+        public async Task<SecurityDto> UpdateAsync(SecurityDto securityTypeDto, IFormFile securityIcon)
         {
-            var existingSecurity = await _securityRepo.GetById(securityTypeDto.Id);
+            var existingSecurity = await _securityRepo.GetByIdAsync(securityTypeDto.Id);
             var security = _mapper.Map(securityTypeDto);
 
             if (securityIcon != null)
             {
                 security.IconKey = $"{security.Id}_{Guid.NewGuid():N}";
-                await _fileStorageService.UploadFile(_iconsBucket, securityIcon, security.IconKey);
+                await _fileStorageService.UploadFileAsync(_iconsBucket, securityIcon, security.IconKey);
             }
             else if (string.IsNullOrEmpty(securityTypeDto.IconKey))
             {
@@ -158,30 +158,30 @@ namespace MoneyManager.Application.Services.Securities
 
             if (!string.IsNullOrEmpty(existingSecurity?.IconKey) && existingSecurity.IconKey != security.IconKey)
             {
-                await _fileStorageService.DeleteFile(_iconsBucket, existingSecurity.IconKey);
+                await _fileStorageService.DeleteFileAsync(_iconsBucket, existingSecurity.IconKey);
             }
 
             _securityRepo.Update(security);
-            await _db.Commit();
+            await _db.CommitAsync();
 
-            return await GetById(security.Id);
+            return await GetByIdAsync(security.Id);
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            var security = await _securityRepo.GetById(id);
+            var security = await _securityRepo.GetByIdAsync(id);
             if (security != null && !string.IsNullOrEmpty(security.IconKey))
             {
-                await _fileStorageService.DeleteFile(_iconsBucket, security.IconKey);
+                await _fileStorageService.DeleteFileAsync(_iconsBucket, security.IconKey);
             }
 
-            await _securityRepo.Delete(id);
-            await _db.Commit();
+            await _securityRepo.DeleteAsync(id);
+            await _db.CommitAsync();
         }
 
-        public async Task<string> GetIconUrl(string iconKey)
+        public async Task<string> GetIconUrlAsync(string iconKey)
         {
-            return await _fileStorageService.GetFileUrl(_iconsBucket, iconKey);
+            return await _fileStorageService.GetFileUrlAsync(_iconsBucket, iconKey);
         }
 
         private IQueryable<Security> GetFullHierarchyColumns(IQueryable<Security> securityQuery)

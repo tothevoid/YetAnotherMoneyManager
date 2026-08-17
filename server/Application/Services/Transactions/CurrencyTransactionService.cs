@@ -26,46 +26,46 @@ namespace MoneyManager.Application.Services.Transactions
             _currencyTransactionRepo = uow.CreateRepository<CurrencyTransaction>();
         }
 
-        public async Task<IEnumerable<CurrencyTransactionDto>> GetAll()
+        public async Task<IEnumerable<CurrencyTransactionDto>> GetAllAsync()
         {
             var query = new ComplexQueryBuilder<CurrencyTransaction>()
                 .AddJoins(GetFullHierarchyColumns)
                 .AddOrder(CurrencyTransaction => CurrencyTransaction.Date)
                 .GetQuery();
-            var currencyTransactions = await _currencyTransactionRepo.GetAll(query);
+            var currencyTransactions = await _currencyTransactionRepo.GetAllAsync(query);
             
             return _mapper.Map(currencyTransactions);
         }
 
-        public async Task Update(CurrencyTransactionDto currencyTransactionDto)
+        public async Task UpdateAsync(CurrencyTransactionDto currencyTransactionDto)
         {
             var currencyTransaction = _mapper.Map(currencyTransactionDto);
             _currencyTransactionRepo.Update(currencyTransaction);
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
-        public async Task<Guid> Add(CurrencyTransactionDto currencyTransactionDto)
+        public async Task<Guid> AddAsync(CurrencyTransactionDto currencyTransactionDto)
         {
             var currencyTransaction = _mapper.Map(currencyTransactionDto);
             currencyTransaction.Id = Guid.NewGuid();
-            await _currencyTransactionRepo.Add(currencyTransaction);
-            await _db.Commit();
+            await _currencyTransactionRepo.AddAsync(currencyTransaction);
+            await _db.CommitAsync();
             return currencyTransaction.Id;
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            await _currencyTransactionRepo.Delete(id);
-            await _db.Commit();
+            await _currencyTransactionRepo.DeleteAsync(id);
+            await _db.CommitAsync();
         }
 
-        public async Task<CurrencyTransactionDto> GetById(Guid id)
+        public async Task<CurrencyTransactionDto> GetByIdAsync(Guid id)
         {
-            var entity = await _currencyTransactionRepo.GetById(id, include: GetFullHierarchyColumns);
+            var entity = await _currencyTransactionRepo.GetByIdAsync(id, include: GetFullHierarchyColumns);
             return _mapper.Map(entity);
         }
 
-        public async Task<IEnumerable<CurrencyTransactionDto>> GetAllByAccountId(Guid accountId)
+        public async Task<IEnumerable<CurrencyTransactionDto>> GetAllByAccountIdAsync(Guid accountId)
         {
             var query = new ComplexQueryBuilder<CurrencyTransaction>()
                 .AddFilter(x => x.SourceAccountId == accountId || x.DestinationAccountId == accountId)
@@ -73,7 +73,7 @@ namespace MoneyManager.Application.Services.Transactions
                 .AddOrder(CurrencyTransaction => CurrencyTransaction.Date)
                 .GetQuery();
 
-            var transactions = await _currencyTransactionRepo.GetAll(query);
+            var transactions = await _currencyTransactionRepo.GetAllAsync(query);
 
             return _mapper.Map(transactions);
         }

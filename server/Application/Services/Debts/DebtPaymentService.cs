@@ -34,13 +34,13 @@ namespace MoneyManager.Application.Services.Debts
             _accountRepo = uow.CreateRepository<Account>();
         }
 
-        public async Task<DebtPaymentDto> GetById(Guid id)
+        public async Task<DebtPaymentDto> GetByIdAsync(Guid id)
         {
-            var debtPayment = await _debtPaymentRepo.GetById(id);
+            var debtPayment = await _debtPaymentRepo.GetByIdAsync(id);
             return _mapper.Map(debtPayment);
         }
 
-        public async Task<IEnumerable<DebtPaymentDto>> GetAll(int pageIndex, int recordsQuantity, Guid? debtId = null, Guid? tagId = null)
+        public async Task<IEnumerable<DebtPaymentDto>> GetAllAsync(int pageIndex, int recordsQuantity, Guid? debtId = null, Guid? tagId = null)
         {
             var builder = new ComplexQueryBuilder<DebtPayment>();
 
@@ -60,11 +60,11 @@ namespace MoneyManager.Application.Services.Debts
                 .AddJoins(GetFullHierarchyColumns)
                 .GetQuery();
 
-            var debtPayments = await _debtPaymentRepo.GetAll(query);
+            var debtPayments = await _debtPaymentRepo.GetAllAsync(query);
             return _mapper.Map(debtPayments);
         }
 
-        public async Task<PaginationConfigDto> GetPagination(Guid? debtId = null, Guid? tagId = null)
+        public async Task<PaginationConfigDto> GetPaginationAsync(Guid? debtId = null, Guid? tagId = null)
         {
             int pageSize = 10;
             int recordsQuantity;
@@ -74,19 +74,19 @@ namespace MoneyManager.Application.Services.Debts
 
             if (hasDebtId && hasTagId)
             {
-                recordsQuantity = await _debtPaymentRepo.GetCount(p => p.DebtId == debtId.Value && p.Debt.DebtTags.Any(dt => dt.DebtTagId == tagId.Value));
+                recordsQuantity = await _debtPaymentRepo.GetCountAsync(p => p.DebtId == debtId.Value && p.Debt.DebtTags.Any(dt => dt.DebtTagId == tagId.Value));
             }
             else if (hasDebtId)
             {
-                recordsQuantity = await _debtPaymentRepo.GetCount(p => p.DebtId == debtId.Value);
+                recordsQuantity = await _debtPaymentRepo.GetCountAsync(p => p.DebtId == debtId.Value);
             }
             else if (hasTagId)
             {
-                recordsQuantity = await _debtPaymentRepo.GetCount(p => p.Debt.DebtTags.Any(dt => dt.DebtTagId == tagId.Value));
+                recordsQuantity = await _debtPaymentRepo.GetCountAsync(p => p.Debt.DebtTags.Any(dt => dt.DebtTagId == tagId.Value));
             }
             else
             {
-                recordsQuantity = await _debtPaymentRepo.GetCount();
+                recordsQuantity = await _debtPaymentRepo.GetCountAsync();
             }
 
             return new PaginationConfigDto()
@@ -96,46 +96,46 @@ namespace MoneyManager.Application.Services.Debts
             };
         }
 
-        public async Task<Guid> Add(DebtPaymentDto debtPaymentDto)
+        public async Task<Guid> AddAsync(DebtPaymentDto debtPaymentDto)
         {
             var debtPayment = _mapper.Map(debtPaymentDto);
             debtPayment.Id = Guid.NewGuid();
 
-            await _debtPaymentRepo.Add(debtPayment);
+            await _debtPaymentRepo.AddAsync(debtPayment);
 
             await UpdateLinkedEntities(debtPayment.DebtId, debtPayment.TargetAccountId, debtPaymentDto.Amount, debtPaymentDto.IsPercentagePayment);
-            await _db.Commit();
+            await _db.CommitAsync();
 
             return debtPayment.Id;
         }
 
-        public async Task Update(DebtPaymentDto updatedPaymentDto)
+        public async Task UpdateAsync(DebtPaymentDto updatedPaymentDto)
         {
-            var currentDebtPayment = await _debtPaymentRepo.GetById(updatedPaymentDto.Id);
+            var currentDebtPayment = await _debtPaymentRepo.GetByIdAsync(updatedPaymentDto.Id);
             var updatedDebtPayment = _mapper.Map(updatedPaymentDto);
             _debtPaymentRepo.Update(updatedDebtPayment);
 
             await ActualizeDebts(currentDebtPayment, updatedDebtPayment);
             await ActualizeAccounts(currentDebtPayment, updatedDebtPayment);
 
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            var debtPayment = await _debtPaymentRepo.GetById(id);
+            var debtPayment = await _debtPaymentRepo.GetByIdAsync(id);
 
             if (debtPayment == null)
             {
                return;
             }
 
-            await _debtPaymentRepo.Delete(id);
+            await _debtPaymentRepo.DeleteAsync(id);
 
             await UpdateLinkedEntities(debtPayment.DebtId, debtPayment.TargetAccountId, debtPayment.Amount * -1, 
                 debtPayment.IsPercentagePayment);
 
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
         private async Task ActualizeDebts(DebtPayment currentDebtPayment, DebtPayment updatedDebtPayment)
@@ -195,7 +195,7 @@ namespace MoneyManager.Application.Services.Debts
 
         private async Task UpdateLinkedDebt(Guid debtId, decimal diff)
         {
-            var debt = await _debtRepo.GetById(debtId, disableTracking: false);
+            var debt = await _debtRepo.GetByIdAsync(debtId, disableTracking: false);
 
             debt.Amount += diff;
 
@@ -210,7 +210,7 @@ namespace MoneyManager.Application.Services.Debts
                 return;
             }
 
-            var debt = await _debtRepo.GetById(currentDebtPayment.DebtId, disableTracking: false);
+            var debt = await _debtRepo.GetByIdAsync(currentDebtPayment.DebtId, disableTracking: false);
 
             debt.Amount += currentDebtPayment.Amount;
 
@@ -219,7 +219,7 @@ namespace MoneyManager.Application.Services.Debts
 
         private async Task UpdateLinkedAccount(Guid accountId, decimal diff)
         {
-            var account = await _accountRepo.GetById(accountId, disableTracking: false);
+            var account = await _accountRepo.GetByIdAsync(accountId, disableTracking: false);
 
             account.Balance += diff;
 

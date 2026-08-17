@@ -20,7 +20,7 @@ namespace MoneyManager.WebApi.Controllers.Reports
         [HttpGet("xlsx")]
         public async Task<IActionResult> GetAllAssetsReportXlsx()
         {
-            var fileBytes = await _reportService.CreateReport();
+            var fileBytes = await _reportService.CreateReportAsync();
             var dt = DateTime.Now;
             return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"assets_{dt:hh-mm_dd-MM-yy}.xlsx");
         }

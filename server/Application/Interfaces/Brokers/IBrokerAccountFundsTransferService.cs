@@ -8,16 +8,16 @@ namespace MoneyManager.Application.Interfaces.Brokers
 {
     public interface IBrokerAccountFundsTransferService
     {
-        Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAll();
-        Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAll(Guid brokerAccountId);
-        Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAll(Guid? brokerAccountId, int pageIndex, int recordsQuantity);
+        Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAllAsync();
+        Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAllAsync(Guid brokerAccountId);
+        Task<IEnumerable<BrokerAccountFundsTransferDto>> GetAllAsync(Guid? brokerAccountId, int pageIndex, int recordsQuantity);
 
-        Task<(decimal deposited, decimal withdrawn)> GetSumTillSpecificDate(DateOnly date, Guid? brokerAccountId);
+        Task<(decimal deposited, decimal withdrawn)> GetSumTillSpecificDateAsync(DateOnly date, Guid? brokerAccountId);
 
-        Task <PaginationConfigDto> GetPagination();
-        Task<PaginationConfigDto> GetPaginationByBrokerAccount(Guid brokerAccountId);
-        Task<BrokerAccountFundsTransferDto> Add(BrokerAccountFundsTransferDto transfer);
-        Task Update(BrokerAccountFundsTransferDto transfer);
-        Task Delete(Guid id);
+        Task<PaginationConfigDto> GetPaginationAsync();
+        Task<PaginationConfigDto> GetPaginationByBrokerAccountAsync(Guid brokerAccountId);
+        Task<BrokerAccountFundsTransferDto> AddAsync(BrokerAccountFundsTransferDto transfer);
+        Task UpdateAsync(BrokerAccountFundsTransferDto transfer);
+        Task DeleteAsync(Guid id);
     }
 }

@@ -34,7 +34,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             var paymentId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtPaymentService>();
-                return await service.Add(payment);
+                return await service.AddAsync(payment);
             });
 
             Assert.NotEqual(Guid.Empty, paymentId);
@@ -43,7 +43,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             {
                 var debtService = sp.GetRequiredService<IDebtPaymentService>();
 
-                return await debtService.GetById(paymentId);
+                return await debtService.GetByIdAsync(paymentId);
             });
 
             Assert.NotNull(paymentFromDb);
@@ -61,7 +61,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             var paymentId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtPaymentService>();
-                return await service.Add(new DebtPaymentDto
+                return await service.AddAsync(new DebtPaymentDto
                 {
                     DebtId = debtId,
                     TargetAccountId = accountId,
@@ -79,8 +79,8 @@ namespace MoneyManager.Application.Tests.Services.Debts
                 var accService = sp.GetRequiredService<IAccountService>();
 
 
-                var debt = await debtService.GetById(debtId);
-                var acc = await accService.GetById(accountId);
+                var debt = await debtService.GetByIdAsync(debtId);
+                var acc = await accService.GetByIdAsync(accountId);
 
                 return (debt.Amount, acc.Balance);
             });
@@ -97,7 +97,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtPaymentService>();
-                await service.Add(new DebtPaymentDto
+                await service.AddAsync(new DebtPaymentDto
                 {
                     DebtId = debtId,
                     TargetAccountId = accountId,
@@ -109,7 +109,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             var pagination = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtPaymentService>();
-                return await service.GetPagination();
+                return await service.GetPaginationAsync();
             });
 
             Assert.NotNull(pagination);
@@ -118,7 +118,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             var payments = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtPaymentService>();
-                return await service.GetAll(1, pagination.PageSize);
+                return await service.GetAllAsync(1, pagination.PageSize);
             });
 
             Assert.NotNull(payments);
@@ -133,7 +133,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             var paymentId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtPaymentService>();
-                return await service.Add(new DebtPaymentDto
+                return await service.AddAsync(new DebtPaymentDto
                 {
                     DebtId = debtId,
                     TargetAccountId = accountId,
@@ -148,8 +148,8 @@ namespace MoneyManager.Application.Tests.Services.Debts
                 var debtService = sp.GetRequiredService<IDebtService>();
                 var accService = sp.GetRequiredService<IAccountService>();
 
-                var debt = await debtService.GetById(debtId);
-                var acc = await accService.GetById(accountId);
+                var debt = await debtService.GetByIdAsync(debtId);
+                var acc = await accService.GetByIdAsync(accountId);
 
                 return (debt.Amount, acc.Balance);
             });
@@ -160,7 +160,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtPaymentService>();
-                await service.Delete(paymentId);
+                await service.DeleteAsync(paymentId);
             });
 
             var (debtAmountAfterDelete, accountBalanceAfterDelete) = await ExecuteScopeAsync(async sp =>
@@ -168,9 +168,9 @@ namespace MoneyManager.Application.Tests.Services.Debts
                 var debtService = sp.GetRequiredService<IDebtService>();
                 var accService = sp.GetRequiredService<IAccountService>();
 
-                var debts = await debtService.GetAll(false);
+                var debts = await debtService.GetAllAsync(false);
                 var debt = debts.First(d => d.Id == debtId);
-                var acc = await accService.GetById(accountId);
+                var acc = await accService.GetByIdAsync(accountId);
 
                 return (debt.Amount, acc.Balance);
             });
@@ -189,7 +189,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             var paymentId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtPaymentService>();
-                return await service.Add(new DebtPaymentDto
+                return await service.AddAsync(new DebtPaymentDto
                 {
                     DebtId = debtId,
                     TargetAccountId = initialAccountId,
@@ -202,7 +202,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtPaymentService>();
-                await service.Update(new DebtPaymentDto
+                await service.UpdateAsync(new DebtPaymentDto
                 {
                     Id = paymentId,
                     DebtId = debtId,
@@ -218,8 +218,8 @@ namespace MoneyManager.Application.Tests.Services.Debts
             {
                 var accService = sp.GetRequiredService<IAccountService>();
 
-                var initialAccount = await accService.GetById(initialAccountId);
-                var newAccount = await accService.GetById(newAccountId);
+                var initialAccount = await accService.GetByIdAsync(initialAccountId);
+                var newAccount = await accService.GetByIdAsync(newAccountId);
 
                 Assert.Equal(500m, initialAccount.Balance);     // Reverted to 1000
                 Assert.Equal(1550m, newAccount.Balance);     // Increased by 1000
@@ -239,7 +239,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             var paymentId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtPaymentService>();
-                return await service.Add(new DebtPaymentDto
+                return await service.AddAsync(new DebtPaymentDto
                 {
                     DebtId = debtId,
                     TargetAccountId = initialAccountId,
@@ -252,7 +252,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtPaymentService>();
-                await service.Update(new DebtPaymentDto
+                await service.UpdateAsync(new DebtPaymentDto
                 {
                     Id = paymentId,
                     DebtId = debtId,
@@ -268,8 +268,8 @@ namespace MoneyManager.Application.Tests.Services.Debts
             {
                 var accService = sp.GetRequiredService<IAccountService>();
 
-                var initialAccount = await accService.GetById(initialAccountId);
-                var newAccount = await accService.GetById(newAccountId);
+                var initialAccount = await accService.GetByIdAsync(initialAccountId);
+                var newAccount = await accService.GetByIdAsync(newAccountId);
 
                 Assert.Equal(500m, initialAccount.Balance);     // Reverted to 500m
                 Assert.Equal(2250m, newAccount.Balance);     // Increased by 1000
@@ -285,7 +285,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             {
                 var service = sp.GetRequiredService<IDebtPaymentService>();
                 var amount = 300m;
-                await service.Add(new DebtPaymentDto
+                await service.AddAsync(new DebtPaymentDto
                 {
                     DebtId = debtId,
                     TargetAccountId = accountId,
@@ -302,8 +302,8 @@ namespace MoneyManager.Application.Tests.Services.Debts
                 var accService = sp.GetRequiredService<IAccountService>();
                 var debtService = sp.GetRequiredService<IDebtService>();
 
-                var account = await accService.GetById(accountId);
-                var debt = await debtService.GetById(debtId);
+                var account = await accService.GetByIdAsync(accountId);
+                var debt = await debtService.GetByIdAsync(debtId);
 
                 // both should be changed
                 Assert.Equal(500m + nonPercentageAmount, account.Balance); 
@@ -314,7 +314,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             {
                 var service = sp.GetRequiredService<IDebtPaymentService>();
                 var amount = 300m;
-                await service.Add(new DebtPaymentDto
+                await service.AddAsync(new DebtPaymentDto
                 {
                     DebtId = debtId,
                     TargetAccountId = accountId,
@@ -331,8 +331,8 @@ namespace MoneyManager.Application.Tests.Services.Debts
                 var accService = sp.GetRequiredService<IAccountService>();
                 var debtService = sp.GetRequiredService<IDebtService>();
 
-                var account = await accService.GetById(accountId);
-                var debt = await debtService.GetById(debtId);
+                var account = await accService.GetByIdAsync(accountId);
+                var debt = await debtService.GetByIdAsync(debtId);
 
                 // should be changed
                 Assert.Equal(500m + nonPercentageAmount + percentageAmount, account.Balance);
@@ -350,22 +350,22 @@ namespace MoneyManager.Application.Tests.Services.Debts
             var tagId = await ExecuteScopeAsync(async sp =>
             {
                 var tagService = sp.GetRequiredService<IDebtTagService>();
-                var newTagId = await tagService.Add(new DebtTagDto { Name = $"Tag_{Guid.NewGuid()}", ColorHex = "#FF0000" });
-                await tagService.AssignTagsToDebt(debt1Id, new List<Guid> { newTagId });
+                var newTagId = await tagService.AddAsync(new DebtTagDto { Name = $"Tag_{Guid.NewGuid()}", ColorHex = "#FF0000" });
+                await tagService.AssignTagsToDebtAsync(debt1Id, new List<Guid> { newTagId });
                 return newTagId;
             });
 
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtPaymentService>();
-                await service.Add(new DebtPaymentDto
+                await service.AddAsync(new DebtPaymentDto
                 {
                     DebtId = debt1Id,
                     TargetAccountId = accountId,
                     Amount = 100m,
                     Date = DateOnly.FromDateTime(DateTime.Now)
                 });
-                await service.Add(new DebtPaymentDto
+                await service.AddAsync(new DebtPaymentDto
                 {
                     DebtId = debt2Id,
                     TargetAccountId = accountId,
@@ -378,11 +378,11 @@ namespace MoneyManager.Application.Tests.Services.Debts
             {
                 var service = sp.GetRequiredService<IDebtPaymentService>();
 
-                var pagination = await service.GetPagination(tagId: tagId);
+                var pagination = await service.GetPaginationAsync(tagId: tagId);
                 Assert.NotNull(pagination);
                 Assert.Equal(1, pagination.RecordsQuantity);
 
-                var payments = (await service.GetAll(1, 10, tagId: tagId)).ToList();
+                var payments = (await service.GetAllAsync(1, 10, tagId: tagId)).ToList();
                 Assert.Single(payments);
                 Assert.Equal(debt1Id, payments[0].DebtId);
                 Assert.Equal(100m, payments[0].Amount);
@@ -394,7 +394,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             var bank = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBankService>();
-                return await service.Add(new BankDto()
+                return await service.AddAsync(new BankDto()
                 {
                     Id = Guid.NewGuid(),
                     Name = $"Test bank_{DateTime.UtcNow}"
@@ -404,7 +404,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             var accountId = await ExecuteScopeAsync(async sp =>
             {
                 var accService = sp.GetRequiredService<IAccountService>();
-                return await accService.Add(new AccountDTO
+                return await accService.AddAsync(new AccountDto
                 {
                     Active = true,
                     Name = $"Payment Test Acc_{DateTime.UtcNow}",
@@ -424,7 +424,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             var debtId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtService>();
-                return await service.Add(new DebtDto
+                return await service.AddAsync(new DebtDto
                 {
                     Name = "Payment Test Debt",
                     Amount = initialDebt,

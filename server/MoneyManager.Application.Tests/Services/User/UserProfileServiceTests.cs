@@ -18,7 +18,7 @@ namespace MoneyManager.Application.Tests.Services.User
             var user = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IUserProfileService>();
-                return await service.Get();
+                return await service.GetAsync();
             });
 
             Assert.NotNull(user);
@@ -31,7 +31,7 @@ namespace MoneyManager.Application.Tests.Services.User
             var seededUser = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IUserProfileService>();
-                return await service.Get();
+                return await service.GetAsync();
             });
 
             Assert.NotNull(seededUser);
@@ -39,7 +39,7 @@ namespace MoneyManager.Application.Tests.Services.User
             var authenticated = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IUserProfileService>();
-                return await service.GetByAuth(seededUser.UserName, seededUser.Password ?? "");
+                return await service.GetByAuthAsync(seededUser.UserName, seededUser.Password ?? "");
             });
 
             Assert.NotNull(authenticated);
@@ -52,7 +52,7 @@ namespace MoneyManager.Application.Tests.Services.User
             var current = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IUserProfileService>();
-                return await service.Get();
+                return await service.GetAsync();
             });
 
             Assert.NotNull(current);
@@ -70,13 +70,13 @@ namespace MoneyManager.Application.Tests.Services.User
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IUserProfileService>();
-                await service.Update(updateDto);
+                await service.UpdateAsync(updateDto);
             });
 
             var updated = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IUserProfileService>();
-                return await service.Get();
+                return await service.GetAsync();
             });
 
             Assert.NotNull(updated);

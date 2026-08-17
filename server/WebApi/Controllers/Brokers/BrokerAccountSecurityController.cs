@@ -36,7 +36,7 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         public async Task<IEnumerable<BrokerAccountSecurityModel>> GetAll()
         {
             var brokerAccountSecurities = await _brokerAccountSecurityService
-                .GetAll(true);
+                .GetAllAsync(true);
 
             return _mapper.Map(brokerAccountSecurities);
         }
@@ -45,20 +45,20 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         public async Task<IEnumerable<BrokerAccountSecurityModel>> GetByBrokerAccount([FromQuery] Guid brokerAccountId)
         {
             var brokerAccountSecurities = await _brokerAccountSecurityService
-                .GetByBrokerAccount(brokerAccountId);
+                .GetByBrokerAccountAsync(brokerAccountId);
             return _mapper.Map(brokerAccountSecurities);
         }
 
         [HttpGet(nameof(PullQuotations))]
         public async Task PullQuotations()
         {
-            await _brokerAccountSecurityService.PullQuotations();
+            await _brokerAccountSecurityService.PullQuotationsAsync();
         }
 
         [HttpGet(nameof(PullQuotationsByBrokerAccount))]
         public async Task PullQuotationsByBrokerAccount([FromQuery] Guid brokerAccountId)
         {
-            await _brokerAccountSecurityService.PullQuotationsByBrokerAccount(brokerAccountId);
+            await _brokerAccountSecurityService.PullQuotationsByBrokerAccountAsync(brokerAccountId);
         }
 
         [HttpGet(nameof(GetLastPullDate))]

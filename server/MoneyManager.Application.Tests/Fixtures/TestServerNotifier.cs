@@ -4,7 +4,7 @@ namespace MoneyManager.Application.Tests.Fixtures
 {
     public class TestServerNotifier : IServerNotifier
     {
-        public Task SendToAll(string? message = null)
+        public Task SendToAllAsync(string? message = null)
         {
             return Task.CompletedTask;
         }

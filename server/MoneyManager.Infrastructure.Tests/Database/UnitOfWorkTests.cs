@@ -43,12 +43,12 @@ namespace MoneyManager.Infrastructure.Tests.Database
                 Active = true
             };
 
-            await repository.Add(entity);
-            await unitOfWork.Commit();
+            await repository.AddAsync(entity);
+            await unitOfWork.CommitAsync();
 
             using var verifyContext = CreateDbContext();
             var verifyRepo = new Repository<AccountType>(verifyContext);
-            var fetched = await verifyRepo.GetById(entity.Id);
+            var fetched = await verifyRepo.GetByIdAsync(entity.Id);
 
             Assert.NotNull(fetched);
             Assert.Equal(entity.Name, fetched.Name);

@@ -30,14 +30,14 @@ namespace MoneyManager.WebApi.Controllers.Banks
         [HttpGet]
         public async Task<IEnumerable<BankModel>> GetAll()
         {
-            var banks = await _bankService.GetAll();
+            var banks = await _bankService.GetAllAsync();
             return _mapper.Map(banks);
         }
 
         [HttpGet(nameof(GetById))]
         public async Task<BankModel> GetById([FromQuery] Guid id)
         {
-            var bank = await _bankService.GetById(id);
+            var bank = await _bankService.GetByIdAsync(id);
             return _mapper.Map(bank);
         }
 
@@ -47,7 +47,7 @@ namespace MoneyManager.WebApi.Controllers.Banks
             var bank = JsonSerializer.Deserialize<BankModel>(bankJson);
 
             var bankDto = _mapper.Map(bank);
-            var createdBank = await _bankService.Add(bankDto, bankIcon);
+            var createdBank = await _bankService.AddAsync(bankDto, bankIcon);
             return _mapper.Map(createdBank);
         }
 
@@ -57,20 +57,20 @@ namespace MoneyManager.WebApi.Controllers.Banks
             var bank = JsonSerializer.Deserialize<BankModel>(bankJson);
 
             var bankDto = _mapper.Map(bank);
-            var updatedBank = await _bankService.Update(bankDto, bankIcon);
+            var updatedBank = await _bankService.UpdateAsync(bankDto, bankIcon);
             return _mapper.Map(updatedBank);
         }
 
         [HttpDelete]
         public async Task Delete(Guid id) =>
-            await _bankService.Delete(id);
+            await _bankService.DeleteAsync(id);
 
         [HttpGet("icon")]
         [AllowAnonymous]
         public async Task<IActionResult> GetBankIcon(string iconKey)
         {
             Response.Headers.CacheControl = "public, max-age=31536000, immutable";
-            var url = await _bankService.GetIconUrl(iconKey);
+            var url = await _bankService.GetIconUrlAsync(iconKey);
             return Redirect(url);
         }
     }

@@ -32,7 +32,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var id = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICurrencyTransactionService>();
-                return await service.Add(dto);
+                return await service.AddAsync(dto);
             });
 
             Assert.NotEqual(Guid.Empty, id);
@@ -40,7 +40,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var fetched = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICurrencyTransactionService>();
-                return await service.GetById(id);
+                return await service.GetByIdAsync(id);
             });
 
             Assert.NotNull(fetched);
@@ -67,13 +67,13 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var id = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICurrencyTransactionService>();
-                return await service.Add(dto);
+                return await service.AddAsync(dto);
             });
 
             var sourceTransactions = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICurrencyTransactionService>();
-                return await service.GetAllByAccountId(sourceId);
+                return await service.GetAllByAccountIdAsync(sourceId);
             });
 
             Assert.NotNull(sourceTransactions);
@@ -82,7 +82,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var destTransactions = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICurrencyTransactionService>();
-                return await service.GetAllByAccountId(destId);
+                return await service.GetAllByAccountIdAsync(destId);
             });
 
             Assert.NotNull(destTransactions);
@@ -97,7 +97,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var id = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICurrencyTransactionService>();
-                return await service.Add(new CurrencyTransactionDto
+                return await service.AddAsync(new CurrencyTransactionDto
                 {
                     Name = "Initial Fx",
                     SourceAccountId = sourceId,
@@ -111,18 +111,18 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICurrencyTransactionService>();
-                var item = await service.GetById(id);
+                var item = await service.GetByIdAsync(id);
                 item.Name = "Updated Fx";
                 item.Amount = 300m;
                 item.SourceAccount = null;
                 item.DestinationAccount = null;
-                await service.Update(item);
+                await service.UpdateAsync(item);
             });
 
             var updated = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICurrencyTransactionService>();
-                return await service.GetById(id);
+                return await service.GetByIdAsync(id);
             });
 
             Assert.NotNull(updated);
@@ -138,7 +138,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var id = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICurrencyTransactionService>();
-                return await service.Add(new CurrencyTransactionDto
+                return await service.AddAsync(new CurrencyTransactionDto
                 {
                     Name = "To Delete Fx",
                     SourceAccountId = sourceId,
@@ -152,13 +152,13 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICurrencyTransactionService>();
-                await service.Delete(id);
+                await service.DeleteAsync(id);
             });
 
             var deleted = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICurrencyTransactionService>();
-                return await service.GetById(id);
+                return await service.GetByIdAsync(id);
             });
 
             Assert.Null(deleted);
@@ -169,7 +169,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var sourceId = await ExecuteScopeAsync(async sp =>
             {
                 var accService = sp.GetRequiredService<IAccountService>();
-                return await accService.Add(new AccountDTO
+                return await accService.AddAsync(new AccountDto
                 {
                     Active = true,
                     Name = "Fx Source Acc",
@@ -183,7 +183,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var destId = await ExecuteScopeAsync(async sp =>
             {
                 var accService = sp.GetRequiredService<IAccountService>();
-                return await accService.Add(new AccountDTO
+                return await accService.AddAsync(new AccountDto
                 {
                     Active = true,
                     Name = "Fx Dest Acc",

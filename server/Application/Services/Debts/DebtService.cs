@@ -25,13 +25,13 @@ namespace MoneyManager.Application.Services.Debts
             _debtRepo = uow.CreateRepository<Debt>();
         }
 
-        public async Task<DebtDto> GetById(Guid id)
+        public async Task<DebtDto> GetByIdAsync(Guid id)
         {
-            var debt = await _debtRepo.GetById(id, include: GetFullHierarchyColumns);
+            var debt = await _debtRepo.GetByIdAsync(id, include: GetFullHierarchyColumns);
             return _mapper.Map(debt);
         }
 
-        public async Task<IEnumerable<DebtDto>> GetAll(bool onlyActive)
+        public async Task<IEnumerable<DebtDto>> GetAllAsync(bool onlyActive)
         {
             var builder = new ComplexQueryBuilder<Debt>();
 
@@ -43,13 +43,13 @@ namespace MoneyManager.Application.Services.Debts
             builder.AddJoins(GetFullHierarchyColumns)
                 .AddOrder((debt) => debt.Date, true);
 
-            var debts = await _debtRepo.GetAll(builder.GetQuery());
+            var debts = await _debtRepo.GetAllAsync(builder.GetQuery());
             return _mapper.Map(debts);
         }
 
-        public async Task Update(DebtDto debtDto)
+        public async Task UpdateAsync(DebtDto debtDto)
         {
-            var debt = await _debtRepo.GetById(debtDto.Id, disableTracking: false);
+            var debt = await _debtRepo.GetByIdAsync(debtDto.Id, disableTracking: false);
 
             if (debt == null) return;
 
@@ -58,23 +58,23 @@ namespace MoneyManager.Application.Services.Debts
             debt.CurrencyId = debtDto.CurrencyId;
             debt.Date = debtDto.Date;
 
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
-        public async Task<Guid> Add(DebtDto debtDto)
+        public async Task<Guid> AddAsync(DebtDto debtDto)
         {
             var debt = _mapper.Map(debtDto);
             debt.Id = Guid.NewGuid();
 
-            await _debtRepo.Add(debt);
-            await _db.Commit();
+            await _debtRepo.AddAsync(debt);
+            await _db.CommitAsync();
             return debt.Id;
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            await _debtRepo.Delete(id);
-            await _db.Commit();
+            await _debtRepo.DeleteAsync(id);
+            await _db.CommitAsync();
         }
 
         private IQueryable<Debt> GetFullHierarchyColumns(IQueryable<Debt> debtQuery)

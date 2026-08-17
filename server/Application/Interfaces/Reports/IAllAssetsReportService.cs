@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 
 namespace MoneyManager.Application.Interfaces.Reports
 {
     public interface IAllAssetsReportService
     {
-        Task<byte[]> CreateReport();
+        Task<byte[]> CreateReportAsync();
     }
 }

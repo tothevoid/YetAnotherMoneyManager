@@ -8,11 +8,11 @@ namespace MoneyManager.Application.Interfaces.Debts
 {
     public interface IDebtPaymentService
     {
-        Task<DebtPaymentDto> GetById(Guid id);
-        Task<IEnumerable<DebtPaymentDto>> GetAll(int pageIndex, int recordsQuantity, Guid? debtId = null, Guid? tagId = null);
-        Task<PaginationConfigDto> GetPagination(Guid? debtId = null, Guid? tagId = null);
-        Task<Guid> Add(DebtPaymentDto debtPayment);
-        Task Update(DebtPaymentDto updatedPaymentDto);
-        Task Delete(Guid id);
+        Task<DebtPaymentDto> GetByIdAsync(Guid id);
+        Task<IEnumerable<DebtPaymentDto>> GetAllAsync(int pageIndex, int recordsQuantity, Guid? debtId = null, Guid? tagId = null);
+        Task<PaginationConfigDto> GetPaginationAsync(Guid? debtId = null, Guid? tagId = null);
+        Task<Guid> AddAsync(DebtPaymentDto debtPayment);
+        Task UpdateAsync(DebtPaymentDto updatedPaymentDto);
+        Task DeleteAsync(Guid id);
     }
 }

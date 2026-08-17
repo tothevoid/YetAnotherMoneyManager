@@ -27,7 +27,7 @@ namespace MoneyManager.WebApi.Controllers.Debts
         [HttpGet("GetAll")]
         public async Task<IEnumerable<DebtModel>> GetAll([FromQuery] bool onlyActive)
         {
-            var debts = await _debtService.GetAll(onlyActive);
+            var debts = await _debtService.GetAllAsync(onlyActive);
             return _mapper.Map(debts);
         }
 
@@ -35,18 +35,18 @@ namespace MoneyManager.WebApi.Controllers.Debts
         public async Task<Guid> Add(DebtModel debt)
         {
             var debtDto = _mapper.Map(debt);
-            return await _debtService.Add(debtDto);
+            return await _debtService.AddAsync(debtDto);
         }
 
         [HttpPatch]
         public async Task Update(DebtModel debt)
         {
             var debtDto = _mapper.Map(debt);
-            await _debtService.Update(debtDto);
+            await _debtService.UpdateAsync(debtDto);
         }
 
         [HttpDelete]
         public async Task Delete(Guid id) =>
-            await _debtService.Delete(id);
+            await _debtService.DeleteAsync(id);
     }
 }

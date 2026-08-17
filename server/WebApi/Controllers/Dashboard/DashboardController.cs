@@ -1,13 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System;
-using MoneyManager.Application.DTO.Securities;
+using MoneyManager.Application.Interfaces.Dashboard;
 using MoneyManager.WebApi.Mappings;
-using MoneyManager.WebApi.Models.Securities;
-using MoneyManager.Application.Interfaces.Securities;
-using MoneyManager.Application.Interfaces.Currencies;
-using MoneyManager.Application.Services.Dashboard;
 using MoneyManager.WebApi.Models.Dashboard;
 using Microsoft.AspNetCore.Authorization;
 
@@ -30,7 +24,7 @@ namespace MoneyManager.WebApi.Controllers.Dashboard
 
         public async Task<GlobalDashboardModel> Get()
         {
-            var dasboard = await _dashboardService.GetDashboard();
+            var dasboard = await _dashboardService.GetDashboardAsync();
             return _mapper.Map(dasboard);
         }
     }

@@ -1,4 +1,4 @@
-﻿using MoneyManager.Shared.Entities;
+using MoneyManager.Shared.Entities;
 using System;
 using MoneyManager.Application.DTO.Accounts;
 
@@ -10,11 +10,11 @@ namespace MoneyManager.Application.DTO.Brokers
 
         public decimal Amount { get; set; }
 
-        public AccountDTO Account { get; set; }
+        public AccountDto Account { get; set; }
 
         public Guid AccountId { get; set; }
 
-        public BrokerAccountDTO BrokerAccount { get; set; }
+        public BrokerAccountDto BrokerAccount { get; set; }
 
         public Guid BrokerAccountId { get; set; }
 

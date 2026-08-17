@@ -20,7 +20,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var addedId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountTaxDeductionService>();
-                return await service.Add(new BrokerAccountTaxDeductionDto
+                return await service.AddAsync(new BrokerAccountTaxDeductionDto
                 {
                     BrokerAccountId = brokerAccountId,
                     Name = "IIS Tax Deduction 2025",
@@ -34,7 +34,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountTaxDeductionService>();
-                return await service.GetAll(brokerAccountId);
+                return await service.GetAllAsync(brokerAccountId);
             });
 
             Assert.NotNull(all);
@@ -43,7 +43,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var accountAmount = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountTaxDeductionService>();
-                return await service.GetAmountByBrokerAccount(brokerAccountId);
+                return await service.GetAmountByBrokerAccountAsync(brokerAccountId);
             });
 
             Assert.Equal(52000m, accountAmount);
@@ -57,7 +57,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var addedId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountTaxDeductionService>();
-                return await service.Add(new BrokerAccountTaxDeductionDto
+                return await service.AddAsync(new BrokerAccountTaxDeductionDto
                 {
                     BrokerAccountId = brokerAccountId,
                     Name = "Initial Deduction",
@@ -69,7 +69,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountTaxDeductionService>();
-                await service.Update(new BrokerAccountTaxDeductionDto
+                await service.UpdateAsync(new BrokerAccountTaxDeductionDto
                 {
                     Id = addedId,
                     BrokerAccountId = brokerAccountId,
@@ -82,7 +82,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountTaxDeductionService>();
-                return await service.GetAll(brokerAccountId);
+                return await service.GetAllAsync(brokerAccountId);
             });
 
             var updated = all.FirstOrDefault(d => d.Id == addedId);
@@ -92,13 +92,13 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountTaxDeductionService>();
-                await service.Delete(addedId);
+                await service.DeleteAsync(addedId);
             });
 
             var listAfterDelete = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountTaxDeductionService>();
-                return await service.GetAll(brokerAccountId);
+                return await service.GetAllAsync(brokerAccountId);
             });
 
             Assert.DoesNotContain(listAfterDelete, d => d.Id == addedId);
@@ -116,7 +116,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             {
                 var service = sp.GetRequiredService<IBrokerAccountTaxDeductionService>();
                 // Before date
-                await service.Add(new BrokerAccountTaxDeductionDto
+                await service.AddAsync(new BrokerAccountTaxDeductionDto
                 {
                     BrokerAccountId = broker1AccId,
                     Name = "Broker 1 Deduction 2020",
@@ -129,7 +129,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             {
                 var service = sp.GetRequiredService<IBrokerAccountTaxDeductionService>();
                 // After target date (boundary out)
-                await service.Add(new BrokerAccountTaxDeductionDto
+                await service.AddAsync(new BrokerAccountTaxDeductionDto
                 {
                     BrokerAccountId = broker1AccId,
                     Name = "Broker 1 Deduction 2020 Out",
@@ -143,7 +143,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             {
                 var service = sp.GetRequiredService<IBrokerAccountTaxDeductionService>();
                 // Before date
-                await service.Add(new BrokerAccountTaxDeductionDto
+                await service.AddAsync(new BrokerAccountTaxDeductionDto
                 {
                     BrokerAccountId = broker2AccId,
                     Name = "Broker 2 Deduction 2020",
@@ -156,7 +156,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             {
                 var service = sp.GetRequiredService<IBrokerAccountTaxDeductionService>();
                 // After target date (boundary out)
-                await service.Add(new BrokerAccountTaxDeductionDto
+                await service.AddAsync(new BrokerAccountTaxDeductionDto
                 {
                     BrokerAccountId = broker2AccId,
                     Name = "Broker 2 Deduction Future",
@@ -169,7 +169,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var sumB1 = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountTaxDeductionService>();
-                return await service.GetSumTillSpecificDate(targetDate, broker1AccId);
+                return await service.GetSumTillSpecificDateAsync(targetDate, broker1AccId);
             });
             Assert.Equal(13000m, sumB1);
 
@@ -177,7 +177,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var sumB2 = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountTaxDeductionService>();
-                return await service.GetSumTillSpecificDate(targetDate, broker2AccId);
+                return await service.GetSumTillSpecificDateAsync(targetDate, broker2AccId);
             });
             Assert.Equal(52000m, sumB2);
 
@@ -185,7 +185,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var sumAll = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountTaxDeductionService>();
-                return await service.GetSumTillSpecificDate(targetDate, null);
+                return await service.GetSumTillSpecificDateAsync(targetDate, null);
             });
             Assert.Equal(65000m, sumAll);
         }
@@ -195,19 +195,19 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var brokerId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerService>();
-                return await service.Add(new BrokerDTO { Name = "Deduction Broker" });
+                return await service.AddAsync(new BrokerDto { Name = "Deduction Broker" });
             });
 
             var typeId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountTypeService>();
-                return await service.Add(new BrokerAccountTypeDTO { Name = "IIS Type" });
+                return await service.AddAsync(new BrokerAccountTypeDto { Name = "IIS Type" });
             });
 
             return await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountService>();
-                return await service.Add(new BrokerAccountDTO
+                return await service.AddAsync(new BrokerAccountDto
                 {
                     Name = "IIS Account",
                     BrokerId = brokerId,

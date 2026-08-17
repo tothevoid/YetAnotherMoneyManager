@@ -3,7 +3,7 @@ import { Box, Card, Grid, Stack} from "@chakra-ui/react";
 import { Text} from "@chakra-ui/react";
 import { useUserProfile } from "../../../features/UserProfileSettingsModal/hooks/UserProfileContext";
 import { Fragment, useEffect, useState } from "react";
-import { getDashboard } from "../../api/dashboard/dashobardApi";
+import { getDashboard } from "../../api/dashboard/dashboardApi";
 import { GlobalDashboard, DistributionModel } from "../../models/dashboard/DashboardEntity";
 import { formatMoneyByCurrencyCulture } from "../../shared/utilities/formatters/moneyFormatter";
 import DistributionChart from "./components/DistributionChart";

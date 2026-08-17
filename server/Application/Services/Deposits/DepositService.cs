@@ -26,31 +26,31 @@ namespace MoneyManager.Application.Services.Deposits
             _depositRepo = uow.CreateRepository<Deposit>();
         }
 
-        public async Task<IEnumerable<DepositDTO>> GetAll(int monthsFrom, int monthsTo, bool onlyActive)
+        public async Task<IEnumerable<DepositDto>> GetAllAsync(int monthsFrom, int monthsTo, bool onlyActive)
         {
             var deposits = await GetDeposits(monthsFrom, monthsTo, onlyActive, x => x.To, false);
             return _mapper.Map(deposits);
         }
 
-        public async Task<IEnumerable<DepositDTO>> GetAllActive()
+        public async Task<IEnumerable<DepositDto>> GetAllActiveAsync()
         {
-            var deposits = await _depositRepo.GetAll(deposit => deposit.To > DateOnly.FromDateTime(DateTime.Now), 
+            var deposits = await _depositRepo.GetAllAsync(deposit => deposit.To > DateOnly.FromDateTime(DateTime.Now), 
                 include: GetFullHierarchyColumns);
             return _mapper.Map(deposits.OrderByDescending(x => x.From));
         }
 
-        public async Task<Guid> Add(DepositDTO deposit)
+        public async Task<Guid> AddAsync(DepositDto deposit)
         {
             var mappedDeposit = _mapper.Map(deposit);
             mappedDeposit.Id = Guid.NewGuid();
-            await _depositRepo.Add(mappedDeposit);
-            await _db.Commit();
+            await _depositRepo.AddAsync(mappedDeposit);
+            await _db.CommitAsync();
             return mappedDeposit.Id;
         }
 
-        public async Task Update(DepositDTO modifiedDeposit)
+        public async Task UpdateAsync(DepositDto modifiedDeposit)
         {
-            var currentDeposit = await _depositRepo.GetById(modifiedDeposit.Id, GetFullHierarchyColumns);
+            var currentDeposit = await _depositRepo.GetByIdAsync(modifiedDeposit.Id, GetFullHierarchyColumns);
 
             if (currentDeposit == null)
             {
@@ -59,25 +59,25 @@ namespace MoneyManager.Application.Services.Deposits
 
             var deposit = _mapper.Map(modifiedDeposit);
             _depositRepo.Update(deposit);
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            await _depositRepo.Delete(id);
-            await _db.Commit();
+            await _depositRepo.DeleteAsync(id);
+            await _db.CommitAsync();
         }
 
-        public async Task<DepositMonthSummaryDTO> GetSummary(int monthsFrom, int monthsTo, bool onlyActive)
+        public async Task<DepositMonthSummaryDto> GetSummaryAsync(int monthsFrom, int monthsTo, bool onlyActive)
         {
             var deposits = (await GetDeposits(monthsFrom, monthsTo, onlyActive, deposit => deposit.From)).ToList();
             var dates = new Dictionary<DateOnly, List<Payment>>();
 
             if (!deposits.Any())
             {
-                return new DepositMonthSummaryDTO()
+                return new DepositMonthSummaryDto()
                 {
-                    Payments = Enumerable.Empty<PeriodPaymentDTO>(),
+                    Payments = Enumerable.Empty<PeriodPaymentDto>(),
                 };
             }
 
@@ -113,14 +113,14 @@ namespace MoneyManager.Application.Services.Deposits
             }
 
 
-            return new DepositMonthSummaryDTO()
+            return new DepositMonthSummaryDto()
             {
                 Payments = dates.Select(date =>
-                    new PeriodPaymentDTO
+                    new PeriodPaymentDto
                     {
                         Period = date.Key.ToString("MM.yy"),
                         Payments = date.Value.Select(payment =>
-                            new DepositPaymentDTO
+                            new DepositPaymentDto
                             {
                                 DepositId = payment.DepositId,
                                 Name = payment.Name, 
@@ -130,10 +130,10 @@ namespace MoneyManager.Application.Services.Deposits
             };
         }
 
-        public async Task<DepositsRangeDTO> GetDepositsRange()
+        public async Task<DepositsRangeDto> GetDepositsRangeAsync()
         {
-            var minValueEntity = await _depositRepo.GetMin((deposit) => deposit.From);
-            var maxValueEntity = await _depositRepo.GetMax((deposit) => deposit.To);
+            var minValueEntity = await _depositRepo.GetMinAsync((deposit) => deposit.From);
+            var maxValueEntity = await _depositRepo.GetMaxAsync((deposit) => deposit.To);
 
             if (minValueEntity == null || maxValueEntity == null)
             {
@@ -145,7 +145,7 @@ namespace MoneyManager.Application.Services.Deposits
             var rangeStart = new DateOnly(minValue.Year, minValue.Month, 1);
             var rangeEnd = new DateOnly(maxValue.Year, maxValue.Month, 1).AddMonths(1).AddDays(-1);
 
-            return new DepositsRangeDTO() { From = rangeStart, To = rangeEnd };
+            return new DepositsRangeDto() { From = rangeStart, To = rangeEnd };
         }
 
         private async Task<IEnumerable<Deposit>> GetDeposits(int monthsFrom, int monthsTo, bool onlyActive, 
@@ -172,7 +172,7 @@ namespace MoneyManager.Application.Services.Deposits
                 .AddOrder(orderBy, isDescending)
                 .DisableTracking();
 
-            return await _depositRepo.GetAll(complexQuery.GetQuery());
+            return await _depositRepo.GetAllAsync(complexQuery.GetQuery());
         }
 
         private decimal CalculateProfitInRange(DateOnly from, DateOnly to, int totalDays, decimal estimatedEarn)

@@ -20,7 +20,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             var accountId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptoAccountService>();
-                return await service.Add(new CryptoAccountDto
+                return await service.AddAsync(new CryptoAccountDto
                 {
                     Name = "Main Crypto Wallet",
                     CryptoProviderId = providerId
@@ -32,7 +32,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             var fetched = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptoAccountService>();
-                return await service.GetById(accountId);
+                return await service.GetByIdAsync(accountId);
             });
 
             Assert.NotNull(fetched);
@@ -48,7 +48,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             var accountId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptoAccountService>();
-                return await service.Add(new CryptoAccountDto
+                return await service.AddAsync(new CryptoAccountDto
                 {
                     Name = "Initial Account Name",
                     CryptoProviderId = providerId
@@ -58,7 +58,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptoAccountService>();
-                await service.Update(new CryptoAccountDto
+                await service.UpdateAsync(new CryptoAccountDto
                 {
                     Id = accountId,
                     Name = "Updated Account Name",
@@ -69,7 +69,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             var fetched = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptoAccountService>();
-                return await service.GetById(accountId);
+                return await service.GetByIdAsync(accountId);
             });
 
             Assert.NotNull(fetched);
@@ -78,13 +78,13 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptoAccountService>();
-                await service.Delete(accountId);
+                await service.DeleteAsync(accountId);
             });
 
             var deleted = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptoAccountService>();
-                return await service.GetById(accountId);
+                return await service.GetByIdAsync(accountId);
             });
 
             Assert.Null(deleted);
@@ -95,7 +95,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             return await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptoProviderService>();
-                return await service.Add(new CryptoProviderDto { Name = name });
+                return await service.AddAsync(new CryptoProviderDto { Name = name });
             });
         }
     }

@@ -27,7 +27,7 @@ namespace MoneyManager.WebApi.Controllers.Accounts
         [HttpGet]
         public async Task<IEnumerable<AccountTypeModel>> GetAll()
         {
-            var types = await _accountTypeService.GetAll();
+            var types = await _accountTypeService.GetAllAsync();
             return _mapper.Map(types);
         }
 
@@ -35,18 +35,18 @@ namespace MoneyManager.WebApi.Controllers.Accounts
         public async Task<Guid> Add(AccountTypeModel accountType)
         {
             var accountTypeDto = _mapper.Map(accountType);
-            return await _accountTypeService.Add(accountTypeDto);
+            return await _accountTypeService.AddAsync(accountTypeDto);
         }
 
         [HttpPatch]
         public async Task Update(AccountTypeModel accountType)
         {
             var accountTypeDto = _mapper.Map(accountType);
-            await _accountTypeService.Update(accountTypeDto);
+            await _accountTypeService.UpdateAsync(accountTypeDto);
         }
 
         [HttpDelete]
         public async Task Delete(Guid id) =>
-            await _accountTypeService.Delete(id);
+            await _accountTypeService.DeleteAsync(id);
     }
 }

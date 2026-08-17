@@ -34,7 +34,7 @@ namespace MoneyManager.Application.Services.Brokers
             _dividendRepo = uow.CreateRepository<Dividend>();
         }
 
-        public async Task<IEnumerable<DividendPaymentDto>> GetAll(Guid? brokerAccountId, int pageIndex, int recordsQuantity)
+        public async Task<IEnumerable<DividendPaymentDto>> GetAllAsync(Guid? brokerAccountId, int pageIndex, int recordsQuantity)
         {
             var query = new ComplexQueryBuilder<DividendPayment>()
                 .AddPagination(pageIndex, recordsQuantity,
@@ -48,26 +48,26 @@ namespace MoneyManager.Application.Services.Brokers
             }
 
             var dividends = await _dividendPaymentRepo
-                .GetAll(query.GetQuery());
+                .GetAllAsync(query.GetQuery());
             
             return _mapper.Map(dividends);
         }
 
-        public async Task<decimal> GetSumTillSpecificDate(DateOnly date, Guid? brokerAccountId)
+        public async Task<decimal> GetSumTillSpecificDateAsync(DateOnly date, Guid? brokerAccountId)
         {
             Expression<Func<DividendPayment, bool>> filter = brokerAccountId != null ?
                 (dividendPayment) => dividendPayment.ReceivedAt <= date && dividendPayment.BrokerAccountId == brokerAccountId :
                 (dividendPayment) => dividendPayment.ReceivedAt <= date;
 
-            return await _dividendPaymentRepo.GetSum((payment) => payment.SecuritiesQuantity * payment.Dividend.Amount - payment.Tax, filter);
+            return await _dividendPaymentRepo.GetSumAsync((payment) => payment.SecuritiesQuantity * payment.Dividend.Amount - payment.Tax, filter);
         }
 
-        public async Task<PaginationConfigDto> GetPagination()
+        public async Task<PaginationConfigDto> GetPaginationAsync()
         {
             return await GetPaginationByFilter();
         }
 
-        public async Task<PaginationConfigDto> GetPaginationByBrokerAccount(Guid brokerAccountId)
+        public async Task<PaginationConfigDto> GetPaginationByBrokerAccountAsync(Guid brokerAccountId)
         {
             return await GetPaginationByFilter(GetBaseFilter(brokerAccountId));
         }
@@ -75,7 +75,7 @@ namespace MoneyManager.Application.Services.Brokers
         private async Task<PaginationConfigDto> GetPaginationByFilter(Expression<Func<DividendPayment, bool>> filter = null)
         {
             int pageSize = 10;
-            var recordsQuantity = await _dividendPaymentRepo.GetCount(filter);
+            var recordsQuantity = await _dividendPaymentRepo.GetCountAsync(filter);
 
             return new PaginationConfigDto()
             {
@@ -89,45 +89,45 @@ namespace MoneyManager.Application.Services.Brokers
             return brokerAccountSecurity => brokerAccountSecurity.BrokerAccountId == brokerAccountId;
         }
 
-        public async Task<decimal> GetEarnings()
+        public async Task<decimal> GetEarningsAsync()
         {
             return await _dividendPaymentRepo
-                .GetSum(EarningAggregationExpression);
+                .GetSumAsync(EarningAggregationExpression);
         }
 
-        public async Task<decimal> GetEarningsByBrokerAccount(Guid brokerAccountId)
+        public async Task<decimal> GetEarningsByBrokerAccountAsync(Guid brokerAccountId)
         {
             return await _dividendPaymentRepo
-                .GetSum(EarningAggregationExpression, dividendPayment => dividendPayment.BrokerAccountId == brokerAccountId);
+                .GetSumAsync(EarningAggregationExpression, dividendPayment => dividendPayment.BrokerAccountId == brokerAccountId);
         }
 
         private static Expression<Func<DividendPayment, decimal>> EarningAggregationExpression =>
             dividendPayment => dividendPayment.SecuritiesQuantity * dividendPayment.Dividend.Amount - dividendPayment.Tax;
 
-        public async Task<Guid> Add(DividendPaymentDto dividendPaymentDto)
+        public async Task<Guid> AddAsync(DividendPaymentDto dividendPaymentDto)
         {
             var dividendPayment = _mapper.Map(dividendPaymentDto);
             dividendPayment.Id = Guid.NewGuid();
-            await _dividendPaymentRepo.Add(dividendPayment);
+            await _dividendPaymentRepo.AddAsync(dividendPayment);
 
-            var dividend = await _dividendRepo.GetById(dividendPaymentDto.DividendId);
+            var dividend = await _dividendRepo.GetByIdAsync(dividendPaymentDto.DividendId);
             await ActualizeBrokerAccountBalance(dividendPayment.BrokerAccountId,
                 CalculateDividendPaymentAmount(dividend, dividendPayment.SecuritiesQuantity,
                     dividendPayment.Tax));
-            await _db.Commit();
+            await _db.CommitAsync();
             return dividendPayment.Id;
         }
 
-        public async Task Update(DividendPaymentDto dividendPaymentDto)
+        public async Task UpdateAsync(DividendPaymentDto dividendPaymentDto)
         {
             var dividendPayment = _mapper.Map(dividendPaymentDto);
 
-            var existingDividend = await _dividendPaymentRepo.GetById(dividendPaymentDto.Id, DividendPaymentQuery.GetFullHierarchyColumns);
+            var existingDividend = await _dividendPaymentRepo.GetByIdAsync(dividendPaymentDto.Id, DividendPaymentQuery.GetFullHierarchyColumns);
             var existingDividendAmount = CalculateDividendPaymentAmount(existingDividend.Dividend, existingDividend.SecuritiesQuantity,
                 existingDividend.Tax);
 
             var actualDividend = dividendPaymentDto.DividendId != existingDividend.DividendId ? 
-                await _dividendRepo.GetById(dividendPaymentDto.DividendId) : 
+                await _dividendRepo.GetByIdAsync(dividendPaymentDto.DividendId) : 
                 existingDividend.Dividend;
             var actualDividendAmount = CalculateDividendPaymentAmount(actualDividend, dividendPaymentDto.SecuritiesQuantity,
                 dividendPaymentDto.Tax);
@@ -139,24 +139,24 @@ namespace MoneyManager.Application.Services.Brokers
             }
 
             _dividendPaymentRepo.Update(dividendPayment);
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            await _dividendPaymentRepo.Delete(id);
+            await _dividendPaymentRepo.DeleteAsync(id);
 
-            var dividendPayment = await _dividendPaymentRepo.GetById(id, DividendPaymentQuery.GetFullHierarchyColumns);
+            var dividendPayment = await _dividendPaymentRepo.GetByIdAsync(id, DividendPaymentQuery.GetFullHierarchyColumns);
             var diff = CalculateDividendPaymentAmount(dividendPayment.Dividend, dividendPayment.SecuritiesQuantity, 
                 dividendPayment.Tax);
             await ActualizeBrokerAccountBalance(dividendPayment.BrokerAccountId, -1 * diff);
 
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
         public async Task ActualizeBrokerAccountBalance(Guid brokerAccountId, decimal diff)
         {
-            var brokerAccount = await _brokerAccountRepo.GetById(brokerAccountId, disableTracking: false);
+            var brokerAccount = await _brokerAccountRepo.GetByIdAsync(brokerAccountId, disableTracking: false);
             brokerAccount.MainCurrencyAmount += diff;
             _brokerAccountRepo.Update(brokerAccount);
         }
@@ -165,7 +165,5 @@ namespace MoneyManager.Application.Services.Brokers
         {
             return dividend.Amount * securitiesQuantity - tax;
         }
-
-      
     }
 }

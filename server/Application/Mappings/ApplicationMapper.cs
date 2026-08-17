@@ -28,65 +28,65 @@ namespace MoneyManager.Application.Mappings
     [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.None)]
     public partial class ApplicationMapper
     {
-        public partial Transaction Map(TransactionDTO dto);
-        public partial TransactionDTO Map(Transaction entity);
-        public partial IEnumerable<TransactionDTO> Map(IEnumerable<Transaction> entities);
+        public partial Transaction Map(TransactionDto dto);
+        public partial TransactionDto Map(Transaction entity);
+        public partial IEnumerable<TransactionDto> Map(IEnumerable<Transaction> entities);
 
-        public partial Account Map(AccountDTO dto);
-        public partial AccountDTO Map(Account entity);
-        public partial IEnumerable<AccountDTO> Map(IEnumerable<Account> entities);
+        public partial Account Map(AccountDto dto);
+        public partial AccountDto Map(Account entity);
+        public partial IEnumerable<AccountDto> Map(IEnumerable<Account> entities);
 
-        public partial TransactionType Map(TransactionTypeDTO dto);
-        public partial TransactionTypeDTO Map(TransactionType entity);
-        public partial IEnumerable<TransactionTypeDTO> Map(IEnumerable<TransactionType> entities);
+        public partial TransactionType Map(TransactionTypeDto dto);
+        public partial TransactionTypeDto Map(TransactionType entity);
+        public partial IEnumerable<TransactionTypeDto> Map(IEnumerable<TransactionType> entities);
 
-        public partial Deposit Map(DepositDTO dto);
-        public partial DepositDTO Map(Deposit entity);
-        public partial IEnumerable<DepositDTO> Map(IEnumerable<Deposit> entities);
+        public partial Deposit Map(DepositDto dto);
+        public partial DepositDto Map(Deposit entity);
+        public partial IEnumerable<DepositDto> Map(IEnumerable<Deposit> entities);
 
-        public partial Currency Map(CurrencyDTO dto);
-        public partial CurrencyDTO Map(Currency entity);
-        public partial IEnumerable<CurrencyDTO> Map(IEnumerable<Currency> entities);
+        public partial Currency Map(CurrencyDto dto);
+        public partial CurrencyDto Map(Currency entity);
+        public partial IEnumerable<CurrencyDto> Map(IEnumerable<Currency> entities);
 
-        public partial AccountType Map(AccountTypeDTO dto);
-        public partial AccountTypeDTO Map(AccountType entity);
-        public partial IEnumerable<AccountTypeDTO> Map(IEnumerable<AccountType> entities);
+        public partial AccountType Map(AccountTypeDto dto);
+        public partial AccountTypeDto Map(AccountType entity);
+        public partial IEnumerable<AccountTypeDto> Map(IEnumerable<AccountType> entities);
 
         public partial CurrencyTransaction Map(CurrencyTransactionDto dto);
         public partial CurrencyTransactionDto Map(CurrencyTransaction entity);
         public partial IEnumerable<CurrencyTransactionDto> Map(IEnumerable<CurrencyTransaction> entities);
 
-        public partial Security Map(SecurityDTO dto);
-        public partial SecurityDTO Map(Security entity);
-        public partial IEnumerable<SecurityDTO> Map(IEnumerable<Security> entities);
+        public partial Security Map(SecurityDto dto);
+        public partial SecurityDto Map(Security entity);
+        public partial IEnumerable<SecurityDto> Map(IEnumerable<Security> entities);
 
-        public partial SecurityType Map(SecurityTypeDTO dto);
-        public partial SecurityTypeDTO Map(SecurityType entity);
-        public partial IEnumerable<SecurityTypeDTO> Map(IEnumerable<SecurityType> entities);
+        public partial SecurityType Map(SecurityTypeDto dto);
+        public partial SecurityTypeDto Map(SecurityType entity);
+        public partial IEnumerable<SecurityTypeDto> Map(IEnumerable<SecurityType> entities);
 
         public partial Dividend Map(DividendDto dto);
         public partial DividendDto Map(Dividend entity);
         public partial IEnumerable<DividendDto> Map(IEnumerable<Dividend> entities);
 
-        public partial Broker Map(BrokerDTO dto);
-        public partial BrokerDTO Map(Broker entity);
-        public partial IEnumerable<BrokerDTO> Map(IEnumerable<Broker> entities);
+        public partial Broker Map(BrokerDto dto);
+        public partial BrokerDto Map(Broker entity);
+        public partial IEnumerable<BrokerDto> Map(IEnumerable<Broker> entities);
 
-        public partial BrokerAccount Map(BrokerAccountDTO dto);
-        public partial BrokerAccountDTO Map(BrokerAccount entity);
-        public partial IEnumerable<BrokerAccountDTO> Map(IEnumerable<BrokerAccount> entities);
+        public partial BrokerAccount Map(BrokerAccountDto dto);
+        public partial BrokerAccountDto Map(BrokerAccount entity);
+        public partial IEnumerable<BrokerAccountDto> Map(IEnumerable<BrokerAccount> entities);
 
-        public partial BrokerAccountSecurity Map(BrokerAccountSecurityDTO dto);
-        public partial BrokerAccountSecurityDTO Map(BrokerAccountSecurity entity);
-        public partial IEnumerable<BrokerAccountSecurityDTO> Map(IEnumerable<BrokerAccountSecurity> entities);
+        public partial BrokerAccountSecurity Map(BrokerAccountSecurityDto dto);
+        public partial BrokerAccountSecurityDto Map(BrokerAccountSecurity entity);
+        public partial IEnumerable<BrokerAccountSecurityDto> Map(IEnumerable<BrokerAccountSecurity> entities);
 
-        public partial BrokerAccountType Map(BrokerAccountTypeDTO dto);
-        public partial BrokerAccountTypeDTO Map(BrokerAccountType entity);
-        public partial IEnumerable<BrokerAccountTypeDTO> Map(IEnumerable<BrokerAccountType> entities);
+        public partial BrokerAccountType Map(BrokerAccountTypeDto dto);
+        public partial BrokerAccountTypeDto Map(BrokerAccountType entity);
+        public partial IEnumerable<BrokerAccountTypeDto> Map(IEnumerable<BrokerAccountType> entities);
 
-        public partial SecurityTransaction Map(SecurityTransactionDTO dto);
-        public partial SecurityTransactionDTO Map(SecurityTransaction entity);
-        public partial IEnumerable<SecurityTransactionDTO> Map(IEnumerable<SecurityTransaction> entities);
+        public partial SecurityTransaction Map(SecurityTransactionDto dto);
+        public partial SecurityTransactionDto Map(SecurityTransaction entity);
+        public partial IEnumerable<SecurityTransactionDto> Map(IEnumerable<SecurityTransaction> entities);
 
         public partial UserProfile Map(UserProfileDto dto);
         public partial UserProfileDto Map(UserProfile entity);

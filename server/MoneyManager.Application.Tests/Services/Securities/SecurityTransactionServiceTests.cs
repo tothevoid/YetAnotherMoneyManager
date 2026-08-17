@@ -19,7 +19,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
         {
             var (securityId, brokerAccountId) = await SetupDependencies();
 
-            var dto = new SecurityTransactionDTO
+            var dto = new SecurityTransactionDto
             {
                 SecurityId = securityId,
                 BrokerAccountId = brokerAccountId,
@@ -34,7 +34,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var addedId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTransactionService>();
-                return await service.Add(dto);
+                return await service.AddAsync(dto);
             });
 
             Assert.NotEqual(Guid.Empty, addedId);
@@ -42,7 +42,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTransactionService>();
-                return await service.GetAll(brokerAccountId, 10, 1);
+                return await service.GetAllAsync(brokerAccountId, 10, 1);
             });
 
             Assert.NotNull(all);
@@ -54,7 +54,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
         {
             var (securityId, brokerAccountId) = await SetupDependencies();
 
-            var dto = new SecurityTransactionDTO
+            var dto = new SecurityTransactionDto
             {
                 SecurityId = securityId,
                 BrokerAccountId = brokerAccountId,
@@ -67,13 +67,13 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var addedId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTransactionService>();
-                return await service.Add(dto);
+                return await service.AddAsync(dto);
             });
 
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTransactionService>();
-                await service.Update(new SecurityTransactionDTO
+                await service.UpdateAsync(new SecurityTransactionDto
                 {
                     Id = addedId,
                     SecurityId = securityId,
@@ -88,7 +88,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTransactionService>();
-                return await service.GetAll(brokerAccountId, 10, 1);
+                return await service.GetAllAsync(brokerAccountId, 10, 1);
             });
 
             var updated = all.FirstOrDefault(st => st.Id == addedId);
@@ -99,13 +99,13 @@ namespace MoneyManager.Application.Tests.Services.Securities
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTransactionService>();
-                await service.Delete(addedId);
+                await service.DeleteAsync(addedId);
             });
 
             var listAfterDelete = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTransactionService>();
-                return await service.GetAll(brokerAccountId, 10, 1);
+                return await service.GetAllAsync(brokerAccountId, 10, 1);
             });
 
             Assert.DoesNotContain(listAfterDelete, st => st.Id == addedId);
@@ -123,7 +123,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTransactionService>();
-                await service.Add(new SecurityTransactionDTO
+                await service.AddAsync(new SecurityTransactionDto
                 {
                     SecurityId = securityId,
                     BrokerAccountId = broker1AccountId,
@@ -141,7 +141,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTransactionService>();
-                await service.Add(new SecurityTransactionDTO
+                await service.AddAsync(new SecurityTransactionDto
                 {
                     SecurityId = securityId,
                     BrokerAccountId = broker1AccountId,
@@ -159,7 +159,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTransactionService>();
-                await service.Add(new SecurityTransactionDTO
+                await service.AddAsync(new SecurityTransactionDto
                 {
                     SecurityId = securityId,
                     BrokerAccountId = broker1AccountId,
@@ -175,7 +175,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTransactionService>();
-                await service.Add(new SecurityTransactionDTO
+                await service.AddAsync(new SecurityTransactionDto
                 {
                     SecurityId = securityId,
                     BrokerAccountId = broker2AccountId,
@@ -190,7 +190,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTransactionService>();
-                await service.Add(new SecurityTransactionDTO
+                await service.AddAsync(new SecurityTransactionDto
                 {
                     SecurityId = securityId,
                     BrokerAccountId = broker2AccountId,
@@ -205,7 +205,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var summaryB1 = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTransactionService>();
-                return await service.GetSummaryTillSpecificDate(targetDate, broker1AccountId);
+                return await service.GetSummaryTillSpecificDateAsync(targetDate, broker1AccountId);
             });
 
             Assert.NotNull(summaryB1);
@@ -219,7 +219,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var summaryB2 = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTransactionService>();
-                return await service.GetSummaryTillSpecificDate(targetDate, broker2AccountId);
+                return await service.GetSummaryTillSpecificDateAsync(targetDate, broker2AccountId);
             });
 
             Assert.NotNull(summaryB2);
@@ -233,7 +233,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var summaryAll = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTransactionService>();
-                return await service.GetSummaryTillSpecificDate(targetDate, null);
+                return await service.GetSummaryTillSpecificDateAsync(targetDate, null);
             });
 
             Assert.NotNull(summaryAll);
@@ -249,13 +249,13 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var securityTypeId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTypeService>();
-                return await service.Add(new SecurityTypeDTO { Name = "SecTx Stock" });
+                return await service.AddAsync(new SecurityTypeDto { Name = "SecTx Stock" });
             });
 
             var securityId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityService>();
-                var sec = await service.Add(new SecurityDTO
+                var sec = await service.AddAsync(new SecurityDto
                 {
                     Name = "Microsoft",
                     Ticker = "MSFT",
@@ -269,19 +269,19 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var brokerId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerService>();
-                return await service.Add(new BrokerDTO { Name = "SecTx Broker" });
+                return await service.AddAsync(new BrokerDto { Name = "SecTx Broker" });
             });
 
             var brokerAccountTypeId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountTypeService>();
-                return await service.Add(new BrokerAccountTypeDTO { Name = "Standard Broker Acc" });
+                return await service.AddAsync(new BrokerAccountTypeDto { Name = "Standard Broker Acc" });
             });
 
             var brokerAccountId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountService>();
-                return await service.Add(new BrokerAccountDTO
+                return await service.AddAsync(new BrokerAccountDto
                 {
                     Name = "SecTx Broker Acc",
                     BrokerId = brokerId,

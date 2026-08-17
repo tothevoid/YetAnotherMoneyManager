@@ -23,7 +23,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountFundsTransferService>();
-                await service.Add(new BrokerAccountFundsTransferDto
+                await service.AddAsync(new BrokerAccountFundsTransferDto
                 {
                     BrokerAccountId = brokerAccountId,
                     AccountId = accountId,
@@ -36,7 +36,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var summary = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountSummaryService>();
-                return await service.GetSummary();
+                return await service.GetSummaryAsync();
             });
 
             Assert.NotNull(summary);
@@ -46,7 +46,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var accountSummary = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountSummaryService>();
-                return await service.GetSummaryByBrokerAccount(brokerAccountId);
+                return await service.GetSummaryByBrokerAccountAsync(brokerAccountId);
             });
 
             Assert.NotNull(accountSummary);
@@ -57,7 +57,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var monthHistory = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountSummaryService>();
-                return await service.GetMonthTransfersHistoryByBrokerAccount(brokerAccountId, now.Month, now.Year);
+                return await service.GetMonthTransfersHistoryByBrokerAccountAsync(brokerAccountId, now.Month, now.Year);
             });
 
             Assert.NotNull(monthHistory);
@@ -66,7 +66,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var yearHistory = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountSummaryService>();
-                return await service.GetYearTransfersHistoryByBrokerAccount(brokerAccountId, now.Year);
+                return await service.GetYearTransfersHistoryByBrokerAccountAsync(brokerAccountId, now.Year);
             });
 
             Assert.NotNull(yearHistory);
@@ -78,19 +78,19 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var brokerId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerService>();
-                return await service.Add(new BrokerDTO { Name = "Summary Broker" });
+                return await service.AddAsync(new BrokerDto { Name = "Summary Broker" });
             });
 
             var typeId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountTypeService>();
-                return await service.Add(new BrokerAccountTypeDTO { Name = "Summary Acc Type" });
+                return await service.AddAsync(new BrokerAccountTypeDto { Name = "Summary Acc Type" });
             });
 
             var brokerAccountId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountService>();
-                return await service.Add(new BrokerAccountDTO
+                return await service.AddAsync(new BrokerAccountDto
                 {
                     Name = "Summary Broker Acc",
                     BrokerId = brokerId,
@@ -103,7 +103,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var accountId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IAccountService>();
-                return await service.Add(new AccountDTO
+                return await service.AddAsync(new AccountDto
                 {
                     Active = true,
                     Name = "Summary Linked Card",

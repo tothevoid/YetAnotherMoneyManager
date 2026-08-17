@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using MoneyManager.Application.DTO.Accounts;
 using MoneyManager.Application.Interfaces.Accounts;
 using MoneyManager.Application.Tests.Fixtures;
@@ -18,7 +18,7 @@ namespace MoneyManager.Application.Tests.Services.Accounts
             {
                 var accountTypeService = sp.GetRequiredService<IAccountTypeService>();
 
-                var typesBefore = await accountTypeService.GetAll();
+                var typesBefore = await accountTypeService.GetAllAsync();
 
                 return typesBefore;
             });
@@ -31,7 +31,7 @@ namespace MoneyManager.Application.Tests.Services.Accounts
 
                 foreach (var name in names)
                 {
-                    await accountTypeService.Add(new AccountTypeDTO() { Active = true, Id = Guid.NewGuid(), Name = name });
+                    await accountTypeService.AddAsync(new AccountTypeDto() { Active = true, Id = Guid.NewGuid(), Name = name });
                 }
             });
 
@@ -39,7 +39,7 @@ namespace MoneyManager.Application.Tests.Services.Accounts
             {
                 var accountTypeService = sp.GetRequiredService<IAccountTypeService>();
 
-                var typesAfter = await accountTypeService.GetAll();
+                var typesAfter = await accountTypeService.GetAllAsync();
 
                 return typesAfter;
             });
@@ -59,7 +59,7 @@ namespace MoneyManager.Application.Tests.Services.Accounts
                 var accountTypeService = sp.GetRequiredService<IAccountTypeService>();
 
                 var accountType = CreateAccountType(id, nameBefore);
-                await accountTypeService.Add(accountType);
+                await accountTypeService.AddAsync(accountType);
             });
 
             var nameAfter = "TestAfter";
@@ -69,14 +69,14 @@ namespace MoneyManager.Application.Tests.Services.Accounts
                 var accountTypeService = sp.GetRequiredService<IAccountTypeService>();
 
                 var accountType = CreateAccountType(id, nameAfter);
-                await accountTypeService.Update(accountType);
+                await accountTypeService.UpdateAsync(accountType);
             });
 
             await ExecuteScopeAsync(async sp =>
             {
                 var accountTypeService = sp.GetRequiredService<IAccountTypeService>();
 
-                var typesAfter = await accountTypeService.GetAll();
+                var typesAfter = await accountTypeService.GetAllAsync();
 
                 var accountTypeWithNameBefore = typesAfter.FirstOrDefault(type => type.Name == nameBefore);
 
@@ -97,21 +97,21 @@ namespace MoneyManager.Application.Tests.Services.Accounts
                 var accountTypeService = sp.GetRequiredService<IAccountTypeService>();
 
                 var accountType = CreateAccountType(id, nameof(TestDelete));
-                await accountTypeService.Add(accountType);
+                await accountTypeService.AddAsync(accountType);
             });
 
             await ExecuteScopeAsync(async sp =>
             {
                 var accountTypeService = sp.GetRequiredService<IAccountTypeService>();
 
-                await accountTypeService.Delete(id);
+                await accountTypeService.DeleteAsync(id);
             });
 
             await ExecuteScopeAsync(async sp =>
             {
                 var accountTypeService = sp.GetRequiredService<IAccountTypeService>();
 
-                var typesAfter = await accountTypeService.GetAll();
+                var typesAfter = await accountTypeService.GetAllAsync();
 
                 var accountTypesWithSameId = typesAfter.FirstOrDefault(type => type.Id == id);
 
@@ -119,6 +119,6 @@ namespace MoneyManager.Application.Tests.Services.Accounts
             });
         }
 
-        private AccountTypeDTO CreateAccountType(Guid id, string name) => new() { Id = id, Active = true, Name = name };
+        private AccountTypeDto CreateAccountType(Guid id, string name) => new() { Id = id, Active = true, Name = name };
     }
 }

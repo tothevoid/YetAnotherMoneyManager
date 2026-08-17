@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using MoneyManager.Shared.Entities;
 
 namespace MoneyManager.Application.DTO.Transactions
 {
-    public class TransactionTypeDTO: BaseEntity
+    public class TransactionTypeDto: BaseEntity
     {
         public string Name { get; set; }
 

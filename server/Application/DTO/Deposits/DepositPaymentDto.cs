@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 
 namespace MoneyManager.Application.DTO.Deposits
 {
-    public class DepositPaymentDTO
+    public class DepositPaymentDto
     {
         public Guid DepositId { get; set; }
 

@@ -6,7 +6,7 @@ namespace MoneyManager.Application.Interfaces.Brokers
 {
     public interface IBrokerAccountPortfolioHistoryService
     {
-        Task<BrokerAccountPortfolioHistoryDto> GetAll(DateOnly date);
-        Task<BrokerAccountPortfolioHistoryDto> GetByBrokerAccount(DateOnly date, Guid brokerAccountId);
+        Task<BrokerAccountPortfolioHistoryDto> GetAllAsync(DateOnly date);
+        Task<BrokerAccountPortfolioHistoryDto> GetByBrokerAccountAsync(DateOnly date, Guid brokerAccountId);
     }
 }

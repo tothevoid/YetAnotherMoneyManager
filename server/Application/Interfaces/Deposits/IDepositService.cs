@@ -1,4 +1,3 @@
-﻿using MoneyManager.Application.DTO;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,18 +7,18 @@ namespace MoneyManager.Application.Interfaces.Deposits
 {
     public interface IDepositService
     {
-        Task<IEnumerable<DepositDTO>> GetAll(int monthsFrom, int monthsTo, bool onlyActive);
+        Task<IEnumerable<DepositDto>> GetAllAsync(int monthsFrom, int monthsTo, bool onlyActive);
 
-        Task<IEnumerable<DepositDTO>> GetAllActive();
+        Task<IEnumerable<DepositDto>> GetAllActiveAsync();
 
-        Task<Guid> Add(DepositDTO deposit);
+        Task<Guid> AddAsync(DepositDto deposit);
 
-        Task Update(DepositDTO modifiedDeposit);
+        Task UpdateAsync(DepositDto modifiedDeposit);
 
-        Task Delete(Guid id);
+        Task DeleteAsync(Guid id);
 
-        Task<DepositMonthSummaryDTO> GetSummary(int monthsFrom, int monthsTo, bool onlyActive);
+        Task<DepositMonthSummaryDto> GetSummaryAsync(int monthsFrom, int monthsTo, bool onlyActive);
 
-        Task<DepositsRangeDTO> GetDepositsRange();
+        Task<DepositsRangeDto> GetDepositsRangeAsync();
     }
 }

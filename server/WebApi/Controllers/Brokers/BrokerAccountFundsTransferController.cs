@@ -29,7 +29,7 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         [HttpPost(nameof(GetAll))]
         public async Task<IEnumerable<BrokerAccountFundsTransferModel>> GetAll(GetAllBrokerAccountFundTransferQuery query)
         {
-            var transfers = await _brokerAccountFundsTransferService.GetAll(query.BrokerAccountId, 
+            var transfers = await _brokerAccountFundsTransferService.GetAllAsync(query.BrokerAccountId, 
                 query.PageIndex, query.RecordsQuantity);
             return _mapper.Map(transfers);
         }
@@ -38,7 +38,7 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         public async Task<BrokerAccountFundsTransferModel> Add(BrokerAccountFundsTransferModel transferModel)
         {
             var transferDto = _mapper.Map(transferModel);
-            var result = await _brokerAccountFundsTransferService.Add(transferDto);
+            var result = await _brokerAccountFundsTransferService.AddAsync(transferDto);
             return _mapper.Map(result);
         }
 
@@ -46,14 +46,14 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         public async Task Update(BrokerAccountFundsTransferModel transferModel)
         {
             var transferDto = _mapper.Map(transferModel);
-            await _brokerAccountFundsTransferService.Update(transferDto);
+            await _brokerAccountFundsTransferService.UpdateAsync(transferDto);
         }
 
         [HttpGet(nameof(GetPagination))]
         public async Task<PaginationConfigModel> GetPagination()
         {
             var pagination = await _brokerAccountFundsTransferService
-                .GetPagination();
+                .GetPaginationAsync();
             return _mapper.Map(pagination);
         }
 
@@ -61,12 +61,12 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         public async Task<PaginationConfigModel> GetPaginationByBrokerAccount([FromQuery] Guid brokerAccountId)
         {
             var pagination = await _brokerAccountFundsTransferService
-                .GetPaginationByBrokerAccount(brokerAccountId);
+                .GetPaginationByBrokerAccountAsync(brokerAccountId);
             return _mapper.Map(pagination);
         }
 
         [HttpDelete]
         public async Task Delete(Guid id) =>
-            await _brokerAccountFundsTransferService.Delete(id);
+            await _brokerAccountFundsTransferService.DeleteAsync(id);
     }
 }

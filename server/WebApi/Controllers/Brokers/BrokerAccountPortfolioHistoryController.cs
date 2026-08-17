@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Application.Services.Brokers;
 using System;
@@ -22,13 +23,13 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         [HttpGet(nameof(GetAll))]
         public async Task<BrokerAccountPortfolioHistoryDto> GetAll([FromQuery] DateOnly date)
         {
-            return await _brokerAccountPortfolioHistoryService.GetAll(AdjustDate(date));
+            return await _brokerAccountPortfolioHistoryService.GetAllAsync(AdjustDate(date));
         }
 
         [HttpGet(nameof(GetByBrokerAccount))]
         public async Task<BrokerAccountPortfolioHistoryDto> GetByBrokerAccount([FromQuery] DateOnly date, [FromQuery] Guid brokerAccountId)
         {
-            return await _brokerAccountPortfolioHistoryService.GetByBrokerAccount(AdjustDate(date), brokerAccountId);
+            return await _brokerAccountPortfolioHistoryService.GetByBrokerAccountAsync(AdjustDate(date), brokerAccountId);
         }
 
         private DateOnly AdjustDate(DateOnly date)

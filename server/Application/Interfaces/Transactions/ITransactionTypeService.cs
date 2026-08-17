@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -8,14 +8,14 @@ namespace MoneyManager.Application.Interfaces.Transactions
 {
     public interface ITransactionTypeService
     {
-        Task<IEnumerable<TransactionTypeDTO>> GetAll(bool onlyActive);
+        Task<IEnumerable<TransactionTypeDto>> GetAllAsync(bool onlyActive);
 
-        Task<TransactionTypeDTO> Add(TransactionTypeDTO transactionTypeDto, IFormFile transactionTypeIcon);
+        Task<TransactionTypeDto> AddAsync(TransactionTypeDto transactionTypeDto, IFormFile transactionTypeIcon);
 
-        Task<TransactionTypeDTO> Update(TransactionTypeDTO transactionTypeDto, IFormFile transactionTypeIcon);
+        Task<TransactionTypeDto> UpdateAsync(TransactionTypeDto transactionTypeDto, IFormFile transactionTypeIcon);
 
-        Task Delete(Guid id);
+        Task DeleteAsync(Guid id);
 
-        Task<string> GetIconUrl(string iconKey);
+        Task<string> GetIconUrlAsync(string iconKey);
     }
 }

@@ -29,7 +29,7 @@ namespace MoneyManager.Application.Services.Accounts
             _transactionRepo = uow.CreateRepository<Transaction>();
         }
 
-        public async Task<IEnumerable<AccountDTO>> GetAll(bool onlyActive)
+        public async Task<IEnumerable<AccountDto>> GetAllAsync(bool onlyActive)
         {
             var query = new ComplexQueryBuilder<Account>()
                 .AddFilter(onlyActive ? account => account.Active : null)
@@ -38,32 +38,32 @@ namespace MoneyManager.Application.Services.Accounts
                 .DisableTracking()
                 .GetQuery();
 
-            var transactions = await _accountRepo.GetAll(query);
+            var transactions = await _accountRepo.GetAllAsync(query);
             return _mapper.Map(transactions);
         }
 
-        public async Task<AccountDTO> GetById(Guid id)
+        public async Task<AccountDto> GetByIdAsync(Guid id)
         {
-            var account = await _accountRepo.GetById(id, GetFullHierarchyColumns);
+            var account = await _accountRepo.GetByIdAsync(id, GetFullHierarchyColumns);
             return _mapper.Map(account);
         }
 
-        public async Task<IEnumerable<AccountDTO>> GetAllByTypes(Guid[] typesIds, bool onlyActive = false)
+        public async Task<IEnumerable<AccountDto>> GetAllByTypesAsync(Guid[] typesIds, bool onlyActive = false)
         {
             Expression<Func<Account, bool>> filter = null;
 
             filter = account =>
                 (!onlyActive || account.Active) && typesIds.Contains(account.AccountTypeId);
 
-            var transactions = await _accountRepo.GetAll(filter, GetFullHierarchyColumns);
+            var transactions = await _accountRepo.GetAllAsync(filter, GetFullHierarchyColumns);
             return _mapper.Map(transactions);
         }
 
-        public async Task Update(AccountDTO accountDTO)
+        public async Task UpdateAsync(AccountDto accountDto)
         {
-            var account = _mapper.Map(accountDTO);
+            var account = _mapper.Map(accountDto);
 
-            var currentAccountState = await _accountRepo.GetById(account.Id);
+            var currentAccountState = await _accountRepo.GetByIdAsync(account.Id);
             if (currentAccountState == null)
             {
                 return;
@@ -76,30 +76,30 @@ namespace MoneyManager.Application.Services.Accounts
             {
                 var transaction = GenerateSystemTransaction(account,
                     $"{currentAccountState.Balance} => {account.Balance}", balanceDiff);
-                await _transactionRepo.Add(transaction);
+                await _transactionRepo.AddAsync(transaction);
             }
 
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
-        public async Task<Guid> Add(AccountDTO accountDto)
+        public async Task<Guid> AddAsync(AccountDto accountDto)
         {
             var account = _mapper.Map(accountDto);
             account.Id = Guid.NewGuid();
-            await _accountRepo.Add(account);
-            await _db.Commit();
+            await _accountRepo.AddAsync(account);
+            await _db.CommitAsync();
             return account.Id;
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            await _accountRepo.Delete(id);
-            await _db.Commit();
+            await _accountRepo.DeleteAsync(id);
+            await _db.CommitAsync();
         }
 
-        public async Task Transfer(AccountTransferDTO transferDto)
+        public async Task TransferAsync(AccountTransferDto transferDto)
         {
-            var accounts = (await _accountRepo.GetAll(account => 
+            var accounts = (await _accountRepo.GetAllAsync(account => 
                 account.Id == transferDto.From || account.Id == transferDto.To)).ToList();
             var fromAccount = accounts.FirstOrDefault(account => account.Id == transferDto.From);
             var toAccount = accounts.FirstOrDefault(account => account.Id == transferDto.To);
@@ -121,20 +121,20 @@ namespace MoneyManager.Application.Services.Accounts
 
             var tasks = new List<Task>()
             {
-                _transactionRepo.Add(fromAccountTransaction),
-                _transactionRepo.Add(toAccountTransaction),
+                _transactionRepo.AddAsync(fromAccountTransaction),
+                _transactionRepo.AddAsync(toAccountTransaction),
             };
 
             await Task.WhenAll(tasks);
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
-        public async Task<AccountCurrencySummaryDTO[]> GetSummary()
+        public async Task<AccountCurrencySummaryDto[]> GetSummaryAsync()
         {
             //TODO: Group on db level
-            var accounts = await _accountRepo.GetAll(account => account.Active, GetFullHierarchyColumns);
+            var accounts = await _accountRepo.GetAllAsync(account => account.Active, GetFullHierarchyColumns);
             var groups = accounts.GroupBy(account => account.CurrencyId)
-                .Select(group => new AccountCurrencySummaryDTO()
+                .Select(group => new AccountCurrencySummaryDto()
                 {
                     Name = group.First().Currency.Name, 
                     Summary = group.Sum(account => account.Balance)

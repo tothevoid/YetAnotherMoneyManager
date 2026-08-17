@@ -4,7 +4,7 @@ using System;
 
 namespace MoneyManager.Application.DTO.Transactions
 {
-    public class TransactionDTO : BaseEntity
+    public class TransactionDto : BaseEntity
     {
         public string Name { get; set; }
 
@@ -12,11 +12,11 @@ namespace MoneyManager.Application.DTO.Transactions
 
         public decimal Amount { get; set; }
 
-        public AccountDTO Account { get; set; }
+        public AccountDto Account { get; set; }
 
         public Guid AccountId { get; set; }
 
-        public TransactionTypeDTO TransactionType { get; set; }
+        public TransactionTypeDto TransactionType { get; set; }
 
         public Guid TransactionTypeId { get;set; }
 

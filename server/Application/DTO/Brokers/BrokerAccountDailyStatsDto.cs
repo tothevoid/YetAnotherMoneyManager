@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using MoneyManager.Application.DTO.Securities;
 
@@ -17,7 +17,7 @@ namespace MoneyManager.Application.DTO.Brokers
 
     public class BrokerAccountDailySecurityStatsDto
     {
-        public SecurityDTO Security { get; set; }
+        public SecurityDto Security { get; set; }
 
         public decimal StartPrice { get; set; }
 

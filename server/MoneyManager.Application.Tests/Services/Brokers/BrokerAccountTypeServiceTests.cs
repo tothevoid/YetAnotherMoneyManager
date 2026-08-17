@@ -17,7 +17,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var typeId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountTypeService>();
-                return await service.Add(new BrokerAccountTypeDTO { Name = "IIS (Tax Free)" });
+                return await service.AddAsync(new BrokerAccountTypeDto { Name = "IIS (Tax Free)" });
             });
 
             Assert.NotEqual(Guid.Empty, typeId);
@@ -25,7 +25,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountTypeService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             Assert.NotNull(all);
@@ -38,19 +38,19 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var typeId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountTypeService>();
-                return await service.Add(new BrokerAccountTypeDTO { Name = "Brokerage Initial" });
+                return await service.AddAsync(new BrokerAccountTypeDto { Name = "Brokerage Initial" });
             });
 
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountTypeService>();
-                await service.Update(new BrokerAccountTypeDTO { Id = typeId, Name = "Brokerage Updated" });
+                await service.UpdateAsync(new BrokerAccountTypeDto { Id = typeId, Name = "Brokerage Updated" });
             });
 
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountTypeService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             var updated = all.FirstOrDefault(t => t.Id == typeId);
@@ -64,19 +64,19 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var typeId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountTypeService>();
-                return await service.Add(new BrokerAccountTypeDTO { Name = "Brokerage Initial" });
+                return await service.AddAsync(new BrokerAccountTypeDto { Name = "Brokerage Initial" });
             });
 
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountTypeService>();
-                await service.Delete(typeId);
+                await service.DeleteAsync(typeId);
             });
 
             var allAfterDelete = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountTypeService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             Assert.DoesNotContain(allAfterDelete, t => t.Id == typeId);

@@ -28,14 +28,14 @@ namespace MoneyManager.WebApi.Controllers.Debts
         [HttpPost(nameof(GetAll))]
         public async Task<IEnumerable<DebtPaymentModel>> GetAll(GetAllDebtPaymentsQuery query)
         {
-            var debtPayments = await _debtPaymentService.GetAll(query.PageIndex, query.RecordsQuantity, query.DebtId, query.TagId);
+            var debtPayments = await _debtPaymentService.GetAllAsync(query.PageIndex, query.RecordsQuantity, query.DebtId, query.TagId);
             return _mapper.Map(debtPayments);
         }
 
         [HttpGet(nameof(GetPagination))]
         public async Task<PaginationConfigModel> GetPagination([FromQuery] Guid? debtId, [FromQuery] Guid? tagId)
         {
-            var pagination = await _debtPaymentService.GetPagination(debtId, tagId);
+            var pagination = await _debtPaymentService.GetPaginationAsync(debtId, tagId);
             return _mapper.Map(pagination);
         }
 
@@ -43,18 +43,18 @@ namespace MoneyManager.WebApi.Controllers.Debts
         public async Task<Guid> Add(DebtPaymentModel debtPayment)
         {
             var debtPaymentDto = _mapper.Map(debtPayment);
-            return await _debtPaymentService.Add(debtPaymentDto);
+            return await _debtPaymentService.AddAsync(debtPaymentDto);
         }
 
         [HttpPatch]
         public async Task Update(DebtPaymentModel debtPayment)
         {
             var debtPaymentDto = _mapper.Map(debtPayment);
-            await _debtPaymentService.Update(debtPaymentDto);
+            await _debtPaymentService.UpdateAsync(debtPaymentDto);
         }
 
         [HttpDelete]
         public async Task Delete(Guid id) =>
-            await _debtPaymentService.Delete(id);
+            await _debtPaymentService.DeleteAsync(id);
     }
 }

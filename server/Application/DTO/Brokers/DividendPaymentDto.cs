@@ -1,4 +1,4 @@
-﻿using MoneyManager.Infrastructure.Entities.Brokers;
+using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Entities.Securities;
 using MoneyManager.Shared.Entities;
 using System;
@@ -8,7 +8,7 @@ namespace MoneyManager.Application.DTO.Brokers
 {
     public class DividendPaymentDto : BaseEntity
     {
-        public BrokerAccountDTO BrokerAccount { get; set; }
+        public BrokerAccountDto BrokerAccount { get; set; }
 
         public Guid BrokerAccountId { get; set; }
 

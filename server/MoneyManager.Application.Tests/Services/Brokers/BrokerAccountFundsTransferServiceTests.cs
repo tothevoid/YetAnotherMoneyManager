@@ -22,7 +22,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var added = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountFundsTransferService>();
-                return await service.Add(new BrokerAccountFundsTransferDto
+                return await service.AddAsync(new BrokerAccountFundsTransferDto
                 {
                     BrokerAccountId = brokerAccountId,
                     AccountId = accountId,
@@ -38,7 +38,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountFundsTransferService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             Assert.NotNull(all);
@@ -47,7 +47,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var accountTransfers = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountFundsTransferService>();
-                return await service.GetAll(brokerAccountId);
+                return await service.GetAllAsync(brokerAccountId);
             });
 
             Assert.NotNull(accountTransfers);
@@ -62,7 +62,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var added = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountFundsTransferService>();
-                return await service.Add(new BrokerAccountFundsTransferDto
+                return await service.AddAsync(new BrokerAccountFundsTransferDto
                 {
                     BrokerAccountId = brokerAccountId,
                     AccountId = accountId,
@@ -75,7 +75,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountFundsTransferService>();
-                await service.Update(new BrokerAccountFundsTransferDto
+                await service.UpdateAsync(new BrokerAccountFundsTransferDto
                 {
                     Id = added.Id,
                     BrokerAccountId = brokerAccountId,
@@ -89,7 +89,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountFundsTransferService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             var updated = all.FirstOrDefault(t => t.Id == added.Id);
@@ -100,13 +100,13 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountFundsTransferService>();
-                await service.Delete(added.Id);
+                await service.DeleteAsync(added.Id);
             });
 
             var listAfterDelete = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountFundsTransferService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             Assert.DoesNotContain(listAfterDelete, t => t.Id == added.Id);
@@ -124,7 +124,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             {
                 var service = sp.GetRequiredService<IBrokerAccountFundsTransferService>();
                 // Deposit before date
-                await service.Add(new BrokerAccountFundsTransferDto
+                await service.AddAsync(new BrokerAccountFundsTransferDto
                 {
                     BrokerAccountId = broker1AccId,
                     AccountId = account1Id,
@@ -138,7 +138,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             {
                 var service = sp.GetRequiredService<IBrokerAccountFundsTransferService>();
                 // Withdraw before date
-                await service.Add(new BrokerAccountFundsTransferDto
+                await service.AddAsync(new BrokerAccountFundsTransferDto
                 {
                     BrokerAccountId = broker1AccId,
                     AccountId = account1Id,
@@ -152,7 +152,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             {
                 var service = sp.GetRequiredService<IBrokerAccountFundsTransferService>();
                 // Deposit after target date (boundary out)
-                await service.Add(new BrokerAccountFundsTransferDto
+                await service.AddAsync(new BrokerAccountFundsTransferDto
                 {
                     BrokerAccountId = broker1AccId,
                     AccountId = account1Id,
@@ -167,7 +167,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             {
                 var service = sp.GetRequiredService<IBrokerAccountFundsTransferService>();
                 // Deposit before date
-                await service.Add(new BrokerAccountFundsTransferDto
+                await service.AddAsync(new BrokerAccountFundsTransferDto
                 {
                     BrokerAccountId = broker2AccId,
                     AccountId = account2Id,
@@ -181,7 +181,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             {
                 var service = sp.GetRequiredService<IBrokerAccountFundsTransferService>();
                 // Withdraw before date
-                await service.Add(new BrokerAccountFundsTransferDto
+                await service.AddAsync(new BrokerAccountFundsTransferDto
                 {
                     BrokerAccountId = broker2AccId,
                     AccountId = account2Id,
@@ -195,7 +195,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             {
                 var service = sp.GetRequiredService<IBrokerAccountFundsTransferService>();
                 // Withdraw after target date (boundary out)
-                await service.Add(new BrokerAccountFundsTransferDto
+                await service.AddAsync(new BrokerAccountFundsTransferDto
                 {
                     BrokerAccountId = broker2AccId,
                     AccountId = account2Id,
@@ -209,7 +209,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var (depositedB1, withdrawnB1) = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountFundsTransferService>();
-                return await service.GetSumTillSpecificDate(targetDate, broker1AccId);
+                return await service.GetSumTillSpecificDateAsync(targetDate, broker1AccId);
             });
             Assert.Equal(1000m, depositedB1);
             Assert.Equal(300m, withdrawnB1);
@@ -218,7 +218,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var (depositedB2, withdrawnB2) = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountFundsTransferService>();
-                return await service.GetSumTillSpecificDate(targetDate, broker2AccId);
+                return await service.GetSumTillSpecificDateAsync(targetDate, broker2AccId);
             });
             Assert.Equal(2000m, depositedB2);
             Assert.Equal(700m, withdrawnB2);
@@ -227,7 +227,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var (depositedAll, withdrawnAll) = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountFundsTransferService>();
-                return await service.GetSumTillSpecificDate(targetDate, null);
+                return await service.GetSumTillSpecificDateAsync(targetDate, null);
             });
             Assert.Equal(3000m, depositedAll);
             Assert.Equal(1000m, withdrawnAll);
@@ -238,19 +238,19 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var brokerId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerService>();
-                return await service.Add(new BrokerDTO { Name = "Transfer Broker" });
+                return await service.AddAsync(new BrokerDto { Name = "Transfer Broker" });
             });
 
             var typeId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountTypeService>();
-                return await service.Add(new BrokerAccountTypeDTO { Name = "Transfer Acc Type" });
+                return await service.AddAsync(new BrokerAccountTypeDto { Name = "Transfer Acc Type" });
             });
 
             var brokerAccountId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountService>();
-                return await service.Add(new BrokerAccountDTO
+                return await service.AddAsync(new BrokerAccountDto
                 {
                     Name = "Transfer Broker Acc",
                     BrokerId = brokerId,
@@ -262,7 +262,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var accountId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IAccountService>();
-                return await service.Add(new AccountDTO
+                return await service.AddAsync(new AccountDto
                 {
                     Active = true,
                     Name = "Transfer Card Acc",

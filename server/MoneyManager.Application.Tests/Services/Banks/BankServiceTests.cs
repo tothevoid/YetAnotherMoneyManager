@@ -25,13 +25,13 @@ namespace MoneyManager.Application.Tests.Services.Banks
             await ExecuteScopeAsync(async sp =>
             {
                 var bankService = sp.GetRequiredService<IBankService>();
-                await bankService.Add(bankDto, null);
+                await bankService.AddAsync(bankDto, null);
             });
 
             var fetched = await ExecuteScopeAsync(async sp =>
             {
                 var bankService = sp.GetRequiredService<IBankService>();
-                return await bankService.GetById(bankId);
+                return await bankService.GetByIdAsync(bankId);
             });
 
             Assert.NotNull(fetched);
@@ -48,13 +48,13 @@ namespace MoneyManager.Application.Tests.Services.Banks
             await ExecuteScopeAsync(async sp =>
             {
                 var bankService = sp.GetRequiredService<IBankService>();
-                await bankService.Add(new BankDto { Id = bankId, Name = name }, null);
+                await bankService.AddAsync(new BankDto { Id = bankId, Name = name }, null);
             });
 
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var bankService = sp.GetRequiredService<IBankService>();
-                return await bankService.GetAll();
+                return await bankService.GetAllAsync();
             });
 
             Assert.NotNull(all);
@@ -74,19 +74,19 @@ namespace MoneyManager.Application.Tests.Services.Banks
             await ExecuteScopeAsync(async sp =>
             {
                 var bankService = sp.GetRequiredService<IBankService>();
-                await bankService.Add(bankDto, null);
+                await bankService.AddAsync(bankDto, null);
             });
 
             await ExecuteScopeAsync(async sp =>
             {
                 var bankService = sp.GetRequiredService<IBankService>();
-                await bankService.Update(new BankDto { Id = bankId, Name = name + " Sachs" }, null);
+                await bankService.UpdateAsync(new BankDto { Id = bankId, Name = name + " Sachs" }, null);
             });
 
             var updated = await ExecuteScopeAsync(async sp =>
             {
                 var bankService = sp.GetRequiredService<IBankService>();
-                return await bankService.GetById(bankId);
+                return await bankService.GetByIdAsync(bankId);
             });
 
             Assert.NotNull(updated);
@@ -100,13 +100,13 @@ namespace MoneyManager.Application.Tests.Services.Banks
             await ExecuteScopeAsync(async sp =>
             {
                 var bankService = sp.GetRequiredService<IBankService>();
-                await bankService.Add(new BankDto { Id = bankId, Name = "Morgan Stanley" }, null);
+                await bankService.AddAsync(new BankDto { Id = bankId, Name = "Morgan Stanley" }, null);
             });
 
             var result = await ExecuteScopeAsync(async sp =>
             {
                 var bankService = sp.GetRequiredService<IBankService>();
-                return await bankService.Delete(bankId);
+                return await bankService.DeleteAsync(bankId);
             });
 
             Assert.True(result);
@@ -114,7 +114,7 @@ namespace MoneyManager.Application.Tests.Services.Banks
             var deleted = await ExecuteScopeAsync(async sp =>
             {
                 var bankService = sp.GetRequiredService<IBankService>();
-                return await bankService.GetById(bankId);
+                return await bankService.GetByIdAsync(bankId);
             });
 
             Assert.Null(deleted);
@@ -127,13 +127,13 @@ namespace MoneyManager.Application.Tests.Services.Banks
             await ExecuteScopeAsync(async sp =>
             {
                 var bankService = sp.GetRequiredService<IBankService>();
-                await bankService.Add(new BankDto { Id = bankId, Name = "Bank With Icon", IconKey = "sample-icon-key" }, null);
+                await bankService.AddAsync(new BankDto { Id = bankId, Name = "Bank With Icon", IconKey = "sample-icon-key" }, null);
             });
 
             var result = await ExecuteScopeAsync(async sp =>
             {
                 var bankService = sp.GetRequiredService<IBankService>();
-                return await bankService.Delete(bankId);
+                return await bankService.DeleteAsync(bankId);
             });
 
             Assert.True(result);
@@ -141,7 +141,7 @@ namespace MoneyManager.Application.Tests.Services.Banks
             var deleted = await ExecuteScopeAsync(async sp =>
             {
                 var bankService = sp.GetRequiredService<IBankService>();
-                return await bankService.GetById(bankId);
+                return await bankService.GetByIdAsync(bankId);
             });
 
             Assert.Null(deleted);
@@ -154,19 +154,19 @@ namespace MoneyManager.Application.Tests.Services.Banks
             await ExecuteScopeAsync(async sp =>
             {
                 var bankService = sp.GetRequiredService<IBankService>();
-                await bankService.Add(new BankDto { Id = bankId, Name = "Bank To Remove Icon", IconKey = "initial-icon-key" }, null);
+                await bankService.AddAsync(new BankDto { Id = bankId, Name = "Bank To Remove Icon", IconKey = "initial-icon-key" }, null);
             });
 
             await ExecuteScopeAsync(async sp =>
             {
                 var bankService = sp.GetRequiredService<IBankService>();
-                await bankService.Update(new BankDto { Id = bankId, Name = "Bank To Remove Icon", IconKey = null }, null);
+                await bankService.UpdateAsync(new BankDto { Id = bankId, Name = "Bank To Remove Icon", IconKey = null }, null);
             });
 
             var updated = await ExecuteScopeAsync(async sp =>
             {
                 var bankService = sp.GetRequiredService<IBankService>();
-                return await bankService.GetById(bankId);
+                return await bankService.GetByIdAsync(bankId);
             });
 
             Assert.NotNull(updated);
@@ -182,7 +182,7 @@ namespace MoneyManager.Application.Tests.Services.Banks
             var added = await ExecuteScopeAsync(async sp =>
             {
                 var bankService = sp.GetRequiredService<IBankService>();
-                return await bankService.Add(new BankDto { Id = bankId, Name = "Bank Versioned Icon" }, formFile);
+                return await bankService.AddAsync(new BankDto { Id = bankId, Name = "Bank Versioned Icon" }, formFile);
             });
 
             Assert.NotNull(added.IconKey);
@@ -200,7 +200,7 @@ namespace MoneyManager.Application.Tests.Services.Banks
             var added = await ExecuteScopeAsync(async sp =>
             {
                 var bankService = sp.GetRequiredService<IBankService>();
-                return await bankService.Add(new BankDto { Id = bankId, Name = "Bank Replace Icon" }, formFile1);
+                return await bankService.AddAsync(new BankDto { Id = bankId, Name = "Bank Replace Icon" }, formFile1);
             });
 
             var initialKey = added.IconKey;
@@ -209,7 +209,7 @@ namespace MoneyManager.Application.Tests.Services.Banks
             var updated = await ExecuteScopeAsync(async sp =>
             {
                 var bankService = sp.GetRequiredService<IBankService>();
-                return await bankService.Update(new BankDto { Id = bankId, Name = "Bank Replace Icon" }, formFile2);
+                return await bankService.UpdateAsync(new BankDto { Id = bankId, Name = "Bank Replace Icon" }, formFile2);
             });
 
             Assert.NotNull(updated.IconKey);

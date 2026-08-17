@@ -26,24 +26,24 @@ namespace MoneyManager.Application.Services.User
             _currencyService = currencyService;
         }
 
-        public async Task<UserProfileDto> Get()
+        public async Task<UserProfileDto> GetAsync()
         {
-            var users = await _userProfileRepo.GetAll(include: GetFullHierarchyColumns);
+            var users = await _userProfileRepo.GetAllAsync(include: GetFullHierarchyColumns);
             return _mapper.Map(users.FirstOrDefault());
         }
 
-        public async Task<UserProfileDto> GetByAuth(string userName, string password)
+        public async Task<UserProfileDto> GetByAuthAsync(string userName, string password)
         {
-            var users = await _userProfileRepo.GetAll((user) =>
+            var users = await _userProfileRepo.GetAllAsync((user) =>
                 string.Equals(user.UserName, userName) && 
                 (string.Equals(user.Password, password) || 
                   (string.IsNullOrEmpty(user.Password) && string.IsNullOrEmpty(password))));
             return _mapper.Map(users.FirstOrDefault());
         }
 
-        public async Task Update(UserProfileDto newUserStateDto)
+        public async Task UpdateAsync(UserProfileDto newUserStateDto)
         {
-            var currentUserState = await Get();
+            var currentUserState = await GetAsync();
             var userProfile = _mapper.Map(newUserStateDto);
 
             var currencyChanged = currentUserState.CurrencyId != userProfile.CurrencyId;
@@ -56,12 +56,12 @@ namespace MoneyManager.Application.Services.User
                 currentUserState.Password;
 
             _userProfileRepo.Update(userProfile);
-            await _db.Commit();
+            await _db.CommitAsync();
 
             if (currencyChanged)
             {
-                var currency = await _currencyService.GetById(newUserStateDto.CurrencyId);
-                await _currencyService.SyncRates(currency);
+                var currency = await _currencyService.GetByIdAsync(newUserStateDto.CurrencyId);
+                await _currencyService.SyncRatesAsync(currency);
             }
         }
 

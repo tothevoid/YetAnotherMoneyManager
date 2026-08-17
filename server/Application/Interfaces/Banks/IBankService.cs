@@ -8,11 +8,11 @@ namespace MoneyManager.Application.Interfaces.Banks
 {
     public interface IBankService
     {
-        Task<IEnumerable<BankDto>> GetAll();
-        Task<BankDto> GetById(Guid id);
-        Task<BankDto> Add(BankDto bankDto, IFormFile bankIcon);
-        Task<BankDto> Update(BankDto bankDto, IFormFile bankIcon);
-        Task<bool> Delete(Guid id);
-        Task<string> GetIconUrl(string iconKey);
+        Task<IEnumerable<BankDto>> GetAllAsync();
+        Task<BankDto> GetByIdAsync(Guid id);
+        Task<BankDto> AddAsync(BankDto bankDto, IFormFile bankIcon);
+        Task<BankDto> UpdateAsync(BankDto bankDto, IFormFile bankIcon);
+        Task<bool> DeleteAsync(Guid id);
+        Task<string> GetIconUrlAsync(string iconKey);
     }
 }

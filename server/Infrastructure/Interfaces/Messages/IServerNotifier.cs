@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +8,6 @@ namespace MoneyManager.Infrastructure.Interfaces.Messages
 {
     public interface IServerNotifier
     {
-        public Task SendToAll(string message = null);
+        public Task SendToAllAsync(string message = null);
     }
 }

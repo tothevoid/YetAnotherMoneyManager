@@ -9,6 +9,7 @@ using MoneyManager.Application.Interfaces.Banks;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Application.Interfaces.Crypto;
 using MoneyManager.Application.Interfaces.Currencies;
+using MoneyManager.Application.Interfaces.Dashboard;
 using MoneyManager.Application.Interfaces.Debts;
 using MoneyManager.Application.Interfaces.Deposits;
 using MoneyManager.Application.Interfaces.Transactions;
@@ -60,9 +61,9 @@ namespace MoneyManager.Application.Services.Dashboard
             _brokerAccountSummaryService = brokerAccountSummaryService;
         }
 
-        public async Task<GlobalDashboardDto> GetDashboard()
+        public async Task<GlobalDashboardDto> GetDashboardAsync()
         {
-            var banks = await _bankService.GetAll();
+            var banks = await _bankService.GetAllAsync();
             var bankDistributionCalculator = new BankDistributionCalculator(banks);
 
             var accountStats = await GetAccountData(bankDistributionCalculator);
@@ -87,11 +88,11 @@ namespace MoneyManager.Application.Services.Dashboard
 
         private async Task<TransactionsGlobalDashboardDto> GetTransactionDate()
         {
-            var userProfile = await _userProfile.Get();
+            var userProfile = await _userProfile.GetAsync();
 
             var currentDate = DateTime.Now;
             var transactions = (await _transactionsService
-                .GetAll(currentDate.Month, currentDate.Year, false))
+                .GetAllAsync(currentDate.Month, currentDate.Year, false))
                 //TODO: migrate to db level
                 .Where(transaction => !transaction.IsSystem);
 
@@ -135,7 +136,7 @@ namespace MoneyManager.Application.Services.Dashboard
                 });
         }
 
-        private decimal HandleTransaction(TransactionDTO transaction, Dictionary<string, decimal> distribution)
+        private decimal HandleTransaction(TransactionDto transaction, Dictionary<string, decimal> distribution)
         {
             var typeName = transaction.TransactionType.Name;
             var amount = Math.Abs(transaction.Amount);
@@ -155,7 +156,7 @@ namespace MoneyManager.Application.Services.Dashboard
 
         private async Task<AccountsGlobalDashboardDto> GetAccountData(BankDistributionCalculator bankDistributionCalculator)
         {
-            var accounts = await _accountService.GetAll(true);
+            var accounts = await _accountService.GetAllAsync(true);
 
             var cashValuesDistribution = new List<DistributionDto>();
             var bankAccountsDistribution = new List<DistributionDto>();
@@ -188,7 +189,7 @@ namespace MoneyManager.Application.Services.Dashboard
             };
         }
 
-        private decimal HandleCard(AccountDTO account, List<DistributionDto> cardValues, 
+        private decimal HandleCard(AccountDto account, List<DistributionDto> cardValues, 
             BankDistributionCalculator bankDistributionCalculator)
         {
             var currencyName = account.Currency.Name;
@@ -210,7 +211,7 @@ namespace MoneyManager.Application.Services.Dashboard
 
         private async Task<BrokerAccountsGlobalDashboardDto> GetBrokerAccountData(BankDistributionCalculator bankDistributionCalculator)
         {
-            var brokerAccounts = await _brokerAccountService.GetAll();
+            var brokerAccounts = await _brokerAccountService.GetAllAsync();
 
             var brokerAccountsValues = new List<DistributionDto>();
             decimal brokerAccountsSummary = 0;
@@ -219,7 +220,7 @@ namespace MoneyManager.Application.Services.Dashboard
             {
                 var currencyName = brokerAccount.Currency.Name;
 
-                var values = await _brokerAccountSummaryService.GetPortfolioValuesByBrokerAccount(brokerAccount.Id);
+                var values = await _brokerAccountSummaryService.GetPortfolioValuesByBrokerAccountAsync(brokerAccount.Id);
 
                 var amount = values.CurrentAmount;
 
@@ -246,7 +247,7 @@ namespace MoneyManager.Application.Services.Dashboard
 
         private async Task<DebtsGlobalDashboardDto> GetDebtsData()
         {
-            var debts = await _debtService.GetAll(true);
+            var debts = await _debtService.GetAllAsync(true);
 
             var debtsDistribution = new List<DistributionDto>();
             decimal debtsSummary = 0;
@@ -275,7 +276,7 @@ namespace MoneyManager.Application.Services.Dashboard
 
         private async Task<DepositsGlobalDashboardDto> GetDepositStats(BankDistributionCalculator bankDistributionCalculator)
         {
-            var deposits = await _depositService.GetAllActive();
+            var deposits = await _depositService.GetAllActiveAsync();
 
             var startedAmountDistribution = new List<DistributionDto>();
             var earningsDistribution = new List<DistributionDto>();
@@ -332,7 +333,7 @@ namespace MoneyManager.Application.Services.Dashboard
 
         }
 
-        private decimal CalculateDepositEarnings(DepositDTO deposit)
+        private decimal CalculateDepositEarnings(DepositDto deposit)
         {
             var totalDays = deposit.To.DayNumber - deposit.From.DayNumber;
             var daysPassed = DateOnly.FromDateTime(DateTime.Now).DayNumber - deposit.From.DayNumber;
@@ -341,10 +342,10 @@ namespace MoneyManager.Application.Services.Dashboard
 
         private async Task<CryptoAccountsGlobalDashboardDto> GetCryptoAccountStats()
         {
-            var cryptoAccounts = await _cryptoAccountService.GetAll();
+            var cryptoAccounts = await _cryptoAccountService.GetAllAsync();
 
             // TODO: Rework
-            var currencies = await _currencyService.GetAll();
+            var currencies = await _currencyService.GetAllAsync();
             var usdCurrency = currencies.FirstOrDefault(currency => currency.Id == CurrencyConstants.USD);
 
             var cryptoAccountsValues = new List<DistributionDto>();
@@ -353,7 +354,7 @@ namespace MoneyManager.Application.Services.Dashboard
             foreach (var cryptoAccount in cryptoAccounts)
             {
                 var cryptocurrencies = await _cryptoAccountCryptocurrencyService
-                    .GetByCryptoAccount(cryptoAccount.Id);
+                    .GetByCryptoAccountAsync(cryptoAccount.Id);
 
                 var amount = cryptocurrencies.Sum(cryptocurrency =>
                     cryptocurrency.Quantity * cryptocurrency.Cryptocurrency.Price);

@@ -3,7 +3,7 @@ import { FundTransfersQuery } from '../../pages/BrokerAccount/hooks/useBrokerAcc
 import { PaginationConfig } from '../../shared/models/PaginationConfig';
 import { Nullable } from '../../shared/utilities/nullable';
 import { createEntity, deleteEntity, getAllEntitiesByConfig, getPagination, updateEntity } from '../basicApi';
-import { prepareBrokerAccountFundsTransfer, prepareBrokerAccountFundsTransferRequest } from './BrokerAccountFundsTransferMapping';
+import { prepareBrokerAccountFundsTransfer, prepareBrokerAccountFundsTransferRequest } from './brokerAccountFundsTransferMapping';
 
 const basicUrl = `BrokerAccountFundsTransfer`;
 

@@ -1,4 +1,4 @@
-﻿using MoneyManager.Application.DTO.Brokers;
+using MoneyManager.Application.DTO.Brokers;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,24 +7,24 @@ namespace MoneyManager.Application.Interfaces.Brokers
 {
     public interface IBrokerAccountSecurityService
     {
-        Task<IEnumerable<BrokerAccountSecurityDTO>> GetAll(bool unionSecurities = false);
+        Task<IEnumerable<BrokerAccountSecurityDto>> GetAllAsync(bool unionSecurities = false);
         
-        Task<IEnumerable<BrokerAccountSecurityDTO>> GetByBrokerAccount(Guid brokerAccountId);
+        Task<IEnumerable<BrokerAccountSecurityDto>> GetByBrokerAccountAsync(Guid brokerAccountId);
 
-        Task PullQuotations();
+        Task PullQuotationsAsync();
 
-        Task PullQuotationsByBrokerAccount(Guid brokerAccountId);
+        Task PullQuotationsByBrokerAccountAsync(Guid brokerAccountId);
         
-        Task<Guid> Add(BrokerAccountSecurityDTO security);
+        Task<Guid> AddAsync(BrokerAccountSecurityDto security);
         
-        Task Update(BrokerAccountSecurityDTO security);
+        Task UpdateAsync(BrokerAccountSecurityDto security);
         
-        Task Delete(Guid id);
+        Task DeleteAsync(Guid id);
 
-        Task<decimal> GetInitialSecuritiesValue(Guid brokerAccountId);
+        Task<decimal> GetInitialSecuritiesValueAsync(Guid brokerAccountId);
 
-        Task<decimal> GetActualSecuritiesValue(Guid brokerAccountId);
+        Task<decimal> GetActualSecuritiesValueAsync(Guid brokerAccountId);
 
-        Task<decimal> GetTotalSoldByBrokerAccount(Guid brokerAccountId);
+        Task<decimal> GetTotalSoldByBrokerAccountAsync(Guid brokerAccountId);
     }
 }

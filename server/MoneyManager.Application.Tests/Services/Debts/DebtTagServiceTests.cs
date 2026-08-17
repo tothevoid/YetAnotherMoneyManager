@@ -25,7 +25,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             var tagId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtTagService>();
-                return await service.Add(new DebtTagDto
+                return await service.AddAsync(new DebtTagDto
                 {
                     Name = tagName,
                     ColorHex = colorHex
@@ -37,7 +37,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             var tags = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtTagService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             Assert.NotNull(tags);
@@ -53,7 +53,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             var tagId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtTagService>();
-                return await service.Add(new DebtTagDto
+                return await service.AddAsync(new DebtTagDto
                 {
                     Name = "Family",
                     ColorHex = "#00FF00"
@@ -66,7 +66,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtTagService>();
-                await service.Update(new DebtTagDto
+                await service.UpdateAsync(new DebtTagDto
                 {
                     Id = tagId,
                     Name = updatedName,
@@ -77,7 +77,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             var fetched = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtTagService>();
-                return await service.GetById(tagId);
+                return await service.GetByIdAsync(tagId);
             });
 
             Assert.NotNull(fetched);
@@ -91,7 +91,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             var tagId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtTagService>();
-                return await service.Add(new DebtTagDto
+                return await service.AddAsync(new DebtTagDto
                 {
                     Name = "Temporary",
                     ColorHex = "#CCCCCC"
@@ -101,13 +101,13 @@ namespace MoneyManager.Application.Tests.Services.Debts
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtTagService>();
-                await service.Delete(tagId);
+                await service.DeleteAsync(tagId);
             });
 
             var tags = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtTagService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             Assert.DoesNotContain(tags, t => t.Id == tagId);
@@ -119,7 +119,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             var tagId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtTagService>();
-                return await service.Add(new DebtTagDto
+                return await service.AddAsync(new DebtTagDto
                 {
                     Name = "Car Loan",
                     ColorHex = "#123456"
@@ -131,7 +131,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
                 var debtService = sp.GetRequiredService<IDebtService>();
                 var tagService = sp.GetRequiredService<IDebtTagService>();
 
-                var createdDebtId = await debtService.Add(new DebtDto
+                var createdDebtId = await debtService.AddAsync(new DebtDto
                 {
                     Name = "Auto Parts",
                     Amount = 1000m,
@@ -139,14 +139,14 @@ namespace MoneyManager.Application.Tests.Services.Debts
                     Date = DateOnly.FromDateTime(DateTime.Now)
                 });
 
-                await tagService.AssignTagsToDebt(createdDebtId, new[] { tagId });
+                await tagService.AssignTagsToDebtAsync(createdDebtId, new[] { tagId });
                 return createdDebtId;
             });
 
             var stats = await ExecuteScopeAsync(async sp =>
             {
                 var tagService = sp.GetRequiredService<IDebtTagService>();
-                return await tagService.GetStats();
+                return await tagService.GetStatsAsync();
             });
 
             var tagStats = stats.FirstOrDefault(s => s.TagId == tagId);

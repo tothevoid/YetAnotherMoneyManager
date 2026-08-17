@@ -1,4 +1,3 @@
-﻿using MoneyManager.Application.DTO.Currencies;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,10 +7,10 @@ namespace MoneyManager.Application.Interfaces.Debts
 {
     public interface IDebtService
     {
-        Task<IEnumerable<DebtDto>> GetAll(bool onlyActive);
-        Task<DebtDto> GetById(Guid id);
-        Task<Guid> Add(DebtDto debt);
-        Task Update(DebtDto debt);
-        Task Delete(Guid id);
+        Task<IEnumerable<DebtDto>> GetAllAsync(bool onlyActive);
+        Task<DebtDto> GetByIdAsync(Guid id);
+        Task<Guid> AddAsync(DebtDto debt);
+        Task UpdateAsync(DebtDto debt);
+        Task DeleteAsync(Guid id);
     }
 }

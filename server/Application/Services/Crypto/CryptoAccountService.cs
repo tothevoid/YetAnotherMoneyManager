@@ -24,38 +24,38 @@ namespace MoneyManager.Application.Services.Crypto
             _cryptoAccountRepo = uow.CreateRepository<CryptoAccount>();
         }
 
-        public async Task<CryptoAccountDto> GetById(Guid id)
+        public async Task<CryptoAccountDto> GetByIdAsync(Guid id)
         {
-            var cryptoAccount = await _cryptoAccountRepo.GetById(id);
+            var cryptoAccount = await _cryptoAccountRepo.GetByIdAsync(id);
             return _mapper.Map(cryptoAccount);  
         }
 
-        public async Task<IEnumerable<CryptoAccountDto>> GetAll()
+        public async Task<IEnumerable<CryptoAccountDto>> GetAllAsync()
         {
-            var cryptoAccounts = await _cryptoAccountRepo.GetAll(include: GetFullHierarchyColumns);
+            var cryptoAccounts = await _cryptoAccountRepo.GetAllAsync(include: GetFullHierarchyColumns);
             return _mapper.Map(cryptoAccounts);
         }
 
-        public async Task Update(CryptoAccountDto cryptoAccountDto)
+        public async Task UpdateAsync(CryptoAccountDto cryptoAccountDto)
         {
             var cryptoAccount = _mapper.Map(cryptoAccountDto);
             _cryptoAccountRepo.Update(cryptoAccount);
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
-        public async Task<Guid> Add(CryptoAccountDto currencyDto)
+        public async Task<Guid> AddAsync(CryptoAccountDto cryptoAccountDto)
         {
-            var cryptoAccount = _mapper.Map(currencyDto);
+            var cryptoAccount = _mapper.Map(cryptoAccountDto);
             cryptoAccount.Id = Guid.NewGuid();
-            await _cryptoAccountRepo.Add(cryptoAccount);
-            await _db.Commit();
+            await _cryptoAccountRepo.AddAsync(cryptoAccount);
+            await _db.CommitAsync();
             return cryptoAccount.Id;
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            await _cryptoAccountRepo.Delete(id);
-            await _db.Commit();
+            await _cryptoAccountRepo.DeleteAsync(id);
+            await _db.CommitAsync();
         }
 
         private IQueryable<CryptoAccount> GetFullHierarchyColumns(

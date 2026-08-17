@@ -42,9 +42,9 @@ export const useDebtPayments = (queryParameters: DebtPaymentsQuery) => {
 	}
 
 	const updateDebtPaymentEntity = async (updatedDebtPayment: DebtPaymentEntity) => {
-		const deptPaymentUpdated = await updateDebtPayment(updatedDebtPayment);
+		const debtPaymentUpdated = await updateDebtPayment(updatedDebtPayment);
 	
-		if (!deptPaymentUpdated) {
+		if (!debtPaymentUpdated) {
 			return;
 		}
 
@@ -71,6 +71,7 @@ export const useDebtPayments = (queryParameters: DebtPaymentsQuery) => {
 		createDebtPaymentEntity,
 		updateDebtPaymentEntity,
 		deleteDebtPaymentEntity,
+		refetch: fetchData,
 		debtPaymentsQueryParameters,
 		setDebtPaymentsQueryParameters
 	}

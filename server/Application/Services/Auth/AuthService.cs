@@ -35,9 +35,9 @@ namespace MoneyManager.Application.Services.Auth
             _mapper = mapper;
         }
 
-        public async Task<string> Login(string userName, string password)
+        public async Task<string> LoginAsync(string userName, string password)
         {
-            var user = await _userProfileService.GetByAuth(userName, password);
+            var user = await _userProfileService.GetByAuthAsync(userName, password);
             
             if (user == null)
                 throw new ArgumentException(nameof(user));
@@ -65,9 +65,9 @@ namespace MoneyManager.Application.Services.Auth
             return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
 
-        public async Task<bool> ChangePassword(string userName, string currentPassword, string newPassword)
+        public async Task<bool> ChangePasswordAsync(string userName, string currentPassword, string newPassword)
         {
-            var user = await _userProfileService.GetByAuth(userName, currentPassword);
+            var user = await _userProfileService.GetByAuthAsync(userName, currentPassword);
 
             if (user == null)
                 throw new ArgumentException(nameof(user));
@@ -76,7 +76,7 @@ namespace MoneyManager.Application.Services.Auth
 
             var mappedUser = _mapper.Map(user);
             _db.Update(mappedUser);
-            await _uow.Commit();
+            await _uow.CommitAsync();
             return true;
         }
     }

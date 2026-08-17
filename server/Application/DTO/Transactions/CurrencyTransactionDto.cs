@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,11 +13,11 @@ namespace MoneyManager.Application.DTO.Transactions
     {
         public string Name { get; set; }
 
-        public AccountDTO SourceAccount { get; set; }
+        public AccountDto SourceAccount { get; set; }
 
         public Guid SourceAccountId { get; set; }
 
-        public AccountDTO DestinationAccount { get; set; }
+        public AccountDto DestinationAccount { get; set; }
 
         public Guid DestinationAccountId { get; set; }
 

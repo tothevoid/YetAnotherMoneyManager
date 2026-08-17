@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import BrokerAccountFundTransferModal, { CreateBrokerAccountFundTransferContext, EditBrokerAccountFundTransferContext } from '../../../BrokerAccounts/modals/BrokerAccountFundTransferModal/BrokerAccountFundTransferModal';
 import { Nullable } from '../../../../shared/utilities/nullable';
 import AddButton from '../../../../shared/components/AddButton/AddButton';
-import { getBrokerAccountFundsTransferPagination } from '../../../../api/brokers/BrokerAccountFundsTransferApi';
+import { getBrokerAccountFundsTransferPagination } from '../../../../api/brokers/brokerAccountFundsTransferApi';
 import { ActiveEntityMode } from '../../../../shared/enums/activeEntityMode';
 import CollectionPagination from '../../../../shared/components/CollectionPagination/CollectionPagination';
 

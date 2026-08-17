@@ -36,10 +36,10 @@ namespace MoneyManager.Application.Tests.Integrations.Stock
             var from = new DateOnly(2026, 8, 2);
             var till = new DateOnly(2026, 8, 9);
 
-            var security = new SecurityDTO { Ticker = "SBER" };
+            var security = new SecurityDto { Ticker = "SBER" };
 
             // Act
-            var result = (await connector.GetCandles(security, from, till, 24)).ToList();
+            var result = (await connector.GetCandlesAsync(security, from, till, 24)).ToList();
 
             // Assert
             Assert.Single(result);
@@ -72,7 +72,7 @@ namespace MoneyManager.Application.Tests.Integrations.Stock
             var factory = new StubHttpClientFactory(httpClient);
 
             var connector = new MoexConnector(factory);
-            var security = new SecurityDTO
+            var security = new SecurityDto
             {
                 Ticker = "GLDRUB_TOM",
                 TypeId = SecurityTypeConstants.PreciousMetal
@@ -81,7 +81,7 @@ namespace MoneyManager.Application.Tests.Integrations.Stock
             var till = new DateOnly(2026, 8, 9);
 
             // Act
-            var result = (await connector.GetCandles(security, from, till, 24)).ToList();
+            var result = (await connector.GetCandlesAsync(security, from, till, 24)).ToList();
 
             // Assert
             Assert.Single(result);

@@ -4,7 +4,7 @@ import { BrokerAccountEntity } from "../../models/brokers/BrokerAccountEntity";
 import { getBrokerAccountById } from "../../api/brokers/brokerAccountApi";
 import { getLastPullDate, pullBrokerAccountQuotations } from "../../api/brokers/brokerAccountSecurityApi";
 import BrokerAccountSecuritiesList, { BrokerAccountSecuritiesListRef } from "./components/BrokerAccountSecuritiesList/BrokerAccountSecuritiesList";
-import { useSignalR } from "../../shared/hooks/SignalRHook";
+import { useSignalR } from "../../shared/hooks/useSignalR";
 import BrokerAccountTabs, { ChangeAction } from "./components/BrokerAccountTabs/BrokerAccountTabs";
 import BrokerAccountHeader from "./components/BrokerAccountHeader/BrokerAccountHeader";
 import { getPortfolioValues } from "../../api/brokers/brokerAccountSummaryApi";

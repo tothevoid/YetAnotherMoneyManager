@@ -30,35 +30,35 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         [HttpPost(nameof(GetAll))]
         public async Task<IEnumerable<DividendPaymentModel>> GetAll(GetAllDividendsPaymentsQuery query)
         {
-            var dividendPayments = await _dividendPaymentService.GetAll(query.BrokerAccountId, query.PageIndex, query.RecordsQuantity);
+            var dividendPayments = await _dividendPaymentService.GetAllAsync(query.BrokerAccountId, query.PageIndex, query.RecordsQuantity);
             return _mapper.Map(dividendPayments);
         }
 
         [HttpGet(nameof(GetEarningsByBrokerAccount))]
         public async Task<decimal> GetEarningsByBrokerAccount([FromQuery] Guid brokerAccountId)
         {
-            return await _dividendPaymentService.GetEarningsByBrokerAccount(brokerAccountId);
+            return await _dividendPaymentService.GetEarningsByBrokerAccountAsync(brokerAccountId);
         }
 
         [HttpPut]
         public async Task<Guid> Add(DividendPaymentModel dividendPayment)
         {
             var dividendDto = _mapper.Map(dividendPayment);
-            return await _dividendPaymentService.Add(dividendDto);
+            return await _dividendPaymentService.AddAsync(dividendDto);
         }
 
         [HttpPatch]
         public async Task Update(DividendPaymentModel dividendPayment)
         {
             var dividendDto = _mapper.Map(dividendPayment);
-            await _dividendPaymentService.Update(dividendDto);
+            await _dividendPaymentService.UpdateAsync(dividendDto);
         }
 
         [HttpGet(nameof(GetPagination))]
         public async Task<PaginationConfigModel> GetPagination()
         {
             var pagination = await _dividendPaymentService
-                .GetPagination();
+                .GetPaginationAsync();
             return _mapper.Map(pagination);
         }
 
@@ -66,12 +66,12 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         public async Task<PaginationConfigModel> GetPaginationByBrokerAccount([FromQuery] Guid brokerAccountId)
         {
             var pagination = await _dividendPaymentService
-                .GetPaginationByBrokerAccount(brokerAccountId);
+                .GetPaginationByBrokerAccountAsync(brokerAccountId);
             return _mapper.Map(pagination);
         }
 
         [HttpDelete]
         public async Task Delete(Guid id) =>
-            await _dividendPaymentService.Delete(id);
+            await _dividendPaymentService.DeleteAsync(id);
     }
 }

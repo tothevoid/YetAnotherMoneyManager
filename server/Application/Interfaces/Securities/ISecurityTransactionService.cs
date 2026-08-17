@@ -8,16 +8,16 @@ namespace MoneyManager.Application.Interfaces.Securities
 {
     public interface ISecurityTransactionService
     {
-        Task<IEnumerable<SecurityTransactionDTO>> GetAll(Guid? brokerAccountId, int recordsQuantity, int pageIndex);
+        Task<IEnumerable<SecurityTransactionDto>> GetAllAsync(Guid? brokerAccountId, int recordsQuantity, int pageIndex);
 
-        Task<Dictionary<string, SecurityTransactionsSummary>> GetSummaryTillSpecificDate(DateOnly date, Guid? brokerAccountId);
+        Task<Dictionary<string, SecurityTransactionsSummary>> GetSummaryTillSpecificDateAsync(DateOnly date, Guid? brokerAccountId);
 
-        Task<IEnumerable<SecurityTransactionsHistoryDto>> GetTransactionsHistory(Guid securityId);
-        Task<PaginationConfigDto> GetPagination(Guid brokerAccountId);
-        Task<PaginationConfigDto> GetPagination();
-        Task<Guid> Add(SecurityTransactionDTO securityTransaction);
-        Task Update(SecurityTransactionDTO securityTransaction);
-        Task Delete(Guid id);
+        Task<IEnumerable<SecurityTransactionsHistoryDto>> GetTransactionsHistoryAsync(Guid securityId);
+        Task<PaginationConfigDto> GetPaginationAsync(Guid brokerAccountId);
+        Task<PaginationConfigDto> GetPaginationAsync();
+        Task<Guid> AddAsync(SecurityTransactionDto securityTransaction);
+        Task UpdateAsync(SecurityTransactionDto securityTransaction);
+        Task DeleteAsync(Guid id);
     }
 
     //TODO: remove from interface file

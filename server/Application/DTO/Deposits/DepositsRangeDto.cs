@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 
 namespace MoneyManager.Application.DTO.Deposits
 {
-    public class DepositsRangeDTO
+    public class DepositsRangeDto
     {
         public DateOnly From { get; set; }
 

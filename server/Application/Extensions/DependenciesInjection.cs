@@ -6,6 +6,7 @@ using MoneyManager.Application.Interfaces.Banks;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Application.Interfaces.Crypto;
 using MoneyManager.Application.Interfaces.Currencies;
+using MoneyManager.Application.Interfaces.Dashboard;
 using MoneyManager.Application.Interfaces.Debts;
 using MoneyManager.Application.Interfaces.Deposits;
 using MoneyManager.Application.Interfaces.FileStorage;

@@ -11,7 +11,7 @@ namespace MoneyManager.Application.DTO.Brokers
 
         public DateTime DateApplied { get; set; }
 
-        public BrokerAccountDTO BrokerAccount { get; set; }
+        public BrokerAccountDto BrokerAccount { get; set; }
 
         public Guid BrokerAccountId { get; set; }
     }

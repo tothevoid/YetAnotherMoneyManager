@@ -27,7 +27,7 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         [HttpGet]
         public async Task<IEnumerable<BrokerModel>> GetAll()
         {
-            var securities = await _brokerService.GetAll();
+            var securities = await _brokerService.GetAllAsync();
             return _mapper.Map(securities);
         }
 
@@ -35,18 +35,18 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         public async Task<Guid> Add(BrokerModel broker)
         {
             var brokerDto = _mapper.Map(broker);
-            return await _brokerService.Add(brokerDto);
+            return await _brokerService.AddAsync(brokerDto);
         }
 
         [HttpPatch]
         public async Task Update(BrokerModel broker)
         {
             var brokerDto = _mapper.Map(broker);
-            await _brokerService.Update(brokerDto);
+            await _brokerService.UpdateAsync(brokerDto);
         }
 
         [HttpDelete]
         public async Task Delete(Guid id) =>
-            await _brokerService.Delete(id);
+            await _brokerService.DeleteAsync(id);
     }
 }

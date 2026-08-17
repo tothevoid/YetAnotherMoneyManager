@@ -16,11 +16,9 @@ namespace MoneyManager.Application.Services.FileStorage
         public FileStorageService(IMinioClient minioClient)
         {
             _minio = minioClient;
-
-           
         }
 
-        public async Task UploadFile(string bucketName, IFormFile file, string key)
+        public async Task UploadFileAsync(string bucketName, IFormFile file, string key)
         {
             var existsArgs = new BucketExistsArgs().WithBucket(bucketName);
             var hasBucket = await _minio.BucketExistsAsync(existsArgs);
@@ -40,7 +38,7 @@ namespace MoneyManager.Application.Services.FileStorage
                 .WithContentType(file.ContentType));
         }
 
-        public async Task<string> GetFileUrl(string bucketName, string key)
+        public async Task<string> GetFileUrlAsync(string bucketName, string key)
         {
             return await _minio.PresignedGetObjectAsync(new PresignedGetObjectArgs()
                 .WithBucket(bucketName)
@@ -48,7 +46,7 @@ namespace MoneyManager.Application.Services.FileStorage
                 .WithExpiry(60 * 60));
         }
 
-        public async Task DeleteFile(string bucketName, string key)
+        public async Task DeleteFileAsync(string bucketName, string key)
         {
             if (string.IsNullOrEmpty(bucketName) || string.IsNullOrEmpty(key))
             {

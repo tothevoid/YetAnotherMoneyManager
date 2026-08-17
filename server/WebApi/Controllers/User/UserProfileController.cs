@@ -32,7 +32,7 @@ namespace MoneyManager.WebApi.Controllers.User
         [HttpGet]
         public async Task<UserProfileModel> Get()
         {
-            var userProfile = await _userProfileService.Get();
+            var userProfile = await _userProfileService.GetAsync();
             return _mapper.Map(userProfile);
         }
 
@@ -40,7 +40,7 @@ namespace MoneyManager.WebApi.Controllers.User
         public async Task Update(UserProfileModel userProfile)
         {
             var userProfileDto = _mapper.Map(userProfile);
-            await _userProfileService.Update(userProfileDto);
+            await _userProfileService.UpdateAsync(userProfileDto);
         }
 
     }

@@ -27,44 +27,44 @@ namespace MoneyManager.Application.Services.Transactions
             _accountRepo = uow.CreateRepository<Account>();
         }
 
-        public async Task<TransactionDTO> GetById(Guid id)
+        public async Task<TransactionDto> GetByIdAsync(Guid id)
         {
-            var transaction =  await _transactionsRepo.GetById(id);
+            var transaction =  await _transactionsRepo.GetByIdAsync(id);
             return _mapper.Map(transaction);
         }
 
-        public async Task<IEnumerable<TransactionDTO>> GetAll(int month, int year, bool showSystem)
+        public async Task<IEnumerable<TransactionDto>> GetAllAsync(int month, int year, bool showSystem)
         {
             var (startDate, endDate) = GetDateRange(month, year);
 
-            var transactions = await _transactionsRepo.GetAll(transaction => 
+            var transactions = await _transactionsRepo.GetAllAsync(transaction => 
                 transaction.Date >= startDate && transaction.Date <= endDate && (showSystem || !transaction.IsSystem),
                 GetFullHierarchyColumns);
             return _mapper.Map(transactions.OrderByDescending(x => x.Date));
         }
 
-        public async Task<TransactionDTO> Add(TransactionDTO transactionDTO)
+        public async Task<TransactionDto> AddAsync(TransactionDto transactionDto)
         {
-            var transaction = _mapper.Map(transactionDTO);
+            var transaction = _mapper.Map(transactionDto);
             transaction.Id = Guid.NewGuid();
-            var sourceId = transactionDTO.AccountId != Guid.Empty ? transactionDTO.AccountId : (transactionDTO?.Account?.Id ?? default);
+            var sourceId = transactionDto.AccountId != Guid.Empty ? transactionDto.AccountId : (transactionDto?.Account?.Id ?? default);
             if (sourceId != default)
             {
                 transaction.AccountId = sourceId;
 
-                var account = await _accountRepo.GetById(sourceId);
+                var account = await _accountRepo.GetByIdAsync(sourceId);
                 account.Balance += transaction.Amount;
                 _accountRepo.Update(account);
             }
 
-            await _transactionsRepo.Add(transaction);
-            await _db.Commit();
+            await _transactionsRepo.AddAsync(transaction);
+            await _db.CommitAsync();
 
-            var newTransaction = await _transactionsRepo.GetById(transaction.Id, GetFullHierarchyColumns, true);
+            var newTransaction = await _transactionsRepo.GetByIdAsync(transaction.Id, GetFullHierarchyColumns, true);
             return _mapper.Map(newTransaction);
         }
 
-        public async Task Update(TransactionDTO transactionToUpdate)
+        public async Task UpdateAsync(TransactionDto transactionToUpdate)
         {
             var transaction = _mapper.Map(transactionToUpdate);
             var sourceId = transactionToUpdate.AccountId != Guid.Empty ? transactionToUpdate.AccountId : (transactionToUpdate?.Account?.Id ?? default);
@@ -73,15 +73,15 @@ namespace MoneyManager.Application.Services.Transactions
                 transaction.AccountId = sourceId;
             }
 
-            var lastTransaction = await _transactionsRepo.GetById(transactionToUpdate.Id);
+            var lastTransaction = await _transactionsRepo.GetByIdAsync(transactionToUpdate.Id);
             var lastTransactionDto = _mapper.Map(lastTransaction);
             _transactionsRepo.Update(transaction);
 
             await RecalculateAccount(lastTransactionDto, transactionToUpdate);
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
-        private async Task RecalculateAccount(TransactionDTO currentTransaction, TransactionDTO updatedTransaction)
+        private async Task RecalculateAccount(TransactionDto currentTransaction, TransactionDto updatedTransaction)
         {
             var accountsToUpdate = new List<(Guid accountId, decimal delta)>();
             var lastTransactionId = currentTransaction.AccountId != Guid.Empty ? currentTransaction.AccountId : (currentTransaction?.Account?.Id ?? default);
@@ -115,15 +115,15 @@ namespace MoneyManager.Application.Services.Transactions
 
             foreach (var account in accountsToUpdate)
             {
-                var accountEntity = await _accountRepo.GetById(account.accountId);
+                var accountEntity = await _accountRepo.GetByIdAsync(account.accountId);
                 accountEntity.Balance += account.delta;
                 _accountRepo.Update(accountEntity);
             }
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            var transaction = await _transactionsRepo.GetById(id);
+            var transaction = await _transactionsRepo.GetByIdAsync(id);
 
             if (transaction == null)
             {
@@ -133,14 +133,14 @@ namespace MoneyManager.Application.Services.Transactions
             var sourceId = transaction.AccountId != Guid.Empty ? transaction.AccountId : (transaction?.Account?.Id ?? default);
             if (sourceId != default && transaction.Amount != 0)
             {
-                var accountEntity = await _accountRepo.GetById(sourceId);
+                var accountEntity = await _accountRepo.GetByIdAsync(sourceId);
                 accountEntity.Balance += transaction.Amount * -1;
                 _accountRepo.Update(accountEntity);
 
             }
 
-            await _transactionsRepo.Delete(transaction.Id);
-            await _db.Commit();
+            await _transactionsRepo.DeleteAsync(transaction.Id);
+            await _db.CommitAsync();
         }
 
         private (DateOnly, DateOnly) GetDateRange(int month, int year)

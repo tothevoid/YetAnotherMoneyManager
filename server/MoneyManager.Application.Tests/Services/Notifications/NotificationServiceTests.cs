@@ -21,7 +21,7 @@ namespace MoneyManager.Application.Tests.Services.Notifications
             var created = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<INotificationService>();
-                return await service.Create(
+                return await service.CreateAsync(
                     title: "Test Notification",
                     message: "This is a test notification message",
                     severity: NotificationSeverity.Info,
@@ -42,7 +42,7 @@ namespace MoneyManager.Application.Tests.Services.Notifications
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<INotificationService>();
-                return (await service.GetAll()).ToList();
+                return (await service.GetAllAsync()).ToList();
             });
 
             Assert.Contains(all, n => n.Id == created.Id);
@@ -54,13 +54,13 @@ namespace MoneyManager.Application.Tests.Services.Notifications
             var notification = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<INotificationService>();
-                return await service.Create("Unread Notification", "Message", NotificationSeverity.Warning);
+                return await service.CreateAsync("Unread Notification", "Message", NotificationSeverity.Warning);
             });
 
             var unreadCountBefore = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<INotificationService>();
-                return await service.GetUnreadCount();
+                return await service.GetUnreadCountAsync();
             });
 
             Assert.True(unreadCountBefore > 0);
@@ -68,13 +68,13 @@ namespace MoneyManager.Application.Tests.Services.Notifications
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<INotificationService>();
-                await service.MarkAsRead(notification.Id);
+                await service.MarkAsReadAsync(notification.Id);
             });
 
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<INotificationService>();
-                return (await service.GetAll()).ToList();
+                return (await service.GetAllAsync()).ToList();
             });
 
             var updated = all.FirstOrDefault(n => n.Id == notification.Id);
@@ -89,20 +89,20 @@ namespace MoneyManager.Application.Tests.Services.Notifications
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<INotificationService>();
-                await service.Create("Notification 1", "Msg 1", NotificationSeverity.Info);
-                await service.Create("Notification 2", "Msg 2", NotificationSeverity.Danger);
+                await service.CreateAsync("Notification 1", "Msg 1", NotificationSeverity.Info);
+                await service.CreateAsync("Notification 2", "Msg 2", NotificationSeverity.Danger);
             });
 
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<INotificationService>();
-                await service.MarkAllAsRead();
+                await service.MarkAllAsReadAsync();
             });
 
             var unreadCount = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<INotificationService>();
-                return await service.GetUnreadCount();
+                return await service.GetUnreadCountAsync();
             });
 
             Assert.Equal(0, unreadCount);
@@ -114,19 +114,19 @@ namespace MoneyManager.Application.Tests.Services.Notifications
             var notification = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<INotificationService>();
-                return await service.Create("To Delete", "Delete Msg", NotificationSeverity.Success);
+                return await service.CreateAsync("To Delete", "Delete Msg", NotificationSeverity.Success);
             });
 
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<INotificationService>();
-                await service.Delete(notification.Id);
+                await service.DeleteAsync(notification.Id);
             });
 
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<INotificationService>();
-                return (await service.GetAll()).ToList();
+                return (await service.GetAllAsync()).ToList();
             });
 
             Assert.DoesNotContain(all, n => n.Id == notification.Id);
@@ -138,8 +138,8 @@ namespace MoneyManager.Application.Tests.Services.Notifications
             var notification = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<INotificationService>();
-                var created = await service.Create("Old Notification", "To be cleaned", NotificationSeverity.Info);
-                await service.MarkAsRead(created.Id);
+                var created = await service.CreateAsync("Old Notification", "To be cleaned", NotificationSeverity.Info);
+                await service.MarkAsReadAsync(created.Id);
                 return created;
             });
 
@@ -147,13 +147,13 @@ namespace MoneyManager.Application.Tests.Services.Notifications
             {
                 var service = sp.GetRequiredService<INotificationService>();
                 // Clean with olderThanDays: -1 (all read notifications before tomorrow)
-                await service.CleanUpOldNotifications(olderThanDays: -1);
+                await service.CleanUpOldNotificationsAsync(olderThanDays: -1);
             });
 
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<INotificationService>();
-                return (await service.GetAll(recordsQuantity: 100)).ToList();
+                return (await service.GetAllAsync(recordsQuantity: 100)).ToList();
             });
 
             Assert.DoesNotContain(all, n => n.Id == notification.Id);
@@ -165,13 +165,13 @@ namespace MoneyManager.Application.Tests.Services.Notifications
             var notification = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<INotificationService>();
-                return await service.Create("Paginated Notification", "Msg", NotificationSeverity.Info, category: "TestCategory");
+                return await service.CreateAsync("Paginated Notification", "Msg", NotificationSeverity.Info, category: "TestCategory");
             });
 
             var pagination = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<INotificationService>();
-                return await service.GetPagination(category: "TestCategory");
+                return await service.GetPaginationAsync(category: "TestCategory");
             });
 
             Assert.NotNull(pagination);

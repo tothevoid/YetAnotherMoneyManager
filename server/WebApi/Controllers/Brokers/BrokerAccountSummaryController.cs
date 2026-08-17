@@ -29,70 +29,70 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         [HttpGet(nameof(GetSummaryByBrokerAccount))]
         public async Task<BrokerAccountSummaryModel> GetSummaryByBrokerAccount(Guid brokerAccountId, DateTime from, DateTime to)
         {
-            var brokerAccount = await _brokerAccountSummaryService.GetSummaryByBrokerAccount(brokerAccountId);
+            var brokerAccount = await _brokerAccountSummaryService.GetSummaryByBrokerAccountAsync(brokerAccountId);
             return _mapper.Map(brokerAccount);
         }
 
         [HttpGet(nameof(GetSummary))]
         public async Task<BrokerAccountSummaryModel> GetSummary(DateTime from, DateTime to)
         {
-            var brokerAccount = await _brokerAccountSummaryService.GetSummary();
+            var brokerAccount = await _brokerAccountSummaryService.GetSummaryAsync();
             return _mapper.Map(brokerAccount);
         }
 
         [HttpGet(nameof(GetMonthTransfersHistory))]
         public async Task<IEnumerable<BrokerAccountDayTransferModel>> GetMonthTransfersHistory(int month, int year)
         {
-            var brokerAccount = await _brokerAccountSummaryService.GetMonthTransfersHistory(month, year);
+            var brokerAccount = await _brokerAccountSummaryService.GetMonthTransfersHistoryAsync(month, year);
             return _mapper.Map(brokerAccount);
         }
 
         [HttpGet(nameof(GetMonthTransfersHistoryByBrokerAccount))]
         public async Task<IEnumerable<BrokerAccountDayTransferModel>> GetMonthTransfersHistoryByBrokerAccount(Guid brokerAccountId, int month, int year)
         {
-            var brokerAccount = await _brokerAccountSummaryService.GetMonthTransfersHistoryByBrokerAccount(brokerAccountId, month, year);
+            var brokerAccount = await _brokerAccountSummaryService.GetMonthTransfersHistoryByBrokerAccountAsync(brokerAccountId, month, year);
             return _mapper.Map(brokerAccount);
         }
 
         [HttpGet(nameof(GetYearTransfersHistory))]
         public async Task<IEnumerable<BrokerAccountMonthTransferModel>> GetYearTransfersHistory(int year)
         {
-            var brokerAccount = await _brokerAccountSummaryService.GetYearTransfersHistory(year);
+            var brokerAccount = await _brokerAccountSummaryService.GetYearTransfersHistoryAsync(year);
             return _mapper.Map(brokerAccount);
         }
 
         [HttpGet(nameof(GetYearTransfersHistoryByBrokerAccount))]
         public async Task<IEnumerable<BrokerAccountMonthTransferModel>> GetYearTransfersHistoryByBrokerAccount(Guid brokerAccountId, int year)
         {
-            var brokerAccount = await _brokerAccountSummaryService.GetYearTransfersHistoryByBrokerAccount(brokerAccountId, year);
+            var brokerAccount = await _brokerAccountSummaryService.GetYearTransfersHistoryByBrokerAccountAsync(brokerAccountId, year);
             return _mapper.Map(brokerAccount);
         }
 
         [HttpGet(nameof(GetDailyStatsByBrokerAccount))]
         public async Task<BrokerAccountDailyStatsModel> GetDailyStatsByBrokerAccount([FromQuery] Guid brokerAccountId)
         {
-            var brokerAccount = await _brokerAccountSummaryService.GetDailyStatsByBrokerAccount(brokerAccountId);
+            var brokerAccount = await _brokerAccountSummaryService.GetDailyStatsByBrokerAccountAsync(brokerAccountId);
             return _mapper.Map(brokerAccount);
         }
 
         [HttpGet(nameof(GetDailyStats))]
         public async Task<BrokerAccountDailyStatsModel> GetDailyStats()
         {
-            var brokerAccount = await _brokerAccountSummaryService.GetDailyStats();
+            var brokerAccount = await _brokerAccountSummaryService.GetDailyStatsAsync();
             return _mapper.Map(brokerAccount);
         }
 
         [HttpGet(nameof(GetPortfolioValuesByBrokerAccount))]
         public async Task<BrokerAccountPortfolioModel> GetPortfolioValuesByBrokerAccount([FromQuery] Guid brokerAccountId)
         {
-            var brokerAccount = await _brokerAccountSummaryService.GetPortfolioValuesByBrokerAccount(brokerAccountId);
+            var brokerAccount = await _brokerAccountSummaryService.GetPortfolioValuesByBrokerAccountAsync(brokerAccountId);
             return _mapper.Map(brokerAccount);
         }
 
         [HttpGet(nameof(GetPortfolioValues))]
         public async Task<BrokerAccountPortfolioModel> GetPortfolioValues()
         {
-            var brokerAccount = await _brokerAccountSummaryService.GetPortfolioValues();
+            var brokerAccount = await _brokerAccountSummaryService.GetPortfolioValuesAsync();
             return _mapper.Map(brokerAccount);
         }
 

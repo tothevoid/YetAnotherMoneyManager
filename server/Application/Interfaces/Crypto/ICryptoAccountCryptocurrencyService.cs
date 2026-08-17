@@ -1,4 +1,3 @@
-using MoneyManager.Application.DTO.Currencies;
 using MoneyManager.Application.DTO.Crypto;
 using System;
 using System.Collections.Generic;
@@ -8,11 +7,10 @@ namespace MoneyManager.Application.Interfaces.Crypto
 {
     public interface ICryptoAccountCryptocurrencyService
     {
-        
-        Task<IEnumerable<CryptoAccountCryptocurrencyDto>> GetByCryptoAccount(Guid cryptoAccountId);
-        Task<IEnumerable<CryptoAccountCryptocurrencyDto>> GetAll();
-        Task<Guid> Add(CryptoAccountCryptocurrencyDto cryptoAccountCryptocurrency);
-        Task Update(CryptoAccountCryptocurrencyDto cryptoAccountCryptocurrency);
-        Task Delete(Guid id);
+        Task<IEnumerable<CryptoAccountCryptocurrencyDto>> GetByCryptoAccountAsync(Guid cryptoAccountId);
+        Task<IEnumerable<CryptoAccountCryptocurrencyDto>> GetAllAsync();
+        Task<Guid> AddAsync(CryptoAccountCryptocurrencyDto cryptoAccountCryptocurrency);
+        Task UpdateAsync(CryptoAccountCryptocurrencyDto cryptoAccountCryptocurrency);
+        Task DeleteAsync(Guid id);
     }
 }

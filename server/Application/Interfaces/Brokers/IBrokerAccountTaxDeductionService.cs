@@ -7,11 +7,11 @@ namespace MoneyManager.Application.Interfaces.Brokers
 {
     public interface IBrokerAccountTaxDeductionService
     {
-        Task<IEnumerable<BrokerAccountTaxDeductionDto>> GetAll(Guid? brokerAccountId);
-        Task<decimal> GetSumTillSpecificDate(DateOnly date, Guid? brokerAccountId);
-        Task<decimal> GetAmountByBrokerAccount(Guid brokerAccountId);
-        Task<Guid> Add(BrokerAccountTaxDeductionDto dto);
-        Task Update(BrokerAccountTaxDeductionDto dto);
-        Task Delete(Guid id);
+        Task<IEnumerable<BrokerAccountTaxDeductionDto>> GetAllAsync(Guid? brokerAccountId);
+        Task<decimal> GetSumTillSpecificDateAsync(DateOnly date, Guid? brokerAccountId);
+        Task<decimal> GetAmountByBrokerAccountAsync(Guid brokerAccountId);
+        Task<Guid> AddAsync(BrokerAccountTaxDeductionDto dto);
+        Task UpdateAsync(BrokerAccountTaxDeductionDto dto);
+        Task DeleteAsync(Guid id);
     }
 }

@@ -29,26 +29,26 @@ namespace MoneyManager.Application.Services.Currencies
             _currencyGrabber = currencyGrabber;
         }
 
-        public async Task<IEnumerable<CurrencyDTO>> GetAll()
+        public async Task<IEnumerable<CurrencyDto>> GetAllAsync()
         {
-            var transactions = await _currencyRepo.GetAll();
+            var transactions = await _currencyRepo.GetAllAsync();
             return _mapper.Map(transactions);
         }
 
-        public async Task<CurrencyDTO> GetById(Guid id)
+        public async Task<CurrencyDto> GetByIdAsync(Guid id)
         {
-            var transactions = await _currencyRepo.GetById(id);
+            var transactions = await _currencyRepo.GetByIdAsync(id);
             return _mapper.Map(transactions);
         }
 
         //TODO: Guid parameter instead of DTO
         //TODO: Should be in separate service
-        public async Task SyncRates(CurrencyDTO mainCurrency)
+        public async Task SyncRatesAsync(CurrencyDto mainCurrency)
         {
-            var currencies = (await _currencyRepo.GetAll(disableTracking: false)).ToList();
+            var currencies = (await _currencyRepo.GetAllAsync(disableTracking: false)).ToList();
             var currenciesNames = currencies.Select(x => x.Name).ToHashSet();
 
-            var rates = await _currencyGrabber.GetRates(mainCurrency.Name, currenciesNames);
+            var rates = await _currencyGrabber.GetRatesAsync(mainCurrency.Name, currenciesNames);
 
             foreach (var currency in currencies)
             {
@@ -60,29 +60,29 @@ namespace MoneyManager.Application.Services.Currencies
 
                 currency.Rate = rates.TryGetValue(currency.Name, out var rate) ? rate : 1;
             }
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
-        public async Task Update(CurrencyDTO currencyDto)
+        public async Task UpdateAsync(CurrencyDto currencyDto)
         {
             var currency = _mapper.Map(currencyDto);
             _currencyRepo.Update(currency);
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
-        public async Task<Guid> Add(CurrencyDTO currencyDto)
+        public async Task<Guid> AddAsync(CurrencyDto currencyDto)
         {
             var currency = _mapper.Map(currencyDto);
             currency.Id = Guid.NewGuid();
-            await _currencyRepo.Add(currency);
-            await _db.Commit();
+            await _currencyRepo.AddAsync(currency);
+            await _db.CommitAsync();
             return currency.Id;
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            await _currencyRepo.Delete(id);
-            await _db.Commit();
+            await _currencyRepo.DeleteAsync(id);
+            await _db.CommitAsync();
         }
     }
 }

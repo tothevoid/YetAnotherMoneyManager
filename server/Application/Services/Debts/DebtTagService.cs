@@ -28,9 +28,9 @@ namespace MoneyManager.Application.Services.Debts
             _debtToDebtTagRepo = uow.CreateRepository<DebtToDebtTag>();
         }
 
-        public async Task<IEnumerable<DebtTagDto>> GetAll()
+        public async Task<IEnumerable<DebtTagDto>> GetAllAsync()
         {
-            var debtTags = await _debtTagRepo.GetAll(include: GetFullHierarchyColumns);
+            var debtTags = await _debtTagRepo.GetAllAsync(include: GetFullHierarchyColumns);
 
             return debtTags.Select(debtTag => new DebtTagDto
             {
@@ -41,9 +41,9 @@ namespace MoneyManager.Application.Services.Debts
             });
         }
 
-        public async Task<DebtTagDto> GetById(Guid id)
+        public async Task<DebtTagDto> GetByIdAsync(Guid id)
         {
-            var debtTag = await _debtTagRepo.GetById(id, include: GetFullHierarchyColumns);
+            var debtTag = await _debtTagRepo.GetByIdAsync(id, include: GetFullHierarchyColumns);
 
             if (debtTag == null)
             {
@@ -59,10 +59,10 @@ namespace MoneyManager.Application.Services.Debts
             };
         }
 
-        public async Task<IEnumerable<DebtTagStatsDto>> GetStats()
+        public async Task<IEnumerable<DebtTagStatsDto>> GetStatsAsync()
         {
-            var debtTags = await _debtTagRepo.GetAll(include: GetFullHierarchyColumns);
-            var debtPayments = await _debtPaymentRepo.GetAll(filter: payment => !payment.IsPercentagePayment);
+            var debtTags = await _debtTagRepo.GetAllAsync(include: GetFullHierarchyColumns);
+            var debtPayments = await _debtPaymentRepo.GetAllAsync(filter: payment => !payment.IsPercentagePayment);
 
             var debtTagStats = new List<DebtTagStatsDto>();
 
@@ -92,7 +92,7 @@ namespace MoneyManager.Application.Services.Debts
             return debtTagStats;
         }
 
-        public async Task<Guid> Add(DebtTagDto debtTagDto)
+        public async Task<Guid> AddAsync(DebtTagDto debtTagDto)
         {
             var debtTag = _mapper.Map(debtTagDto);
 
@@ -101,40 +101,40 @@ namespace MoneyManager.Application.Services.Debts
                 debtTag.Id = Guid.NewGuid();
             }
 
-            await _debtTagRepo.Add(debtTag);
-            await _db.Commit();
+            await _debtTagRepo.AddAsync(debtTag);
+            await _db.CommitAsync();
 
             return debtTag.Id;
         }
 
-        public async Task Update(DebtTagDto debtTagDto)
+        public async Task UpdateAsync(DebtTagDto debtTagDto)
         {
-            var debtTag = await _debtTagRepo.GetById(debtTagDto.Id, disableTracking: false);
+            var debtTag = await _debtTagRepo.GetByIdAsync(debtTagDto.Id, disableTracking: false);
             if (debtTag != null)
             {
                 debtTag.Name = debtTagDto.Name;
                 debtTag.ColorHex = debtTagDto.ColorHex;
                 _debtTagRepo.Update(debtTag);
-                await _db.Commit();
+                await _db.CommitAsync();
             }
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            await _debtTagRepo.Delete(id);
-            await _db.Commit();
+            await _debtTagRepo.DeleteAsync(id);
+            await _db.CommitAsync();
         }
 
-        public async Task AssignTagsToDebt(Guid debtId, IEnumerable<Guid> tagIds)
+        public async Task AssignTagsToDebtAsync(Guid debtId, IEnumerable<Guid> tagIds)
         {
-            var existingAssociations = await _debtToDebtTagRepo.GetAll(dt => dt.DebtId == debtId, disableTracking: false);
+            var existingAssociations = await _debtToDebtTagRepo.GetAllAsync(dt => dt.DebtId == debtId, disableTracking: false);
             var desiredTagIds = tagIds?.ToHashSet() ?? new HashSet<Guid>();
 
             foreach (var assoc in existingAssociations)
             {
                 if (!desiredTagIds.Contains(assoc.DebtTagId))
                 {
-                    await _debtToDebtTagRepo.Delete(assoc.Id);
+                    await _debtToDebtTagRepo.DeleteAsync(assoc.Id);
                 }
             }
 
@@ -147,7 +147,7 @@ namespace MoneyManager.Application.Services.Debts
             {
                 if (!remainingTagIds.Contains(tagId))
                 {
-                    await _debtToDebtTagRepo.Add(new DebtToDebtTag
+                    await _debtToDebtTagRepo.AddAsync(new DebtToDebtTag
                     {
                         Id = Guid.NewGuid(),
                         DebtId = debtId,
@@ -156,7 +156,7 @@ namespace MoneyManager.Application.Services.Debts
                 }
             }
 
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
         private IQueryable<DebtTag> GetFullHierarchyColumns(IQueryable<DebtTag> debtTagQuery)

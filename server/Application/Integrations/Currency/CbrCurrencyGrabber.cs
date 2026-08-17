@@ -1,4 +1,4 @@
-﻿using MoneyManager.Application.Integrations.Currency.Models;
+using MoneyManager.Application.Integrations.Currency.Models;
 using MoneyManager.Application.Interfaces.Integrations.Currency;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +19,7 @@ namespace MoneyManager.Application.Integrations.Currency
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<Dictionary<string, decimal>> GetRates(string mainCurrency, HashSet<string> requestedCurrencies)
+        public async Task<Dictionary<string, decimal>> GetRatesAsync(string mainCurrency, HashSet<string> requestedCurrencies)
         {
             var httpClient = _httpClientFactory.CreateClient();
             var response = await httpClient.GetAsync("https://www.cbr-xml-daily.ru/latest.js");

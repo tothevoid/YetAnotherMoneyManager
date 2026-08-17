@@ -66,6 +66,7 @@ export const useCryptoProviders = () => {
         error,
         createCryptoProviderEntity,
         updateCryptoProviderEntity,
-        deleteCryptoProviderEntity
+        deleteCryptoProviderEntity,
+        refetch: fetchData
     }
 }

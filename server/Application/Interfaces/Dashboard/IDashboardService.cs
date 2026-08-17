@@ -1,10 +1,10 @@
-﻿using MoneyManager.Application.DTO.Dashboard;
+using MoneyManager.Application.DTO.Dashboard;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.Interfaces.Currencies
+namespace MoneyManager.Application.Interfaces.Dashboard
 {
     public interface IDashboardService
     {
-        public Task<GlobalDashboardDto> GetDashboard();
+        public Task<GlobalDashboardDto> GetDashboardAsync();
     }
 }

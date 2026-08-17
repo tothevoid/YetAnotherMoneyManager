@@ -1,4 +1,4 @@
-﻿using MoneyManager.Application.DTO.Currencies;
+using MoneyManager.Application.DTO.Currencies;
 using MoneyManager.Infrastructure.Entities.Banks;
 using MoneyManager.Shared.Entities;
 using System;
@@ -6,7 +6,7 @@ using MoneyManager.Application.DTO.Banks;
 
 namespace MoneyManager.Application.DTO.Deposits
 {
-    public class DepositDTO : BaseEntity
+    public class DepositDto : BaseEntity
     {
         public string Name { get; set; }
 
@@ -20,7 +20,7 @@ namespace MoneyManager.Application.DTO.Deposits
 
         public decimal EstimatedEarn { get; set; }
 
-        public CurrencyDTO Currency { get; set; }
+        public CurrencyDto Currency { get; set; }
 
         public Guid CurrencyId { get; set; }
 

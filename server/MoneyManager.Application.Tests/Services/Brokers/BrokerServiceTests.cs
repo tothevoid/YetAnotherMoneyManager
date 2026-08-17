@@ -17,7 +17,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var brokerId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerService>();
-                return await service.Add(new BrokerDTO { Name = "Interactive Brokers" });
+                return await service.AddAsync(new BrokerDto { Name = "Interactive Brokers" });
             });
 
             Assert.NotEqual(Guid.Empty, brokerId);
@@ -25,7 +25,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             Assert.NotNull(all);
@@ -40,19 +40,19 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var brokerId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerService>();
-                return await service.Add(new BrokerDTO { Name = "Brokers" });
+                return await service.AddAsync(new BrokerDto { Name = "Brokers" });
             });
 
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerService>();
-                await service.Update(new BrokerDTO { Id = brokerId, Name = actualName });
+                await service.UpdateAsync(new BrokerDto { Id = brokerId, Name = actualName });
             });
 
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             var updated = all.FirstOrDefault(b => b.Id == brokerId);
@@ -66,13 +66,13 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var brokerId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerService>();
-                return await service.Add(new BrokerDTO { Name = "Interactive Brokers" });
+                return await service.AddAsync(new BrokerDto { Name = "Interactive Brokers" });
             });
 
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             var updated = all.FirstOrDefault(b => b.Id == brokerId);
@@ -81,13 +81,13 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerService>();
-                await service.Delete(brokerId);
+                await service.DeleteAsync(brokerId);
             });
 
             var allAfterDelete = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             Assert.DoesNotContain(allAfterDelete, b => b.Id == brokerId);

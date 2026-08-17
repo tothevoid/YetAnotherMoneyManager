@@ -9,6 +9,6 @@ namespace MoneyManager.Infrastructure.Interfaces.Database
         IRepository<T> CreateRepository<T>() 
             where T: BaseEntity;
 
-        Task Commit();
+        Task CommitAsync();
     }
 }

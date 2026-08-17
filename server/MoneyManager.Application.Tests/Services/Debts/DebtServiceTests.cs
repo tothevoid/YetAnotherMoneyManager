@@ -25,7 +25,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             var debtId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtService>();
-                return await service.Add(new DebtDto
+                return await service.AddAsync(new DebtDto
                 {
                     Name = name,
                     Amount = 500m,
@@ -39,7 +39,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtService>();
-                return await service.GetAll(false);
+                return await service.GetAllAsync(false);
             });
 
             Assert.NotNull(all);
@@ -55,7 +55,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             var activeDebtId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtService>();
-                return await service.Add(new DebtDto
+                return await service.AddAsync(new DebtDto
                 {
                     Name = activeDebtName,
                     Amount = 300m,
@@ -75,7 +75,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             var debtToBePaidId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtService>();
-                return await service.Add(debtToBePaid);
+                return await service.AddAsync(debtToBePaid);
             });
 
             await ExecuteScopeAsync(async sp =>
@@ -84,13 +84,13 @@ namespace MoneyManager.Application.Tests.Services.Debts
                 var accountService = sp.GetRequiredService<IAccountService>();
                 var bankService = sp.GetRequiredService<IBankService>();
 
-                var bank = await bankService.Add(new BankDto()
+                var bank = await bankService.AddAsync(new BankDto()
                 {
                     Id = Guid.NewGuid(),
                     Name = "Test Bank"
                 }, null);
 
-                var accountId = await accountService.Add(new AccountDTO()
+                var accountId = await accountService.AddAsync(new AccountDto()
                 {
                     AccountTypeId = AccountTypeConstants.Cash,
                     Active = true,
@@ -100,7 +100,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
                     BankId = bank.Id
                 });
 
-                return await debtPaymentService.Add(new DebtPaymentDto()
+                return await debtPaymentService.AddAsync(new DebtPaymentDto()
                 {
                    Id = Guid.NewGuid(),
                    Date = DateOnly.FromDateTime(DateTime.Now),
@@ -114,7 +114,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             var activeDebts = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtService>();
-                return await service.GetAll(true);
+                return await service.GetAllAsync(true);
             });
 
             Assert.Contains(activeDebts, d => d.Id == activeDebtId);
@@ -134,7 +134,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             var debtId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtService>();
-                return await service.Add(new DebtDto
+                return await service.AddAsync(new DebtDto
                 {
                     Name = initialDebtName,
                     Amount = 1000m,
@@ -146,7 +146,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtService>();
-                await service.Update(new DebtDto
+                await service.UpdateAsync(new DebtDto
                 {
                     Id = debtId,
                     Name = updatedDebtName,
@@ -159,7 +159,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtService>();
-                return await service.GetAll(false);
+                return await service.GetAllAsync(false);
             });
 
             var updated = all.FirstOrDefault(d => d.Id == debtId);
@@ -176,7 +176,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
             var debtId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtService>();
-                return await service.Add(new DebtDto
+                return await service.AddAsync(new DebtDto
                 {
                     Name = "Debt to Delete",
                     Amount = 200m,
@@ -188,13 +188,13 @@ namespace MoneyManager.Application.Tests.Services.Debts
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtService>();
-                await service.Delete(debtId);
+                await service.DeleteAsync(debtId);
             });
 
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtService>();
-                return await service.GetAll(false);
+                return await service.GetAllAsync(false);
             });
 
             Assert.DoesNotContain(all, d => d.Id == debtId);

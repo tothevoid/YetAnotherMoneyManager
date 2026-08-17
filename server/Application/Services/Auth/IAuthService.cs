@@ -1,12 +1,11 @@
-using System;
 using System.Threading.Tasks;
 
 namespace MoneyManager.Application.Services.Auth
 {
     public interface IAuthService
     {
-        Task<string> Login(string username, string password);
+        Task<string> LoginAsync(string username, string password);
 
-        Task<bool> ChangePassword(string userName, string currentPassword, string newPassword);
+        Task<bool> ChangePasswordAsync(string userName, string currentPassword, string newPassword);
     }
 }

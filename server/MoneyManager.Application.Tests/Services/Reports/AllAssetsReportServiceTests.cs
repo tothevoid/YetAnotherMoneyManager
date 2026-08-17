@@ -16,7 +16,7 @@ namespace MoneyManager.Application.Tests.Services.Reports
             var reportBytes = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IAllAssetsReportService>();
-                return await service.CreateReport();
+                return await service.CreateReportAsync();
             });
 
             Assert.NotNull(reportBytes);

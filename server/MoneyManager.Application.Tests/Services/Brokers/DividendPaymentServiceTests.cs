@@ -22,7 +22,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var paymentId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDividendPaymentService>();
-                return await service.Add(new DividendPaymentDto
+                return await service.AddAsync(new DividendPaymentDto
                 {
                     BrokerAccountId = brokerAccountId,
                     DividendId = dividendId,
@@ -37,7 +37,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var totalEarnings = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDividendPaymentService>();
-                return await service.GetEarnings();
+                return await service.GetEarningsAsync();
             });
 
             Assert.True(totalEarnings > 0);
@@ -45,7 +45,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var accountEarnings = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDividendPaymentService>();
-                return await service.GetEarningsByBrokerAccount(brokerAccountId);
+                return await service.GetEarningsByBrokerAccountAsync(brokerAccountId);
             });
 
             Assert.True(accountEarnings > 0);
@@ -59,7 +59,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var paymentId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDividendPaymentService>();
-                return await service.Add(new DividendPaymentDto
+                return await service.AddAsync(new DividendPaymentDto
                 {
                     BrokerAccountId = brokerAccountId,
                     DividendId = dividendId,
@@ -72,7 +72,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDividendPaymentService>();
-                await service.Update(new DividendPaymentDto
+                await service.UpdateAsync(new DividendPaymentDto
                 {
                     Id = paymentId,
                     BrokerAccountId = brokerAccountId,
@@ -86,7 +86,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDividendPaymentService>();
-                await service.Delete(paymentId);
+                await service.DeleteAsync(paymentId);
             });
         }
 
@@ -102,7 +102,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             {
                 var service = sp.GetRequiredService<IDividendPaymentService>();
                 // Before targetDate: 100 * 1.5 - 5 = 145m
-                await service.Add(new DividendPaymentDto
+                await service.AddAsync(new DividendPaymentDto
                 {
                     BrokerAccountId = broker1AccId,
                     DividendId = dividendId,
@@ -116,7 +116,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             {
                 var service = sp.GetRequiredService<IDividendPaymentService>();
                 // After targetDate (boundary out)
-                await service.Add(new DividendPaymentDto
+                await service.AddAsync(new DividendPaymentDto
                 {
                     BrokerAccountId = broker1AccId,
                     DividendId = dividendId,
@@ -131,7 +131,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             {
                 var service = sp.GetRequiredService<IDividendPaymentService>();
                 // Before targetDate: 50 * 1.5 - 2 = 73m
-                await service.Add(new DividendPaymentDto
+                await service.AddAsync(new DividendPaymentDto
                 {
                     BrokerAccountId = broker2AccId,
                     DividendId = dividendId,
@@ -145,7 +145,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             {
                 var service = sp.GetRequiredService<IDividendPaymentService>();
                 // After targetDate (boundary out)
-                await service.Add(new DividendPaymentDto
+                await service.AddAsync(new DividendPaymentDto
                 {
                     BrokerAccountId = broker2AccId,
                     DividendId = dividendId,
@@ -159,7 +159,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var sumB1 = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDividendPaymentService>();
-                return await service.GetSumTillSpecificDate(targetDate, broker1AccId);
+                return await service.GetSumTillSpecificDateAsync(targetDate, broker1AccId);
             });
             Assert.Equal(145m, sumB1);
 
@@ -167,7 +167,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var sumB2 = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDividendPaymentService>();
-                return await service.GetSumTillSpecificDate(targetDate, broker2AccId);
+                return await service.GetSumTillSpecificDateAsync(targetDate, broker2AccId);
             });
             Assert.Equal(73m, sumB2);
 
@@ -175,7 +175,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var sumAll = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDividendPaymentService>();
-                return await service.GetSumTillSpecificDate(targetDate, null);
+                return await service.GetSumTillSpecificDateAsync(targetDate, null);
             });
             Assert.Equal(218m, sumAll);
         }
@@ -185,19 +185,19 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var brokerId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerService>();
-                return await service.Add(new BrokerDTO { Name = "Div Payment Broker" });
+                return await service.AddAsync(new BrokerDto { Name = "Div Payment Broker" });
             });
 
             var typeId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountTypeService>();
-                return await service.Add(new BrokerAccountTypeDTO { Name = "Div Payment Type" });
+                return await service.AddAsync(new BrokerAccountTypeDto { Name = "Div Payment Type" });
             });
 
             var brokerAccountId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountService>();
-                return await service.Add(new BrokerAccountDTO
+                return await service.AddAsync(new BrokerAccountDto
                 {
                     Name = "Div Payment Broker Acc",
                     BrokerId = brokerId,
@@ -209,13 +209,13 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var secTypeId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTypeService>();
-                return await service.Add(new SecurityTypeDTO { Name = "Div Sec Type" });
+                return await service.AddAsync(new SecurityTypeDto { Name = "Div Sec Type" });
             });
 
             var securityId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityService>();
-                var sec = await service.Add(new SecurityDTO
+                var sec = await service.AddAsync(new SecurityDto
                 {
                     Name = "Div Security",
                     Ticker = "DIVP",
@@ -230,7 +230,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var dividendId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDividendService>();
-                return await service.Add(new DividendDto
+                return await service.AddAsync(new DividendDto
                 {
                     SecurityId = securityId,
                     Amount = 1.5m,

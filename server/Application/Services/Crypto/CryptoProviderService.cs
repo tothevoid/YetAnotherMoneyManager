@@ -1,12 +1,9 @@
-using MoneyManager.Application.DTO.Currencies;
-using MoneyManager.Infrastructure.Entities.Currencies;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MoneyManager.Application.DTO.Crypto;
 using MoneyManager.Application.Interfaces.Crypto;
-using MoneyManager.Application.Interfaces.Integrations.Currency;
 using MoneyManager.Application.Mappings;
 using MoneyManager.Infrastructure.Entities.Crypto;
 
@@ -25,32 +22,32 @@ namespace MoneyManager.Application.Services.Crypto
             _cryptoProviderRepo = uow.CreateRepository<CryptoProvider>();
         }
 
-        public async Task<IEnumerable<CryptoProviderDto>> GetAll()
+        public async Task<IEnumerable<CryptoProviderDto>> GetAllAsync()
         {
-            var cryptoProviders = await _cryptoProviderRepo.GetAll();
+            var cryptoProviders = await _cryptoProviderRepo.GetAllAsync();
             return _mapper.Map(cryptoProviders);
         }
 
-        public async Task Update(CryptoProviderDto cryptoProviderDto)
+        public async Task UpdateAsync(CryptoProviderDto cryptoProviderDto)
         {
             var cryptoProvider = _mapper.Map(cryptoProviderDto);
             _cryptoProviderRepo.Update(cryptoProvider);
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
-        public async Task<Guid> Add(CryptoProviderDto cryptoProviderDto)
+        public async Task<Guid> AddAsync(CryptoProviderDto cryptoProviderDto)
         {
             var cryptoProvider = _mapper.Map(cryptoProviderDto);
             cryptoProvider.Id = Guid.NewGuid();
-            await _cryptoProviderRepo.Add(cryptoProvider);
-            await _db.Commit();
+            await _cryptoProviderRepo.AddAsync(cryptoProvider);
+            await _db.CommitAsync();
             return cryptoProvider.Id;
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            await _cryptoProviderRepo.Delete(id);
-            await _db.Commit();
+            await _cryptoProviderRepo.DeleteAsync(id);
+            await _db.CommitAsync();
         }
     }
 }

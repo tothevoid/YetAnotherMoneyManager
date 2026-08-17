@@ -17,18 +17,12 @@ interface Props {
 }
 
 const BrokerAccountTaxDeductionsList: React.FC<Props> = (props) => {
-    const dataChangedHandler = () => {
-        if (props?.onDataChanged){
-            props.onDataChanged();
-        }
-    }
-
     const {
         taxDeductions,
         createTaxDeductionEntity,
         updateTaxDeductionEntity,
         deleteTaxDeductionEntity,
-    } = useBrokerAccountTaxDeductions({brokerAccountId: props.brokerAccountId}, dataChangedHandler);
+    } = useBrokerAccountTaxDeductions({ brokerAccountId: props.brokerAccountId }, props.onDataChanged);
 
     const { 
         modalRef,

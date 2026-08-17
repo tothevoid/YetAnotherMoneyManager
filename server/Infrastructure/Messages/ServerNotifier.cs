@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using MoneyManager.Infrastructure.Interfaces.Messages;
 
@@ -12,7 +12,7 @@ namespace MoneyManager.Infrastructure.Messages
             _hubContext = hubContext;
         }
 
-        public async Task SendToAll(string message = null)
+        public async Task SendToAllAsync(string message = null)
         {
             await _hubContext.Clients.All.SendAsync("ReceiveServerMessage", message);
         }

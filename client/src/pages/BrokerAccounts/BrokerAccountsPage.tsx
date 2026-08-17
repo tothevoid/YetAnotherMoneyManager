@@ -4,7 +4,7 @@ import BrokerAccountSecuritiesList, { BrokerAccountSecuritiesListRef } from "../
 import BrokerAccountTabs, { ChangeAction } from "../BrokerAccount/components/BrokerAccountTabs/BrokerAccountTabs";
 import { useUserProfile } from "../../../features/UserProfileSettingsModal/hooks/UserProfileContext";
 import { getLastPullDate, pullBrokerAccountQuotations } from "../../api/brokers/brokerAccountSecurityApi";
-import { useSignalR } from "../../shared/hooks/SignalRHook";
+import { useSignalR } from "../../shared/hooks/useSignalR";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getPortfolioValues } from "../../api/brokers/brokerAccountSummaryApi";

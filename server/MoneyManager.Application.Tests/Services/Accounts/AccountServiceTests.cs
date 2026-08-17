@@ -21,13 +21,13 @@ namespace MoneyManager.Application.Tests.Services.Accounts
             var activeAccountsBefore = await ExecuteScopeAsync(async sp =>
             {
                 var accountsService = sp.GetRequiredService<IAccountService>();
-                return (await accountsService.GetAll(true)).Count();
+                return (await accountsService.GetAllAsync(true)).Count();
             });
 
             var allAccountsBefore = await ExecuteScopeAsync(async sp =>
             {
                 var accountsService = sp.GetRequiredService<IAccountService>();
-                return (await accountsService.GetAll(false)).Count();
+                return (await accountsService.GetAllAsync(false)).Count();
             });
 
             var activeAccountsToCreate = 15;
@@ -39,13 +39,13 @@ namespace MoneyManager.Application.Tests.Services.Accounts
 
                 foreach (var account in Enumerable.Range(0, activeAccountsToCreate))
                 {
-                    await accountsService.Add(CreateAccount(Guid.NewGuid(), 
+                    await accountsService.AddAsync(CreateAccount(Guid.NewGuid(), 
                         account.ToString(), AccountTypeConstants.Cash, CurrencyConstants.USD, true));
                 }
 
                 foreach (var account in Enumerable.Range(0, nonActiveAccountsToCreate))
                 {
-                    await accountsService.Add(CreateAccount(Guid.NewGuid(),
+                    await accountsService.AddAsync(CreateAccount(Guid.NewGuid(),
                         account.ToString(), AccountTypeConstants.Cash, CurrencyConstants.USD, false));
                 }
             });
@@ -53,13 +53,13 @@ namespace MoneyManager.Application.Tests.Services.Accounts
             var activeAccountsAfter = await ExecuteScopeAsync(async sp =>
             {
                 var accountsService = sp.GetRequiredService<IAccountService>();
-                return (await accountsService.GetAll(true)).Count();
+                return (await accountsService.GetAllAsync(true)).Count();
             });
 
             var allAccountsAfter = await ExecuteScopeAsync(async sp =>
             {
                 var accountsService = sp.GetRequiredService<IAccountService>();
-                return (await accountsService.GetAll(false)).Count();
+                return (await accountsService.GetAllAsync(false)).Count();
             });
 
             Assert.Equal(activeAccountsBefore + activeAccountsToCreate, activeAccountsAfter);
@@ -72,7 +72,7 @@ namespace MoneyManager.Application.Tests.Services.Accounts
             var activeCashAccountsBefore = await ExecuteScopeAsync(async sp =>
             {
                 var accountsService = sp.GetRequiredService<IAccountService>();
-                return (await accountsService.GetAllByTypes(new Guid[] { AccountTypeConstants.Cash}, true)).Count();
+                return (await accountsService.GetAllByTypesAsync(new Guid[] { AccountTypeConstants.Cash}, true)).Count();
             });
 
             var newAccountTypeId = Guid.NewGuid();
@@ -83,11 +83,11 @@ namespace MoneyManager.Application.Tests.Services.Accounts
                 var typesService = sp.GetRequiredService<IAccountTypeService>();
                 var accountsService = sp.GetRequiredService<IAccountService>();
 
-                await typesService.Add(new AccountTypeDTO() { Id = newAccountTypeId, Name = "Test", Active = true });
+                await typesService.AddAsync(new AccountTypeDto() { Id = newAccountTypeId, Name = "Test", Active = true });
 
                 foreach (var account in Enumerable.Range(0, newAccountTypeAccounts))
                 {
-                    await accountsService.Add(CreateAccount(Guid.NewGuid(),
+                    await accountsService.AddAsync(CreateAccount(Guid.NewGuid(),
                         account.ToString(), newAccountTypeId, CurrencyConstants.USD, true));
                 }
             });
@@ -95,13 +95,13 @@ namespace MoneyManager.Application.Tests.Services.Accounts
             var activeCashAccountsAfter = await ExecuteScopeAsync(async sp =>
             {
                 var accountsService = sp.GetRequiredService<IAccountService>();
-                return (await accountsService.GetAllByTypes(new Guid[] { AccountTypeConstants.Cash }, true)).Count();
+                return (await accountsService.GetAllByTypesAsync(new Guid[] { AccountTypeConstants.Cash }, true)).Count();
             });
 
             var newAccountTypeActiveAccountsAfter = await ExecuteScopeAsync(async sp =>
             {
                 var accountsService = sp.GetRequiredService<IAccountService>();
-                return (await accountsService.GetAllByTypes(new Guid[] { newAccountTypeId }, true)).Count();
+                return (await accountsService.GetAllByTypesAsync(new Guid[] { newAccountTypeId }, true)).Count();
             });
 
             Assert.Equal(activeCashAccountsBefore, activeCashAccountsAfter);
@@ -116,13 +116,13 @@ namespace MoneyManager.Application.Tests.Services.Accounts
             var createdId = await ExecuteScopeAsync(async sp =>
             {
                 var accountsService = sp.GetRequiredService<IAccountService>();
-                return await accountsService.Add(CreateAccount(Guid.NewGuid(), accountName, AccountTypeConstants.Cash, CurrencyConstants.USD, true, 500));
+                return await accountsService.AddAsync(CreateAccount(Guid.NewGuid(), accountName, AccountTypeConstants.Cash, CurrencyConstants.USD, true, 500));
             });
 
             var account = await ExecuteScopeAsync(async sp =>
             {
                 var accountsService = sp.GetRequiredService<IAccountService>();
-                return await accountsService.GetById(createdId);
+                return await accountsService.GetByIdAsync(createdId);
             });
 
             Assert.NotNull(account);
@@ -137,7 +137,7 @@ namespace MoneyManager.Application.Tests.Services.Accounts
             var account = await ExecuteScopeAsync(async sp =>
             {
                 var accountsService = sp.GetRequiredService<IAccountService>();
-                return await accountsService.GetById(Guid.NewGuid());
+                return await accountsService.GetByIdAsync(Guid.NewGuid());
             });
 
             Assert.Null(account);
@@ -151,7 +151,7 @@ namespace MoneyManager.Application.Tests.Services.Accounts
             var createdId = await ExecuteScopeAsync(async sp =>
             {
                 var accountsService = sp.GetRequiredService<IAccountService>();
-                return await accountsService.Add(dto);
+                return await accountsService.AddAsync(dto);
             });
 
             Assert.NotEqual(Guid.Empty, createdId);
@@ -159,7 +159,7 @@ namespace MoneyManager.Application.Tests.Services.Accounts
             var fetched = await ExecuteScopeAsync(async sp =>
             {
                 var accountsService = sp.GetRequiredService<IAccountService>();
-                return await accountsService.GetById(createdId);
+                return await accountsService.GetByIdAsync(createdId);
             });
 
             Assert.NotNull(fetched);
@@ -176,16 +176,16 @@ namespace MoneyManager.Application.Tests.Services.Accounts
             var accountId = await ExecuteScopeAsync(async sp =>
             {
                 var accountsService = sp.GetRequiredService<IAccountService>();
-                return await accountsService.Add(CreateAccount(Guid.NewGuid(), "Update Balance Test", AccountTypeConstants.Cash, CurrencyConstants.USD, true, initialBalance));
+                return await accountsService.AddAsync(CreateAccount(Guid.NewGuid(), "Update Balance Test", AccountTypeConstants.Cash, CurrencyConstants.USD, true, initialBalance));
             });
 
             await ExecuteScopeAsync(async sp =>
             {
                 var accountsService = sp.GetRequiredService<IAccountService>();
-                var accountDto = await accountsService.GetById(accountId);
+                var accountDto = await accountsService.GetByIdAsync(accountId);
                 accountDto.Balance = updatedBalance;
                 accountDto.Name = "Updated Name";
-                await accountsService.Update(accountDto);
+                await accountsService.UpdateAsync(accountDto);
             });
 
             var (updatedAccount, systemTxCount) = await ExecuteScopeAsync(async sp =>
@@ -194,8 +194,8 @@ namespace MoneyManager.Application.Tests.Services.Accounts
                 var uow = sp.GetRequiredService<IUnitOfWork>();
                 var txRepo = uow.CreateRepository<Transaction>();
 
-                var acc = await accountsService.GetById(accountId);
-                var txs = await txRepo.GetAll(t => t.AccountId == accountId && t.IsSystem);
+                var acc = await accountsService.GetByIdAsync(accountId);
+                var txs = await txRepo.GetAllAsync(t => t.AccountId == accountId && t.IsSystem);
                 return (acc, txs.Count());
             });
 
@@ -213,22 +213,22 @@ namespace MoneyManager.Application.Tests.Services.Accounts
             var accountId = await ExecuteScopeAsync(async sp =>
             {
                 var accountsService = sp.GetRequiredService<IAccountService>();
-                return await accountsService.Add(CreateAccount(Guid.NewGuid(), "Update Same Balance", AccountTypeConstants.Cash, CurrencyConstants.USD, true, balance));
+                return await accountsService.AddAsync(CreateAccount(Guid.NewGuid(), "Update Same Balance", AccountTypeConstants.Cash, CurrencyConstants.USD, true, balance));
             });
 
             await ExecuteScopeAsync(async sp =>
             {
                 var accountsService = sp.GetRequiredService<IAccountService>();
-                var accountDto = await accountsService.GetById(accountId);
+                var accountDto = await accountsService.GetByIdAsync(accountId);
                 accountDto.Name = "Renamed Only";
-                await accountsService.Update(accountDto);
+                await accountsService.UpdateAsync(accountDto);
             });
 
             var systemTxCount = await ExecuteScopeAsync(async sp =>
             {
                 var uow = sp.GetRequiredService<IUnitOfWork>();
                 var txRepo = uow.CreateRepository<Transaction>();
-                var txs = await txRepo.GetAll(t => t.AccountId == accountId && t.IsSystem);
+                var txs = await txRepo.GetAllAsync(t => t.AccountId == accountId && t.IsSystem);
                 return txs.Count();
             });
 
@@ -242,7 +242,7 @@ namespace MoneyManager.Application.Tests.Services.Accounts
             {
                 var accountsService = sp.GetRequiredService<IAccountService>();
                 var nonExistentAccount = CreateAccount(Guid.NewGuid(), "Ghost", AccountTypeConstants.Cash, CurrencyConstants.USD, true);
-                await accountsService.Update(nonExistentAccount);
+                await accountsService.UpdateAsync(nonExistentAccount);
             });
         }
 
@@ -252,19 +252,19 @@ namespace MoneyManager.Application.Tests.Services.Accounts
             var accountId = await ExecuteScopeAsync(async sp =>
             {
                 var accountsService = sp.GetRequiredService<IAccountService>();
-                return await accountsService.Add(CreateAccount(Guid.NewGuid(), "To Delete", AccountTypeConstants.Cash, CurrencyConstants.USD, true));
+                return await accountsService.AddAsync(CreateAccount(Guid.NewGuid(), "To Delete", AccountTypeConstants.Cash, CurrencyConstants.USD, true));
             });
 
             await ExecuteScopeAsync(async sp =>
             {
                 var accountsService = sp.GetRequiredService<IAccountService>();
-                await accountsService.Delete(accountId);
+                await accountsService.DeleteAsync(accountId);
             });
 
             var deleted = await ExecuteScopeAsync(async sp =>
             {
                 var accountsService = sp.GetRequiredService<IAccountService>();
-                return await accountsService.GetById(accountId);
+                return await accountsService.GetByIdAsync(accountId);
             });
 
             Assert.Null(deleted);
@@ -276,19 +276,19 @@ namespace MoneyManager.Application.Tests.Services.Accounts
             var fromId = await ExecuteScopeAsync(async sp =>
             {
                 var accountsService = sp.GetRequiredService<IAccountService>();
-                return await accountsService.Add(CreateAccount(Guid.NewGuid(), "From Account", AccountTypeConstants.Cash, CurrencyConstants.USD, true, 1000m));
+                return await accountsService.AddAsync(CreateAccount(Guid.NewGuid(), "From Account", AccountTypeConstants.Cash, CurrencyConstants.USD, true, 1000m));
             });
 
             var toId = await ExecuteScopeAsync(async sp =>
             {
                 var accountsService = sp.GetRequiredService<IAccountService>();
-                return await accountsService.Add(CreateAccount(Guid.NewGuid(), "To Account", AccountTypeConstants.Cash, CurrencyConstants.USD, true, 200m));
+                return await accountsService.AddAsync(CreateAccount(Guid.NewGuid(), "To Account", AccountTypeConstants.Cash, CurrencyConstants.USD, true, 200m));
             });
 
             await ExecuteScopeAsync(async sp =>
             {
                 var accountsService = sp.GetRequiredService<IAccountService>();
-                await accountsService.Transfer(new AccountTransferDTO
+                await accountsService.TransferAsync(new AccountTransferDto
                 {
                     From = fromId,
                     To = toId,
@@ -303,10 +303,10 @@ namespace MoneyManager.Application.Tests.Services.Accounts
                 var uow = sp.GetRequiredService<IUnitOfWork>();
                 var txRepo = uow.CreateRepository<Transaction>();
 
-                var from = await accountsService.GetById(fromId);
-                var to = await accountsService.GetById(toId);
-                var fromTxs = await txRepo.GetAll(t => t.AccountId == fromId);
-                var toTxs = await txRepo.GetAll(t => t.AccountId == toId);
+                var from = await accountsService.GetByIdAsync(fromId);
+                var to = await accountsService.GetByIdAsync(toId);
+                var fromTxs = await txRepo.GetAllAsync(t => t.AccountId == fromId);
+                var toTxs = await txRepo.GetAllAsync(t => t.AccountId == toId);
 
                 return (from, to, fromTxs.Count(), toTxs.Count());
             });
@@ -325,7 +325,7 @@ namespace MoneyManager.Application.Tests.Services.Accounts
                 await ExecuteScopeAsync(async sp =>
                 {
                     var accountsService = sp.GetRequiredService<IAccountService>();
-                    await accountsService.Transfer(new AccountTransferDTO
+                    await accountsService.TransferAsync(new AccountTransferDto
                     {
                         From = Guid.NewGuid(),
                         To = Guid.NewGuid(),
@@ -346,15 +346,15 @@ namespace MoneyManager.Application.Tests.Services.Accounts
             await ExecuteScopeAsync(async sp =>
             {
                 var accountsService = sp.GetRequiredService<IAccountService>();
-                await accountsService.Add(CreateAccount(usdAcc1, "Summary USD 1", AccountTypeConstants.Cash, CurrencyConstants.USD, true, 150m));
-                await accountsService.Add(CreateAccount(usdAcc2, "Summary USD 2", AccountTypeConstants.Cash, CurrencyConstants.USD, true, 350m));
-                await accountsService.Add(CreateAccount(usdInactive, "Summary USD Inactive", AccountTypeConstants.Cash, CurrencyConstants.USD, false, 500m));
+                await accountsService.AddAsync(CreateAccount(usdAcc1, "Summary USD 1", AccountTypeConstants.Cash, CurrencyConstants.USD, true, 150m));
+                await accountsService.AddAsync(CreateAccount(usdAcc2, "Summary USD 2", AccountTypeConstants.Cash, CurrencyConstants.USD, true, 350m));
+                await accountsService.AddAsync(CreateAccount(usdInactive, "Summary USD Inactive", AccountTypeConstants.Cash, CurrencyConstants.USD, false, 500m));
             });
 
             var summaries = await ExecuteScopeAsync(async sp =>
             {
                 var accountsService = sp.GetRequiredService<IAccountService>();
-                return await accountsService.GetSummary();
+                return await accountsService.GetSummaryAsync();
             });
 
             Assert.NotNull(summaries);
@@ -363,7 +363,7 @@ namespace MoneyManager.Application.Tests.Services.Accounts
             Assert.True(usdSummary.Summary >= 500m); // 150 + 350 active accounts
         }
 
-        private AccountDTO CreateAccount(Guid id, string name, Guid typeId, Guid currencyId, bool active, decimal balance = 100) => new()
+        private AccountDto CreateAccount(Guid id, string name, Guid typeId, Guid currencyId, bool active, decimal balance = 100) => new()
         {
             Id = id, 
             Active = active, 

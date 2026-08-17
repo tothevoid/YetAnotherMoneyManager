@@ -31,39 +31,39 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         [HttpGet]
         public async Task<IEnumerable<BrokerAccountModel>> GetAll()
         {
-            var brokerAccounts = await _brokerAccountService.GetAll();
+            var brokerAccounts = await _brokerAccountService.GetAllAsync();
             return _mapper.Map(brokerAccounts);
         }
 
         [HttpGet("GetById")]
         public async Task<BrokerAccountModel> GetById([FromQuery] Guid id)
         {
-            var brokerAccount = await _brokerAccountService.GetById(id);
+            var brokerAccount = await _brokerAccountService.GetByIdAsync(id);
             return _mapper.Map(brokerAccount);
         }
 
-        [HttpGet(nameof(GetTotalSoldAmountByBrokerAccountId))]
-        public async Task<decimal> GetTotalSoldAmountByBrokerAccountId([FromQuery] Guid brokerAccountId)
+        [HttpGet(nameof(GetTotalSoldAmountByBrokerAccount))]
+        public async Task<decimal> GetTotalSoldAmountByBrokerAccount([FromQuery] Guid brokerAccountId)
         {
-            return await _brokerAccountService.GetTotalSoldAmountByBrokerAccountId(brokerAccountId);
+            return await _brokerAccountService.GetTotalSoldAmountByBrokerAccountAsync(brokerAccountId);
         }
 
         [HttpPut]
         public async Task<Guid> Add(BrokerAccountModel brokerAccount)
         {
             var brokerAccountDto = _mapper.Map(brokerAccount);
-            return await _brokerAccountService.Add(brokerAccountDto);
+            return await _brokerAccountService.AddAsync(brokerAccountDto);
         }
 
         [HttpPatch]
         public async Task Update(BrokerAccountModel brokerAccount)
         {
             var brokerAccountDto = _mapper.Map(brokerAccount);
-            await _brokerAccountService.Update(brokerAccountDto);
+            await _brokerAccountService.UpdateAsync(brokerAccountDto);
         }
 
         [HttpDelete]
         public async Task Delete(Guid id) =>
-            await _brokerAccountService.Delete(id);
+            await _brokerAccountService.DeleteAsync(id);
     }
 }

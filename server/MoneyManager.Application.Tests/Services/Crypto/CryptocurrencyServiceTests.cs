@@ -25,7 +25,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             var added = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptocurrencyService>();
-                return await service.Add(dto, null);
+                return await service.AddAsync(dto, null);
             });
 
             Assert.NotNull(added);
@@ -35,7 +35,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptocurrencyService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             Assert.NotNull(all);
@@ -55,14 +55,14 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             var added = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptocurrencyService>();
-                return await service.Add(dto, null);
+                return await service.AddAsync(dto, null);
             });
 
             added.Price = 3800m;
             var updated = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptocurrencyService>();
-                return await service.Update(added, null);
+                return await service.UpdateAsync(added, null);
             });
 
             Assert.NotNull(updated);
@@ -71,13 +71,13 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptocurrencyService>();
-                await service.Delete(added.Id);
+                await service.DeleteAsync(added.Id);
             });
 
             var allAfterDelete = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptocurrencyService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             Assert.DoesNotContain(allAfterDelete, c => c.Id == added.Id);
@@ -97,19 +97,19 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             var added = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptocurrencyService>();
-                return await service.Add(dto, null);
+                return await service.AddAsync(dto, null);
             });
 
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptocurrencyService>();
-                await service.Delete(added.Id);
+                await service.DeleteAsync(added.Id);
             });
 
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptocurrencyService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             Assert.DoesNotContain(all, c => c.Id == added.Id);
@@ -129,7 +129,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             var added = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptocurrencyService>();
-                return await service.Add(dto, null);
+                return await service.AddAsync(dto, null);
             });
 
             added.IconKey = null;
@@ -137,7 +137,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             var updated = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptocurrencyService>();
-                return await service.Update(added, null);
+                return await service.UpdateAsync(added, null);
             });
 
             Assert.NotNull(updated);
@@ -158,7 +158,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             var added = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptocurrencyService>();
-                return await service.Add(dto, formFile);
+                return await service.AddAsync(dto, formFile);
             });
 
             Assert.NotNull(added.IconKey);
@@ -182,7 +182,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             var added = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptocurrencyService>();
-                return await service.Add(dto, formFile1);
+                return await service.AddAsync(dto, formFile1);
             });
 
             var initialKey = added.IconKey;
@@ -191,7 +191,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             var updated = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptocurrencyService>();
-                return await service.Update(added, formFile2);
+                return await service.UpdateAsync(added, formFile2);
             });
 
             Assert.NotNull(updated.IconKey);

@@ -17,7 +17,7 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
 {
     public class MoexConnector(IHttpClientFactory httpClientFactory) : IStockConnector
     {
-        public async Task<IEnumerable<SecurityHistoryValueDto>> GetTickerHistory(SecurityDTO security, DateOnly from, DateOnly to)
+        public async Task<IEnumerable<SecurityHistoryValueDto>> GetTickerHistoryAsync(SecurityDto security, DateOnly from, DateOnly to)
         {
             var httpClient = httpClientFactory.CreateClient();
 
@@ -28,7 +28,7 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
             return await GetHistory(query, httpClient);
         }
 
-        public async Task<IEnumerable<MarketDataRow>> GetExtendedValuesByTickers(IEnumerable<SecurityDTO> securities)
+        public async Task<IEnumerable<MarketDataRow>> GetExtendedValuesByTickersAsync(IEnumerable<SecurityDto> securities)
         {
             var httpClient = httpClientFactory.CreateClient();
 
@@ -51,7 +51,7 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
             return result;
         }
 
-        public async Task<IEnumerable<MarketDataRow>> GetValuesByTickers(IEnumerable<SecurityDTO> securities)
+        public async Task<IEnumerable<MarketDataRow>> GetValuesByTickersAsync(IEnumerable<SecurityDto> securities)
         {
             var httpClient = httpClientFactory.CreateClient();
 
@@ -262,7 +262,7 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
             return columnsIndexes;
         }
 
-        public async Task<IEnumerable<SecurityCandleDto>> GetCandles(SecurityDTO security, DateOnly from, DateOnly to, int interval = 24)
+        public async Task<IEnumerable<SecurityCandleDto>> GetCandlesAsync(SecurityDto security, DateOnly from, DateOnly to, int interval = 24)
         {
             var httpClient = httpClientFactory.CreateClient();
 
@@ -270,7 +270,7 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
                 ? MoexUrlFactory.GetCurrencyCandlesQuery(security.Ticker, from, to, interval)
                 : MoexUrlFactory.GetCandlesQuery(security.Ticker, from, to, interval);
 
-            return await GetCandlesAsync(query, httpClient);
+            return await GetCandlesInternalAsync(query, httpClient);
         }
 
         private static decimal GetDecimalValue(object[] row, int index, decimal defaultValue = 0m)
@@ -287,7 +287,7 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
                 : defaultValue;
         }
 
-        private static async Task<IEnumerable<SecurityCandleDto>> GetCandlesAsync(string query, HttpClient httpClient)
+        private static async Task<IEnumerable<SecurityCandleDto>> GetCandlesInternalAsync(string query, HttpClient httpClient)
         {
             var result = await httpClient.GetAsync(query);
             var response = await result.Content.ReadFromJsonAsync<MoexCandlesResponse>();

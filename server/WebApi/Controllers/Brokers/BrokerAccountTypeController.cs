@@ -27,7 +27,7 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         [HttpGet]
         public async Task<IEnumerable<BrokerAccountTypeModel>> GetAll()
         {
-            var brokerAccountsTypes = await _brokerAccountTypeService.GetAll();
+            var brokerAccountsTypes = await _brokerAccountTypeService.GetAllAsync();
             return _mapper.Map(brokerAccountsTypes);
         }
 
@@ -35,18 +35,18 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         public async Task<Guid> Add(BrokerAccountTypeModel brokerAccountType)
         {
             var brokerAccountTypeDto = _mapper.Map(brokerAccountType);
-            return await _brokerAccountTypeService.Add(brokerAccountTypeDto);
+            return await _brokerAccountTypeService.AddAsync(brokerAccountTypeDto);
         }
 
         [HttpPatch]
         public async Task Update(BrokerAccountTypeModel brokerAccountType)
         {
             var brokerAccountTypeDto = _mapper.Map(brokerAccountType);
-            await _brokerAccountTypeService.Update(brokerAccountTypeDto);
+            await _brokerAccountTypeService.UpdateAsync(brokerAccountTypeDto);
         }
 
         [HttpDelete]
         public async Task Delete(Guid id) =>
-            await _brokerAccountTypeService.Delete(id);
+            await _brokerAccountTypeService.DeleteAsync(id);
     }
 }

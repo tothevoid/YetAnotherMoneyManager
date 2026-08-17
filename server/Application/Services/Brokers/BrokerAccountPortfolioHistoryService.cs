@@ -25,12 +25,12 @@ namespace MoneyManager.Application.Services.Brokers
         private readonly ISecurityService _securityService = securityService;
         private readonly IStockConnector _stockConnector = stockConnector;
 
-        public async Task<BrokerAccountPortfolioHistoryDto> GetAll(DateOnly date)
+        public async Task<BrokerAccountPortfolioHistoryDto> GetAllAsync(DateOnly date)
         {
             return await GetHistory(date, null);
         }
 
-        public async Task<BrokerAccountPortfolioHistoryDto> GetByBrokerAccount(DateOnly date, Guid brokerAccountId)
+        public async Task<BrokerAccountPortfolioHistoryDto> GetByBrokerAccountAsync(DateOnly date, Guid brokerAccountId)
         {
             return await GetHistory(date, brokerAccountId);
         }
@@ -74,7 +74,7 @@ namespace MoneyManager.Application.Services.Brokers
                 return 0m;
             }
 
-            var securitiesList = await _securityService.FindByTickers(securitiesStats.Keys);
+            var securitiesList = await _securityService.FindByTickersAsync(securitiesStats.Keys);
             var securitiesMap = securitiesList.ToDictionary(s => s.Ticker.ToLower(), s => s);
 
             using var semaphore = new SemaphoreSlim(5);
@@ -111,12 +111,12 @@ namespace MoneyManager.Application.Services.Brokers
             return totalSecuritiesValue;
         }
 
-        private async Task<decimal> GetSecurityPriceAtDate(SecurityDTO security, DateOnly date)
+        private async Task<decimal> GetSecurityPriceAtDate(SecurityDto security, DateOnly date)
         {
             try
             {
                 // TODO: handle long holidays (>7 days) case
-                var history = await _stockConnector.GetCandles(security, date.AddDays(-7), date);
+                var history = await _stockConnector.GetCandlesAsync(security, date.AddDays(-7), date);
                 var lastHistoryValue = history?.OrderBy(h => h.End).LastOrDefault();
                 if (lastHistoryValue != null && lastHistoryValue.Close > 0)
                 {
@@ -134,22 +134,22 @@ namespace MoneyManager.Application.Services.Brokers
 
         private async Task<decimal> GetTotalTaxDeduction(DateOnly date, Guid? brokerAccountId)
         {
-            return await _taxDeductionService.GetSumTillSpecificDate(date, brokerAccountId);
+            return await _taxDeductionService.GetSumTillSpecificDateAsync(date, brokerAccountId);
         }
 
         private async Task<decimal> GetTotalDividendPayments(DateOnly date, Guid? brokerAccountId)
         {
-            return await _dividendPaymentService.GetSumTillSpecificDate(date, brokerAccountId);
+            return await _dividendPaymentService.GetSumTillSpecificDateAsync(date, brokerAccountId);
         }
 
         private async Task<(decimal deposited, decimal withdrawn)> GetTotalTransfers(DateOnly date, Guid? brokerAccountId)
         {
-            return await _brokerAccountFundsTransferService.GetSumTillSpecificDate(date, brokerAccountId);
+            return await _brokerAccountFundsTransferService.GetSumTillSpecificDateAsync(date, brokerAccountId);
         }
 
         private async Task<Dictionary<string, SecurityTransactionsSummary>> GetSecuritiesStats(DateOnly date, Guid? brokerAccountId)
         {
-            return await _securityTransactionService.GetSummaryTillSpecificDate(date, brokerAccountId);
+            return await _securityTransactionService.GetSummaryTillSpecificDateAsync(date, brokerAccountId);
         }
     }
 

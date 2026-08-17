@@ -8,7 +8,7 @@ namespace MoneyManager.Infrastructure.Tests.Messages
     public class ServerNotifierTests
     {
         [Fact]
-        public async Task SendToAll_CallsSignalRHubClientsAll()
+        public async Task SendToAllAsync_CallsSignalRHubClientsAll()
         {
             var mockHubContext = Substitute.For<IHubContext<ServerMessagesHub>>();
             var mockClients = Substitute.For<IHubClients>();
@@ -19,7 +19,7 @@ namespace MoneyManager.Infrastructure.Tests.Messages
 
             var notifier = new ServerNotifier(mockHubContext);
 
-            await notifier.SendToAll("Test Message");
+            await notifier.SendToAllAsync("Test Message");
 
             await mockClientProxy.Received(1).SendCoreAsync(
                 "ReceiveServerMessage",

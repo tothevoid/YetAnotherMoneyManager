@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using MoneyManager.Application.DTO.Securities;
 using System;
 using System.Collections.Generic;
@@ -8,17 +8,17 @@ namespace MoneyManager.Application.Interfaces.Securities
 {
     public interface ISecurityService
     {
-        Task<IEnumerable<SecurityDTO>> GetAll(bool disableTracking = true);
-        Task<SecurityDTO> FindByTicker(string ticker);
+        Task<IEnumerable<SecurityDto>> GetAllAsync(bool disableTracking = true);
+        Task<SecurityDto> FindByTickerAsync(string ticker);
 
-        Task<IEnumerable<SecurityDTO>> FindByTickers(IEnumerable<string> tickers);
+        Task<IEnumerable<SecurityDto>> FindByTickersAsync(IEnumerable<string> tickers);
 
-        Task<SecurityDTO> GetById(Guid id, bool loadHierarchy = true, bool disableTracking = true);
-        Task<SecurityStatsDto> GetStats(Guid securityId);
-        Task<IEnumerable<SecurityHistoryValueDto>> GetTickerHistory(string ticker);
-        Task<SecurityDTO> Add(SecurityDTO security, IFormFile securityIcon);
-        Task<SecurityDTO> Update(SecurityDTO security, IFormFile securityIcon);
-        Task<string> GetIconUrl(string iconKey);
-        Task Delete(Guid id);
+        Task<SecurityDto> GetByIdAsync(Guid id, bool loadHierarchy = true, bool disableTracking = true);
+        Task<SecurityStatsDto> GetStatsAsync(Guid securityId);
+        Task<IEnumerable<SecurityHistoryValueDto>> GetTickerHistoryAsync(string ticker);
+        Task<SecurityDto> AddAsync(SecurityDto security, IFormFile securityIcon);
+        Task<SecurityDto> UpdateAsync(SecurityDto security, IFormFile securityIcon);
+        Task<string> GetIconUrlAsync(string iconKey);
+        Task DeleteAsync(Guid id);
     }
 }

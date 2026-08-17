@@ -31,7 +31,7 @@ namespace MoneyManager.Application.Services.Securities
             _dividendRepo = uow.CreateRepository<Dividend>();
         }
 
-        public async Task<IEnumerable<DividendDto>> GetAll(Guid securityId, int pageIndex, int recordsQuantity)
+        public async Task<IEnumerable<DividendDto>> GetAllAsync(Guid securityId, int pageIndex, int recordsQuantity)
         {
             var query = new ComplexQueryBuilder<Dividend>()
                 .AddPagination(pageIndex, recordsQuantity,
@@ -40,14 +40,14 @@ namespace MoneyManager.Application.Services.Securities
                 .AddJoins(GetFullHierarchyColumns)
                 .GetQuery();
 
-            var dividends = await _dividendRepo.GetAll(query);
+            var dividends = await _dividendRepo.GetAllAsync(query);
             return _mapper.Map(dividends);
         }
 
-        public async Task<PaginationConfigDto> GetPagination(Guid securityId)
+        public async Task<PaginationConfigDto> GetPaginationAsync(Guid securityId)
         {
             int pageSize = 10;
-            var recordsQuantity = await _dividendRepo.GetCount(GetBaseFilter(securityId));
+            var recordsQuantity = await _dividendRepo.GetCountAsync(GetBaseFilter(securityId));
 
             return new PaginationConfigDto()
             {
@@ -61,10 +61,10 @@ namespace MoneyManager.Application.Services.Securities
             return brokerAccountSecurity => brokerAccountSecurity.SecurityId == securityId;
         }
 
-        public async Task<IEnumerable<DividendDto>> GetAvailable(Guid brokerAccountId)
+        public async Task<IEnumerable<DividendDto>> GetAvailableAsync(Guid brokerAccountId)
         {
             var securities = await _dividendRepo
-                .GetAll((dividend) => dividend.DividendPayments.All(payment => 
+                .GetAllAsync((dividend) => dividend.DividendPayments.All(payment => 
                        !dividend.DividendPayments.Any(p => p.BrokerAccountId == brokerAccountId) &&
                         dividend.Security.BrokerAccountSecurities.Any(s => s.BrokerAccountId == brokerAccountId)
                     ),
@@ -72,26 +72,26 @@ namespace MoneyManager.Application.Services.Securities
             return _mapper.Map(securities);
         }
 
-        public async Task Update(DividendDto securityTypeDto)
+        public async Task UpdateAsync(DividendDto securityTypeDto)
         {
             var dividend = _mapper.Map(securityTypeDto);
             _dividendRepo.Update(dividend);
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
-        public async Task<Guid> Add(DividendDto securityDto)
+        public async Task<Guid> AddAsync(DividendDto securityDto)
         {
             var dividend = _mapper.Map(securityDto);
             dividend.Id = Guid.NewGuid();
-            await _dividendRepo.Add(dividend);
-            await _db.Commit();
+            await _dividendRepo.AddAsync(dividend);
+            await _db.CommitAsync();
             return dividend.Id;
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            await _dividendRepo.Delete(id);
-            await _db.Commit();
+            await _dividendRepo.DeleteAsync(id);
+            await _db.CommitAsync();
         }
 
         private IQueryable<Dividend> GetFullHierarchyColumns(IQueryable<Dividend> dividendQuery)

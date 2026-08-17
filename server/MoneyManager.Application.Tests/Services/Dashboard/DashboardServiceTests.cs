@@ -1,6 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using MoneyManager.Application.Interfaces.Currencies;
-using MoneyManager.Application.Interfaces.User;
+using MoneyManager.Application.Interfaces.Dashboard;
 using MoneyManager.Application.Tests.Fixtures;
 
 namespace MoneyManager.Application.Tests.Services.Dashboard
@@ -17,7 +16,7 @@ namespace MoneyManager.Application.Tests.Services.Dashboard
             var dashboard = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDashboardService>();
-                return await service.GetDashboard();
+                return await service.GetDashboardAsync();
             });
 
             //TODO: add mock data

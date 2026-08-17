@@ -34,7 +34,7 @@ namespace MoneyManager.Application.Services.Notifications
                         (!hasCategory || n.Category == category);
         }
 
-        public async Task<IEnumerable<NotificationDto>> GetAll(int pageIndex = 1, int recordsQuantity = 15, bool onlyUnread = false, string category = null)
+        public async Task<IEnumerable<NotificationDto>> GetAllAsync(int pageIndex = 1, int recordsQuantity = 15, bool onlyUnread = false, string category = null)
         {
             var builder = new ComplexQueryBuilder<Notification>()
                 .AddFilter(GetNotificationFilter(onlyUnread, category))
@@ -54,13 +54,13 @@ namespace MoneyManager.Application.Services.Notifications
                 }
             }
 
-            var notifications = await _notificationRepo.GetAll(builder.GetQuery());
+            var notifications = await _notificationRepo.GetAllAsync(builder.GetQuery());
             return _mapper.Map(notifications);
         }
 
-        public async Task<PaginationConfigDto> GetPagination(bool onlyUnread = false, string category = null)
+        public async Task<PaginationConfigDto> GetPaginationAsync(bool onlyUnread = false, string category = null)
         {
-            var recordsQuantity = await _notificationRepo.GetCount(GetNotificationFilter(onlyUnread, category));
+            var recordsQuantity = await _notificationRepo.GetCountAsync(GetNotificationFilter(onlyUnread, category));
             return new PaginationConfigDto
             {
                 PageSize = 15,
@@ -68,19 +68,19 @@ namespace MoneyManager.Application.Services.Notifications
             };
         }
 
-        public async Task<int> GetUnreadCount()
+        public async Task<int> GetUnreadCountAsync()
         {
-            var unread = await _notificationRepo.GetAll(
+            var unread = await _notificationRepo.GetAllAsync(
                 filter: n => n.UserProfileId == UserProfileConstants.UserProfileId && !n.IsRead,
                 disableTracking: true);
 
             return unread.Count();
         }
 
-        public async Task CleanUpOldNotifications(int olderThanDays = 90)
+        public async Task CleanUpOldNotificationsAsync(int olderThanDays = 90)
         {
             var threshold = DateTime.UtcNow.AddDays(-olderThanDays);
-            var oldReadNotifications = (await _notificationRepo.GetAll(
+            var oldReadNotifications = (await _notificationRepo.GetAllAsync(
                 filter: n => n.UserProfileId == UserProfileConstants.UserProfileId && n.IsRead && n.CreatedAt < threshold,
                 disableTracking: false)).ToList();
 
@@ -88,10 +88,10 @@ namespace MoneyManager.Application.Services.Notifications
 
             foreach (var item in oldReadNotifications)
             {
-                await _notificationRepo.Delete(item.Id);
+                await _notificationRepo.DeleteAsync(item.Id);
             }
 
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
         private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
@@ -105,7 +105,7 @@ namespace MoneyManager.Application.Services.Notifications
         private static string BuildAllNotificationsReadMessage() =>
             "{\"type\":\"AllNotificationsRead\"}";
 
-        public async Task<NotificationDto> Create(
+        public async Task<NotificationDto> CreateAsync(
             string title,
             string message,
             NotificationSeverity severity = NotificationSeverity.Info,
@@ -126,31 +126,31 @@ namespace MoneyManager.Application.Services.Notifications
                 CreatedAt = DateTime.UtcNow
             };
 
-            await _notificationRepo.Add(entity);
-            await _db.Commit();
+            await _notificationRepo.AddAsync(entity);
+            await _db.CommitAsync();
 
             var dto = _mapper.Map(entity);
-            await _serverNotifier.SendToAll(BuildNotificationReceivedMessage(dto));
+            await _serverNotifier.SendToAllAsync(BuildNotificationReceivedMessage(dto));
             return dto;
         }
 
-        public async Task MarkAsRead(Guid notificationId)
+        public async Task MarkAsReadAsync(Guid notificationId)
         {
-            var item = await _notificationRepo.GetById(notificationId, disableTracking: false);
+            var item = await _notificationRepo.GetByIdAsync(notificationId, disableTracking: false);
             if (item != null && !item.IsRead)
             {
                 item.IsRead = true;
                 item.ReadAt = DateTime.UtcNow;
                 _notificationRepo.Update(item);
-                await _db.Commit();
+                await _db.CommitAsync();
 
-                await _serverNotifier.SendToAll(BuildNotificationReadMessage(notificationId));
+                await _serverNotifier.SendToAllAsync(BuildNotificationReadMessage(notificationId));
             }
         }
 
-        public async Task MarkAllAsRead()
+        public async Task MarkAllAsReadAsync()
         {
-            var unreadItems = (await _notificationRepo.GetAll(
+            var unreadItems = (await _notificationRepo.GetAllAsync(
                 filter: n => n.UserProfileId == UserProfileConstants.UserProfileId && !n.IsRead,
                 disableTracking: false)).ToList();
 
@@ -164,14 +164,14 @@ namespace MoneyManager.Application.Services.Notifications
                 _notificationRepo.Update(item);
             }
 
-            await _db.Commit();
-            await _serverNotifier.SendToAll(BuildAllNotificationsReadMessage());
+            await _db.CommitAsync();
+            await _serverNotifier.SendToAllAsync(BuildAllNotificationsReadMessage());
         }
 
-        public async Task Delete(Guid notificationId)
+        public async Task DeleteAsync(Guid notificationId)
         {
-            await _notificationRepo.Delete(notificationId);
-            await _db.Commit();
+            await _notificationRepo.DeleteAsync(notificationId);
+            await _db.CommitAsync();
         }
     }
 }

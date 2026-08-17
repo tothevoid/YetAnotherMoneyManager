@@ -21,7 +21,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var divId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDividendService>();
-                return await service.Add(new DividendDto
+                return await service.AddAsync(new DividendDto
                 {
                     SecurityId = securityId,
                     Amount = 2.5m,
@@ -35,7 +35,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDividendService>();
-                return await service.GetAll(securityId, 1, 10);
+                return await service.GetAllAsync(securityId, 1, 10);
             });
 
             Assert.NotNull(all);
@@ -51,7 +51,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var divId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDividendService>();
-                return await service.Add(new DividendDto
+                return await service.AddAsync(new DividendDto
                 {
                     SecurityId = securityId,
                     Amount = 1.0m,
@@ -63,7 +63,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDividendService>();
-                await service.Update(new DividendDto
+                await service.UpdateAsync(new DividendDto
                 {
                     Id = divId,
                     SecurityId = securityId,
@@ -76,7 +76,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDividendService>();
-                return await service.GetAll(securityId, 1, 10);
+                return await service.GetAllAsync(securityId, 1, 10);
             });
 
             var updated = all.FirstOrDefault(d => d.Id == divId);
@@ -86,13 +86,13 @@ namespace MoneyManager.Application.Tests.Services.Securities
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDividendService>();
-                await service.Delete(divId);
+                await service.DeleteAsync(divId);
             });
 
             var listAfterDelete = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDividendService>();
-                return await service.GetAll(securityId, 1, 10);
+                return await service.GetAllAsync(securityId, 1, 10);
             });
 
             Assert.DoesNotContain(listAfterDelete, d => d.Id == divId);
@@ -103,13 +103,13 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var securityTypeId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTypeService>();
-                return await service.Add(new SecurityTypeDTO { Name = "Dividend Stock Type" });
+                return await service.AddAsync(new SecurityTypeDto { Name = "Dividend Stock Type" });
             });
 
             return await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityService>();
-                var sec = await service.Add(new SecurityDTO
+                var sec = await service.AddAsync(new SecurityDto
                 {
                     Name = "Dividend Payer Inc",
                     Ticker = "DIV",

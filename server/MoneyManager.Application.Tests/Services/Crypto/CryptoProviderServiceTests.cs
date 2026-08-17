@@ -18,7 +18,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             var providerId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptoProviderService>();
-                return await service.Add(new CryptoProviderDto
+                return await service.AddAsync(new CryptoProviderDto
                 {
                     Name = "Binance"
                 });
@@ -29,7 +29,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptoProviderService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             Assert.NotNull(all);
@@ -42,7 +42,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             var providerId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptoProviderService>();
-                return await service.Add(new CryptoProviderDto
+                return await service.AddAsync(new CryptoProviderDto
                 {
                     Name = "Bybit Initial"
                 });
@@ -51,7 +51,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptoProviderService>();
-                await service.Update(new CryptoProviderDto
+                await service.UpdateAsync(new CryptoProviderDto
                 {
                     Id = providerId,
                     Name = "Bybit Updated"
@@ -61,7 +61,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptoProviderService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             var updated = all.FirstOrDefault(p => p.Id == providerId);
@@ -71,13 +71,13 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptoProviderService>();
-                await service.Delete(providerId);
+                await service.DeleteAsync(providerId);
             });
 
             var listAfterDelete = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptoProviderService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             Assert.DoesNotContain(listAfterDelete, p => p.Id == providerId);

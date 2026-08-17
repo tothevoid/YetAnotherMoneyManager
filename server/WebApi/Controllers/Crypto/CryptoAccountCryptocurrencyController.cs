@@ -1,13 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using MoneyManager.Application.DTO.Brokers;
-using MoneyManager.Application.Interfaces.Brokers;
-using MoneyManager.WebApi.Models.Brokers;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 using MoneyManager.Application.DTO.Crypto;
 using MoneyManager.Application.Interfaces.Crypto;
-using MoneyManager.Infrastructure.Entities.Crypto;
 using MoneyManager.WebApi.Mappings;
 using MoneyManager.WebApi.Models.Crypto;
 using Microsoft.AspNetCore.Authorization;
@@ -32,14 +28,14 @@ namespace MoneyManager.WebApi.Controllers.Crypto
         [HttpGet(nameof(GetByCryptoAccount))]
         public async Task<IEnumerable<CryptoAccountCryptocurrencyModel>> GetByCryptoAccount(Guid cryptoAccountId)
         {
-            var cryptoAccountCryptocurrencies = await _cryptoAccountCryptocurrencyService.GetByCryptoAccount(cryptoAccountId);
+            var cryptoAccountCryptocurrencies = await _cryptoAccountCryptocurrencyService.GetByCryptoAccountAsync(cryptoAccountId);
             return _mapper.Map(cryptoAccountCryptocurrencies);
         }
 
         [HttpGet]
         public async Task<IEnumerable<CryptoAccountCryptocurrencyModel>> GetAll()
         {
-            var cryptoAccountCryptocurrencies = await _cryptoAccountCryptocurrencyService.GetAll();
+            var cryptoAccountCryptocurrencies = await _cryptoAccountCryptocurrencyService.GetAllAsync();
             return _mapper.Map(cryptoAccountCryptocurrencies);
         }
 
@@ -47,18 +43,18 @@ namespace MoneyManager.WebApi.Controllers.Crypto
         public async Task<Guid> Add(CryptoAccountCryptocurrencyModel cryptoAccountCryptocurrency)
         {
             var cryptoAccountCryptocurrencyDto = _mapper.Map(cryptoAccountCryptocurrency);
-            return await _cryptoAccountCryptocurrencyService.Add(cryptoAccountCryptocurrencyDto);
+            return await _cryptoAccountCryptocurrencyService.AddAsync(cryptoAccountCryptocurrencyDto);
         }
 
         [HttpPatch]
         public async Task Update(CryptoAccountCryptocurrencyModel brokerAccount)
         {
             var cryptoAccountCryptocurrencyDto = _mapper.Map(brokerAccount);
-            await _cryptoAccountCryptocurrencyService.Update(cryptoAccountCryptocurrencyDto);
+            await _cryptoAccountCryptocurrencyService.UpdateAsync(cryptoAccountCryptocurrencyDto);
         }
 
         [HttpDelete]
         public async Task Delete(Guid id) =>
-            await _cryptoAccountCryptocurrencyService.Delete(id);
+            await _cryptoAccountCryptocurrencyService.DeleteAsync(id);
     }
 }

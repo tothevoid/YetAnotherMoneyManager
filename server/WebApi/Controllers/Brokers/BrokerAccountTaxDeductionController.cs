@@ -28,7 +28,7 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         [HttpPost(nameof(GetAll))]
         public async Task<IEnumerable<BrokerAccountTaxDeductionModel>> GetAll(GetAllBrokerAccountsTaxDeductionsQuery query)
         {
-            var dtos = await _service.GetAll(query.BrokerAccountId);
+            var dtos = await _service.GetAllAsync(query.BrokerAccountId);
             return _mapper.Map(dtos);
         }
 
@@ -36,26 +36,26 @@ namespace MoneyManager.WebApi.Controllers.Brokers
         public async Task<Guid> Add(BrokerAccountTaxDeductionModel model)
         {
             var dto = _mapper.Map(model);
-            return await _service.Add(dto);
+            return await _service.AddAsync(dto);
         }
 
         [HttpGet(nameof(GetAmountByBrokerAccount))]
         public async Task<decimal> GetAmountByBrokerAccount([FromQuery] Guid brokerAccountId)
         {
-            return await _service.GetAmountByBrokerAccount(brokerAccountId);
+            return await _service.GetAmountByBrokerAccountAsync(brokerAccountId);
         }
 
         [HttpPatch]
         public async Task Update(BrokerAccountTaxDeductionModel model)
         {
             var dto = _mapper.Map(model);
-            await _service.Update(dto);
+            await _service.UpdateAsync(dto);
         }
 
         [HttpDelete]
         public async Task Delete(Guid id)
         {
-            await _service.Delete(id);
+            await _service.DeleteAsync(id);
         }
     }
 }

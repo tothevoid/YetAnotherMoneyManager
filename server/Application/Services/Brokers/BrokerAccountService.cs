@@ -23,15 +23,15 @@ namespace MoneyManager.Application.Services.Brokers
         private readonly ApplicationMapper _mapper;
        
         public BrokerAccountService(IUnitOfWork uow, ApplicationMapper mapper, 
-            IBrokerAccountSecurityService brokerAccountSecuritySecurityService)
+            IBrokerAccountSecurityService brokerAccountSecurityService)
         {
             _db = uow;
             _mapper = mapper;
-            _brokerAccountSecurityService = brokerAccountSecuritySecurityService;
+            _brokerAccountSecurityService = brokerAccountSecurityService;
             _brokerAccountRepo = uow.CreateRepository<BrokerAccount>();
         }
 
-        public async Task<IEnumerable<BrokerAccountDTO>> GetAll()
+        public async Task<IEnumerable<BrokerAccountDto>> GetAllAsync()
         {
             var query = new ComplexQueryBuilder<BrokerAccount>()
                 .AddOrder(brokerAccount => brokerAccount.Name)
@@ -39,45 +39,46 @@ namespace MoneyManager.Application.Services.Brokers
                 .GetQuery();
 
             var brokerAccounts = await _brokerAccountRepo
-                .GetAll(query);
+                .GetAllAsync(query);
 
             var brokerAccountsDtos = _mapper.Map(brokerAccounts)
                 .ToList();
 
             return brokerAccountsDtos;
         }
-        public async Task<BrokerAccountDTO> GetById(Guid id)
+
+        public async Task<BrokerAccountDto> GetByIdAsync(Guid id)
         {
-            var brokerAccount = await _brokerAccountRepo.GetById(id, GetFullHierarchyColumns);
+            var brokerAccount = await _brokerAccountRepo.GetByIdAsync(id, GetFullHierarchyColumns);
             var brokerAccountDto = _mapper.Map(brokerAccount);
             return brokerAccountDto;
         }
 
-        public async Task<Guid> Add(BrokerAccountDTO brokerAccountDto)
+        public async Task<Guid> AddAsync(BrokerAccountDto brokerAccountDto)
         {
             var brokerAccount = _mapper.Map(brokerAccountDto);
             brokerAccount.Id = Guid.NewGuid();
-            await _brokerAccountRepo.Add(brokerAccount);
-            await _db.Commit();
+            await _brokerAccountRepo.AddAsync(brokerAccount);
+            await _db.CommitAsync();
             return brokerAccount.Id;
         }
 
-        public async Task Update(BrokerAccountDTO brokerAccountDto)
+        public async Task UpdateAsync(BrokerAccountDto brokerAccountDto)
         {
             var brokerAccount = _mapper.Map(brokerAccountDto);
             _brokerAccountRepo.Update(brokerAccount);
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            await _brokerAccountRepo.Delete(id);
-            await _db.Commit();
+            await _brokerAccountRepo.DeleteAsync(id);
+            await _db.CommitAsync();
         }
 
-        public async Task<decimal> GetTotalSoldAmountByBrokerAccountId(Guid brokerAccountId)
+        public async Task<decimal> GetTotalSoldAmountByBrokerAccountAsync(Guid brokerAccountId)
         {
-            return await _brokerAccountSecurityService.GetTotalSoldByBrokerAccount(brokerAccountId);
+            return await _brokerAccountSecurityService.GetTotalSoldByBrokerAccountAsync(brokerAccountId);
         }
 
         private IQueryable<BrokerAccount> GetFullHierarchyColumns(IQueryable<BrokerAccount> brokerAccountQuery)
@@ -88,7 +89,5 @@ namespace MoneyManager.Application.Services.Brokers
                 .Include(brokerAccount => brokerAccount.Broker)
                 .Include(brokerAccount => brokerAccount.Bank);
         }
-
-        
     }
 }

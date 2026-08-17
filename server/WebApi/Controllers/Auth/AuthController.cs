@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using MoneyManager.WebApi.Models.Auth;
 using MoneyManager.Application.Services.Auth;
 using System.Threading.Tasks;
@@ -20,7 +20,7 @@ namespace MoneyManager.WebApi.Controllers.Auth
         [HttpPost(nameof(Login))]
         public async Task<IActionResult> Login(LoginModel loginData)
         {
-            var token = await _authService.Login(loginData.UserName, loginData.Password);
+            var token = await _authService.LoginAsync(loginData.UserName, loginData.Password);
 
             if (string.IsNullOrEmpty(loginData.Password))
                 return Ok(new { passwordChangeRequired = true });
@@ -34,12 +34,12 @@ namespace MoneyManager.WebApi.Controllers.Auth
         [HttpPost(nameof(ChangePassword))]
         public async Task<IActionResult> ChangePassword(ChangePasswordModel changePasswordData)
         {
-            var changed = await _authService.ChangePassword(changePasswordData.UserName, changePasswordData.CurrentPassword, 
+            var changed = await _authService.ChangePasswordAsync(changePasswordData.UserName, changePasswordData.CurrentPassword, 
                 changePasswordData.NewPassword);
 
             if (changed)
             {
-                var token = await _authService.Login(changePasswordData.UserName, changePasswordData.NewPassword);
+                var token = await _authService.LoginAsync(changePasswordData.UserName, changePasswordData.NewPassword);
                 return Ok(new { token });
             }
            

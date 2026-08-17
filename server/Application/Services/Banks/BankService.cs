@@ -31,43 +31,43 @@ namespace MoneyManager.Application.Services.Banks
             _fileStorageService = fileStorageService;
         }
 
-        public async Task<IEnumerable<BankDto>> GetAll()
+        public async Task<IEnumerable<BankDto>> GetAllAsync()
         {
-            var banks = await _bankRepo.GetAll();
+            var banks = await _bankRepo.GetAllAsync();
             return _mapper.Map(banks);
         }
 
-        public async Task<BankDto> GetById(Guid id)
+        public async Task<BankDto> GetByIdAsync(Guid id)
         {
-            var bank = await _bankRepo.GetById(id);
+            var bank = await _bankRepo.GetByIdAsync(id);
             return _mapper.Map(bank);
         }
 
-        public async Task<BankDto> Add(BankDto bankDto, IFormFile bankIcon)
+        public async Task<BankDto> AddAsync(BankDto bankDto, IFormFile bankIcon)
         {
             var bank = _mapper.Map(bankDto);
 
             if (bankIcon != null)
             {
                 var key = $"{bank.Id}_{Guid.NewGuid():N}";
-                await _fileStorageService.UploadFile(IconsBucket, bankIcon, key);
+                await _fileStorageService.UploadFileAsync(IconsBucket, bankIcon, key);
                 bank.IconKey = key;
             }
 
-            await _bankRepo.Add(bank);
-            await _db.Commit();
+            await _bankRepo.AddAsync(bank);
+            await _db.CommitAsync();
             return _mapper.Map(bank);
         }
 
-        public async Task<BankDto> Update(BankDto bankDto, IFormFile bankIcon)
+        public async Task<BankDto> UpdateAsync(BankDto bankDto, IFormFile bankIcon)
         {
-            var existingBank = await _bankRepo.GetById(bankDto.Id);
+            var existingBank = await _bankRepo.GetByIdAsync(bankDto.Id);
             var bank = _mapper.Map(bankDto);
 
             if (bankIcon != null)
             {
                 bank.IconKey = $"{bank.Id}_{Guid.NewGuid():N}";
-                await _fileStorageService.UploadFile(IconsBucket, bankIcon, bank.IconKey);
+                await _fileStorageService.UploadFileAsync(IconsBucket, bankIcon, bank.IconKey);
             }
             else if (string.IsNullOrEmpty(bankDto.IconKey))
             {
@@ -76,31 +76,31 @@ namespace MoneyManager.Application.Services.Banks
 
             if (!string.IsNullOrEmpty(existingBank?.IconKey) && existingBank.IconKey != bank.IconKey)
             {
-                await _fileStorageService.DeleteFile(IconsBucket, existingBank.IconKey);
+                await _fileStorageService.DeleteFileAsync(IconsBucket, existingBank.IconKey);
             }
             
             _bankRepo.Update(bank);
-            await _db.Commit();
+            await _db.CommitAsync();
             return _mapper.Map(bank);
         }
 
-        public async Task<bool> Delete(Guid id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
-            var bank = await _bankRepo.GetById(id);
+            var bank = await _bankRepo.GetByIdAsync(id);
             if (bank != null && !string.IsNullOrEmpty(bank.IconKey))
             {
-                await _fileStorageService.DeleteFile(IconsBucket, bank.IconKey);
+                await _fileStorageService.DeleteFileAsync(IconsBucket, bank.IconKey);
             }
 
-            await _bankRepo.Delete(id);
-            await _db.Commit();
+            await _bankRepo.DeleteAsync(id);
+            await _db.CommitAsync();
 
             return true;
         }
 
-        public async Task<string> GetIconUrl(string iconKey)
+        public async Task<string> GetIconUrlAsync(string iconKey)
         {
-            return await _fileStorageService.GetFileUrl(IconsBucket, iconKey);
+            return await _fileStorageService.GetFileUrlAsync(IconsBucket, iconKey);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using MoneyManager.Application.DTO.Currencies;
+using MoneyManager.Application.DTO.Currencies;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,11 +7,11 @@ namespace MoneyManager.Application.Interfaces.Currencies
 {
     public interface ICurrencyService
     {
-        Task SyncRates(CurrencyDTO mainCurrency);
-        Task<IEnumerable<CurrencyDTO>> GetAll();
-        Task<CurrencyDTO> GetById(Guid id);
-        Task<Guid> Add(CurrencyDTO currency);
-        Task Update(CurrencyDTO currency);
-        Task Delete(Guid id);
+        Task SyncRatesAsync(CurrencyDto mainCurrency);
+        Task<IEnumerable<CurrencyDto>> GetAllAsync();
+        Task<CurrencyDto> GetByIdAsync(Guid id);
+        Task<Guid> AddAsync(CurrencyDto currency);
+        Task UpdateAsync(CurrencyDto currency);
+        Task DeleteAsync(Guid id);
     }
 }

@@ -20,7 +20,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             var addedId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptoAccountCryptocurrencyService>();
-                return await service.Add(new CryptoAccountCryptocurrencyDto
+                return await service.AddAsync(new CryptoAccountCryptocurrencyDto
                 {
                     CryptoAccountId = accountId,
                     CryptocurrencyId = cryptoId,
@@ -33,7 +33,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             var items = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptoAccountCryptocurrencyService>();
-                return await service.GetByCryptoAccount(accountId);
+                return await service.GetByCryptoAccountAsync(accountId);
             });
 
             Assert.NotNull(items);
@@ -48,7 +48,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             var addedId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptoAccountCryptocurrencyService>();
-                return await service.Add(new CryptoAccountCryptocurrencyDto
+                return await service.AddAsync(new CryptoAccountCryptocurrencyDto
                 {
                     CryptoAccountId = accountId,
                     CryptocurrencyId = cryptoId,
@@ -59,7 +59,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptoAccountCryptocurrencyService>();
-                await service.Update(new CryptoAccountCryptocurrencyDto
+                await service.UpdateAsync(new CryptoAccountCryptocurrencyDto
                 {
                     Id = addedId,
                     CryptoAccountId = accountId,
@@ -71,7 +71,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             var itemsAfterUpdate = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptoAccountCryptocurrencyService>();
-                return await service.GetByCryptoAccount(accountId);
+                return await service.GetByCryptoAccountAsync(accountId);
             });
 
             var updated = itemsAfterUpdate.FirstOrDefault(i => i.Id == addedId);
@@ -81,13 +81,13 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptoAccountCryptocurrencyService>();
-                await service.Delete(addedId);
+                await service.DeleteAsync(addedId);
             });
 
             var itemsAfterDelete = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptoAccountCryptocurrencyService>();
-                return await service.GetByCryptoAccount(accountId);
+                return await service.GetByCryptoAccountAsync(accountId);
             });
 
             Assert.DoesNotContain(itemsAfterDelete, i => i.Id == addedId);
@@ -98,13 +98,13 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             var providerId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptoProviderService>();
-                return await service.Add(new CryptoProviderDto { Name = "Kraken" });
+                return await service.AddAsync(new CryptoProviderDto { Name = "Kraken" });
             });
 
             var accountId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptoAccountService>();
-                return await service.Add(new CryptoAccountDto
+                return await service.AddAsync(new CryptoAccountDto
                 {
                     Name = "Kraken Account",
                     CryptoProviderId = providerId
@@ -114,7 +114,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             var crypto = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptocurrencyService>();
-                return await service.Add(new CryptocurrencyDto { Name = "Solana", Symbol = "SOL", Price = 150m }, null);
+                return await service.AddAsync(new CryptocurrencyDto { Name = "Solana", Symbol = "SOL", Price = 150m }, null);
             });
 
             return (accountId, crypto.Id);

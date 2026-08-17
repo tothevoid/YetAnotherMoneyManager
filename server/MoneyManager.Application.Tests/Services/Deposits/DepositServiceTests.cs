@@ -21,7 +21,7 @@ namespace MoneyManager.Application.Tests.Services.Deposits
             var depositId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDepositService>();
-                return await service.Add(new DepositDTO
+                return await service.AddAsync(new DepositDto
                 {
                     Name = "High Yield Deposit",
                     From = today.AddMonths(-1),
@@ -38,7 +38,7 @@ namespace MoneyManager.Application.Tests.Services.Deposits
             var activeDeposits = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDepositService>();
-                return await service.GetAllActive();
+                return await service.GetAllActiveAsync();
             });
 
             Assert.NotNull(activeDeposits);
@@ -55,7 +55,7 @@ namespace MoneyManager.Application.Tests.Services.Deposits
             var depositId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDepositService>();
-                return await service.Add(new DepositDTO
+                return await service.AddAsync(new DepositDto
                 {
                     Name = "Summary Test Deposit",
                     From = from,
@@ -70,7 +70,7 @@ namespace MoneyManager.Application.Tests.Services.Deposits
             var range = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDepositService>();
-                return await service.GetDepositsRange();
+                return await service.GetDepositsRangeAsync();
             });
 
             Assert.NotNull(range);
@@ -83,7 +83,7 @@ namespace MoneyManager.Application.Tests.Services.Deposits
                 // monthsFrom = 2025*12 + 1, monthsTo = 2025*12 + 12
                 int monthsFrom = 2025 * 12 + 1;
                 int monthsTo = 2025 * 12 + 12;
-                return await service.GetSummary(monthsFrom, monthsTo, false);
+                return await service.GetSummaryAsync(monthsFrom, monthsTo, false);
             });
 
             Assert.NotNull(summary);
@@ -99,7 +99,7 @@ namespace MoneyManager.Application.Tests.Services.Deposits
             var depositId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDepositService>();
-                return await service.Add(new DepositDTO
+                return await service.AddAsync(new DepositDto
                 {
                     Name = "Deposit to Update",
                     From = today,
@@ -114,7 +114,7 @@ namespace MoneyManager.Application.Tests.Services.Deposits
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDepositService>();
-                await service.Update(new DepositDTO
+                await service.UpdateAsync(new DepositDto
                 {
                     Id = depositId,
                     Name = "Updated Deposit Name",
@@ -130,7 +130,7 @@ namespace MoneyManager.Application.Tests.Services.Deposits
             var activeList = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDepositService>();
-                return await service.GetAllActive();
+                return await service.GetAllActiveAsync();
             });
 
             var updated = activeList.FirstOrDefault(d => d.Id == depositId);
@@ -141,13 +141,13 @@ namespace MoneyManager.Application.Tests.Services.Deposits
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDepositService>();
-                await service.Delete(depositId);
+                await service.DeleteAsync(depositId);
             });
 
             var listAfterDelete = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDepositService>();
-                return await service.GetAllActive();
+                return await service.GetAllActiveAsync();
             });
 
             Assert.DoesNotContain(listAfterDelete, d => d.Id == depositId);

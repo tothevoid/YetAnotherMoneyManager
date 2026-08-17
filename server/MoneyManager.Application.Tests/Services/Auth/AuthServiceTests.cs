@@ -18,7 +18,7 @@ namespace MoneyManager.Application.Tests.Services.Auth
             var user = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IUserProfileService>();
-                return await service.Get();
+                return await service.GetAsync();
             });
 
             Assert.NotNull(user);
@@ -27,7 +27,7 @@ namespace MoneyManager.Application.Tests.Services.Auth
             var token = await ExecuteScopeAsync(async sp =>
             {
                 var authService = sp.GetRequiredService<IAuthService>();
-                return await authService.Login(user.UserName, user.Password ?? "");
+                return await authService.LoginAsync(user.UserName, user.Password ?? "");
             });
 
             Assert.False(string.IsNullOrWhiteSpace(token));
@@ -38,7 +38,7 @@ namespace MoneyManager.Application.Tests.Services.Auth
             var changeResult = await ExecuteScopeAsync(async sp =>
             {
                 var authService = sp.GetRequiredService<IAuthService>();
-                return await authService.ChangePassword(user.UserName, user.Password ?? "", newPassword);
+                return await authService.ChangePasswordAsync(user.UserName, user.Password ?? "", newPassword);
             });
 
             Assert.True(changeResult);
@@ -47,7 +47,7 @@ namespace MoneyManager.Application.Tests.Services.Auth
             var newToken = await ExecuteScopeAsync(async sp =>
             {
                 var authService = sp.GetRequiredService<IAuthService>();
-                return await authService.Login(user.UserName, newPassword);
+                return await authService.LoginAsync(user.UserName, newPassword);
             });
 
             Assert.False(string.IsNullOrWhiteSpace(newToken));
@@ -61,7 +61,7 @@ namespace MoneyManager.Application.Tests.Services.Auth
                 await ExecuteScopeAsync(async sp =>
                 {
                     var authService = sp.GetRequiredService<IAuthService>();
-                    await authService.Login("non_existent_user_12345", "wrong_password");
+                    await authService.LoginAsync("non_existent_user_12345", "wrong_password");
                 });
             });
         }

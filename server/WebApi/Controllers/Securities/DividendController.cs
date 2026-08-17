@@ -28,21 +28,21 @@ namespace MoneyManager.WebApi.Controllers.Securities
         [HttpPost(nameof(GetAll))]
         public async Task<IEnumerable<DividendModel>> GetAll(GetAllDividendsQuery query)
         {
-            var securities = await _dividendService.GetAll(query.SecurityId, query.PageIndex, query.RecordsQuantity);
+            var securities = await _dividendService.GetAllAsync(query.SecurityId, query.PageIndex, query.RecordsQuantity);
             return _mapper.Map(securities);
         }
 
         [HttpGet(nameof(GetAvailable))]
         public async Task<IEnumerable<DividendModel>> GetAvailable(Guid brokerAccountId)
         {
-            var securities = await _dividendService.GetAvailable(brokerAccountId);
+            var securities = await _dividendService.GetAvailableAsync(brokerAccountId);
             return _mapper.Map(securities);
         }
 
         [HttpGet(nameof(GetPagination))]
         public async Task<PaginationConfigModel> GetPagination([FromQuery] Guid securityId)
         {
-            var pagination = await _dividendService.GetPagination(securityId);
+            var pagination = await _dividendService.GetPaginationAsync(securityId);
             return _mapper.Map(pagination);
         }
 
@@ -50,18 +50,18 @@ namespace MoneyManager.WebApi.Controllers.Securities
         public async Task<Guid> Add(DividendModel dividend)
         {
             var dividendDto = _mapper.Map(dividend);
-            return await _dividendService.Add(dividendDto);
+            return await _dividendService.AddAsync(dividendDto);
         }
 
         [HttpPatch]
         public async Task Update(DividendModel dividend)
         {
             var dividendDto = _mapper.Map(dividend);
-            await _dividendService.Update(dividendDto);
+            await _dividendService.UpdateAsync(dividendDto);
         }
 
         [HttpDelete]
         public async Task Delete(Guid id) =>
-            await _dividendService.Delete(id);
+            await _dividendService.DeleteAsync(id);
     }
 }

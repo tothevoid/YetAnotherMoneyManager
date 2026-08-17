@@ -27,7 +27,7 @@ namespace MoneyManager.WebApi.Controllers.Securities
         [HttpGet]
         public async Task<IEnumerable<SecurityTypeModel>> GetAll()
         {
-            var types = await _securityTypeService.GetAll();
+            var types = await _securityTypeService.GetAllAsync();
             return _mapper.Map(types);
         }
 
@@ -35,18 +35,18 @@ namespace MoneyManager.WebApi.Controllers.Securities
         public async Task<Guid> Add(SecurityTypeModel securityType)
         {
             var securityTypeDto = _mapper.Map(securityType);
-            return await _securityTypeService.Add(securityTypeDto);
+            return await _securityTypeService.AddAsync(securityTypeDto);
         }
 
         [HttpPatch]
         public async Task Update(SecurityTypeModel securityType)
         {
             var securityTypeDto = _mapper.Map(securityType);
-            await _securityTypeService.Update(securityTypeDto);
+            await _securityTypeService.UpdateAsync(securityTypeDto);
         }
 
         [HttpDelete]
         public async Task Delete(Guid id) =>
-            await _securityTypeService.Delete(id);
+            await _securityTypeService.DeleteAsync(id);
     }
 }

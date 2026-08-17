@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using MoneyManager.Shared.Entities;
 
 namespace MoneyManager.Application.DTO.Currencies
 {
-    public class CurrencyDTO : BaseEntity
+    public class CurrencyDto : BaseEntity
     {
         public string Name { get; set; }
 

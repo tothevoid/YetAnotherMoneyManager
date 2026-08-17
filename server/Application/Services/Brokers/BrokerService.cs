@@ -22,32 +22,32 @@ namespace MoneyManager.Application.Services.Brokers
             _brokerRepo = uow.CreateRepository<Broker>();
         }
 
-        public async Task<IEnumerable<BrokerDTO>> GetAll()
+        public async Task<IEnumerable<BrokerDto>> GetAllAsync()
         {
-            var brokers = await _brokerRepo.GetAll();
+            var brokers = await _brokerRepo.GetAllAsync();
             return _mapper.Map(brokers);
         }
 
-         public async Task<Guid> Add(BrokerDTO securityDto)
+        public async Task<Guid> AddAsync(BrokerDto securityDto)
         {
             var broker = _mapper.Map(securityDto);
             broker.Id = Guid.NewGuid();
-            await _brokerRepo.Add(broker);
-            await _db.Commit();
+            await _brokerRepo.AddAsync(broker);
+            await _db.CommitAsync();
             return broker.Id;
         }
 
-        public async Task Update(BrokerDTO brokersDto)
+        public async Task UpdateAsync(BrokerDto brokersDto)
         {
             var brokers = _mapper.Map(brokersDto);
             _brokerRepo.Update(brokers);
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            await _brokerRepo.Delete(id);
-            await _db.Commit();
+            await _brokerRepo.DeleteAsync(id);
+            await _db.CommitAsync();
         }
     }
 }

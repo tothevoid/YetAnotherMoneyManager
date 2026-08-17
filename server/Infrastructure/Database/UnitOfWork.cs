@@ -33,7 +33,7 @@ namespace MoneyManager.Infrastructure.Database
             return (Repository<T>)_repositories[type];
         }
 
-        public async Task Commit()
+        public async Task CommitAsync()
         {
             await _applicationDbContext.SaveChangesAsync();
         }

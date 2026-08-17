@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,7 +20,7 @@ namespace MoneyManager.Application.Jobs
         [TickerFunction(functionName: nameof(Pull), cronExpression: "*/1 * * * *")]
         public async Task Pull()
         {
-            await _brokerAccountSecurityService.PullQuotations();
+            await _brokerAccountSecurityService.PullQuotationsAsync();
         }
     }
 }

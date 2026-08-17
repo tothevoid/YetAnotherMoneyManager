@@ -22,7 +22,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var accountId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountService>();
-                return await service.Add(new BrokerAccountDTO
+                return await service.AddAsync(new BrokerAccountDto
                 {
                     Name = "Main Brokerage Account",
                     BrokerId = brokerId,
@@ -38,7 +38,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             Assert.NotNull(all);
@@ -57,7 +57,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var accountId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountService>();
-                return await service.Add(new BrokerAccountDTO
+                return await service.AddAsync(new BrokerAccountDto
                 {
                     Name = "Initial Broker Acc",
                     BrokerId = brokerId,
@@ -70,7 +70,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountService>();
-                await service.Update(new BrokerAccountDTO
+                await service.UpdateAsync(new BrokerAccountDto
                 {
                     Id = accountId,
                     Name = actualName,
@@ -84,7 +84,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var current = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountService>();
-                return await service.GetById(accountId);
+                return await service.GetByIdAsync(accountId);
             });
 
             Assert.NotNull(current);
@@ -103,7 +103,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var accountId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountService>();
-                return await service.Add(new BrokerAccountDTO
+                return await service.AddAsync(new BrokerAccountDto
                 {
                     Name = "Initial Broker Acc",
                     BrokerId = brokerId,
@@ -116,13 +116,13 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountService>();
-                await service.Delete(accountId);
+                await service.DeleteAsync(accountId);
             });
 
             var listAfterDelete = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             Assert.DoesNotContain(listAfterDelete, a => a.Id == accountId);
@@ -133,19 +133,19 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var brokerId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerService>();
-                return await service.Add(new BrokerDTO { Name = "Test Broker" });
+                return await service.AddAsync(new BrokerDto { Name = "Test Broker" });
             });
 
             var typeId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBrokerAccountTypeService>();
-                return await service.Add(new BrokerAccountTypeDTO { Name = "Test Broker Acc Type" });
+                return await service.AddAsync(new BrokerAccountTypeDto { Name = "Test Broker Acc Type" });
             });
 
             var bankId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IBankService>();
-                var bank = await service.Add(new BankDto { Name = "Test Broker Acc Type" }, null);
+                var bank = await service.AddAsync(new BankDto { Name = "Test Broker Acc Type" }, null);
                 return bank.Id;
             });
 

@@ -29,7 +29,7 @@ namespace MoneyManager.WebApi.Controllers.Transactions
         [HttpGet]
         public async Task<IEnumerable<TransactionTypeModel>> GetAll(bool onlyActive = false)
         {
-            var transactions = await _transactionTypeService.GetAll(onlyActive);
+            var transactions = await _transactionTypeService.GetAllAsync(onlyActive);
             return _mapper.Map(transactions);
         }
 
@@ -38,7 +38,7 @@ namespace MoneyManager.WebApi.Controllers.Transactions
         {
             var transactionType = JsonSerializer.Deserialize<TransactionTypeModel>(transactionTypeJson);
             var transactionTypeDto = _mapper.Map(transactionType);
-            var transactionTypeResult = await _transactionTypeService.Add(transactionTypeDto, transactionTypeIcon);
+            var transactionTypeResult = await _transactionTypeService.AddAsync(transactionTypeDto, transactionTypeIcon);
 
             return _mapper.Map(transactionTypeResult);
         }
@@ -48,21 +48,21 @@ namespace MoneyManager.WebApi.Controllers.Transactions
         {
             var transactionType = JsonSerializer.Deserialize<TransactionTypeModel>(transactionTypeJson);
             var transactionTypeDto = _mapper.Map(transactionType);
-            var transactionTypeResult = await _transactionTypeService.Update(transactionTypeDto, transactionTypeIcon);
+            var transactionTypeResult = await _transactionTypeService.UpdateAsync(transactionTypeDto, transactionTypeIcon);
 
             return _mapper.Map(transactionTypeResult);
         }
 
         [HttpDelete]
         public async Task Delete(Guid id) =>
-            await _transactionTypeService.Delete(id);
+            await _transactionTypeService.DeleteAsync(id);
 
         [HttpGet("icon")]
         [AllowAnonymous]
         public async Task<IActionResult> GetSecurityIcon(string iconKey)
         {
             Response.Headers.CacheControl = "public, max-age=31536000, immutable";
-            var url = await _transactionTypeService.GetIconUrl(iconKey);
+            var url = await _transactionTypeService.GetIconUrlAsync(iconKey);
             return Redirect(url);
         }
     }

@@ -1,16 +1,16 @@
-﻿using System;
+using System;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Shared.Entities;
 
 namespace MoneyManager.Application.DTO.Brokers
 {
-    public class BrokerAccountSecurityDTO: BaseEntity
+    public class BrokerAccountSecurityDto: BaseEntity
     {
-        public BrokerAccountDTO BrokerAccount { get; set; }
+        public BrokerAccountDto BrokerAccount { get; set; }
 
         public Guid BrokerAccountId { get; set; }
 
-        public SecurityDTO Security { get; set; }
+        public SecurityDto Security { get; set; }
 
         public Guid SecurityId { get; set; }
 

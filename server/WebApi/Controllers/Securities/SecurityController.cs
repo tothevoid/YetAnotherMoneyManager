@@ -31,21 +31,21 @@ namespace MoneyManager.WebApi.Controllers.Securities
         [HttpGet]
         public async Task<IEnumerable<SecurityModel>> GetAll()
         {
-            var securities = await _securityService.GetAll();
+            var securities = await _securityService.GetAllAsync();
             return _mapper.Map(securities);
         }
 
         [HttpGet(nameof(GetById))]
         public async Task<SecurityModel> GetById([FromQuery] Guid id)
         {
-            var brokerAccount = await _securityService.GetById(id);
+            var brokerAccount = await _securityService.GetByIdAsync(id);
             return _mapper.Map(brokerAccount);
         }
 
         [HttpGet(nameof(GetStats))]
         public async Task<SecurityStatsModel> GetStats([FromQuery] Guid securityId)
         {
-            var stats = await _securityService.GetStats(securityId);
+            var stats = await _securityService.GetStatsAsync(securityId);
             return _mapper.Map(stats);
         }
 
@@ -54,35 +54,35 @@ namespace MoneyManager.WebApi.Controllers.Securities
         public async Task<IActionResult> GetSecurityIcon(string iconKey)
         {
             Response.Headers.CacheControl = "public, max-age=31536000, immutable";
-            var url = await _securityService.GetIconUrl(iconKey);
+            var url = await _securityService.GetIconUrlAsync(iconKey);
             return Redirect(url);
         }
 
         [HttpGet(nameof(GetTickerHistory))]
         public async Task<IEnumerable<SecurityHistoryValueModel>> GetTickerHistory([FromQuery] string ticker)
         {
-            var brokerAccount = await _securityService.GetTickerHistory(ticker);
+            var brokerAccount = await _securityService.GetTickerHistoryAsync(ticker);
             return _mapper.Map(brokerAccount);
         }
 
         [HttpPut]
-        public async Task<SecurityDTO> Add([FromForm] string securityJson, [FromForm] IFormFile securityIcon)
+        public async Task<SecurityDto> Add([FromForm] string securityJson, [FromForm] IFormFile securityIcon)
         {
             var security = JsonSerializer.Deserialize<SecurityModel>(securityJson);
             var securityDto = _mapper.Map(security);
-            return await _securityService.Add(securityDto, securityIcon);
+            return await _securityService.AddAsync(securityDto, securityIcon);
         }
 
         [HttpPatch]
-        public async Task<SecurityDTO> Update([FromForm] string securityJson, [FromForm] IFormFile securityIcon)
+        public async Task<SecurityDto> Update([FromForm] string securityJson, [FromForm] IFormFile securityIcon)
         {
             var security = JsonSerializer.Deserialize<SecurityModel>(securityJson);
             var securityDto = _mapper.Map(security);
-            return await _securityService.Update(securityDto, securityIcon);
+            return await _securityService.UpdateAsync(securityDto, securityIcon);
         }
 
         [HttpDelete]
         public async Task Delete(Guid id) =>
-            await _securityService.Delete(id);
+            await _securityService.DeleteAsync(id);
     }
 }

@@ -27,46 +27,46 @@ namespace MoneyManager.WebApi.Controllers.Accounts
         [HttpPost("GetAll")]
         public async Task<IEnumerable<AccountModel>> GetAll(AccountGetAllConfig getAllConfig)
         {
-            var accounts = await _accountService.GetAll(getAllConfig.OnlyActive);
+            var accounts = await _accountService.GetAllAsync(getAllConfig.OnlyActive);
             return _mapper.Map(accounts);
         }
 
         [HttpPost("GetAllByTypes")]
         public async Task<IEnumerable<AccountModel>> GetAllByTypes(AccountGetAllByTypesConfig getAllConfig)
         {
-            var accounts = await _accountService.GetAllByTypes(getAllConfig.TypesIds, getAllConfig.OnlyActive);
+            var accounts = await _accountService.GetAllByTypesAsync(getAllConfig.TypesIds, getAllConfig.OnlyActive);
             return _mapper.Map(accounts);
         }
 
         [HttpPut]
         public async Task<Guid> Add(AccountModel account)
         {
-            var accountDTO = _mapper.Map(account);
-            return await _accountService.Add(accountDTO);
+            var accountDto = _mapper.Map(account);
+            return await _accountService.AddAsync(accountDto);
         }
 
         [HttpPatch]
         public async Task Update(AccountModel account)
         {
-            var accountDTO = _mapper.Map(account);
-            await _accountService.Update(accountDTO);
+            var accountDto = _mapper.Map(account);
+            await _accountService.UpdateAsync(accountDto);
         }
 
         [HttpDelete]
         public async Task Delete(Guid id) =>
-            await _accountService.Delete(id);
+            await _accountService.DeleteAsync(id);
 
         [HttpPost(nameof(Transfer))]
         public async Task Transfer(AccountTransferModel accountTransfer)
         {
             var transferDto = _mapper.Map(accountTransfer);
-            await _accountService.Transfer(transferDto);
+            await _accountService.TransferAsync(transferDto);
         }
 
         [HttpGet(nameof(GetSummary))]
         public async Task<IEnumerable<AccountCurrencySummaryModel>> GetSummary()
         {
-            var result =  await _accountService.GetSummary();
+            var result =  await _accountService.GetSummaryAsync();
             var summaryModel = _mapper.Map(result);
             return summaryModel;
         }
@@ -74,7 +74,7 @@ namespace MoneyManager.WebApi.Controllers.Accounts
         [HttpGet(nameof(GetById))]
         public async Task<ActionResult<AccountModel>> GetById(Guid id)
         {
-            var account = await _accountService.GetById(id);
+            var account = await _accountService.GetByIdAsync(id);
             if (account == null) return NotFound();
             return _mapper.Map(account);
         }

@@ -1,4 +1,4 @@
-﻿using ClosedXML.Excel;
+using ClosedXML.Excel;
 using MoneyManager.Application.DTO.Accounts;
 using MoneyManager.Application.DTO.Banks;
 using MoneyManager.Application.DTO.Dashboard;
@@ -6,6 +6,7 @@ using MoneyManager.Application.Interfaces.Accounts;
 using MoneyManager.Application.Interfaces.Banks;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Application.Interfaces.Currencies;
+using MoneyManager.Application.Interfaces.Dashboard;
 using MoneyManager.Application.Interfaces.Debts;
 using MoneyManager.Application.Interfaces.Deposits;
 using MoneyManager.Application.Interfaces.Reports;
@@ -50,7 +51,7 @@ namespace MoneyManager.Application.Services.Reports
             _currencyTransactionService = currencyTransactionService;
         }
 
-        public async Task<byte[]> CreateReport()
+        public async Task<byte[]> CreateReportAsync()
         {
             using var workbook = new XLWorkbook();
 
@@ -58,7 +59,7 @@ namespace MoneyManager.Application.Services.Reports
             await CreateTotalsWorksheet(totalsSheet);
             totalsSheet.Columns().AdjustToContents();
 
-            var bankAccounts = await _bankService.GetAll();
+            var bankAccounts = await _bankService.GetAllAsync();
             foreach (var bank in bankAccounts)
             {
                 await CreateBankAccountWorksheet(workbook, bank);
@@ -87,10 +88,10 @@ namespace MoneyManager.Application.Services.Reports
 
         private async Task CreateBankAccountWorksheet(IXLWorkbook workbook, BankDto bank)
         {
-            var accounts = (await _accountService.GetAll(true))
+            var accounts = (await _accountService.GetAllAsync(true))
                 .Where(account => account.BankId == bank.Id).ToList();
 
-            var deposits = (await _depositService.GetAllActive())
+            var deposits = (await _depositService.GetAllActiveAsync())
                 .Where(deposit => deposit.BankId == bank.Id).ToList();
 
             if (!accounts.Any() && !deposits.Any())
@@ -176,7 +177,7 @@ namespace MoneyManager.Application.Services.Reports
 
         private async Task CreateBrokerAccountWorksheet(IXLWorksheet worksheet)
         {
-            var accounts = await _brokerAccountService.GetAll();
+            var accounts = await _brokerAccountService.GetAllAsync();
 
             worksheet.Cell("A1").Value = "Тикер";
             worksheet.Cell("B1").Value = "Количество";
@@ -201,7 +202,7 @@ namespace MoneyManager.Application.Services.Reports
                 currentRow++;
             }
 
-            var brokerAccountSecurities = await _brokerAccountSecurityService.GetAll(true);
+            var brokerAccountSecurities = await _brokerAccountSecurityService.GetAllAsync(true);
 
             foreach (var brokerAccountSecurity in brokerAccountSecurities)
             {
@@ -220,7 +221,7 @@ namespace MoneyManager.Application.Services.Reports
             worksheet.Cell("B1").Value = "Количество";
             worksheet.Cell("C1").Value = "Отношение к осн. валюте";
 
-            var activeDebtors = await _debtService.GetAll(true);
+            var activeDebtors = await _debtService.GetAllAsync(true);
 
             int currentRow = 2;
             decimal total = 0;
@@ -243,7 +244,7 @@ namespace MoneyManager.Application.Services.Reports
 
         private async Task CreateTotalsWorksheet(IXLWorksheet worksheet)
         {
-            var dashboard = await _dashboardService.GetDashboard();
+            var dashboard = await _dashboardService.GetDashboardAsync();
 
             var currentRow = 1;
 
@@ -302,7 +303,7 @@ namespace MoneyManager.Application.Services.Reports
             }
         }
 
-        public async Task CreateCashAccountsWorksheet(IXLWorksheet worksheet, AccountDTO cashAccount)
+        public async Task CreateCashAccountsWorksheet(IXLWorksheet worksheet, AccountDto cashAccount)
         {
             worksheet.Cell("A1").Value = "Название";
             worksheet.Cell("B1").Value = "Количество";
@@ -317,7 +318,7 @@ namespace MoneyManager.Application.Services.Reports
             decimal totalPnL = 0;
             decimal total = 0;
 
-            var transactions = (await _currencyTransactionService.GetAllByAccountId(cashAccount.Id))
+            var transactions = (await _currencyTransactionService.GetAllByAccountIdAsync(cashAccount.Id))
                 .Where(transaction => transaction.DestinationAccountId == cashAccount.Id).ToList();
 
             foreach (var transaction in transactions.OrderBy(transaction => transaction.Date))
@@ -381,9 +382,9 @@ namespace MoneyManager.Application.Services.Reports
             return totalCurrencies;
         }
 
-        private async Task<IEnumerable<AccountDTO>> GetCashAccounts()
+        private async Task<IEnumerable<AccountDto>> GetCashAccounts()
         {
-            return await _accountService.GetAllByTypes(new[] { AccountTypeConstants.Cash }, true);
+            return await _accountService.GetAllByTypesAsync(new[] { AccountTypeConstants.Cash }, true);
         }
 
         private void SetPercentValue(IXLCell cell, decimal value)

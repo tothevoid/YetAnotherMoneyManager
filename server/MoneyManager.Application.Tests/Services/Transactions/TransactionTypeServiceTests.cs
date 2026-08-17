@@ -17,7 +17,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var types = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionTypeService>();
-                return await service.GetAll(false);
+                return await service.GetAllAsync(false);
             });
 
             Assert.NotNull(types);
@@ -27,7 +27,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
         [Fact]
         public async Task TestAdd_CreatesTransactionType()
         {
-            var dto = new TransactionTypeDTO
+            var dto = new TransactionTypeDto
             {
                 Id = Guid.NewGuid(),
                 Name = "Test Expense",
@@ -37,7 +37,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var added = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionTypeService>();
-                return await service.Add(dto, null);
+                return await service.AddAsync(dto, null);
             });
 
             Assert.NotNull(added);
@@ -47,7 +47,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionTypeService>();
-                return await service.GetAll(false);
+                return await service.GetAllAsync(false);
             });
 
             Assert.Contains(all, t => t.Id == added.Id && t.Name == "Test Expense");
@@ -56,7 +56,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
         [Fact]
         public async Task TestUpdate_ModifiesTransactionType()
         {
-            var dto = new TransactionTypeDTO
+            var dto = new TransactionTypeDto
             {
                 Id = Guid.NewGuid(),
                 Name = "Original Type",
@@ -66,7 +66,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var added = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionTypeService>();
-                return await service.Add(dto, null);
+                return await service.AddAsync(dto, null);
             });
 
             added.Name = "Updated Type";
@@ -74,7 +74,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var updated = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionTypeService>();
-                return await service.Update(added, null);
+                return await service.UpdateAsync(added, null);
             });
 
             Assert.NotNull(updated);
@@ -83,7 +83,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionTypeService>();
-                return await service.GetAll(false);
+                return await service.GetAllAsync(false);
             });
 
             Assert.Contains(all, t => t.Id == added.Id && t.Name == "Updated Type");
@@ -92,7 +92,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
         [Fact]
         public async Task TestDelete_RemovesTransactionType()
         {
-            var dto = new TransactionTypeDTO
+            var dto = new TransactionTypeDto
             {
                 Id = Guid.NewGuid(),
                 Name = "To Delete Type",
@@ -102,19 +102,19 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var added = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionTypeService>();
-                return await service.Add(dto, null);
+                return await service.AddAsync(dto, null);
             });
 
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionTypeService>();
-                await service.Delete(added.Id);
+                await service.DeleteAsync(added.Id);
             });
 
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionTypeService>();
-                return await service.GetAll(false);
+                return await service.GetAllAsync(false);
             });
 
             Assert.DoesNotContain(all, t => t.Id == added.Id);
@@ -126,19 +126,19 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var activeType = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionTypeService>();
-                return await service.Add(new TransactionTypeDTO { Name = "Active Type", Active = true }, null);
+                return await service.AddAsync(new TransactionTypeDto { Name = "Active Type", Active = true }, null);
             });
 
             var inactiveType = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionTypeService>();
-                return await service.Add(new TransactionTypeDTO { Name = "Inactive Type", Active = false }, null);
+                return await service.AddAsync(new TransactionTypeDto { Name = "Inactive Type", Active = false }, null);
             });
 
             var onlyActive = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionTypeService>();
-                return await service.GetAll(true);
+                return await service.GetAllAsync(true);
             });
 
             Assert.Contains(onlyActive, t => t.Id == activeType.Id);
@@ -148,7 +148,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
         [Fact]
         public async Task TestDelete_WithIcon()
         {
-            var dto = new TransactionTypeDTO
+            var dto = new TransactionTypeDto
             {
                 Id = Guid.NewGuid(),
                 Name = "Type With Icon",
@@ -159,19 +159,19 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var added = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionTypeService>();
-                return await service.Add(dto, null);
+                return await service.AddAsync(dto, null);
             });
 
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionTypeService>();
-                await service.Delete(added.Id);
+                await service.DeleteAsync(added.Id);
             });
 
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionTypeService>();
-                return await service.GetAll(false);
+                return await service.GetAllAsync(false);
             });
 
             Assert.DoesNotContain(all, t => t.Id == added.Id);
@@ -180,7 +180,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
         [Fact]
         public async Task TestUpdate_RemoveIcon()
         {
-            var dto = new TransactionTypeDTO
+            var dto = new TransactionTypeDto
             {
                 Id = Guid.NewGuid(),
                 Name = "Type To Remove Icon",
@@ -191,7 +191,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var added = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionTypeService>();
-                return await service.Add(dto, null);
+                return await service.AddAsync(dto, null);
             });
 
             added.IconKey = null;
@@ -199,7 +199,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var updated = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionTypeService>();
-                return await service.Update(added, null);
+                return await service.UpdateAsync(added, null);
             });
 
             Assert.NotNull(updated);
@@ -210,7 +210,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
         public async Task TestAdd_WithIcon_GeneratesVersionedKey()
         {
             var formFile = CreateDummyFormFile();
-            var dto = new TransactionTypeDTO
+            var dto = new TransactionTypeDto
             {
                 Id = Guid.NewGuid(),
                 Name = "Type Versioned Icon",
@@ -220,7 +220,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var added = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionTypeService>();
-                return await service.Add(dto, formFile);
+                return await service.AddAsync(dto, formFile);
             });
 
             Assert.NotNull(added.IconKey);
@@ -234,7 +234,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var formFile1 = CreateDummyFormFile();
             var formFile2 = CreateDummyFormFile();
 
-            var dto = new TransactionTypeDTO
+            var dto = new TransactionTypeDto
             {
                 Id = Guid.NewGuid(),
                 Name = "Type Replace Icon",
@@ -244,7 +244,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var added = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionTypeService>();
-                return await service.Add(dto, formFile1);
+                return await service.AddAsync(dto, formFile1);
             });
 
             var initialKey = added.IconKey;
@@ -253,7 +253,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var updated = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionTypeService>();
-                return await service.Update(added, formFile2);
+                return await service.UpdateAsync(added, formFile2);
             });
 
             Assert.NotNull(updated.IconKey);

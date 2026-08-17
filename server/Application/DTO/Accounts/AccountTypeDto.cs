@@ -1,8 +1,8 @@
-﻿using MoneyManager.Shared.Entities;
+using MoneyManager.Shared.Entities;
 
 namespace MoneyManager.Application.DTO.Accounts
 {
-    public class AccountTypeDTO : BaseEntity
+    public class AccountTypeDto : BaseEntity
     {
         public string Name { get; set; }
 

@@ -18,7 +18,7 @@ namespace MoneyManager.Application.Jobs
         public async Task CleanUp()
         {
             // Remove notifications older than 3 months (90 days)
-            await _notificationService.CleanUpOldNotifications(olderThanDays: 90);
+            await _notificationService.CleanUpOldNotificationsAsync(olderThanDays: 90);
         }
     }
 }

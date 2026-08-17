@@ -1,13 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using MoneyManager.Application.DTO.Brokers;
-using MoneyManager.Application.Interfaces.Brokers;
-using MoneyManager.WebApi.Models.Brokers;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 using MoneyManager.Application.DTO.Crypto;
 using MoneyManager.Application.Interfaces.Crypto;
-using MoneyManager.Infrastructure.Entities.Crypto;
 using MoneyManager.WebApi.Mappings;
 using MoneyManager.WebApi.Models.Crypto;
 using Microsoft.AspNetCore.Authorization;
@@ -31,7 +27,7 @@ namespace MoneyManager.WebApi.Controllers.Crypto
         [HttpGet]
         public async Task<IEnumerable<CryptoProviderModel>> GetAll()
         {
-            var cryptoProviders = await _cryptoProviderService.GetAll();
+            var cryptoProviders = await _cryptoProviderService.GetAllAsync();
             return _mapper.Map(cryptoProviders);
         }
 
@@ -39,18 +35,18 @@ namespace MoneyManager.WebApi.Controllers.Crypto
         public async Task<Guid> Add(CryptoProviderModel cryptoProvider)
         {
             var cryptoProviderDto = _mapper.Map(cryptoProvider);
-            return await _cryptoProviderService.Add(cryptoProviderDto);
+            return await _cryptoProviderService.AddAsync(cryptoProviderDto);
         }
 
         [HttpPatch]
         public async Task Update(CryptoProviderModel cryptoProvider)
         {
             var cryptoProviderDto = _mapper.Map(cryptoProvider);
-            await _cryptoProviderService.Update(cryptoProviderDto);
+            await _cryptoProviderService.UpdateAsync(cryptoProviderDto);
         }
 
         [HttpDelete]
         public async Task Delete(Guid id) =>
-            await _cryptoProviderService.Delete(id);
+            await _cryptoProviderService.DeleteAsync(id);
     }
 }

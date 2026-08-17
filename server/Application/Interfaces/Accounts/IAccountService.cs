@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MoneyManager.Application.DTO.Accounts;
@@ -7,13 +7,13 @@ namespace MoneyManager.Application.Interfaces.Accounts
 {
     public interface IAccountService
     {
-        Task<IEnumerable<AccountDTO>> GetAll(bool onlyActive);
-        Task<IEnumerable<AccountDTO>> GetAllByTypes(Guid[] typesIds, bool onlyActive);
-        Task<AccountDTO> GetById(Guid id);
-        Task<Guid> Add(AccountDTO transaction);
-        Task Update(AccountDTO accountDTO);
-        Task Delete(Guid id);
-        Task Transfer(AccountTransferDTO transferDto);
-        Task<AccountCurrencySummaryDTO[]> GetSummary();
+        Task<IEnumerable<AccountDto>> GetAllAsync(bool onlyActive);
+        Task<IEnumerable<AccountDto>> GetAllByTypesAsync(Guid[] typesIds, bool onlyActive);
+        Task<AccountDto> GetByIdAsync(Guid id);
+        Task<Guid> AddAsync(AccountDto transaction);
+        Task UpdateAsync(AccountDto accountDto);
+        Task DeleteAsync(Guid id);
+        Task TransferAsync(AccountTransferDto transferDto);
+        Task<AccountCurrencySummaryDto[]> GetSummaryAsync();
     }
 }

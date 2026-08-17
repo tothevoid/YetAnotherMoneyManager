@@ -6,7 +6,6 @@ using MoneyManager.Application.DTO.Currencies;
 using MoneyManager.Application.Interfaces.Currencies;
 using MoneyManager.WebApi.Mappings;
 using MoneyManager.WebApi.Models.Currencies;
-using MoneyManager.Application.DTO;
 using MoneyManager.Application.Interfaces.User;
 using MoneyManager.Application.Services.User;
 using Microsoft.AspNetCore.Authorization;
@@ -33,14 +32,14 @@ namespace MoneyManager.WebApi.Controllers.Currencies
         [HttpGet("SyncRates")]
         public async Task SyncRates()
         {
-            var profile = await _userProfileService.Get();
-            await _currencyService.SyncRates(profile.Currency);
+            var profile = await _userProfileService.GetAsync();
+            await _currencyService.SyncRatesAsync(profile.Currency);
         }
 
         [HttpGet]
         public async Task<IEnumerable<CurrencyModel>> GetAll()
         {
-            var currencies = await _currencyService.GetAll();
+            var currencies = await _currencyService.GetAllAsync();
             return _mapper.Map(currencies);
         }
 
@@ -48,18 +47,18 @@ namespace MoneyManager.WebApi.Controllers.Currencies
         public async Task<Guid> Add(CurrencyModel currency)
         {
             var currencyDto = _mapper.Map(currency);
-            return await _currencyService.Add(currencyDto);
+            return await _currencyService.AddAsync(currencyDto);
         }
 
         [HttpPatch]
         public async Task Update(CurrencyModel currency)
         {
             var currencyDto = _mapper.Map(currency);
-            await _currencyService.Update(currencyDto);
+            await _currencyService.UpdateAsync(currencyDto);
         }
 
         [HttpDelete]
         public async Task Delete(Guid id) =>
-            await _currencyService.Delete(id);
+            await _currencyService.DeleteAsync(id);
     }
 }

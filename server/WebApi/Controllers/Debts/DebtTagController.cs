@@ -28,14 +28,14 @@ namespace MoneyManager.WebApi.Controllers.Debts
         [HttpGet]
         public async Task<IEnumerable<DebtTagModel>> GetAll()
         {
-            var tags = await _debtTagService.GetAll();
+            var tags = await _debtTagService.GetAllAsync();
             return _mapper.Map(tags);
         }
 
         [HttpGet("stats")]
         public async Task<IEnumerable<DebtTagStatsModel>> GetStats()
         {
-            var stats = await _debtTagService.GetStats();
+            var stats = await _debtTagService.GetStatsAsync();
             return _mapper.Map(stats);
         }
 
@@ -43,26 +43,26 @@ namespace MoneyManager.WebApi.Controllers.Debts
         public async Task<Guid> Add([FromBody] DebtTagModel model)
         {
             var dto = _mapper.Map(model);
-            return await _debtTagService.Add(dto);
+            return await _debtTagService.AddAsync(dto);
         }
 
         [HttpPatch]
         public async Task Update([FromBody] DebtTagModel model)
         {
             var dto = _mapper.Map(model);
-            await _debtTagService.Update(dto);
+            await _debtTagService.UpdateAsync(dto);
         }
 
         [HttpDelete]
         public async Task Delete([FromQuery] Guid id)
         {
-            await _debtTagService.Delete(id);
+            await _debtTagService.DeleteAsync(id);
         }
 
         [HttpPut("debt/{debtId}")]
         public async Task AssignTagsToDebt([FromRoute] Guid debtId, [FromBody] IEnumerable<Guid> tagIds)
         {
-            await _debtTagService.AssignTagsToDebt(debtId, tagIds);
+            await _debtTagService.AssignTagsToDebtAsync(debtId, tagIds);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
         {
             var typeId = await CreateSecurityType("Equity");
 
-            var dto = new SecurityDTO
+            var dto = new SecurityDto
             {
                 Name = "Apple Inc.",
                 Ticker = "AAPL",
@@ -29,7 +29,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var added = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityService>();
-                return await service.Add(dto, null);
+                return await service.AddAsync(dto, null);
             });
 
             Assert.NotNull(added);
@@ -39,7 +39,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             Assert.NotNull(all);
@@ -51,7 +51,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
         {
             var typeId = await CreateSecurityType("ETF");
 
-            var dto = new SecurityDTO
+            var dto = new SecurityDto
             {
                 Name = "S&P 500 ETF",
                 Ticker = "VOO",
@@ -63,14 +63,14 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var added = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityService>();
-                return await service.Add(dto, null);
+                return await service.AddAsync(dto, null);
             });
 
             added.ActualPrice = 480m;
             var updated = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityService>();
-                return await service.Update(added, null);
+                return await service.UpdateAsync(added, null);
             });
 
             Assert.NotNull(updated);
@@ -79,13 +79,13 @@ namespace MoneyManager.Application.Tests.Services.Securities
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityService>();
-                await service.Delete(added.Id);
+                await service.DeleteAsync(added.Id);
             });
 
             var allAfterDelete = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             Assert.DoesNotContain(allAfterDelete, s => s.Id == added.Id);
@@ -96,7 +96,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
         {
             var typeId = await CreateSecurityType("Equity");
 
-            var dto = new SecurityDTO
+            var dto = new SecurityDto
             {
                 Name = "Microsoft Corp.",
                 Ticker = "MSFT",
@@ -108,13 +108,13 @@ namespace MoneyManager.Application.Tests.Services.Securities
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityService>();
-                await service.Add(dto, null);
+                await service.AddAsync(dto, null);
             });
 
             var found = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityService>();
-                return await service.FindByTicker("msft");
+                return await service.FindByTickerAsync("msft");
             });
 
             Assert.NotNull(found);
@@ -123,7 +123,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var foundList = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityService>();
-                return await service.FindByTickers(["MSFT", "NONEXISTENT"]);
+                return await service.FindByTickersAsync(["MSFT", "NONEXISTENT"]);
             });
 
             Assert.Single(foundList);
@@ -135,7 +135,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
         {
             var typeId = await CreateSecurityType("EquityIcon");
 
-            var dto = new SecurityDTO
+            var dto = new SecurityDto
             {
                 Name = "Security With Icon",
                 Ticker = "SWI",
@@ -148,19 +148,19 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var added = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityService>();
-                return await service.Add(dto, null);
+                return await service.AddAsync(dto, null);
             });
 
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityService>();
-                await service.Delete(added.Id);
+                await service.DeleteAsync(added.Id);
             });
 
             var all = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityService>();
-                return await service.GetAll();
+                return await service.GetAllAsync();
             });
 
             Assert.DoesNotContain(all, s => s.Id == added.Id);
@@ -171,7 +171,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
         {
             var typeId = await CreateSecurityType("EquityIcon2");
 
-            var dto = new SecurityDTO
+            var dto = new SecurityDto
             {
                 Name = "Security To Remove Icon",
                 Ticker = "SRI",
@@ -184,7 +184,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var added = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityService>();
-                return await service.Add(dto, null);
+                return await service.AddAsync(dto, null);
             });
 
             added.IconKey = null;
@@ -192,7 +192,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var updated = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityService>();
-                return await service.Update(added, null);
+                return await service.UpdateAsync(added, null);
             });
 
             Assert.NotNull(updated);
@@ -205,7 +205,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var typeId = await CreateSecurityType("EquityIcon3");
             var formFile = CreateDummyFormFile();
 
-            var dto = new SecurityDTO
+            var dto = new SecurityDto
             {
                 Name = "Security Versioned Icon",
                 Ticker = "SVI",
@@ -217,7 +217,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var added = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityService>();
-                return await service.Add(dto, formFile);
+                return await service.AddAsync(dto, formFile);
             });
 
             Assert.NotNull(added.IconKey);
@@ -232,7 +232,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var formFile1 = CreateDummyFormFile();
             var formFile2 = CreateDummyFormFile();
 
-            var dto = new SecurityDTO
+            var dto = new SecurityDto
             {
                 Name = "Security Replace Icon",
                 Ticker = "SRI2",
@@ -244,7 +244,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var added = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityService>();
-                return await service.Add(dto, formFile1);
+                return await service.AddAsync(dto, formFile1);
             });
 
             var initialKey = added.IconKey;
@@ -253,7 +253,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var updated = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityService>();
-                return await service.Update(added, formFile2);
+                return await service.UpdateAsync(added, formFile2);
             });
 
             Assert.NotNull(updated.IconKey);
@@ -272,7 +272,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
             return await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISecurityTypeService>();
-                return await service.Add(new SecurityTypeDTO { Name = name });
+                return await service.AddAsync(new SecurityTypeDto { Name = name });
             });
         }
     }

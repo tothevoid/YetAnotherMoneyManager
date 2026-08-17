@@ -30,7 +30,7 @@ namespace MoneyManager.WebApi.Controllers.Securities
         public async Task<IEnumerable<SecurityTransactionModel>> GetAll(GetAllSecuritiesTransactionsQuery request)
         {
             var securityTransactions = await _securityTransactionService
-                .GetAll(request.BrokerAccountId, request.RecordsQuantity, request.PageIndex);
+                .GetAllAsync(request.BrokerAccountId, request.RecordsQuantity, request.PageIndex);
             return _mapper.Map(securityTransactions);
         }
 
@@ -38,7 +38,7 @@ namespace MoneyManager.WebApi.Controllers.Securities
         public async Task<PaginationConfigModel> GetPaginationByBrokerAccount([FromQuery] Guid brokerAccountId)
         {
             var pagination = await _securityTransactionService
-                .GetPagination(brokerAccountId);
+                .GetPaginationAsync(brokerAccountId);
             return _mapper.Map(pagination);
         }
 
@@ -46,7 +46,7 @@ namespace MoneyManager.WebApi.Controllers.Securities
         public async Task<PaginationConfigModel> GetPagination()
         {
             var pagination = await _securityTransactionService
-                .GetPagination();
+                .GetPaginationAsync();
             return _mapper.Map(pagination);
         }
 
@@ -54,7 +54,7 @@ namespace MoneyManager.WebApi.Controllers.Securities
         public async Task<IEnumerable<SecurityTransactionsHistoryModel>> GetTransactionsHistory([FromQuery] Guid securityId)
         {
             var transactions = await _securityTransactionService
-                .GetTransactionsHistory(securityId);
+                .GetTransactionsHistoryAsync(securityId);
             return _mapper.Map(transactions);
         }
 
@@ -62,18 +62,18 @@ namespace MoneyManager.WebApi.Controllers.Securities
         public async Task<Guid> Add(SecurityTransactionModel securityTransaction)
         {
             var securityTransactionDto = _mapper.Map(securityTransaction);
-            return await _securityTransactionService.Add(securityTransactionDto);
+            return await _securityTransactionService.AddAsync(securityTransactionDto);
         }
 
         [HttpPatch]
         public async Task Update(SecurityTransactionModel securityTransaction)
         {
             var securityTransactionDto = _mapper.Map(securityTransaction);
-            await _securityTransactionService.Update(securityTransactionDto);
+            await _securityTransactionService.UpdateAsync(securityTransactionDto);
         }
 
         [HttpDelete]
         public async Task Delete(Guid id) =>
-            await _securityTransactionService.Delete(id);
+            await _securityTransactionService.DeleteAsync(id);
     }
 }

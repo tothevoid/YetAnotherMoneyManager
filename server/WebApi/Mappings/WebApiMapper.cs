@@ -35,77 +35,77 @@ namespace MoneyManager.WebApi.Mappings
     [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.None)]
     public partial class WebApiMapper
     {
-        public partial TransactionDTO Map(TransactionModel model);
-        public partial TransactionModel Map(TransactionDTO dto);
-        public partial IEnumerable<TransactionModel> Map(IEnumerable<TransactionDTO> dtos);
+        public partial TransactionDto Map(TransactionModel model);
+        public partial TransactionModel Map(TransactionDto dto);
+        public partial IEnumerable<TransactionModel> Map(IEnumerable<TransactionDto> dtos);
 
-        public partial AccountDTO Map(AccountModel model);
-        public partial AccountModel Map(AccountDTO dto);
-        public partial IEnumerable<AccountModel> Map(IEnumerable<AccountDTO> dtos);
+        public partial AccountDto Map(AccountModel model);
+        public partial AccountModel Map(AccountDto dto);
+        public partial IEnumerable<AccountModel> Map(IEnumerable<AccountDto> dtos);
 
-        public partial TransactionTypeDTO Map(TransactionTypeModel model);
-        public partial TransactionTypeModel Map(TransactionTypeDTO dto);
-        public partial IEnumerable<TransactionTypeModel> Map(IEnumerable<TransactionTypeDTO> dtos);
+        public partial TransactionTypeDto Map(TransactionTypeModel model);
+        public partial TransactionTypeModel Map(TransactionTypeDto dto);
+        public partial IEnumerable<TransactionTypeModel> Map(IEnumerable<TransactionTypeDto> dtos);
 
-        public partial DepositDTO Map(DepositModel model);
-        public partial DepositModel Map(DepositDTO dto);
-        public partial IEnumerable<DepositModel> Map(IEnumerable<DepositDTO> dtos);
+        public partial DepositDto Map(DepositModel model);
+        public partial DepositModel Map(DepositDto dto);
+        public partial IEnumerable<DepositModel> Map(IEnumerable<DepositDto> dtos);
 
-        public partial CurrencyDTO Map(CurrencyModel model);
-        public partial CurrencyModel Map(CurrencyDTO dto);
-        public partial IEnumerable<CurrencyModel> Map(IEnumerable<CurrencyDTO> dtos);
+        public partial CurrencyDto Map(CurrencyModel model);
+        public partial CurrencyModel Map(CurrencyDto dto);
+        public partial IEnumerable<CurrencyModel> Map(IEnumerable<CurrencyDto> dtos);
 
-        public partial AccountTypeDTO Map(AccountTypeModel model);
-        public partial AccountTypeModel Map(AccountTypeDTO dto);
-        public partial IEnumerable<AccountTypeModel> Map(IEnumerable<AccountTypeDTO> dtos);
+        public partial AccountTypeDto Map(AccountTypeModel model);
+        public partial AccountTypeModel Map(AccountTypeDto dto);
+        public partial IEnumerable<AccountTypeModel> Map(IEnumerable<AccountTypeDto> dtos);
 
         public partial CurrencyTransactionDto Map(CurrencyTransactionModel model);
         public partial CurrencyTransactionModel Map(CurrencyTransactionDto dto);
         public partial IEnumerable<CurrencyTransactionModel> Map(IEnumerable<CurrencyTransactionDto> dtos);
 
-        public partial DepositsRangeModel Map(DepositsRangeDTO dto);
-        public partial DepositMonthSummary Map(DepositMonthSummaryDTO dto);
-        public partial DepositPayment Map(DepositPaymentDTO dto);
-        public partial PeriodPayment Map(PeriodPaymentDTO dto);
-        public partial AccountTransferDTO Map(AccountTransferModel model);
+        public partial DepositsRangeModel Map(DepositsRangeDto dto);
+        public partial DepositMonthSummary Map(DepositMonthSummaryDto dto);
+        public partial DepositPayment Map(DepositPaymentDto dto);
+        public partial PeriodPayment Map(PeriodPaymentDto dto);
+        public partial AccountTransferDto Map(AccountTransferModel model);
         public partial SecurityHistoryValueModel Map(SecurityHistoryValueDto dto);
         public partial SecurityHistoryValueDto Map(SecurityHistoryValueModel model);
         public partial IEnumerable<SecurityHistoryValueModel> Map(IEnumerable<SecurityHistoryValueDto> dtos);
 
-        public partial AccountCurrencySummaryModel Map(AccountCurrencySummaryDTO dto);
-        public partial IEnumerable<AccountCurrencySummaryModel> Map(IEnumerable<AccountCurrencySummaryDTO> dtos);
+        public partial AccountCurrencySummaryModel Map(AccountCurrencySummaryDto dto);
+        public partial IEnumerable<AccountCurrencySummaryModel> Map(IEnumerable<AccountCurrencySummaryDto> dtos);
 
-        public partial SecurityDTO Map(SecurityModel model);
-        public partial SecurityModel Map(SecurityDTO dto);
-        public partial IEnumerable<SecurityModel> Map(IEnumerable<SecurityDTO> dtos);
+        public partial SecurityDto Map(SecurityModel model);
+        public partial SecurityModel Map(SecurityDto dto);
+        public partial IEnumerable<SecurityModel> Map(IEnumerable<SecurityDto> dtos);
 
         public partial DividendDto Map(DividendModel model);
         public partial DividendModel Map(DividendDto dto);
         public partial IEnumerable<DividendModel> Map(IEnumerable<DividendDto> dtos);
 
-        public partial SecurityTypeDTO Map(SecurityTypeModel model);
-        public partial SecurityTypeModel Map(SecurityTypeDTO dto);
-        public partial IEnumerable<SecurityTypeModel> Map(IEnumerable<SecurityTypeDTO> dtos);
+        public partial SecurityTypeDto Map(SecurityTypeModel model);
+        public partial SecurityTypeModel Map(SecurityTypeDto dto);
+        public partial IEnumerable<SecurityTypeModel> Map(IEnumerable<SecurityTypeDto> dtos);
 
-        public partial BrokerDTO Map(BrokerModel model);
-        public partial BrokerModel Map(BrokerDTO dto);
-        public partial IEnumerable<BrokerModel> Map(IEnumerable<BrokerDTO> dtos);
+        public partial BrokerDto Map(BrokerModel model);
+        public partial BrokerModel Map(BrokerDto dto);
+        public partial IEnumerable<BrokerModel> Map(IEnumerable<BrokerDto> dtos);
 
-        public partial BrokerAccountDTO Map(BrokerAccountModel model);
-        public partial BrokerAccountModel Map(BrokerAccountDTO dto);
-        public partial IEnumerable<BrokerAccountModel> Map(IEnumerable<BrokerAccountDTO> dtos);
+        public partial BrokerAccountDto Map(BrokerAccountModel model);
+        public partial BrokerAccountModel Map(BrokerAccountDto dto);
+        public partial IEnumerable<BrokerAccountModel> Map(IEnumerable<BrokerAccountDto> dtos);
 
-        public partial BrokerAccountSecurityDTO Map(BrokerAccountSecurityModel model);
-        public partial BrokerAccountSecurityModel Map(BrokerAccountSecurityDTO dto);
-        public partial IEnumerable<BrokerAccountSecurityModel> Map(IEnumerable<BrokerAccountSecurityDTO> dtos);
+        public partial BrokerAccountSecurityDto Map(BrokerAccountSecurityModel model);
+        public partial BrokerAccountSecurityModel Map(BrokerAccountSecurityDto dto);
+        public partial IEnumerable<BrokerAccountSecurityModel> Map(IEnumerable<BrokerAccountSecurityDto> dtos);
 
-        public partial BrokerAccountTypeDTO Map(BrokerAccountTypeModel model);
-        public partial BrokerAccountTypeModel Map(BrokerAccountTypeDTO dto);
-        public partial IEnumerable<BrokerAccountTypeModel> Map(IEnumerable<BrokerAccountTypeDTO> dtos);
+        public partial BrokerAccountTypeDto Map(BrokerAccountTypeModel model);
+        public partial BrokerAccountTypeModel Map(BrokerAccountTypeDto dto);
+        public partial IEnumerable<BrokerAccountTypeModel> Map(IEnumerable<BrokerAccountTypeDto> dtos);
 
-        public partial SecurityTransactionDTO Map(SecurityTransactionModel model);
-        public partial SecurityTransactionModel Map(SecurityTransactionDTO dto);
-        public partial IEnumerable<SecurityTransactionModel> Map(IEnumerable<SecurityTransactionDTO> dtos);
+        public partial SecurityTransactionDto Map(SecurityTransactionModel model);
+        public partial SecurityTransactionModel Map(SecurityTransactionDto dto);
+        public partial IEnumerable<SecurityTransactionModel> Map(IEnumerable<SecurityTransactionDto> dtos);
 
         public partial UserProfileDto Map(UserProfileModel model);
         public partial UserProfileModel Map(UserProfileDto dto);

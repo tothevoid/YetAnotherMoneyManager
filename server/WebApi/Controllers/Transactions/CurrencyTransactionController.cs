@@ -1,7 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using MoneyManager.Application.DTO.Securities;
-using MoneyManager.Application.Interfaces.Securities;
-using MoneyManager.WebApi.Models.Securities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
@@ -30,14 +27,14 @@ namespace MoneyManager.WebApi.Controllers.Transactions
         [HttpGet]
         public async Task<IEnumerable<CurrencyTransactionModel>> GetAll()
         {
-            var currencyTransactions = await _currencyTransactionService.GetAll();
+            var currencyTransactions = await _currencyTransactionService.GetAllAsync();
             return _mapper.Map(currencyTransactions);
         }
 
         [HttpGet(nameof(GetById))]
         public async Task<ActionResult<CurrencyTransactionModel>> GetById(Guid id)
         {
-            var dto = await _currencyTransactionService.GetById(id);
+            var dto = await _currencyTransactionService.GetByIdAsync(id);
             if (dto == null) return NotFound();
             return _mapper.Map(dto);
         }
@@ -45,7 +42,7 @@ namespace MoneyManager.WebApi.Controllers.Transactions
         [HttpGet(nameof(GetAllByAccountId))]
         public async Task<IEnumerable<CurrencyTransactionModel>> GetAllByAccountId([FromQuery] Guid accountId)
         {
-            var dtos = await _currencyTransactionService.GetAllByAccountId(accountId);
+            var dtos = await _currencyTransactionService.GetAllByAccountIdAsync(accountId);
             return _mapper.Map(dtos);
         }
 
@@ -53,18 +50,18 @@ namespace MoneyManager.WebApi.Controllers.Transactions
         public async Task<Guid> Add(CurrencyTransactionModel currencyTransaction)
         {
             var currencyTransactionDto = _mapper.Map(currencyTransaction);
-            return await _currencyTransactionService.Add(currencyTransactionDto);
+            return await _currencyTransactionService.AddAsync(currencyTransactionDto);
         }
 
         [HttpPatch]
         public async Task Update(CurrencyTransactionModel currencyTransaction)
         {
             var currencyTransactionDto = _mapper.Map(currencyTransaction);
-            await _currencyTransactionService.Update(currencyTransactionDto);
+            await _currencyTransactionService.UpdateAsync(currencyTransactionDto);
         }
 
         [HttpDelete]
         public async Task Delete(Guid id) =>
-            await _currencyTransactionService.Delete(id);
+            await _currencyTransactionService.DeleteAsync(id);
     }
 }

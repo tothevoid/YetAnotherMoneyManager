@@ -23,12 +23,12 @@ namespace MoneyManager.Infrastructure.Database
             _entities = context.Set<TEntity>();
         }
 
-        public async Task Add(TEntity entity)
+        public async Task AddAsync(TEntity entity)
         {
             await _entities.AddAsync(entity);
         }
 
-        public async Task<TEntity> GetById(Guid id,
+        public async Task<TEntity> GetByIdAsync(Guid id,
             Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null,
             bool disableTracking = true)
         {
@@ -43,13 +43,13 @@ namespace MoneyManager.Infrastructure.Database
              return await query.Where(entity => entity.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
+        public async Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> predicate)
         {
             IQueryable<TEntity> query = _entities.AsNoTracking();
             return await query.Where(predicate).FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Output>> Group<TKey, Output>(
+        public async Task<IEnumerable<Output>> GroupAsync<TKey, Output>(
             Expression<Func<TEntity, TKey>> groupSelector,
             Expression<Func<IGrouping<TKey, TEntity>, Output>> projection,
             Expression<Func<TEntity, bool>> filter = null)
@@ -63,7 +63,7 @@ namespace MoneyManager.Infrastructure.Database
             return await query.GroupBy(groupSelector).Select(projection).ToListAsync();
         }
 
-        public async Task<IEnumerable<TEntity>> GetAll(Expression<Func<TEntity, bool>> filter = null,
+        public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null,
             bool disableTracking = true)
         {
@@ -83,7 +83,7 @@ namespace MoneyManager.Infrastructure.Database
             return await query.ToListAsync();
         }
 
-        public async Task<IEnumerable<TEntity>> GetAll(ComplexQuery<TEntity> complexQuery)
+        public async Task<IEnumerable<TEntity>> GetAllAsync(ComplexQuery<TEntity> complexQuery)
         {
             IQueryable<TEntity> query =
                 complexQuery.TrackingDisabled ? _entities.AsQueryable().AsNoTracking() : _entities.AsQueryable();
@@ -119,7 +119,7 @@ namespace MoneyManager.Infrastructure.Database
             return await query.ToListAsync();
         }
 
-        public async Task<int> GetCount(Expression<Func<TEntity, bool>> filter = null)
+        public async Task<int> GetCountAsync(Expression<Func<TEntity, bool>> filter = null)
         {
             IQueryable<TEntity> query = _entities.AsQueryable().AsNoTracking();
 
@@ -137,7 +137,7 @@ namespace MoneyManager.Infrastructure.Database
             _entities.Update(entity);
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
             var entity = await _entities.FirstOrDefaultAsync(entity => entity.Id == id);
 
@@ -149,19 +149,19 @@ namespace MoneyManager.Infrastructure.Database
             _entities.Remove(entity);
         }
 
-        public async Task<TEntity> GetMin(Expression<Func<TEntity, object>> sortField)
+        public async Task<TEntity> GetMinAsync(Expression<Func<TEntity, object>> sortField)
         {
             IQueryable<TEntity> query = _entities.AsNoTracking();
-            return await query.OrderBy(sortField).Take(1).FirstOrDefaultAsync(); ;
+            return await query.OrderBy(sortField).Take(1).FirstOrDefaultAsync();
         }
 
-        public async Task<TEntity> GetMax(Expression<Func<TEntity, object>> sortField)
+        public async Task<TEntity> GetMaxAsync(Expression<Func<TEntity, object>> sortField)
         {
             IQueryable<TEntity> query = _entities.AsNoTracking();
-            return await query.OrderByDescending(sortField).Take(1).FirstOrDefaultAsync(); ;
+            return await query.OrderByDescending(sortField).Take(1).FirstOrDefaultAsync();
         }
 
-        public async Task<decimal> GetSum(Expression<Func<TEntity, decimal>> projection, 
+        public async Task<decimal> GetSumAsync(Expression<Func<TEntity, decimal>> projection, 
             Expression<Func<TEntity, bool>> filter = null)
         {
             IQueryable<TEntity> query = _entities.AsNoTracking();
@@ -173,7 +173,7 @@ namespace MoneyManager.Infrastructure.Database
             return await query.SumAsync(projection);
         }
 
-        public async Task SaveChanges() => await _context.SaveChangesAsync();
+        public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
 
         public void Dispose()
         {

@@ -1,19 +1,19 @@
-﻿using MoneyManager.Application.DTO.Currencies;
+using MoneyManager.Application.DTO.Currencies;
 using MoneyManager.Shared.Entities;
 using System;
 using MoneyManager.Application.DTO.Banks;
 
 namespace MoneyManager.Application.DTO.Accounts
 {
-    public class AccountDTO : BaseEntity
+    public class AccountDto : BaseEntity
     {
         public string Name { get; set; }
 
         public decimal Balance { get; set; }
 
-        public CurrencyDTO Currency { get; set; }
+        public CurrencyDto Currency { get; set; }
 
-        public AccountTypeDTO AccountType { get; set; }
+        public AccountTypeDto AccountType { get; set; }
 
         public Guid CurrencyId { get; set; }
 

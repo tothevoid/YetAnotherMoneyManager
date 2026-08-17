@@ -52,7 +52,7 @@ namespace MoneyManager.Application.Services.Brokers
             _stockConnector = stockConnector;
         }
 
-        public async Task<IEnumerable<BrokerAccountSecurityDTO>> GetAll(bool unionSecurities = false)
+        public async Task<IEnumerable<BrokerAccountSecurityDto>> GetAllAsync(bool unionSecurities = false)
         {
             var complexQuery = new ComplexQueryBuilder<BrokerAccountSecurity>()
                 .AddJoins(GetFullHierarchyColumns)
@@ -60,7 +60,7 @@ namespace MoneyManager.Application.Services.Brokers
                 .GetQuery();
 
             var brokerAccountSecurities = await _brokerAccountSecurityRepo
-                .GetAll(complexQuery);
+                .GetAllAsync(complexQuery);
 
             if (!unionSecurities)
             {
@@ -90,7 +90,7 @@ namespace MoneyManager.Application.Services.Brokers
             return _mapper.Map(handledBrokerAccountSecurities.Values);
         }
 
-        public async Task<IEnumerable<BrokerAccountSecurityDTO>> GetByBrokerAccount(Guid brokerAccountId)
+        public async Task<IEnumerable<BrokerAccountSecurityDto>> GetByBrokerAccountAsync(Guid brokerAccountId)
         {
             var complexQuery = new ComplexQueryBuilder<BrokerAccountSecurity>()
                 .AddFilter(GetBaseFilter(brokerAccountId))
@@ -99,13 +99,13 @@ namespace MoneyManager.Application.Services.Brokers
                 .GetQuery();
 
             var brokerAccountSecurities = await _brokerAccountSecurityRepo
-                .GetAll(complexQuery);
+                .GetAllAsync(complexQuery);
             return _mapper.Map(brokerAccountSecurities);
         }
 
-        public async Task PullQuotations()
+        public async Task PullQuotationsAsync()
         {
-            var securities = (await _securityService.GetAll()).ToList();
+            var securities = (await _securityService.GetAllAsync()).ToList();
 
             if (!securities.Any())
             {
@@ -115,11 +115,11 @@ namespace MoneyManager.Application.Services.Brokers
             await PullQuotations(securities);
         }
 
-        public async Task PullQuotationsByBrokerAccount(Guid brokerAccountId)
+        public async Task PullQuotationsByBrokerAccountAsync(Guid brokerAccountId)
         {
             //TODO: limit data to only ticker
             var brokerAccountSecurities = await _brokerAccountSecurityRepo
-                .GetAll((brokerAccountSecurity) => brokerAccountSecurity.BrokerAccountId == brokerAccountId,
+                .GetAllAsync((brokerAccountSecurity) => brokerAccountSecurity.BrokerAccountId == brokerAccountId,
                     (query) => query.Include((brokerAccount) => brokerAccount.Security));
 
             var mappedSecurities =  _mapper.Map(brokerAccountSecurities);
@@ -127,11 +127,11 @@ namespace MoneyManager.Application.Services.Brokers
             await PullQuotations(mappedSecurities.Select(brokerAccountSecurity => brokerAccountSecurity.Security).ToList());
         }
 
-        private async Task PullQuotations(IEnumerable<SecurityDTO> securities)
+        private async Task PullQuotations(IEnumerable<SecurityDto> securities)
         {
             var date = DateTime.UtcNow;
             var tickersValues = (await _stockConnector
-                .GetValuesByTickers(securities)).ToList();
+                .GetValuesByTickersAsync(securities)).ToList();
                 
             var filteredValue = tickersValues
                 .Where(marketValue => (marketValue.LastValue ?? marketValue.MarketPrice) != null)
@@ -145,53 +145,53 @@ namespace MoneyManager.Application.Services.Brokers
                 if (row == null) continue;
 
                 // TODO: use service instead of repo
-                var updatingSecurity = await _securityRepo.GetById(security.Id, null, false);
+                var updatingSecurity = await _securityRepo.GetByIdAsync(security.Id, null, false);
                 updatingSecurity.ActualPrice = row.GetLastValue();
                 updatingSecurity.PriceFetchedAt = DateTime.UtcNow;
             }
 
             _pullQuotationsService.UpdatePullDate(date);
-            await _db.Commit();
-            await _serverNotifier.SendToAll(JsonSerializer.Serialize(new { date }));
+            await _db.CommitAsync();
+            await _serverNotifier.SendToAllAsync(JsonSerializer.Serialize(new { date }));
         }
 
-        public async Task<Guid> Add(BrokerAccountSecurityDTO brokerAccountSecurityDto)
+        public async Task<Guid> AddAsync(BrokerAccountSecurityDto brokerAccountSecurityDto)
         {
             var brokerAccountSecurity = _mapper.Map(brokerAccountSecurityDto);
             brokerAccountSecurity.Id = Guid.NewGuid();
-            await _brokerAccountSecurityRepo.Add(brokerAccountSecurity);
-            await _db.Commit();
+            await _brokerAccountSecurityRepo.AddAsync(brokerAccountSecurity);
+            await _db.CommitAsync();
             return brokerAccountSecurity.Id;
         }
 
-        public async Task Update(BrokerAccountSecurityDTO brokerAccountSecurityDto)
+        public async Task UpdateAsync(BrokerAccountSecurityDto brokerAccountSecurityDto)
         {
             var brokerAccountSecurity = _mapper.Map(brokerAccountSecurityDto);
             _brokerAccountSecurityRepo.Update(brokerAccountSecurity);
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            await _brokerAccountSecurityRepo.Delete(id);
-            await _db.Commit();
+            await _brokerAccountSecurityRepo.DeleteAsync(id);
+            await _db.CommitAsync();
         }
 
-        public async Task<decimal> GetInitialSecuritiesValue(Guid brokerAccountId)
+        public async Task<decimal> GetInitialSecuritiesValueAsync(Guid brokerAccountId)
         {
-            var securities = await GetByBrokerAccount(brokerAccountId);
+            var securities = await GetByBrokerAccountAsync(brokerAccountId);
             return securities.Sum(accountSecurity => accountSecurity.Price);
         }
 
-        public async Task<decimal> GetActualSecuritiesValue(Guid brokerAccountId)
+        public async Task<decimal> GetActualSecuritiesValueAsync(Guid brokerAccountId)
         {
-            var securities = await GetByBrokerAccount(brokerAccountId);
+            var securities = await GetByBrokerAccountAsync(brokerAccountId);
             return securities.Sum(accountSecurity => (accountSecurity.Quantity - accountSecurity.SoldQuantity) * accountSecurity.Security.ActualPrice);
         }
 
-        public async Task<decimal> GetTotalSoldByBrokerAccount(Guid brokerAccountId)
+        public async Task<decimal> GetTotalSoldByBrokerAccountAsync(Guid brokerAccountId)
         {
-            var brokerAccountSecurities = await GetByBrokerAccount(brokerAccountId);
+            var brokerAccountSecurities = await GetByBrokerAccountAsync(brokerAccountId);
 
             return brokerAccountSecurities.Sum(brokerAccountSecurity => brokerAccountSecurity.SoldPrice);
         }

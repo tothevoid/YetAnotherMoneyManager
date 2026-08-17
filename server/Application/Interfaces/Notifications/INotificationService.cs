@@ -9,13 +9,13 @@ namespace MoneyManager.Application.Interfaces.Notifications
 {
     public interface INotificationService
     {
-        Task<IEnumerable<NotificationDto>> GetAll(int pageIndex = 1, int recordsQuantity = 15, bool onlyUnread = false, string category = null);
+        Task<IEnumerable<NotificationDto>> GetAllAsync(int pageIndex = 1, int recordsQuantity = 15, bool onlyUnread = false, string category = null);
 
-        Task<PaginationConfigDto> GetPagination(bool onlyUnread = false, string category = null);
+        Task<PaginationConfigDto> GetPaginationAsync(bool onlyUnread = false, string category = null);
 
-        Task<int> GetUnreadCount();
+        Task<int> GetUnreadCountAsync();
 
-        Task<NotificationDto> Create(
+        Task<NotificationDto> CreateAsync(
             string title,
             string message,
             NotificationSeverity severity = NotificationSeverity.Info,
@@ -23,12 +23,12 @@ namespace MoneyManager.Application.Interfaces.Notifications
             string category = "System",
             Guid? userProfileId = null);
 
-        Task MarkAsRead(Guid notificationId);
+        Task MarkAsReadAsync(Guid notificationId);
 
-        Task MarkAllAsRead();
+        Task MarkAllAsReadAsync();
 
-        Task Delete(Guid notificationId);
+        Task DeleteAsync(Guid notificationId);
 
-        Task CleanUpOldNotifications(int olderThanDays = 90);
+        Task CleanUpOldNotificationsAsync(int olderThanDays = 90);
     }
 }

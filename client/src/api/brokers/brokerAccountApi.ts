@@ -14,9 +14,9 @@ export const getBrokerAccountById = async (id: string): Promise<BrokerAccountEnt
         .then((brokerAccount: BrokerAccountEntityResponse | void) => brokerAccount && prepareBrokerAccount(brokerAccount))
 }
 
-export const getTotalSoldAmountByBrokerAccountId = async (id: string): Promise<number | void> => {
-    return getEntity<number>(`${basicUrl}/GetTotalSoldAmountByBrokerAccountId?brokerAccountId=${id}`);
-}
+export const getTotalSoldAmountByBrokerAccount = async (brokerAccountId: string): Promise<number | void> => {
+    return getEntity<number>(`${basicUrl}/GetTotalSoldAmountByBrokerAccount?brokerAccountId=${brokerAccountId}`);
+};
 
 export const createBrokerAccount = async (addedBroker: BrokerAccountEntity): Promise<BrokerAccountEntity | void> => {
     return await createEntity<BrokerAccountEntityRequest, BrokerAccountEntityResponse>(basicUrl, prepareBrokerAccountRequest(addedBroker));

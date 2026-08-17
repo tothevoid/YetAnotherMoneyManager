@@ -1,13 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using MoneyManager.Application.DTO.Crypto;
 using MoneyManager.Application.Interfaces.Crypto;
-using MoneyManager.Infrastructure.Entities.Crypto;
 using MoneyManager.WebApi.Mappings;
 using MoneyManager.WebApi.Models.Crypto;
-using MoneyManager.WebApi.Models.Securities;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -33,7 +30,7 @@ namespace MoneyManager.WebApi.Controllers.Crypto
         [HttpGet]
         public async Task<IEnumerable<CryptocurrencyModel>> GetAll()
         {
-            var cryptocurrencies = await _cryptocurrencyService.GetAll();
+            var cryptocurrencies = await _cryptocurrencyService.GetAllAsync();
             return _mapper.Map(cryptocurrencies);
         }
 
@@ -42,7 +39,7 @@ namespace MoneyManager.WebApi.Controllers.Crypto
         {
             var cryptocurrency = JsonSerializer.Deserialize<CryptocurrencyModel>(cryptocurrencyJson);
             var cryptocurrencyDto = _mapper.Map(cryptocurrency);
-            var result = await _cryptocurrencyService.Add(cryptocurrencyDto, cryptocurrencyIcon);
+            var result = await _cryptocurrencyService.AddAsync(cryptocurrencyDto, cryptocurrencyIcon);
             return _mapper.Map(result);
         }
 
@@ -51,13 +48,13 @@ namespace MoneyManager.WebApi.Controllers.Crypto
         {
             var cryptocurrency = JsonSerializer.Deserialize<CryptocurrencyModel>(cryptocurrencyJson);
             var cryptocurrencyDto = _mapper.Map(cryptocurrency);
-            var result = await _cryptocurrencyService.Update(cryptocurrencyDto, cryptocurrencyIcon);
+            var result = await _cryptocurrencyService.UpdateAsync(cryptocurrencyDto, cryptocurrencyIcon);
             return _mapper.Map(result);
         }
 
         [HttpDelete]
         public async Task Delete(Guid id) =>
-            await _cryptocurrencyService.Delete(id);
+            await _cryptocurrencyService.DeleteAsync(id);
 
 
         [HttpGet("icon")]
@@ -65,7 +62,7 @@ namespace MoneyManager.WebApi.Controllers.Crypto
         public async Task<IActionResult> GetCryptocurrencyIcon(string iconKey)
         {
             Response.Headers.CacheControl = "public, max-age=31536000, immutable";
-            var url = await _cryptocurrencyService.GetIconUrl(iconKey);
+            var url = await _cryptocurrencyService.GetIconUrlAsync(iconKey);
             return Redirect(url);
         }
     }

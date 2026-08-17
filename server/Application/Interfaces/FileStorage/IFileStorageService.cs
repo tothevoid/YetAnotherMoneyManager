@@ -5,10 +5,10 @@ namespace MoneyManager.Application.Interfaces.FileStorage
 {
     public interface IFileStorageService
     {
-        Task UploadFile(string bucketName, IFormFile file, string key);
+        Task UploadFileAsync(string bucketName, IFormFile file, string key);
 
-        Task<string> GetFileUrl(string bucketName, string key);
+        Task<string> GetFileUrlAsync(string bucketName, string key);
 
-        Task DeleteFile(string bucketName, string key);
+        Task DeleteFileAsync(string bucketName, string key);
     }
 }

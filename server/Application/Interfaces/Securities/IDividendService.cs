@@ -1,24 +1,23 @@
-﻿using MoneyManager.Application.DTO.Common;
+using MoneyManager.Application.DTO.Common;
 using MoneyManager.Application.DTO.Securities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace MoneyManager.Application.Interfaces.Securities
 {
     public interface IDividendService
     {
-        Task<IEnumerable<DividendDto>> GetAll(Guid securityId, int pageIndex, int recordsQuantity);
+        Task<IEnumerable<DividendDto>> GetAllAsync(Guid securityId, int pageIndex, int recordsQuantity);
 
-        Task<IEnumerable<DividendDto>> GetAvailable(Guid brokerAccountId);
+        Task<IEnumerable<DividendDto>> GetAvailableAsync(Guid brokerAccountId);
 
-        Task<PaginationConfigDto> GetPagination(Guid securityId);
+        Task<PaginationConfigDto> GetPaginationAsync(Guid securityId);
 
-        Task Update(DividendDto securityTypeDto);
+        Task UpdateAsync(DividendDto securityTypeDto);
 
-        Task<Guid> Add(DividendDto securityDto);
+        Task<Guid> AddAsync(DividendDto securityDto);
 
-        Task Delete(Guid id);
+        Task DeleteAsync(Guid id);
     }
 }

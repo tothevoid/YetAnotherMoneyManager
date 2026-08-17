@@ -21,32 +21,32 @@ namespace MoneyManager.Application.Services.Brokers
             _brokerAccountTypeRepo = uow.CreateRepository<BrokerAccountType>();
         }
 
-        public async Task<IEnumerable<BrokerAccountTypeDTO>> GetAll()
+        public async Task<IEnumerable<BrokerAccountTypeDto>> GetAllAsync()
         {
-            var brokerAccountTypes = await _brokerAccountTypeRepo.GetAll();
+            var brokerAccountTypes = await _brokerAccountTypeRepo.GetAllAsync();
             return _mapper.Map(brokerAccountTypes);
         }
 
-        public async Task<Guid> Add(BrokerAccountTypeDTO brokerAccountTypeDto)
+        public async Task<Guid> AddAsync(BrokerAccountTypeDto brokerAccountTypeDto)
         {
             var brokerAccountType = _mapper.Map(brokerAccountTypeDto);
             brokerAccountType.Id = Guid.NewGuid();
-            await _brokerAccountTypeRepo.Add(brokerAccountType);
-            await _db.Commit();
+            await _brokerAccountTypeRepo.AddAsync(brokerAccountType);
+            await _db.CommitAsync();
             return brokerAccountType.Id;
         }
 
-        public async Task Update(BrokerAccountTypeDTO brokerAccountTypeDto)
+        public async Task UpdateAsync(BrokerAccountTypeDto brokerAccountTypeDto)
         {
             var brokerAccountType = _mapper.Map(brokerAccountTypeDto);
             _brokerAccountTypeRepo.Update(brokerAccountType);
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            await _brokerAccountTypeRepo.Delete(id);
-            await _db.Commit();
+            await _brokerAccountTypeRepo.DeleteAsync(id);
+            await _db.CommitAsync();
         }
     }
 }

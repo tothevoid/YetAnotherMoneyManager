@@ -8,7 +8,6 @@ using MoneyManager.Infrastructure.Entities.Brokers;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using Minio.DataModel.Notification;
 using System.Linq.Expressions;
 
 namespace MoneyManager.Application.Services.Brokers
@@ -26,52 +25,52 @@ namespace MoneyManager.Application.Services.Brokers
             _brokerAccountTaxDeductionRepo = uow.CreateRepository<BrokerAccountTaxDeduction>();
         }
 
-        public async Task<IEnumerable<BrokerAccountTaxDeductionDto>> GetAll(Guid? brokerAccountId = null)
+        public async Task<IEnumerable<BrokerAccountTaxDeductionDto>> GetAllAsync(Guid? brokerAccountId = null)
         {
             Expression<Func<BrokerAccountTaxDeduction, bool>> filter = brokerAccountId != null ? 
                 (taxDeduction) => taxDeduction.BrokerAccountId == brokerAccountId : 
                 null;
 
-            var entities = await _brokerAccountTaxDeductionRepo.GetAll(filter, GetFullHierarchyColumns);
+            var entities = await _brokerAccountTaxDeductionRepo.GetAllAsync(filter, GetFullHierarchyColumns);
             return _mapper.Map(entities);
         }
 
-        public async Task<decimal> GetSumTillSpecificDate(DateOnly date, Guid? brokerAccountId)
+        public async Task<decimal> GetSumTillSpecificDateAsync(DateOnly date, Guid? brokerAccountId)
         {
             Expression<Func<BrokerAccountTaxDeduction, bool>> filter = brokerAccountId != null ?
                 (taxDeduction) => DateOnly.FromDateTime(taxDeduction.DateApplied) <= date && taxDeduction.BrokerAccountId == brokerAccountId :
                 (taxDeduction) => DateOnly.FromDateTime(taxDeduction.DateApplied) <= date;
 
-            return await _brokerAccountTaxDeductionRepo.GetSum((taxDeduction) => taxDeduction.Amount, filter);
+            return await _brokerAccountTaxDeductionRepo.GetSumAsync((taxDeduction) => taxDeduction.Amount, filter);
         }
 
-        public async Task<decimal> GetAmountByBrokerAccount(Guid brokerAccountId)
+        public async Task<decimal> GetAmountByBrokerAccountAsync(Guid brokerAccountId)
         {
-            return await _brokerAccountTaxDeductionRepo.GetSum(
+            return await _brokerAccountTaxDeductionRepo.GetSumAsync(
                 projection: (taxDeduction) => taxDeduction.Amount,
                 filter: (taxDeduction) => taxDeduction.BrokerAccountId == brokerAccountId);
         }
 
-        public async Task<Guid> Add(BrokerAccountTaxDeductionDto dto)
+        public async Task<Guid> AddAsync(BrokerAccountTaxDeductionDto dto)
         {
             var entity = _mapper.Map(dto);
             entity.Id = Guid.NewGuid();
-            await _brokerAccountTaxDeductionRepo.Add(entity);
-            await _db.Commit();
+            await _brokerAccountTaxDeductionRepo.AddAsync(entity);
+            await _db.CommitAsync();
             return entity.Id;
         }
 
-        public async Task Update(BrokerAccountTaxDeductionDto dto)
+        public async Task UpdateAsync(BrokerAccountTaxDeductionDto dto)
         {
             var entity = _mapper.Map(dto);
             _brokerAccountTaxDeductionRepo.Update(entity);
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            await _brokerAccountTaxDeductionRepo.Delete(id);
-            await _db.Commit();
+            await _brokerAccountTaxDeductionRepo.DeleteAsync(id);
+            await _db.CommitAsync();
         }
 
         private IQueryable<BrokerAccountTaxDeduction> GetFullHierarchyColumns(IQueryable<BrokerAccountTaxDeduction> taxDeductionQuery)
@@ -80,7 +79,7 @@ namespace MoneyManager.Application.Services.Brokers
                 .Include(taxDeduction => taxDeduction.BrokerAccount.Type)
                 .Include(taxDeduction => taxDeduction.BrokerAccount.Currency)
                 .Include(taxDeduction => taxDeduction.BrokerAccount.Broker)
-                .Include(taxDeduction => taxDeduction.BrokerAccount.Bank); ;
+                .Include(taxDeduction => taxDeduction.BrokerAccount.Bank);
         }
     }
 }

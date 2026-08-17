@@ -19,7 +19,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
         {
             var (accountId, typeId) = await SetupDependencies();
 
-            var txDto = new TransactionDTO
+            var txDto = new TransactionDto
             {
                 Amount = 150m,
                 Date = DateOnly.FromDateTime(DateTime.UtcNow),
@@ -31,7 +31,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var created = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionsService>();
-                return await service.Add(txDto);
+                return await service.AddAsync(txDto);
             });
 
             Assert.NotNull(created);
@@ -42,7 +42,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var fetched = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionsService>();
-                return await service.GetById(created.Id);
+                return await service.GetByIdAsync(created.Id);
             });
 
             Assert.NotNull(fetched);
@@ -52,7 +52,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var accountBalance = await ExecuteScopeAsync(async sp =>
             {
                 var accService = sp.GetRequiredService<IAccountService>();
-                var acc = await accService.GetById(accountId);
+                var acc = await accService.GetByIdAsync(accountId);
                 return acc.Balance;
             });
 
@@ -68,7 +68,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionsService>();
-                await service.Add(new TransactionDTO
+                await service.AddAsync(new TransactionDto
                 {
                     Amount = 50m,
                     Date = DateOnly.FromDateTime(now),
@@ -81,7 +81,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var allRegular = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionsService>();
-                return await service.GetAll(now.Month, now.Year, false);
+                return await service.GetAllAsync(now.Month, now.Year, false);
             });
 
             Assert.NotNull(allRegular);
@@ -96,7 +96,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var created = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionsService>();
-                return await service.Add(new TransactionDTO
+                return await service.AddAsync(new TransactionDto
                 {
                     Amount = 200m,
                     Date = DateOnly.FromDateTime(DateTime.UtcNow),
@@ -115,13 +115,13 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionsService>();
-                await service.Update(created);
+                await service.UpdateAsync(created);
             });
 
             var accountBalance = await ExecuteScopeAsync(async sp =>
             {
                 var accService = sp.GetRequiredService<IAccountService>();
-                var acc = await accService.GetById(accountId);
+                var acc = await accService.GetByIdAsync(accountId);
                 return acc.Balance;
             });
 
@@ -137,7 +137,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var created = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionsService>();
-                return await service.Add(new TransactionDTO
+                return await service.AddAsync(new TransactionDto
                 {
                     Amount = 300m,
                     Date = DateOnly.FromDateTime(DateTime.UtcNow),
@@ -150,13 +150,13 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ITransactionsService>();
-                await service.Delete(created.Id);
+                await service.DeleteAsync(created.Id);
             });
 
             var accountBalance = await ExecuteScopeAsync(async sp =>
             {
                 var accService = sp.GetRequiredService<IAccountService>();
-                var acc = await accService.GetById(accountId);
+                var acc = await accService.GetByIdAsync(accountId);
                 return acc.Balance;
             });
 
@@ -169,7 +169,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var accountId = await ExecuteScopeAsync(async sp =>
             {
                 var accService = sp.GetRequiredService<IAccountService>();
-                return await accService.Add(new AccountDTO
+                return await accService.AddAsync(new AccountDto
                 {
                     Active = true,
                     Name = "Tx Test Account",
@@ -183,7 +183,7 @@ namespace MoneyManager.Application.Tests.Services.Transactions
             var typeId = await ExecuteScopeAsync(async sp =>
             {
                 var typeService = sp.GetRequiredService<ITransactionTypeService>();
-                var added = await typeService.Add(new TransactionTypeDTO { Active = true, Name = "Tx Category" }, null);
+                var added = await typeService.AddAsync(new TransactionTypeDto { Active = true, Name = "Tx Category" }, null);
                 return added.Id;
             });
 

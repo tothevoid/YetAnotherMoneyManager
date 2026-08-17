@@ -76,6 +76,7 @@ export const useDeposits = (queryParameters: DepositsQuery) => {
 		createDepositEntity,
 		updateDepositEntity,
 		deleteDepositEntity,
+		refetch: fetchData,
 		depositsQueryParameters, 
 		setDepositsQueryParameters
 	}

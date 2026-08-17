@@ -1,6 +1,6 @@
 
 import { useCallback, useEffect, useState } from "react";
-import { createBrokerAccountFundsTransfer, deleteBrokerAccountFundsTransfer, getBrokerAccountFundsTransfers, updateBrokerAccountFundsTransfer } from "../../../api/brokers/BrokerAccountFundsTransferApi";
+import { createBrokerAccountFundsTransfer, deleteBrokerAccountFundsTransfer, getBrokerAccountFundsTransfers, updateBrokerAccountFundsTransfer } from "../../../api/brokers/brokerAccountFundsTransferApi";
 import { BrokerAccountFundTransferEntity } from "../../../models/brokers/BrokerAccountFundTransfer";
 import { Nullable } from "../../../shared/utilities/nullable";
 
@@ -62,6 +62,7 @@ export const useBrokerAccountFundTransfers = (queryParameters: FundTransfersQuer
         createFundTransferEntity,
         updateFundTransferEntity,
         deleteFundTransferEntity,
+        refetch: fetchData,
         reloadFundTransfers: fetchData,
         fundTransfersQueryParameters,
         setFundTransfersQueryParameters

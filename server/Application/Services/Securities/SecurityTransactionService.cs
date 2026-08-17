@@ -42,7 +42,7 @@ namespace MoneyManager.Application.Services.Securities
             _dividendPaymentRepo = uow.CreateRepository<DividendPayment>();
         }
 
-        public async Task<IEnumerable<SecurityTransactionDTO>> GetAll(Guid? brokerAccountId,
+        public async Task<IEnumerable<SecurityTransactionDto>> GetAllAsync(Guid? brokerAccountId,
             int recordsQuantity, int pageIndex)
         {
             var query = new ComplexQueryBuilder<SecurityTransaction>()
@@ -58,17 +58,17 @@ namespace MoneyManager.Application.Services.Securities
             }
 
             var brokerAccountSecurities = await _securityTransactionRepo
-                .GetAll(query.GetQuery());
+                .GetAllAsync(query.GetQuery());
             return _mapper.Map(brokerAccountSecurities);
         }
 
-        public async Task<Dictionary<string, SecurityTransactionsSummary>> GetSummaryTillSpecificDate(DateOnly date, Guid? brokerAccountId)
+        public async Task<Dictionary<string, SecurityTransactionsSummary>> GetSummaryTillSpecificDateAsync(DateOnly date, Guid? brokerAccountId)
         {
             Expression<Func<SecurityTransaction, bool>> filter = brokerAccountId != null ?
                 (transaction) => DateOnly.FromDateTime(transaction.Date) <= date && transaction.BrokerAccountId == brokerAccountId :
                 (transaction) => DateOnly.FromDateTime(transaction.Date) <= date;
 
-            var result = await _securityTransactionRepo.Group(
+            var result = await _securityTransactionRepo.GroupAsync(
                 (transaction) => transaction.Security.Ticker, 
                 (group) =>
                     new
@@ -94,7 +94,7 @@ namespace MoneyManager.Application.Services.Securities
                 });
         }
 
-        public async Task<IEnumerable<SecurityTransactionsHistoryDto>> GetTransactionsHistory(Guid securityId)
+        public async Task<IEnumerable<SecurityTransactionsHistoryDto>> GetTransactionsHistoryAsync(Guid securityId)
         {
             var complexQuery = new ComplexQueryBuilder<SecurityTransaction>()
                 .AddFilter(securityTransaction => securityTransaction.SecurityId == securityId)
@@ -104,10 +104,10 @@ namespace MoneyManager.Application.Services.Securities
                 .GetQuery();
 
             var transactions = await _securityTransactionRepo
-                .GetAll(complexQuery);
+                .GetAllAsync(complexQuery);
 
             var dividendsPayments = (await _dividendPaymentRepo
-                .GetAll(dividendPayment => dividendPayment.Dividend.SecurityId == securityId, DividendPaymentQuery.GetFullHierarchyColumns))
+                .GetAllAsync(dividendPayment => dividendPayment.Dividend.SecurityId == securityId, DividendPaymentQuery.GetFullHierarchyColumns))
                 .OrderBy(dividendPayment => dividendPayment.ReceivedAt)
                 .ToArray();
 
@@ -134,13 +134,13 @@ namespace MoneyManager.Application.Services.Securities
             return convertedTransactions;
         }
 
-        public async Task<PaginationConfigDto> GetPagination(Guid brokerAccountId)
+        public async Task<PaginationConfigDto> GetPaginationAsync(Guid brokerAccountId)
         {
             var filter = GetBaseFilter(brokerAccountId);
             return await GetFilteredPagination(filter);
         }
 
-        public async Task<PaginationConfigDto> GetPagination()
+        public async Task<PaginationConfigDto> GetPaginationAsync()
         {
             return await GetFilteredPagination();
         }
@@ -148,7 +148,7 @@ namespace MoneyManager.Application.Services.Securities
         private async Task<PaginationConfigDto> GetFilteredPagination(Expression<Func<SecurityTransaction, bool>> filter = null)
         {
             int pageSize = 10;
-            var recordsQuantity = await _securityTransactionRepo.GetCount(filter);
+            var recordsQuantity = await _securityTransactionRepo.GetCountAsync(filter);
 
             return new PaginationConfigDto()
             {
@@ -162,40 +162,40 @@ namespace MoneyManager.Application.Services.Securities
             return transaction => transaction.BrokerAccountId == brokerAccountId;
         }
 
-        public async Task<Guid> Add(SecurityTransactionDTO securityDto)
+        public async Task<Guid> AddAsync(SecurityTransactionDto securityDto)
         {
             var securityTransaction = _mapper.Map(securityDto);
             securityTransaction.Id = Guid.NewGuid();
             await HandleAddedTransaction(securityDto);
-            await _securityTransactionRepo.Add(securityTransaction);
-            await _db.Commit();
+            await _securityTransactionRepo.AddAsync(securityTransaction);
+            await _db.CommitAsync();
             return securityTransaction.Id;
         }
 
-        public async Task Update(SecurityTransactionDTO securityDto)
+        public async Task UpdateAsync(SecurityTransactionDto securityDto)
         {
             await HandleModifiedTransaction(securityDto);
             var securityTransaction = _mapper.Map(securityDto);
             _securityTransactionRepo.Update(securityTransaction);
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
             await HandleDeletedTransaction(id);
-            await _securityTransactionRepo.Delete(id);
+            await _securityTransactionRepo.DeleteAsync(id);
 
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
-        private async Task<BrokerAccountSecurity> FindExistingBrokerAccountSecurity(SecurityTransactionDTO securityTransaction)
+        private async Task<BrokerAccountSecurity> FindExistingBrokerAccountSecurity(SecurityTransactionDto securityTransaction)
         {
-            return await _brokerAccountSecurityRepo.Find(brokerAccountSecurity =>
+            return await _brokerAccountSecurityRepo.FindAsync(brokerAccountSecurity =>
                 brokerAccountSecurity.BrokerAccountId == securityTransaction.BrokerAccountId &&
                 brokerAccountSecurity.SecurityId == securityTransaction.SecurityId);
         }
 
-        private async Task GenerateBrokerAccountSecurity(SecurityTransactionDTO securityTransaction)
+        private async Task GenerateBrokerAccountSecurity(SecurityTransactionDto securityTransaction)
         {
             var price = securityTransaction.GetTotalPrice;
             var brokerAccountSecurity = new BrokerAccountSecurity()
@@ -206,12 +206,12 @@ namespace MoneyManager.Application.Services.Securities
                 Quantity = securityTransaction.Quantity
             };
 
-            await _brokerAccountSecurityRepo.Add(brokerAccountSecurity);
-            await _db.Commit();
+            await _brokerAccountSecurityRepo.AddAsync(brokerAccountSecurity);
+            await _db.CommitAsync();
             await ActualizeBrokerAccountCurrencyValue(brokerAccountSecurity.BrokerAccountId, -1 * price);
         }
 
-        private async Task HandleAddedTransaction(SecurityTransactionDTO securityTransaction, BrokerAccountSecurity brokerAccountSecurity = null)
+        private async Task HandleAddedTransaction(SecurityTransactionDto securityTransaction, BrokerAccountSecurity brokerAccountSecurity = null)
         {
             var modifiingBrokerAccountSecurity = await FindExistingBrokerAccountSecurity(securityTransaction);
 
@@ -230,7 +230,7 @@ namespace MoneyManager.Application.Services.Securities
             }
         }
 
-        private async Task ApplyAddedBuyTransaction(SecurityTransactionDTO securityTransaction, BrokerAccountSecurity brokerAccountSecurity)
+        private async Task ApplyAddedBuyTransaction(SecurityTransactionDto securityTransaction, BrokerAccountSecurity brokerAccountSecurity)
         {
             if (brokerAccountSecurity != null)
             {
@@ -248,7 +248,7 @@ namespace MoneyManager.Application.Services.Securities
 
         }
 
-        private async Task ApplyAddedSellTransaction(SecurityTransactionDTO securityTransaction, BrokerAccountSecurity brokerAccountSecurity)
+        private async Task ApplyAddedSellTransaction(SecurityTransactionDto securityTransaction, BrokerAccountSecurity brokerAccountSecurity)
         {
             if (brokerAccountSecurity == null)
             {
@@ -264,7 +264,7 @@ namespace MoneyManager.Application.Services.Securities
             await ActualizeBrokerAccountCurrencyValue(brokerAccountSecurity.BrokerAccountId, totalPrice);
         }
 
-        private async Task HandleModifiedTransaction(SecurityTransactionDTO modifiedSecurityTransaction)
+        private async Task HandleModifiedTransaction(SecurityTransactionDto modifiedSecurityTransaction)
         {
             var brokerAccountSecurity = await FindExistingBrokerAccountSecurity(modifiedSecurityTransaction);
             if (brokerAccountSecurity != null)
@@ -278,9 +278,9 @@ namespace MoneyManager.Application.Services.Securities
         }
 
         private async Task ApplyTransactionChanges(BrokerAccountSecurity brokerAccountSecurity,
-            SecurityTransactionDTO modifiedSecurityTransaction)
+            SecurityTransactionDto modifiedSecurityTransaction)
         {
-            var committedSecurityTransaction = await _securityTransactionRepo.GetById(modifiedSecurityTransaction.Id);
+            var committedSecurityTransaction = await _securityTransactionRepo.GetByIdAsync(modifiedSecurityTransaction.Id);
             var committedSecurityTransactionDto = _mapper.Map(committedSecurityTransaction);
 
             if (committedSecurityTransactionDto.BrokerAccountId == modifiedSecurityTransaction.BrokerAccountId ||
@@ -330,10 +330,10 @@ namespace MoneyManager.Application.Services.Securities
             await ActualizeBrokerAccountCurrencyValue(brokerAccountSecurity.BrokerAccountId, priceDiff * -1);
         }
 
-        private async Task<bool> HandleChangedBrokerAccount(SecurityTransactionDTO committedTransaction, 
-            SecurityTransactionDTO modifiedTransaction)
+        private async Task<bool> HandleChangedBrokerAccount(SecurityTransactionDto committedTransaction, 
+            SecurityTransactionDto modifiedTransaction)
         {
-            var securityTransaction = await _securityTransactionRepo.GetById(committedTransaction.Id);
+            var securityTransaction = await _securityTransactionRepo.GetByIdAsync(committedTransaction.Id);
             var securityTransactionDto = _mapper.Map(securityTransaction);
             var brokerAccountSecurity = await FindExistingBrokerAccountSecurity(securityTransactionDto);
 
@@ -345,15 +345,15 @@ namespace MoneyManager.Application.Services.Securities
 
         private async Task ActualizeBrokerAccountCurrencyValue(Guid brokerAccountId, decimal currencyDiff)
         {
-            var brokerAccount = await _brokerAccountRepo.GetById(brokerAccountId, disableTracking: false);
+            var brokerAccount = await _brokerAccountRepo.GetByIdAsync(brokerAccountId, disableTracking: false);
             brokerAccount.MainCurrencyAmount += currencyDiff;
             _brokerAccountRepo.Update(brokerAccount);
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
         private async Task HandleDeletedTransaction(Guid transactionId, BrokerAccountSecurity brokerAccountSecurity = null)
         {
-            var securityTransaction = await _securityTransactionRepo.GetById(transactionId);
+            var securityTransaction = await _securityTransactionRepo.GetByIdAsync(transactionId);
             var securityTransactionDto = _mapper.Map(securityTransaction);
 
             if (brokerAccountSecurity == null)
@@ -371,7 +371,7 @@ namespace MoneyManager.Application.Services.Securities
             }
         }
         
-        private async Task HandleDeletedBuyTransaction(SecurityTransactionDTO transaction, BrokerAccountSecurity brokerAccountSecurity)
+        private async Task HandleDeletedBuyTransaction(SecurityTransactionDto transaction, BrokerAccountSecurity brokerAccountSecurity)
         {
             if (brokerAccountSecurity == null)
             {
@@ -382,7 +382,7 @@ namespace MoneyManager.Application.Services.Securities
 
             if (brokerAccountSecurity.Quantity == transaction.Quantity && brokerAccountSecurity.SoldQuantity == 0)
             {
-                await _brokerAccountSecurityService.Delete(brokerAccountSecurity.Id);
+                await _brokerAccountSecurityService.DeleteAsync(brokerAccountSecurity.Id);
             }
             else
             {
@@ -395,7 +395,7 @@ namespace MoneyManager.Application.Services.Securities
             await ActualizeBrokerAccountCurrencyValue(brokerAccountSecurity.BrokerAccountId, price);
         }
 
-        private async Task HandleDeletedSellTransaction(SecurityTransactionDTO transaction, BrokerAccountSecurity brokerAccountSecurity)
+        private async Task HandleDeletedSellTransaction(SecurityTransactionDto transaction, BrokerAccountSecurity brokerAccountSecurity)
         {
             var price = transaction.GetTotalPrice;
 
@@ -417,7 +417,7 @@ namespace MoneyManager.Application.Services.Securities
         private async Task UpdateBrokerAccountSecurity(BrokerAccountSecurity brokerAccountSecurity)
         {
             _brokerAccountSecurityRepo.Update(brokerAccountSecurity);
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
         private IQueryable<SecurityTransaction> GetFullHierarchyColumns(

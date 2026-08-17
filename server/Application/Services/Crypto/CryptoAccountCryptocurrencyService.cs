@@ -24,41 +24,41 @@ namespace MoneyManager.Application.Services.Crypto
             _cryptoAccountCryptocurrencyRepo = uow.CreateRepository<CryptoAccountCryptocurrency>();
         }
 
-        public async Task<IEnumerable<CryptoAccountCryptocurrencyDto>> GetByCryptoAccount(Guid cryptoAccountId)
+        public async Task<IEnumerable<CryptoAccountCryptocurrencyDto>> GetByCryptoAccountAsync(Guid cryptoAccountId)
         {
-            var cryptoAccountCryptocurrencies = await _cryptoAccountCryptocurrencyRepo.GetAll(
+            var cryptoAccountCryptocurrencies = await _cryptoAccountCryptocurrencyRepo.GetAllAsync(
                 (cryptoAccountCryptocurrency) => cryptoAccountCryptocurrency.CryptoAccountId == cryptoAccountId,
                 include: GetFullHierarchyColumns);
             
             return _mapper.Map(cryptoAccountCryptocurrencies);
         }
 
-        public async Task<IEnumerable<CryptoAccountCryptocurrencyDto>> GetAll()
+        public async Task<IEnumerable<CryptoAccountCryptocurrencyDto>> GetAllAsync()
         {
-            var cryptoAccountCryptocurrencies = await _cryptoAccountCryptocurrencyRepo.GetAll(include: GetFullHierarchyColumns);
+            var cryptoAccountCryptocurrencies = await _cryptoAccountCryptocurrencyRepo.GetAllAsync(include: GetFullHierarchyColumns);
             return _mapper.Map(cryptoAccountCryptocurrencies);
         }
 
-        public async Task Update(CryptoAccountCryptocurrencyDto cryptoAccountCryptocurrencyDto)
+        public async Task UpdateAsync(CryptoAccountCryptocurrencyDto cryptoAccountCryptocurrencyDto)
         {
             var cryptoAccountCryptocurrency = _mapper.Map(cryptoAccountCryptocurrencyDto);
             _cryptoAccountCryptocurrencyRepo.Update(cryptoAccountCryptocurrency);
-            await _db.Commit();
+            await _db.CommitAsync();
         }
 
-        public async Task<Guid> Add(CryptoAccountCryptocurrencyDto cryptoAccountCryptocurrencyDto)
+        public async Task<Guid> AddAsync(CryptoAccountCryptocurrencyDto cryptoAccountCryptocurrencyDto)
         {
             var cryptoAccountCryptocurrency = _mapper.Map(cryptoAccountCryptocurrencyDto);
             cryptoAccountCryptocurrency.Id = Guid.NewGuid();
-            await _cryptoAccountCryptocurrencyRepo.Add(cryptoAccountCryptocurrency);
-            await _db.Commit();
+            await _cryptoAccountCryptocurrencyRepo.AddAsync(cryptoAccountCryptocurrency);
+            await _db.CommitAsync();
             return cryptoAccountCryptocurrency.Id;
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            await _cryptoAccountCryptocurrencyRepo.Delete(id);
-            await _db.Commit();
+            await _cryptoAccountCryptocurrencyRepo.DeleteAsync(id);
+            await _db.CommitAsync();
         }
 
         private IQueryable<CryptoAccountCryptocurrency> GetFullHierarchyColumns(

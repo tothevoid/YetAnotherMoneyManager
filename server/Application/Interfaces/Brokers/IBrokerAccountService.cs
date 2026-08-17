@@ -1,4 +1,4 @@
-﻿using MoneyManager.Application.DTO.Brokers;
+using MoneyManager.Application.DTO.Brokers;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,16 +7,16 @@ namespace MoneyManager.Application.Interfaces.Brokers
 {
     public interface IBrokerAccountService
     {
-        Task<IEnumerable<BrokerAccountDTO>> GetAll();
+        Task<IEnumerable<BrokerAccountDto>> GetAllAsync();
 
-        Task<BrokerAccountDTO> GetById(Guid id);
+        Task<BrokerAccountDto> GetByIdAsync(Guid id);
 
-        Task<decimal> GetTotalSoldAmountByBrokerAccountId(Guid brokerAccountId);
+        Task<decimal> GetTotalSoldAmountByBrokerAccountAsync(Guid brokerAccountId);
 
-        Task<Guid> Add(BrokerAccountDTO brokerAccount);
+        Task<Guid> AddAsync(BrokerAccountDto brokerAccount);
 
-        Task Update(BrokerAccountDTO brokerAccount);
+        Task UpdateAsync(BrokerAccountDto brokerAccount);
 
-        Task Delete(Guid id);
+        Task DeleteAsync(Guid id);
     }
 }

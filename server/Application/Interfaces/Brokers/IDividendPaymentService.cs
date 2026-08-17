@@ -8,22 +8,22 @@ namespace MoneyManager.Application.Interfaces.Brokers
 {
     public interface IDividendPaymentService
     {
-        Task<IEnumerable<DividendPaymentDto>> GetAll(Guid? brokerAccountId, int pageIndex, int recordsQuantity);
+        Task<IEnumerable<DividendPaymentDto>> GetAllAsync(Guid? brokerAccountId, int pageIndex, int recordsQuantity);
 
-        Task<decimal> GetSumTillSpecificDate(DateOnly date, Guid? brokerAccountId);
+        Task<decimal> GetSumTillSpecificDateAsync(DateOnly date, Guid? brokerAccountId);
 
-        Task<PaginationConfigDto> GetPagination();
+        Task<PaginationConfigDto> GetPaginationAsync();
 
-        Task<PaginationConfigDto> GetPaginationByBrokerAccount(Guid brokerAccountId);
+        Task<PaginationConfigDto> GetPaginationByBrokerAccountAsync(Guid brokerAccountId);
 
-        Task<decimal> GetEarnings();
+        Task<decimal> GetEarningsAsync();
 
-        Task<decimal> GetEarningsByBrokerAccount(Guid brokerAccountId);
+        Task<decimal> GetEarningsByBrokerAccountAsync(Guid brokerAccountId);
 
-        Task<Guid> Add(DividendPaymentDto dividendPaymentDto);
+        Task<Guid> AddAsync(DividendPaymentDto dividendPaymentDto);
 
-        Task Update(DividendPaymentDto dividendPaymentDto);
+        Task UpdateAsync(DividendPaymentDto dividendPaymentDto);
 
-        Task Delete(Guid id);
+        Task DeleteAsync(Guid id);
     }
 }

@@ -1,37 +1,97 @@
-import config from '../../config' 
+import axios from 'axios';
+import config from '../../config';
 import { Nullable } from '../../shared/utilities/nullable';
+import { setAccessToken, clearAccessToken } from '../tokenStorage';
 
 const basicUrl = `${config.api.URL}/Auth`;
 
-export const auth = async (userName: string, password: Nullable<string>)
-    : Promise<Nullable<{passwordChangeRequired: boolean, token: Nullable<string>}>> => {
-    const response = await fetch(`${basicUrl}/Login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userName: userName, password: password ?? null })
-    });
+export interface AuthResult {
+    passwordChangeRequired: boolean;
+    token: Nullable<string>;
+}
 
-    if (!response.ok) return null
-    const parsedResponse = await response.json();
-    if (parsedResponse?.passwordChangeRequired) {
-        return { passwordChangeRequired: true, token: null };
-    } else if (parsedResponse?.token) {
-        return { passwordChangeRequired: false, token: parsedResponse.token };
+export const auth = async (
+    userName: string,
+    password: Nullable<string>
+): Promise<Nullable<AuthResult>> => {
+    try {
+        const response = await axios.post(
+            `${basicUrl}/Login`,
+            { userName, password: password ?? null },
+            { withCredentials: true }
+        );
+
+        const data = response.data;
+        if (data?.passwordChangeRequired) {
+            return { passwordChangeRequired: true, token: null };
+        }
+
+        if (data?.accessToken) {
+            setAccessToken(data.accessToken);
+            return { passwordChangeRequired: false, token: data.accessToken };
+        }
+
+        return null;
+    } catch {
+        return null;
     }
-    return null;
-}
+};
 
-export const changePassword = async (userName: string, currentPassword: Nullable<string>, 
-    newPassword: string)
-    : Promise<Nullable<string>> => {
-    const response = await fetch(`${basicUrl}/ChangePassword`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userName, currentPassword, newPassword })
-    });
+export const changePassword = async (
+    userName: string,
+    currentPassword: Nullable<string>,
+    newPassword: string
+): Promise<Nullable<string>> => {
+    try {
+        const response = await axios.post(
+            `${basicUrl}/ChangePassword`,
+            { userName, currentPassword, newPassword },
+            { withCredentials: true }
+        );
 
-    if (!response.ok) return null
-    const parsedResponse = await response.json();
-    return parsedResponse?.token ?? null;
-}
+        const data = response.data;
+        if (data?.accessToken) {
+            setAccessToken(data.accessToken);
+            return data.accessToken;
+        }
 
+        return null;
+    } catch {
+        return null;
+    }
+};
+
+export const refreshTokenApi = async (): Promise<Nullable<string>> => {
+    try {
+        const response = await axios.post(
+            `${basicUrl}/RefreshToken`,
+            {},
+            { withCredentials: true }
+        );
+
+        const data = response.data;
+        if (data?.accessToken) {
+            setAccessToken(data.accessToken);
+            return data.accessToken;
+        }
+
+        return null;
+    } catch {
+        clearAccessToken();
+        return null;
+    }
+};
+
+export const logoutApi = async (): Promise<void> => {
+    try {
+        await axios.post(
+            `${basicUrl}/RevokeToken`,
+            {},
+            { withCredentials: true }
+        );
+    } catch (e) {
+        console.error("Logout revoke failed", e);
+    } finally {
+        clearAccessToken();
+    }
+};

@@ -107,14 +107,11 @@ export const useNotifications = (options: UseNotificationsOptions = {}) => {
 
     useEffect(() => {
         if (autoLoad) {
-            const token = localStorage.getItem("auth_token");
-            if (token) {
-                getPaginationConfig().then(config => {
-                    const size = config?.pageSize || 15;
-                    setRecordsQuantity(size);
-                    loadPage(1, size);
-                });
-            }
+            getPaginationConfig().then(config => {
+                const size = config?.pageSize || 15;
+                setRecordsQuantity(size);
+                loadPage(1, size);
+            });
         }
     }, [autoLoad, getPaginationConfig, loadPage]);
 

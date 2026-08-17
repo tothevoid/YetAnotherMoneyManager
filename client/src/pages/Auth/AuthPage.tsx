@@ -18,8 +18,7 @@ const AuthPage: React.FC = () => {
     const location = useLocation();
     const from = location.state?.from ?? "/";
 
-    const onTokenReceived = (token: string) => {
-        localStorage.setItem("auth_token", token);
+    const onTokenReceived = () => {
         navigate(from, { replace: true });
     };
 

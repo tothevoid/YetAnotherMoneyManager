@@ -3,7 +3,8 @@ import Header from '../features/Navigation/Header/Header';
 import TransactionsPage from './pages/Transactions/TransactionsPage'
 import DepositsPage from './pages/Deposits/DepositsPage';
 
-import { BrowserRouter as Router, Route, Routes, Outlet, Navigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes, Outlet, Navigate, useLocation } from 'react-router-dom';
 import AccountsPage from './pages/Accounts/AccountsPage';
 import DataPage from './pages/Data/DataPage';
 import BrokerAccountsPage from './pages/BrokerAccounts/BrokerAccountsPage';
@@ -19,11 +20,36 @@ import AuthPage from './pages/Auth/AuthPage';
 import { UserProvider } from '../features/UserProfileSettingsModal/hooks/UserProfileContext.tsx';
 import NotificationsPage from './pages/Notifications/NotificationsPage';
 import CashAccountPage from './pages/CashAccountPage/CashAccountPage.tsx';
+import { getAccessToken } from './api/tokenStorage';
+import { refreshTokenApi } from './api/auth/authApi';
 
 
 const RequireAuth = () => {
-	const token = localStorage.getItem("auth_token");
-	return token ? <Outlet /> : <Navigate to="/auth" replace state={{ from: location.pathname }}/>;
+	const [checkingAuth, setCheckingAuth] = useState(true);
+	const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!getAccessToken());
+	const location = useLocation();
+
+	useEffect(() => {
+		if (getAccessToken()) {
+			setIsAuthenticated(true);
+			setCheckingAuth(false);
+			return;
+		}
+
+		refreshTokenApi()
+			.then(token => {
+				setIsAuthenticated(!!token);
+			})
+			.finally(() => {
+				setCheckingAuth(false);
+			});
+	}, []);
+
+	if (checkingAuth) {
+		return null;
+	}
+
+	return isAuthenticated ? <Outlet /> : <Navigate to="/auth" replace state={{ from: location.pathname }}/>;
 }
 
 const PageWrapper = () => (

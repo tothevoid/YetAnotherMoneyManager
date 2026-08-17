@@ -199,6 +199,74 @@ namespace MoneyManager.Application.Tests.Services.Securities
             Assert.Null(updated.IconKey);
         }
 
+        [Fact]
+        public async Task TestAdd_WithIcon_GeneratesVersionedKey()
+        {
+            var typeId = await CreateSecurityType("EquityIcon3");
+            var formFile = CreateDummyFormFile();
+
+            var dto = new SecurityDTO
+            {
+                Name = "Security Versioned Icon",
+                Ticker = "SVI",
+                TypeId = typeId,
+                CurrencyId = CurrencyConstants.USD,
+                ActualPrice = 200m
+            };
+
+            var added = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISecurityService>();
+                return await service.Add(dto, formFile);
+            });
+
+            Assert.NotNull(added.IconKey);
+            Assert.StartsWith(added.Id.ToString(), added.IconKey);
+            Assert.NotEqual(added.Id.ToString(), added.IconKey);
+        }
+
+        [Fact]
+        public async Task TestUpdate_ReplaceIcon_GeneratesNewKey()
+        {
+            var typeId = await CreateSecurityType("EquityIcon4");
+            var formFile1 = CreateDummyFormFile();
+            var formFile2 = CreateDummyFormFile();
+
+            var dto = new SecurityDTO
+            {
+                Name = "Security Replace Icon",
+                Ticker = "SRI2",
+                TypeId = typeId,
+                CurrencyId = CurrencyConstants.USD,
+                ActualPrice = 250m
+            };
+
+            var added = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISecurityService>();
+                return await service.Add(dto, formFile1);
+            });
+
+            var initialKey = added.IconKey;
+            Assert.NotNull(initialKey);
+
+            var updated = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISecurityService>();
+                return await service.Update(added, formFile2);
+            });
+
+            Assert.NotNull(updated.IconKey);
+            Assert.NotEqual(initialKey, updated.IconKey);
+            Assert.StartsWith(added.Id.ToString(), updated.IconKey);
+        }
+
+        private static Microsoft.AspNetCore.Http.IFormFile CreateDummyFormFile()
+        {
+            var content = System.Text.Encoding.UTF8.GetBytes("dummy security image");
+            return new Microsoft.AspNetCore.Http.FormFile(new System.IO.MemoryStream(content), 0, content.Length, "icon", "icon.png");
+        }
+
         private async Task<Guid> CreateSecurityType(string name)
         {
             return await ExecuteScopeAsync(async sp =>

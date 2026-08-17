@@ -172,5 +172,55 @@ namespace MoneyManager.Application.Tests.Services.Banks
             Assert.NotNull(updated);
             Assert.Null(updated.IconKey);
         }
+
+        [Fact]
+        public async Task TestAdd_WithIcon_GeneratesVersionedKey()
+        {
+            var bankId = Guid.NewGuid();
+            var formFile = CreateDummyFormFile();
+
+            var added = await ExecuteScopeAsync(async sp =>
+            {
+                var bankService = sp.GetRequiredService<IBankService>();
+                return await bankService.Add(new BankDto { Id = bankId, Name = "Bank Versioned Icon" }, formFile);
+            });
+
+            Assert.NotNull(added.IconKey);
+            Assert.StartsWith(bankId.ToString(), added.IconKey);
+            Assert.NotEqual(bankId.ToString(), added.IconKey);
+        }
+
+        [Fact]
+        public async Task TestUpdate_ReplaceIcon_GeneratesNewKey()
+        {
+            var bankId = Guid.NewGuid();
+            var formFile1 = CreateDummyFormFile();
+            var formFile2 = CreateDummyFormFile();
+
+            var added = await ExecuteScopeAsync(async sp =>
+            {
+                var bankService = sp.GetRequiredService<IBankService>();
+                return await bankService.Add(new BankDto { Id = bankId, Name = "Bank Replace Icon" }, formFile1);
+            });
+
+            var initialKey = added.IconKey;
+            Assert.NotNull(initialKey);
+
+            var updated = await ExecuteScopeAsync(async sp =>
+            {
+                var bankService = sp.GetRequiredService<IBankService>();
+                return await bankService.Update(new BankDto { Id = bankId, Name = "Bank Replace Icon" }, formFile2);
+            });
+
+            Assert.NotNull(updated.IconKey);
+            Assert.NotEqual(initialKey, updated.IconKey);
+            Assert.StartsWith(bankId.ToString(), updated.IconKey);
+        }
+
+        private static Microsoft.AspNetCore.Http.IFormFile CreateDummyFormFile()
+        {
+            var content = System.Text.Encoding.UTF8.GetBytes("dummy image content");
+            return new Microsoft.AspNetCore.Http.FormFile(new System.IO.MemoryStream(content), 0, content.Length, "icon", "icon.png");
+        }
     }
 }

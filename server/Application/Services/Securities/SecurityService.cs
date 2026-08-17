@@ -130,7 +130,7 @@ namespace MoneyManager.Application.Services.Securities
             
             if (securityIcon != null)
             {
-                var key = security.Id.ToString();
+                var key = $"{security.Id}_{Guid.NewGuid():N}";
                 await _fileStorageService.UploadFile(_iconsBucket, securityIcon, key);
                 security.IconKey = key;
             }
@@ -148,14 +148,17 @@ namespace MoneyManager.Application.Services.Securities
 
             if (securityIcon != null)
             {
-                var key = security.Id.ToString();
-                await _fileStorageService.UploadFile(_iconsBucket, securityIcon, key);
-                security.IconKey = key;
+                security.IconKey = $"{security.Id}_{Guid.NewGuid():N}";
+                await _fileStorageService.UploadFile(_iconsBucket, securityIcon, security.IconKey);
             }
-            else if (string.IsNullOrEmpty(securityTypeDto.IconKey) && existingSecurity != null && !string.IsNullOrEmpty(existingSecurity.IconKey))
+            else if (string.IsNullOrEmpty(securityTypeDto.IconKey))
+            {
+                security.IconKey = null;
+            }
+
+            if (!string.IsNullOrEmpty(existingSecurity?.IconKey) && existingSecurity.IconKey != security.IconKey)
             {
                 await _fileStorageService.DeleteFile(_iconsBucket, existingSecurity.IconKey);
-                security.IconKey = null;
             }
 
             _securityRepo.Update(security);

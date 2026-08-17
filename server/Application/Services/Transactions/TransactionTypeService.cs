@@ -49,7 +49,7 @@ namespace MoneyManager.Application.Services.Transactions
 
             if (transactionTypeIcon != null)
             {
-                var key = transactionTypeDto.Id.ToString();
+                var key = $"{transactionType.Id}_{Guid.NewGuid():N}";
                 await _fileStorageService.UploadFile(_iconsBucket, transactionTypeIcon, key);
                 transactionType.IconKey = key;
             }
@@ -67,14 +67,17 @@ namespace MoneyManager.Application.Services.Transactions
 
             if (transactionTypeIcon != null)
             {
-                var key = transactionTypeDto.Id.ToString();
-                await _fileStorageService.UploadFile(_iconsBucket, transactionTypeIcon, key);
-                transactionType.IconKey = key;
+                transactionType.IconKey = $"{transactionType.Id}_{Guid.NewGuid():N}";
+                await _fileStorageService.UploadFile(_iconsBucket, transactionTypeIcon, transactionType.IconKey);
             }
-            else if (string.IsNullOrEmpty(transactionTypeDto.IconKey) && existingTransactionType != null && !string.IsNullOrEmpty(existingTransactionType.IconKey))
+            else if (string.IsNullOrEmpty(transactionTypeDto.IconKey))
+            {
+                transactionType.IconKey = null;
+            }
+
+            if (!string.IsNullOrEmpty(existingTransactionType?.IconKey) && existingTransactionType.IconKey != transactionType.IconKey)
             {
                 await _fileStorageService.DeleteFile(_iconsBucket, existingTransactionType.IconKey);
-                transactionType.IconKey = null;
             }
 
             _transactionTypeRepo.Update(transactionType);

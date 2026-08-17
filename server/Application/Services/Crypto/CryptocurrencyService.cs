@@ -41,7 +41,7 @@ namespace MoneyManager.Application.Services.Crypto
 
             if (cryptocurrencyIcon != null)
             {
-                var key = cryptocurrency.Id.ToString();
+                var key = $"{cryptocurrency.Id}_{Guid.NewGuid():N}";
                 await _fileStorageService.UploadFile(_iconsBucket, cryptocurrencyIcon, key);
                 cryptocurrency.IconKey = key;
             }
@@ -58,14 +58,17 @@ namespace MoneyManager.Application.Services.Crypto
 
             if (cryptocurrencyIcon != null)
             {
-                var key = cryptocurrency.Id.ToString();
-                await _fileStorageService.UploadFile(_iconsBucket, cryptocurrencyIcon, key);
-                cryptocurrency.IconKey = key;
+                cryptocurrency.IconKey = $"{cryptocurrency.Id}_{Guid.NewGuid():N}";
+                await _fileStorageService.UploadFile(_iconsBucket, cryptocurrencyIcon, cryptocurrency.IconKey);
             }
-            else if (string.IsNullOrEmpty(cryptocurrencyDto.IconKey) && existingCrypto != null && !string.IsNullOrEmpty(existingCrypto.IconKey))
+            else if (string.IsNullOrEmpty(cryptocurrencyDto.IconKey))
+            {
+                cryptocurrency.IconKey = null;
+            }
+
+            if (!string.IsNullOrEmpty(existingCrypto?.IconKey) && existingCrypto.IconKey != cryptocurrency.IconKey)
             {
                 await _fileStorageService.DeleteFile(_iconsBucket, existingCrypto.IconKey);
-                cryptocurrency.IconKey = null;
             }
 
             _cryptocurrencyRepo.Update(cryptocurrency);

@@ -61,6 +61,7 @@ namespace MoneyManager.WebApi.Controllers.Transactions
         [AllowAnonymous]
         public async Task<IActionResult> GetSecurityIcon(string iconKey)
         {
+            Response.Headers.CacheControl = "public, max-age=31536000, immutable";
             var url = await _transactionTypeService.GetIconUrl(iconKey);
             return Redirect(url);
         }

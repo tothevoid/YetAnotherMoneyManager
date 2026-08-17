@@ -49,7 +49,7 @@ namespace MoneyManager.Application.Services.Banks
 
             if (bankIcon != null)
             {
-                var key = bank.Id.ToString();
+                var key = $"{bank.Id}_{Guid.NewGuid():N}";
                 await _fileStorageService.UploadFile(IconsBucket, bankIcon, key);
                 bank.IconKey = key;
             }
@@ -66,14 +66,17 @@ namespace MoneyManager.Application.Services.Banks
 
             if (bankIcon != null)
             {
-                var key = bank.Id.ToString();
-                await _fileStorageService.UploadFile(IconsBucket, bankIcon, key);
-                bank.IconKey = key;
+                bank.IconKey = $"{bank.Id}_{Guid.NewGuid():N}";
+                await _fileStorageService.UploadFile(IconsBucket, bankIcon, bank.IconKey);
             }
-            else if (string.IsNullOrEmpty(bankDto.IconKey) && existingBank != null && !string.IsNullOrEmpty(existingBank.IconKey))
+            else if (string.IsNullOrEmpty(bankDto.IconKey))
+            {
+                bank.IconKey = null;
+            }
+
+            if (!string.IsNullOrEmpty(existingBank?.IconKey) && existingBank.IconKey != bank.IconKey)
             {
                 await _fileStorageService.DeleteFile(IconsBucket, existingBank.IconKey);
-                bank.IconKey = null;
             }
             
             _bankRepo.Update(bank);

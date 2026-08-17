@@ -11,11 +11,11 @@ import DataTable, { ColumnDef } from "../../../../shared/components/DataTable/Da
 
 interface State {
     brokerAccountTypes: BrokerAccountTypeEntity[],
-    currentBrokerAccountId: string | null
+    currentBrokerAccountTypeId: string | null
 }
 
 const BrokerAccountTypesTable: React.FC = () => {
-    const [state, setState] = useState<State>({brokerAccountTypes: [], currentBrokerAccountId: null});
+    const [state, setState] = useState<State>({brokerAccountTypes: [], currentBrokerAccountTypeId: null});
     const [isLoading, setIsLoading] = useState(true);
     const [updatedBrokerAccountType, setUpdatedBrokerAccountType] = useState<BrokerAccountTypeEntity | null>(null);
     const { t } = useTranslation();
@@ -80,30 +80,30 @@ const BrokerAccountTypesTable: React.FC = () => {
 
     const onDeleteClicked = async (brokerAccountType: BrokerAccountTypeEntity) => {
         setState((currentState) => {
-            return {...currentState, currentBrokerAccountId: brokerAccountType.id}
+            return {...currentState, currentBrokerAccountTypeId: brokerAccountType.id}
         })
         confirmModalRef.current?.openModal()
     }
 
     const onDeleteConfirmed = async () => {
-        const {currentBrokerAccountId} = state;
+        const {currentBrokerAccountTypeId} = state;
 
-        if (!currentBrokerAccountId){
+        if (!currentBrokerAccountTypeId){
             return;
         }
 
-        const isDeleted = await deleteBrokerAccountType(currentBrokerAccountId);
+        const isDeleted = await deleteBrokerAccountType(currentBrokerAccountTypeId);
         
         if (!isDeleted) {
             return;
         }
 
         const brokerAccountTypes = state.brokerAccountTypes.filter((brokerAccountType: BrokerAccountTypeEntity) => {
-            return brokerAccountType.id !== state.currentBrokerAccountId;
+            return brokerAccountType.id !== state.currentBrokerAccountTypeId;
         });
 
         setState((currentState) => {
-            return {...currentState, brokerAccountTypes, currentBrokerAccountId: null}
+            return {...currentState, brokerAccountTypes, currentBrokerAccountTypeId: null}
         })
     }
 

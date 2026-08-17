@@ -21,8 +21,8 @@ const BanksTable: React.FC = () => {
         banks: []});
     const [isLoading, setIsLoading] = useState(true);
 
-    const [bankToDeletedId, setBankToDeleteId] = useState<Nullable<string>>();
-    const [updatedBank, setUpdatedBank] = useState<BankEntity | null>();
+    const [bankToDeleteId, setBankToDeleteId] = useState<string | null>(null);
+    const [updatedBank, setUpdatedBank] = useState<BankEntity | null>(null);
 
     const { t } = useTranslation();
     const modalRef = useRef<BaseModalRef>(null);
@@ -45,10 +45,10 @@ const BanksTable: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        if (bankToDeletedId) {
+        if (bankToDeleteId) {
             confirmModalRef.current?.openModal();
         }
-    }, [bankToDeletedId]);
+    }, [bankToDeleteId]);
 
     useEffect(() => {
         if (updatedBank) {
@@ -70,7 +70,7 @@ const BanksTable: React.FC = () => {
 
     const onBankSaved = async (savedBank: BankEntity, icon: Nullable<File>) => {
         const isModified = state.banks
-            .findIndex(transactionType => transactionType.id === savedBank.id) >= 0;
+            .findIndex(bank => bank.id === savedBank.id) >= 0;
 
         if (isModified) {
             await onBankUpdated(savedBank, icon);
@@ -110,18 +110,18 @@ const BanksTable: React.FC = () => {
     }
 
     const onDeleteConfirmed = async () => {
-        if (!bankToDeletedId){
+        if (!bankToDeleteId){
             return;
         }
 
-        const isDeleted = await deleteBank(bankToDeletedId);
+        const isDeleted = await deleteBank(bankToDeleteId);
         
         if (!isDeleted) {
             return;
         }
 
         const banks = state.banks.filter((bank: BankEntity) => {
-            return bank.id !== bankToDeletedId;
+            return bank.id !== bankToDeleteId;
         });
 
         setState((currentState) => {

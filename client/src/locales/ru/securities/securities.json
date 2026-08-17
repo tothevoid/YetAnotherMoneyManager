@@ -2,7 +2,7 @@
     "security_page_summary_add": "Добавить бумагу",
     "security_page_summary_no_securities": "Нет бумаг",
     "security_delete_title": "Удалить бумагу",
-    "entity_security_from_title": "Ценная бумага",
+    "entity_security_form_title": "Ценная бумага",
     "entity_security_name": "Название",
     "entity_security_ticker": "Тикер",
     "entity_security_type": "Тип",

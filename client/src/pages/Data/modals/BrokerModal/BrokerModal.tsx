@@ -50,7 +50,7 @@ const BrokerModal: React.FC<ModalProps> = (props: ModalProps) => {
         <BaseFormModal
             visibilityChanged={onModalVisibilityChanged}
             ref={props.modalRef}
-            title={t("entity_broker_from_title")}
+            title={t("entity_broker_form_title")}
             submitHandler={handleSubmit(onSubmit)}
         >
             <Field.Root invalid={!!errors.name}>

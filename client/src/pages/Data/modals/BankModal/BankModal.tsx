@@ -54,8 +54,8 @@ const BankModal: React.FC<ModalProps> = (props: ModalProps) => {
         setIconUrl(url);
     }, [props.bank]);
 
-    const onSubmit = (transactionType: BankFormInput) => {
-        props.onSaved({...transactionType, iconKey: props.bank?.iconKey } as BankEntity, icon);
+    const onSubmit = (bank: BankFormInput) => {
+        props.onSaved({...bank, iconKey: props.bank?.iconKey } as BankEntity, icon);
         props.modalRef?.current?.closeModal();
     }
 
@@ -64,7 +64,7 @@ const BankModal: React.FC<ModalProps> = (props: ModalProps) => {
         setIconUrl(url);
     }
 
-    return <BaseFormModal visibilityChanged={onModalVisibilityChanged} ref={props.modalRef} title={t("entity_bank_from_title")} submitHandler={handleSubmit(onSubmit)}>
+    return <BaseFormModal visibilityChanged={onModalVisibilityChanged} ref={props.modalRef} title={t("entity_bank_form_title")} submitHandler={handleSubmit(onSubmit)}>
         <ImageInput imageUrl={iconUrl} onImageSelected={onImageSelected}/>
         <Field.Root invalid={!!errors.name}>
             <Field.Label>{t("entity_bank_name")}</Field.Label>

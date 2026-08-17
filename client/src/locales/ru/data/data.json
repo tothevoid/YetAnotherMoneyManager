@@ -19,15 +19,15 @@
     "entity_transaction_type": "Тип",
     "entity_transaction_bank": "Банк",
 
-    "entity_broker_account_type_from_title": "Тип брокерского счёта",
+    "entity_broker_account_type_form_title": "Тип брокерского счёта",
     "entity_broker_account_type_name": "Название",
     "entity_broker_account_type_add": "Добавить тип счёта",
 
-    "entity_broker_from_title": "Брокер",
+    "entity_broker_form_title": "Брокер",
     "entity_broker_name": "Название",
     "entity_broker_add": "Добавить брокера",
 
-    "entity_bank_from_title": "Банк",
+    "entity_bank_form_title": "Банк",
     "entity_bank_name": "Название",
     "entity_bank_add": "Добавить банк",
     "banks_delete_title": "Удалить банк",

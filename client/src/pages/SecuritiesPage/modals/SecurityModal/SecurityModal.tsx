@@ -95,7 +95,7 @@ const SecurityModal: React.FC<ModalProps> = (props: ModalProps) => {
         }
     }
 
-    return <BaseFormModal visibilityChanged={onVisibilityChanged} ref={props.modalRef} title={t("entity_security_from_title")} submitHandler={handleSubmit(onSubmit)}>
+    return <BaseFormModal visibilityChanged={onVisibilityChanged} ref={props.modalRef} title={t("entity_security_form_title")} submitHandler={handleSubmit(onSubmit)}>
         <Stack marginBlock={2} gapX={4} alignItems={"center"} direction={"row"}>
             <ImageInput imageUrl={iconUrl} onImageSelected={onImageSelected} />
             <Field.Root invalid={!!errors.ticker}>

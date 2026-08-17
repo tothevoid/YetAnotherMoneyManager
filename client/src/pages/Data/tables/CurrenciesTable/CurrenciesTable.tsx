@@ -87,12 +87,12 @@ const CurrenciesTable: React.FC = () => {
     };
 
     const onCurrencyAdded = async (currency: CurrencyEntity) => {
-        const cureatedCurrencyId = await createCurrency(currency);
-        if (!cureatedCurrencyId) {
+        const createdCurrencyId = await createCurrency(currency);
+        if (!createdCurrencyId) {
             return;
         }
 
-        currency.id = cureatedCurrencyId;
+        currency.id = createdCurrencyId;
 
         setState((currentState) => {
             return {...currentState, currencies: [...currentState.currencies, currency]}

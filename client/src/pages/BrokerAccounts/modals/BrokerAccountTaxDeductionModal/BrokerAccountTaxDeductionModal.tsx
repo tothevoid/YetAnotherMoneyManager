@@ -24,7 +24,7 @@ export interface EditBrokerAccountTaxDeductionContext {
 
 interface ModalProps {
     isGlobalBrokerAccount: boolean
-    onSaved: (transfer: BrokerAccountTaxDeductionEntity) => void
+    onSaved: (taxDeduction: BrokerAccountTaxDeductionEntity) => void
     context: CreateBrokerAccountTaxDeductionContext | EditBrokerAccountTaxDeductionContext
     modalRef: RefObject<BaseModalRef | null>}
 

@@ -31,12 +31,14 @@ namespace MoneyManager.Application.Services.Auth
         private readonly IConfiguration _appConfig;
         private readonly IUserProfileService _userProfileService;
         private readonly ApplicationMapper _mapper;
+        private readonly IPasswordHasherService _passwordHasher;
 
         public AuthService(
             ApplicationMapper mapper,
             IUnitOfWork uow,
             IConfiguration appConfig,
-            IUserProfileService userProfileService)
+            IUserProfileService userProfileService,
+            IPasswordHasherService passwordHasher)
         {
             _uow = uow;
             _userProfileRepo = uow.CreateRepository<UserProfile>();
@@ -44,6 +46,7 @@ namespace MoneyManager.Application.Services.Auth
             _appConfig = appConfig;
             _userProfileService = userProfileService;
             _mapper = mapper;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<LoginResponseDto> LoginAsync(string userName, string password, string? ipAddress = null, string? userAgent = null)
@@ -147,10 +150,14 @@ namespace MoneyManager.Application.Services.Auth
                 throw new ArgumentException(nameof(user));
             }
 
-            user.Password = newPassword;
+            var userEntity = await _userProfileRepo.GetByIdAsync(user.Id, disableTracking: false);
+            if (userEntity == null)
+            {
+                throw new ArgumentException(nameof(user));
+            }
 
-            var mappedUser = _mapper.Map(user);
-            _userProfileRepo.Update(mappedUser);
+            userEntity.Password = _passwordHasher.HashPassword(newPassword);
+            _userProfileRepo.Update(userEntity);
 
             // Revoke all sessions on password change
             await RevokeAllUserTokensAsync(user.Id);

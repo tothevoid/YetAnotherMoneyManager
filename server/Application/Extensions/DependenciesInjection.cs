@@ -74,6 +74,7 @@ namespace MoneyManager.Application.Extensions
             services.AddTransient<ICryptoProviderService, CryptoProviderService>();
             services.AddTransient<IBankService, BankService>();
             services.AddTransient<IAuthService, AuthService>();
+            services.AddSingleton<IPasswordHasherService, PasswordHasherService>();
 
             services.AddTransient<IAllAssetsReportService, AllAssetsReportService>();
             services.AddTransient<IBrokerAccountPortfolioHistoryService, BrokerAccountPortfolioHistoryService>();

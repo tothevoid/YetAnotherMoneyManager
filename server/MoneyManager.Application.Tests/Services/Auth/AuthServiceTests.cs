@@ -1,10 +1,15 @@
 using Microsoft.Extensions.DependencyInjection;
+using MoneyManager.Application.DTO;
 using MoneyManager.Application.DTO.Auth;
 using MoneyManager.Application.Interfaces.Auth;
 using MoneyManager.Application.Interfaces.User;
-using MoneyManager.Application.Services.Auth;
+using MoneyManager.Application.Mappings;
 using MoneyManager.Application.Tests.Fixtures;
+using MoneyManager.Infrastructure.Constants;
+using MoneyManager.Infrastructure.Entities.User;
+using MoneyManager.Infrastructure.Interfaces.Database;
 using System;
+using System.Linq;
 using System.Security;
 using System.Threading.Tasks;
 using Xunit;
@@ -18,22 +23,51 @@ namespace MoneyManager.Application.Tests.Services.Auth
         {
         }
 
+        private async Task<(UserProfileDto User, string RawPassword)> EnsureUserWithKnownPasswordAsync(string rawPassword = "TestPassword123!")
+        {
+            return await ExecuteScopeAsync(async sp =>
+            {
+                var uow = sp.GetRequiredService<IUnitOfWork>();
+                var userProfileRepo = uow.CreateRepository<UserProfile>();
+                var passwordHasher = sp.GetRequiredService<IPasswordHasherService>();
+
+                var user = (await userProfileRepo.GetAllAsync(disableTracking: false)).FirstOrDefault();
+                if (user == null)
+                {
+                    user = new UserProfile
+                    {
+                        Id = UserProfileConstants.UserProfileId,
+                        UserName = "admin",
+                        LanguageCode = "en-US",
+                        CurrencyId = CurrencyConstants.USD,
+                        Password = passwordHasher.HashPassword(rawPassword)
+                    };
+                    await userProfileRepo.AddAsync(user);
+                }
+                else
+                {
+                    user.Password = passwordHasher.HashPassword(rawPassword);
+                    userProfileRepo.Update(user);
+                }
+
+                await uow.CommitAsync();
+
+                var mapper = sp.GetRequiredService<ApplicationMapper>();
+                var dto = mapper.Map(user);
+                return (dto, rawPassword);
+            });
+        }
+
         [Fact]
         public async Task TestLoginAndChangePassword()
         {
-            var user = await ExecuteScopeAsync(async sp =>
-            {
-                var service = sp.GetRequiredService<IUserProfileService>();
-                return await service.GetAsync();
-            });
-
-            Assert.NotNull(user);
+            var (user, currentPassword) = await EnsureUserWithKnownPasswordAsync();
 
             // Test Login
             var loginResult = await ExecuteScopeAsync(async sp =>
             {
                 var authService = sp.GetRequiredService<IAuthService>();
-                return await authService.LoginAsync(user.UserName, user.Password ?? "");
+                return await authService.LoginAsync(user.UserName, currentPassword);
             });
 
             Assert.NotNull(loginResult);
@@ -46,7 +80,7 @@ namespace MoneyManager.Application.Tests.Services.Auth
             var changeResult = await ExecuteScopeAsync(async sp =>
             {
                 var authService = sp.GetRequiredService<IAuthService>();
-                return await authService.ChangePasswordAsync(user.UserName, user.Password ?? "", newPassword);
+                return await authService.ChangePasswordAsync(user.UserName, currentPassword, newPassword);
             });
 
             Assert.True(changeResult);
@@ -79,16 +113,12 @@ namespace MoneyManager.Application.Tests.Services.Auth
         [Fact]
         public async Task TestRefreshToken_SuccessfulRotation()
         {
-            var user = await ExecuteScopeAsync(async sp =>
-            {
-                var service = sp.GetRequiredService<IUserProfileService>();
-                return await service.GetAsync();
-            });
+            var (user, password) = await EnsureUserWithKnownPasswordAsync();
 
             var loginResult = await ExecuteScopeAsync(async sp =>
             {
                 var authService = sp.GetRequiredService<IAuthService>();
-                return await authService.LoginAsync(user.UserName, user.Password ?? "");
+                return await authService.LoginAsync(user.UserName, password);
             });
 
             // Perform refresh
@@ -118,16 +148,12 @@ namespace MoneyManager.Application.Tests.Services.Auth
         [Fact]
         public async Task TestRefreshToken_WithinGracePeriod_Succeeds()
         {
-            var user = await ExecuteScopeAsync(async sp =>
-            {
-                var service = sp.GetRequiredService<IUserProfileService>();
-                return await service.GetAsync();
-            });
+            var (user, password) = await EnsureUserWithKnownPasswordAsync();
 
             var loginResult = await ExecuteScopeAsync(async sp =>
             {
                 var authService = sp.GetRequiredService<IAuthService>();
-                return await authService.LoginAsync(user.UserName, user.Password ?? "");
+                return await authService.LoginAsync(user.UserName, password);
             });
 
             // Legitimate refresh rotates the token
@@ -153,16 +179,12 @@ namespace MoneyManager.Application.Tests.Services.Auth
         [Fact]
         public async Task TestRefreshToken_ReuseDetection_RevokesAllSessions()
         {
-            var user = await ExecuteScopeAsync(async sp =>
-            {
-                var service = sp.GetRequiredService<IUserProfileService>();
-                return await service.GetAsync();
-            });
+            var (user, password) = await EnsureUserWithKnownPasswordAsync();
 
             var loginResult = await ExecuteScopeAsync(async sp =>
             {
                 var authService = sp.GetRequiredService<IAuthService>();
-                return await authService.LoginAsync(user.UserName, user.Password ?? "");
+                return await authService.LoginAsync(user.UserName, password);
             });
 
             // Legitimate refresh rotates the token (old token marked as used)
@@ -177,8 +199,8 @@ namespace MoneyManager.Application.Tests.Services.Auth
             // Simulate that the replacement token was created outside the 30-second grace window (e.g. 2 minutes ago)
             await ExecuteScopeAsync(async sp =>
             {
-                var uow = sp.GetRequiredService<MoneyManager.Infrastructure.Interfaces.Database.IUnitOfWork>();
-                var tokenRepo = uow.CreateRepository<MoneyManager.Infrastructure.Entities.User.UserRefreshToken>();
+                var uow = sp.GetRequiredService<IUnitOfWork>();
+                var tokenRepo = uow.CreateRepository<UserRefreshToken>();
                 var tokens = await tokenRepo.GetAllAsync(t => t.UserProfileId == user.Id);
                 foreach (var t in tokens)
                 {
@@ -212,16 +234,12 @@ namespace MoneyManager.Application.Tests.Services.Auth
         [Fact]
         public async Task TestRevokeToken_Success()
         {
-            var user = await ExecuteScopeAsync(async sp =>
-            {
-                var service = sp.GetRequiredService<IUserProfileService>();
-                return await service.GetAsync();
-            });
+            var (user, password) = await EnsureUserWithKnownPasswordAsync();
 
             var loginResult = await ExecuteScopeAsync(async sp =>
             {
                 var authService = sp.GetRequiredService<IAuthService>();
-                return await authService.LoginAsync(user.UserName, user.Password ?? "");
+                return await authService.LoginAsync(user.UserName, password);
             });
 
             var revoked = await ExecuteScopeAsync(async sp =>
@@ -246,22 +264,18 @@ namespace MoneyManager.Application.Tests.Services.Auth
         [Fact]
         public async Task TestRevokeAllUserTokens_Success()
         {
-            var user = await ExecuteScopeAsync(async sp =>
-            {
-                var service = sp.GetRequiredService<IUserProfileService>();
-                return await service.GetAsync();
-            });
+            var (user, password) = await EnsureUserWithKnownPasswordAsync();
 
             var session1 = await ExecuteScopeAsync(async sp =>
             {
                 var authService = sp.GetRequiredService<IAuthService>();
-                return await authService.LoginAsync(user.UserName, user.Password ?? "");
+                return await authService.LoginAsync(user.UserName, password);
             });
 
             var session2 = await ExecuteScopeAsync(async sp =>
             {
                 var authService = sp.GetRequiredService<IAuthService>();
-                return await authService.LoginAsync(user.UserName, user.Password ?? "");
+                return await authService.LoginAsync(user.UserName, password);
             });
 
             var revoked = await ExecuteScopeAsync(async sp =>
@@ -295,23 +309,19 @@ namespace MoneyManager.Application.Tests.Services.Auth
         [Fact]
         public async Task TestGetRefreshTokensAndPagination_ActiveAndInactive()
         {
-            var user = await ExecuteScopeAsync(async sp =>
-            {
-                var service = sp.GetRequiredService<IUserProfileService>();
-                return await service.GetAsync();
-            });
+            var (user, password) = await EnsureUserWithKnownPasswordAsync();
 
             // Login 2 sessions
             var session1 = await ExecuteScopeAsync(async sp =>
             {
                 var authService = sp.GetRequiredService<IAuthService>();
-                return await authService.LoginAsync(user.UserName, user.Password ?? "", "192.168.1.1", "Chrome on Windows");
+                return await authService.LoginAsync(user.UserName, password, "192.168.1.1", "Chrome on Windows");
             });
 
             var session2 = await ExecuteScopeAsync(async sp =>
             {
                 var authService = sp.GetRequiredService<IAuthService>();
-                return await authService.LoginAsync(user.UserName, user.Password ?? "", "10.0.0.1", "Safari on iPhone");
+                return await authService.LoginAsync(user.UserName, password, "10.0.0.1", "Safari on iPhone");
             });
 
             // Get active tokens
@@ -339,16 +349,12 @@ namespace MoneyManager.Application.Tests.Services.Auth
         [Fact]
         public async Task TestRevokeSingleToken_Success()
         {
-            var user = await ExecuteScopeAsync(async sp =>
-            {
-                var service = sp.GetRequiredService<IUserProfileService>();
-                return await service.GetAsync();
-            });
+            var (user, password) = await EnsureUserWithKnownPasswordAsync();
 
             var session = await ExecuteScopeAsync(async sp =>
             {
                 var authService = sp.GetRequiredService<IAuthService>();
-                return await authService.LoginAsync(user.UserName, user.Password ?? "", "192.168.1.50", "Firefox on Linux");
+                return await authService.LoginAsync(user.UserName, password, "192.168.1.50", "Firefox on Linux");
             });
 
             var activeTokens = await ExecuteScopeAsync(async sp =>
@@ -381,22 +387,18 @@ namespace MoneyManager.Application.Tests.Services.Auth
         [Fact]
         public async Task TestRevokeOtherTokens_Success()
         {
-            var user = await ExecuteScopeAsync(async sp =>
-            {
-                var service = sp.GetRequiredService<IUserProfileService>();
-                return await service.GetAsync();
-            });
+            var (user, password) = await EnsureUserWithKnownPasswordAsync();
 
             var currentSession = await ExecuteScopeAsync(async sp =>
             {
                 var authService = sp.GetRequiredService<IAuthService>();
-                return await authService.LoginAsync(user.UserName, user.Password ?? "", "192.168.1.100", "Current Browser");
+                return await authService.LoginAsync(user.UserName, password, "192.168.1.100", "Current Browser");
             });
 
             var otherSession = await ExecuteScopeAsync(async sp =>
             {
                 var authService = sp.GetRequiredService<IAuthService>();
-                return await authService.LoginAsync(user.UserName, user.Password ?? "", "192.168.1.200", "Other Browser");
+                return await authService.LoginAsync(user.UserName, password, "192.168.1.200", "Other Browser");
             });
 
             var revokedOthers = await ExecuteScopeAsync(async sp =>
@@ -431,19 +433,13 @@ namespace MoneyManager.Application.Tests.Services.Auth
         [Fact]
         public async Task TestCleanUpExpiredRefreshTokens()
         {
-            var user = await ExecuteScopeAsync(async sp =>
-            {
-                var service = sp.GetRequiredService<IUserProfileService>();
-                return await service.GetAsync();
-            });
-
-            Assert.NotNull(user);
+            var (user, password) = await EnsureUserWithKnownPasswordAsync();
 
             // Create a token
             var loginResult = await ExecuteScopeAsync(async sp =>
             {
                 var authService = sp.GetRequiredService<IAuthService>();
-                return await authService.LoginAsync(user.UserName, user.Password ?? "");
+                return await authService.LoginAsync(user.UserName, password);
             });
 
             Assert.NotNull(loginResult);
@@ -456,6 +452,65 @@ namespace MoneyManager.Application.Tests.Services.Auth
             });
 
             Assert.True(deletedCount >= 1);
+        }
+
+        [Fact]
+        public async Task TestPasswordLazyMigration_PlainTextToArgon2id()
+        {
+            var plainPassword = "LegacyPlainTextPassword_" + Guid.NewGuid().ToString("N");
+
+            // Manually set plain text password for user in DB
+            var user = await ExecuteScopeAsync(async sp =>
+            {
+                var uow = sp.GetRequiredService<IUnitOfWork>();
+                var repo = uow.CreateRepository<UserProfile>();
+                var userEntity = (await repo.GetAllAsync(disableTracking: false)).First();
+                userEntity.Password = plainPassword;
+                repo.Update(userEntity);
+                await uow.CommitAsync();
+
+                var service = sp.GetRequiredService<IUserProfileService>();
+                return await service.GetAsync();
+            });
+
+            Assert.Equal(plainPassword, user.Password);
+
+            // First Login with plain text password triggers lazy migration to Argon2id
+            var loginResult = await ExecuteScopeAsync(async sp =>
+            {
+                var authService = sp.GetRequiredService<IAuthService>();
+                return await authService.LoginAsync(user.UserName, plainPassword);
+            });
+
+            Assert.NotNull(loginResult);
+
+            // Check that database password has been updated to Argon2id format
+            var updatedUser = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IUserProfileService>();
+                return await service.GetAsync();
+            });
+
+            Assert.StartsWith("$argon2id$v=19$m=65536,t=3,p=2$", updatedUser.Password);
+
+            // Second Login verifies against the Argon2id hash successfully
+            var secondLoginResult = await ExecuteScopeAsync(async sp =>
+            {
+                var authService = sp.GetRequiredService<IAuthService>();
+                return await authService.LoginAsync(user.UserName, plainPassword);
+            });
+
+            Assert.NotNull(secondLoginResult);
+
+            // Login with wrong password throws ArgumentException
+            await Assert.ThrowsAsync<ArgumentException>(async () =>
+            {
+                await ExecuteScopeAsync(async sp =>
+                {
+                    var authService = sp.GetRequiredService<IAuthService>();
+                    await authService.LoginAsync(user.UserName, "IncorrectPassword");
+                });
+            });
         }
     }
 }

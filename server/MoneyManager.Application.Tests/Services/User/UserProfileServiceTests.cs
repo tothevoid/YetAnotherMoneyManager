@@ -3,6 +3,7 @@ using MoneyManager.Application.DTO;
 using MoneyManager.Application.Interfaces.User;
 using MoneyManager.Application.Tests.Fixtures;
 using MoneyManager.Infrastructure.Constants;
+using MoneyManager.Infrastructure.Entities.User;
 
 namespace MoneyManager.Application.Tests.Services.User
 {
@@ -28,8 +29,17 @@ namespace MoneyManager.Application.Tests.Services.User
         [Fact]
         public async Task TestGetByAuth()
         {
+            var rawPassword = "TestPassword123!";
             var seededUser = await ExecuteScopeAsync(async sp =>
             {
+                var uow = sp.GetRequiredService<MoneyManager.Infrastructure.Interfaces.Database.IUnitOfWork>();
+                var repo = uow.CreateRepository<UserProfile>();
+                var hasher = sp.GetRequiredService<MoneyManager.Application.Interfaces.Auth.IPasswordHasherService>();
+                var user = (await repo.GetAllAsync(disableTracking: false)).First();
+                user.Password = hasher.HashPassword(rawPassword);
+                repo.Update(user);
+                await uow.CommitAsync();
+
                 var service = sp.GetRequiredService<IUserProfileService>();
                 return await service.GetAsync();
             });
@@ -39,11 +49,40 @@ namespace MoneyManager.Application.Tests.Services.User
             var authenticated = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IUserProfileService>();
-                return await service.GetByAuthAsync(seededUser.UserName, seededUser.Password ?? "");
+                return await service.GetByAuthAsync(seededUser.UserName, rawPassword);
             });
 
             Assert.NotNull(authenticated);
             Assert.Equal(seededUser.Id, authenticated.Id);
+        }
+
+        [Fact]
+        public async Task TestGetByUserName()
+        {
+            var seededUser = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IUserProfileService>();
+                return await service.GetAsync();
+            });
+
+            Assert.NotNull(seededUser);
+
+            var found = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IUserProfileService>();
+                return await service.GetByUserNameAsync(seededUser.UserName);
+            });
+
+            Assert.NotNull(found);
+            Assert.Equal(seededUser.Id, found.Id);
+
+            var nonExistent = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IUserProfileService>();
+                return await service.GetByUserNameAsync("non_existent_username_12345");
+            });
+
+            Assert.Null(nonExistent);
         }
 
         [Fact]
@@ -57,13 +96,11 @@ namespace MoneyManager.Application.Tests.Services.User
 
             Assert.NotNull(current);
 
-            var newUsername = "UpdatedAdmin_V2";
-            var newPassword = "newPassword123";
             var updateDto = new UserProfileDto
             {
                 Id = current.Id,
-                UserName = newUsername,
-                Password = newPassword,
+                UserName = current.UserName,
+                LanguageCode = "en-US",
                 CurrencyId = CurrencyConstants.USD
             };
 
@@ -80,8 +117,10 @@ namespace MoneyManager.Application.Tests.Services.User
             });
 
             Assert.NotNull(updated);
-            Assert.Equal(newUsername, updated.UserName);
-            Assert.Equal(newPassword, updated.Password);
+            Assert.Equal("en-US", updated.LanguageCode);
+            Assert.Equal(CurrencyConstants.USD, updated.CurrencyId);
+            Assert.Equal(current.UserName, updated.UserName);
+            Assert.Equal(current.Password, updated.Password);
         }
     }
 }

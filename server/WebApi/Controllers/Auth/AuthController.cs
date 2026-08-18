@@ -117,7 +117,7 @@ namespace MoneyManager.WebApi.Controllers.Auth
         {
             var changed = await _authService.ChangePasswordAsync(
                 changePasswordData.UserName,
-                changePasswordData.OldPassword,
+                changePasswordData.CurrentPassword,
                 changePasswordData.NewPassword);
 
             if (changed)

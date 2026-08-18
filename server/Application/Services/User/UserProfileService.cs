@@ -1,7 +1,10 @@
+#nullable enable
 using MoneyManager.Infrastructure.Interfaces.Database;
 using System.Linq;
+using System;
 using System.Threading.Tasks;
 using MoneyManager.Application.DTO;
+using MoneyManager.Application.Interfaces.Auth;
 using MoneyManager.Application.Interfaces.User;
 using MoneyManager.Application.Mappings;
 using MoneyManager.Infrastructure.Entities.User;
@@ -17,51 +20,101 @@ namespace MoneyManager.Application.Services.User
         private readonly IRepository<UserProfile> _userProfileRepo;
         private readonly ApplicationMapper _mapper;
         private readonly ICurrencyService _currencyService;
+        private readonly IPasswordHasherService _passwordHasher;
 
-        public UserProfileService(IUnitOfWork uow, ApplicationMapper mapper, ICurrencyService currencyService)
+        public UserProfileService(
+            IUnitOfWork uow,
+            ApplicationMapper mapper,
+            ICurrencyService currencyService,
+            IPasswordHasherService passwordHasher)
         {
             _db = uow;
             _mapper = mapper;
             _userProfileRepo = uow.CreateRepository<UserProfile>();
             _currencyService = currencyService;
+            _passwordHasher = passwordHasher;
         }
 
-        public async Task<UserProfileDto> GetAsync()
+        public async Task<UserProfileDto?> GetAsync()
         {
             var users = await _userProfileRepo.GetAllAsync(include: GetFullHierarchyColumns);
             return _mapper.Map(users.FirstOrDefault());
         }
 
-        public async Task<UserProfileDto> GetByAuthAsync(string userName, string password)
+        public async Task<UserProfileDto?> GetByUserNameAsync(string userName)
         {
-            var users = await _userProfileRepo.GetAllAsync((user) =>
-                string.Equals(user.UserName, userName) && 
-                (string.Equals(user.Password, password) || 
-                  (string.IsNullOrEmpty(user.Password) && string.IsNullOrEmpty(password))));
-            return _mapper.Map(users.FirstOrDefault());
+            var user = await GetUserEntityByUserNameAsync(userName, disableTracking: true);
+            return _mapper.Map(user);
+        }
+
+        public async Task<UserProfileDto?> GetByAuthAsync(string userName, string password)
+        {
+            var user = await GetUserEntityByUserNameAsync(userName, disableTracking: false);
+            if (user == null)
+            {
+                return null;
+            }
+
+            var verificationResult = _passwordHasher.VerifyHashedPassword(user.Password, password);
+            if (verificationResult == PasswordVerificationResult.Failed)
+            {
+                return null;
+            }
+
+            if (verificationResult == PasswordVerificationResult.SuccessRehashNeeded && !string.IsNullOrEmpty(password))
+            {
+                // Lazy migration: upgrade plain-text password to Argon2id hash upon successful authentication
+                user.Password = _passwordHasher.HashPassword(password);
+                _userProfileRepo.Update(user);
+                await _db.CommitAsync();
+            }
+
+            return _mapper.Map(user);
+        }
+
+        private async Task<UserProfile?> GetUserEntityByUserNameAsync(string userName, bool disableTracking = true)
+        {
+            var users = await _userProfileRepo.GetAllAsync(
+                user => string.Equals(user.UserName, userName),
+                include: GetFullHierarchyColumns,
+                disableTracking: disableTracking);
+
+            return users.FirstOrDefault();
         }
 
         public async Task UpdateAsync(UserProfileDto newUserStateDto)
         {
-            var currentUserState = await GetAsync();
-            var userProfile = _mapper.Map(newUserStateDto);
+            var existingUser = !string.IsNullOrEmpty(newUserStateDto.UserName)
+                ? await GetUserEntityByUserNameAsync(newUserStateDto.UserName, disableTracking: false)
+                : (await _userProfileRepo.GetAllAsync(include: GetFullHierarchyColumns, disableTracking: false)).FirstOrDefault();
 
-            var currencyChanged = currentUserState.CurrencyId != userProfile.CurrencyId;
+            if (existingUser == null)
+            {
+                return;
+            }
 
-            userProfile.UserName = !string.IsNullOrEmpty(newUserStateDto.UserName) ? 
-                newUserStateDto.UserName : 
-                currentUserState.UserName;
-            userProfile.Password = !string.IsNullOrEmpty(newUserStateDto.Password) ?
-                newUserStateDto.Password :
-                currentUserState.Password;
+            var currencyChanged = newUserStateDto.CurrencyId != Guid.Empty && existingUser.CurrencyId != newUserStateDto.CurrencyId;
 
-            _userProfileRepo.Update(userProfile);
+            if (!string.IsNullOrEmpty(newUserStateDto.LanguageCode))
+            {
+                existingUser.LanguageCode = newUserStateDto.LanguageCode;
+            }
+
+            if (newUserStateDto.CurrencyId != Guid.Empty)
+            {
+                existingUser.CurrencyId = newUserStateDto.CurrencyId;
+            }
+
+            _userProfileRepo.Update(existingUser);
             await _db.CommitAsync();
 
             if (currencyChanged)
             {
                 var currency = await _currencyService.GetByIdAsync(newUserStateDto.CurrencyId);
-                await _currencyService.SyncRatesAsync(currency);
+                if (currency != null)
+                {
+                    await _currencyService.SyncRatesAsync(currency);
+                }
             }
         }
 

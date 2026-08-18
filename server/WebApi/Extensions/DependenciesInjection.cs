@@ -25,16 +25,39 @@ namespace MoneyManager.WebApi.Extensions
             var user = fileStorageSection.GetSection("User").Value;
             var password = fileStorageSection.GetSection("Password").Value;
 
+            var minioSocketsHandler = new SocketsHttpHandler
+            {
+                PooledConnectionLifetime = TimeSpan.FromMinutes(15),
+                KeepAlivePingDelay = TimeSpan.FromSeconds(30),
+                KeepAlivePingTimeout = TimeSpan.FromSeconds(5),
+                EnableMultipleHttp2Connections = true,
+                SslOptions = new System.Net.Security.SslClientAuthenticationOptions
+                {
+                    // TODO: fix self signed cert workaround
+                    RemoteCertificateValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+                }
+            };
+
             services.AddMinio(configureClient => configureClient
                 .WithEndpoint(endpoint)
                 .WithSSL(useSsl)
                 .WithCredentials(user, password)
-                .WithHttpClient(new HttpClient(new HttpClientHandler
-                {
-                    // TODO: fix self signed cert workaround
-                    ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
-                }))
+                .WithHttpClient(new HttpClient(minioSocketsHandler))
                 .Build());
+
+            return services;
+        }
+
+        public static IServiceCollection AddExternalHttpClients(this IServiceCollection services)
+        {
+            services.AddHttpClient("", client => { })
+                .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
+                {
+                    PooledConnectionLifetime = TimeSpan.FromMinutes(15),
+                    KeepAlivePingDelay = TimeSpan.FromSeconds(30),
+                    KeepAlivePingTimeout = TimeSpan.FromSeconds(5),
+                    EnableMultipleHttp2Connections = true
+                });
 
             return services;
         }

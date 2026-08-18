@@ -14,7 +14,7 @@ using MoneyManager.WebApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHttpClient();
+builder.Services.AddExternalHttpClients();
 builder.Services.AddClientCors(builder.Configuration);
 
 builder.Services.AddDatabaseConnection(builder.Configuration);

@@ -11,6 +11,7 @@ using Xunit;
 
 namespace MoneyManager.Application.Tests.Services.Auth
 {
+    [Trait("Category", "Auth")]
     public class AuthServiceTests : TestBase
     {
         public AuthServiceTests(ServiceProviderFixture serviceProviderFixture) : base(serviceProviderFixture)

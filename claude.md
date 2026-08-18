@@ -53,6 +53,7 @@ This document contains guidelines, coding standards, and architectural patterns 
 - **Directory Hierarchy**: Test file structure under `MoneyManager.Application.Tests` must mirror `MoneyManager.Application`.
 - **Test Style**: xUnit, NSubstitute / Moq, AutoFixture using the AAA (Arrange-Act-Assert) pattern.
 - **S3 / File Storage Testing (`[Trait("Category", "S3")]`)**: All test classes or methods interacting with `IFileStorageService` / MinIO (e.g. `FileStorageServiceTests`, icon uploads/deletions in `BankServiceTests`, `SecurityServiceTests`, `TransactionTypeServiceTests`, `CryptocurrencyServiceTests`) MUST be tagged with `[Trait("Category", "S3")]`. Use `ServiceProviderFixture` for isolated container management.
+- **Auth Testing (`[Trait("Category", "Auth")]`)**: All test classes or methods testing authentication, JWT/Refresh tokens, login, and password changes (e.g. `AuthServiceTests`) MUST be tagged with `[Trait("Category", "Auth")]`.
 
 ### API Controllers & Dual Endpoint Pattern
 - **Date Parameters**: Use `DateOnly` (`YYYY-MM-DD`) for API query parameters.
@@ -66,6 +67,7 @@ This document contains guidelines, coding standards, and architectural patterns 
 - **Build**: `cd server && dotnet build`
 - **Run All Tests**: `cd server && dotnet test`
 - **Run S3 Tests**: `cd server && dotnet test --filter "Category=S3"`
+- **Run Auth Tests**: `cd server && dotnet test --filter "Category=Auth"`
 
 ---
 

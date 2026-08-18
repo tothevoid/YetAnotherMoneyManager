@@ -188,11 +188,16 @@ This document contains guidelines, coding standards, and architectural patterns 
 ---
 
 ## 🔄 Verification Commands & Workflow
-- **Confirmation Before Verification/Tests**: When completing an assigned task or set of code changes, do NOT automatically run long test suites or builds without asking. Always prompt the user: ask whether any adjustments/corrections are needed or if we should proceed to running the verification tests/builds (`dotnet test` / `npm run build`).
-- **Selective Execution**: Once confirmed by the user, execute verification commands selectively based on the scope of changes made during the task:
-  - **Client Changes (`client/`)**: Run `npm run build` in `client/`.
-  - **Server Changes (`server/`)**: Run `dotnet build` and `dotnet test` in `server/`.
+- **Mandatory Pre-Verification Build Check**: BEFORE reporting completion and before asking the user about test execution or adjustments, ALWAYS verify that the modified components compile and build without errors:
+  - **Server Changes (`server/`)**: Automatically run `dotnet build` in `server/` to ensure zero compilation errors.
+  - **Client Changes (`client/`)**: Automatically run `npm run build` in `client/` to ensure zero TypeScript and bundling errors.
+  - **Both / Full-Stack Changes**: Automatically run both `dotnet build` in `server/` and `npm run build` in `client/`.
+  If the build fails, fix all compilation/build errors before reporting to the user.
+- **Confirmation Before Long Test Suites**: Once the build succeeds, prompt the user before running long unit/integration test suites: ask whether any adjustments/corrections are needed or if we should proceed to running the test suites (`dotnet test`).
+- **Selective Test Execution**: Once confirmed by the user, execute tests selectively based on the scope of changes made during the task:
+  - **Server / Application Changes**: Run `dotnet test` in `server/`.
   - **S3 / File Storage Changes**: Run `dotnet test --filter "Category=S3"` (or full `dotnet test`) in `server/`.
-  - **Both / Full-Stack Changes**: Run both client build and server build/tests.
+  - **Auth Changes**: Run `dotnet test --filter "Category=Auth"` (or full `dotnet test`) in `server/`.
+  - **Full-Stack Changes**: Run `dotnet test` in `server/`.
 
 Do NOT run verification commands for a component (client or server) if no changes were made to that component.

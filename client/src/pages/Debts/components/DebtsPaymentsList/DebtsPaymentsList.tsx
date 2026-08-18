@@ -125,7 +125,12 @@ const DebtsPaymentsList: React.FC<Props> = ({
                 confirmActionName={t("modals_delete_button")}
                 ref={confirmModalRef}
             />
-            <DebtPaymentModal debtPayment={activeEntity} modalRef={modalRef} onSaved={onDebtPaymentSaved} />
+            <DebtPaymentModal
+                debtPayment={activeEntity}
+                selectedDebtId={selectedDebtId}
+                modalRef={modalRef}
+                onSaved={onDebtPaymentSaved}
+            />
         </Fragment>
     );
 };

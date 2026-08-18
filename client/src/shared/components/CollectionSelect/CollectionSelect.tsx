@@ -11,10 +11,11 @@ interface Props<T, TFieldValues extends FieldValues> {
     collection: T[],
     labelSelector: (item: T) => string,
     valueSelector: (item: T) => string,
+    isDisabled?: boolean
 }
 
 //TODO: Fix generics for lambdas
-const CollectionSelect = <T, TFieldValues extends FieldValues>({ name, placeholder, control, collection = [], labelSelector, valueSelector }: Props<T, TFieldValues>) => {
+const CollectionSelect = <T, TFieldValues extends FieldValues>({ name, placeholder, control, collection = [], labelSelector, valueSelector, isDisabled }: Props<T, TFieldValues>) => {
     const AnySelect = Select as AnySelect
     return <Controller
         name={name}
@@ -29,6 +30,7 @@ const CollectionSelect = <T, TFieldValues extends FieldValues>({ name, placehold
             return (
                 <AnySelect
                     {...field}
+                    isDisabled={isDisabled}
                     value={normalizedValue}
                     chakraStyles={{
                         control: (provided: any) => ({

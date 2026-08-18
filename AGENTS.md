@@ -176,11 +176,11 @@ This document contains guidelines, coding standards, and architectural patterns 
 ---
 
 ## 🔄 Verification Commands & Workflow
-Execute verification commands selectively based on the scope of changes made during the task:
-
-- **Client Changes (`client/`)**: Run `npm run build` in `client/`.
-- **Server Changes (`server/`)**: Run `dotnet build` and `dotnet test` in `server/`.
-- **S3 / File Storage Changes**: Run `dotnet test --filter "Category=S3"` (or full `dotnet test`) in `server/`.
-- **Both / Full-Stack Changes**: Run both client build and server build/tests.
+- **Confirmation Before Verification/Tests**: When completing an assigned task or set of code changes, do NOT automatically run long test suites or builds without asking. Always prompt the user: ask whether any adjustments/corrections are needed or if we should proceed to running the verification tests/builds (`dotnet test` / `npm run build`).
+- **Selective Execution**: Once confirmed by the user, execute verification commands selectively based on the scope of changes made during the task:
+  - **Client Changes (`client/`)**: Run `npm run build` in `client/`.
+  - **Server Changes (`server/`)**: Run `dotnet build` and `dotnet test` in `server/`.
+  - **S3 / File Storage Changes**: Run `dotnet test --filter "Category=S3"` (or full `dotnet test`) in `server/`.
+  - **Both / Full-Stack Changes**: Run both client build and server build/tests.
 
 Do NOT run verification commands for a component (client or server) if no changes were made to that component.

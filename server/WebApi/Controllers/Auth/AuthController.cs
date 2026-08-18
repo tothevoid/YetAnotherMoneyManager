@@ -47,6 +47,9 @@ namespace MoneyManager.WebApi.Controllers.Auth
         [HttpPost(nameof(RefreshToken))]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto? request)
         {
+            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var userAgent = Request.Headers.UserAgent.ToString();
+            
             var refreshToken = request?.RefreshToken;
             var hasCookie = Request.Cookies.TryGetValue(RefreshTokenCookieKey, out var cookieToken);
 

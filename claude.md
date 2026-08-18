@@ -38,6 +38,16 @@ This document contains guidelines, coding standards, and architectural patterns 
 - **Batch Async Execution**: Avoid sequential `await` inside `foreach` loops for multi-account computations. Use `Task.WhenAll` or aggregated SQL queries.
 - **Direct Bulk Deletes**: Prefer EF Core `ExecuteDeleteAsync()` for primary-key deletions rather than fetching detached entity instances prior to deletion.
 
+### Infrastructure Model Changes & Migrations Workflow
+- **Mandatory User Confirmation for Model Changes**: NEVER modify database entities, models, or configurations in `server/Infrastructure` (`server/Infrastructure/Entities/`, `server/Infrastructure/Configurations/`, `ApplicationDbContext.cs`) without first explicitly presenting the proposed schema changes and obtaining confirmation from the user.
+- **Uncommitted Migration Re-generation Workflow**:
+  - If entity/model changes are approved and made, and the current migration is NOT yet committed to git:
+    1. Roll back the database to the previous migration: `dotnet ef database update <PreviousMigrationName> --project Infrastructure --startup-project WebApi`
+    2. Remove the uncommitted migration: `dotnet ef migrations remove --project Infrastructure --startup-project WebApi`
+    3. Apply the approved entity modifications.
+    4. Generate a clean new migration: `dotnet ef migrations add <MigrationName> --project Infrastructure --startup-project WebApi`
+    5. Apply the migration: `dotnet ef database update --project Infrastructure --startup-project WebApi`
+
 ### Application Service Testing
 - **100% Service Coverage**: Every application service in `MoneyManager.Application` MUST have comprehensive unit test coverage in `MoneyManager.Application.Tests`.
 - **Directory Hierarchy**: Test file structure under `MoneyManager.Application.Tests` must mirror `MoneyManager.Application`.

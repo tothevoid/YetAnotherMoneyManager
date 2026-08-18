@@ -14,7 +14,7 @@ export const HeaderProfileButton = React.forwardRef<HTMLButtonElement, HeaderPro
             ref={ref}
             size="md"
             borderRadius="full"
-            backgroundColor="rgba(255, 255, 255, 0.04)"
+            backgroundColor="background_secondary"
             borderColor="border_primary"
             borderWidth="1px"
             px={2.5}
@@ -26,9 +26,8 @@ export const HeaderProfileButton = React.forwardRef<HTMLButtonElement, HeaderPro
             cursor="pointer"
             transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
             _hover={{
-                backgroundColor: 'rgba(255, 255, 255, 0.08)',
-                borderColor: 'action_primary',
-                boxShadow: '0 0 12px rgba(10, 142, 58, 0.25)'
+                backgroundColor: 'background_primary',
+                borderColor: 'action_primary'
             }}
             {...props}
         >
@@ -36,13 +35,12 @@ export const HeaderProfileButton = React.forwardRef<HTMLButtonElement, HeaderPro
                 w="26px"
                 h="26px"
                 borderRadius="full"
-                background="linear-gradient(135deg, #0a8e3a 0%, #055021 100%)"
+                backgroundColor="action_primary"
                 color="white"
                 align="center"
                 justify="center"
                 fontSize="xs"
                 fontWeight="bold"
-                boxShadow="0 2px 6px rgba(0,0,0,0.4)"
             >
                 {userInitial || <Icon><MdPerson /></Icon>}
             </Flex>

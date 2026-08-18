@@ -15,8 +15,8 @@ interface HeaderProfileCardProps {
     userInitial: string;
     onOpenSettings: () => void;
     onOpenChangePassword: () => void;
+    onOpenTokens: () => void;
     onLogout: () => void;
-    onRevokeAll: () => void;
 }
 
 export const HeaderProfileCard: React.FC<HeaderProfileCardProps> = ({
@@ -24,8 +24,8 @@ export const HeaderProfileCard: React.FC<HeaderProfileCardProps> = ({
     userInitial,
     onOpenSettings,
     onOpenChangePassword,
-    onLogout,
-    onRevokeAll
+    onOpenTokens,
+    onLogout
 }) => {
     const { t } = useTranslation();
 
@@ -44,25 +44,23 @@ export const HeaderProfileCard: React.FC<HeaderProfileCardProps> = ({
             >
                 <Box
                     p={3.5}
-                    background="linear-gradient(180deg, rgba(10, 142, 58, 0.18) 0%, rgba(30, 30, 30, 0.4) 100%)"
+                    backgroundColor="background_primary"
                     borderBottom="1px solid"
                     borderColor="border_primary"
                 >
                     <Flex align="center" justify="space-between">
                         <Flex align="center" gap={3} overflow="hidden" mr={2}>
                             <Flex
-                                w="40px"
-                                h="40px"
-                                minW="40px"
+                                w="38px"
+                                h="38px"
+                                minW="38px"
                                 borderRadius="full"
-                                background="linear-gradient(135deg, #0a8e3a 0%, #043d19 100%)"
+                                backgroundColor="action_primary"
                                 color="white"
                                 align="center"
                                 justify="center"
                                 fontSize="md"
                                 fontWeight="bold"
-                                border="2px solid rgba(10, 142, 58, 0.6)"
-                                boxShadow="0 0 14px rgba(10, 142, 58, 0.4)"
                             >
                                 {userInitial || <Icon fontSize="20px"><MdPerson /></Icon>}
                             </Flex>
@@ -89,8 +87,8 @@ export const HeaderProfileCard: React.FC<HeaderProfileCardProps> = ({
                             aria-label={t('header_profile_logout')}
                             transition="all 0.15s ease"
                             _hover={{
-                                backgroundColor: 'rgba(220, 38, 38, 0.15)',
-                                color: '#f87171'
+                                backgroundColor: 'status_danger_bg',
+                                color: 'status_danger'
                             }}
                             onClick={onLogout}
                         >
@@ -116,10 +114,9 @@ export const HeaderProfileCard: React.FC<HeaderProfileCardProps> = ({
                     />
                     <HeaderProfileMenuItem
                         icon={<MdOutlineDevices />}
-                        title={t('header_profile_revoke_all')}
-                        description={t('header_profile_revoke_all_desc')}
-                        onClick={onRevokeAll}
-                        isDanger
+                        title={t('header_profile_tokens')}
+                        description={t('header_profile_tokens_desc')}
+                        onClick={onOpenTokens}
                     />
                 </VStack>
             </Popover.Content>

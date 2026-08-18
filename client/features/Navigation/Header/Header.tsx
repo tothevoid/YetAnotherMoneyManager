@@ -5,6 +5,7 @@ import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import UserProfileSettingsModal from '../../UserProfileSettingsModal/UserProfileSettingsModal';
 import ChangePasswordModal from '../../ChangePasswordModal/ChangePasswordModal';
+import TokensModal from '../../TokensModal/TokensModal';
 import { NavLink } from 'react-router-dom';
 import { BaseModalRef } from '../../../src/shared/utilities/modalUtilities';
 import { HeaderNotificationBell } from './HeaderNotificationBell';
@@ -16,6 +17,7 @@ const Header = () => {
     const { t } = useTranslation();
     const userProfileSettingsRef = useRef<BaseModalRef>(null);
     const changePasswordModalRef = useRef<BaseModalRef>(null);
+    const tokensModalRef = useRef<BaseModalRef>(null);
 
     const onOpenSettingsClick = () => {
         userProfileSettingsRef.current?.openModal();
@@ -23,6 +25,10 @@ const Header = () => {
 
     const onOpenChangePasswordClick = () => {
         changePasswordModalRef.current?.openModal();
+    };
+
+    const onOpenTokensClick = () => {
+        tokensModalRef.current?.openModal();
     };
 
     const onDownloadReportClick = async () => {
@@ -86,10 +92,12 @@ const Header = () => {
                     <HeaderProfileMenu
                         onOpenSettings={onOpenSettingsClick}
                         onOpenChangePassword={onOpenChangePasswordClick}
+                        onOpenTokens={onOpenTokensClick}
                     />
                 </Flex>
                 <UserProfileSettingsModal ref={userProfileSettingsRef}/>
                 <ChangePasswordModal ref={changePasswordModalRef}/>
+                <TokensModal ref={tokensModalRef}/>
             </Flex>
         </Box>
     </nav>;

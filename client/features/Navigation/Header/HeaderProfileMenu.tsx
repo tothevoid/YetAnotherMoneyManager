@@ -2,18 +2,20 @@ import React, { useState } from 'react';
 import { Popover } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { useUserProfile } from '../../UserProfileSettingsModal/hooks/UserProfileContext';
-import { logout, revokeAll } from '../../../src/api/auth/authApi';
+import { logout } from '../../../src/api/auth/authApi';
 import { HeaderProfileButton } from './HeaderProfileButton';
 import { HeaderProfileCard } from './HeaderProfileCard';
 
 interface HeaderProfileMenuProps {
     onOpenSettings: () => void;
     onOpenChangePassword: () => void;
+    onOpenTokens: () => void;
 }
 
 export const HeaderProfileMenu: React.FC<HeaderProfileMenuProps> = ({
     onOpenSettings,
-    onOpenChangePassword
+    onOpenChangePassword,
+    onOpenTokens
 }) => {
     const { t } = useTranslation();
     const { user } = useUserProfile();
@@ -29,14 +31,15 @@ export const HeaderProfileMenu: React.FC<HeaderProfileMenuProps> = ({
         onOpenChangePassword();
     };
 
+    const handleOpenTokens = () => {
+        setOpen(false);
+        onOpenTokens();
+    };
+
     const handleLogout = async () => {
         setOpen(false);
         await logout();
-    };
-
-    const handleRevokeAll = async () => {
-        setOpen(false);
-        await revokeAll();
+        window.location.reload();
     };
 
     const userName = user?.userName || t('header_profile_user');
@@ -56,8 +59,8 @@ export const HeaderProfileMenu: React.FC<HeaderProfileMenuProps> = ({
                 userInitial={userInitial}
                 onOpenSettings={handleOpenSettings}
                 onOpenChangePassword={handleOpenChangePassword}
+                onOpenTokens={handleOpenTokens}
                 onLogout={handleLogout}
-                onRevokeAll={handleRevokeAll}
             />
         </Popover.Root>
     );

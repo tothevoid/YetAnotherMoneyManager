@@ -2,10 +2,11 @@ import React from 'react';
 import { AccountEntity } from '../../../../models/accounts/AccountEntity';
 import { MdOutlineArrowDownward, MdOutlineArrowUpward, MdEdit, MdOutlinePayment } from 'react-icons/md';
 import { MdDelete } from "react-icons/md";
-import { Flex, Stack, Card, CardBody, Text, Button, Icon, Image } from '@chakra-ui/react';
+import { Flex, Stack, Card, CardBody, Text, Button, Icon } from '@chakra-ui/react';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
 import { TransactionEntity } from '../../../../models/transactions/TransactionEntity';
 import { getTransactionTypeIconUrl } from '../../../../api/transactions/transactionTypeApi';
+import StoredIcon from '../../../../shared/components/StoredIcon';
 
 interface Props { 
 	transaction: TransactionEntity
@@ -26,16 +27,18 @@ const Transaction: React.FC<Props> = (props: Props) => {
 			</Icon>
 	}
 
-	const icon = transactionType.iconKey ?
-		<Image title={transactionType.name} h={8} w={8} src={getTransactionTypeIconUrl(transactionType.iconKey)}/>:
-		<MdOutlinePayment size={32} color="#aaa" />
+	const iconUrl = transactionType.iconKey ? getTransactionTypeIconUrl(transactionType.iconKey) : undefined;
 
 	return <Card.Root borderColor="border_primary" color="text_primary" backgroundColor="background_primary" 
 		mt={5} mb={5} boxShadow={"sm"} _hover={{ boxShadow: "md" }}>
 		<CardBody>
 			<Flex justifyContent="space-between" alignItems="center">
 				<Stack direction={'row'} alignItems="center">
-					{icon}
+					<StoredIcon
+						src={iconUrl}
+						fallbackIcon={<MdOutlinePayment size={20} color="#aaa" />}
+						size="md"
+					/>
 					<Stack direction={"row"} ml={5}>
 						<Text fontWeight={700}>{name}</Text>
 						<Text>{account.name}</Text>

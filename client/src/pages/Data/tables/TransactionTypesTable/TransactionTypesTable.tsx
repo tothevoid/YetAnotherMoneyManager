@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, Icon, Text, Image } from "@chakra-ui/react";
+import { Box, Button, Checkbox, Icon, Text } from "@chakra-ui/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { MdDelete, MdEdit, MdOutlinePayment } from "react-icons/md";
 import { useTranslation } from "react-i18next";
@@ -9,6 +9,7 @@ import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
 import TransactionTypeModal from "../../modals/TransactionTypeModal/TransactionTypeModal";
 import AddButton from "../../../../shared/components/AddButton/AddButton";
 import DataTable, { ColumnDef } from "../../../../shared/components/DataTable/DataTable";
+import StoredIcon from "../../../../shared/components/StoredIcon";
 
 interface State {
     transactionTypes: TransactionTypeEntity[]
@@ -132,17 +133,11 @@ const TransactionTypesTable: React.FC = () => {
         {
             width: "40px",
             render: (transactionType) => (
-                transactionType.iconKey ? (
-                    <Image
-                        h={8}
-                        w={8}
-                        rounded={16}
-                        src={getTransactionTypeIconUrl(transactionType?.iconKey)}
-                        objectFit="contain"
-                    />
-                ) : (
-                    <MdOutlinePayment size={32} color="#aaa" />
-                )
+                <StoredIcon
+                    src={transactionType.iconKey ? getTransactionTypeIconUrl(transactionType.iconKey) : undefined}
+                    fallbackIcon={<MdOutlinePayment size={20} color="#aaa" />}
+                    size="md"
+                />
             )
         },
         {

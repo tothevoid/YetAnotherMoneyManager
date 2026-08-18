@@ -1,4 +1,4 @@
-import { Button, Card, Flex, Icon, Link, Span, Stack, Text, Image } from '@chakra-ui/react';
+import { Button, Card, Flex, Icon, Link, Span, Stack, Text } from '@chakra-ui/react';
 import { MdDelete, MdEdit } from "react-icons/md";
 import { Fragment, useEffect, useState } from 'react';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
@@ -6,6 +6,8 @@ import { BrokerAccountEntity } from '../../../../models/brokers/BrokerAccountEnt
 import { getBankIconUrl } from '../../../../api/banks/bankApi';
 import { getPortfolioValues } from '../../../../api/brokers/brokerAccountSummaryApi';
 import { BrokerAccountPortfolioEntity } from '../../../../models/brokers/BrokerAccountPortfolioEntity';
+import { BsBank } from 'react-icons/bs';
+import StoredIcon from '../../../../shared/components/StoredIcon';
 
 interface Props {
 	brokerAccount: BrokerAccountEntity
@@ -36,6 +38,7 @@ const BrokerAccount = (props: Props) => {
 	}
 
 	const color = portfolio.profitAndLoss >= 0 ? "gain": "loss";
+	const bankIconUrl = bank?.iconKey ? getBankIconUrl(bank.iconKey) : undefined;
 
 	return <Fragment>
 		<Card.Root backgroundColor="background_primary" borderColor="border_primary" >
@@ -43,7 +46,11 @@ const BrokerAccount = (props: Props) => {
 				<Flex justifyContent="space-between" alignItems="center">
 					<Stack>
 						<Flex gapX={2} alignItems={"center"}>
-							{bank?.iconKey && <Image fit={"contain"} h={6} w={6} rounded={4} src={getBankIconUrl(bank?.iconKey)}/>}
+							<StoredIcon
+								src={bankIconUrl}
+								fallbackIcon={<BsBank size={16} color="#aaa" />}
+								size="sm"
+							/>
 							<Link fontSize="2xl" fontWeight={900} color="text_primary" href={accountLink}>{name}</Link>
 						</Flex>
 						<Text fontWeight={600}>{broker.name}</Text>

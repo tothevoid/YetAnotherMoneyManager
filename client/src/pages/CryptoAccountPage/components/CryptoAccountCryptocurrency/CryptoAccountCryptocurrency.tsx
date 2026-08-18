@@ -1,11 +1,12 @@
-import { Card, Flex, Stack, Text, Image, Button, Icon } from '@chakra-ui/react';
+import { Card, Flex, Stack, Text, Button, Icon } from '@chakra-ui/react';
 import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
-import { HiOutlineBuildingOffice2 } from 'react-icons/hi2';
+import { FaBitcoin } from 'react-icons/fa';
 import { CryptoAccountCryptocurrencyEntity } from '../../../../models/crypto/CryptoAccountCryptocurrencyEntity';
 import { getIconUrl } from '../../../../api/crypto/cryptocurrencyApi';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
 import { MdDelete, MdEdit } from 'react-icons/md';
+import StoredIcon from '../../../../shared/components/StoredIcon';
 
 type Props = {
     cryptoAccountCryptocurrency: CryptoAccountCryptocurrencyEntity,
@@ -19,18 +20,19 @@ const CryptoAccountCryptocurrency = (props: Props) => {
 
     const { t } = useTranslation();
 
-    //TODO: Fix duplication with SecurityPage
-    const icon = cryptocurrency.iconKey ?
-        <Image h={8} w={8} rounded={16} src={getIconUrl(cryptocurrency.iconKey)}/>:
-        <HiOutlineBuildingOffice2 size={32} color="#aaa" />
+    const iconUrl = cryptocurrency.iconKey ? getIconUrl(cryptocurrency.iconKey) : undefined;
 
     return <Fragment>
         <Card.Root backgroundColor="background_primary" borderColor="border_primary" >
             <Card.Body color="text_primary" boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
                 <Flex justifyContent="space-between" alignItems="center">
                     <Stack>
-                        <Stack justifyContent={"start"} direction={"row"}>
-                            {icon}
+                        <Stack justifyContent={"start"} direction={"row"} alignItems="center">
+                            <StoredIcon
+                                src={iconUrl}
+                                fallbackIcon={<FaBitcoin size={20} color="#aaa" />}
+                                size="md"
+                            />
                             <Text color="text_primary" fontSize="xl" fontWeight={900}>{cryptocurrency.name}</Text>
                         </Stack>
                         <Text fontWeight={600}>{t("broker_account_security_card_security_quantity")}: {formatMoneyByCurrencyCulture(quantity, "USD")}</Text>

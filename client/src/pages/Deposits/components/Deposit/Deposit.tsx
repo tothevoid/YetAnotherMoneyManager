@@ -1,10 +1,12 @@
 import { MdDelete, MdEdit, MdContentCopy } from "react-icons/md";
-import { Card, Flex, Stack, Button, Text, Container, Icon, Image, Progress } from "@chakra-ui/react";
-import {  formatNumericDate } from "../../../../shared/utilities/formatters/dateFormatter";
+import { Card, Flex, Stack, Button, Text, Container, Icon, Progress } from "@chakra-ui/react";
+import { formatNumericDate } from "../../../../shared/utilities/formatters/dateFormatter";
 import { formatMoney } from "../../../../shared/utilities/formatters/moneyFormatter";
 import { DepositEntity } from "../../../../models/deposits/DepositEntity";
 import { useTranslation } from "react-i18next";
 import { getBankIconUrl } from "../../../../api/banks/bankApi";
+import { BsBank } from "react-icons/bs";
+import StoredIcon from "../../../../shared/components/StoredIcon";
 
 interface Props {
     deposit: DepositEntity
@@ -26,11 +28,17 @@ const Deposit: React.FC<Props> = ({deposit, onEditClicked, onCloneClicked, onDel
 
     const alreadyEarned = (deposit.estimatedEarn ?? 0) / totalDays * daysPassed;
 
+    const bankIconUrl = deposit?.bank?.iconKey ? getBankIconUrl(deposit.bank.iconKey) : undefined;
+
     return <Card.Root borderColor="border_primary" color="text_primary" backgroundColor="background_primary">
         <Card.Body boxShadow={"sm"} _hover={{ boxShadow: "md" }} >
             <Stack>
                 <Flex gapX={2} alignItems={"center"} justifyContent={"left"} direction={"row"}>
-                    {deposit?.bank?.iconKey && <Image fit={"contain"} h={6} w={6} rounded={4} src={getBankIconUrl(deposit?.bank?.iconKey)}/>}
+                    <StoredIcon
+                        src={bankIconUrl}
+                        fallbackIcon={<BsBank size={16} color="#aaa" />}
+                        size="sm"
+                    />
                     <Text fontSize={"xl"} fontWeight={600}>
                         {deposit.name}
                     </Text>

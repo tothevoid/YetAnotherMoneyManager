@@ -2,17 +2,19 @@
 import React, { Fragment, useCallback, useEffect, useState } from "react";
 
 import { getDailyStats } from "../../../../api/brokers/brokerAccountSummaryApi";
-import { Card, SimpleGrid, Stack, Table, Text, Link, Image} from "@chakra-ui/react";
+import { Card, SimpleGrid, Stack, Table, Text, Link, Flex } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { BrokerAccountDailySecurityStatsEntity, BrokerAccountDailyStatsEntity } from "../../../../models/brokers/BrokerAccountDailyStatsEntity";
 import { Nullable } from "../../../../shared/utilities/nullable";
 import MoneyCard from "../../../../shared/components/MoneyCard/MoneyCard";
 import { calculateDiff } from "../../../../shared/utilities/numericDiffsUtilities";
 import { formatMoneyByCurrencyCulture } from "../../../../shared/utilities/formatters/moneyFormatter";
-import {  formatTime } from "../../../../shared/utilities/formatters/dateFormatter";
+import { formatTime } from "../../../../shared/utilities/formatters/dateFormatter";
 import RefreshButton from "../../../../shared/components/RefreshButton/RefreshButton";
 import StatsCard from "../../../../shared/components/StatsCard/StatsCard";
 import { getIconUrl } from "../../../../api/securities/securityApi";
+import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
+import StoredIcon from "../../../../shared/components/StoredIcon";
 
 interface Props {
 	brokerAccountId: Nullable<string>
@@ -62,11 +64,19 @@ const BrokerAccountDailyStats: React.FC<Props> = ({ brokerAccountId, currencyNam
 		const minDiff = formatMoneyByCurrencyCulture(stat.minPrice - stat.currentPrice, currencyName);
 		const maxDiff = formatMoneyByCurrencyCulture(stat.maxPrice - stat.currentPrice, currencyName);
 
+		const iconUrl = stat.security.iconKey ? getIconUrl(stat.security.iconKey) : undefined;
+
 		return <Table.Row key={stat.security.id} color="text_primary" backgroundColor="background_primary">
 			<Table.Cell>
 				<Link color="text_primary" href={`/security/${stat.security.id}`}>
-					<Image h={8} w={8} rounded={16} src={getIconUrl(stat.security.iconKey)}/>
-					{stat.security.ticker}
+					<Flex align="center" gap={2}>
+						<StoredIcon
+							src={iconUrl}
+							fallbackIcon={<HiOutlineBuildingOffice2 size={16} color="#aaa" />}
+							size="sm"
+						/>
+						{stat.security.ticker}
+					</Flex>
 				</Link>
 			</Table.Cell>
 			<Table.Cell>{formatMoneyByCurrencyCulture(stat.startPrice, currencyName)}</Table.Cell>

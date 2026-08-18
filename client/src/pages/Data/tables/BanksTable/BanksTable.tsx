@@ -1,4 +1,4 @@
-import { Box, Button, Icon, Text, Image } from "@chakra-ui/react";
+import { Box, Button, Icon, Text } from "@chakra-ui/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { useTranslation } from "react-i18next";
@@ -11,6 +11,7 @@ import BankModal from "../../modals/BankModal/BankModal";
 import { BsBank } from "react-icons/bs";
 import AddButton from "../../../../shared/components/AddButton/AddButton";
 import DataTable, { ColumnDef } from "../../../../shared/components/DataTable/DataTable";
+import StoredIcon from "../../../../shared/components/StoredIcon";
 
 interface State {
     banks: BankEntity[]
@@ -134,17 +135,11 @@ const BanksTable: React.FC = () => {
         {
             width: "50px",
             render: (bank) => (
-                bank.iconKey ? (
-                    <Image
-                        h={8}
-                        w={8}
-                        rounded={16}
-                        src={getBankIconUrl(bank?.iconKey)}
-                        objectFit="contain"
-                    />
-                ) : (
-                    <BsBank size={32} color="#aaa" />
-                )
+                <StoredIcon
+                    src={bank.iconKey ? getBankIconUrl(bank.iconKey) : undefined}
+                    fallbackIcon={<BsBank size={20} color="#aaa" />}
+                    size="md"
+                />
             )
         },
         {

@@ -1,4 +1,4 @@
-import { Card, Flex, Link, Stack, Text, Image, Badge, Box, Button } from '@chakra-ui/react';
+import { Card, Flex, Link, Stack, Text, Badge, Box, Button } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { HiOutlineBuildingOffice2 } from 'react-icons/hi2';
@@ -7,6 +7,7 @@ import { TbArrowDownLeft, TbArrowUpRight } from 'react-icons/tb';
 import { getIconUrl } from '../../../../api/securities/securityApi';
 import { BrokerAccountSecurityEntity } from '../../../../models/brokers/BrokerAccountSecurityEntity';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
+import StoredIcon from '../../../../shared/components/StoredIcon';
 
 type Props = {
     brokerAccountSecurity: BrokerAccountSecurityEntity;
@@ -35,11 +36,7 @@ export const BrokerAccountSecurity = ({ brokerAccountSecurity }: Props) => {
 
     const securityLink = `../security/${security.id}`;
 
-    const icon = security.iconKey ? (
-        <Image h={9} w={9} rounded={18} src={getIconUrl(security.iconKey)} alt={security.name} />
-    ) : (
-        <HiOutlineBuildingOffice2 size={34} color="#aaa" />
-    );
+    const iconUrl = security.iconKey ? getIconUrl(security.iconKey) : undefined;
 
     return (
         <Card.Root
@@ -56,7 +53,11 @@ export const BrokerAccountSecurity = ({ brokerAccountSecurity }: Props) => {
                 <Stack spaceY={3.5}>
                     <Flex justify="space-between" align="center">
                         <Flex align="center" gap={3}>
-                            {icon}
+                            <StoredIcon
+                                src={iconUrl}
+                                fallbackIcon={<HiOutlineBuildingOffice2 size={22} color="#aaa" />}
+                                size="lg"
+                            />
                             <Stack spaceY={0}>
                                 <Flex align="center" gap={1.5}>
                                     <Link color="text_primary" href={securityLink} fontSize="lg" fontWeight="900">

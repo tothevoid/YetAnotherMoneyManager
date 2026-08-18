@@ -1,11 +1,12 @@
-import { Button, Card, Flex, Icon, Stack, Text, Image, Link } from '@chakra-ui/react';
+import { Button, Card, Flex, Icon, Stack, Text, Link } from '@chakra-ui/react';
 import { MdDelete, MdEdit, MdCompareArrows } from "react-icons/md";
 import { Fragment, useCallback } from 'react';
 import { AccountEntity } from '../../../../models/accounts/AccountEntity';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
 import { getBankIconUrl } from '../../../../api/banks/bankApi';
 import { ACCOUNT_TYPE } from '../../../../shared/constants/accountType';
-import { BsCurrencyExchange } from "react-icons/bs";
+import { BsCurrencyExchange, BsBank } from "react-icons/bs";
+import StoredIcon from '../../../../shared/components/StoredIcon';
 
 interface Props {
     account: AccountEntity,
@@ -17,15 +18,24 @@ interface Props {
 const Account = (props: Props) => {
     const {name, balance, currency, bank, accountType} = props.account;
 
-    const getIconUrl = useCallback(() => {
-        if (bank?.iconKey) {
-            return <Image fit={"contain"} h={4} w={4} rounded={4} src={getBankIconUrl(bank?.iconKey)}/>
-        } else if (accountType.id === ACCOUNT_TYPE.CASH) {
-            return <Icon size='md'>
-                <BsCurrencyExchange/>
-            </Icon>
+    const renderIcon = useCallback(() => {
+        if (accountType.id === ACCOUNT_TYPE.CASH) {
+            return (
+                <StoredIcon
+                    fallbackIcon={<BsCurrencyExchange size={14} color="#aaa" />}
+                    size="xs"
+                />
+            );
         }
-        return getBankIconUrl(bank?.iconKey)
+
+        const iconUrl = bank?.iconKey ? getBankIconUrl(bank.iconKey) : undefined;
+        return (
+            <StoredIcon
+                src={iconUrl}
+                fallbackIcon={<BsBank size={14} color="#aaa" />}
+                size="xs"
+            />
+        );
     }, [accountType, bank]);
 
     const getTitle = useCallback(() => {
@@ -41,7 +51,7 @@ const Account = (props: Props) => {
                 <Flex justifyContent="space-between" alignItems="center">
                     <Stack>
                         <Flex gapX={2} alignItems={"center"}>
-                            {getIconUrl()}
+                            {renderIcon()}
                             {getTitle()}
                         </Flex>
                         <Text fontWeight={700}>{formatMoneyByCurrencyCulture(balance, currency.name)}</Text>

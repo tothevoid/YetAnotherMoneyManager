@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using MoneyManager.Application.DTO.Banks;
+using MoneyManager.Application.DTO.FileStorage;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace MoneyManager.Application.Interfaces.Banks
         Task<BankDto> AddAsync(BankDto bankDto, IFormFile bankIcon);
         Task<BankDto> UpdateAsync(BankDto bankDto, IFormFile bankIcon);
         Task<bool> DeleteAsync(Guid id);
+        Task<FileStreamDto> GetIconStreamAsync(string iconKey);
         Task<string> GetIconUrlAsync(string iconKey);
     }
 }

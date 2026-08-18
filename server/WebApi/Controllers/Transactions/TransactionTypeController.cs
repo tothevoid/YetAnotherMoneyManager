@@ -59,11 +59,16 @@ namespace MoneyManager.WebApi.Controllers.Transactions
 
         [HttpGet("icon")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetSecurityIcon(string iconKey)
+        public async Task<IActionResult> GetTransactionTypeIcon(string iconKey)
         {
+            var file = await _transactionTypeService.GetIconStreamAsync(iconKey);
+            if (file == null)
+            {
+                return NotFound();
+            }
+
             Response.Headers.CacheControl = "public, max-age=31536000, immutable";
-            var url = await _transactionTypeService.GetIconUrlAsync(iconKey);
-            return Redirect(url);
+            return File(file.Stream, file.ContentType);
         }
     }
 }

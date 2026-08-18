@@ -1,6 +1,6 @@
 import { Button, Card, Flex, Icon, Link, Stack, Text } from '@chakra-ui/react';
 import { MdDelete, MdEdit } from "react-icons/md";
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment } from 'react';
 import { HiOutlineBuildingOffice2 } from 'react-icons/hi2';
 import { getIconUrl } from '../../../../api/securities/securityApi';
 import { SecurityEntity } from '../../../../models/securities/SecurityEntity';

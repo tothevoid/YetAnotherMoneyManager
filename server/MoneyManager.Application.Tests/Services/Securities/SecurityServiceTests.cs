@@ -263,6 +263,16 @@ namespace MoneyManager.Application.Tests.Services.Securities
             Assert.NotNull(updated.IconKey);
             Assert.NotEqual(initialKey, updated.IconKey);
             Assert.StartsWith(added.Id.ToString(), updated.IconKey);
+
+            var iconFile = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISecurityService>();
+                return await service.GetIconStreamAsync(updated.IconKey);
+            });
+
+            Assert.NotNull(iconFile);
+            Assert.NotNull(iconFile.Stream);
+            Assert.Equal("image/png", iconFile.ContentType);
         }
 
         private static Microsoft.AspNetCore.Http.IFormFile CreateDummyFormFile()

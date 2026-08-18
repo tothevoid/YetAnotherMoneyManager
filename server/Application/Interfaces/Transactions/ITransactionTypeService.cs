@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using MoneyManager.Application.DTO.FileStorage;
 using MoneyManager.Application.DTO.Transactions;
 
 namespace MoneyManager.Application.Interfaces.Transactions
@@ -15,6 +16,8 @@ namespace MoneyManager.Application.Interfaces.Transactions
         Task<TransactionTypeDto> UpdateAsync(TransactionTypeDto transactionTypeDto, IFormFile transactionTypeIcon);
 
         Task DeleteAsync(Guid id);
+
+        Task<FileStreamDto> GetIconStreamAsync(string iconKey);
 
         Task<string> GetIconUrlAsync(string iconKey);
     }

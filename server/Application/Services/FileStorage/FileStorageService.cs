@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using MoneyManager.Application.DTO.FileStorage;
 using MoneyManager.Application.Interfaces.FileStorage;
 using System;
 using System.Threading.Tasks;
@@ -10,10 +12,12 @@ namespace MoneyManager.Application.Services.FileStorage
     public class FileStorageService : IFileStorageService
     {
         private readonly IMinioClient _minio;
+        private readonly ILogger<FileStorageService> _logger;
 
-        public FileStorageService(IMinioClient minioClient)
+        public FileStorageService(IMinioClient minioClient, ILogger<FileStorageService> logger = null)
         {
             _minio = minioClient;
+            _logger = logger;
         }
 
         public async Task UploadFileAsync(string bucketName, IFormFile file, string key)
@@ -49,6 +53,52 @@ namespace MoneyManager.Application.Services.FileStorage
                 .WithStreamData(stream)
                 .WithObjectSize(file.Length)
                 .WithContentType(contentType));
+        }
+
+        public async Task<FileStreamDto> GetFileStreamAsync(string bucketName, string key)
+        {
+            if (string.IsNullOrEmpty(bucketName) || string.IsNullOrEmpty(key))
+            {
+                return null;
+            }
+
+            var memoryStream = new System.IO.MemoryStream();
+            string contentType = "application/octet-stream";
+
+            try
+            {
+                var statArgs = new StatObjectArgs()
+                    .WithBucket(bucketName)
+                    .WithObject(key);
+
+                var stat = await _minio.StatObjectAsync(statArgs);
+                if (stat != null && !string.IsNullOrWhiteSpace(stat.ContentType))
+                {
+                    contentType = stat.ContentType;
+                }
+
+                var getArgs = new GetObjectArgs()
+                    .WithBucket(bucketName)
+                    .WithObject(key)
+                    .WithCallbackStream(stream =>
+                    {
+                        stream.CopyTo(memoryStream);
+                    });
+
+                await _minio.GetObjectAsync(getArgs);
+                memoryStream.Position = 0;
+
+                return new FileStreamDto
+                {
+                    Stream = memoryStream,
+                    ContentType = contentType
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "Failed to get file stream for bucket '{BucketName}' and key '{Key}'", bucketName, key);
+                return null;
+            }
         }
 
         public async Task<string> GetFileUrlAsync(string bucketName, string key)

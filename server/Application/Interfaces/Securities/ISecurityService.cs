@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+using MoneyManager.Application.DTO.FileStorage;
 using MoneyManager.Application.DTO.Securities;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace MoneyManager.Application.Interfaces.Securities
         Task<IEnumerable<SecurityHistoryValueDto>> GetTickerHistoryAsync(string ticker);
         Task<SecurityDto> AddAsync(SecurityDto security, IFormFile securityIcon);
         Task<SecurityDto> UpdateAsync(SecurityDto security, IFormFile securityIcon);
+        Task<FileStreamDto> GetIconStreamAsync(string iconKey);
         Task<string> GetIconUrlAsync(string iconKey);
         Task DeleteAsync(Guid id);
     }

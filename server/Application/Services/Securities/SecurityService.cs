@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using MoneyManager.Application.DTO.FileStorage;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.FileStorage;
 using MoneyManager.Application.Interfaces.Integrations.Stock;
@@ -177,6 +178,11 @@ namespace MoneyManager.Application.Services.Securities
 
             await _securityRepo.DeleteAsync(id);
             await _db.CommitAsync();
+        }
+
+        public async Task<FileStreamDto> GetIconStreamAsync(string iconKey)
+        {
+            return await _fileStorageService.GetFileStreamAsync(_iconsBucket, iconKey);
         }
 
         public async Task<string> GetIconUrlAsync(string iconKey)

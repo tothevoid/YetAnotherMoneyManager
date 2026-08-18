@@ -61,9 +61,14 @@ namespace MoneyManager.WebApi.Controllers.Crypto
         [AllowAnonymous]
         public async Task<IActionResult> GetCryptocurrencyIcon(string iconKey)
         {
+            var file = await _cryptocurrencyService.GetIconStreamAsync(iconKey);
+            if (file == null)
+            {
+                return NotFound();
+            }
+
             Response.Headers.CacheControl = "public, max-age=31536000, immutable";
-            var url = await _cryptocurrencyService.GetIconUrlAsync(iconKey);
-            return Redirect(url);
+            return File(file.Stream, file.ContentType);
         }
     }
 }

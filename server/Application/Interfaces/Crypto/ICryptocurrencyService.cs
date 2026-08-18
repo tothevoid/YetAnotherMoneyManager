@@ -1,4 +1,5 @@
 using MoneyManager.Application.DTO.Crypto;
+using MoneyManager.Application.DTO.FileStorage;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ namespace MoneyManager.Application.Interfaces.Crypto
         Task<CryptocurrencyDto> AddAsync(CryptocurrencyDto cryptocurrency, IFormFile cryptocurrencyIcon);
         Task<CryptocurrencyDto> UpdateAsync(CryptocurrencyDto cryptocurrency, IFormFile cryptocurrencyIcon);
         Task DeleteAsync(Guid id);
+        Task<FileStreamDto> GetIconStreamAsync(string iconKey);
         Task<string> GetIconUrlAsync(string iconKey);
     }
 }

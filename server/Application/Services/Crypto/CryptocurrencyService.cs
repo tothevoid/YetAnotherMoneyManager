@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MoneyManager.Application.DTO.Crypto;
+using MoneyManager.Application.DTO.FileStorage;
 using MoneyManager.Application.Interfaces.Crypto;
 using MoneyManager.Application.Mappings;
 using MoneyManager.Infrastructure.Entities.Crypto;
@@ -86,6 +87,11 @@ namespace MoneyManager.Application.Services.Crypto
 
             await _cryptocurrencyRepo.DeleteAsync(id);
             await _db.CommitAsync();
+        }
+
+        public async Task<FileStreamDto> GetIconStreamAsync(string iconKey)
+        {
+            return await _fileStorageService.GetFileStreamAsync(_iconsBucket, iconKey);
         }
 
         public async Task<string> GetIconUrlAsync(string iconKey)

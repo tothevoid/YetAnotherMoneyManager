@@ -33,6 +33,23 @@ namespace MoneyManager.Application.Tests.Services.FileStorage
         }
 
         [Fact]
+        public async Task GetFileStreamAsync_ShouldReturnFileContentDto()
+        {
+            var bucketName = $"test-bucket-{Guid.NewGuid():N}";
+            var key = $"file-{Guid.NewGuid():N}.png";
+            var formFile = CreateFormFile("fake-image-bytes", "image.png", "image/png");
+
+            await _fileStorageService.UploadFileAsync(bucketName, formFile, key);
+
+            var fileDto = await _fileStorageService.GetFileStreamAsync(bucketName, key);
+
+            Assert.NotNull(fileDto);
+            Assert.NotNull(fileDto.Stream);
+            Assert.Equal("image/png", fileDto.ContentType);
+            Assert.True(fileDto.Stream.Length > 0);
+        }
+
+        [Fact]
         public async Task GetFileUrlAsync_ShouldReturnPresignedUrl()
         {
             var bucketName = $"test-bucket-{Guid.NewGuid():N}";

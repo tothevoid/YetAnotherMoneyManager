@@ -53,9 +53,14 @@ namespace MoneyManager.WebApi.Controllers.Securities
         [AllowAnonymous]
         public async Task<IActionResult> GetSecurityIcon(string iconKey)
         {
+            var file = await _securityService.GetIconStreamAsync(iconKey);
+            if (file == null)
+            {
+                return NotFound();
+            }
+
             Response.Headers.CacheControl = "public, max-age=31536000, immutable";
-            var url = await _securityService.GetIconUrlAsync(iconKey);
-            return Redirect(url);
+            return File(file.Stream, file.ContentType);
         }
 
         [HttpGet(nameof(GetTickerHistory))]

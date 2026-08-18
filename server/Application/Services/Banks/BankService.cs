@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using MoneyManager.Application.DTO.Banks;
+using MoneyManager.Application.DTO.FileStorage;
 using MoneyManager.Application.DTO.Transactions;
 using MoneyManager.Application.Interfaces.Banks;
 using MoneyManager.Application.Interfaces.FileStorage;
@@ -96,6 +97,11 @@ namespace MoneyManager.Application.Services.Banks
             await _db.CommitAsync();
 
             return true;
+        }
+
+        public async Task<FileStreamDto> GetIconStreamAsync(string iconKey)
+        {
+            return await _fileStorageService.GetFileStreamAsync(IconsBucket, iconKey);
         }
 
         public async Task<string> GetIconUrlAsync(string iconKey)

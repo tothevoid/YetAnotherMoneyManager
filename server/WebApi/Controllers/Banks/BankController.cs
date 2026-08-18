@@ -69,9 +69,14 @@ namespace MoneyManager.WebApi.Controllers.Banks
         [AllowAnonymous]
         public async Task<IActionResult> GetBankIcon(string iconKey)
         {
+            var file = await _bankService.GetIconStreamAsync(iconKey);
+            if (file == null)
+            {
+                return NotFound();
+            }
+
             Response.Headers.CacheControl = "public, max-age=31536000, immutable";
-            var url = await _bankService.GetIconUrlAsync(iconKey);
-            return Redirect(url);
+            return File(file.Stream, file.ContentType);
         }
     }
 }

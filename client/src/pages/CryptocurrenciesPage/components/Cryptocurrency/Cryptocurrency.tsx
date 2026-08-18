@@ -1,6 +1,6 @@
 import { Button, Card, Flex, Icon, Stack, Text } from '@chakra-ui/react';
 import { MdDelete, MdEdit } from "react-icons/md";
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment } from 'react';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
 import { CryptocurrencyEntity } from '../../../../models/crypto/CryptocurrencyEntity';
 import { FaBitcoin } from "react-icons/fa";

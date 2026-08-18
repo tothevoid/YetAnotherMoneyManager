@@ -5,6 +5,7 @@ using MoneyManager.Infrastructure.Interfaces.Database;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MoneyManager.Infrastructure.Entities.Transactions;
+using MoneyManager.Application.DTO.FileStorage;
 using MoneyManager.Application.DTO.Transactions;
 using MoneyManager.Application.Interfaces.FileStorage;
 using Microsoft.AspNetCore.Http;
@@ -96,6 +97,11 @@ namespace MoneyManager.Application.Services.Transactions
 
             await _transactionTypeRepo.DeleteAsync(id);
             await _db.CommitAsync();
+        }
+
+        public async Task<FileStreamDto> GetIconStreamAsync(string iconKey)
+        {
+            return await _fileStorageService.GetFileStreamAsync(_iconsBucket, iconKey);
         }
     }
 }

@@ -8,7 +8,7 @@ const ENTITY_NAME = "cryptocurrencyJson"
 const ICON_NAME = "cryptoCurrencyIcon"
 
 export const getCryptocurrencies = async (): Promise<CryptocurrencyEntity[]> => {
-   return await getAllEntities<CryptocurrencyEntity>(basicUrl);
+    return await getAllEntities<CryptocurrencyEntity>(basicUrl);
 };
 
 export const createCryptocurrency = async (addedCryptocurrency: CryptocurrencyEntity, file: File | null): Promise<CryptocurrencyEntity | void> => {
@@ -23,14 +23,10 @@ export const deleteCryptocurrency = async (cryptoCurrencyId: string): Promise<bo
     return await deleteEntity(basicUrl, cryptoCurrencyId);
 }
 
-export const getIconUrl = (iconKey: Nullable<string>, date: Nullable<Date> = null): string => {
+export const getIconUrl = (iconKey: Nullable<string>): string => {
     if (!iconKey) {
         return "";
     }
-    
-    const baseIconUrl = getStoredIconUrl(basicUrl, iconKey);
 
-    return date ?
-        `${baseIconUrl}&date=${date}`:
-        baseIconUrl;
+    return getStoredIconUrl(basicUrl, iconKey);
 }

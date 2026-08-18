@@ -2,6 +2,7 @@ import { CurrencyEntity } from "../currencies/CurrencyEntity"
 
 export interface CommonUserProfileEntity {
     id: string,
+    userName: string,
     languageCode: string
 }
 

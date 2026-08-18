@@ -27,6 +27,7 @@
     "validation_login_required": "Введите логин",
     "validation_password_required": "Введите пароль",
     "validation_password_min_length": "Пароль должен содержать минимум 6 символов",
+    "validation_passwords_must_match": "Пароли не совпадают",
     "validation_same_account": "Исходный счёт и счёт зачисления не могут совпадать",
     "validation_percentage_range": "Значение процента должно быть от 0 до 100"
 }

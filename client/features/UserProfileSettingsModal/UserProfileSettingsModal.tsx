@@ -72,6 +72,7 @@ const UserProfileSettingsModal = forwardRef<BaseModalRef>((_, ref) => {
 	const onSubmit = async (userProfileForm: UserProfileFormInput) => {
 		const userProfile: UserProfileEntity = {
 			id: userProfileForm.id,
+			userName: user?.userName ?? "",
 			currency: state.currencies.find(currency => userProfileForm.currency.id === currency.id)!,
 			languageCode: userProfileForm.languageCode.value,
 		}

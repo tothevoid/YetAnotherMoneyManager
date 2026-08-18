@@ -3,6 +3,7 @@ import { UserProfileEntity, UserProfileEntityRequest } from "../../models/user/U
 export const prepareUserProfileRequest = (userProfile: UserProfileEntity): UserProfileEntityRequest => {
     return {
         id: userProfile.id,
+        userName: userProfile.userName,
         currencyId: userProfile.currency.id,
         languageCode: userProfile.languageCode
     }

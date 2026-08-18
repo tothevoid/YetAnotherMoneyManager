@@ -27,6 +27,7 @@
     "validation_login_required": "Login is required",
     "validation_password_required": "Password is required",
     "validation_password_min_length": "Password must be at least 6 characters",
+    "validation_passwords_must_match": "Passwords must match",
     "validation_same_account": "Source and destination accounts cannot be the same",
     "validation_percentage_range": "Percentage must be between 0 and 100"
 }

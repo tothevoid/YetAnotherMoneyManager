@@ -1,7 +1,7 @@
 import axios from 'axios';
 import config from '../../config';
 import { Nullable } from '../../shared/utilities/nullable';
-import { setAccessToken, clearAccessToken } from '../tokenStorage';
+import { setAccessToken, clearAccessToken, getAccessToken } from '../tokenStorage';
 
 const basicUrl = `${config.api.URL}/Auth`;
 
@@ -101,9 +101,34 @@ export const logoutApi = async (): Promise<void> => {
             {},
             { withCredentials: true }
         );
-    } catch (e) {
-        console.error("Logout revoke failed", e);
+    } catch {
+        // Ignore network/server errors on logout
     } finally {
         clearAccessToken();
+        if (!window.location.pathname.endsWith('/auth')) {
+            window.location.href = '/auth';
+        }
     }
 };
+
+export const revokeAllApi = async (): Promise<void> => {
+    try {
+        const token = getAccessToken();
+        await axios.post(
+            `${basicUrl}/RevokeAll`,
+            {},
+            {
+                withCredentials: true,
+                headers: token ? { Authorization: `Bearer ${token}` } : {}
+            }
+        );
+    } catch {
+        // Ignore network/server errors on revoke all
+    } finally {
+        clearAccessToken();
+        if (!window.location.pathname.endsWith('/auth')) {
+            window.location.href = '/auth';
+        }
+    }
+};
+

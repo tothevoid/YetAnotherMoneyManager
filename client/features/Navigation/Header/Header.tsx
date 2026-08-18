@@ -1,27 +1,29 @@
 import HeaderItem from '../HeaderItem/HeaderItem';
-import { Box, Button,Flex, Icon, Image, Link } from '@chakra-ui/react';
+import { Box, Button, Flex, Icon, Image, Link } from '@chakra-ui/react';
 import { MdDownload } from 'react-icons/md';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MdOutlineSettings } from 'react-icons/md';
 import UserProfileSettingsModal from '../../UserProfileSettingsModal/UserProfileSettingsModal';
-import { NavLink, useNavigate } from 'react-router-dom';
+import ChangePasswordModal from '../../ChangePasswordModal/ChangePasswordModal';
+import { NavLink } from 'react-router-dom';
 import { BaseModalRef } from '../../../src/shared/utilities/modalUtilities';
-import { MdOutlineExitToApp } from "react-icons/md";
-
 import { HeaderNotificationBell } from './HeaderNotificationBell';
+import { HeaderProfileMenu } from './HeaderProfileMenu';
 import appIcon from './AppIcon.svg';
 import { downloadAllAssetsReportXlsx } from '../../../src/api/reports/allAssetsReport';
 
 const Header = () => {
     const { t } = useTranslation();
     const userProfileSettingsRef = useRef<BaseModalRef>(null);
-
-    const navigate = useNavigate();
+    const changePasswordModalRef = useRef<BaseModalRef>(null);
 
     const onOpenSettingsClick = () => {
         userProfileSettingsRef.current?.openModal();
-    }
+    };
+
+    const onOpenChangePasswordClick = () => {
+        changePasswordModalRef.current?.openModal();
+    };
 
     const onDownloadReportClick = async () => {
         const blob = await downloadAllAssetsReportXlsx();
@@ -44,11 +46,6 @@ const Header = () => {
         }
     };
 
-    const onExitClick = () => {
-        localStorage.setItem("auth_token", "");
-        navigate("/auth", { replace: true });
-    }
-
     const tabs = [
         { path: "/", title: t("header_dashboard")},
         { path: "accounts", title: t("header_accounts")},
@@ -60,7 +57,7 @@ const Header = () => {
         { path: "cryptocurrencies", title: t("header_cryptocurrencies")},
         { path: "crypto_accounts", title: t("header_cryptoaccounts")},
         { path: "data", title: t("header_data")}
-    ]
+    ];
 
     return <nav>
         <Box w="100%">
@@ -69,7 +66,7 @@ const Header = () => {
                     <Link href='/'>
                         <Image marginInline={"10px"} width="30px" src={appIcon}></Image>
                     </Link>
-                      <Flex flex="1">
+                    <Flex flex="1">
                         {
                             tabs.map(tab => 
                                 <NavLink key={tab.path} to={tab.path} className={({ isActive }) => isActive ? 'active' : ''}>
@@ -86,21 +83,16 @@ const Header = () => {
                             <MdDownload/>
                         </Icon>
                     </Button>
-                    <Button borderColor="background_secondary" background="button_background_secondary" size={'md'} onClick={onOpenSettingsClick}>
-                        <Icon color="card_action_icon_primary">
-                            <MdOutlineSettings/>
-                        </Icon>
-                    </Button>
-                    <Button borderColor="background_secondary" background="button_background_secondary" size={'md'} onClick={onExitClick}>
-                        <Icon color="card_action_icon_primary">
-                            <MdOutlineExitToApp/>
-                        </Icon>
-                    </Button>
+                    <HeaderProfileMenu
+                        onOpenSettings={onOpenSettingsClick}
+                        onOpenChangePassword={onOpenChangePasswordClick}
+                    />
                 </Flex>
                 <UserProfileSettingsModal ref={userProfileSettingsRef}/>
+                <ChangePasswordModal ref={changePasswordModalRef}/>
             </Flex>
         </Box>
-    </nav>
-}
+    </nav>;
+};
 
 export default Header;

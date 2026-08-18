@@ -21,8 +21,7 @@ import { UserProvider } from '../features/UserProfileSettingsModal/hooks/UserPro
 import NotificationsPage from './pages/Notifications/NotificationsPage';
 import CashAccountPage from './pages/CashAccountPage/CashAccountPage.tsx';
 import { getAccessToken } from './api/tokenStorage';
-import { refreshTokenApi } from './api/auth/authApi';
-
+import { refreshToken } from './api/auth/authApi';
 
 const RequireAuth = () => {
 	const token = getAccessToken();
@@ -39,7 +38,7 @@ const RequireAuth = () => {
 			return;
 		}
 
-		refreshTokenApi()
+		refreshToken()
 			.then(refreshedToken => {
 				setIsAuthenticated(!!refreshedToken);
 			})
@@ -55,18 +54,18 @@ const RequireAuth = () => {
 		return null;
 	}
 
-	return isAuthenticated ? <Outlet /> : <Navigate to="/auth" replace state={{ from: location.pathname }}/>;
+	return isAuthenticated ? <Outlet /> : <Navigate to="/auth" replace state={{ from: location.pathname }} />;
 }
 
 const PageWrapper = () => (
 	<UserProvider>
 		<div className="app">
 			<div className="header">
-					<Header />
-				</div>
-				<main className="app-main">
-					<Outlet />
-				</main>
+				<Header />
+			</div>
+			<main className="app-main">
+				<Outlet />
+			</main>
 		</div>
 	</UserProvider>
 );
@@ -78,8 +77,8 @@ const App = () => {
 				<Route path="/auth" element={<AuthPage />} />
 				<Route element={<RequireAuth />}>
 					<Route element={<PageWrapper />}>
-						<Route path="/" element={<DashboardPage />} />	
-						<Route path="/accounts" element={<AccountsPage /> } />
+						<Route path="/" element={<DashboardPage />} />
+						<Route path="/accounts" element={<AccountsPage />} />
 						<Route path="/transactions" element={<TransactionsPage />} />
 						<Route path="/deposits" element={<DepositsPage />} />
 						<Route path="/broker_accounts" element={<BrokerAccountsPage />} />

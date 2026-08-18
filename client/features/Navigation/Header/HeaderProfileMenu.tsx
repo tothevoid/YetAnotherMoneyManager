@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Popover } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { useUserProfile } from '../../UserProfileSettingsModal/hooks/UserProfileContext';
-import { logoutApi, revokeAllApi } from '../../../src/api/auth/authApi';
+import { logout, revokeAll } from '../../../src/api/auth/authApi';
 import { HeaderProfileButton } from './HeaderProfileButton';
 import { HeaderProfileCard } from './HeaderProfileCard';
 
@@ -31,12 +31,12 @@ export const HeaderProfileMenu: React.FC<HeaderProfileMenuProps> = ({
 
     const handleLogout = async () => {
         setOpen(false);
-        await logoutApi();
+        await logout();
     };
 
     const handleRevokeAll = async () => {
         setOpen(false);
-        await revokeAllApi();
+        await revokeAll();
     };
 
     const userName = user?.userName || t('header_profile_user');

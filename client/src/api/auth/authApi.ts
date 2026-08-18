@@ -63,7 +63,7 @@ export const changePassword = async (
 
 let inFlightRefreshPromise: Nullable<Promise<Nullable<string>>> = null;
 
-export const refreshTokenApi = async (): Promise<Nullable<string>> => {
+export const refreshToken = async (): Promise<Nullable<string>> => {
     if (inFlightRefreshPromise) {
         return inFlightRefreshPromise;
     }
@@ -94,7 +94,7 @@ export const refreshTokenApi = async (): Promise<Nullable<string>> => {
     return inFlightRefreshPromise;
 };
 
-export const logoutApi = async (): Promise<void> => {
+export const logout = async (): Promise<void> => {
     try {
         await axios.post(
             `${basicUrl}/RevokeToken`,
@@ -111,7 +111,7 @@ export const logoutApi = async (): Promise<void> => {
     }
 };
 
-export const revokeAllApi = async (): Promise<void> => {
+export const revokeAll = async (): Promise<void> => {
     try {
         const token = getAccessToken();
         await axios.post(

@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import config from "../config";
 import { getAccessToken, setAccessToken, clearAccessToken } from "./tokenStorage";
-import { refreshTokenApi } from "./auth/authApi";
+import { refreshToken } from "./auth/authApi";
 
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
     _retry?: boolean;
@@ -23,27 +23,35 @@ httpClient.interceptors.request.use((reqConfig: InternalAxiosRequestConfig) => {
 let isRefreshing = false;
 let failedQueue: Array<{
     resolve: (token: string) => void;
-    reject: (err: unknown) => void;
+    reject: (error: unknown) => void;
 }> = [];
 
 const processQueue = (error: unknown, token: string | null = null) => {
     failedQueue.forEach(prom => {
         if (error) {
             prom.reject(error);
-        } else {
-            prom.resolve(token!);
+        } else if (token) {
+            prom.resolve(token);
         }
     });
     failedQueue = [];
 };
 
-const isRefreshableAuthError = (error: AxiosError, request?: CustomAxiosRequestConfig): request is CustomAxiosRequestConfig => {
-    if (!request || error.response?.status !== 401 || request._retry) {
-        return false;
+const handleAuthFailure = (error: unknown) => {
+    processQueue(error, null);
+    clearAccessToken();
+    if (!window.location.pathname.endsWith("/auth")) {
+        window.location.href = "/auth";
     }
+};
 
+const shouldRefreshToken = (request: CustomAxiosRequestConfig): boolean => {
     const url = request.url ?? "";
     return !url.includes("/Auth/Login") && !url.includes("/Auth/RefreshToken");
+};
+
+const isRefreshableAuthError = (error: AxiosError, request?: CustomAxiosRequestConfig): request is CustomAxiosRequestConfig => {
+    return !!(request && error.response?.status === 401 && !request._retry && shouldRefreshToken(request));
 };
 
 const waitForRefreshedToken = (request: CustomAxiosRequestConfig): Promise<AxiosResponse> => {
@@ -56,19 +64,11 @@ const waitForRefreshedToken = (request: CustomAxiosRequestConfig): Promise<Axios
 };
 
 const requestNewAccessToken = async (): Promise<string> => {
-    const newAccessToken = await refreshTokenApi();
+    const newAccessToken = await refreshToken();
     if (!newAccessToken) {
         throw new Error("No access token returned from refresh endpoint.");
     }
     return newAccessToken;
-};
-
-const handleAuthFailure = (error: unknown) => {
-    processQueue(error, null);
-    clearAccessToken();
-    if (!window.location.pathname.endsWith("/auth")) {
-        window.location.href = "/auth";
-    }
 };
 
 httpClient.interceptors.response.use(

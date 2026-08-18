@@ -290,5 +290,141 @@ namespace MoneyManager.Application.Tests.Services.Auth
                 });
             });
         }
+
+        [Fact]
+        public async Task TestGetRefreshTokensAndPagination_ActiveAndInactive()
+        {
+            var user = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IUserProfileService>();
+                return await service.GetAsync();
+            });
+
+            // Login 2 sessions
+            var session1 = await ExecuteScopeAsync(async sp =>
+            {
+                var authService = sp.GetRequiredService<IAuthService>();
+                return await authService.LoginAsync(user.UserName, user.Password ?? "", "192.168.1.1", "Chrome on Windows");
+            });
+
+            var session2 = await ExecuteScopeAsync(async sp =>
+            {
+                var authService = sp.GetRequiredService<IAuthService>();
+                return await authService.LoginAsync(user.UserName, user.Password ?? "", "10.0.0.1", "Safari on iPhone");
+            });
+
+            // Get active tokens
+            var activeTokens = await ExecuteScopeAsync(async sp =>
+            {
+                var authService = sp.GetRequiredService<IAuthService>();
+                return await authService.GetRefreshTokensAsync(user.Id, isActive: true, 1, 10, session1.RefreshToken);
+            });
+
+            Assert.NotNull(activeTokens);
+            Assert.Contains(activeTokens, s => s.IsCurrent && s.CreatedByIp == "192.168.1.1");
+            Assert.Contains(activeTokens, s => !s.IsCurrent && s.CreatedByIp == "10.0.0.1");
+
+            // Pagination config
+            var paginationConfig = await ExecuteScopeAsync(async sp =>
+            {
+                var authService = sp.GetRequiredService<IAuthService>();
+                return await authService.GetRefreshTokensPaginationAsync(user.Id, isActive: true);
+            });
+
+            Assert.NotNull(paginationConfig);
+            Assert.True(paginationConfig.RecordsQuantity >= 2);
+        }
+
+        [Fact]
+        public async Task TestRevokeSingleToken_Success()
+        {
+            var user = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IUserProfileService>();
+                return await service.GetAsync();
+            });
+
+            var session = await ExecuteScopeAsync(async sp =>
+            {
+                var authService = sp.GetRequiredService<IAuthService>();
+                return await authService.LoginAsync(user.UserName, user.Password ?? "", "192.168.1.50", "Firefox on Linux");
+            });
+
+            var activeTokens = await ExecuteScopeAsync(async sp =>
+            {
+                var authService = sp.GetRequiredService<IAuthService>();
+                return await authService.GetRefreshTokensAsync(user.Id, isActive: true);
+            });
+
+            var targetToken = Assert.Single(activeTokens, s => s.CreatedByIp == "192.168.1.50");
+
+            var revoked = await ExecuteScopeAsync(async sp =>
+            {
+                var authService = sp.GetRequiredService<IAuthService>();
+                return await authService.RevokeTokenAsync(targetToken.Id, user.Id);
+            });
+
+            Assert.True(revoked);
+
+            // Verify session is no longer active and fails refresh
+            await Assert.ThrowsAsync<SecurityException>(async () =>
+            {
+                await ExecuteScopeAsync(async sp =>
+                {
+                    var authService = sp.GetRequiredService<IAuthService>();
+                    await authService.RefreshTokenAsync(session.RefreshToken);
+                });
+            });
+        }
+
+        [Fact]
+        public async Task TestRevokeOtherTokens_Success()
+        {
+            var user = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IUserProfileService>();
+                return await service.GetAsync();
+            });
+
+            var currentSession = await ExecuteScopeAsync(async sp =>
+            {
+                var authService = sp.GetRequiredService<IAuthService>();
+                return await authService.LoginAsync(user.UserName, user.Password ?? "", "192.168.1.100", "Current Browser");
+            });
+
+            var otherSession = await ExecuteScopeAsync(async sp =>
+            {
+                var authService = sp.GetRequiredService<IAuthService>();
+                return await authService.LoginAsync(user.UserName, user.Password ?? "", "192.168.1.200", "Other Browser");
+            });
+
+            var revokedOthers = await ExecuteScopeAsync(async sp =>
+            {
+                var authService = sp.GetRequiredService<IAuthService>();
+                return await authService.RevokeOtherTokensAsync(user.Id, currentSession.RefreshToken);
+            });
+
+            Assert.True(revokedOthers);
+
+            // Current session should still be refreshable
+            var refreshedCurrent = await ExecuteScopeAsync(async sp =>
+            {
+                var authService = sp.GetRequiredService<IAuthService>();
+                return await authService.RefreshTokenAsync(currentSession.RefreshToken);
+            });
+
+            Assert.NotNull(refreshedCurrent);
+            Assert.False(string.IsNullOrEmpty(refreshedCurrent.AccessToken));
+
+            // Other session must be revoked and fail refresh
+            await Assert.ThrowsAsync<SecurityException>(async () =>
+            {
+                await ExecuteScopeAsync(async sp =>
+                {
+                    var authService = sp.GetRequiredService<IAuthService>();
+                    await authService.RefreshTokenAsync(otherSession.RefreshToken);
+                });
+            });
+        }
     }
 }

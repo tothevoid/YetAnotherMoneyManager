@@ -103,8 +103,7 @@ namespace MoneyManager.WebApi.Controllers.Auth
         [HttpPost(nameof(RevokeAll))]
         public async Task<IActionResult> RevokeAll()
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (Guid.TryParse(userIdClaim, out var userId))
+            if (TryGetCurrentUserId(out var userId))
             {
                 await _authService.RevokeAllUserTokensAsync(userId);
             }
@@ -118,7 +117,7 @@ namespace MoneyManager.WebApi.Controllers.Auth
         {
             var changed = await _authService.ChangePasswordAsync(
                 changePasswordData.UserName,
-                changePasswordData.CurrentPassword,
+                changePasswordData.OldPassword,
                 changePasswordData.NewPassword);
 
             if (changed)
@@ -141,6 +140,66 @@ namespace MoneyManager.WebApi.Controllers.Auth
             }
 
             return BadRequest("Password change failed.");
+        }
+
+        [Authorize]
+        [HttpGet("RefreshTokens")]
+        public async Task<IActionResult> GetRefreshTokens([FromQuery] bool isActive = true, [FromQuery] int pageIndex = 1, [FromQuery] int recordsQuantity = 10)
+        {
+            if (!TryGetCurrentUserId(out var userId))
+            {
+                return Unauthorized();
+            }
+
+            Request.Cookies.TryGetValue(RefreshTokenCookieKey, out var currentCookieToken);
+            var tokens = await _authService.GetRefreshTokensAsync(userId, isActive, pageIndex, recordsQuantity, currentCookieToken);
+            return Ok(tokens);
+        }
+
+        [Authorize]
+        [HttpGet("RefreshTokens/Pagination")]
+        public async Task<IActionResult> GetRefreshTokensPagination([FromQuery] bool isActive = true)
+        {
+            if (!TryGetCurrentUserId(out var userId))
+            {
+                return Unauthorized();
+            }
+
+            var pagination = await _authService.GetRefreshTokensPaginationAsync(userId, isActive);
+            return Ok(pagination);
+        }
+
+        [Authorize]
+        [HttpDelete("RefreshTokens/{id:guid}")]
+        public async Task<IActionResult> RevokeToken(Guid id)
+        {
+            if (!TryGetCurrentUserId(out var userId))
+            {
+                return Unauthorized();
+            }
+
+            var revoked = await _authService.RevokeTokenAsync(id, userId);
+            return revoked ? Ok(new { message = "Token revoked." }) : NotFound();
+        }
+
+        [Authorize]
+        [HttpPost("RevokeOthers")]
+        public async Task<IActionResult> RevokeOtherTokens()
+        {
+            if (!TryGetCurrentUserId(out var userId))
+            {
+                return Unauthorized();
+            }
+
+            Request.Cookies.TryGetValue(RefreshTokenCookieKey, out var currentCookieToken);
+            await _authService.RevokeOtherTokensAsync(userId, currentCookieToken);
+            return Ok(new { message = "Other tokens revoked." });
+        }
+
+        private bool TryGetCurrentUserId(out Guid userId)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return Guid.TryParse(userIdClaim, out userId);
         }
 
         private void SetRefreshTokenCookie(string refreshToken, DateTime expiresAt)

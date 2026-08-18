@@ -3,14 +3,18 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MoneyManager.Application.DTO;
 using MoneyManager.Application.DTO.Auth;
+using MoneyManager.Application.DTO.Common;
 using MoneyManager.Application.Interfaces.Auth;
 using MoneyManager.Application.Interfaces.User;
 using MoneyManager.Application.Mappings;
 using MoneyManager.Infrastructure.Entities.User;
 using MoneyManager.Infrastructure.Interfaces.Database;
+using MoneyManager.Infrastructure.Queries;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -69,11 +73,6 @@ namespace MoneyManager.Application.Services.Auth
 
         public async Task<TokenResponseDto> RefreshTokenAsync(string refreshToken, string? ipAddress = null, string? userAgent = null)
         {
-            if (string.IsNullOrWhiteSpace(refreshToken))
-            {
-                throw new SecurityException("Refresh token is required.");
-            }
-
             var storedToken = await FindTokenByHashAsync(refreshToken);
 
             if (storedToken == null)
@@ -81,41 +80,42 @@ namespace MoneyManager.Application.Services.Auth
                 throw new SecurityException("Invalid refresh token.");
             }
 
-            // Reuse Detection: If an already-used token is presented, compromise is detected.
+            if (storedToken.IsRevoked)
+            {
+                await RevokeAllUserTokensAsync(storedToken.UserProfileId);
+                throw new SecurityException("Compromised token used. All sessions revoked.");
+            }
+
             if (storedToken.IsUsed)
             {
-                var gracePeriodResponse = await TryGetGracePeriodTokenResponseAsync(storedToken);
-                if (gracePeriodResponse != null)
+                var graceResponse = await TryGetGracePeriodTokenResponseAsync(storedToken);
+                if (graceResponse != null)
                 {
-                    return gracePeriodResponse;
+                    return graceResponse;
                 }
 
                 await RevokeAllUserTokensAsync(storedToken.UserProfileId);
-                throw new SecurityException("Refresh token reuse detected. All sessions revoked.");
+                throw new SecurityException("Compromised token used. All sessions revoked.");
             }
 
-            if (storedToken.IsRevoked || storedToken.ExpiresAt <= DateTime.UtcNow)
+            if (storedToken.ExpiresAt < DateTime.UtcNow)
             {
-                throw new SecurityException("Refresh token is expired or revoked.");
+                throw new SecurityException("Refresh token expired.");
             }
 
             var user = await _userProfileRepo.GetByIdAsync(storedToken.UserProfileId);
             if (user == null)
             {
-                throw new SecurityException("User profile not found.");
+                throw new SecurityException("User not found.");
             }
 
             var userDto = _mapper.Map(user);
-
-            // Mark old token as used
-            storedToken.IsUsed = true;
-
-            // Generate new token pair
             var (newAccessToken, newRawRefreshToken, newRefreshTokenEntity) = CreateRefreshTokenEntity(userDto, ipAddress, userAgent);
 
+            storedToken.IsUsed = true;
             storedToken.ReplacedByTokenId = newRefreshTokenEntity.Id;
-            _refreshTokenRepo.Update(storedToken);
 
+            _refreshTokenRepo.Update(storedToken);
             await _refreshTokenRepo.AddAsync(newRefreshTokenEntity);
             await _uow.CommitAsync();
 
@@ -129,35 +129,13 @@ namespace MoneyManager.Application.Services.Auth
 
         public async Task<bool> RevokeTokenAsync(string refreshToken)
         {
-            if (string.IsNullOrWhiteSpace(refreshToken))
-            {
-                return false;
-            }
-
             var storedToken = await FindTokenByHashAsync(refreshToken);
-
-            if (storedToken == null || storedToken.IsRevoked)
-            {
-                return false;
-            }
-
-            storedToken.IsRevoked = true;
-            _refreshTokenRepo.Update(storedToken);
-            await _uow.CommitAsync();
-            return true;
+            return await RevokeTokenAsync(storedToken);
         }
 
-        public async Task<bool> RevokeAllUserTokensAsync(Guid userProfileId)
+        public Task<bool> RevokeAllUserTokensAsync(Guid userProfileId)
         {
-            var activeTokens = await _refreshTokenRepo.GetAllAsync(token => token.UserProfileId == userProfileId && !token.IsRevoked);
-            foreach (var token in activeTokens)
-            {
-                token.IsRevoked = true;
-                _refreshTokenRepo.Update(token);
-            }
-
-            await _uow.CommitAsync();
-            return true;
+            return RevokeTokensInternalAsync(userProfileId);
         }
 
         public async Task<bool> ChangePasswordAsync(string userName, string currentPassword, string newPassword)
@@ -179,6 +157,119 @@ namespace MoneyManager.Application.Services.Auth
 
             await _uow.CommitAsync();
             return true;
+        }
+
+        public async Task<IEnumerable<UserRefreshTokenDto>> GetRefreshTokensAsync(
+            Guid userProfileId,
+            bool isActive = true,
+            int pageIndex = 1,
+            int recordsQuantity = 10,
+            string? currentRefreshToken = null)
+        {
+            var filter = GetTokenFilter(userProfileId, isActive);
+
+            var builder = new ComplexQueryBuilder<UserRefreshToken>()
+                .AddFilter(filter)
+                .DisableTracking();
+
+            if (pageIndex > 0 && recordsQuantity > 0)
+            {
+                builder.AddPagination(pageIndex, recordsQuantity, t => t.CreatedAt, isDescending: true);
+            }
+            else
+            {
+                builder.AddOrder(t => t.CreatedAt, isDescending: true);
+            }
+
+            var tokens = await _refreshTokenRepo.GetAllAsync(builder.GetQuery());
+            var currentHash = string.IsNullOrEmpty(currentRefreshToken) ? null : HashToken(currentRefreshToken);
+
+            return tokens.Select(token => new UserRefreshTokenDto
+            {
+                Id = token.Id,
+                CreatedByIp = token.CreatedByIp,
+                UserAgent = token.UserAgent,
+                CreatedAt = token.CreatedAt,
+                ExpiresAt = token.ExpiresAt,
+                IsCurrent = currentHash != null && token.TokenHash == currentHash,
+                IsRevoked = token.IsRevoked,
+                IsUsed = token.IsUsed
+            });
+        }
+
+        public async Task<PaginationConfigDto> GetRefreshTokensPaginationAsync(Guid userProfileId, bool isActive = true)
+        {
+            var filter = GetTokenFilter(userProfileId, isActive);
+            var recordsQuantity = await _refreshTokenRepo.GetCountAsync(filter);
+
+            return new PaginationConfigDto
+            {
+                PageSize = 10,
+                RecordsQuantity = recordsQuantity
+            };
+        }
+
+        public async Task<bool> RevokeTokenAsync(Guid tokenId, Guid userProfileId)
+        {
+            var token = await _refreshTokenRepo.GetByIdAsync(tokenId);
+            if (token == null || token.UserProfileId != userProfileId)
+            {
+                return false;
+            }
+
+            return await RevokeTokenAsync(token);
+        }
+
+        public Task<bool> RevokeOtherTokensAsync(Guid userProfileId, string? currentRefreshToken)
+        {
+            return RevokeTokensInternalAsync(userProfileId, currentRefreshToken);
+        }
+
+        private async Task<bool> RevokeTokenAsync(UserRefreshToken? token)
+        {
+            if (token == null || token.IsRevoked)
+            {
+                return false;
+            }
+
+            token.IsRevoked = true;
+            _refreshTokenRepo.Update(token);
+            await _uow.CommitAsync();
+            return true;
+        }
+
+        private async Task<bool> RevokeTokensInternalAsync(Guid userProfileId, string? exceptRefreshToken = null)
+        {
+            var exceptHash = string.IsNullOrEmpty(exceptRefreshToken) ? null : HashToken(exceptRefreshToken);
+            var activeTokens = await _refreshTokenRepo.GetAllAsync(token => token.UserProfileId == userProfileId && !token.IsRevoked);
+
+            foreach (var token in activeTokens)
+            {
+                if (exceptHash != null && token.TokenHash == exceptHash)
+                {
+                    continue;
+                }
+
+                token.IsRevoked = true;
+                _refreshTokenRepo.Update(token);
+            }
+
+            await _uow.CommitAsync();
+            return true;
+        }
+
+        private static Expression<Func<UserRefreshToken, bool>> GetTokenFilter(Guid userProfileId, bool isActive)
+        {
+            if (isActive)
+            {
+                return token => token.UserProfileId == userProfileId &&
+                                !token.IsRevoked &&
+                                !token.IsUsed &&
+                                token.ExpiresAt > DateTime.UtcNow;
+            }
+
+            return token => token.UserProfileId == userProfileId &&
+                            (token.IsRevoked || token.IsUsed || token.ExpiresAt <= DateTime.UtcNow);
         }
 
         private async Task<TokenResponseDto?> TryGetGracePeriodTokenResponseAsync(UserRefreshToken storedToken)

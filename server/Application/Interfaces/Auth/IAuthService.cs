@@ -1,7 +1,9 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using MoneyManager.Application.DTO.Auth;
+using MoneyManager.Application.DTO.Common;
 
 namespace MoneyManager.Application.Interfaces.Auth
 {
@@ -16,5 +18,13 @@ namespace MoneyManager.Application.Interfaces.Auth
         Task<bool> RevokeAllUserTokensAsync(Guid userProfileId);
 
         Task<bool> ChangePasswordAsync(string userName, string currentPassword, string newPassword);
+
+        Task<IEnumerable<UserRefreshTokenDto>> GetRefreshTokensAsync(Guid userProfileId, bool isActive = true, int pageIndex = 1, int recordsQuantity = 10, string? currentRefreshToken = null);
+
+        Task<PaginationConfigDto> GetRefreshTokensPaginationAsync(Guid userProfileId, bool isActive = true);
+
+        Task<bool> RevokeTokenAsync(Guid tokenId, Guid userProfileId);
+
+        Task<bool> RevokeOtherTokensAsync(Guid userProfileId, string? currentRefreshToken);
     }
 }

@@ -225,6 +225,31 @@ namespace MoneyManager.Application.Services.Auth
             return RevokeTokensInternalAsync(userProfileId, currentRefreshToken);
         }
 
+        public async Task<int> CleanUpExpiredRefreshTokensAsync(int olderThanDays = 30)
+        {
+            var threshold = DateTime.UtcNow.AddDays(-olderThanDays);
+
+            // Filter criteria:
+            // 1. Naturally expired tokens whose expiration date passed the threshold (e.g. > 30 days ago).
+            // 2. Explicitly revoked tokens created before the threshold, allowing a retention window for audit/history UI before permanent removal.
+            var tokensToDelete = (await _refreshTokenRepo.GetAllAsync(
+                token => token.ExpiresAt < threshold || (token.IsRevoked && token.CreatedAt < threshold),
+                disableTracking: false)).ToList();
+
+            if (tokensToDelete.Count == 0)
+            {
+                return 0;
+            }
+
+            foreach (var token in tokensToDelete)
+            {
+                await _refreshTokenRepo.DeleteAsync(token.Id);
+            }
+
+            await _uow.CommitAsync();
+            return tokensToDelete.Count;
+        }
+
         private async Task<bool> RevokeTokenAsync(UserRefreshToken? token)
         {
             if (token == null || token.IsRevoked)

@@ -26,5 +26,7 @@ namespace MoneyManager.Application.Interfaces.Auth
         Task<bool> RevokeTokenAsync(Guid tokenId, Guid userProfileId);
 
         Task<bool> RevokeOtherTokensAsync(Guid userProfileId, string? currentRefreshToken);
+
+        Task<int> CleanUpExpiredRefreshTokensAsync(int olderThanDays = 30);
     }
 }

@@ -427,5 +427,35 @@ namespace MoneyManager.Application.Tests.Services.Auth
                 });
             });
         }
+
+        [Fact]
+        public async Task TestCleanUpExpiredRefreshTokens()
+        {
+            var user = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IUserProfileService>();
+                return await service.GetAsync();
+            });
+
+            Assert.NotNull(user);
+
+            // Create a token
+            var loginResult = await ExecuteScopeAsync(async sp =>
+            {
+                var authService = sp.GetRequiredService<IAuthService>();
+                return await authService.LoginAsync(user.UserName, user.Password ?? "");
+            });
+
+            Assert.NotNull(loginResult);
+
+            // Clean up tokens older than -1 day (should delete the token just created)
+            var deletedCount = await ExecuteScopeAsync(async sp =>
+            {
+                var authService = sp.GetRequiredService<IAuthService>();
+                return await authService.CleanUpExpiredRefreshTokensAsync(olderThanDays: -1);
+            });
+
+            Assert.True(deletedCount >= 1);
+        }
     }
 }

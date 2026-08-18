@@ -84,6 +84,12 @@ namespace MoneyManager.Application.Services.Auth
             // Reuse Detection: If an already-used token is presented, compromise is detected.
             if (storedToken.IsUsed)
             {
+                var gracePeriodResponse = await TryGetGracePeriodTokenResponseAsync(storedToken);
+                if (gracePeriodResponse != null)
+                {
+                    return gracePeriodResponse;
+                }
+
                 await RevokeAllUserTokensAsync(storedToken.UserProfileId);
                 throw new SecurityException("Refresh token reuse detected. All sessions revoked.");
             }
@@ -173,6 +179,36 @@ namespace MoneyManager.Application.Services.Auth
 
             await _uow.CommitAsync();
             return true;
+        }
+
+        private async Task<TokenResponseDto?> TryGetGracePeriodTokenResponseAsync(UserRefreshToken storedToken)
+        {
+            if (!storedToken.ReplacedByTokenId.HasValue)
+            {
+                return null;
+            }
+
+            var replacementToken = await _refreshTokenRepo.GetByIdAsync(storedToken.ReplacedByTokenId.Value);
+            if (replacementToken == null || replacementToken.IsRevoked || replacementToken.CreatedAt < DateTime.UtcNow.AddSeconds(-30))
+            {
+                return null;
+            }
+
+            var activeUser = await _userProfileRepo.GetByIdAsync(storedToken.UserProfileId);
+            if (activeUser == null)
+            {
+                return null;
+            }
+
+            var activeUserDto = _mapper.Map(activeUser);
+            var (activeAccessToken, _) = GenerateAccessToken(activeUserDto);
+
+            return new TokenResponseDto
+            {
+                AccessToken = activeAccessToken,
+                RefreshToken = string.Empty,
+                ExpiresAt = replacementToken.ExpiresAt
+            };
         }
 
         private async Task<UserRefreshToken?> FindTokenByHashAsync(string rawRefreshToken)

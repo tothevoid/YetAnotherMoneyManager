@@ -48,7 +48,9 @@ namespace MoneyManager.WebApi.Controllers.Auth
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto? request)
         {
             var refreshToken = request?.RefreshToken;
-            if (string.IsNullOrEmpty(refreshToken) && Request.Cookies.TryGetValue(RefreshTokenCookieKey, out var cookieToken))
+            var hasCookie = Request.Cookies.TryGetValue(RefreshTokenCookieKey, out var cookieToken);
+
+            if (string.IsNullOrEmpty(refreshToken) && hasCookie)
             {
                 refreshToken = cookieToken;
             }
@@ -60,11 +62,11 @@ namespace MoneyManager.WebApi.Controllers.Auth
 
             try
             {
-                var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
-                var userAgent = Request.Headers.UserAgent.ToString();
-
                 var result = await _authService.RefreshTokenAsync(refreshToken, ipAddress, userAgent);
-                SetRefreshTokenCookie(result.RefreshToken, result.ExpiresAt);
+                if (!string.IsNullOrEmpty(result.RefreshToken))
+                {
+                    SetRefreshTokenCookie(result.RefreshToken, result.ExpiresAt);
+                }
 
                 return Ok(result);
             }
@@ -78,8 +80,9 @@ namespace MoneyManager.WebApi.Controllers.Auth
         [HttpPost(nameof(RevokeToken))]
         public async Task<IActionResult> RevokeToken([FromBody] RefreshTokenRequestDto? request)
         {
+            var hasCookie = Request.Cookies.TryGetValue(RefreshTokenCookieKey, out var cookieToken);
             var refreshToken = request?.RefreshToken;
-            if (string.IsNullOrEmpty(refreshToken) && Request.Cookies.TryGetValue(RefreshTokenCookieKey, out var cookieToken))
+            if (string.IsNullOrEmpty(refreshToken) && hasCookie)
             {
                 refreshToken = cookieToken;
             }

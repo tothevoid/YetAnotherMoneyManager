@@ -115,6 +115,41 @@ namespace MoneyManager.Application.Tests.Services.Auth
         }
 
         [Fact]
+        public async Task TestRefreshToken_WithinGracePeriod_Succeeds()
+        {
+            var user = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IUserProfileService>();
+                return await service.GetAsync();
+            });
+
+            var loginResult = await ExecuteScopeAsync(async sp =>
+            {
+                var authService = sp.GetRequiredService<IAuthService>();
+                return await authService.LoginAsync(user.UserName, user.Password ?? "");
+            });
+
+            // Legitimate refresh rotates the token
+            var refreshResult = await ExecuteScopeAsync(async sp =>
+            {
+                var authService = sp.GetRequiredService<IAuthService>();
+                return await authService.RefreshTokenAsync(loginResult.RefreshToken);
+            });
+
+            Assert.NotNull(refreshResult);
+
+            // Concurrent request within 30s grace window sends the old login token again
+            var concurrentResult = await ExecuteScopeAsync(async sp =>
+            {
+                var authService = sp.GetRequiredService<IAuthService>();
+                return await authService.RefreshTokenAsync(loginResult.RefreshToken);
+            });
+
+            Assert.NotNull(concurrentResult);
+            Assert.False(string.IsNullOrWhiteSpace(concurrentResult.AccessToken));
+        }
+
+        [Fact]
         public async Task TestRefreshToken_ReuseDetection_RevokesAllSessions()
         {
             var user = await ExecuteScopeAsync(async sp =>
@@ -138,7 +173,21 @@ namespace MoneyManager.Application.Tests.Services.Auth
 
             Assert.NotNull(refreshResult);
 
-            // Attacker tries to reuse the old loginResult.RefreshToken
+            // Simulate that the replacement token was created outside the 30-second grace window (e.g. 2 minutes ago)
+            await ExecuteScopeAsync(async sp =>
+            {
+                var uow = sp.GetRequiredService<MoneyManager.Infrastructure.Interfaces.Database.IUnitOfWork>();
+                var tokenRepo = uow.CreateRepository<MoneyManager.Infrastructure.Entities.User.UserRefreshToken>();
+                var tokens = await tokenRepo.GetAllAsync(t => t.UserProfileId == user.Id);
+                foreach (var t in tokens)
+                {
+                    t.CreatedAt = DateTime.UtcNow.AddMinutes(-2);
+                    tokenRepo.Update(t);
+                }
+                await uow.CommitAsync();
+            });
+
+            // Attacker tries to reuse the old loginResult.RefreshToken outside grace window
             await Assert.ThrowsAsync<SecurityException>(async () =>
             {
                 await ExecuteScopeAsync(async sp =>

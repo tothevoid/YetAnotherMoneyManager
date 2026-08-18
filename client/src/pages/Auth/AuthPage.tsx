@@ -16,7 +16,8 @@ const AuthPage: React.FC = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
-    const from = location.state?.from ?? "/";
+    const rawFrom = location.state?.from;
+    const from = rawFrom && !rawFrom.startsWith("/auth") ? rawFrom : "/";
 
     const onTokenReceived = () => {
         navigate(from, { replace: true });

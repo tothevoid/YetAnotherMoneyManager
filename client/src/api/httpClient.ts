@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import config from "../config";
 import { getAccessToken, setAccessToken, clearAccessToken } from "./tokenStorage";
+import { refreshTokenApi } from "./auth/authApi";
 
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
     _retry?: boolean;
@@ -55,17 +56,10 @@ const waitForRefreshedToken = (request: CustomAxiosRequestConfig): Promise<Axios
 };
 
 const requestNewAccessToken = async (): Promise<string> => {
-    const response = await axios.post(
-        `${config.api.URL}/Auth/RefreshToken`,
-        {},
-        { withCredentials: true }
-    );
-
-    const newAccessToken = response.data?.accessToken;
+    const newAccessToken = await refreshTokenApi();
     if (!newAccessToken) {
         throw new Error("No access token returned from refresh endpoint.");
     }
-
     return newAccessToken;
 };
 

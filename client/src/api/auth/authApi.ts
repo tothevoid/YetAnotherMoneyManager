@@ -61,25 +61,37 @@ export const changePassword = async (
     }
 };
 
+let inFlightRefreshPromise: Nullable<Promise<Nullable<string>>> = null;
+
 export const refreshTokenApi = async (): Promise<Nullable<string>> => {
-    try {
-        const response = await axios.post(
-            `${basicUrl}/RefreshToken`,
-            {},
-            { withCredentials: true }
-        );
-
-        const data = response.data;
-        if (data?.accessToken) {
-            setAccessToken(data.accessToken);
-            return data.accessToken;
-        }
-
-        return null;
-    } catch {
-        clearAccessToken();
-        return null;
+    if (inFlightRefreshPromise) {
+        return inFlightRefreshPromise;
     }
+
+    inFlightRefreshPromise = (async () => {
+        try {
+            const response = await axios.post(
+                `${basicUrl}/RefreshToken`,
+                {},
+                { withCredentials: true }
+            );
+
+            const data = response.data;
+            if (data?.accessToken) {
+                setAccessToken(data.accessToken);
+                return data.accessToken;
+            }
+
+            return null;
+        } catch {
+            clearAccessToken();
+            return null;
+        } finally {
+            inFlightRefreshPromise = null;
+        }
+    })();
+
+    return inFlightRefreshPromise;
 };
 
 export const logoutApi = async (): Promise<void> => {

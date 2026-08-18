@@ -25,20 +25,26 @@ import { refreshTokenApi } from './api/auth/authApi';
 
 
 const RequireAuth = () => {
-	const [checkingAuth, setCheckingAuth] = useState(true);
-	const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!getAccessToken());
+	const token = getAccessToken();
+	const [checkingAuth, setCheckingAuth] = useState<boolean>(!token);
+	const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!token);
 	const location = useLocation();
 
 	useEffect(() => {
-		if (getAccessToken()) {
+		const currentToken = getAccessToken();
+
+		if (currentToken) {
 			setIsAuthenticated(true);
 			setCheckingAuth(false);
 			return;
 		}
 
 		refreshTokenApi()
-			.then(token => {
-				setIsAuthenticated(!!token);
+			.then(refreshedToken => {
+				setIsAuthenticated(!!refreshedToken);
+			})
+			.catch(() => {
+				setIsAuthenticated(false);
 			})
 			.finally(() => {
 				setCheckingAuth(false);
@@ -70,8 +76,8 @@ const App = () => {
 		<Router>
 			<Routes>
 				<Route path="/auth" element={<AuthPage />} />
-				<Route element={<PageWrapper />}>
-					<Route element={<RequireAuth />}>
+				<Route element={<RequireAuth />}>
+					<Route element={<PageWrapper />}>
 						<Route path="/" element={<DashboardPage />} />	
 						<Route path="/accounts" element={<AccountsPage /> } />
 						<Route path="/transactions" element={<TransactionsPage />} />

@@ -38,18 +38,22 @@ const AuthForm: React.FC<Props> = ({ onPasswordChangeRequired, onTokenReceived }
         try {
             const authInfo = await auth(authData.userName, authData.password);
 
-            if (authInfo) {
-                if (authInfo.passwordChangeRequired) {
-                    onPasswordChangeRequired(userName, password);
-                    return;
-                }
-
-                if (authInfo.token) {
-                    onTokenReceived(authInfo.token);
-                }
-            } else {
+            if (!authInfo) {
                 setError(t("auth_form_error_invalid_credentials"));
+                return;
             }
+
+            if (authInfo.passwordChangeRequired) {
+                onPasswordChangeRequired(userName, password);
+                return;
+            }
+
+            if (authInfo.token) {
+                onTokenReceived(authInfo.token);
+                return;
+            }
+
+            setError(t("auth_form_error_invalid_credentials"));
         } catch (err: unknown) {
             if (err instanceof Error) {
                 setError(err.message || t("auth_form_error"));

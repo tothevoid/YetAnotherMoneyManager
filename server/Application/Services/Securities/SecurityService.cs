@@ -109,10 +109,23 @@ namespace MoneyManager.Application.Services.Securities
             return securityDto;
         }
 
-        public async Task<IEnumerable<SecurityHistoryValueDto>> GetTickerHistoryAsync(string ticker)
+        public async Task<IEnumerable<SecurityHistoryValueDto>> GetTickerHistoryAsync(
+            string ticker,
+            SecurityHistoryPeriod period = SecurityHistoryPeriod.Day1)
         {
             var to = DateOnly.FromDateTime(DateTime.Now);
-            var from = to.AddMonths(-3);
+            var (from, interval) = period switch
+            {
+                SecurityHistoryPeriod.Day1 => (to.AddDays(-1), 10),
+                SecurityHistoryPeriod.Week1 => (to.AddDays(-7), 60),
+                SecurityHistoryPeriod.Month1 => (to.AddMonths(-1), 24),
+                SecurityHistoryPeriod.Month3 => (to.AddMonths(-3), 24),
+                SecurityHistoryPeriod.Month6 => (to.AddMonths(-6), 24),
+                SecurityHistoryPeriod.Year1 => (to.AddYears(-1), 24),
+                SecurityHistoryPeriod.Year5 => (to.AddYears(-5), 7),
+                SecurityHistoryPeriod.Year10 => (to.AddYears(-10), 31),
+                _ => (to.AddYears(-1), 24)
+            };
 
             var security = await FindByTickerAsync(ticker);
                 
@@ -121,7 +134,7 @@ namespace MoneyManager.Application.Services.Securities
                 return [];
             }
 
-            return await _stockConnector.GetTickerHistoryAsync(security, from, to);
+            return await _stockConnector.GetTickerHistoryAsync(security, from, to, interval);
         }
 
         public async Task<SecurityDto> AddAsync(SecurityDto securityDto, IFormFile securityIcon)

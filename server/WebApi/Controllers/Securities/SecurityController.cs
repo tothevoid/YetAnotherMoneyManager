@@ -64,10 +64,12 @@ namespace MoneyManager.WebApi.Controllers.Securities
         }
 
         [HttpGet(nameof(GetTickerHistory))]
-        public async Task<IEnumerable<SecurityHistoryValueModel>> GetTickerHistory([FromQuery] string ticker)
+        public async Task<IEnumerable<SecurityHistoryValueModel>> GetTickerHistory(
+            [FromQuery] string ticker,
+            [FromQuery] SecurityHistoryPeriod period = SecurityHistoryPeriod.Year1)
         {
-            var brokerAccount = await _securityService.GetTickerHistoryAsync(ticker);
-            return _mapper.Map(brokerAccount);
+            var history = await _securityService.GetTickerHistoryAsync(ticker, period);
+            return _mapper.Map(history);
         }
 
         [HttpPut]

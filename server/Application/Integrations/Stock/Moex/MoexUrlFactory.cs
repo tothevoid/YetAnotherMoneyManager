@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Integrations.Stock.Moex.Builders;
+using MoneyManager.Infrastructure.Constants;
 
 namespace MoneyManager.Application.Integrations.Stock.Moex
 {
@@ -57,9 +59,11 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
                 .AddTickers(tickers);
         }
 
-        public static string GetHistoricalQuery(string ticker, DateOnly from, DateOnly to)
+        public static string GetHistoricalQuery(SecurityDto security, DateOnly from, DateOnly to)
         {
-            var builder = new MoexHistoryUrlBuilder(ticker);
+            MoexHistoryUrlBuilder builder = security.TypeId == SecurityTypeConstants.PreciousMetal
+                ? new MoexCurrencyHistoryUrlBuilder(security.Ticker)
+                : new MoexHistoryUrlBuilder(security.Ticker);
 
             return builder
                 .IncludeHistory()
@@ -67,35 +71,17 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
                 .Build();
         }
 
-        public static string GetCurrencyHistoricalQuery(string ticker, DateOnly from, DateOnly to)
+        public static string GetCandlesQuery(SecurityDto security, DateOnly from, DateOnly to, int interval = 24, int start = 0)
         {
-            var builder = new MoexCurrencyHistoryUrlBuilder(ticker);
-
-            return builder
-                .IncludeHistory()
-                .AddRange(from, to)
-                .Build();
-        }
-
-        public static string GetCandlesQuery(string ticker, DateOnly from, DateOnly to, int interval = 24)
-        {
-            var builder = new MoexCandlesUrlBuilder(ticker);
+            MoexCandlesUrlBuilder builder = security.TypeId == SecurityTypeConstants.PreciousMetal
+                ? new MoexCurrencyCandlesUrlBuilder(security.Ticker)
+                : new MoexCandlesUrlBuilder(security.Ticker);
 
             return builder
                 .IncludeCandles()
                 .AddInterval(interval)
                 .AddRange(from, to)
-                .Build();
-        }
-
-        public static string GetCurrencyCandlesQuery(string ticker, DateOnly from, DateOnly to, int interval = 24)
-        {
-            var builder = new MoexCurrencyCandlesUrlBuilder(ticker);
-
-            return builder
-                .IncludeCandles()
-                .AddInterval(interval)
-                .AddRange(from, to)
+                .AddStart(start)
                 .Build();
         }
     }

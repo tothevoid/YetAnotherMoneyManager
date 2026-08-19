@@ -17,15 +17,17 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
 {
     public class MoexConnector(IHttpClientFactory httpClientFactory) : IStockConnector
     {
-        public async Task<IEnumerable<SecurityHistoryValueDto>> GetTickerHistoryAsync(SecurityDto security, DateOnly from, DateOnly to)
+        public async Task<IEnumerable<SecurityHistoryValueDto>> GetTickerHistoryAsync(SecurityDto security, DateOnly from, DateOnly to, int interval = 24)
         {
-            var httpClient = httpClientFactory.CreateClient();
+            var candles = await GetCandlesAsync(security, from, to, interval);
 
-            string query = security.TypeId == SecurityTypeConstants.PreciousMetal ?
-                MoexUrlFactory.GetCurrencyHistoricalQuery(security.Ticker, from, to):
-                MoexUrlFactory.GetHistoricalQuery(security.Ticker, from, to);
-
-            return await GetHistory(query, httpClient);
+            return candles
+                .Where(c => c.Close > 0)
+                .Select(c => new SecurityHistoryValueDto
+                {
+                    Date = c.Begin,
+                    Value = c.Close
+                });
         }
 
         public async Task<IEnumerable<MarketDataRow>> GetExtendedValuesByTickersAsync(IEnumerable<SecurityDto> securities)
@@ -214,41 +216,6 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
             _ => 100
         };
 
-        private static async Task<IEnumerable<SecurityHistoryValueDto>> GetHistory(string query, HttpClient httpClient)
-        {
-            var result = await httpClient.GetAsync(query);
-            var tickerHistory = await result.Content.ReadFromJsonAsync<MoexHistoryResponse>();
-
-            var columnsIndexes = GetColumnIndexMapping(tickerHistory.History.Columns);
-
-            var tradeDate = columnsIndexes["TRADEDATE"];
-            var closeValue = columnsIndexes["CLOSE"];
-
-            var historyValues = new List<SecurityHistoryValueDto>();
-
-            foreach (var marketData in tickerHistory.History.Data)
-            {
-                var rawValue = marketData[closeValue];
-
-                if (rawValue == null)
-                {
-                    continue;
-                }
-
-                var value = Convert.ToDecimal(rawValue.ToString(), CultureInfo.InvariantCulture);
-                if (value == default)
-                {
-                    continue;
-                }
-
-                var date = Convert.ToDateTime(marketData[tradeDate].ToString());
-
-                historyValues.Add(new SecurityHistoryValueDto() { Value = value, Date = DateOnly.FromDateTime(date) });
-            }
-
-            return historyValues;
-        }
-
         private static Dictionary<string, int> GetColumnIndexMapping(IEnumerable<string> columns)
         {
             var columnsIndexes = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
@@ -265,12 +232,33 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
         public async Task<IEnumerable<SecurityCandleDto>> GetCandlesAsync(SecurityDto security, DateOnly from, DateOnly to, int interval = 24)
         {
             var httpClient = httpClientFactory.CreateClient();
+            var candles = new List<SecurityCandleDto>();
+            int start = 0;
+            const int batchSize = 500;
+            const int delayMs = 150;
 
-            string query = security.TypeId == SecurityTypeConstants.PreciousMetal
-                ? MoexUrlFactory.GetCurrencyCandlesQuery(security.Ticker, from, to, interval)
-                : MoexUrlFactory.GetCandlesQuery(security.Ticker, from, to, interval);
+            while (true)
+            {
+                string query = MoexUrlFactory.GetCandlesQuery(security, from, to, interval, start);
 
-            return await GetCandlesInternalAsync(query, httpClient);
+                var batch = await FetchCandlesBatchAsync(query, httpClient);
+                if (batch.Count == 0)
+                {
+                    break;
+                }
+
+                candles.AddRange(batch);
+
+                if (batch.Count < batchSize)
+                {
+                    break;
+                }
+
+                start += batch.Count;
+                await Task.Delay(delayMs);
+            }
+
+            return candles;
         }
 
         private static decimal GetDecimalValue(object[] row, int index, decimal defaultValue = 0m)
@@ -287,18 +275,22 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
                 : defaultValue;
         }
 
-        private static async Task<IEnumerable<SecurityCandleDto>> GetCandlesInternalAsync(string query, HttpClient httpClient)
+        private static async Task<List<SecurityCandleDto>> FetchCandlesBatchAsync(string query, HttpClient httpClient)
         {
             var result = await httpClient.GetAsync(query);
-            var response = await result.Content.ReadFromJsonAsync<MoexCandlesResponse>();
+            if (!result.IsSuccessStatusCode)
+            {
+                return [];
+            }
 
-            if (response?.Candles?.Columns == null || response.Candles.Data == null)
+            var response = await result.Content.ReadFromJsonAsync<MoexCandlesResponse>();
+            var dataList = response?.Candles?.Data?.ToList();
+            if (response?.Candles?.Columns == null || dataList == null || dataList.Count == 0)
             {
                 return [];
             }
 
             var columnsIndexes = GetColumnIndexMapping(response.Candles.Columns);
-
             int openIdx = columnsIndexes.GetValueOrDefault("open", -1);
             int closeIdx = columnsIndexes.GetValueOrDefault("close", -1);
             int highIdx = columnsIndexes.GetValueOrDefault("high", -1);
@@ -309,8 +301,7 @@ namespace MoneyManager.Application.Integrations.Stock.Moex
             int endIdx = columnsIndexes.GetValueOrDefault("end", -1);
 
             var candles = new List<SecurityCandleDto>();
-
-            foreach (var row in response.Candles.Data)
+            foreach (var row in dataList)
             {
                 if (row == null) continue;
 

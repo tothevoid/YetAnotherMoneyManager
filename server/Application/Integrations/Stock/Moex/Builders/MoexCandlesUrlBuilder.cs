@@ -23,6 +23,15 @@ namespace MoneyManager.Application.Integrations.Stock.Moex.Builders
             return this;
         }
 
+        public MoexCandlesUrlBuilder AddStart(int start = 0)
+        {
+            if (start > 0)
+            {
+                AdditionalParameters.Add($"start={start}");
+            }
+            return this;
+        }
+
         protected override string GetUrl()
         {
             return $"{BaseUrl}/engines/stock/markets/shares/securities/{Ticker}/candles.json";

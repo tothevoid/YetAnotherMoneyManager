@@ -109,7 +109,7 @@ namespace MoneyManager.Application.Services.Securities
             return securityDto;
         }
 
-        public async Task<IEnumerable<SecurityHistoryValueDto>> GetTickerHistoryAsync(
+        public async Task<SecurityHistoryDto> GetTickerHistoryAsync(
             string ticker,
             SecurityHistoryPeriod period = SecurityHistoryPeriod.Day1)
         {
@@ -131,10 +131,43 @@ namespace MoneyManager.Application.Services.Securities
                 
             if (security == null)
             {
-                return [];
+                return new SecurityHistoryDto();
             }
 
-            return await _stockConnector.GetTickerHistoryAsync(security, from, to, interval);
+            var history = await _stockConnector.GetTickerHistoryAsync(security, from, to, interval);
+
+            return CalculateHistoryStats(history);
+        }
+
+        private static SecurityHistoryDto CalculateHistoryStats(IEnumerable<SecurityHistoryValueDto> history)
+        {
+            var historyList = history.ToList();
+
+            if (historyList.Count == 0)
+            {
+                return new SecurityHistoryDto();
+            }
+
+            var values = historyList.Select(h => h.Value).ToList();
+            var startPrice = values[0];
+            var endPrice = values[^1];
+            var diff = endPrice - startPrice;
+            var diffPercent = startPrice > 0 ? (diff / startPrice) * 100 : 0m;
+            var minPrice = values.Min();
+            var maxPrice = values.Max();
+            var avgPrice = values.Average();
+
+            return new SecurityHistoryDto
+            {
+                Values = historyList,
+                StartPrice = startPrice,
+                EndPrice = endPrice,
+                Diff = diff,
+                DiffPercent = diffPercent,
+                MinPrice = minPrice,
+                MaxPrice = maxPrice,
+                AvgPrice = avgPrice
+            };
         }
 
         public async Task<SecurityDto> AddAsync(SecurityDto securityDto, IFormFile securityIcon)

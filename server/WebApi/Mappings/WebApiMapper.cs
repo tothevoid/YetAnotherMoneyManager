@@ -71,6 +71,8 @@ namespace MoneyManager.WebApi.Mappings
         public partial SecurityHistoryValueModel Map(SecurityHistoryValueDto dto);
         public partial SecurityHistoryValueDto Map(SecurityHistoryValueModel model);
         public partial IEnumerable<SecurityHistoryValueModel> Map(IEnumerable<SecurityHistoryValueDto> dtos);
+        public partial SecurityHistoryModel Map(SecurityHistoryDto dto);
+        public partial SecurityHistoryDto Map(SecurityHistoryModel model);
 
         public partial AccountCurrencySummaryModel Map(AccountCurrencySummaryDto dto);
         public partial IEnumerable<AccountCurrencySummaryModel> Map(IEnumerable<AccountCurrencySummaryDto> dtos);

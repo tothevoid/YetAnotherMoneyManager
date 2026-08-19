@@ -32,6 +32,12 @@ namespace MoneyManager.Application.Integrations.Stock.Moex.Builders
             return this;
         }
 
+        new public MoexCandlesUrlBuilder AddRange(DateOnly from, DateOnly to)
+        {
+            base.AddRange(from, to);
+            return this;
+        }
+
         protected override string GetUrl()
         {
             return $"{BaseUrl}/engines/stock/markets/shares/securities/{Ticker}/candles.json";

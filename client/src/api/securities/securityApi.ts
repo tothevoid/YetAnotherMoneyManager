@@ -1,4 +1,4 @@
-import { SecurityHistoryValue } from '../../models/securities/SecurityHistoryValue';
+import { SecurityHistory } from '../../models/securities/SecurityHistory';
 import { SecurityHistoryPeriod } from '../../models/securities/SecurityHistoryPeriod';
 import { createEntityWithIcon, deleteEntity, getAllEntities, getEntity, getEntityById, updateEntityWithIcon } from '../basicApi';
 import { SecurityStats } from '../../models/securities/SecurityStats';
@@ -28,11 +28,11 @@ export const getSecurityStats = async (securityId: string): Promise<SecurityStat
 export const getTickerHistory = async (
     ticker: string,
     period: SecurityHistoryPeriod = SecurityHistoryPeriod.Day1
-): Promise<SecurityHistoryValue[] | void> => {
-    return getAllEntities<SecurityHistoryValue>(
+): Promise<SecurityHistory | void> => {
+    return getEntity<SecurityHistory>(
         `${basicUrl}/GetTickerHistory?ticker=${ticker}&period=${period}`
     );
-}
+};
 
 export const createSecurity = async (addedSecurity: SecurityEntity, file: File | null): Promise<SecurityEntity | void> => {
     return await createEntityWithIcon<SecurityEntityRequest, SecurityEntityResponse>(basicUrl,

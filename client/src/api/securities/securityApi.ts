@@ -1,6 +1,5 @@
-import { i18n } from 'i18next';
-import { formatDate } from '../../shared/utilities/formatters/dateFormatter';
 import { SecurityHistoryValue } from '../../models/securities/SecurityHistoryValue';
+import { SecurityHistoryPeriod } from '../../models/securities/SecurityHistoryPeriod';
 import { createEntityWithIcon, deleteEntity, getAllEntities, getEntity, getEntityById, updateEntityWithIcon } from '../basicApi';
 import { SecurityStats } from '../../models/securities/SecurityStats';
 import { SecurityEntity, SecurityEntityRequest, SecurityEntityResponse } from '../../models/securities/SecurityEntity';
@@ -26,26 +25,23 @@ export const getSecurityStats = async (securityId: string): Promise<SecurityStat
     return getEntity<SecurityStats>(`${basicUrl}/GetStats?securityId=${securityId}`);
 }
 
-export const getTickerHistory = async (ticker: string, format: i18n): Promise<SecurityHistoryValue[] | void> => {
-    return getAllEntities<SecurityHistoryValue>(`${basicUrl}/GetTickerHistory?ticker=${ticker}`)
-        .then((securityHistories: SecurityHistoryValue[]) => {
-            return securityHistories.map(securityHistory => {
-                return {
-                    value: securityHistory.value,
-                    date: formatDate(new Date(securityHistory.date), format)
-                }
-            })
-        });
+export const getTickerHistory = async (
+    ticker: string,
+    period: SecurityHistoryPeriod = SecurityHistoryPeriod.Day1
+): Promise<SecurityHistoryValue[] | void> => {
+    return getAllEntities<SecurityHistoryValue>(
+        `${basicUrl}/GetTickerHistory?ticker=${ticker}&period=${period}`
+    );
 }
 
 export const createSecurity = async (addedSecurity: SecurityEntity, file: File | null): Promise<SecurityEntity | void> => {
-    return await createEntityWithIcon<SecurityEntityRequest, SecurityEntityResponse>(basicUrl, 
+    return await createEntityWithIcon<SecurityEntityRequest, SecurityEntityResponse>(basicUrl,
         prepareSecurityEntityRequest(addedSecurity), ENTITY_NAME, ICON_NAME, file)
         .then((securityResponse: SecurityEntityResponse | void) => securityResponse && prepareSecurity(securityResponse));
 }
 
 export const updateSecurity = async (modifiedSecurity: SecurityEntity, file: File | null): Promise<SecurityEntity | void> => {
-    return await updateEntityWithIcon<SecurityEntityRequest, SecurityEntityResponse> (basicUrl, prepareSecurityEntityRequest(modifiedSecurity), ENTITY_NAME, ICON_NAME, file)
+    return await updateEntityWithIcon<SecurityEntityRequest, SecurityEntityResponse>(basicUrl, prepareSecurityEntityRequest(modifiedSecurity), ENTITY_NAME, ICON_NAME, file)
         .then((securityResponse: SecurityEntityResponse | void) => securityResponse && prepareSecurity(securityResponse));
 }
 

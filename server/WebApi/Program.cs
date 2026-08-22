@@ -56,6 +56,8 @@ app.UseRouting();
 
 app.UseCors("AllowReactApp");
 
+app.UseMiddleware<MoneyManager.WebApi.Middlewares.DatabaseMaintenanceMiddleware>();
+
 app.UseAuthentication();
 app.UseAuthorization();
 

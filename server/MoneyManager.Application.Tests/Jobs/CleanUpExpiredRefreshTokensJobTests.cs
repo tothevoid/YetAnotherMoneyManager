@@ -22,7 +22,8 @@ namespace MoneyManager.Application.Tests.Jobs
             {
                 var authService = sp.GetRequiredService<IAuthService>();
                 var notificationService = sp.GetRequiredService<INotificationService>();
-                var job = new CleanUpExpiredRefreshTokensJob(authService, notificationService);
+                var databaseStateService = sp.GetRequiredService<MoneyManager.Application.Interfaces.DatabaseBackup.IDatabaseStateService>();
+                var job = new CleanUpExpiredRefreshTokensJob(authService, notificationService, databaseStateService);
 
                 await job.CleanUpExpiredRefreshTokensAsync();
             });

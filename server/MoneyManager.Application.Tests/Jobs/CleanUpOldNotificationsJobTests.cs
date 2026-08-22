@@ -19,7 +19,8 @@ namespace MoneyManager.Application.Tests.Jobs
             await ExecuteScopeAsync(async sp =>
             {
                 var notificationService = sp.GetRequiredService<INotificationService>();
-                var job = new CleanUpOldNotificationsJob(notificationService);
+                var databaseStateService = sp.GetRequiredService<MoneyManager.Application.Interfaces.DatabaseBackup.IDatabaseStateService>();
+                var job = new CleanUpOldNotificationsJob(notificationService, databaseStateService);
 
                 await job.CleanUp();
             });

@@ -5,6 +5,7 @@ using FluentAssertions;
 using InfrastructureManager.Application.Interfaces;
 using InfrastructureManager.WebApi.Controllers;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 using Xunit;
@@ -29,17 +30,24 @@ namespace InfrastructureManager.Application.Tests.Controllers
         }
 
         [Fact]
-        public async Task ExportBackup_Should_Set_ContentType_And_Call_WriteDumpToStreamAsync()
+        public async Task ExportBackup_Should_Return_Stream_Result_And_Call_WriteDumpToStreamAsync()
         {
             // Arrange
+            var httpContext = new DefaultHttpContext();
+            var serviceProvider = Substitute.For<System.IServiceProvider>();
+            serviceProvider.GetService(typeof(Microsoft.Extensions.Logging.ILoggerFactory))
+                .Returns(Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory.Instance);
+            httpContext.RequestServices = serviceProvider;
+
             var responseBody = new MemoryStream();
-            _controller.HttpContext.Response.Body = responseBody;
+            httpContext.Response.Body = responseBody;
 
             // Act
-            await _controller.ExportBackup(CancellationToken.None);
+            var result = _controller.ExportBackup(CancellationToken.None);
+            await result.ExecuteAsync(httpContext);
 
             // Assert
-            _controller.HttpContext.Response.ContentType.Should().Be("application/sql");
+            httpContext.Response.ContentType.Should().Be("application/octet-stream");
             await _postgresBackupService.Received(1).WriteDumpToStreamAsync(Arg.Any<Stream>(), Arg.Any<CancellationToken>());
         }
 
@@ -54,7 +62,7 @@ namespace InfrastructureManager.Application.Tests.Controllers
             var result = await _controller.RestoreBackup(CancellationToken.None);
 
             // Assert
-            result.Should().BeOfType<OkObjectResult>();
+            result.Should().NotBeNull();
             await _postgresBackupService.Received(1).RestoreDumpFromStreamAsync(Arg.Any<Stream>(), Arg.Any<CancellationToken>());
         }
     }

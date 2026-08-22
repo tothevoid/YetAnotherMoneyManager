@@ -34,6 +34,8 @@ using MoneyManager.Application.Services.Reports;
 using MoneyManager.Application.Services.Securities;
 using MoneyManager.Application.Services.Transactions;
 using MoneyManager.Application.Services.User;
+using MoneyManager.Application.Interfaces.DatabaseBackup;
+using MoneyManager.Application.Services.DatabaseBackup;
 
 namespace MoneyManager.Application.Extensions
 {
@@ -76,6 +78,10 @@ namespace MoneyManager.Application.Extensions
             services.AddTransient<IAuthService, AuthService>();
             services.AddSingleton<IPasswordHasherService, PasswordHasherService>();
 
+            services.AddSingleton<IDatabaseStateService, DatabaseStateService>();
+            services.AddSingleton<IBackupEncryptionService, BackupEncryptionService>();
+            services.AddTransient<IDatabaseBackupService, DatabaseBackupService>();
+
             services.AddTransient<IAllAssetsReportService, AllAssetsReportService>();
             services.AddTransient<IBrokerAccountPortfolioHistoryService, BrokerAccountPortfolioHistoryService>();
             services.AddSingleton<IPullQuotationsService, PullQuotationsService>();
@@ -91,3 +97,4 @@ namespace MoneyManager.Application.Extensions
         }
     }
 }
+

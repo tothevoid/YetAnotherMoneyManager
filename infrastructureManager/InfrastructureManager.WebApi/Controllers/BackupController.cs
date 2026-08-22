@@ -19,18 +19,19 @@ namespace InfrastructureManager.WebApi.Controllers
         }
 
         [HttpGet("backup")]
-        public async Task ExportBackup(CancellationToken cancellationToken)
+        public IResult ExportBackup(CancellationToken cancellationToken)
         {
-            Response.ContentType = "application/sql";
-            Response.Headers.Append("Content-Disposition", "attachment; filename=backup.sql");
-            await _postgresBackupService.WriteDumpToStreamAsync(Response.Body, cancellationToken);
+            return Results.Stream(
+                async stream => await _postgresBackupService.WriteDumpToStreamAsync(stream, cancellationToken),
+                contentType: "application/octet-stream",
+                fileDownloadName: "backup.dump");
         }
 
         [HttpPost("restore")]
-        public async Task<IActionResult> RestoreBackup(CancellationToken cancellationToken)
+        public async Task<IResult> RestoreBackup(CancellationToken cancellationToken)
         {
             await _postgresBackupService.RestoreDumpFromStreamAsync(Request.Body, cancellationToken);
-            return Ok(new RestoreResultDto
+            return Results.Ok(new RestoreResultDto
             {
                 Success = true,
                 Message = "Database restore completed successfully."

@@ -46,18 +46,17 @@ namespace MoneyManager.Application.Tests.Services.Deposits
         }
 
         [Fact]
-        public async Task TestGetSummaryAndDepositsRange()
+        public async Task TestGetDepositsRange()
         {
-            var today = DateOnly.FromDateTime(DateTime.Now);
             var from = new DateOnly(2025, 1, 1);
             var to = new DateOnly(2025, 12, 31);
 
-            var depositId = await ExecuteScopeAsync(async sp =>
+            await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDepositService>();
                 return await service.AddAsync(new DepositDto
                 {
-                    Name = "Summary Test Deposit",
+                    Name = "Range Test Deposit",
                     From = from,
                     To = to,
                     InitialAmount = 5000m,
@@ -76,6 +75,28 @@ namespace MoneyManager.Application.Tests.Services.Deposits
             Assert.NotNull(range);
             Assert.True(range.From <= from);
             Assert.True(range.To >= to);
+        }
+
+        [Fact]
+        public async Task TestGetSummary()
+        {
+            var from = new DateOnly(2025, 1, 1);
+            var to = new DateOnly(2025, 12, 31);
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IDepositService>();
+                return await service.AddAsync(new DepositDto
+                {
+                    Name = "Summary Test Deposit",
+                    From = from,
+                    To = to,
+                    InitialAmount = 5000m,
+                    EstimatedEarn = 500m,
+                    Percentage = 10m,
+                    CurrencyId = CurrencyConstants.USD
+                });
+            });
 
             var summary = await ExecuteScopeAsync(async sp =>
             {
@@ -92,7 +113,7 @@ namespace MoneyManager.Application.Tests.Services.Deposits
         }
 
         [Fact]
-        public async Task TestUpdateAndDelete()
+        public async Task TestUpdate()
         {
             var today = DateOnly.FromDateTime(DateTime.Now);
 
@@ -137,6 +158,27 @@ namespace MoneyManager.Application.Tests.Services.Deposits
             Assert.NotNull(updated);
             Assert.Equal("Updated Deposit Name", updated.Name);
             Assert.Equal(2000m, updated.InitialAmount);
+        }
+
+        [Fact]
+        public async Task TestDelete()
+        {
+            var today = DateOnly.FromDateTime(DateTime.Now);
+
+            var depositId = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IDepositService>();
+                return await service.AddAsync(new DepositDto
+                {
+                    Name = "Deposit to Delete",
+                    From = today,
+                    To = today.AddMonths(6),
+                    InitialAmount = 1000m,
+                    EstimatedEarn = 50m,
+                    Percentage = 5m,
+                    CurrencyId = CurrencyConstants.USD
+                });
+            });
 
             await ExecuteScopeAsync(async sp =>
             {

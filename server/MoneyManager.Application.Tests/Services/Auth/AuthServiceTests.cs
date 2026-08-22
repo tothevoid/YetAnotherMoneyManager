@@ -59,11 +59,10 @@ namespace MoneyManager.Application.Tests.Services.Auth
         }
 
         [Fact]
-        public async Task TestLoginAndChangePassword()
+        public async Task TestLogin_Success_ReturnsTokens()
         {
             var (user, currentPassword) = await EnsureUserWithKnownPasswordAsync();
 
-            // Test Login
             var loginResult = await ExecuteScopeAsync(async sp =>
             {
                 var authService = sp.GetRequiredService<IAuthService>();
@@ -73,8 +72,12 @@ namespace MoneyManager.Application.Tests.Services.Auth
             Assert.NotNull(loginResult);
             Assert.False(string.IsNullOrWhiteSpace(loginResult.AccessToken));
             Assert.False(string.IsNullOrWhiteSpace(loginResult.RefreshToken));
+        }
 
-            // Test ChangePassword
+        [Fact]
+        public async Task TestChangePassword_Success_AllowsLoginWithNewPassword()
+        {
+            var (user, currentPassword) = await EnsureUserWithKnownPasswordAsync();
             var newPassword = "newPassword_" + Guid.NewGuid().ToString("N");
 
             var changeResult = await ExecuteScopeAsync(async sp =>
@@ -85,7 +88,6 @@ namespace MoneyManager.Application.Tests.Services.Auth
 
             Assert.True(changeResult);
 
-            // Test Login with new password
             var newLoginResult = await ExecuteScopeAsync(async sp =>
             {
                 var authService = sp.GetRequiredService<IAuthService>();

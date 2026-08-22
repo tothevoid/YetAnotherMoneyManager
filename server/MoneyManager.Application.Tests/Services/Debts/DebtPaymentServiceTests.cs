@@ -90,7 +90,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
         }
 
         [Fact]
-        public async Task TestGetPaginationAndGetAll()
+        public async Task TestGetPagination_ReturnsCorrectRecordsQuantity()
         {
             var (debtId, accountId) = await SetupDependencies(1000m, 500m);
 
@@ -114,11 +114,29 @@ namespace MoneyManager.Application.Tests.Services.Debts
 
             Assert.NotNull(pagination);
             Assert.True(pagination.RecordsQuantity >= 1);
+        }
+
+        [Fact]
+        public async Task TestGetAll_Paginated_ReturnsPayments()
+        {
+            var (debtId, accountId) = await SetupDependencies(1000m, 500m);
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IDebtPaymentService>();
+                await service.AddAsync(new DebtPaymentDto
+                {
+                    DebtId = debtId,
+                    TargetAccountId = accountId,
+                    Amount = 100m,
+                    Date = DateOnly.FromDateTime(DateTime.Now)
+                });
+            });
 
             var payments = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtPaymentService>();
-                return await service.GetAllAsync(1, pagination.PageSize);
+                return await service.GetAllAsync(1, 10);
             });
 
             Assert.NotNull(payments);
@@ -342,7 +360,7 @@ namespace MoneyManager.Application.Tests.Services.Debts
         }
 
         [Fact]
-        public async Task TestGetAll_And_GetPagination_FilterByTagId()
+        public async Task TestGetPagination_FilterByTagId_ReturnsCorrectCount()
         {
             var (debt1Id, accountId) = await SetupDependencies(1000m, 500m);
             var (debt2Id, _) = await SetupDependencies(2000m, 500m);
@@ -374,19 +392,58 @@ namespace MoneyManager.Application.Tests.Services.Debts
                 });
             });
 
+            var pagination = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IDebtPaymentService>();
+                return await service.GetPaginationAsync(tagId: tagId);
+            });
+
+            Assert.NotNull(pagination);
+            Assert.Equal(1, pagination.RecordsQuantity);
+        }
+
+        [Fact]
+        public async Task TestGetAll_FilterByTagId_ReturnsFilteredPayments()
+        {
+            var (debt1Id, accountId) = await SetupDependencies(1000m, 500m);
+            var (debt2Id, _) = await SetupDependencies(2000m, 500m);
+
+            var tagId = await ExecuteScopeAsync(async sp =>
+            {
+                var tagService = sp.GetRequiredService<IDebtTagService>();
+                var newTagId = await tagService.AddAsync(new DebtTagDto { Name = $"Tag_{Guid.NewGuid()}", ColorHex = "#FF0000" });
+                await tagService.AssignTagsToDebtAsync(debt1Id, new List<Guid> { newTagId });
+                return newTagId;
+            });
+
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDebtPaymentService>();
-
-                var pagination = await service.GetPaginationAsync(tagId: tagId);
-                Assert.NotNull(pagination);
-                Assert.Equal(1, pagination.RecordsQuantity);
-
-                var payments = (await service.GetAllAsync(1, 10, tagId: tagId)).ToList();
-                Assert.Single(payments);
-                Assert.Equal(debt1Id, payments[0].DebtId);
-                Assert.Equal(100m, payments[0].Amount);
+                await service.AddAsync(new DebtPaymentDto
+                {
+                    DebtId = debt1Id,
+                    TargetAccountId = accountId,
+                    Amount = 100m,
+                    Date = DateOnly.FromDateTime(DateTime.Now)
+                });
+                await service.AddAsync(new DebtPaymentDto
+                {
+                    DebtId = debt2Id,
+                    TargetAccountId = accountId,
+                    Amount = 200m,
+                    Date = DateOnly.FromDateTime(DateTime.Now)
+                });
             });
+
+            var payments = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IDebtPaymentService>();
+                return (await service.GetAllAsync(1, 10, tagId: tagId)).ToList();
+            });
+
+            Assert.Single(payments);
+            Assert.Equal(debt1Id, payments[0].DebtId);
+            Assert.Equal(100m, payments[0].Amount);
         }
 
         private async Task<Guid> CreateAccount(decimal initialBalance)

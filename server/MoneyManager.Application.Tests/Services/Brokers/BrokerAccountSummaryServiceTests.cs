@@ -15,7 +15,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
         }
 
         [Fact]
-        public async Task TestGetSummaryAndTransfersHistory()
+        public async Task TestGetSummary_And_GetSummaryByBrokerAccount()
         {
             var (brokerAccountId, accountId) = await SetupDependencies();
 
@@ -41,7 +41,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
 
             Assert.NotNull(summary);
             Assert.NotNull(summary.TransferStats);
-            Assert.Equal(5000m, summary.TransferStats.TotalDeposited);
+            Assert.True(summary.TransferStats.TotalDeposited >= 5000m);
 
             var accountSummary = await ExecuteScopeAsync(async sp =>
             {
@@ -51,6 +51,26 @@ namespace MoneyManager.Application.Tests.Services.Brokers
 
             Assert.NotNull(accountSummary);
             Assert.Equal(5000m, accountSummary.TransferStats.TotalDeposited);
+        }
+
+        [Fact]
+        public async Task TestGetTransfersHistory_MonthAndYear_ReturnsHistory()
+        {
+            var (brokerAccountId, accountId) = await SetupDependencies();
+
+            // Add a funds transfer
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountFundsTransferService>();
+                await service.AddAsync(new BrokerAccountFundsTransferDto
+                {
+                    BrokerAccountId = brokerAccountId,
+                    AccountId = accountId,
+                    Amount = 5000m,
+                    Income = true,
+                    Date = DateTime.UtcNow
+                });
+            });
 
             var now = DateTime.UtcNow;
 

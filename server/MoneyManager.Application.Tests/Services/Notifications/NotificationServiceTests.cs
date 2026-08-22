@@ -49,21 +49,31 @@ namespace MoneyManager.Application.Tests.Services.Notifications
         }
 
         [Fact]
-        public async Task TestGetUnreadCount_And_MarkAsRead()
+        public async Task TestGetUnreadCount_ReturnsPositiveCountForUnreadNotifications()
+        {
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<INotificationService>();
+                return await service.CreateAsync("Unread Notification", "Message", NotificationSeverity.Warning);
+            });
+
+            var unreadCount = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<INotificationService>();
+                return await service.GetUnreadCountAsync();
+            });
+
+            Assert.True(unreadCount > 0);
+        }
+
+        [Fact]
+        public async Task TestMarkAsRead_UpdatesIsReadAndReadAt()
         {
             var notification = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<INotificationService>();
                 return await service.CreateAsync("Unread Notification", "Message", NotificationSeverity.Warning);
             });
-
-            var unreadCountBefore = await ExecuteScopeAsync(async sp =>
-            {
-                var service = sp.GetRequiredService<INotificationService>();
-                return await service.GetUnreadCountAsync();
-            });
-
-            Assert.True(unreadCountBefore > 0);
 
             await ExecuteScopeAsync(async sp =>
             {

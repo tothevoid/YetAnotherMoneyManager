@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="InfrastructureManager.Application.Tests/InfrastructureManager.Application.Tests.csproj" />
+  <Project Path="InfrastructureManager.Application/InfrastructureManager.Application.csproj" />
+  <Project Path="InfrastructureManager.WebApi/InfrastructureManager.WebApi.csproj" />
+</Solution>

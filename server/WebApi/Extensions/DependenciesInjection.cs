@@ -7,6 +7,8 @@ using Microsoft.IdentityModel.Tokens;
 using Minio;
 using MoneyManager.Application.Extensions;
 using MoneyManager.Infrastructure.Database;
+using MoneyManager.Infrastructure.Interfaces.DatabaseBackup;
+using MoneyManager.Infrastructure.Services.DatabaseBackup;
 using MoneyManager.WebApi.Mappings;
 using System.Net.Http;
 using System.Text;
@@ -124,6 +126,32 @@ namespace MoneyManager.WebApi.Extensions
         public static IServiceCollection AddMappings(this IServiceCollection services)
         {
             services.AddSingleton<WebApiMapper>();
+            return services;
+        }
+
+        public static IServiceCollection AddInfrastructureManagerClient(this IServiceCollection services, IConfiguration configuration)
+        {
+            var infraSection = configuration.GetSection("InfrastructureManager");
+            var url = infraSection.GetSection("Url").Value;
+            var apiKey = infraSection.GetSection("ApiKey").Value;
+
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                throw new InvalidOperationException("InfrastructureManager:Url configuration is required and was not provided.");
+            }
+
+            if (string.IsNullOrWhiteSpace(apiKey))
+            {
+                throw new InvalidOperationException("InfrastructureManager:ApiKey configuration is required and was not provided.");
+            }
+
+            services.AddHttpClient<IDatabaseBackupProvider, HttpDatabaseBackupProvider>(client =>
+            {
+                client.BaseAddress = new Uri(url);
+                client.DefaultRequestHeaders.Add("X-Service-Api-Key", apiKey);
+                client.Timeout = TimeSpan.FromMinutes(10);
+            });
+
             return services;
         }
     }

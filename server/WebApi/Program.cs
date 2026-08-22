@@ -22,6 +22,7 @@ builder.Services.AddDatabaseConnection(builder.Configuration);
 builder.Services.AddTickerQ();
 
 builder.Services.AddMinioConfiguration(builder.Configuration);
+builder.Services.AddInfrastructureManagerClient(builder.Configuration);
 
 builder.Services.AddSignalR();
 builder.Services.AddControllers();

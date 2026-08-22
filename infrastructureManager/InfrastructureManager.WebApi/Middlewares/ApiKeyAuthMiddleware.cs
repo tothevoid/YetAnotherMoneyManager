@@ -14,10 +14,10 @@ namespace InfrastructureManager.WebApi.Middlewares
         public ApiKeyAuthMiddleware(RequestDelegate next, IConfiguration configuration)
         {
             _next = next;
-            var apiKey = configuration["AUTH_API_KEY"];
+            var apiKey = configuration["INFRA_MANAGER_AUTH_KEY"];
             if (string.IsNullOrWhiteSpace(apiKey))
             {
-                throw new System.InvalidOperationException("AUTH_API_KEY environment variable is required and was not configured.");
+                throw new System.InvalidOperationException("INFRA_MANAGER_AUTH_KEY environment variable is required and was not configured.");
             }
             _expectedApiKey = apiKey;
         }

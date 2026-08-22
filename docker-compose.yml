@@ -36,6 +36,26 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+  infrastructure_manager:
+    build: ./infrastructureManager
+    container_name: ${PROJECT_NAME}_infrastructure_manager
+    restart: always
+    environment:
+      - ASPNETCORE_HTTP_PORTS=${INFRA_MANAGER_PORT:-5050}
+      - INFRA_MANAGER_AUTH_KEY=${INFRA_MANAGER_AUTH_KEY:-dev-infra-secret-key-321}
+      - DB__ConnectionString=Host=database;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:${INFRA_MANAGER_PORT:-5050}/health || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 3s
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - server-network
+      - postgres-network
   server:
     build: ./server
     container_name: ${PROJECT_NAME}_server
@@ -50,6 +70,8 @@ services:
       - FileStorage__UseSsl=${MINIO_USE_SSL}
       - FileStorage__Password=${MINIO_ROOT_PASSWORD}
       - FileStorage__Port=${MINIO_API_PORT}
+      - InfrastructureManager__Url=http://infrastructure_manager:${INFRA_MANAGER_PORT:-5050}
+      - InfrastructureManager__ApiKey=${INFRA_MANAGER_AUTH_KEY:-dev-infra-secret-key-321}
       - Client__Url=${PUBLIC_CLIENT_URL}
       - Auth__Audience=${PUBLIC_CLIENT_URL}
       - Auth__Issuer=${PUBLIC_SERVER_URL}
@@ -60,6 +82,8 @@ services:
       database:
         condition: service_healthy
       files_database:
+        condition: service_healthy
+      infrastructure_manager:
         condition: service_healthy
     networks:
       - server-network

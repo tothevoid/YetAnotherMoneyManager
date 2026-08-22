@@ -47,7 +47,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
         }
 
         [Fact]
-        public async Task TestUpdateAndDelete()
+        public async Task TestUpdate()
         {
             var typeId = await CreateSecurityType("ETF");
 
@@ -75,6 +75,27 @@ namespace MoneyManager.Application.Tests.Services.Securities
 
             Assert.NotNull(updated);
             Assert.Equal(480m, updated.ActualPrice);
+        }
+
+        [Fact]
+        public async Task TestDelete()
+        {
+            var typeId = await CreateSecurityType("ETF");
+
+            var dto = new SecurityDto
+            {
+                Name = "S&P 500 ETF",
+                Ticker = "VOO",
+                TypeId = typeId,
+                CurrencyId = CurrencyConstants.USD,
+                ActualPrice = 450m
+            };
+
+            var added = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISecurityService>();
+                return await service.AddAsync(dto, null);
+            });
 
             await ExecuteScopeAsync(async sp =>
             {

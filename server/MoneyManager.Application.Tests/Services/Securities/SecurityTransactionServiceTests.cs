@@ -50,7 +50,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
         }
 
         [Fact]
-        public async Task TestUpdateAndDelete()
+        public async Task TestUpdate()
         {
             var (securityId, brokerAccountId) = await SetupDependencies();
 
@@ -95,6 +95,28 @@ namespace MoneyManager.Application.Tests.Services.Securities
             Assert.NotNull(updated);
             Assert.Equal(20, updated.Quantity);
             Assert.True(updated.IsSell);
+        }
+
+        [Fact]
+        public async Task TestDelete()
+        {
+            var (securityId, brokerAccountId) = await SetupDependencies();
+
+            var dto = new SecurityTransactionDto
+            {
+                SecurityId = securityId,
+                BrokerAccountId = brokerAccountId,
+                Quantity = 5,
+                Price = 200m,
+                Date = DateTime.UtcNow,
+                IsSell = false
+            };
+
+            var addedId = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISecurityTransactionService>();
+                return await service.AddAsync(dto);
+            });
 
             await ExecuteScopeAsync(async sp =>
             {

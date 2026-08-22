@@ -43,7 +43,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
         }
 
         [Fact]
-        public async Task TestUpdateAndDelete()
+        public async Task TestUpdate()
         {
             var dto = new CryptocurrencyDto
             {
@@ -67,6 +67,23 @@ namespace MoneyManager.Application.Tests.Services.Crypto
 
             Assert.NotNull(updated);
             Assert.Equal(3800m, updated.Price);
+        }
+
+        [Fact]
+        public async Task TestDelete()
+        {
+            var dto = new CryptocurrencyDto
+            {
+                Name = "Ethereum",
+                Symbol = "ETH",
+                Price = 3500m
+            };
+
+            var added = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ICryptocurrencyService>();
+                return await service.AddAsync(dto, null);
+            });
 
             await ExecuteScopeAsync(async sp =>
             {

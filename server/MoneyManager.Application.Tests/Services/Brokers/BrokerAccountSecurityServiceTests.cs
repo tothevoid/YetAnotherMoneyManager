@@ -44,7 +44,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
         }
 
         [Fact]
-        public async Task TestUpdateAndDelete()
+        public async Task TestUpdate()
         {
             var (brokerAccountId, securityId) = await SetupDependencies();
 
@@ -82,6 +82,24 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var updated = all.FirstOrDefault(bas => bas.Id == addedId);
             Assert.NotNull(updated);
             Assert.Equal(30, updated.Quantity);
+        }
+
+        [Fact]
+        public async Task TestDelete()
+        {
+            var (brokerAccountId, securityId) = await SetupDependencies();
+
+            var addedId = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountSecurityService>();
+                return await service.AddAsync(new BrokerAccountSecurityDto
+                {
+                    BrokerAccountId = brokerAccountId,
+                    SecurityId = securityId,
+                    Quantity = 10,
+                    Price = 120m
+                });
+            });
 
             await ExecuteScopeAsync(async sp =>
             {

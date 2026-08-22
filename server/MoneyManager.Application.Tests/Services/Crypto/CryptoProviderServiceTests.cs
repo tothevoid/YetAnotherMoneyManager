@@ -37,7 +37,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
         }
 
         [Fact]
-        public async Task TestUpdateAndDelete()
+        public async Task TestUpdate()
         {
             var providerId = await ExecuteScopeAsync(async sp =>
             {
@@ -67,6 +67,19 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             var updated = all.FirstOrDefault(p => p.Id == providerId);
             Assert.NotNull(updated);
             Assert.Equal("Bybit Updated", updated.Name);
+        }
+
+        [Fact]
+        public async Task TestDelete()
+        {
+            var providerId = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ICryptoProviderService>();
+                return await service.AddAsync(new CryptoProviderDto
+                {
+                    Name = "Bybit Initial"
+                });
+            });
 
             await ExecuteScopeAsync(async sp =>
             {

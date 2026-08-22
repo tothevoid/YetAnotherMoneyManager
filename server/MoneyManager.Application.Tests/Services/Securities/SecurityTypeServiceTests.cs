@@ -33,7 +33,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
         }
 
         [Fact]
-        public async Task TestUpdateAndDelete()
+        public async Task TestUpdate()
         {
             var actualName = "Bond Updated";
 

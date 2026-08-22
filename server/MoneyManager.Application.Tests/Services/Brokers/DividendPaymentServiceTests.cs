@@ -52,7 +52,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
         }
 
         [Fact]
-        public async Task TestUpdateAndDelete()
+        public async Task TestUpdate()
         {
             var (brokerAccountId, dividendId) = await SetupDependencies();
 
@@ -83,11 +83,49 @@ namespace MoneyManager.Application.Tests.Services.Brokers
                 });
             });
 
+            var all = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IDividendPaymentService>();
+                return await service.GetAllAsync(brokerAccountId, 1, 10);
+            });
+
+            var updated = all.FirstOrDefault(p => p.Id == paymentId);
+            Assert.NotNull(updated);
+            Assert.Equal(200, updated.SecuritiesQuantity);
+            Assert.Equal(10m, updated.Tax);
+        }
+
+        [Fact]
+        public async Task TestDelete()
+        {
+            var (brokerAccountId, dividendId) = await SetupDependencies();
+
+            var paymentId = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IDividendPaymentService>();
+                return await service.AddAsync(new DividendPaymentDto
+                {
+                    BrokerAccountId = brokerAccountId,
+                    DividendId = dividendId,
+                    SecuritiesQuantity = 50,
+                    Tax = 2m,
+                    ReceivedAt = DateOnly.FromDateTime(DateTime.Now)
+                });
+            });
+
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IDividendPaymentService>();
                 await service.DeleteAsync(paymentId);
             });
+
+            var allAfterDelete = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IDividendPaymentService>();
+                return await service.GetAllAsync(brokerAccountId, 1, 10);
+            });
+
+            Assert.DoesNotContain(allAfterDelete, p => p.Id == paymentId);
         }
 
         [Fact]

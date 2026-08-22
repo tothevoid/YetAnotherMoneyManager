@@ -55,7 +55,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
         }
 
         [Fact]
-        public async Task TestUpdateAndDelete()
+        public async Task TestUpdate()
         {
             var (brokerAccountId, accountId) = await SetupDependencies();
 
@@ -96,6 +96,25 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             Assert.NotNull(updated);
             Assert.Equal(750m, updated.Amount);
             Assert.False(updated.Income);
+        }
+
+        [Fact]
+        public async Task TestDelete()
+        {
+            var (brokerAccountId, accountId) = await SetupDependencies();
+
+            var added = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountFundsTransferService>();
+                return await service.AddAsync(new BrokerAccountFundsTransferDto
+                {
+                    BrokerAccountId = brokerAccountId,
+                    AccountId = accountId,
+                    Amount = 500m,
+                    Income = true,
+                    Date = DateTime.UtcNow
+                });
+            });
 
             await ExecuteScopeAsync(async sp =>
             {

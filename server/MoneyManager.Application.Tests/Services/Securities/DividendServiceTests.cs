@@ -43,7 +43,7 @@ namespace MoneyManager.Application.Tests.Services.Securities
         }
 
         [Fact]
-        public async Task TestUpdateAndDelete()
+        public async Task TestUpdate()
         {
             var securityId = await SetupSecurity();
             var today = DateOnly.FromDateTime(DateTime.Now);
@@ -82,6 +82,25 @@ namespace MoneyManager.Application.Tests.Services.Securities
             var updated = all.FirstOrDefault(d => d.Id == divId);
             Assert.NotNull(updated);
             Assert.Equal(3.0m, updated.Amount);
+        }
+
+        [Fact]
+        public async Task TestDelete()
+        {
+            var securityId = await SetupSecurity();
+            var today = DateOnly.FromDateTime(DateTime.Now);
+
+            var divId = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IDividendService>();
+                return await service.AddAsync(new DividendDto
+                {
+                    SecurityId = securityId,
+                    Amount = 1.0m,
+                    DeclarationDate = today,
+                    SnapshotDate = today
+                });
+            });
 
             await ExecuteScopeAsync(async sp =>
             {

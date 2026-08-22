@@ -41,7 +41,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
         }
 
         [Fact]
-        public async Task TestUpdateAndDelete()
+        public async Task TestUpdate()
         {
             var (accountId, cryptoId) = await SetupDependencies();
 
@@ -77,6 +77,23 @@ namespace MoneyManager.Application.Tests.Services.Crypto
             var updated = itemsAfterUpdate.FirstOrDefault(i => i.Id == addedId);
             Assert.NotNull(updated);
             Assert.Equal(5.0m, updated.Quantity);
+        }
+
+        [Fact]
+        public async Task TestDelete()
+        {
+            var (accountId, cryptoId) = await SetupDependencies();
+
+            var addedId = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ICryptoAccountCryptocurrencyService>();
+                return await service.AddAsync(new CryptoAccountCryptocurrencyDto
+                {
+                    CryptoAccountId = accountId,
+                    CryptocurrencyId = cryptoId,
+                    Quantity = 1.0m
+                });
+            });
 
             await ExecuteScopeAsync(async sp =>
             {

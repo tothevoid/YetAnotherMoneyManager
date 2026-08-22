@@ -41,7 +41,7 @@ namespace MoneyManager.Application.Tests.Services.Crypto
         }
 
         [Fact]
-        public async Task TestUpdateAndDelete()
+        public async Task TestUpdate()
         {
             var providerId = await CreateProvider("OKX");
 
@@ -74,6 +74,22 @@ namespace MoneyManager.Application.Tests.Services.Crypto
 
             Assert.NotNull(fetched);
             Assert.Equal("Updated Account Name", fetched.Name);
+        }
+
+        [Fact]
+        public async Task TestDelete()
+        {
+            var providerId = await CreateProvider("OKX");
+
+            var accountId = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ICryptoAccountService>();
+                return await service.AddAsync(new CryptoAccountDto
+                {
+                    Name = "Account to Delete",
+                    CryptoProviderId = providerId
+                });
+            });
 
             await ExecuteScopeAsync(async sp =>
             {

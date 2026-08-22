@@ -50,7 +50,7 @@ namespace MoneyManager.Application.Tests.Services.Brokers
         }
 
         [Fact]
-        public async Task TestUpdateAndDelete()
+        public async Task TestUpdate()
         {
             var brokerAccountId = await SetupBrokerAccount();
 
@@ -88,6 +88,24 @@ namespace MoneyManager.Application.Tests.Services.Brokers
             var updated = all.FirstOrDefault(d => d.Id == addedId);
             Assert.NotNull(updated);
             Assert.Equal(15000m, updated.Amount);
+        }
+
+        [Fact]
+        public async Task TestDelete()
+        {
+            var brokerAccountId = await SetupBrokerAccount();
+
+            var addedId = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IBrokerAccountTaxDeductionService>();
+                return await service.AddAsync(new BrokerAccountTaxDeductionDto
+                {
+                    BrokerAccountId = brokerAccountId,
+                    Name = "Initial Deduction",
+                    Amount = 10000m,
+                    DateApplied = DateTime.UtcNow
+                });
+            });
 
             await ExecuteScopeAsync(async sp =>
             {

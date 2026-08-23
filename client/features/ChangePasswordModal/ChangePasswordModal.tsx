@@ -1,5 +1,5 @@
 import { forwardRef, useImperativeHandle, useMemo, useRef, useState } from 'react';
-import { Field, Input, Stack, Text } from '@chakra-ui/react';
+import { Field, Stack, Text } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
@@ -7,6 +7,7 @@ import { BaseModalRef } from '../../src/shared/utilities/modalUtilities';
 import BaseFormModal from '../../src/shared/modals/BaseFormModal/BaseFormModal';
 import { useUserProfile } from '../UserProfileSettingsModal/hooks/UserProfileContext';
 import { changePassword } from '../../src/api/auth/authApi';
+import { PasswordInput } from '../../src/shared/components/PasswordInput/PasswordInput';
 import {
     ChangePasswordModalInput,
     getChangePasswordModalValidationSchema
@@ -81,36 +82,27 @@ const ChangePasswordModal = forwardRef<BaseModalRef>((_, ref) => {
 
                 <Field.Root invalid={!!errors.currentPassword}>
                     <Field.Label color="text_primary">{t('change_password_form_current_password')}</Field.Label>
-                    <Input
-                        type="password"
+                    <PasswordInput
+                        autoComplete="current-password"
                         {...register('currentPassword')}
-                        backgroundColor="background_primary"
-                        borderColor="border_primary"
-                        color="text_primary"
                     />
                     <Field.ErrorText>{errors.currentPassword?.message}</Field.ErrorText>
                 </Field.Root>
 
                 <Field.Root invalid={!!errors.newPassword}>
                     <Field.Label color="text_primary">{t('change_password_form_new_password')}</Field.Label>
-                    <Input
-                        type="password"
+                    <PasswordInput
+                        autoComplete="new-password"
                         {...register('newPassword')}
-                        backgroundColor="background_primary"
-                        borderColor="border_primary"
-                        color="text_primary"
                     />
                     <Field.ErrorText>{errors.newPassword?.message}</Field.ErrorText>
                 </Field.Root>
 
                 <Field.Root invalid={!!errors.confirmPassword}>
                     <Field.Label color="text_primary">{t('change_password_form_confirm_password')}</Field.Label>
-                    <Input
-                        type="password"
+                    <PasswordInput
+                        autoComplete="new-password"
                         {...register('confirmPassword')}
-                        backgroundColor="background_primary"
-                        borderColor="border_primary"
-                        color="text_primary"
                     />
                     <Field.ErrorText>{errors.confirmPassword?.message}</Field.ErrorText>
                 </Field.Root>

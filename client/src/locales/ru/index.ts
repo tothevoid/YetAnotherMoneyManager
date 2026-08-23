@@ -1,5 +1,6 @@
 import commonGeneral from './common/general.json';
 import commonModals from './common/modals.json';
+import actions from './actions/actions.json';
 import notifications from './common/notifications.json';
 import accounts from './accounts/accounts.json';
 import broker from './broker/broker.json';
@@ -20,6 +21,7 @@ import auth from './auth/auth.json';
 const ru = {
     ...commonGeneral,
     ...commonModals,
+    ...actions,
     ...notifications,
     ...accounts,
     ...broker,

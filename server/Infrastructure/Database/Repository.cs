@@ -12,7 +12,7 @@ using MoneyManager.Infrastructure.Queries;
 namespace MoneyManager.Infrastructure.Database
 {
     public class Repository<TEntity>: IRepository<TEntity>
-        where TEntity: BaseEntity
+        where TEntity: class
     {
         private readonly ApplicationDbContext _context;
         private readonly DbSet<TEntity> _entities;
@@ -40,7 +40,7 @@ namespace MoneyManager.Infrastructure.Database
                 query = include(query);
             }
 
-             return await query.Where(entity => entity.Id == id).FirstOrDefaultAsync();
+            return await query.Where(entity => EF.Property<Guid>(entity, "Id") == id).FirstOrDefaultAsync();
         }
 
         public async Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> predicate)
@@ -139,7 +139,7 @@ namespace MoneyManager.Infrastructure.Database
 
         public async Task DeleteAsync(Guid id)
         {
-            var entity = await _entities.FirstOrDefaultAsync(entity => entity.Id == id);
+            var entity = await _entities.FirstOrDefaultAsync(entity => EF.Property<Guid>(entity, "Id") == id);
 
             if (entity == null)
             {

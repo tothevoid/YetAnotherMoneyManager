@@ -9,7 +9,7 @@ using MoneyManager.Shared.Entities;
 namespace MoneyManager.Infrastructure.Interfaces.Database
 {
     public interface IRepository<TEntity>: IDisposable
-        where TEntity: BaseEntity
+        where TEntity: class
     {
         Task AddAsync(TEntity entity);
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -10,7 +10,7 @@ using MoneyManager.Shared.Entities;
 namespace MoneyManager.Infrastructure.Queries
 {
     public class ComplexQueryBuilder<TEntity>
-        where TEntity: BaseEntity
+        where TEntity: class
     {
         private readonly ComplexQuery<TEntity> _complexQuery = new();
 

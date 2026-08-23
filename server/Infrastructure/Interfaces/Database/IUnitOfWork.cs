@@ -7,7 +7,7 @@ namespace MoneyManager.Infrastructure.Interfaces.Database
     public interface IUnitOfWork
     {
         IRepository<T> CreateRepository<T>() 
-            where T: BaseEntity;
+            where T: class;
 
         Task CommitAsync();
     }

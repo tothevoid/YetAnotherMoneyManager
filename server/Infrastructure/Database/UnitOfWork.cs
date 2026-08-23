@@ -18,7 +18,7 @@ namespace MoneyManager.Infrastructure.Database
         }
 
         public IRepository<T> CreateRepository<T>()
-            where T : BaseEntity
+            where T : class
         {
             _repositories ??= new Dictionary<string, object>();
 

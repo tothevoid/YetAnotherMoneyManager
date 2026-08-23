@@ -1,23 +1,24 @@
 import HeaderItem from '../HeaderItem/HeaderItem';
 import { Box, Button, Flex, Icon, Image, Link } from '@chakra-ui/react';
-import { MdDownload } from 'react-icons/md';
+import { AiFillTool } from 'react-icons/ai';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import UserProfileSettingsModal from '../../UserProfileSettingsModal/UserProfileSettingsModal';
 import ChangePasswordModal from '../../ChangePasswordModal/ChangePasswordModal';
 import TokensModal from '../../TokensModal/TokensModal';
+import ActionsModal from '../../ActionsModal/ActionsModal';
 import { NavLink } from 'react-router-dom';
 import { BaseModalRef } from '../../../src/shared/utilities/modalUtilities';
 import { HeaderNotificationBell } from './HeaderNotificationBell';
 import { HeaderProfileMenu } from './HeaderProfileMenu';
 import appIcon from './AppIcon.svg';
-import { downloadAllAssetsReportXlsx } from '../../../src/api/reports/allAssetsReport';
 
 const Header = () => {
     const { t } = useTranslation();
     const userProfileSettingsRef = useRef<BaseModalRef>(null);
     const changePasswordModalRef = useRef<BaseModalRef>(null);
     const tokensModalRef = useRef<BaseModalRef>(null);
+    const actionsModalRef = useRef<BaseModalRef>(null);
 
     const onOpenSettingsClick = () => {
         userProfileSettingsRef.current?.openModal();
@@ -31,38 +32,21 @@ const Header = () => {
         tokensModalRef.current?.openModal();
     };
 
-    const onDownloadReportClick = async () => {
-        const blob = await downloadAllAssetsReportXlsx();
-        if (blob) {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            const now = new Date();
-            const pad = (n: number) => n.toString().padStart(2, '0');
-            const hh = pad(now.getHours());
-            const mm = pad(now.getMinutes());
-            const dd = pad(now.getDate());
-            const MM = pad(now.getMonth() + 1);
-            const yy = now.getFullYear().toString().slice(-2);
-            a.download = `assets_${hh}-${mm}_${dd}-${MM}-${yy}.xlsx`;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            window.URL.revokeObjectURL(url);
-        }
+    const onOpenActionsClick = () => {
+        actionsModalRef.current?.openModal();
     };
 
     const tabs = [
-        { path: "/", title: t("header_dashboard")},
-        { path: "accounts", title: t("header_accounts")},
-        { path: "transactions", title: t("header_transactions")},
-        { path: "deposits", title: t("header_deposits")},
-        { path: "broker_accounts", title: t("header_broker_account")},
-        { path: "securities", title: t("header_securities")},
-        { path: "debts", title: t("header_debts")},
-        { path: "cryptocurrencies", title: t("header_cryptocurrencies")},
-        { path: "crypto_accounts", title: t("header_cryptoaccounts")},
-        { path: "data", title: t("header_data")}
+        { path: "/", title: t("header_dashboard") },
+        { path: "accounts", title: t("header_accounts") },
+        { path: "transactions", title: t("header_transactions") },
+        { path: "deposits", title: t("header_deposits") },
+        { path: "broker_accounts", title: t("header_broker_account") },
+        { path: "securities", title: t("header_securities") },
+        { path: "debts", title: t("header_debts") },
+        { path: "cryptocurrencies", title: t("header_cryptocurrencies") },
+        { path: "crypto_accounts", title: t("header_cryptoaccounts") },
+        { path: "data", title: t("header_data") }
     ];
 
     return <nav>
@@ -74,7 +58,7 @@ const Header = () => {
                     </Link>
                     <Flex flex="1">
                         {
-                            tabs.map(tab => 
+                            tabs.map(tab =>
                                 <NavLink key={tab.path} to={tab.path} className={({ isActive }) => isActive ? 'active' : ''}>
                                     {({ isActive }) => <HeaderItem title={tab.title} active={isActive} />}
                                 </NavLink>
@@ -84,9 +68,15 @@ const Header = () => {
                 </Flex>
                 <Flex width="auto" justify="flex-end" direction="row" gap={2}>
                     <HeaderNotificationBell />
-                    <Button borderColor="background_secondary" background="button_background_secondary" size={'md'} onClick={onDownloadReportClick}>
-                        <Icon color="card_action_icon_primary">
-                            <MdDownload/>
+                    <Button
+                        borderColor="background_secondary"
+                        background="button_background_secondary"
+                        size={'md'}
+                        onClick={onOpenActionsClick}
+                        title={t("header_actions_title")}
+                    >
+                        <Icon>
+                            <AiFillTool />
                         </Icon>
                     </Button>
                     <HeaderProfileMenu
@@ -95,9 +85,10 @@ const Header = () => {
                         onOpenTokens={onOpenTokensClick}
                     />
                 </Flex>
-                <UserProfileSettingsModal ref={userProfileSettingsRef}/>
-                <ChangePasswordModal ref={changePasswordModalRef}/>
-                <TokensModal ref={tokensModalRef}/>
+                <UserProfileSettingsModal ref={userProfileSettingsRef} />
+                <ChangePasswordModal ref={changePasswordModalRef} />
+                <TokensModal ref={tokensModalRef} />
+                <ActionsModal ref={actionsModalRef} />
             </Flex>
         </Box>
     </nav>;

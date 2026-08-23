@@ -55,6 +55,31 @@ namespace MoneyManager.Application.Services.FileStorage
                 .WithContentType(contentType));
         }
 
+        public async Task UploadBytesAsync(string bucketName, byte[] data, string key, string contentType)
+        {
+            if (data == null || data.Length == 0)
+            {
+                return;
+            }
+
+            var existsArgs = new BucketExistsArgs().WithBucket(bucketName);
+            var hasBucket = await _minio.BucketExistsAsync(existsArgs);
+
+            if (!hasBucket)
+            {
+                await _minio.MakeBucketAsync(new MakeBucketArgs().WithBucket(bucketName));
+            }
+
+            using var stream = new System.IO.MemoryStream(data);
+
+            await _minio.PutObjectAsync(new PutObjectArgs()
+                .WithBucket(bucketName)
+                .WithObject(key)
+                .WithStreamData(stream)
+                .WithObjectSize(data.Length)
+                .WithContentType(string.IsNullOrWhiteSpace(contentType) ? "application/octet-stream" : contentType));
+        }
+
         public async Task<FileStreamDto> GetFileStreamAsync(string bucketName, string key)
         {
             if (string.IsNullOrEmpty(bucketName) || string.IsNullOrEmpty(key))

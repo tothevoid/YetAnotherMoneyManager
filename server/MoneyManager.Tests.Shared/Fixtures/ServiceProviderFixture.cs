@@ -7,6 +7,7 @@ using MoneyManager.Application.Interfaces.FileStorage;
 using MoneyManager.Application.Services.FileStorage;
 using MoneyManager.Infrastructure.Database;
 using MoneyManager.Infrastructure.Interfaces.Database;
+using MoneyManager.Infrastructure.Extensions;
 using MoneyManager.Infrastructure.Interfaces.Messages;
 using Testcontainers.Minio;
 using Testcontainers.PostgreSql;
@@ -43,7 +44,8 @@ namespace MoneyManager.Tests.Shared.Fixtures
                 {"FileStorage:Endpoint", MinioEndpoint},
                 {"FileStorage:UseSsl", "false"},
                 {"FileStorage:User", MinioAccessKey},
-                {"FileStorage:Password", MinioSecretKey}
+                {"FileStorage:Password", MinioSecretKey},
+                {"DB:ConnectionString", ConnectionString}
             };
 
             var configuration = new ConfigurationBuilder()
@@ -53,6 +55,9 @@ namespace MoneyManager.Tests.Shared.Fixtures
             services.AddSingleton<IConfiguration>(configuration);
             services.AddHttpClient();
             services.AddApplicationServices();
+            services.AddInfrastructureServices();
+
+            services.AddSingleton<MoneyManager.Infrastructure.Interfaces.DatabaseBackup.IDatabaseBackupProvider, TestDatabaseBackupProvider>();
 
             services.AddMinio(configureClient => configureClient
                 .WithEndpoint(MinioEndpoint)

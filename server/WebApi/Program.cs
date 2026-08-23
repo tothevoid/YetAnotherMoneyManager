@@ -12,6 +12,9 @@ using MoneyManager.Application.Extensions;
 using MoneyManager.Infrastructure.Extensions;
 using MoneyManager.WebApi.Extensions;
 
+using TickerQ.EntityFrameworkCore.Customizer;
+using TickerQ.EntityFrameworkCore.DependencyInjection;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddExternalHttpClients();
@@ -19,7 +22,14 @@ builder.Services.AddClientCors(builder.Configuration);
 
 builder.Services.AddDatabaseConnection(builder.Configuration);
 
-builder.Services.AddTickerQ();
+builder.Services.AddTickerQ(opt =>
+{
+    opt.AddOperationalStore(ef =>
+    {
+        ef.UseApplicationDbContext<ApplicationDbContext>(ConfigurationType.UseModelCustomizer);
+        ef.SetSchema("ticker");
+    });
+});
 
 builder.Services.AddMinioConfiguration(builder.Configuration);
 builder.Services.AddInfrastructureManagerClient(builder.Configuration);

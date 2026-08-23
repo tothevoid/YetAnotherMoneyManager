@@ -67,6 +67,7 @@ namespace MoneyManager.Infrastructure.Database
 
             modelBuilder.ApplyConfiguration(new BankConfiguration());
             modelBuilder.ApplyConfiguration(new NotificationConfiguration());
+            modelBuilder.ApplyConfiguration(new ScheduledCronTickerConfiguration());
             modelBuilder.ApplyConfiguration(new ScheduledTaskAttachmentConfiguration());
 
             InitializeDefaultData(modelBuilder);

@@ -8,7 +8,7 @@ namespace MoneyManager.Infrastructure.Entities.Scheduler
     {
         public Guid OccurrenceId { get; set; }
 
-        public CronTickerOccurrenceEntity<CronTickerEntity> Occurrence { get; set; }
+        public CronTickerOccurrenceEntity<ScheduledCronTicker> Occurrence { get; set; }
 
         public string FileName { get; set; }
 

@@ -603,6 +603,57 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.ToTable("Notification");
                 });
 
+            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Scheduler.ScheduledCronTicker", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Expression")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Function")
+                        .HasColumnType("text");
+
+                    b.Property<string>("InitIdentifier")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsSystemPaused")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<byte[]>("Request")
+                        .HasColumnType("bytea");
+
+                    b.Property<int>("Retries")
+                        .HasColumnType("integer");
+
+                    b.PrimitiveCollection<int[]>("RetryIntervals")
+                        .HasColumnType("integer[]");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Expression")
+                        .HasDatabaseName("IX_CronTickers_Expression");
+
+                    b.HasIndex("Function", "Expression")
+                        .HasDatabaseName("IX_Function_Expression");
+
+                    b.ToTable("CronTickers", "ticker");
+                });
+
             modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Scheduler.ScheduledTaskAttachment", b =>
                 {
                     b.Property<Guid>("Id")
@@ -965,58 +1016,7 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.ToTable("UserRefreshToken");
                 });
 
-            modelBuilder.Entity("TickerQ.Utilities.Entities.CronTickerEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Expression")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Function")
-                        .HasColumnType("text");
-
-                    b.Property<string>("InitIdentifier")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsEnabled")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsSystemPaused")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false);
-
-                    b.Property<byte[]>("Request")
-                        .HasColumnType("bytea");
-
-                    b.Property<int>("Retries")
-                        .HasColumnType("integer");
-
-                    b.PrimitiveCollection<int[]>("RetryIntervals")
-                        .HasColumnType("integer[]");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Expression")
-                        .HasDatabaseName("IX_CronTickers_Expression");
-
-                    b.HasIndex("Function", "Expression")
-                        .HasDatabaseName("IX_Function_Expression");
-
-                    b.ToTable("CronTickers", "ticker");
-                });
-
-            modelBuilder.Entity("TickerQ.Utilities.Entities.CronTickerOccurrenceEntity<TickerQ.Utilities.Entities.CronTickerEntity>", b =>
+            modelBuilder.Entity("TickerQ.Utilities.Entities.CronTickerOccurrenceEntity<MoneyManager.Infrastructure.Entities.Scheduler.ScheduledCronTicker>", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
@@ -1389,7 +1389,7 @@ namespace MoneyManager.Infrastructure.Migrations
 
             modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Scheduler.ScheduledTaskAttachment", b =>
                 {
-                    b.HasOne("TickerQ.Utilities.Entities.CronTickerOccurrenceEntity<TickerQ.Utilities.Entities.CronTickerEntity>", "Occurrence")
+                    b.HasOne("TickerQ.Utilities.Entities.CronTickerOccurrenceEntity<MoneyManager.Infrastructure.Entities.Scheduler.ScheduledCronTicker>", "Occurrence")
                         .WithMany()
                         .HasForeignKey("OccurrenceId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1514,10 +1514,10 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.Navigation("UserProfile");
                 });
 
-            modelBuilder.Entity("TickerQ.Utilities.Entities.CronTickerOccurrenceEntity<TickerQ.Utilities.Entities.CronTickerEntity>", b =>
+            modelBuilder.Entity("TickerQ.Utilities.Entities.CronTickerOccurrenceEntity<MoneyManager.Infrastructure.Entities.Scheduler.ScheduledCronTicker>", b =>
                 {
-                    b.HasOne("TickerQ.Utilities.Entities.CronTickerEntity", "CronTicker")
-                        .WithMany()
+                    b.HasOne("MoneyManager.Infrastructure.Entities.Scheduler.ScheduledCronTicker", "CronTicker")
+                        .WithMany("Occurrences")
                         .HasForeignKey("CronTickerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1625,6 +1625,11 @@ namespace MoneyManager.Infrastructure.Migrations
             modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Debts.DebtTag", b =>
                 {
                     b.Navigation("DebtAssociations");
+                });
+
+            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Scheduler.ScheduledCronTicker", b =>
+                {
+                    b.Navigation("Occurrences");
                 });
 
             modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Securities.Dividend", b =>

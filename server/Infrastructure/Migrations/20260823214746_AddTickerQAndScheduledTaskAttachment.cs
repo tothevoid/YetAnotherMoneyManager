@@ -20,17 +20,17 @@ namespace MoneyManager.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Function = table.Column<string>(type: "text", nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    InitIdentifier = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Expression = table.Column<string>(type: "text", nullable: true),
                     Request = table.Column<byte[]>(type: "bytea", nullable: true),
                     Retries = table.Column<int>(type: "integer", nullable: false),
                     RetryIntervals = table.Column<int[]>(type: "integer[]", nullable: true),
                     IsEnabled = table.Column<bool>(type: "boolean", nullable: false),
-                    IsSystemPaused = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
-                    Function = table.Column<string>(type: "text", nullable: true),
-                    Description = table.Column<string>(type: "text", nullable: true),
-                    InitIdentifier = table.Column<string>(type: "text", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    IsSystemPaused = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {

@@ -20,7 +20,7 @@ namespace MoneyManager.Application.Attributes.Scheduler
             string displayName,
             string description,
             string category,
-            string defaultCronExpression)
+            string defaultCronExpression = "0 0 * * *")
         {
             TaskName = taskName;
             DisplayName = displayName;

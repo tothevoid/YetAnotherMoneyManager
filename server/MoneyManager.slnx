@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="Application/MoneyManager.Application.csproj" />
+  <Project Path="Infrastructure/MoneyManager.Infrastructure.csproj" />
+  <Project Path="MoneyManager.Application.Tests/MoneyManager.Application.Tests.csproj" />
+  <Project Path="MoneyManager.Infrastructure.Tests/MoneyManager.Infrastructure.Tests.csproj" />
+  <Project Path="MoneyManager.Tests.Shared/MoneyManager.Tests.Shared.csproj" />
+  <Project Path="Shared/MoneyManager.Shared.csproj" />
+  <Project Path="WebApi/MoneyManager.WebApi.csproj" />
+</Solution>

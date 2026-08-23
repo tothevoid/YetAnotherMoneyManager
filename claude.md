@@ -16,7 +16,7 @@ This document contains guidelines, coding standards, and architectural patterns 
   - `server/Infrastructure`: EF Core DbContext, entity configurations, and migrations.
   - `server/Shared`: Common constants and helper models.
   - `server/MoneyManager.Application.Tests`: Unit tests for application services.
-- **Orphan Directory Prohibition**: Do NOT create or restore legacy directories (`server/BLL`, `server/DAL`, `server/Common`, `server/MoneyManager`, `server/server`). Only project folders in `MoneyManager.sln` are valid.
+- **Orphan Directory Prohibition**: Do NOT create or restore legacy directories (`server/BLL`, `server/DAL`, `server/Common`, `server/MoneyManager`, `server/server`). Only project folders in `MoneyManager.slnx` are valid.
 
 ### DTO Naming Conventions
 - **PascalCase with `Dto` Suffix**: All Data Transfer Object classes and files MUST use PascalCase with the `Dto` suffix (e.g. `AccountDto.cs`, `SecurityTransactionDto.cs`, `BrokerAccountSummaryDto.cs`, `UserProfileDto.cs`). Do NOT use `*DTO` all-caps suffix.

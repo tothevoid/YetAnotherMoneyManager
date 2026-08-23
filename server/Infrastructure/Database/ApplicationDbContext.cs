@@ -8,6 +8,7 @@ using MoneyManager.Infrastructure.Configurations.Deposits;
 using MoneyManager.Infrastructure.Configurations.Notifications;
 using MoneyManager.Infrastructure.Configurations.Securities;
 using MoneyManager.Infrastructure.Configurations.Transactions;
+using MoneyManager.Infrastructure.Configurations.Scheduler;
 using MoneyManager.Infrastructure.Configurations.User;
 using MoneyManager.Infrastructure.Data;
 using MoneyManager.Infrastructure.Entities.Accounts;
@@ -66,6 +67,7 @@ namespace MoneyManager.Infrastructure.Database
 
             modelBuilder.ApplyConfiguration(new BankConfiguration());
             modelBuilder.ApplyConfiguration(new NotificationConfiguration());
+            modelBuilder.ApplyConfiguration(new ScheduledTaskAttachmentConfiguration());
 
             InitializeDefaultData(modelBuilder);
 

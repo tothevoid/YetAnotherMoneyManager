@@ -12,6 +12,8 @@ namespace MoneyManager.Infrastructure.Entities.Scheduler
 
         public string FileName { get; set; }
 
+        public string BucketName { get; set; }
+
         public string StoragePath { get; set; }
 
         public string ContentType { get; set; }

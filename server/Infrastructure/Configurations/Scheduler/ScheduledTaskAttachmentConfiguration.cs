@@ -12,6 +12,10 @@ namespace MoneyManager.Infrastructure.Configurations.Scheduler
                 .IsRequired()
                 .HasMaxLength(256);
 
+            builder.Property(a => a.BucketName)
+                .IsRequired()
+                .HasMaxLength(128);
+
             builder.Property(a => a.StoragePath)
                 .IsRequired()
                 .HasMaxLength(512);

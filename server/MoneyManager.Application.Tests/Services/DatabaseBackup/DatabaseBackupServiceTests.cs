@@ -23,12 +23,16 @@ namespace MoneyManager.Application.Tests.Services.DatabaseBackup
             {
                 var backupService = sp.GetRequiredService<IDatabaseBackupService>();
 
-                var backupBytes = await backupService.CreateBackupAsync();
+                var backup = await backupService.CreateBackupAsync();
 
-                Assert.NotNull(backupBytes);
-                Assert.True(backupBytes.Length > 0);
+                Assert.NotNull(backup);
+                Assert.NotNull(backup.Data);
+                Assert.True(backup.Data.Length > 0);
+                Assert.Equal("application/gzip", backup.ContentType);
+                Assert.False(backup.IsEncrypted);
+                Assert.EndsWith(".sql.gz", backup.FileName);
 
-                var validationResult = await backupService.ValidateBackupAsync(backupBytes);
+                var validationResult = await backupService.ValidateBackupAsync(backup.Data);
                 Assert.True(validationResult.IsValid);
                 Assert.False(validationResult.IsEncrypted);
                 Assert.Null(validationResult.ErrorMessage);
@@ -43,24 +47,28 @@ namespace MoneyManager.Application.Tests.Services.DatabaseBackup
                 var backupService = sp.GetRequiredService<IDatabaseBackupService>();
                 var password = "BackupPassword123!@#";
 
-                var encryptedBytes = await backupService.CreateBackupAsync(password);
+                var backup = await backupService.CreateBackupAsync(password);
 
-                Assert.NotNull(encryptedBytes);
-                Assert.True(encryptedBytes.Length > 0);
+                Assert.NotNull(backup);
+                Assert.NotNull(backup.Data);
+                Assert.True(backup.Data.Length > 0);
+                Assert.Equal("application/octet-stream", backup.ContentType);
+                Assert.True(backup.IsEncrypted);
+                Assert.EndsWith(".sql.gz.enc", backup.FileName);
 
                 // Validation without password should indicate encrypted
-                var valWithoutPass = await backupService.ValidateBackupAsync(encryptedBytes);
+                var valWithoutPass = await backupService.ValidateBackupAsync(backup.Data);
                 Assert.True(valWithoutPass.IsValid);
                 Assert.True(valWithoutPass.IsEncrypted);
 
                 // Validation with correct password should return valid metadata
-                var valWithPass = await backupService.ValidateBackupAsync(encryptedBytes, password);
+                var valWithPass = await backupService.ValidateBackupAsync(backup.Data, password);
                 Assert.True(valWithPass.IsValid);
                 Assert.True(valWithPass.IsEncrypted);
                 Assert.Null(valWithPass.ErrorMessage);
 
                 // Validation with wrong password should fail
-                var valWrongPass = await backupService.ValidateBackupAsync(encryptedBytes, "WrongPassword");
+                var valWrongPass = await backupService.ValidateBackupAsync(backup.Data, "WrongPassword");
                 Assert.False(valWrongPass.IsValid);
                 Assert.NotNull(valWrongPass.ErrorMessage);
             });
@@ -90,7 +98,8 @@ namespace MoneyManager.Application.Tests.Services.DatabaseBackup
             await ExecuteScopeAsync(async sp =>
             {
                 var backupService = sp.GetRequiredService<IDatabaseBackupService>();
-                backupData = await backupService.CreateBackupAsync(password);
+                var backup = await backupService.CreateBackupAsync(password);
+                backupData = backup.Data;
             });
 
             Assert.NotNull(backupData);

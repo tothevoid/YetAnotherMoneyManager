@@ -13,14 +13,17 @@ namespace MoneyManager.Application.Tests.Services.Reports
         [Fact]
         public async Task TestCreateReport_GeneratesExcelByteArray()
         {
-            var reportBytes = await ExecuteScopeAsync(async sp =>
+            var report = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<IAllAssetsReportService>();
                 return await service.CreateReportAsync();
             });
 
-            Assert.NotNull(reportBytes);
-            Assert.NotEmpty(reportBytes);
+            Assert.NotNull(report);
+            Assert.NotNull(report.Data);
+            Assert.NotEmpty(report.Data);
+            Assert.Equal("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", report.ContentType);
+            Assert.EndsWith(".xlsx", report.FileName);
         }
     }
 }

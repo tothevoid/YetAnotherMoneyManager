@@ -1,0 +1,212 @@
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using MoneyManager.Application.DTO.Scheduler;
+using MoneyManager.Application.Interfaces.Scheduler;
+using MoneyManager.Application.Tests.Fixtures;
+using MoneyManager.Infrastructure.Entities.Scheduler;
+using Xunit;
+
+namespace MoneyManager.Application.Tests.Services.Scheduler
+{
+    public class SchedulerTaskServiceTests : TestBase
+    {
+        public SchedulerTaskServiceTests(ServiceProviderFixture serviceProviderFixture) : base(serviceProviderFixture)
+        {
+        }
+
+        [Fact]
+        public async Task GetNotScheduledTasksAsync_ReturnsUnscheduledJobs()
+        {
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISchedulerTaskService>();
+
+                var definitions = await service.GetNotScheduledTasksAsync();
+
+                Assert.NotNull(definitions);
+                var list = definitions.ToList();
+                Assert.True(list.Count >= 5);
+                Assert.Contains(list, d => d.TaskName == "GenerateAllAssetsReport");
+                Assert.Contains(list, d => d.TaskName == "DatabaseBackup");
+                Assert.Contains(list, d => d.TaskName == "PullQuotations");
+                Assert.Contains(list, d => d.TaskName == "CleanUpOldNotifications");
+                Assert.Contains(list, d => d.TaskName == "CleanUpExpiredRefreshTokens");
+            });
+        }
+
+        [Fact]
+        public async Task CreateTaskAsync_ValidRequest_CreatesTaskSuccessfully()
+        {
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISchedulerTaskService>();
+
+                // Ensure clean state
+                await service.DeleteTaskAsync("GenerateAllAssetsReport");
+
+                var createDto = new CreateScheduledTaskDto
+                {
+                    TaskName = "GenerateAllAssetsReport",
+                    CronExpression = "0 9 * * 1",
+                    IsEnabled = true
+                };
+
+                var created = await service.CreateTaskAsync(createDto);
+
+                Assert.NotNull(created);
+                Assert.Equal("GenerateAllAssetsReport", created.TaskName);
+                Assert.NotEmpty(created.DisplayName);
+                Assert.NotEmpty(created.Description);
+                Assert.Equal("0 9 * * 1", created.CronExpression);
+                Assert.True(created.IsEnabled);
+
+                var fetched = await service.GetTaskByNameAsync("GenerateAllAssetsReport");
+                Assert.NotNull(fetched);
+                Assert.Equal("GenerateAllAssetsReport", fetched.TaskName);
+            });
+        }
+
+        [Fact]
+        public async Task CreateTaskAsync_DuplicateTask_ThrowsInvalidOperationException()
+        {
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISchedulerTaskService>();
+
+                // Ensure task is created first
+                await service.DeleteTaskAsync("DatabaseBackup");
+                await service.CreateTaskAsync(new CreateScheduledTaskDto
+                {
+                    TaskName = "DatabaseBackup",
+                    CronExpression = "0 3 * * 0",
+                    IsEnabled = true
+                });
+
+                // Attempt to create duplicate
+                var duplicateDto = new CreateScheduledTaskDto
+                {
+                    TaskName = "DatabaseBackup",
+                    CronExpression = "0 4 * * 0",
+                    IsEnabled = false
+                };
+
+                await Assert.ThrowsAsync<InvalidOperationException>(() => service.CreateTaskAsync(duplicateDto));
+            });
+        }
+
+        [Fact]
+        public async Task CreateTaskAsync_InvalidCron_ThrowsArgumentException()
+        {
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISchedulerTaskService>();
+
+                var invalidDto = new CreateScheduledTaskDto
+                {
+                    TaskName = "PullQuotations",
+                    CronExpression = "*/99 * * * *",
+                    IsEnabled = true
+                };
+
+                await Assert.ThrowsAsync<ArgumentException>(() => service.CreateTaskAsync(invalidDto));
+            });
+        }
+
+        [Fact]
+        public async Task CreateTaskAsync_UnknownTaskName_ThrowsArgumentException()
+        {
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISchedulerTaskService>();
+
+                var unknownDto = new CreateScheduledTaskDto
+                {
+                    TaskName = "NonExistentJob",
+                    CronExpression = "0 0 * * *",
+                    IsEnabled = true
+                };
+
+                await Assert.ThrowsAsync<ArgumentException>(() => service.CreateTaskAsync(unknownDto));
+            });
+        }
+
+        [Fact]
+        public async Task DeleteTaskAsync_ExistingTask_RemovesTask()
+        {
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISchedulerTaskService>();
+
+                await service.DeleteTaskAsync("CleanUpOldNotifications");
+                await service.CreateTaskAsync(new CreateScheduledTaskDto
+                {
+                    TaskName = "CleanUpOldNotifications",
+                    CronExpression = "0 0 * * *",
+                    IsEnabled = true
+                });
+
+                var deleted = await service.DeleteTaskAsync("CleanUpOldNotifications");
+                Assert.True(deleted);
+
+                var task = await service.GetTaskByNameAsync("CleanUpOldNotifications");
+                Assert.Null(task);
+            });
+        }
+
+        [Fact]
+        public async Task UpdateScheduleAsync_ValidDto_UpdatesTask()
+        {
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISchedulerTaskService>();
+
+                await service.DeleteTaskAsync("GenerateAllAssetsReport");
+                await service.CreateTaskAsync(new CreateScheduledTaskDto
+                {
+                    TaskName = "GenerateAllAssetsReport",
+                    CronExpression = "0 9 * * 1",
+                    IsEnabled = true
+                });
+
+                var updateDto = new UpdateScheduleDto
+                {
+                    CronExpression = "0 10 * * 2",
+                    IsEnabled = false
+                };
+
+                var updated = await service.UpdateScheduleAsync("GenerateAllAssetsReport", updateDto);
+
+                Assert.NotNull(updated);
+                Assert.Equal("0 10 * * 2", updated.CronExpression);
+                Assert.False(updated.IsEnabled);
+            });
+        }
+
+        [Fact]
+        public async Task ToggleTaskStatusAsync_TogglesEnabledState()
+        {
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISchedulerTaskService>();
+
+                await service.DeleteTaskAsync("CleanUpExpiredRefreshTokens");
+                await service.CreateTaskAsync(new CreateScheduledTaskDto
+                {
+                    TaskName = "CleanUpExpiredRefreshTokens",
+                    CronExpression = "0 0 * * *",
+                    IsEnabled = true
+                });
+
+                var updated = await service.ToggleTaskStatusAsync("CleanUpExpiredRefreshTokens", false);
+                Assert.NotNull(updated);
+                Assert.False(updated.IsEnabled);
+
+                var reEnabled = await service.ToggleTaskStatusAsync("CleanUpExpiredRefreshTokens", true);
+                Assert.NotNull(reEnabled);
+                Assert.True(reEnabled.IsEnabled);
+            });
+        }
+    }
+}

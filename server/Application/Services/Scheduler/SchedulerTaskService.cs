@@ -22,12 +22,12 @@ namespace MoneyManager.Application.Services.Scheduler
         private readonly ILogger<SchedulerTaskService> _logger;
 
         public SchedulerTaskService(
-            IUnitOfWork uow,
+            IUnitOfWork unitOfWork,
             IScheduledJobRegistry jobRegistry,
             ILogger<SchedulerTaskService> logger)
         {
-            _db = uow;
-            _tickerRepo = uow.CreateRepository<ScheduledCronTicker>();
+            _db = unitOfWork;
+            _tickerRepo = unitOfWork.CreateRepository<ScheduledCronTicker>();
             _jobRegistry = jobRegistry;
             _logger = logger;
         }
@@ -226,16 +226,9 @@ namespace MoneyManager.Application.Services.Scheduler
             var category = descriptor?.Category ?? "General";
             var cronExpression = ticker.Expression;
 
-            var lastStatus = ScheduledTaskExecutionStatus.Unknown;
-            if (latestOccurrence != null)
-            {
-                lastStatus = latestOccurrence.Status switch
-                {
-                    TickerQ.Utilities.Enums.TickerStatus.Done => ScheduledTaskExecutionStatus.Success,
-                    TickerQ.Utilities.Enums.TickerStatus.Failed => ScheduledTaskExecutionStatus.Failed,
-                    _ => ScheduledTaskExecutionStatus.Running
-                };
-            }
+            var lastStatus = latestOccurrence != null
+                ? SchedulerStatusMapper.ToExecutionStatus(latestOccurrence.Status)
+                : ScheduledTaskExecutionStatus.Unknown;
 
             return new ScheduledTaskDto
             {

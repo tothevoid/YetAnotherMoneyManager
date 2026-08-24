@@ -30,17 +30,28 @@ namespace MoneyManager.Application.Services.DatabaseBackup
             _logger = logger;
         }
 
-        public async Task<byte[]> CreateBackupAsync(string? password = null)
+        public async Task<GeneratedBackupDto> CreateBackupAsync(string? password = null)
         {
             var rawDumpBytes = await _databaseBackupProvider.ExportDatabaseDumpAsync();
             var compressedBytes = CompressGzip(rawDumpBytes);
+            var isEncrypted = !string.IsNullOrEmpty(password);
 
-            if (!string.IsNullOrEmpty(password))
+            var data = isEncrypted
+                ? await _backupEncryptionService.EncryptAsync(compressedBytes, password!)
+                : compressedBytes;
+
+            var timestamp = DateTime.UtcNow.ToString("yyyyMMdd_HHmmss");
+            var fileName = isEncrypted
+                ? $"moneymanager_backup_{timestamp}.sql.gz.enc"
+                : $"moneymanager_backup_{timestamp}.sql.gz";
+
+            return new GeneratedBackupDto
             {
-                return await _backupEncryptionService.EncryptAsync(compressedBytes, password);
-            }
-
-            return compressedBytes;
+                Data = data,
+                FileName = fileName,
+                ContentType = isEncrypted ? "application/octet-stream" : "application/gzip",
+                IsEncrypted = isEncrypted
+            };
         }
 
         public async Task<BackupValidationResultDto> ValidateBackupAsync(byte[] backupData, string? password = null)

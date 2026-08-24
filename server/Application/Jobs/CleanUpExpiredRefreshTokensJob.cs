@@ -1,50 +1,66 @@
+using System;
+using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
+using MoneyManager.Application.Attributes.Scheduler;
+using MoneyManager.Application.DTO.Scheduler;
+using MoneyManager.Application.Enums.Scheduler;
 using MoneyManager.Application.Interfaces.Auth;
 using MoneyManager.Application.Interfaces.DatabaseBackup;
 using MoneyManager.Application.Interfaces.Notifications;
+using MoneyManager.Application.Interfaces.Scheduler;
 using MoneyManager.Infrastructure.Constants;
 using MoneyManager.Infrastructure.Entities.Notifications;
 using TickerQ.Utilities.Base;
 
 namespace MoneyManager.Application.Jobs
 {
-    public class CleanUpExpiredRefreshTokensJob
+    [ScheduledJob(
+        taskName: "CleanUpExpiredRefreshTokens",
+        displayName: "Clean Up Session Tokens",
+        description: "Remove expired and revoked JWT refresh tokens older than 30 days",
+        category: "Auth",
+        defaultCronExpression: "0 0 * * *")]
+    public class CleanUpExpiredRefreshTokensJob : ScheduledJobBase
     {
         private readonly IAuthService _authService;
         private readonly INotificationService _notificationService;
-        private readonly IDatabaseStateService _databaseStateService;
 
         public CleanUpExpiredRefreshTokensJob(
             IAuthService authService,
             INotificationService notificationService,
-            IDatabaseStateService databaseStateService)
+            IDatabaseStateService databaseStateService,
+            ISchedulerJournalService journalService)
+            : base(databaseStateService, journalService)
         {
             _authService = authService;
             _notificationService = notificationService;
-            _databaseStateService = databaseStateService;
         }
 
-        // Expired and revoked refresh tokens cleanup every day at 00:00
-        [TickerFunction(functionName: nameof(CleanUpExpiredRefreshTokensAsync), cronExpression: "0 0 * * *")]
+        [TickerFunction(functionName: "CleanUpExpiredRefreshTokens")]
         public async Task CleanUpExpiredRefreshTokensAsync()
         {
-            if (_databaseStateService.IsRestoring)
-            {
-                return;
-            }
+            await ExecuteAsync(triggerSource: ScheduledTaskTriggerSource.Scheduled);
+        }
 
-            // Remove refresh tokens expired or revoked older than 30 days
+        protected override async Task<JobExecutionResult> ExecuteCoreAsync(
+            ScheduledTaskTriggerSource triggerSource,
+            CancellationToken cancellationToken)
+        {
             var deletedCount = await _authService.CleanUpExpiredRefreshTokensAsync(olderThanDays: 30);
 
             if (deletedCount > 0)
             {
                 await _notificationService.CreateAsync(
-                    title: "Session cleanup",
-                    message: $"Removed expired and revoked tokens: {deletedCount}.",
+                    title: "Session Tokens Clean Up",
+                    message: $"Removed {deletedCount} expired or revoked tokens.",
                     severity: NotificationSeverity.Info,
                     category: "Auth",
                     userProfileId: UserProfileConstants.UserProfileId);
             }
+
+            return JobExecutionResult.Success($"Successfully removed {deletedCount} expired session tokens");
         }
     }
 }
+

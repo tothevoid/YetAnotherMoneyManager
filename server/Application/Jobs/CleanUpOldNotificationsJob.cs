@@ -1,34 +1,49 @@
+using System;
+using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
+using MoneyManager.Application.Attributes.Scheduler;
+using MoneyManager.Application.DTO.Scheduler;
+using MoneyManager.Application.Enums.Scheduler;
 using MoneyManager.Application.Interfaces.DatabaseBackup;
 using MoneyManager.Application.Interfaces.Notifications;
+using MoneyManager.Application.Interfaces.Scheduler;
 using TickerQ.Utilities.Base;
 
 namespace MoneyManager.Application.Jobs
 {
-    public class CleanUpOldNotificationsJob
+    [ScheduledJob(
+        taskName: "CleanUpOldNotifications",
+        displayName: "Clean Up Old Notifications",
+        description: "Remove read system notifications older than 90 days",
+        category: "System",
+        defaultCronExpression: "0 0 * * *")]
+    public class CleanUpOldNotificationsJob : ScheduledJobBase
     {
         private readonly INotificationService _notificationService;
-        private readonly IDatabaseStateService _databaseStateService;
 
         public CleanUpOldNotificationsJob(
             INotificationService notificationService,
-            IDatabaseStateService databaseStateService)
+            IDatabaseStateService databaseStateService,
+            ISchedulerJournalService journalService)
+            : base(databaseStateService, journalService)
         {
             _notificationService = notificationService;
-            _databaseStateService = databaseStateService;
         }
 
-        // Irrelative notifications removal every day at 00:00
-        [TickerFunction(functionName: nameof(CleanUp), cronExpression: "0 0 * * *")]
+        [TickerFunction(functionName: "CleanUpOldNotifications")]
         public async Task CleanUp()
         {
-            if (_databaseStateService.IsRestoring)
-            {
-                return;
-            }
+            await ExecuteAsync(triggerSource: ScheduledTaskTriggerSource.Scheduled);
+        }
 
-            // Remove notifications older than 3 months (90 days)
+        protected override async Task<JobExecutionResult> ExecuteCoreAsync(
+            ScheduledTaskTriggerSource triggerSource,
+            CancellationToken cancellationToken)
+        {
             await _notificationService.CleanUpOldNotificationsAsync(olderThanDays: 90);
+            return JobExecutionResult.Success("Successfully cleaned up read system notifications older than 90 days");
         }
     }
 }
+

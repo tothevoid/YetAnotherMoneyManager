@@ -2,6 +2,7 @@ using ClosedXML.Excel;
 using MoneyManager.Application.DTO.Accounts;
 using MoneyManager.Application.DTO.Banks;
 using MoneyManager.Application.DTO.Dashboard;
+using MoneyManager.Application.DTO.Reports;
 using MoneyManager.Application.Interfaces.Accounts;
 using MoneyManager.Application.Interfaces.Banks;
 using MoneyManager.Application.Interfaces.Brokers;
@@ -51,7 +52,7 @@ namespace MoneyManager.Application.Services.Reports
             _currencyTransactionService = currencyTransactionService;
         }
 
-        public async Task<byte[]> CreateReportAsync()
+        public async Task<GeneratedReportDto> CreateReportAsync()
         {
             using var workbook = new XLWorkbook();
 
@@ -83,7 +84,16 @@ namespace MoneyManager.Application.Services.Reports
 
             using var ms = new System.IO.MemoryStream();
             workbook.SaveAs(ms);
-            return ms.ToArray();
+
+            var timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd_HHmm");
+            var fileName = $"AllAssetsReport_{timestamp}.xlsx";
+
+            return new GeneratedReportDto
+            {
+                Data = ms.ToArray(),
+                FileName = fileName,
+                ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            };
         }
 
         private async Task CreateBankAccountWorksheet(IXLWorkbook workbook, BankDto bank)

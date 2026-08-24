@@ -13,7 +13,5 @@ namespace MoneyManager.Application.Interfaces.Scheduler
         ScheduledJobDescriptor GetDescriptor(string taskName);
 
         bool TryGetDescriptor(string taskName, out ScheduledJobDescriptor descriptor);
-
-        Task ExecuteJobAsync(string taskName, ScheduledTaskTriggerSource triggerSource = ScheduledTaskTriggerSource.Manual, CancellationToken cancellationToken = default);
     }
 }

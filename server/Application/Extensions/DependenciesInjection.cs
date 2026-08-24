@@ -36,6 +36,9 @@ using MoneyManager.Application.Services.Transactions;
 using MoneyManager.Application.Services.User;
 using MoneyManager.Application.Interfaces.DatabaseBackup;
 using MoneyManager.Application.Services.DatabaseBackup;
+using MoneyManager.Application.Interfaces.Scheduler;
+using MoneyManager.Application.Services.Scheduler;
+using MoneyManager.Application.Jobs;
 
 namespace MoneyManager.Application.Extensions
 {
@@ -92,6 +95,24 @@ namespace MoneyManager.Application.Extensions
             services.AddTransient<ICurrencyGrabber, CbrCurrencyGrabber>();
 
             services.AddScoped<IFileStorageService, FileStorageService>();
+
+            services.AddSingleton<IScheduledJobRegistry, ScheduledJobRegistry>();
+            services.AddTransient<IScheduleExecutor, ScheduleExecutor>();
+            services.AddTransient<ISchedulerTaskService, SchedulerTaskService>();
+            services.AddTransient<ISchedulerJournalService, SchedulerJournalService>();
+            services.AddTransient<ISchedulerAttachmentService, SchedulerAttachmentService>();
+
+            services.AddTransient<IScheduledJob, AssetReportJob>();
+            services.AddTransient<IScheduledJob, DatabaseBackupJob>();
+            services.AddTransient<IScheduledJob, PullQuotationsJob>();
+            services.AddTransient<IScheduledJob, CleanUpOldNotificationsJob>();
+            services.AddTransient<IScheduledJob, CleanUpExpiredRefreshTokensJob>();
+
+            services.AddTransient<AssetReportJob>();
+            services.AddTransient<DatabaseBackupJob>();
+            services.AddTransient<PullQuotationsJob>();
+            services.AddTransient<CleanUpOldNotificationsJob>();
+            services.AddTransient<CleanUpExpiredRefreshTokensJob>();
 
             return services;
         }

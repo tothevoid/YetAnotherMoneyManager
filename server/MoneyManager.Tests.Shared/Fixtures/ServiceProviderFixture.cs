@@ -69,6 +69,9 @@ namespace MoneyManager.Tests.Shared.Fixtures
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(ConnectionString));
+
+            services.AddTickerQConfiguration();
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             ServiceProvider = services.BuildServiceProvider();

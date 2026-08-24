@@ -25,15 +25,8 @@ namespace MoneyManager.WebApi.Controllers.DatabaseBackup
         [HttpPost("export")]
         public async Task<IActionResult> ExportBackup([FromBody] ExportBackupRequestDto? request)
         {
-            var password = request?.Password;
-            var backupBytes = await _backupService.CreateBackupAsync(password);
-
-            var now = DateTime.UtcNow;
-            var isEncrypted = !string.IsNullOrEmpty(password);
-            var extension = isEncrypted ? "mmbackup" : "sql.gz";
-            var fileName = $"moneymanager_backup_{now:yyyyMMdd_HHmmss}.{extension}";
-
-            return File(backupBytes, "application/octet-stream", fileName);
+            var backup = await _backupService.CreateBackupAsync(request?.Password);
+            return File(backup.Data, backup.ContentType, backup.FileName);
         }
 
         [HttpPost("validate")]

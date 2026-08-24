@@ -28,6 +28,7 @@ using MoneyManager.WebApi.Models.Notifications;
 using MoneyManager.WebApi.Models.Securities;
 using MoneyManager.WebApi.Models.Transactions;
 using MoneyManager.WebApi.Models.User;
+using MoneyManager.WebApi.Models.Scheduler;
 
 namespace MoneyManager.WebApi.Mappings
 {
@@ -218,5 +219,21 @@ namespace MoneyManager.WebApi.Mappings
         public partial NotificationDto Map(NotificationModel model);
         public partial NotificationModel Map(NotificationDto dto);
         public partial IEnumerable<NotificationModel> Map(IEnumerable<NotificationDto> dtos);
+
+        public partial ScheduledTaskDefinitionModel Map(MoneyManager.Application.DTO.Scheduler.ScheduledTaskDefinitionDto dto);
+        public partial IEnumerable<ScheduledTaskDefinitionModel> Map(IEnumerable<MoneyManager.Application.DTO.Scheduler.ScheduledTaskDefinitionDto> dtos);
+
+        public partial MoneyManager.Application.DTO.Scheduler.CreateScheduledTaskDto Map(MoneyManager.WebApi.Models.Scheduler.CreateScheduledTaskModel model);
+
+        public partial ScheduledTaskModel Map(MoneyManager.Application.DTO.Scheduler.ScheduledTaskDto dto);
+        public partial IEnumerable<ScheduledTaskModel> Map(IEnumerable<MoneyManager.Application.DTO.Scheduler.ScheduledTaskDto> dtos);
+
+        public partial ScheduledTaskJournalModel Map(MoneyManager.Application.DTO.Scheduler.ScheduledTaskJournalDto dto);
+        public partial IEnumerable<ScheduledTaskJournalModel> Map(IEnumerable<MoneyManager.Application.DTO.Scheduler.ScheduledTaskJournalDto> dtos);
+
+        public partial ScheduledTaskAttachmentModel Map(MoneyManager.Application.DTO.Scheduler.ScheduledTaskAttachmentDto dto);
+        public partial IEnumerable<ScheduledTaskAttachmentModel> Map(IEnumerable<MoneyManager.Application.DTO.Scheduler.ScheduledTaskAttachmentDto> dtos);
+
+        public partial MoneyManager.Application.DTO.Scheduler.UpdateScheduleDto Map(MoneyManager.WebApi.Models.Scheduler.UpdateScheduleModel model);
     }
 }

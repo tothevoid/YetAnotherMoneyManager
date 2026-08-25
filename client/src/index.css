@@ -1,10 +1,40 @@
+html {
+  color-scheme: dark;
+  background-color: #121212;
+  scrollbar-gutter: stable;
+  scrollbar-color: #383838 #121212;
+  scrollbar-width: auto;
+}
+
 body {
   margin: 0;
+  background-color: #121212;
+  color: #E0E0E0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom dark scrollbar styling */
+::-webkit-scrollbar {
+  width: 14px;
+  height: 14px;
+}
+
+::-webkit-scrollbar-track {
+  background: #121212;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333333;
+  border-radius: 7px;
+  border: 3px solid #121212;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4a4a4a;
 }
 
 code {
@@ -18,6 +48,7 @@ input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
 input[type="number"] {
   -moz-appearance: textfield;
 }
@@ -27,6 +58,7 @@ input[type="number"] {
     opacity: 0;
     transform: translateY(2px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -47,4 +79,3 @@ input:-webkit-autofill:active {
   caret-color: #E0E0E0 !important;
   transition: background-color 5000s ease-in-out 0s;
 }
-

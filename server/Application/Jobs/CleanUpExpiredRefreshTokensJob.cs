@@ -20,7 +20,7 @@ namespace MoneyManager.Application.Jobs
         displayName: "Clean Up Session Tokens",
         description: "Remove expired and revoked JWT refresh tokens older than 30 days",
         category: "Auth",
-        defaultCronExpression: "0 0 * * *")]
+        defaultCronExpression: "0 0 0 * * *")]
     public class CleanUpExpiredRefreshTokensJob : ScheduledJobBase
     {
         private readonly IAuthService _authService;
@@ -38,9 +38,11 @@ namespace MoneyManager.Application.Jobs
         }
 
         [TickerFunction(functionName: "CleanUpExpiredRefreshTokens")]
-        public async Task CleanUpExpiredRefreshTokensAsync()
+        public async Task CleanUpExpiredRefreshTokensAsync(
+            TickerFunctionContext context = null,
+            CancellationToken cancellationToken = default)
         {
-            await ExecuteAsync(triggerSource: ScheduledTaskTriggerSource.Scheduled);
+            await ExecuteAsync(triggerSource: ScheduledTaskTriggerSource.Scheduled, cancellationToken: cancellationToken);
         }
 
         protected override async Task<JobExecutionResult> ExecuteCoreAsync(

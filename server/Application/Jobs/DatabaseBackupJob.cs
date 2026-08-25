@@ -21,7 +21,7 @@ namespace MoneyManager.Application.Jobs
         displayName: "Database Backup",
         description: "Create PostgreSQL database dump with optional encryption",
         category: "System",
-        defaultCronExpression: "0 3 * * 0")]
+        defaultCronExpression: "0 0 3 * * 0")]
     public class DatabaseBackupJob : ScheduledJobBase
     {
         private readonly IDatabaseBackupService _backupService;
@@ -43,9 +43,11 @@ namespace MoneyManager.Application.Jobs
         }
 
         [TickerFunction(functionName: "DatabaseBackup")]
-        public async Task BackupDatabaseAsync()
+        public async Task BackupDatabaseAsync(
+            TickerFunctionContext context = null,
+            CancellationToken cancellationToken = default)
         {
-            await ExecuteAsync(triggerSource: ScheduledTaskTriggerSource.Scheduled);
+            await ExecuteAsync(triggerSource: ScheduledTaskTriggerSource.Scheduled, cancellationToken: cancellationToken);
         }
 
         public async Task ExecuteBackupAsync(

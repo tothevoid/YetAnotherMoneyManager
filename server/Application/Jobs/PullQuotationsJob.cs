@@ -17,7 +17,7 @@ namespace MoneyManager.Application.Jobs
         displayName: "Update MOEX Quotations",
         description: "Periodically fetch latest security quotes from MOEX exchange",
         category: "Brokers",
-        defaultCronExpression: "*/15 * * * *")]
+        defaultCronExpression: "0 */15 * * * *")]
     public class PullQuotationsJob : ScheduledJobBase
     {
         private readonly IBrokerAccountSecurityService _brokerAccountSecurityService;
@@ -32,9 +32,11 @@ namespace MoneyManager.Application.Jobs
         }
 
         [TickerFunction(functionName: "PullQuotations")]
-        public async Task Pull()
+        public async Task Pull(
+            TickerFunctionContext context = null,
+            CancellationToken cancellationToken = default)
         {
-            await ExecuteAsync(triggerSource: ScheduledTaskTriggerSource.Scheduled);
+            await ExecuteAsync(triggerSource: ScheduledTaskTriggerSource.Scheduled, cancellationToken: cancellationToken);
         }
 
         protected override async Task<JobExecutionResult> ExecuteCoreAsync(

@@ -22,7 +22,7 @@ namespace MoneyManager.Application.Jobs
         displayName: "All Assets Report (Excel)",
         description: "Automatically generate Excel statement for all accounts, assets and debts",
         category: "Reports",
-        defaultCronExpression: "0 9 * * 1")]
+        defaultCronExpression: "0 0 9 * * 1")]
     public class AssetReportJob : ScheduledJobBase
     {
         private readonly IAllAssetsReportService _reportService;
@@ -43,9 +43,11 @@ namespace MoneyManager.Application.Jobs
         }
 
         [TickerFunction(functionName: "GenerateAllAssetsReport")]
-        public async Task GenerateReportAsync()
+        public async Task GenerateReportAsync(
+            TickerFunctionContext context = null,
+            CancellationToken cancellationToken = default)
         {
-            await ExecuteAsync(triggerSource: ScheduledTaskTriggerSource.Scheduled);
+            await ExecuteAsync(triggerSource: ScheduledTaskTriggerSource.Scheduled, cancellationToken: cancellationToken);
         }
 
         protected override async Task<JobExecutionResult> ExecuteCoreAsync(

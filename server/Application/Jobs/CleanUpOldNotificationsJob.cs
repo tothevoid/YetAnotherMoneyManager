@@ -17,7 +17,7 @@ namespace MoneyManager.Application.Jobs
         displayName: "Clean Up Old Notifications",
         description: "Remove read system notifications older than 90 days",
         category: "System",
-        defaultCronExpression: "0 0 * * *")]
+        defaultCronExpression: "0 0 0 * * *")]
     public class CleanUpOldNotificationsJob : ScheduledJobBase
     {
         private readonly INotificationService _notificationService;
@@ -32,9 +32,11 @@ namespace MoneyManager.Application.Jobs
         }
 
         [TickerFunction(functionName: "CleanUpOldNotifications")]
-        public async Task CleanUp()
+        public async Task CleanUp(
+            TickerFunctionContext context = null,
+            CancellationToken cancellationToken = default)
         {
-            await ExecuteAsync(triggerSource: ScheduledTaskTriggerSource.Scheduled);
+            await ExecuteAsync(triggerSource: ScheduledTaskTriggerSource.Scheduled, cancellationToken: cancellationToken);
         }
 
         protected override async Task<JobExecutionResult> ExecuteCoreAsync(

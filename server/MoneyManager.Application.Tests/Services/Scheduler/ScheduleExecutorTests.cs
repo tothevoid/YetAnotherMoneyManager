@@ -5,6 +5,7 @@ using MoneyManager.Application.DTO.Scheduler;
 using MoneyManager.Application.Enums.Scheduler;
 using MoneyManager.Application.Interfaces.Scheduler;
 using MoneyManager.Application.Tests.Fixtures;
+using MoneyManager.Infrastructure.Entities.Scheduler;
 using Xunit;
 
 namespace MoneyManager.Application.Tests.Services.Scheduler
@@ -32,6 +33,9 @@ namespace MoneyManager.Application.Tests.Services.Scheduler
             await ExecuteScopeAsync(async sp =>
             {
                 var executor = sp.GetRequiredService<IScheduleExecutor>();
+                var taskService = sp.GetRequiredService<ISchedulerTaskService>();
+
+                await taskService.DeleteTaskAsync("CleanUpExpiredRefreshTokens");
 
                 await Assert.ThrowsAsync<InvalidOperationException>(() =>
                     executor.ExecuteJobAsync("CleanUpExpiredRefreshTokens", triggerSource: ScheduledTaskTriggerSource.Manual));
@@ -43,13 +47,14 @@ namespace MoneyManager.Application.Tests.Services.Scheduler
         {
             await ExecuteScopeAsync(async sp =>
             {
-                var taskService = sp.GetRequiredService<ISchedulerTaskService>();
                 var executor = sp.GetRequiredService<IScheduleExecutor>();
+                var taskService = sp.GetRequiredService<ISchedulerTaskService>();
 
+                // Create the task
                 await taskService.CreateTaskAsync(new CreateScheduledTaskDto
                 {
                     TaskName = "CleanUpExpiredRefreshTokens",
-                    CronExpression = "0 0 * * *",
+                    CronExpression = "0 0 2 * * *",
                     IsEnabled = true
                 });
 

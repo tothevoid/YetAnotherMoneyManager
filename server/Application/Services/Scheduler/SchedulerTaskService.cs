@@ -11,6 +11,8 @@ using MoneyManager.Application.Utilities.Scheduler;
 using MoneyManager.Infrastructure.Entities.Scheduler;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using TickerQ.Utilities.Entities;
+using TickerQ.Utilities.Interfaces.Managers;
+using TickerQ.Utilities.Models;
 
 namespace MoneyManager.Application.Services.Scheduler
 {
@@ -115,6 +117,8 @@ namespace MoneyManager.Application.Services.Scheduler
                 throw new ArgumentException($"Invalid Cron expression: '{cronExpression}'", nameof(dto.CronExpression));
             }
 
+            var tickerCronExpression = CronExpressionHelper.ToTickerQCron(cronExpression);
+
             var existingTicker = await _tickerRepo.FindAsync(ticker => ticker.Function == dto.TaskName);
 
             if (existingTicker != null)
@@ -127,7 +131,7 @@ namespace MoneyManager.Application.Services.Scheduler
                 Id = Guid.NewGuid(),
                 Description = descriptor.DisplayName,
                 Function = descriptor.TaskName,
-                Expression = cronExpression,
+                Expression = tickerCronExpression,
                 IsEnabled = dto.IsEnabled
             };
 
@@ -158,7 +162,7 @@ namespace MoneyManager.Application.Services.Scheduler
                     throw new ArgumentException($"Invalid Cron expression: '{dto.CronExpression}'", nameof(dto.CronExpression));
                 }
 
-                ticker.Expression = dto.CronExpression;
+                ticker.Expression = CronExpressionHelper.ToTickerQCron(dto.CronExpression);
             }
 
             if (dto.IsEnabled.HasValue)
@@ -224,7 +228,7 @@ namespace MoneyManager.Application.Services.Scheduler
             var displayName = descriptor?.DisplayName ?? taskName;
             var description = descriptor?.Description ?? ticker.Description ?? string.Empty;
             var category = descriptor?.Category ?? "General";
-            var cronExpression = ticker.Expression;
+            var clientCronExpression = CronExpressionHelper.ToStandardCron(ticker.Expression);
 
             var lastStatus = latestOccurrence != null
                 ? SchedulerStatusMapper.ToExecutionStatus(latestOccurrence.Status)
@@ -235,13 +239,13 @@ namespace MoneyManager.Application.Services.Scheduler
                 TaskName = taskName,
                 DisplayName = displayName,
                 Description = description,
-                CronExpression = cronExpression,
+                CronExpression = clientCronExpression,
                 IsEnabled = ticker.IsEnabled,
                 Category = category,
                 LastExecutionUtc = latestOccurrence?.ExecutedAt,
                 LastExecutionStatus = lastStatus,
                 LastExecutionDurationMs = latestOccurrence?.ElapsedTime,
-                NextExecutionUtc = ticker.IsEnabled ? CronExpressionHelper.GetNextExecutionUtc(cronExpression, currentUtcTime) : null
+                NextExecutionUtc = ticker.IsEnabled ? CronExpressionHelper.GetNextExecutionUtc(ticker.Expression, currentUtcTime) : null
             };
         }
 

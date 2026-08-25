@@ -67,7 +67,7 @@ namespace MoneyManager.Application.Services.Scheduler
                         DisplayName: attr.DisplayName,
                         Description: attr.Description,
                         Category: attr.Category,
-                        DefaultCronExpression: attr.DefaultCronExpression
+                        DefaultCronExpression: Utilities.Scheduler.CronExpressionHelper.ToStandardCron(attr.DefaultCronExpression)
                     );
 
                     result[attr.TaskName] = descriptor;

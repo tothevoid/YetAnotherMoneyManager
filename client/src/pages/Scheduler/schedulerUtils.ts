@@ -1,0 +1,284 @@
+import { i18n, TFunction } from 'i18next';
+import { CronExpressionParser } from 'cron-parser';
+import cronstrue from 'cronstrue/i18n';
+import { ScheduledTaskExecutionStatus } from '../../models/scheduler/ScheduledTaskEntity';
+
+export interface StatusBadgeInfo {
+    colorPalette: string;
+    label: string;
+}
+
+export enum CronFrequency {
+    Daily = 'Daily',
+    Weekly = 'Weekly',
+    IntervalMinutes = 'IntervalMinutes',
+    IntervalHours = 'IntervalHours',
+    Cron = 'Cron'
+}
+
+export interface CronScheduleConfig {
+    frequency: CronFrequency;
+    time: string;
+    selectedDays: string[];
+    intervalValue: number;
+    customCron: string;
+}
+
+export const FREQUENCY_OPTIONS = [
+    { key: CronFrequency.Daily, labelKey: 'scheduler_frequency_daily' },
+    { key: CronFrequency.Weekly, labelKey: 'scheduler_frequency_weekly' },
+    { key: CronFrequency.IntervalMinutes, labelKey: 'scheduler_frequency_interval_minutes' },
+    { key: CronFrequency.IntervalHours, labelKey: 'scheduler_frequency_interval_hours' },
+    { key: CronFrequency.Cron, labelKey: 'scheduler_frequency_cron' }
+] as const;
+
+export const DEFAULT_CRON_SCHEDULE: CronScheduleConfig = {
+    frequency: CronFrequency.Daily,
+    time: '09:00',
+    selectedDays: ['1'],
+    intervalValue: 15,
+    customCron: '0 9 * * *'
+};
+
+export const getCronWeekDays = (i18n: i18n) => {
+    const formatter = new Intl.DateTimeFormat(i18n.language, { weekday: 'short' });
+    return [1, 2, 3, 4, 5, 6, 0].map((day) => {
+        // Construct fixed date for Monday-Sunday relative alignment
+        const date = new Date(2024, 0, day === 0 ? 7 : day);
+        const name = formatter.format(date);
+        return {
+            key: day.toString(),
+            label: name.charAt(0).toUpperCase() + name.slice(1)
+        };
+    });
+};
+
+export const getMaxIntervalValue = (frequency: CronFrequency): number => {
+    return frequency === CronFrequency.IntervalMinutes ? 59 : 23;
+};
+
+export const clampIntervalValue = (value: string | number, frequency: CronFrequency): number => {
+    const parsed = typeof value === 'number' ? value : parseInt(value, 10);
+    if (isNaN(parsed) || parsed < 1) return 1;
+    const max = getMaxIntervalValue(frequency);
+    return Math.min(parsed, max);
+};
+
+export const isValidCronExpression = (cron: string): boolean => {
+    if (!cron?.trim()) return false;
+    try {
+        CronExpressionParser.parse(cron.trim());
+        return true;
+    } catch {
+        return false;
+    }
+};
+
+type CronFields = ReturnType<typeof CronExpressionParser.parse>['fields'];
+
+const formatCronTime = (hour: number, minute: number): string =>
+    `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+
+const tryParseMinuteInterval = (fields: CronFields, trimmed: string): CronScheduleConfig | null => {
+    const { minute, hour, dayOfMonth, month, dayOfWeek } = fields;
+    const isStandardDate = dayOfMonth.isWildcard && month.isWildcard;
+
+    if (isStandardDate && dayOfWeek.isWildcard && hour.isWildcard && minute.values.length > 1) {
+        const step = (minute.values[1] as number) - (minute.values[0] as number);
+        return {
+            frequency: CronFrequency.IntervalMinutes,
+            time: '00:00',
+            selectedDays: [],
+            intervalValue: step > 0 ? step : 15,
+            customCron: trimmed
+        };
+    }
+    return null;
+};
+
+const tryParseHourInterval = (fields: CronFields, trimmed: string): CronScheduleConfig | null => {
+    const { minute, hour, dayOfMonth, month, dayOfWeek } = fields;
+    const isStandardDate = dayOfMonth.isWildcard && month.isWildcard;
+
+    if (
+        isStandardDate &&
+        dayOfWeek.isWildcard &&
+        minute.values.length === 1 &&
+        minute.values[0] === 0 &&
+        hour.values.length > 1
+    ) {
+        const step = (hour.values[1] as number) - (hour.values[0] as number);
+        return {
+            frequency: CronFrequency.IntervalHours,
+            time: '00:00',
+            selectedDays: [],
+            intervalValue: step > 0 ? step : 1,
+            customCron: trimmed
+        };
+    }
+    return null;
+};
+
+const tryParseDailySchedule = (fields: CronFields, trimmed: string): CronScheduleConfig | null => {
+    const { minute, hour, dayOfMonth, month, dayOfWeek } = fields;
+    const isStandardDate = dayOfMonth.isWildcard && month.isWildcard;
+
+    if (
+        isStandardDate &&
+        dayOfWeek.isWildcard &&
+        minute.values.length === 1 &&
+        hour.values.length === 1
+    ) {
+        return {
+            frequency: CronFrequency.Daily,
+            time: formatCronTime(hour.values[0] as number, minute.values[0] as number),
+            selectedDays: [],
+            intervalValue: 15,
+            customCron: trimmed
+        };
+    }
+    return null;
+};
+
+const tryParseWeeklySchedule = (fields: CronFields, trimmed: string): CronScheduleConfig | null => {
+    const { minute, hour, dayOfMonth, month, dayOfWeek } = fields;
+    const isStandardDate = dayOfMonth.isWildcard && month.isWildcard;
+
+    if (
+        isStandardDate &&
+        !dayOfWeek.isWildcard &&
+        minute.values.length === 1 &&
+        hour.values.length === 1
+    ) {
+        const days = (dayOfWeek.values as number[]).map((d) => d.toString());
+        return {
+            frequency: CronFrequency.Weekly,
+            time: formatCronTime(hour.values[0] as number, minute.values[0] as number),
+            selectedDays: days,
+            intervalValue: 15,
+            customCron: trimmed
+        };
+    }
+    return null;
+};
+
+export const parseCronSchedule = (cron?: string | null): CronScheduleConfig => {
+    if (!cron?.trim()) {
+        return { ...DEFAULT_CRON_SCHEDULE, customCron: '' };
+    }
+
+    const trimmed = cron.trim();
+
+    try {
+        const parsed = CronExpressionParser.parse(trimmed);
+        const fields = parsed.fields;
+
+        const config =
+            tryParseMinuteInterval(fields, trimmed) ??
+            tryParseHourInterval(fields, trimmed) ??
+            tryParseDailySchedule(fields, trimmed) ??
+            tryParseWeeklySchedule(fields, trimmed);
+
+        if (config) {
+            return config;
+        }
+    } catch {
+        // Fall back to raw Cron string on parse error
+    }
+
+    return {
+        frequency: CronFrequency.Cron,
+        time: '09:00',
+        selectedDays: ['1'],
+        intervalValue: 15,
+        customCron: trimmed
+    };
+};
+
+export const buildCronSchedule = (config: CronScheduleConfig): string => {
+    if (config.frequency === CronFrequency.Cron) {
+        return config.customCron.trim();
+    }
+
+    const [hourStr, minStr] = (config.time || '09:00').split(':');
+    const hour = parseInt(hourStr, 10) || 0;
+    const min = parseInt(minStr, 10) || 0;
+
+    switch (config.frequency) {
+        case CronFrequency.Daily:
+            return `${min} ${hour} * * *`;
+        case CronFrequency.Weekly: {
+            const daysStr = config.selectedDays.length > 0 ? config.selectedDays.join(',') : '*';
+            return `${min} ${hour} * * ${daysStr}`;
+        }
+        case CronFrequency.IntervalMinutes:
+            return `*/${config.intervalValue || 15} * * * *`;
+        case CronFrequency.IntervalHours:
+            return `0 */${config.intervalValue || 1} * * *`;
+        default:
+            return config.customCron.trim();
+    }
+};
+
+export const toggleCronWeekDay = (selectedDays: string[], dayKey: string): string[] => {
+    if (selectedDays.includes(dayKey)) {
+        return selectedDays.length > 1 ? selectedDays.filter((d) => d !== dayKey) : selectedDays;
+    }
+    return [...selectedDays, dayKey];
+};
+
+export const formatDuration = (ms: number): string => {
+    if (ms < 1000) return `${ms} ms`;
+    return `${(ms / 1000).toFixed(1)} s`;
+};
+
+export const getStatusBadgeProps = (
+    status: ScheduledTaskExecutionStatus,
+    t: TFunction
+): StatusBadgeInfo => {
+    switch (status) {
+        case ScheduledTaskExecutionStatus.Success:
+            return { colorPalette: 'green', label: t('scheduler_journal_status_success') };
+        case ScheduledTaskExecutionStatus.Failed:
+            return { colorPalette: 'red', label: t('scheduler_journal_status_failed') };
+        case ScheduledTaskExecutionStatus.Running:
+            return { colorPalette: 'yellow', label: t('scheduler_journal_status_running') };
+        default:
+            return { colorPalette: 'gray', label: t('scheduler_journal_status_unknown') };
+    }
+};
+
+export const formatCronExpression = (
+    cron: string | null | undefined,
+    i18n: i18n,
+    t?: TFunction
+): string => {
+    if (!cron?.trim()) {
+        return t ? t('scheduler_cron_manual') : '';
+    }
+    try {
+        return cronstrue.toString(cron.trim(), {
+            locale: i18n.language,
+            use24HourTimeFormat: true
+        });
+    } catch {
+        return cron;
+    }
+};
+
+export const getTaskStatusDotColor = (
+    isEnabled: boolean,
+    lastExecutionStatus: ScheduledTaskExecutionStatus
+): string => {
+    if (!isEnabled) return 'gray.500';
+    switch (lastExecutionStatus) {
+        case ScheduledTaskExecutionStatus.Success:
+            return 'green.400';
+        case ScheduledTaskExecutionStatus.Failed:
+            return 'red.400';
+        case ScheduledTaskExecutionStatus.Running:
+            return 'yellow.400';
+        default:
+            return 'blue.400';
+    }
+};

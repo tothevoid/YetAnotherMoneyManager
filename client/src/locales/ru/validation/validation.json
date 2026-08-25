@@ -29,5 +29,7 @@
     "validation_password_min_length": "Пароль должен содержать минимум 6 символов",
     "validation_passwords_must_match": "Пароли не совпадают",
     "validation_same_account": "Исходный счёт и счёт зачисления не могут совпадать",
-    "validation_percentage_range": "Значение процента должно быть от 0 до 100"
+    "validation_percentage_range": "Значение процента должно быть от 0 до 100",
+    "validation_cron_required": "Укажите Cron выражение",
+    "validation_cron_invalid": "Некорректное Cron выражение (минуты 0-59, часы 0-23)"
 }

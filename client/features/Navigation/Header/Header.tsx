@@ -46,6 +46,7 @@ const Header = () => {
         { path: "debts", title: t("header_debts") },
         { path: "cryptocurrencies", title: t("header_cryptocurrencies") },
         { path: "crypto_accounts", title: t("header_cryptoaccounts") },
+        { path: "scheduler", title: t("header_scheduler") },
         { path: "data", title: t("header_data") }
     ];
 

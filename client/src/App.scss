@@ -19,3 +19,13 @@
 	margin: 0 10%;
 	box-sizing: border-box;
 }
+
+input[type="time"],
+input[type="date"] {
+	color-scheme: dark;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator,
+input[type="date"]::-webkit-calendar-picker-indicator {
+	cursor: pointer;
+}

@@ -20,6 +20,7 @@ import AuthPage from './pages/Auth/AuthPage';
 import { UserProvider } from '../features/UserProfileSettingsModal/hooks/UserProfileContext.tsx';
 import NotificationsPage from './pages/Notifications/NotificationsPage';
 import CashAccountPage from './pages/CashAccountPage/CashAccountPage.tsx';
+import SchedulerPage from './pages/Scheduler/SchedulerPage.tsx';
 import { getAccessToken } from './api/tokenStorage';
 import { refreshToken } from './api/auth/authApi';
 
@@ -93,6 +94,7 @@ const App = () => {
 						<Route path="/security/:securityId" element={<SecurityPage />} />
 						<Route path="/cash_account/:cashAccountId" element={<CashAccountPage />} />
 						<Route path="/notifications" element={<NotificationsPage />} />
+						<Route path="/scheduler" element={<SchedulerPage />} />
 					</Route>
 				</Route>
 			</Routes>

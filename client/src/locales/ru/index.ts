@@ -17,6 +17,7 @@ import currencyTransactions from './transactions/currency.json';
 import data from './data/data.json';
 import validation from './validation/validation.json';
 import auth from './auth/auth.json';
+import scheduler from './scheduler/scheduler.json';
 
 const ru = {
     ...commonGeneral,
@@ -37,7 +38,8 @@ const ru = {
     ...currencyTransactions,
     ...data,
     ...validation,
-    ...auth
+    ...auth,
+    ...scheduler
 };
 
 export default ru;

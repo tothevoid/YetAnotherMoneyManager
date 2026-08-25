@@ -12,7 +12,7 @@ using MoneyManager.Infrastructure.Entities.Scheduler;
 using MoneyManager.Infrastructure.Interfaces.Database;
 using TickerQ.Utilities.Entities;
 using TickerQ.Utilities.Interfaces.Managers;
-using TickerQ.Utilities.Models;
+using TickerQ.Utilities.Enums;
 
 namespace MoneyManager.Application.Services.Scheduler
 {
@@ -20,6 +20,7 @@ namespace MoneyManager.Application.Services.Scheduler
     {
         private readonly IUnitOfWork _db;
         private readonly IRepository<ScheduledCronTicker> _tickerRepo;
+        private readonly IRepository<CronTickerOccurrenceEntity<ScheduledCronTicker>> _occurrenceRepo;
         private readonly IScheduledJobRegistry _jobRegistry;
         private readonly ILogger<SchedulerTaskService> _logger;
 
@@ -30,6 +31,7 @@ namespace MoneyManager.Application.Services.Scheduler
         {
             _db = unitOfWork;
             _tickerRepo = unitOfWork.CreateRepository<ScheduledCronTicker>();
+            _occurrenceRepo = unitOfWork.CreateRepository<CronTickerOccurrenceEntity<ScheduledCronTicker>>();
             _jobRegistry = jobRegistry;
             _logger = logger;
         }
@@ -155,6 +157,8 @@ namespace MoneyManager.Application.Services.Scheduler
                 return null;
             }
 
+            bool deletePendingOccurrences = false;
+
             if (!string.IsNullOrWhiteSpace(dto.CronExpression))
             {
                 if (!CronExpressionHelper.IsValidCronExpression(dto.CronExpression))
@@ -162,12 +166,26 @@ namespace MoneyManager.Application.Services.Scheduler
                     throw new ArgumentException($"Invalid Cron expression: '{dto.CronExpression}'", nameof(dto.CronExpression));
                 }
 
-                ticker.Expression = CronExpressionHelper.ToTickerQCron(dto.CronExpression);
+                var newExpression = CronExpressionHelper.ToTickerQCron(dto.CronExpression);
+                if (ticker.Expression != newExpression)
+                {
+                    ticker.Expression = newExpression;
+                    deletePendingOccurrences = true;
+                }
             }
 
             if (dto.IsEnabled.HasValue)
             {
                 ticker.IsEnabled = dto.IsEnabled.Value;
+                if (!ticker.IsEnabled)
+                {
+                    deletePendingOccurrences = true;
+                }
+            }
+
+            if (deletePendingOccurrences) 
+            {
+                await RemovePendingOccurrencesAsync(ticker.Id);
             }
 
             _tickerRepo.Update(ticker);
@@ -192,6 +210,11 @@ namespace MoneyManager.Application.Services.Scheduler
             }
 
             ticker.IsEnabled = isEnabled;
+            if (!isEnabled)
+            {
+                await RemovePendingOccurrencesAsync(ticker.Id);
+            }
+
             _tickerRepo.Update(ticker);
             await _db.CommitAsync();
 
@@ -213,9 +236,22 @@ namespace MoneyManager.Application.Services.Scheduler
                 return false;
             }
 
+            await RemovePendingOccurrencesAsync(ticker.Id);
             await _tickerRepo.DeleteAsync(ticker.Id);
             await _db.CommitAsync();
             return true;
+        }
+
+        private async Task RemovePendingOccurrencesAsync(Guid tickerId)
+        {
+            var pendingOccurrences = await _occurrenceRepo.GetAllAsync(
+                occurrence => occurrence.CronTickerId == tickerId &&
+                              (occurrence.Status == TickerStatus.Idle || occurrence.Status == TickerStatus.Queued));
+
+            foreach (var pending in pendingOccurrences)
+            {
+                await _occurrenceRepo.DeleteAsync(pending.Id);
+            }
         }
 
         private static ScheduledTaskDto MapToDto(

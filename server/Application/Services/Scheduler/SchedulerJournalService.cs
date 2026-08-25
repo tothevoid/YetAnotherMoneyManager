@@ -114,7 +114,15 @@ namespace MoneyManager.Application.Services.Scheduler
             string errorMessage = null,
             ScheduledTaskAttachment attachment = null)
         {
-            var occurrenceId = attachment?.OccurrenceId ?? Guid.NewGuid();
+            var occurrenceId = (attachment != null && attachment.OccurrenceId != Guid.Empty)
+                ? attachment.OccurrenceId
+                : Guid.NewGuid();
+
+            if (attachment != null)
+            {
+                attachment.OccurrenceId = occurrenceId;
+            }
+
             var executionTime = DateTime.UtcNow;
 
             try
@@ -135,7 +143,9 @@ namespace MoneyManager.Application.Services.Scheduler
                     ExecutedAt = executionTime,
                     ElapsedTime = durationMs,
                     Status = SchedulerStatusMapper.ToTickerStatus(status),
-                    ExceptionMessage = errorMessage
+                    ExceptionMessage = errorMessage,
+                    CreatedAt = executionTime,
+                    UpdatedAt = executionTime
                 };
 
                 await _occurrenceRepo.AddAsync(occurrence);

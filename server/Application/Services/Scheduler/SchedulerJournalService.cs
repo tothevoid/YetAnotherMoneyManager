@@ -170,13 +170,20 @@ namespace MoneyManager.Application.Services.Scheduler
         {
             var hasTask = !string.IsNullOrWhiteSpace(taskName) && taskName != "All";
 
-            return status switch
+            if (!status.HasValue || status.Value == ScheduledTaskExecutionStatus.Unknown)
             {
-                ScheduledTaskExecutionStatus.Success => occurrence => (!hasTask || occurrence.CronTicker.Function == taskName) && occurrence.Status == TickerStatus.Done,
-                ScheduledTaskExecutionStatus.Failed => occurrence => (!hasTask || occurrence.CronTicker.Function == taskName) && occurrence.Status == TickerStatus.Failed,
-                ScheduledTaskExecutionStatus.Running => occurrence => (!hasTask || occurrence.CronTicker.Function == taskName) && occurrence.Status != TickerStatus.Done && occurrence.Status != TickerStatus.Failed,
-                _ => occurrence => !hasTask || occurrence.CronTicker.Function == taskName
-            };
+                return occurrence => !hasTask || occurrence.CronTicker.Function == taskName;
+            }
+
+            var targetTickerStatus = SchedulerStatusMapper.ToTickerStatus(status.Value);
+
+            if (status.Value == ScheduledTaskExecutionStatus.Done)
+            {
+                return occurrence => (!hasTask || occurrence.CronTicker.Function == taskName) &&
+                    (occurrence.Status == TickerStatus.Done || occurrence.Status == TickerStatus.DueDone);
+            }
+
+            return occurrence => (!hasTask || occurrence.CronTicker.Function == taskName) && occurrence.Status == targetTickerStatus;
         }
 
         private static ScheduledTaskAttachmentDto MapAttachmentDto(ScheduledTaskAttachment entity)

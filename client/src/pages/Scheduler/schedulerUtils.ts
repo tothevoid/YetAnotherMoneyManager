@@ -238,21 +238,43 @@ export const formatDuration = (ms: number): string => {
     return `${(ms / 1000).toFixed(1)} s`;
 };
 
+export const STATUS_META: Record<ScheduledTaskExecutionStatus, { colorPalette: string; labelKey: string }> = {
+    [ScheduledTaskExecutionStatus.Done]: { colorPalette: 'green', labelKey: 'scheduler_journal_status_done' },
+    [ScheduledTaskExecutionStatus.DueDone]: { colorPalette: 'teal', labelKey: 'scheduler_journal_status_due_done' },
+    [ScheduledTaskExecutionStatus.Failed]: { colorPalette: 'red', labelKey: 'scheduler_journal_status_failed' },
+    [ScheduledTaskExecutionStatus.InProgress]: { colorPalette: 'yellow', labelKey: 'scheduler_journal_status_in_progress' },
+    [ScheduledTaskExecutionStatus.Queued]: { colorPalette: 'cyan', labelKey: 'scheduler_journal_status_queued' },
+    [ScheduledTaskExecutionStatus.Idle]: { colorPalette: 'gray', labelKey: 'scheduler_journal_status_idle' },
+    [ScheduledTaskExecutionStatus.Cancelled]: { colorPalette: 'purple', labelKey: 'scheduler_journal_status_cancelled' },
+    [ScheduledTaskExecutionStatus.Skipped]: { colorPalette: 'orange', labelKey: 'scheduler_journal_status_skipped' },
+    [ScheduledTaskExecutionStatus.Unknown]: { colorPalette: 'gray', labelKey: 'scheduler_journal_status_unknown' }
+};
+
+export const getStatusLabel = (status: ScheduledTaskExecutionStatus, t: TFunction): string => {
+    const meta = STATUS_META[status] ?? STATUS_META[ScheduledTaskExecutionStatus.Unknown];
+    return t(meta.labelKey);
+};
+
 export const getStatusBadgeProps = (
     status: ScheduledTaskExecutionStatus,
     t: TFunction
 ): StatusBadgeInfo => {
-    switch (status) {
-        case ScheduledTaskExecutionStatus.Success:
-            return { colorPalette: 'green', label: t('scheduler_journal_status_success') };
-        case ScheduledTaskExecutionStatus.Failed:
-            return { colorPalette: 'red', label: t('scheduler_journal_status_failed') };
-        case ScheduledTaskExecutionStatus.Running:
-            return { colorPalette: 'yellow', label: t('scheduler_journal_status_running') };
-        default:
-            return { colorPalette: 'gray', label: t('scheduler_journal_status_unknown') };
-    }
+    const meta = STATUS_META[status] ?? STATUS_META[ScheduledTaskExecutionStatus.Unknown];
+    return {
+        colorPalette: meta.colorPalette,
+        label: t(meta.labelKey)
+    };
 };
+
+export const getStatusFilterOptions = (t: TFunction) => [
+    { value: 'All', label: t('scheduler_all_statuses') },
+    ...Object.entries(STATUS_META)
+        .filter(([statusKey]) => Number(statusKey) !== ScheduledTaskExecutionStatus.Unknown)
+        .map(([statusKey, meta]) => ({
+            value: statusKey,
+            label: t(meta.labelKey)
+        }))
+];
 
 export const formatCronExpression = (
     cron: string | null | undefined,
@@ -278,12 +300,19 @@ export const getTaskStatusDotColor = (
 ): string => {
     if (!isEnabled) return 'gray.500';
     switch (lastExecutionStatus) {
-        case ScheduledTaskExecutionStatus.Success:
+        case ScheduledTaskExecutionStatus.Done:
+        case ScheduledTaskExecutionStatus.DueDone:
             return 'green.400';
         case ScheduledTaskExecutionStatus.Failed:
             return 'red.400';
-        case ScheduledTaskExecutionStatus.Running:
+        case ScheduledTaskExecutionStatus.InProgress:
             return 'yellow.400';
+        case ScheduledTaskExecutionStatus.Cancelled:
+        case ScheduledTaskExecutionStatus.Skipped:
+            return 'orange.400';
+        case ScheduledTaskExecutionStatus.Queued:
+        case ScheduledTaskExecutionStatus.Idle:
+            return 'cyan.400';
         default:
             return 'blue.400';
     }

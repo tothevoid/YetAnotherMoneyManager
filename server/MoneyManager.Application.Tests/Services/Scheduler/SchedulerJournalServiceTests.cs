@@ -48,25 +48,25 @@ namespace MoneyManager.Application.Tests.Services.Scheduler
 
                 await journalService.RecordExecutionAsync(
                     taskName: "GenerateAllAssetsReport",
-                    status: ScheduledTaskExecutionStatus.Success,
+                    status: ScheduledTaskExecutionStatus.Done,
                     durationMs: 150,
                     triggerSource: ScheduledTaskTriggerSource.Manual,
                     logMessage: "Test run successful",
                     errorMessage: null,
                     attachment: attachment);
 
-                var journal = await journalService.GetJournalAsync(1, 10, "GenerateAllAssetsReport", status: ScheduledTaskExecutionStatus.Success, triggerSource: ScheduledTaskTriggerSource.Manual);
+                var journal = await journalService.GetJournalAsync(1, 10, "GenerateAllAssetsReport", status: ScheduledTaskExecutionStatus.Done, triggerSource: ScheduledTaskTriggerSource.Manual);
                 Assert.NotNull(journal);
                 var list = journal.ToList();
                 Assert.NotEmpty(list);
 
                 var entry = list.FirstOrDefault(j => j.Id == occurrenceId);
                 Assert.NotNull(entry);
-                Assert.Equal(ScheduledTaskExecutionStatus.Success, entry.Status);
+                Assert.Equal(ScheduledTaskExecutionStatus.Done, entry.Status);
                 Assert.Equal(ScheduledTaskTriggerSource.Manual, entry.TriggerSource);
                 Assert.NotEmpty(entry.Attachments);
 
-                var pagination = await journalService.GetJournalPaginationAsync("GenerateAllAssetsReport", status: ScheduledTaskExecutionStatus.Success, triggerSource: ScheduledTaskTriggerSource.Manual);
+                var pagination = await journalService.GetJournalPaginationAsync("GenerateAllAssetsReport", status: ScheduledTaskExecutionStatus.Done, triggerSource: ScheduledTaskTriggerSource.Manual);
                 Assert.NotNull(pagination);
                 Assert.True(pagination.RecordsQuantity > 0);
             });
@@ -81,7 +81,7 @@ namespace MoneyManager.Application.Tests.Services.Scheduler
 
                 var result = await journalService.RecordExecutionAsync(
                     taskName: "UnregisteredTaskName",
-                    status: ScheduledTaskExecutionStatus.Success,
+                    status: ScheduledTaskExecutionStatus.Done,
                     durationMs: 100);
 
                 Assert.Null(result);

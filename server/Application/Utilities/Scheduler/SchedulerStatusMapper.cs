@@ -9,9 +9,15 @@ namespace MoneyManager.Application.Utilities.Scheduler
         {
             return status switch
             {
-                TickerStatus.Done => ScheduledTaskExecutionStatus.Success,
+                TickerStatus.Idle => ScheduledTaskExecutionStatus.Idle,
+                TickerStatus.Queued => ScheduledTaskExecutionStatus.Queued,
+                TickerStatus.InProgress => ScheduledTaskExecutionStatus.InProgress,
+                TickerStatus.Done => ScheduledTaskExecutionStatus.Done,
+                TickerStatus.DueDone => ScheduledTaskExecutionStatus.DueDone,
                 TickerStatus.Failed => ScheduledTaskExecutionStatus.Failed,
-                _ => ScheduledTaskExecutionStatus.Running
+                TickerStatus.Cancelled => ScheduledTaskExecutionStatus.Cancelled,
+                TickerStatus.Skipped => ScheduledTaskExecutionStatus.Skipped,
+                _ => ScheduledTaskExecutionStatus.Unknown
             };
         }
 
@@ -19,8 +25,14 @@ namespace MoneyManager.Application.Utilities.Scheduler
         {
             return status switch
             {
-                ScheduledTaskExecutionStatus.Success => TickerStatus.Done,
+                ScheduledTaskExecutionStatus.Idle => TickerStatus.Idle,
+                ScheduledTaskExecutionStatus.Queued => TickerStatus.Queued,
+                ScheduledTaskExecutionStatus.InProgress => TickerStatus.InProgress,
+                ScheduledTaskExecutionStatus.Done => TickerStatus.Done,
+                ScheduledTaskExecutionStatus.DueDone => TickerStatus.DueDone,
                 ScheduledTaskExecutionStatus.Failed => TickerStatus.Failed,
+                ScheduledTaskExecutionStatus.Cancelled => TickerStatus.Cancelled,
+                ScheduledTaskExecutionStatus.Skipped => TickerStatus.Skipped,
                 _ => TickerStatus.Queued
             };
         }

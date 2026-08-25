@@ -11,8 +11,8 @@ import {
     MdRefresh
 } from 'react-icons/md';
 import { ScheduledTaskJournalEntity } from '../../../models/scheduler/ScheduledTaskJournalEntity';
-import { ScheduledTaskEntity, ScheduledTaskExecutionStatus, ScheduledTaskTriggerSource } from '../../../models/scheduler/ScheduledTaskEntity';
-import { formatDuration, getStatusBadgeProps } from '../schedulerUtils';
+import { ScheduledTaskEntity, ScheduledTaskTriggerSource } from '../../../models/scheduler/ScheduledTaskEntity';
+import { formatDuration, getStatusBadgeProps, getStatusFilterOptions } from '../schedulerUtils';
 import BaseSelect from '../../../shared/components/BaseSelect/BaseSelect';
 import { SchedulerAttachmentList } from './SchedulerAttachmentList';
 import CopyButton from '../../../shared/components/CopyButton/CopyButton';
@@ -59,12 +59,7 @@ export const SchedulerJournalTable: React.FC<SchedulerJournalTableProps> = ({
         ...tasks.map((task) => ({ value: task.taskName, label: task.displayName }))
     ], [tasks, t]);
 
-    const statusOptions: FilterOption[] = useMemo(() => [
-        { value: 'All', label: t('scheduler_all_statuses') },
-        { value: ScheduledTaskExecutionStatus.Success.toString(), label: t('scheduler_journal_status_success') },
-        { value: ScheduledTaskExecutionStatus.Failed.toString(), label: t('scheduler_journal_status_failed') },
-        { value: ScheduledTaskExecutionStatus.Running.toString(), label: t('scheduler_journal_status_running') }
-    ], [t]);
+    const statusOptions: FilterOption[] = useMemo(() => getStatusFilterOptions(t), [t]);
 
     const selectedTaskOption = taskOptions.find((opt) => opt.value === selectedTask) ?? taskOptions[0];
     const selectedStatusOption = statusOptions.find((opt) => opt.value === selectedStatus) ?? statusOptions[0];

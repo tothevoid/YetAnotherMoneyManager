@@ -44,7 +44,7 @@ namespace MoneyManager.Application.Jobs
 
                 await _journalService.RecordExecutionAsync(
                     taskName: TaskName,
-                    status: ScheduledTaskExecutionStatus.Success,
+                    status: ScheduledTaskExecutionStatus.Done,
                     durationMs: stopwatch.ElapsedMilliseconds,
                     triggerSource: triggerSource,
                     logMessage: result?.LogMessage,

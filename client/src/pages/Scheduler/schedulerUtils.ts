@@ -83,83 +83,89 @@ const tryParseMinuteInterval = (fields: CronFields, trimmed: string): CronSchedu
     const { minute, hour, dayOfMonth, month, dayOfWeek } = fields;
     const isStandardDate = dayOfMonth.isWildcard && month.isWildcard;
 
-    if (isStandardDate && dayOfWeek.isWildcard && hour.isWildcard && minute.values.length > 1) {
-        const step = (minute.values[1] as number) - (minute.values[0] as number);
-        return {
-            frequency: CronFrequency.IntervalMinutes,
-            time: '00:00',
-            selectedDays: [],
-            intervalValue: step > 0 ? step : 15,
-            customCron: trimmed
-        };
+    if (!isStandardDate || !dayOfWeek.isWildcard || !hour.isWildcard) {
+        return null;
     }
-    return null;
+
+    const intervalValue = minute.isWildcard || minute.values.length === 60
+        ? 1
+        : minute.values.length > 1
+            ? ((minute.values[1] as number) - (minute.values[0] as number)) || 15
+            : 0;
+
+    if (intervalValue <= 0) {
+        return null;
+    }
+
+    return {
+        frequency: CronFrequency.IntervalMinutes,
+        time: '00:00',
+        selectedDays: [],
+        intervalValue,
+        customCron: trimmed
+    };
 };
 
 const tryParseHourInterval = (fields: CronFields, trimmed: string): CronScheduleConfig | null => {
     const { minute, hour, dayOfMonth, month, dayOfWeek } = fields;
     const isStandardDate = dayOfMonth.isWildcard && month.isWildcard;
+    const isMinuteZero = minute.values.length === 1 && minute.values[0] === 0;
 
-    if (
-        isStandardDate &&
-        dayOfWeek.isWildcard &&
-        minute.values.length === 1 &&
-        minute.values[0] === 0 &&
-        hour.values.length > 1
-    ) {
-        const step = (hour.values[1] as number) - (hour.values[0] as number);
-        return {
-            frequency: CronFrequency.IntervalHours,
-            time: '00:00',
-            selectedDays: [],
-            intervalValue: step > 0 ? step : 1,
-            customCron: trimmed
-        };
+    if (!isStandardDate || !dayOfWeek.isWildcard || !isMinuteZero) {
+        return null;
     }
-    return null;
+
+    const intervalValue = hour.isWildcard || hour.values.length === 24
+        ? 1
+        : hour.values.length > 1
+            ? ((hour.values[1] as number) - (hour.values[0] as number)) || 1
+            : 0;
+
+    if (intervalValue <= 0) {
+        return null;
+    }
+
+    return {
+        frequency: CronFrequency.IntervalHours,
+        time: '00:00',
+        selectedDays: [],
+        intervalValue,
+        customCron: trimmed
+    };
 };
 
 const tryParseDailySchedule = (fields: CronFields, trimmed: string): CronScheduleConfig | null => {
     const { minute, hour, dayOfMonth, month, dayOfWeek } = fields;
     const isStandardDate = dayOfMonth.isWildcard && month.isWildcard;
 
-    if (
-        isStandardDate &&
-        dayOfWeek.isWildcard &&
-        minute.values.length === 1 &&
-        hour.values.length === 1
-    ) {
-        return {
-            frequency: CronFrequency.Daily,
-            time: formatCronTime(hour.values[0] as number, minute.values[0] as number),
-            selectedDays: [],
-            intervalValue: 15,
-            customCron: trimmed
-        };
+    if (!isStandardDate || !dayOfWeek.isWildcard || minute.values.length !== 1 || hour.values.length !== 1) {
+        return null;
     }
-    return null;
+
+    return {
+        frequency: CronFrequency.Daily,
+        time: formatCronTime(hour.values[0] as number, minute.values[0] as number),
+        selectedDays: [],
+        intervalValue: 15,
+        customCron: trimmed
+    };
 };
 
 const tryParseWeeklySchedule = (fields: CronFields, trimmed: string): CronScheduleConfig | null => {
     const { minute, hour, dayOfMonth, month, dayOfWeek } = fields;
     const isStandardDate = dayOfMonth.isWildcard && month.isWildcard;
 
-    if (
-        isStandardDate &&
-        !dayOfWeek.isWildcard &&
-        minute.values.length === 1 &&
-        hour.values.length === 1
-    ) {
-        const days = (dayOfWeek.values as number[]).map((d) => d.toString());
-        return {
-            frequency: CronFrequency.Weekly,
-            time: formatCronTime(hour.values[0] as number, minute.values[0] as number),
-            selectedDays: days,
-            intervalValue: 15,
-            customCron: trimmed
-        };
+    if (!isStandardDate || dayOfWeek.isWildcard || minute.values.length !== 1 || hour.values.length !== 1) {
+        return null;
     }
-    return null;
+
+    return {
+        frequency: CronFrequency.Weekly,
+        time: formatCronTime(hour.values[0] as number, minute.values[0] as number),
+        selectedDays: (dayOfWeek.values as number[]).map((d) => d.toString()),
+        intervalValue: 15,
+        customCron: trimmed
+    };
 };
 
 export const parseCronSchedule = (cron?: string | null): CronScheduleConfig => {

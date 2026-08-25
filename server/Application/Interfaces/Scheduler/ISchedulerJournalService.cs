@@ -30,5 +30,7 @@ namespace MoneyManager.Application.Interfaces.Scheduler
             string logMessage = null,
             string errorMessage = null,
             ScheduledTaskAttachment attachment = null);
+
+        Task NotifyTaskStartedAsync(string taskName);
     }
 }

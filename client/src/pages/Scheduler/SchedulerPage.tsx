@@ -12,6 +12,7 @@ import { ScheduleConfigModal, ScheduleConfigModalRef } from './components/Schedu
 import { CreateTaskModal, CreateTaskModalRef } from './components/CreateTaskModal';
 import CollectionPagination from '../../shared/components/CollectionPagination/CollectionPagination';
 import { PaginationConfig } from '../../shared/models/PaginationConfig';
+import { useSchedulerEvents } from '../../shared/hooks/useSchedulerEvents';
 
 const SchedulerPage: React.FC = () => {
     const { t } = useTranslation();
@@ -70,12 +71,21 @@ const SchedulerPage: React.FC = () => {
         }
     }, [selectedTaskName, currentPage, pageSize, selectedTaskFilter, selectedStatusFilter, loadJournal]);
 
-    const handleTaskUpdated = () => {
+    const handleTaskUpdated = useCallback(() => {
         loadTasks();
         if (selectedTaskName === null) {
             loadJournal(currentPage, pageSize, selectedTaskFilter, selectedStatusFilter);
         }
-    };
+    }, [loadTasks, selectedTaskName, loadJournal, currentPage, pageSize, selectedTaskFilter, selectedStatusFilter]);
+
+    useSchedulerEvents({
+        onTaskStarted: () => {
+            loadTasks();
+        },
+        onTaskExecutionRecorded: () => {
+            handleTaskUpdated();
+        }
+    });
 
     const getJournalPaginationConfig = useCallback(async (): Promise<PaginationConfig | void> => {
         const statusEnum = selectedStatusFilter !== 'All' ? (Number(selectedStatusFilter) as ScheduledTaskExecutionStatus) : undefined;

@@ -27,6 +27,7 @@ import { deleteScheduledTask, runTaskNow } from '../../../api/scheduler/schedule
 import { getScheduledTaskJournal } from '../../../api/scheduler/schedulerJournalApi';
 import { formatCronExpression, formatDuration, getStatusBadgeProps } from '../schedulerUtils';
 import { SchedulerJournalTable } from './SchedulerJournalTable';
+import { useSchedulerEvents } from '../../../shared/hooks/useSchedulerEvents';
 
 interface SchedulerTaskDetailPaneProps {
     task: ScheduledTaskEntity | null;
@@ -68,6 +69,14 @@ export const SchedulerTaskDetailPane: React.FC<SchedulerTaskDetailPaneProps> = (
             loadHistory(selectedStatusFilter);
         }
     }, [task, loadHistory]);
+
+    useSchedulerEvents({
+        onTaskExecutionRecorded: (payload) => {
+            if (task && payload.taskName === task.taskName) {
+                loadHistory(selectedStatusFilter);
+            }
+        }
+    });
 
     const handleRunNow = async () => {
         if (!task) return;

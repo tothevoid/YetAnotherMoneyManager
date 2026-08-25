@@ -36,6 +36,8 @@ namespace MoneyManager.Application.Jobs
                 return;
             }
 
+            await _journalService.NotifyTaskStartedAsync(TaskName);
+
             var stopwatch = Stopwatch.StartNew();
             try
             {

@@ -16,22 +16,29 @@ using MoneyManager.Infrastructure.Queries;
 using TickerQ.Utilities.Entities;
 using TickerQ.Utilities.Enums;
 
+using System.Text.Json;
+using MoneyManager.Infrastructure.Interfaces.Messages;
+
 namespace MoneyManager.Application.Services.Scheduler
 {
     public class SchedulerJournalService : ISchedulerJournalService
     {
+        private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+
         private readonly IUnitOfWork _db;
         private readonly IRepository<ScheduledCronTicker> _tickerRepo;
         private readonly IRepository<CronTickerOccurrenceEntity<ScheduledCronTicker>> _occurrenceRepo;
         private readonly IRepository<ScheduledTaskAttachment> _attachmentRepo;
         private readonly IScheduledJobRegistry _jobRegistry;
         private readonly ISchedulerAttachmentService _attachmentService;
+        private readonly IServerNotifier _serverNotifier;
         private readonly ILogger<SchedulerJournalService> _logger;
 
         public SchedulerJournalService(
             IUnitOfWork unitOfWork,
             IScheduledJobRegistry jobRegistry,
             ISchedulerAttachmentService attachmentService,
+            IServerNotifier serverNotifier,
             ILogger<SchedulerJournalService> logger)
         {
             _db = unitOfWork;
@@ -40,6 +47,7 @@ namespace MoneyManager.Application.Services.Scheduler
             _attachmentRepo = unitOfWork.CreateRepository<ScheduledTaskAttachment>();
             _jobRegistry = jobRegistry;
             _attachmentService = attachmentService;
+            _serverNotifier = serverNotifier;
             _logger = logger;
         }
 
@@ -155,6 +163,24 @@ namespace MoneyManager.Application.Services.Scheduler
                 {
                     await _attachmentService.SaveAttachmentAsync(occurrenceId, attachment);
                 }
+
+                try
+                {
+                    var socketPayload = JsonSerializer.Serialize(new
+                    {
+                        type = "ScheduledTaskExecutionRecorded",
+                        taskName = taskName,
+                        status = (int)status,
+                        durationMs = durationMs,
+                        errorMessage = errorMessage
+                    }, JsonOptions);
+
+                    await _serverNotifier.SendToAllAsync(socketPayload);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Failed to broadcast execution event via SignalR for {TaskName}", taskName);
+                }
             }
             catch (Exception exception)
             {
@@ -162,6 +188,24 @@ namespace MoneyManager.Application.Services.Scheduler
             }
 
             return attachment;
+        }
+
+        public async Task NotifyTaskStartedAsync(string taskName)
+        {
+            try
+            {
+                var socketPayload = JsonSerializer.Serialize(new
+                {
+                    type = "ScheduledTaskStarted",
+                    taskName = taskName
+                }, JsonOptions);
+
+                await _serverNotifier.SendToAllAsync(socketPayload);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to broadcast task started event via SignalR for {TaskName}", taskName);
+            }
         }
 
         private static Expression<Func<CronTickerOccurrenceEntity<ScheduledCronTicker>, bool>> GetFilter(

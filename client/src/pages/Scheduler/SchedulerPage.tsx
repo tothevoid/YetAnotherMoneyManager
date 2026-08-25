@@ -103,9 +103,10 @@ const SchedulerPage: React.FC = () => {
     };
 
     const handlePageChanged = (recordsQuantity: number, page: number) => {
+        const actualPage = page === 0 ? 1 : page;
         setPageSize(recordsQuantity);
-        setCurrentPage(page + 1);
-        loadJournal(page + 1, recordsQuantity, selectedTaskFilter, selectedStatusFilter);
+        setCurrentPage(actualPage);
+        loadJournal(actualPage, recordsQuantity, selectedTaskFilter, selectedStatusFilter);
     };
 
     const selectedTask = selectedTaskName ? tasks.find((t) => t.taskName === selectedTaskName) || null : null;

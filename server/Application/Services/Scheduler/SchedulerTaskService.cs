@@ -150,7 +150,8 @@ namespace MoneyManager.Application.Services.Scheduler
                 return null;
             }
 
-            var ticker = await _tickerRepo.FindAsync(ticker => ticker.Function == taskName);
+            var tickers = await _tickerRepo.GetAllAsync(t => t.Function == taskName, disableTracking: false);
+            var ticker = tickers.FirstOrDefault();
 
             if (ticker == null)
             {
@@ -202,7 +203,8 @@ namespace MoneyManager.Application.Services.Scheduler
                 return null;
             }
 
-            var ticker = await _tickerRepo.FindAsync(ticker => ticker.Function == taskName);
+            var tickers = await _tickerRepo.GetAllAsync(t => t.Function == taskName, disableTracking: false);
+            var ticker = tickers.FirstOrDefault();
 
             if (ticker == null)
             {
@@ -229,7 +231,8 @@ namespace MoneyManager.Application.Services.Scheduler
                 return false;
             }
 
-            var ticker = await _tickerRepo.FindAsync(ticker => ticker.Function == taskName);
+            var tickers = await _tickerRepo.GetAllAsync(t => t.Function == taskName, disableTracking: false);
+            var ticker = tickers.FirstOrDefault();
 
             if (ticker == null)
             {

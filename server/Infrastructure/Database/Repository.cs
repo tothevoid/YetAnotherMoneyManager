@@ -133,8 +133,11 @@ namespace MoneyManager.Infrastructure.Database
 
         public void Update(TEntity entity)
         {
-            //TODO: if entity is not exists update can insert entity. Fix it
-            _entities.Update(entity);
+            var entry = _context.Entry(entity);
+            if (entry.State == EntityState.Detached)
+            {
+                _entities.Update(entity);
+            }
         }
 
         public async Task DeleteAsync(Guid id)

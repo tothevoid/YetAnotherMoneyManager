@@ -31,13 +31,17 @@ const SchedulerPage: React.FC = () => {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(15);
 
-    const loadTasks = useCallback(async () => {
-        setIsTasksLoading(true);
+    const loadTasks = useCallback(async (showLoading: boolean = false) => {
+        if (showLoading) {
+            setIsTasksLoading(true);
+        }
         try {
             const data = await getScheduledTasks();
             setTasks(data);
         } finally {
-            setIsTasksLoading(false);
+            if (showLoading) {
+                setIsTasksLoading(false);
+            }
         }
     }, []);
 
@@ -45,9 +49,12 @@ const SchedulerPage: React.FC = () => {
         page: number = 1,
         recordsQuantity: number = pageSize,
         task: string = selectedTaskFilter,
-        status: string = selectedStatusFilter
+        status: string = selectedStatusFilter,
+        showLoading: boolean = true
     ) => {
-        setIsJournalLoading(true);
+        if (showLoading) {
+            setIsJournalLoading(true);
+        }
         try {
             const data = await getScheduledTaskJournal({
                 pageIndex: page,
@@ -57,12 +64,14 @@ const SchedulerPage: React.FC = () => {
             });
             setJournal(data);
         } finally {
-            setIsJournalLoading(false);
+            if (showLoading) {
+                setIsJournalLoading(false);
+            }
         }
     }, [pageSize, selectedTaskFilter, selectedStatusFilter]);
 
     useEffect(() => {
-        loadTasks();
+        loadTasks(true);
     }, [loadTasks]);
 
     useEffect(() => {
@@ -71,19 +80,19 @@ const SchedulerPage: React.FC = () => {
         }
     }, [selectedTaskName, currentPage, pageSize, selectedTaskFilter, selectedStatusFilter, loadJournal]);
 
-    const handleTaskUpdated = useCallback(() => {
-        loadTasks();
-        if (selectedTaskName === null) {
-            loadJournal(currentPage, pageSize, selectedTaskFilter, selectedStatusFilter);
+    const handleTaskUpdated = useCallback((refreshJournal: boolean = false) => {
+        loadTasks(false);
+        if (refreshJournal && selectedTaskName === null) {
+            loadJournal(currentPage, pageSize, selectedTaskFilter, selectedStatusFilter, false);
         }
     }, [loadTasks, selectedTaskName, loadJournal, currentPage, pageSize, selectedTaskFilter, selectedStatusFilter]);
 
     useSchedulerEvents({
         onTaskStarted: () => {
-            loadTasks();
+            loadTasks(false);
         },
         onTaskExecutionRecorded: () => {
-            handleTaskUpdated();
+            handleTaskUpdated(true);
         }
     });
 
@@ -165,12 +174,12 @@ const SchedulerPage: React.FC = () => {
                 {/* Modals */}
                 <ScheduleConfigModal
                     ref={configModalRef}
-                    onSaved={handleTaskUpdated}
+                    onSaved={() => handleTaskUpdated(false)}
                 />
 
                 <CreateTaskModal
                     ref={createTaskModalRef}
-                    onCreated={handleTaskUpdated}
+                    onCreated={() => handleTaskUpdated(false)}
                 />
             </VStack>
         </Box>

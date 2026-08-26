@@ -43,9 +43,19 @@ namespace MoneyManager.Infrastructure.Database
             return await query.Where(entity => EF.Property<Guid>(entity, "Id") == id).FirstOrDefaultAsync();
         }
 
-        public async Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> predicate)
+        public async Task<TEntity> FindAsync(
+            Expression<Func<TEntity, bool>> predicate,
+            Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null,
+            bool disableTracking = true)
         {
-            IQueryable<TEntity> query = _entities.AsNoTracking();
+            IQueryable<TEntity> query =
+                disableTracking ? _entities.AsQueryable().AsNoTracking() : _entities.AsQueryable();
+
+            if (include != null)
+            {
+                query = include(query);
+            }
+
             return await query.Where(predicate).FirstOrDefaultAsync();
         }
 

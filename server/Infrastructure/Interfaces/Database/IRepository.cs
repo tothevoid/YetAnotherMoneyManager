@@ -28,7 +28,9 @@ namespace MoneyManager.Infrastructure.Interfaces.Database
 
         Task<int> GetCountAsync(Expression<Func<TEntity, bool>> filter = null);
 
-        Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> predicate);
+        Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> predicate,
+            Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null,
+            bool disableTracking = true);
 
         void Update(TEntity entity);
 

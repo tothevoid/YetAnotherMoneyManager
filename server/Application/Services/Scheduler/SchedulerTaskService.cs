@@ -150,7 +150,7 @@ namespace MoneyManager.Application.Services.Scheduler
                 return null;
             }
 
-            var ticker = await _tickerRepo.FindAsync(t => t.Function == taskName);
+            var ticker = await _tickerRepo.FindAsync(t => t.Function == taskName, disableTracking: false);
 
             if (ticker == null)
             {
@@ -202,7 +202,7 @@ namespace MoneyManager.Application.Services.Scheduler
                 return null;
             }
 
-            var ticker = await _tickerRepo.FindAsync(t => t.Function == taskName);
+            var ticker = await _tickerRepo.FindAsync(t => t.Function == taskName, disableTracking: false);
 
             if (ticker == null)
             {

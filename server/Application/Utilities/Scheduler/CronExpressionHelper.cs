@@ -41,7 +41,29 @@ namespace MoneyManager.Application.Utilities.Scheduler
 
         public static bool IsValidCronExpression(string cronExpression)
         {
-            return CronExpression.TryParse(cronExpression, out _);
+            if (string.IsNullOrWhiteSpace(cronExpression))
+            {
+                return false;
+            }
+
+            if (!CronExpression.TryParse(cronExpression, out var tickerParsed))
+            {
+                return false;
+            }
+
+            try
+            {
+                var parsedStr = tickerParsed.ToString();
+                var format = parsedStr.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length == 6
+                    ? CronFormat.IncludeSeconds
+                    : CronFormat.Standard;
+                CronosExpression.Parse(parsedStr, format);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public static DateTime? GetNextExecutionUtc(string cronExpression, DateTime fromUtc)

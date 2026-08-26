@@ -21,16 +21,5 @@ namespace MoneyManager.Application.Interfaces.Scheduler
             string taskName = null,
             ScheduledTaskExecutionStatus? status = null,
             ScheduledTaskTriggerSource? triggerSource = null);
-
-        Task<ScheduledTaskAttachment> RecordExecutionAsync(
-            string taskName,
-            ScheduledTaskExecutionStatus status,
-            long durationMs,
-            ScheduledTaskTriggerSource triggerSource = ScheduledTaskTriggerSource.Scheduled,
-            string logMessage = null,
-            string errorMessage = null,
-            ScheduledTaskAttachment attachment = null);
-
-        Task NotifyTaskStartedAsync(string taskName);
     }
 }

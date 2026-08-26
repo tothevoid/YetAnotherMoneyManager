@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,6 +9,8 @@ using MoneyManager.Application.Enums.Scheduler;
 using MoneyManager.Application.Interfaces.Scheduler;
 using MoneyManager.Infrastructure.Entities.Scheduler;
 using MoneyManager.Infrastructure.Interfaces.Database;
+using TickerQ.Utilities.Entities;
+using TickerQ.Utilities.Enums;
 
 namespace MoneyManager.Application.Services.Scheduler
 {
@@ -15,6 +18,7 @@ namespace MoneyManager.Application.Services.Scheduler
     {
         private readonly IUnitOfWork _db;
         private readonly IRepository<ScheduledCronTicker> _tickerRepo;
+        private readonly IRepository<CronTickerOccurrenceEntity<ScheduledCronTicker>> _occurrenceRepo;
         private readonly IScheduledJobRegistry _jobRegistry;
         private readonly IEnumerable<IScheduledJob> _jobs;
         private readonly ILogger<ScheduleExecutor> _logger;
@@ -27,6 +31,7 @@ namespace MoneyManager.Application.Services.Scheduler
         {
             _db = unitOfWork;
             _tickerRepo = unitOfWork.CreateRepository<ScheduledCronTicker>();
+            _occurrenceRepo = unitOfWork.CreateRepository<CronTickerOccurrenceEntity<ScheduledCronTicker>>();
             _jobRegistry = jobRegistry;
             _jobs = jobs;
             _logger = logger;
@@ -54,7 +59,44 @@ namespace MoneyManager.Application.Services.Scheduler
                 throw new InvalidOperationException($"Job instance for '{descriptor.JobType.Name}' was not found in DI container.");
             }
 
-            await job.ExecuteAsync(triggerSource, cancellationToken);
+            var occurrence = new CronTickerOccurrenceEntity<ScheduledCronTicker>
+            {
+                Id = Guid.NewGuid(),
+                CronTickerId = ticker.Id,
+                ExecutionTime = DateTime.UtcNow,
+                ExecutedAt = DateTime.UtcNow,
+                Status = TickerStatus.InProgress,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            await _occurrenceRepo.AddAsync(occurrence);
+            await _db.CommitAsync();
+
+            var stopwatch = Stopwatch.StartNew();
+            try
+            {
+                await job.ExecuteAsync(triggerSource, cancellationToken, occurrenceId: occurrence.Id);
+                stopwatch.Stop();
+
+                occurrence.Status = TickerStatus.Done;
+                occurrence.ElapsedTime = stopwatch.ElapsedMilliseconds;
+                occurrence.UpdatedAt = DateTime.UtcNow;
+                _occurrenceRepo.Update(occurrence);
+                await _db.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                stopwatch.Stop();
+                occurrence.Status = TickerStatus.Failed;
+                occurrence.ElapsedTime = stopwatch.ElapsedMilliseconds;
+                occurrence.ExceptionMessage = ex.Message;
+                occurrence.UpdatedAt = DateTime.UtcNow;
+                _occurrenceRepo.Update(occurrence);
+                await _db.CommitAsync();
+                throw;
+            }
         }
     }
 }
+

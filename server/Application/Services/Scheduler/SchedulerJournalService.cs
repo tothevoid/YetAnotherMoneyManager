@@ -25,29 +25,19 @@ namespace MoneyManager.Application.Services.Scheduler
     {
         private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
-        private readonly IUnitOfWork _db;
-        private readonly IRepository<ScheduledCronTicker> _tickerRepo;
         private readonly IRepository<CronTickerOccurrenceEntity<ScheduledCronTicker>> _occurrenceRepo;
         private readonly IRepository<ScheduledTaskAttachment> _attachmentRepo;
         private readonly IScheduledJobRegistry _jobRegistry;
-        private readonly ISchedulerAttachmentService _attachmentService;
-        private readonly IServerNotifier _serverNotifier;
         private readonly ILogger<SchedulerJournalService> _logger;
 
         public SchedulerJournalService(
             IUnitOfWork unitOfWork,
             IScheduledJobRegistry jobRegistry,
-            ISchedulerAttachmentService attachmentService,
-            IServerNotifier serverNotifier,
             ILogger<SchedulerJournalService> logger)
         {
-            _db = unitOfWork;
-            _tickerRepo = unitOfWork.CreateRepository<ScheduledCronTicker>();
             _occurrenceRepo = unitOfWork.CreateRepository<CronTickerOccurrenceEntity<ScheduledCronTicker>>();
             _attachmentRepo = unitOfWork.CreateRepository<ScheduledTaskAttachment>();
             _jobRegistry = jobRegistry;
-            _attachmentService = attachmentService;
-            _serverNotifier = serverNotifier;
             _logger = logger;
         }
 
@@ -104,108 +94,14 @@ namespace MoneyManager.Application.Services.Scheduler
             ScheduledTaskExecutionStatus? status = null,
             ScheduledTaskTriggerSource? triggerSource = null)
         {
-            var recordsQuantity = await _occurrenceRepo.GetCountAsync(GetFilter(taskName, status));
+            var filter = GetFilter(taskName, status);
+            var recordsQuantity = await _occurrenceRepo.GetCountAsync(filter);
 
             return new PaginationConfigDto
             {
                 PageSize = 15,
                 RecordsQuantity = recordsQuantity
             };
-        }
-
-        public async Task<ScheduledTaskAttachment> RecordExecutionAsync(
-            string taskName,
-            ScheduledTaskExecutionStatus status,
-            long durationMs,
-            ScheduledTaskTriggerSource triggerSource = ScheduledTaskTriggerSource.Scheduled,
-            string logMessage = null,
-            string errorMessage = null,
-            ScheduledTaskAttachment attachment = null)
-        {
-            var occurrenceId = (attachment != null && attachment.OccurrenceId != Guid.Empty)
-                ? attachment.OccurrenceId
-                : Guid.NewGuid();
-
-            if (attachment != null)
-            {
-                attachment.OccurrenceId = occurrenceId;
-            }
-
-            var executionTime = DateTime.UtcNow;
-
-            try
-            {
-                var ticker = await _tickerRepo.FindAsync(existingTicker => existingTicker.Function == taskName);
-
-                if (ticker == null)
-                {
-                    _logger.LogWarning("Cannot record execution: ticker for task '{TaskName}' is not registered by user in DB", taskName);
-                    return null;
-                }
-
-                var occurrence = new CronTickerOccurrenceEntity<ScheduledCronTicker>
-                {
-                    Id = occurrenceId,
-                    CronTickerId = ticker.Id,
-                    ExecutionTime = executionTime,
-                    ExecutedAt = executionTime,
-                    ElapsedTime = durationMs,
-                    Status = SchedulerStatusMapper.ToTickerStatus(status),
-                    ExceptionMessage = errorMessage,
-                    CreatedAt = executionTime,
-                    UpdatedAt = executionTime
-                };
-
-                await _occurrenceRepo.AddAsync(occurrence);
-                await _db.CommitAsync();
-
-                if (attachment != null)
-                {
-                    await _attachmentService.SaveAttachmentAsync(occurrenceId, attachment);
-                }
-
-                try
-                {
-                    var socketPayload = JsonSerializer.Serialize(new
-                    {
-                        type = "ScheduledTaskExecutionRecorded",
-                        taskName = taskName,
-                        status = (int)status,
-                        durationMs = durationMs,
-                        errorMessage = errorMessage
-                    }, JsonOptions);
-
-                    await _serverNotifier.SendToAllAsync(socketPayload);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning(ex, "Failed to broadcast execution event via SignalR for {TaskName}", taskName);
-                }
-            }
-            catch (Exception exception)
-            {
-                _logger.LogWarning(exception, "Failed to persist execution record in DB for task {TaskName}", taskName);
-            }
-
-            return attachment;
-        }
-
-        public async Task NotifyTaskStartedAsync(string taskName)
-        {
-            try
-            {
-                var socketPayload = JsonSerializer.Serialize(new
-                {
-                    type = "ScheduledTaskStarted",
-                    taskName = taskName
-                }, JsonOptions);
-
-                await _serverNotifier.SendToAllAsync(socketPayload);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, "Failed to broadcast task started event via SignalR for {TaskName}", taskName);
-            }
         }
 
         private static Expression<Func<CronTickerOccurrenceEntity<ScheduledCronTicker>, bool>> GetFilter(

@@ -6,7 +6,6 @@ import {
     Flex,
     Icon,
     Spinner,
-    Switch,
     Text,
     VStack
 } from '@chakra-ui/react';
@@ -15,6 +14,7 @@ import { MdBackup, MdDownload, MdLock, MdShield } from 'react-icons/md';
 import { exportDatabaseBackup } from '../../../src/api/system/databaseBackupApi';
 import { formatTimestampForBackup } from '../../../src/shared/utilities/dateUtils';
 import { PasswordInput } from '../../../src/shared/components/PasswordInput/PasswordInput';
+import SwitchInput from '../../../src/shared/components/SwitchInput/SwitchInput';
 
 export const ActionsModalBackupCard: React.FC = () => {
     const { t } = useTranslation();
@@ -148,20 +148,15 @@ export const ActionsModalBackupCard: React.FC = () => {
                                     {t("action_backup_protect_toggle")}
                                 </Text>
                             </Flex>
-                            <Switch.Root
+                            <SwitchInput
                                 checked={isProtected}
-                                onCheckedChange={(e) => {
-                                    setIsProtected(e.checked);
+                                onCheckedChange={(checked) => {
+                                    setIsProtected(checked);
                                     setErrorMessage(null);
                                 }}
                                 colorPalette="teal"
                                 size="sm"
-                            >
-                                <Switch.HiddenInput />
-                                <Switch.Control>
-                                    <Switch.Thumb />
-                                </Switch.Control>
-                            </Switch.Root>
+                            />
                         </Flex>
 
                         {isProtected && (

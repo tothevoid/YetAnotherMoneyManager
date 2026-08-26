@@ -11,6 +11,7 @@ using MoneyManager.Application.Interfaces.Notifications;
 using MoneyManager.Application.Interfaces.Scheduler;
 using MoneyManager.Infrastructure.Constants;
 using MoneyManager.Infrastructure.Entities.Notifications;
+using MoneyManager.Infrastructure.Interfaces.Messages;
 using TickerQ.Utilities.Base;
 
 namespace MoneyManager.Application.Jobs
@@ -30,8 +31,9 @@ namespace MoneyManager.Application.Jobs
             IAuthService authService,
             INotificationService notificationService,
             IDatabaseStateService databaseStateService,
-            ISchedulerJournalService journalService)
-            : base(databaseStateService, journalService)
+            ISchedulerAttachmentService attachmentService,
+            IServerNotifier serverNotifier)
+            : base(databaseStateService, attachmentService, serverNotifier)
         {
             _authService = authService;
             _notificationService = notificationService;
@@ -39,10 +41,13 @@ namespace MoneyManager.Application.Jobs
 
         [TickerFunction(functionName: "CleanUpExpiredRefreshTokens")]
         public async Task CleanUpExpiredRefreshTokensAsync(
-            TickerFunctionContext context = null,
+            TickerFunctionContext context,
             CancellationToken cancellationToken = default)
         {
-            await ExecuteAsync(triggerSource: ScheduledTaskTriggerSource.Scheduled, cancellationToken: cancellationToken);
+            await ExecuteAsync(
+                triggerSource: ScheduledTaskTriggerSource.Scheduled,
+                cancellationToken: cancellationToken,
+                occurrenceId: context.Id);
         }
 
         protected override async Task<JobExecutionResult> ExecuteCoreAsync(

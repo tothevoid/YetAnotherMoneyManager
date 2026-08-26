@@ -13,6 +13,7 @@ using MoneyManager.Application.Interfaces.Scheduler;
 using MoneyManager.Infrastructure.Constants;
 using MoneyManager.Infrastructure.Entities.Notifications;
 using MoneyManager.Infrastructure.Entities.Scheduler;
+using MoneyManager.Infrastructure.Interfaces.Messages;
 using TickerQ.Utilities.Base;
 
 namespace MoneyManager.Application.Jobs
@@ -34,8 +35,9 @@ namespace MoneyManager.Application.Jobs
             IFileStorageService fileStorageService,
             INotificationService notificationService,
             IDatabaseStateService databaseStateService,
-            ISchedulerJournalService journalService)
-            : base(databaseStateService, journalService)
+            ISchedulerAttachmentService attachmentService,
+            IServerNotifier serverNotifier)
+            : base(databaseStateService, attachmentService, serverNotifier)
         {
             _reportService = reportService;
             _fileStorageService = fileStorageService;
@@ -44,10 +46,13 @@ namespace MoneyManager.Application.Jobs
 
         [TickerFunction(functionName: "GenerateAllAssetsReport")]
         public async Task GenerateReportAsync(
-            TickerFunctionContext context = null,
+            TickerFunctionContext context,
             CancellationToken cancellationToken = default)
         {
-            await ExecuteAsync(triggerSource: ScheduledTaskTriggerSource.Scheduled, cancellationToken: cancellationToken);
+            await ExecuteAsync(
+                triggerSource: ScheduledTaskTriggerSource.Scheduled,
+                cancellationToken: cancellationToken,
+                occurrenceId: context.Id);
         }
 
         protected override async Task<JobExecutionResult> ExecuteCoreAsync(

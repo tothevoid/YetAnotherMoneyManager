@@ -8,6 +8,7 @@ using MoneyManager.Application.Enums.Scheduler;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Application.Interfaces.DatabaseBackup;
 using MoneyManager.Application.Interfaces.Scheduler;
+using MoneyManager.Infrastructure.Interfaces.Messages;
 using TickerQ.Utilities.Base;
 
 namespace MoneyManager.Application.Jobs
@@ -25,18 +26,22 @@ namespace MoneyManager.Application.Jobs
         public PullQuotationsJob(
             IBrokerAccountSecurityService brokerAccountSecurityService,
             IDatabaseStateService databaseStateService,
-            ISchedulerJournalService journalService)
-            : base(databaseStateService, journalService)
+            ISchedulerAttachmentService attachmentService,
+            IServerNotifier serverNotifier)
+            : base(databaseStateService, attachmentService, serverNotifier)
         {
             _brokerAccountSecurityService = brokerAccountSecurityService;
         }
 
         [TickerFunction(functionName: "PullQuotations")]
         public async Task Pull(
-            TickerFunctionContext context = null,
+            TickerFunctionContext context,
             CancellationToken cancellationToken = default)
         {
-            await ExecuteAsync(triggerSource: ScheduledTaskTriggerSource.Scheduled, cancellationToken: cancellationToken);
+            await ExecuteAsync(
+                triggerSource: ScheduledTaskTriggerSource.Scheduled,
+                cancellationToken: cancellationToken,
+                occurrenceId: context.Id);
         }
 
         protected override async Task<JobExecutionResult> ExecuteCoreAsync(

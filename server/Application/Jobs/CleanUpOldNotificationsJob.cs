@@ -8,6 +8,7 @@ using MoneyManager.Application.Enums.Scheduler;
 using MoneyManager.Application.Interfaces.DatabaseBackup;
 using MoneyManager.Application.Interfaces.Notifications;
 using MoneyManager.Application.Interfaces.Scheduler;
+using MoneyManager.Infrastructure.Interfaces.Messages;
 using TickerQ.Utilities.Base;
 
 namespace MoneyManager.Application.Jobs
@@ -25,18 +26,22 @@ namespace MoneyManager.Application.Jobs
         public CleanUpOldNotificationsJob(
             INotificationService notificationService,
             IDatabaseStateService databaseStateService,
-            ISchedulerJournalService journalService)
-            : base(databaseStateService, journalService)
+            ISchedulerAttachmentService attachmentService,
+            IServerNotifier serverNotifier)
+            : base(databaseStateService, attachmentService, serverNotifier)
         {
             _notificationService = notificationService;
         }
 
         [TickerFunction(functionName: "CleanUpOldNotifications")]
         public async Task CleanUp(
-            TickerFunctionContext context = null,
+            TickerFunctionContext context,
             CancellationToken cancellationToken = default)
         {
-            await ExecuteAsync(triggerSource: ScheduledTaskTriggerSource.Scheduled, cancellationToken: cancellationToken);
+            await ExecuteAsync(
+                triggerSource: ScheduledTaskTriggerSource.Scheduled,
+                cancellationToken: cancellationToken,
+                occurrenceId: context.Id);
         }
 
         protected override async Task<JobExecutionResult> ExecuteCoreAsync(

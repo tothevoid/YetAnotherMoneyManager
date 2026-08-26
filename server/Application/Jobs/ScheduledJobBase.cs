@@ -1,6 +1,6 @@
 using System;
-using System.Diagnostics;
 using System.Reflection;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using MoneyManager.Application.Attributes.Scheduler;
@@ -8,68 +8,60 @@ using MoneyManager.Application.DTO.Scheduler;
 using MoneyManager.Application.Enums.Scheduler;
 using MoneyManager.Application.Interfaces.DatabaseBackup;
 using MoneyManager.Application.Interfaces.Scheduler;
+using MoneyManager.Infrastructure.Interfaces.Messages;
 
 namespace MoneyManager.Application.Jobs
 {
     public abstract class ScheduledJobBase : IScheduledJob
     {
         protected readonly IDatabaseStateService _databaseStateService;
-        protected readonly ISchedulerJournalService _journalService;
+        protected readonly ISchedulerAttachmentService _attachmentService;
+        protected readonly IServerNotifier _serverNotifier;
 
         protected virtual string TaskName =>
             GetType().GetCustomAttribute<ScheduledJobAttribute>()?.TaskName ?? GetType().Name;
 
         protected ScheduledJobBase(
             IDatabaseStateService databaseStateService,
-            ISchedulerJournalService journalService)
+            ISchedulerAttachmentService attachmentService,
+            IServerNotifier serverNotifier)
         {
             _databaseStateService = databaseStateService;
-            _journalService = journalService;
+            _attachmentService = attachmentService;
+            _serverNotifier = serverNotifier;
         }
 
         public async Task ExecuteAsync(
             ScheduledTaskTriggerSource triggerSource = ScheduledTaskTriggerSource.Manual,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default,
+            Guid? occurrenceId = null)
         {
             if (_databaseStateService.IsRestoring)
             {
                 return;
             }
 
-            await _journalService.NotifyTaskStartedAsync(TaskName);
-
-            var stopwatch = Stopwatch.StartNew();
+            var startNotification = JsonSerializer.Serialize(new
+            {
+                type = "ScheduledTaskStarted",
+                taskName = TaskName
+            });
+            await _serverNotifier.SendToAllAsync(startNotification);
+           
             try
             {
                 var result = await ExecuteCoreAsync(triggerSource, cancellationToken);
-                stopwatch.Stop();
 
-                await _journalService.RecordExecutionAsync(
-                    taskName: TaskName,
-                    status: ScheduledTaskExecutionStatus.Done,
-                    durationMs: stopwatch.ElapsedMilliseconds,
-                    triggerSource: triggerSource,
-                    logMessage: result?.LogMessage,
-                    errorMessage: null,
-                    attachment: result?.Attachment);
+                if (result?.Attachment != null && occurrenceId.HasValue && occurrenceId.Value != Guid.Empty)
+                {
+                    await _attachmentService.SaveAttachmentAsync(occurrenceId.Value, result.Attachment);
+                }
 
                 await OnSuccessAsync(triggerSource, result, cancellationToken);
             }
             catch (Exception ex)
             {
-                stopwatch.Stop();
-
-                await _journalService.RecordExecutionAsync(
-                    taskName: TaskName,
-                    status: ScheduledTaskExecutionStatus.Failed,
-                    durationMs: stopwatch.ElapsedMilliseconds,
-                    triggerSource: triggerSource,
-                    logMessage: null,
-                    errorMessage: ex.Message,
-                    attachment: null);
-
                 await OnFailureAsync(triggerSource, ex, cancellationToken);
-
                 throw;
             }
         }

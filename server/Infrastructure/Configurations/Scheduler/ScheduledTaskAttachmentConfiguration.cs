@@ -24,10 +24,8 @@ namespace MoneyManager.Infrastructure.Configurations.Scheduler
                 .IsRequired()
                 .HasMaxLength(128);
 
-            builder.HasOne(a => a.Occurrence)
-                .WithMany()
-                .HasForeignKey(a => a.OccurrenceId)
-                .OnDelete(DeleteBehavior.Cascade);
+            builder.HasIndex(a => a.OccurrenceId);
         }
     }
 }
+

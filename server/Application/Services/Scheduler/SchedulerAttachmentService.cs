@@ -55,7 +55,7 @@ namespace MoneyManager.Application.Services.Scheduler
 
         public async Task<ScheduledTaskAttachment> SaveAttachmentAsync(Guid occurrenceId, ScheduledTaskAttachment attachment)
         {
-            if (attachment == null)
+            if (attachment == null || occurrenceId == Guid.Empty)
             {
                 return null;
             }

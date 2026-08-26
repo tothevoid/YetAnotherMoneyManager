@@ -17,6 +17,7 @@ import { MdAdd, MdHistory, MdSchedule } from 'react-icons/md';
 import { ScheduledTaskEntity } from '../../../models/scheduler/ScheduledTaskEntity';
 import { toggleTaskStatus } from '../../../api/scheduler/schedulerTaskApi';
 import AddButton from '../../../shared/components/AddButton/AddButton';
+import SwitchInput from '../../../shared/components/SwitchInput/SwitchInput';
 import { formatCronExpression, getTaskStatusDotColor } from '../schedulerUtils';
 
 interface SchedulerTaskMasterListProps {
@@ -39,11 +40,10 @@ export const SchedulerTaskMasterList: React.FC<SchedulerTaskMasterListProps> = (
     const { t, i18n } = useTranslation();
     const [togglingMap, setTogglingMap] = React.useState<Record<string, boolean>>({});
 
-    const handleToggle = async (task: ScheduledTaskEntity, e: React.MouseEvent) => {
-        e.stopPropagation();
+    const handleToggle = async (task: ScheduledTaskEntity, nextState: boolean) => {
         setTogglingMap((prev) => ({ ...prev, [task.taskName]: true }));
         try {
-            await toggleTaskStatus(task.taskName, !task.isEnabled);
+            await toggleTaskStatus(task.taskName, nextState);
             onTaskUpdated();
         } finally {
             setTogglingMap((prev) => ({ ...prev, [task.taskName]: false }));
@@ -133,7 +133,13 @@ export const SchedulerTaskMasterList: React.FC<SchedulerTaskMasterListProps> = (
                 return (
                     <Card.Root
                         key={task.taskName}
-                        onClick={() => onSelectTask(task)}
+                        onClick={(e) => {
+                            const target = e.target as HTMLElement;
+                            if (target.closest('[data-scope="switch"]') || target.closest('[data-switch-container]')) {
+                                return;
+                            }
+                            onSelectTask(task);
+                        }}
                         cursor="pointer"
                         backgroundColor={isSelected ? 'background_secondary' : 'background_primary'}
                         borderColor={isSelected ? 'action_primary' : 'border_primary'}
@@ -186,16 +192,19 @@ export const SchedulerTaskMasterList: React.FC<SchedulerTaskMasterListProps> = (
                                 </VStack>
                             </HStack>
 
-                            <Button
-                                size="xs"
-                                variant={task.isEnabled ? 'solid' : 'outline'}
-                                colorPalette={task.isEnabled ? 'green' : 'gray'}
-                                loading={isToggling}
-                                onClick={(e) => handleToggle(task, e)}
+                            <Box
+                                data-switch-container="true"
                                 flexShrink={0}
+                                pt={0.5}
                             >
-                                {task.isEnabled ? t('scheduler_status_active') : t('scheduler_status_paused')}
-                            </Button>
+                                <SwitchInput
+                                    checked={task.isEnabled}
+                                    disabled={isToggling}
+                                    onCheckedChange={(checked) => handleToggle(task, checked)}
+                                    colorPalette="green"
+                                    size="sm"
+                                />
+                            </Box>
                         </Flex>
                     </Card.Root>
                 );

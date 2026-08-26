@@ -1,4 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import { Field, VStack } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { BaseModalRef } from '../../../shared/utilities/modalUtilities';
 import BaseFormModal from '../../../shared/modals/BaseFormModal/BaseFormModal';
@@ -11,6 +12,7 @@ import {
     parseCronSchedule
 } from '../schedulerUtils';
 import { CronScheduleEditor } from './CronScheduleEditor';
+import ButtonGroup from '../../../shared/components/ButtonGroup/ButtonGroup';
 
 export interface ScheduleConfigModalRef {
     openModal: (task: ScheduledTaskEntity) => void;
@@ -26,12 +28,14 @@ export const ScheduleConfigModal = forwardRef<ScheduleConfigModalRef, ScheduleCo
     const formModalRef = useRef<BaseModalRef>(null);
 
     const [currentTask, setCurrentTask] = useState<ScheduledTaskEntity | null>(null);
+    const [isEnabled, setIsEnabled] = useState<boolean>(true);
     const [scheduleConfig, setScheduleConfig] = useState<CronScheduleConfig>(DEFAULT_CRON_SCHEDULE);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     useImperativeHandle(ref, () => ({
         openModal: (task: ScheduledTaskEntity) => {
             setCurrentTask(task);
+            setIsEnabled(task.isEnabled);
             setScheduleConfig(parseCronSchedule(task.cronExpression));
             formModalRef.current?.openModal();
         },
@@ -50,7 +54,7 @@ export const ScheduleConfigModal = forwardRef<ScheduleConfigModalRef, ScheduleCo
         try {
             const result = await updateSchedule(currentTask.taskName, {
                 cronExpression: finalCron,
-                isEnabled: currentTask.isEnabled
+                isEnabled: isEnabled
             });
 
             if (result) {
@@ -69,10 +73,25 @@ export const ScheduleConfigModal = forwardRef<ScheduleConfigModalRef, ScheduleCo
             submitHandler={handleSubmit}
             saveButtonTitle={isSubmitting ? '...' : t('scheduler_save')}
         >
-            <CronScheduleEditor
-                config={scheduleConfig}
-                onChange={setScheduleConfig}
-            />
+            <VStack align="stretch" gap={4}>
+                <Field.Root>
+                    <Field.Label>{t('scheduler_status')}</Field.Label>
+                    <ButtonGroup
+                        options={[
+                            { value: true, label: t('scheduler_status_active') },
+                            { value: false, label: t('scheduler_status_paused') }
+                        ]}
+                        value={isEnabled}
+                        onChange={setIsEnabled}
+                    />
+                </Field.Root>
+
+                <CronScheduleEditor
+                    config={scheduleConfig}
+                    onChange={setScheduleConfig}
+                />
+            </VStack>
         </BaseFormModal>
     );
 });
+

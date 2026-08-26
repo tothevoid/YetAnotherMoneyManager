@@ -218,7 +218,7 @@ export const buildCronSchedule = (config: CronScheduleConfig): string => {
             return `${min} ${hour} * * ${daysStr}`;
         }
         case CronFrequency.IntervalMinutes:
-            return `*/${config.intervalValue || 15} * * * *`;
+            return `*/${config.intervalValue || 1} * * * *`;
         case CronFrequency.IntervalHours:
             return `0 */${config.intervalValue || 1} * * *`;
         default:

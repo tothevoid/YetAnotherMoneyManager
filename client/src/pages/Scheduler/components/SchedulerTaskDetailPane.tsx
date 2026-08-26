@@ -47,33 +47,39 @@ export const SchedulerTaskDetailPane: React.FC<SchedulerTaskDetailPaneProps> = (
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
     const [selectedStatusFilter, setSelectedStatusFilter] = useState<string>('All');
 
-    const loadHistory = useCallback(async (status: string = selectedStatusFilter) => {
-        if (!task) return;
-        setIsLoadingHistory(true);
+    const taskName = task?.taskName;
+
+    const loadHistory = useCallback(async (status: string = selectedStatusFilter, showLoading: boolean = true) => {
+        if (!taskName) return;
+        if (showLoading) {
+            setIsLoadingHistory(true);
+        }
         try {
             const statusEnum = status !== 'All' ? (Number(status) as ScheduledTaskExecutionStatus) : undefined;
             const data = await getScheduledTaskJournal({
                 pageIndex: 1,
                 recordsQuantity: 15,
-                taskName: task.taskName,
+                taskName: taskName,
                 status: statusEnum
             });
             setHistory(data);
         } finally {
-            setIsLoadingHistory(false);
+            if (showLoading) {
+                setIsLoadingHistory(false);
+            }
         }
-    }, [task, selectedStatusFilter]);
+    }, [taskName, selectedStatusFilter]);
 
     useEffect(() => {
-        if (task) {
-            loadHistory(selectedStatusFilter);
+        if (taskName) {
+            loadHistory(selectedStatusFilter, true);
         }
-    }, [task, loadHistory]);
+    }, [taskName, selectedStatusFilter, loadHistory]);
 
     useSchedulerEvents({
         onTaskExecutionRecorded: (payload) => {
-            if (task && payload.taskName === task.taskName) {
-                loadHistory(selectedStatusFilter);
+            if (taskName && payload.taskName === taskName) {
+                loadHistory(selectedStatusFilter, false);
             }
         }
     });

@@ -17,6 +17,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddExternalHttpClients();
 builder.Services.AddClientCors(builder.Configuration);
 
+builder.Services.Configure<HostOptions>(options =>
+{
+    options.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
+    options.ShutdownTimeout = TimeSpan.FromSeconds(10);
+});
+
 builder.Services.AddDatabaseConnection(builder.Configuration);
 builder.Services.AddTickerQConfiguration();
 
@@ -41,9 +47,9 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
     app.UseHsts();
+    app.UseHttpsRedirection();
 }
 
-//app.UseHttpsRedirection()
 
 app.MapHub<ServerMessagesHub>("/messages");
 

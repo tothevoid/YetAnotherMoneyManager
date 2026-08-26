@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Button, Flex, HStack, Icon, Text, VStack } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { MdAttachFile, MdDownload, MdInsertDriveFile } from 'react-icons/md';
 import { ScheduledTaskAttachmentEntity } from '../../../models/scheduler/ScheduledTaskAttachmentEntity';
-import { getAttachmentDownloadUrl } from '../../../api/scheduler/schedulerAttachmentApi';
+import { downloadAttachmentFile } from '../../../api/scheduler/schedulerAttachmentApi';
 import { formatFileSize } from '../../../shared/utilities/formatters/fileFormatter';
 
 interface SchedulerAttachmentListProps {
@@ -16,6 +16,27 @@ export const SchedulerAttachmentList: React.FC<SchedulerAttachmentListProps> = (
     variant = 'boxed'
 }) => {
     const { t } = useTranslation();
+    const [downloadingId, setDownloadingId] = useState<string | null>(null);
+
+    const handleDownload = async (att: ScheduledTaskAttachmentEntity, e: React.MouseEvent) => {
+        e.stopPropagation();
+        setDownloadingId(att.id);
+        try {
+            const blob = await downloadAttachmentFile(att.id);
+            if (blob) {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = att.fileName;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            }
+        } finally {
+            setDownloadingId(null);
+        }
+    };
 
     if (!attachments || attachments.length === 0) {
         return null;
@@ -23,49 +44,50 @@ export const SchedulerAttachmentList: React.FC<SchedulerAttachmentListProps> = (
 
     const items = (
         <VStack align="stretch" gap={2}>
-            {attachments.map((att) => (
-                <Flex
-                    key={att.id}
-                    justify="space-between"
-                    align="center"
-                    p={2.5}
-                    borderRadius="md"
-                    backgroundColor={variant === 'boxed' ? 'background_secondary' : 'background_primary'}
-                    borderWidth="1px"
-                    borderColor="border_primary"
-                >
-                    <HStack gap={2.5} overflow="hidden">
-                        <Icon fontSize="20px" color="action_primary" flexShrink={0}>
-                            <MdInsertDriveFile />
-                        </Icon>
-                        <VStack align="flex-start" gap={0} overflow="hidden">
-                            <Text fontSize="xs" fontWeight="medium" color="text_primary" truncate>
-                                {att.fileName}
-                            </Text>
-                            <Text fontSize="2xs" color="text_secondary">
-                                {formatFileSize(att.fileSizeBytes)}
-                            </Text>
-                        </VStack>
-                    </HStack>
+            {attachments.map((att) => {
+                const isDownloading = downloadingId === att.id;
 
-                    <a
-                        href={getAttachmentDownloadUrl(att.id)}
-                        download={att.fileName}
-                        style={{ textDecoration: 'none', flexShrink: 0 }}
-                        onClick={(e) => e.stopPropagation()}
+                return (
+                    <Flex
+                        key={att.id}
+                        justify="space-between"
+                        align="center"
+                        p={2.5}
+                        borderRadius="md"
+                        backgroundColor={variant === 'boxed' ? 'background_secondary' : 'background_primary'}
+                        borderWidth="1px"
+                        borderColor="border_primary"
                     >
+                        <HStack gap={2.5} overflow="hidden">
+                            <Icon fontSize="20px" color="action_primary" flexShrink={0}>
+                                <MdInsertDriveFile />
+                            </Icon>
+                            <VStack align="flex-start" gap={0} overflow="hidden">
+                                <Text fontSize="xs" fontWeight="medium" color="text_primary" truncate>
+                                    {att.fileName}
+                                </Text>
+                                <Text fontSize="2xs" color="text_secondary">
+                                    {formatFileSize(att.fileSizeBytes)}
+                                </Text>
+                            </VStack>
+                        </HStack>
+
                         <Button
                             size="xs"
                             variant="outline"
                             color="text_primary"
                             borderColor="border_primary"
+                            _hover={{ backgroundColor: 'background_primary', borderColor: 'text_secondary' }}
+                            loading={isDownloading}
+                            onClick={(e) => handleDownload(att, e)}
+                            flexShrink={0}
                         >
                             <Icon mr={1}><MdDownload /></Icon>
                             {t('scheduler_journal_download')}
                         </Button>
-                    </a>
-                </Flex>
-            ))}
+                    </Flex>
+                );
+            })}
         </VStack>
     );
 

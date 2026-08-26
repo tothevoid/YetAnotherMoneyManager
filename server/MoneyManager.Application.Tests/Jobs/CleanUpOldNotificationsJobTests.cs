@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using MoneyManager.Application.Enums.Scheduler;
 using MoneyManager.Application.Interfaces.Notifications;
 using MoneyManager.Application.Jobs;
 using MoneyManager.Application.Tests.Fixtures;
@@ -18,12 +19,9 @@ namespace MoneyManager.Application.Tests.Jobs
         {
             await ExecuteScopeAsync(async sp =>
             {
-                var notificationService = sp.GetRequiredService<INotificationService>();
-                var databaseStateService = sp.GetRequiredService<MoneyManager.Application.Interfaces.DatabaseBackup.IDatabaseStateService>();
-                var schedulerJournalService = sp.GetRequiredService<MoneyManager.Application.Interfaces.Scheduler.ISchedulerJournalService>();
-                var job = new CleanUpOldNotificationsJob(notificationService, databaseStateService, schedulerJournalService);
+                var job = sp.GetRequiredService<CleanUpOldNotificationsJob>();
 
-                await job.CleanUp();
+                await job.ExecuteAsync(triggerSource: ScheduledTaskTriggerSource.Manual);
             });
         }
     }

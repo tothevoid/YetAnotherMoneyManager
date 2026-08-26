@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using MoneyManager.Application.Enums.Scheduler;
 using MoneyManager.Application.Interfaces.Auth;
 using MoneyManager.Application.Interfaces.Notifications;
 using MoneyManager.Application.Jobs;
@@ -20,13 +21,9 @@ namespace MoneyManager.Application.Tests.Jobs
         {
             await ExecuteScopeAsync(async sp =>
             {
-                var authService = sp.GetRequiredService<IAuthService>();
-                var notificationService = sp.GetRequiredService<INotificationService>();
-                var databaseStateService = sp.GetRequiredService<MoneyManager.Application.Interfaces.DatabaseBackup.IDatabaseStateService>();
-                var schedulerJournalService = sp.GetRequiredService<MoneyManager.Application.Interfaces.Scheduler.ISchedulerJournalService>();
-                var job = new CleanUpExpiredRefreshTokensJob(authService, notificationService, databaseStateService, schedulerJournalService);
+                var job = sp.GetRequiredService<CleanUpExpiredRefreshTokensJob>();
 
-                await job.CleanUpExpiredRefreshTokensAsync();
+                await job.ExecuteAsync(triggerSource: ScheduledTaskTriggerSource.Manual);
             });
         }
     }

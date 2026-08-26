@@ -7,6 +7,7 @@ using MoneyManager.Application.Enums.Scheduler;
 using MoneyManager.Application.Interfaces.Scheduler;
 using MoneyManager.Application.Tests.Fixtures;
 using MoneyManager.Infrastructure.Entities.Scheduler;
+using TickerQ.Utilities.Entities;
 using Xunit;
 
 namespace MoneyManager.Application.Tests.Services.Scheduler
@@ -18,12 +19,16 @@ namespace MoneyManager.Application.Tests.Services.Scheduler
         }
 
         [Fact]
-        public async Task RecordExecutionAsync_And_GetJournalAsync_WorksCorrectly()
+        public async Task GetJournalAsync_And_GetJournalPaginationAsync_WorksCorrectly()
         {
             await ExecuteScopeAsync(async sp =>
             {
                 var taskService = sp.GetRequiredService<ISchedulerTaskService>();
                 var journalService = sp.GetRequiredService<ISchedulerJournalService>();
+                var db = sp.GetRequiredService<MoneyManager.Infrastructure.Interfaces.Database.IUnitOfWork>();
+                var occurrenceRepo = db.CreateRepository<CronTickerOccurrenceEntity<ScheduledCronTicker>>();
+                var tickerRepo = db.CreateRepository<ScheduledCronTicker>();
+                var attachmentService = sp.GetRequiredService<ISchedulerAttachmentService>();
 
                 await taskService.CreateTaskAsync(new CreateScheduledTaskDto
                 {
@@ -32,7 +37,24 @@ namespace MoneyManager.Application.Tests.Services.Scheduler
                     IsEnabled = true
                 });
 
+                var ticker = await tickerRepo.FindAsync(t => t.Function == "GenerateAllAssetsReport");
+                Assert.NotNull(ticker);
+
                 var occurrenceId = Guid.NewGuid();
+                var occurrence = new CronTickerOccurrenceEntity<ScheduledCronTicker>
+                {
+                    Id = occurrenceId,
+                    CronTickerId = ticker.Id,
+                    ExecutionTime = DateTime.UtcNow,
+                    ExecutedAt = DateTime.UtcNow,
+                    ElapsedTime = 150,
+                    Status = TickerQ.Utilities.Enums.TickerStatus.Done,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                };
+
+                await occurrenceRepo.AddAsync(occurrence);
+                await db.CommitAsync();
 
                 var attachment = new ScheduledTaskAttachment
                 {
@@ -46,16 +68,9 @@ namespace MoneyManager.Application.Tests.Services.Scheduler
                     CreatedAt = DateTime.UtcNow
                 };
 
-                await journalService.RecordExecutionAsync(
-                    taskName: "GenerateAllAssetsReport",
-                    status: ScheduledTaskExecutionStatus.Done,
-                    durationMs: 150,
-                    triggerSource: ScheduledTaskTriggerSource.Manual,
-                    logMessage: "Test run successful",
-                    errorMessage: null,
-                    attachment: attachment);
+                await attachmentService.SaveAttachmentAsync(occurrenceId, attachment);
 
-                var journal = await journalService.GetJournalAsync(1, 10, "GenerateAllAssetsReport", status: ScheduledTaskExecutionStatus.Done, triggerSource: ScheduledTaskTriggerSource.Manual);
+                var journal = await journalService.GetJournalAsync(1, 10, "GenerateAllAssetsReport", status: ScheduledTaskExecutionStatus.Done);
                 Assert.NotNull(journal);
                 var list = journal.ToList();
                 Assert.NotEmpty(list);
@@ -63,28 +78,11 @@ namespace MoneyManager.Application.Tests.Services.Scheduler
                 var entry = list.FirstOrDefault(j => j.Id == occurrenceId);
                 Assert.NotNull(entry);
                 Assert.Equal(ScheduledTaskExecutionStatus.Done, entry.Status);
-                Assert.Equal(ScheduledTaskTriggerSource.Manual, entry.TriggerSource);
                 Assert.NotEmpty(entry.Attachments);
 
-                var pagination = await journalService.GetJournalPaginationAsync("GenerateAllAssetsReport", status: ScheduledTaskExecutionStatus.Done, triggerSource: ScheduledTaskTriggerSource.Manual);
+                var pagination = await journalService.GetJournalPaginationAsync("GenerateAllAssetsReport", status: ScheduledTaskExecutionStatus.Done);
                 Assert.NotNull(pagination);
                 Assert.True(pagination.RecordsQuantity > 0);
-            });
-        }
-
-        [Fact]
-        public async Task RecordExecutionAsync_UnregisteredTask_ReturnsNull()
-        {
-            await ExecuteScopeAsync(async sp =>
-            {
-                var journalService = sp.GetRequiredService<ISchedulerJournalService>();
-
-                var result = await journalService.RecordExecutionAsync(
-                    taskName: "UnregisteredTaskName",
-                    status: ScheduledTaskExecutionStatus.Done,
-                    durationMs: 100);
-
-                Assert.Null(result);
             });
         }
     }

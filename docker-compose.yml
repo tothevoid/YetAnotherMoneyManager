@@ -37,7 +37,7 @@ services:
       timeout: 5s
       retries: 5
   infrastructure_manager:
-    build: ./infrastructureManager
+    build: ./infra-manager
     container_name: ${PROJECT_NAME}_infrastructure_manager
     restart: always
     environment:

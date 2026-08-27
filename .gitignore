@@ -47,6 +47,7 @@ _ReSharper*/
 
 # Visual Studio Code
 .vscode/
+*.code-workspace
 
 # ====================================================================
 # Testing & Code Coverage

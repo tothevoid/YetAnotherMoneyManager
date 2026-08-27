@@ -63,6 +63,18 @@ This document contains guidelines, coding standards, and architectural patterns 
   - Provide `GetByBrokerAccount(..., Guid brokerAccountId)` for a single account view.
 - **Error Responses**: Exception handling must return standard RFC 7807 JSON `ProblemDetails` payloads.
 
+### Backend Localization & i18n Architecture (`ILocalizationService`)
+- **Prohibition of Hardcoded Strings**: User-facing texts, notifications, error messages, export reports, and scheduled task names/descriptions MUST NOT be hardcoded in backend code.
+- **Resource JSON Dictionaries**: All backend localization strings reside under `server/Application/Resources/{lang}/{category}.json` (e.g. `Resources/en/jobs.json`, `Resources/ru/jobs.json`, `notifications.json`, `scheduler.json`, `report.json`, `auth.json`, `errors.json`).
+  - Resources are embedded in assembly (`<EmbeddedResource Include="Resources\**\*.json" />`).
+- **Strongly-Typed Keys (`LocalizationKeys`)**: All string keys MUST be declared as constants in `MoneyManager.Application.Constants.LocalizationKeys` (e.g. `LocalizationKeys.Jobs.CleanUpExpiredTokens.Name`, `LocalizationKeys.Jobs.Categories.Auth`, `LocalizationKeys.Notifications.SessionCleanUpTitle`).
+- **Service Usage (`ILocalizationService`)**:
+  - `localizer.Get(key, lang, args)`: Resolves text for specific language code with format arguments and English fallback.
+  - `await localizer.GetForUserAsync(key, userId, args)`: Resolves text using target user's configured `UserProfile.LanguageCode`.
+  - `await localizer.GetUserLanguageAsync(userId)`: Centralized helper returning normalized user language code (`"en"` or `"ru"`), eliminating manual `IUserProfileService` lookups and fallbacks.
+- **Scheduled Jobs Localization (`ScheduledJobAttribute`)**: Background jobs declare localization keys via `displayNameKey`, `descriptionKey`, and `categoryKey` in `[ScheduledJob(..., displayNameKey: ..., descriptionKey: ..., categoryKey: ...)]`. The scheduler service dynamically translates descriptors upon querying.
+- **CI Integrity Gate (`LocalizationIntegrityTests`)**: All dictionary keys and `LocalizationKeys` constants are validated in automated tests. Any missing keys between English and Russian dictionaries will fail the test suite.
+
 ### Server Commands
 - **Build**: `cd server && dotnet build`
 - **Run All Tests**: `cd server && dotnet test`

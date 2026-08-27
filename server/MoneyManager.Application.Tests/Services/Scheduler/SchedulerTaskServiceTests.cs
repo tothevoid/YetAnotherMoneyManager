@@ -231,6 +231,7 @@ namespace MoneyManager.Application.Tests.Services.Scheduler
                 Assert.NotNull(ruReport);
                 Assert.Equal("Отчет по всем активам (Excel)", ruReport.DisplayName);
                 Assert.Equal("Автоматическая генерация Excel-выписки по всем счетам, активам и долгам", ruReport.Description);
+                Assert.Equal("Отчеты", ruReport.Category);
 
                 // 2. English
                 await userService.UpdateAsync(new MoneyManager.Application.DTO.UserProfileDto
@@ -244,6 +245,7 @@ namespace MoneyManager.Application.Tests.Services.Scheduler
                 Assert.NotNull(enReport);
                 Assert.Equal("All Assets Report (Excel)", enReport.DisplayName);
                 Assert.Equal("Automatically generate Excel statement for all accounts, assets and debts", enReport.Description);
+                Assert.Equal("Reports", enReport.Category);
             });
         }
     }

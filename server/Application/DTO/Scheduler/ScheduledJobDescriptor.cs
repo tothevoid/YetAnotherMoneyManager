@@ -7,6 +7,6 @@ namespace MoneyManager.Application.DTO.Scheduler
         string TaskName,
         string DisplayNameKey,
         string DescriptionKey,
-        string Category,
+        string CategoryKey,
         string DefaultCronExpression);
 }

@@ -20,7 +20,7 @@ namespace MoneyManager.Application.Jobs
         taskName: "PullQuotations",
         displayNameKey: LocalizationKeys.Jobs.PullQuotations.Name,
         descriptionKey: LocalizationKeys.Jobs.PullQuotations.Description,
-        category: "Brokers",
+        categoryKey: LocalizationKeys.Jobs.Categories.Brokers,
         defaultCronExpression: "0 */15 * * * *")]
     public class PullQuotationsJob : ScheduledJobBase
     {

@@ -20,7 +20,7 @@ namespace MoneyManager.Application.Jobs
         taskName: "CleanUpOldNotifications",
         displayNameKey: LocalizationKeys.Jobs.CleanUpOldNotifications.Name,
         descriptionKey: LocalizationKeys.Jobs.CleanUpOldNotifications.Description,
-        category: "System",
+        categoryKey: LocalizationKeys.Jobs.Categories.System,
         defaultCronExpression: "0 0 0 * * *")]
     public class CleanUpOldNotificationsJob : ScheduledJobBase
     {

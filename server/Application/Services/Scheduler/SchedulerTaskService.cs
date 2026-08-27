@@ -58,7 +58,7 @@ namespace MoneyManager.Application.Services.Scheduler
                     TaskName = descriptor.TaskName,
                     DisplayName = !string.IsNullOrWhiteSpace(descriptor.DisplayNameKey) ? _localizer.Get(descriptor.DisplayNameKey, lang) : descriptor.TaskName,
                     Description = !string.IsNullOrWhiteSpace(descriptor.DescriptionKey) ? _localizer.Get(descriptor.DescriptionKey, lang) : string.Empty,
-                    Category = descriptor.Category,
+                    Category = !string.IsNullOrWhiteSpace(descriptor.CategoryKey) ? _localizer.Get(descriptor.CategoryKey, lang) : "General",
                     DefaultCronExpression = descriptor.DefaultCronExpression
                 }).ToList();
         }
@@ -284,7 +284,9 @@ namespace MoneyManager.Application.Services.Scheduler
             var description = !string.IsNullOrWhiteSpace(descriptor?.DescriptionKey)
                 ? _localizer.Get(descriptor.DescriptionKey, lang)
                 : ticker.Description ?? string.Empty;
-            var category = descriptor?.Category ?? "General";
+            var category = !string.IsNullOrWhiteSpace(descriptor?.CategoryKey)
+                ? _localizer.Get(descriptor.CategoryKey, lang)
+                : "General";
             var clientCronExpression = CronExpressionHelper.ToStandardCron(ticker.Expression);
 
             var lastStatus = latestOccurrence != null

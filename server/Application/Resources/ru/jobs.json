@@ -1,4 +1,9 @@
 {
+  "category_auth": "Аутентификация",
+  "category_system": "Система",
+  "category_reports": "Отчеты",
+  "category_brokers": "Брокеры",
+  "category_general": "Общие",
   "cleanup_expired_tokens_name": "Очистка сессионных токенов",
   "cleanup_expired_tokens_desc": "Удаление истекших и отозванных JWT refresh-токенов старше 30 дней",
   "cleanup_old_notifications_name": "Очистка старых уведомлений",

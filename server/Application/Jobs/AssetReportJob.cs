@@ -24,7 +24,7 @@ namespace MoneyManager.Application.Jobs
         taskName: "GenerateAllAssetsReport",
         displayNameKey: LocalizationKeys.Jobs.AssetReport.Name,
         descriptionKey: LocalizationKeys.Jobs.AssetReport.Description,
-        category: "Reports",
+        categoryKey: LocalizationKeys.Jobs.Categories.Reports,
         defaultCronExpression: "0 0 9 * * 1")]
     public class AssetReportJob : ScheduledJobBase
     {

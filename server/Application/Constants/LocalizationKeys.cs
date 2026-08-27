@@ -69,6 +69,15 @@ namespace MoneyManager.Application.Constants
 
         public static class Jobs
         {
+            public static class Categories
+            {
+                public const string Auth = "jobs.category_auth";
+                public const string System = "jobs.category_system";
+                public const string Reports = "jobs.category_reports";
+                public const string Brokers = "jobs.category_brokers";
+                public const string General = "jobs.category_general";
+            }
+
             public static class CleanUpExpiredTokens
             {
                 public const string Name = "jobs.cleanup_expired_tokens_name";

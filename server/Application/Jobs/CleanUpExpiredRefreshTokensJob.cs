@@ -22,7 +22,7 @@ namespace MoneyManager.Application.Jobs
         taskName: "CleanUpExpiredRefreshTokens",
         displayNameKey: LocalizationKeys.Jobs.CleanUpExpiredTokens.Name,
         descriptionKey: LocalizationKeys.Jobs.CleanUpExpiredTokens.Description,
-        category: "Auth",
+        categoryKey: LocalizationKeys.Jobs.Categories.Auth,
         defaultCronExpression: "0 0 0 * * *")]
     public class CleanUpExpiredRefreshTokensJob : ScheduledJobBase
     {

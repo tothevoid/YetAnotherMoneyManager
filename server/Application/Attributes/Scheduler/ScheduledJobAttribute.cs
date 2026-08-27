@@ -11,7 +11,7 @@ namespace MoneyManager.Application.Attributes.Scheduler
 
         public string DescriptionKey { get; }
 
-        public string Category { get; }
+        public string CategoryKey { get; }
 
         public string DefaultCronExpression { get; }
 
@@ -19,13 +19,13 @@ namespace MoneyManager.Application.Attributes.Scheduler
             string taskName,
             string displayNameKey,
             string descriptionKey,
-            string category,
+            string categoryKey,
             string defaultCronExpression = "0 0 * * *")
         {
             TaskName = taskName;
             DisplayNameKey = displayNameKey;
             DescriptionKey = descriptionKey;
-            Category = category;
+            CategoryKey = categoryKey;
             DefaultCronExpression = defaultCronExpression;
         }
     }

@@ -1,4 +1,9 @@
 {
+  "category_auth": "Auth",
+  "category_system": "System",
+  "category_reports": "Reports",
+  "category_brokers": "Brokers",
+  "category_general": "General",
   "cleanup_expired_tokens_name": "Clean Up Session Tokens",
   "cleanup_expired_tokens_desc": "Remove expired and revoked JWT refresh tokens older than 30 days",
   "cleanup_old_notifications_name": "Clean Up Old Notifications",

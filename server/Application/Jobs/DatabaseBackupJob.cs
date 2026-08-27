@@ -23,7 +23,7 @@ namespace MoneyManager.Application.Jobs
         taskName: "DatabaseBackup",
         displayNameKey: LocalizationKeys.Jobs.DatabaseBackup.Name,
         descriptionKey: LocalizationKeys.Jobs.DatabaseBackup.Description,
-        category: "System",
+        categoryKey: LocalizationKeys.Jobs.Categories.System,
         defaultCronExpression: "0 0 3 * * 0")]
     public class DatabaseBackupJob : ScheduledJobBase
     {

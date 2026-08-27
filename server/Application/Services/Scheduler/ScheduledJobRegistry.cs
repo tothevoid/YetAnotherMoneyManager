@@ -64,8 +64,8 @@ namespace MoneyManager.Application.Services.Scheduler
                     var descriptor = new ScheduledJobDescriptor(
                         JobType: type,
                         TaskName: attr.TaskName,
-                        DisplayName: attr.DisplayName,
-                        Description: attr.Description,
+                        DisplayNameKey: attr.DisplayNameKey,
+                        DescriptionKey: attr.DescriptionKey,
                         Category: attr.Category,
                         DefaultCronExpression: Utilities.Scheduler.CronExpressionHelper.ToStandardCron(attr.DefaultCronExpression)
                     );

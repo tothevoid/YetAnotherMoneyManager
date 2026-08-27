@@ -3,10 +3,12 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using MoneyManager.Application.Attributes.Scheduler;
+using MoneyManager.Application.Constants;
 using MoneyManager.Application.DTO.Scheduler;
 using MoneyManager.Application.Enums.Scheduler;
 using MoneyManager.Application.Interfaces.DatabaseBackup;
 using MoneyManager.Application.Interfaces.FileStorage;
+using MoneyManager.Application.Interfaces.Localization;
 using MoneyManager.Application.Interfaces.Notifications;
 using MoneyManager.Application.Interfaces.Scheduler;
 using MoneyManager.Infrastructure.Constants;
@@ -19,8 +21,8 @@ namespace MoneyManager.Application.Jobs
 {
     [ScheduledJob(
         taskName: "DatabaseBackup",
-        displayName: "Database Backup",
-        description: "Create PostgreSQL database dump with optional encryption",
+        displayNameKey: LocalizationKeys.Jobs.DatabaseBackup.Name,
+        descriptionKey: LocalizationKeys.Jobs.DatabaseBackup.Description,
         category: "System",
         defaultCronExpression: "0 0 3 * * 0")]
     public class DatabaseBackupJob : ScheduledJobBase
@@ -28,12 +30,14 @@ namespace MoneyManager.Application.Jobs
         private readonly IDatabaseBackupService _backupService;
         private readonly IFileStorageService _fileStorageService;
         private readonly INotificationService _notificationService;
+        private readonly ILocalizationService _localizer;
         private string _customPassword;
 
         public DatabaseBackupJob(
             IDatabaseBackupService backupService,
             IFileStorageService fileStorageService,
             INotificationService notificationService,
+            ILocalizationService localizer,
             IDatabaseStateService databaseStateService,
             ISchedulerAttachmentService attachmentService,
             IServerNotifier serverNotifier)
@@ -42,6 +46,7 @@ namespace MoneyManager.Application.Jobs
             _backupService = backupService;
             _fileStorageService = fileStorageService;
             _notificationService = notificationService;
+            _localizer = localizer;
         }
 
         [TickerFunction(functionName: "DatabaseBackup")]
@@ -91,16 +96,23 @@ namespace MoneyManager.Application.Jobs
                 CreatedAt = DateTime.UtcNow
             };
 
+            var titleKey = backup.IsEncrypted ? LocalizationKeys.Notifications.BackupReadyEncryptedTitle : LocalizationKeys.Notifications.BackupReadyTitle;
+            var title = await _localizer.GetForUserAsync(titleKey, UserProfileConstants.UserProfileId);
+            var message = await _localizer.GetForUserAsync(LocalizationKeys.Notifications.BackupReadyMessage, UserProfileConstants.UserProfileId, backup.FileName);
+
             await _notificationService.CreateAsync(
-                title: backup.IsEncrypted ? "Encrypted DB backup ready" : "DB backup ready",
-                message: $"Database backup successfully created: {backup.FileName}",
+                title: title,
+                message: message,
                 severity: NotificationSeverity.Success,
                 actionUrl: "/scheduler?tab=journal",
                 category: "Scheduler",
                 userProfileId: UserProfileConstants.UserProfileId);
 
+            var encryptedPrefix = backup.IsEncrypted ? "encrypted " : "";
+            var logMessage = await _localizer.GetForUserAsync(LocalizationKeys.Scheduler.BackupSuccess, UserProfileConstants.UserProfileId, encryptedPrefix, backup.FileSizeBytes / 1024.0);
+
             return JobExecutionResult.Success(
-                logMessage: $"Successfully created {(backup.IsEncrypted ? "encrypted " : "")}database backup ({backup.FileSizeBytes / 1024.0:F1} KB)",
+                logMessage: logMessage,
                 attachment: attachment);
         }
 
@@ -109,9 +121,12 @@ namespace MoneyManager.Application.Jobs
             Exception exception,
             CancellationToken cancellationToken)
         {
+            var title = await _localizer.GetForUserAsync(LocalizationKeys.Notifications.BackupFailedTitle, UserProfileConstants.UserProfileId);
+            var message = await _localizer.GetForUserAsync(LocalizationKeys.Notifications.BackupFailedMessage, UserProfileConstants.UserProfileId, exception.Message);
+
             await _notificationService.CreateAsync(
-                title: "DB backup failed",
-                message: $"Failed to create database backup: {exception.Message}",
+                title: title,
+                message: message,
                 severity: NotificationSeverity.Danger,
                 actionUrl: "/scheduler?tab=journal",
                 category: "Scheduler",

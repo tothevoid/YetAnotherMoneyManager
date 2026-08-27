@@ -46,7 +46,7 @@ namespace MoneyManager.Application.Tests.Services.Scheduler
 
                 Assert.NotNull(desc);
                 Assert.Equal("GenerateAllAssetsReport", desc.TaskName);
-                Assert.NotEmpty(desc.DisplayName);
+                Assert.NotEmpty(desc.DisplayNameKey);
                 return Task.CompletedTask;
             });
         }

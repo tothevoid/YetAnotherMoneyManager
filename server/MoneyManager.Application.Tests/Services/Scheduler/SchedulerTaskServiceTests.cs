@@ -208,5 +208,43 @@ namespace MoneyManager.Application.Tests.Services.Scheduler
                 Assert.True(reEnabled.IsEnabled);
             });
         }
+
+        [Fact]
+        public async Task Test_ScheduledTasks_Localization_RussianAndEnglish()
+        {
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ISchedulerTaskService>();
+                var userService = sp.GetRequiredService<MoneyManager.Application.Interfaces.User.IUserProfileService>();
+
+                await service.DeleteTaskAsync("GenerateAllAssetsReport");
+
+                // 1. Russian
+                await userService.UpdateAsync(new MoneyManager.Application.DTO.UserProfileDto
+                {
+                    Id = MoneyManager.Infrastructure.Constants.UserProfileConstants.UserProfileId,
+                    LanguageCode = "ru-RU"
+                });
+
+                var ruTasks = await service.GetNotScheduledTasksAsync();
+                var ruReport = ruTasks.FirstOrDefault(t => t.TaskName == "GenerateAllAssetsReport");
+                Assert.NotNull(ruReport);
+                Assert.Equal("Отчет по всем активам (Excel)", ruReport.DisplayName);
+                Assert.Equal("Автоматическая генерация Excel-выписки по всем счетам, активам и долгам", ruReport.Description);
+
+                // 2. English
+                await userService.UpdateAsync(new MoneyManager.Application.DTO.UserProfileDto
+                {
+                    Id = MoneyManager.Infrastructure.Constants.UserProfileConstants.UserProfileId,
+                    LanguageCode = "en-US"
+                });
+
+                var enTasks = await service.GetNotScheduledTasksAsync();
+                var enReport = enTasks.FirstOrDefault(t => t.TaskName == "GenerateAllAssetsReport");
+                Assert.NotNull(enReport);
+                Assert.Equal("All Assets Report (Excel)", enReport.DisplayName);
+                Assert.Equal("Automatically generate Excel statement for all accounts, assets and debts", enReport.Description);
+            });
+        }
     }
 }

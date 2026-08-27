@@ -7,9 +7,9 @@ namespace MoneyManager.Application.Attributes.Scheduler
     {
         public string TaskName { get; }
 
-        public string DisplayName { get; }
+        public string DisplayNameKey { get; }
 
-        public string Description { get; }
+        public string DescriptionKey { get; }
 
         public string Category { get; }
 
@@ -17,14 +17,14 @@ namespace MoneyManager.Application.Attributes.Scheduler
 
         public ScheduledJobAttribute(
             string taskName,
-            string displayName,
-            string description,
+            string displayNameKey,
+            string descriptionKey,
             string category,
             string defaultCronExpression = "0 0 * * *")
         {
             TaskName = taskName;
-            DisplayName = displayName;
-            Description = description;
+            DisplayNameKey = displayNameKey;
+            DescriptionKey = descriptionKey;
             Category = category;
             DefaultCronExpression = defaultCronExpression;
         }

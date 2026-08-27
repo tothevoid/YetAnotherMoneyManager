@@ -10,6 +10,7 @@ namespace MoneyManager.Application.Services.Localization
 {
     public class LocalizationService : ILocalizationService
     {
+        private const string DefaultLanguage = "en";
         private readonly ITranslationProvider _translationProvider;
         private readonly IUserProfileService _userProfileService;
         private readonly ILogger<LocalizationService> _logger;
@@ -49,20 +50,23 @@ namespace MoneyManager.Application.Services.Localization
             return template;
         }
 
-        public async Task<string> GetForUserAsync(string key, Guid? userProfileId = null, params object[] args)
+        public async Task<string> GetUserLanguageAsync(Guid? userProfileId = null)
         {
-            string? userLang = null;
-
             try
             {
                 var user = await _userProfileService.GetAsync();
-                userLang = user?.LanguageCode;
+                return _translationProvider.NormalizeLanguageCode(user?.LanguageCode);
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "Failed to resolve user language profile for localization key '{Key}'. Falling back to default language.", key);
+                _logger.LogWarning(ex, "Failed to resolve user language profile. Falling back to default language '{DefaultLanguage}'", DefaultLanguage);
+                return DefaultLanguage;
             }
+        }
 
+        public async Task<string> GetForUserAsync(string key, Guid? userProfileId = null, params object[] args)
+        {
+            var userLang = await GetUserLanguageAsync(userProfileId);
             return Get(key, userLang, args);
         }
     }

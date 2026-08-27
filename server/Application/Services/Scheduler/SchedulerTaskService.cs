@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MoneyManager.Application.DTO.Scheduler;
 using MoneyManager.Application.Enums.Scheduler;
+using MoneyManager.Application.Interfaces.Localization;
 using MoneyManager.Application.Interfaces.Scheduler;
 using MoneyManager.Application.Utilities.Scheduler;
 using MoneyManager.Infrastructure.Entities.Scheduler;
@@ -22,22 +23,27 @@ namespace MoneyManager.Application.Services.Scheduler
         private readonly IRepository<ScheduledCronTicker> _tickerRepo;
         private readonly IRepository<CronTickerOccurrenceEntity<ScheduledCronTicker>> _occurrenceRepo;
         private readonly IScheduledJobRegistry _jobRegistry;
+        private readonly ILocalizationService _localizer;
         private readonly ILogger<SchedulerTaskService> _logger;
 
         public SchedulerTaskService(
             IUnitOfWork unitOfWork,
             IScheduledJobRegistry jobRegistry,
+            ILocalizationService localizer,
             ILogger<SchedulerTaskService> logger)
         {
             _db = unitOfWork;
             _tickerRepo = unitOfWork.CreateRepository<ScheduledCronTicker>();
             _occurrenceRepo = unitOfWork.CreateRepository<CronTickerOccurrenceEntity<ScheduledCronTicker>>();
             _jobRegistry = jobRegistry;
+            _localizer = localizer;
             _logger = logger;
         }
 
         public async Task<IEnumerable<ScheduledTaskDefinitionDto>> GetNotScheduledTasksAsync()
         {
+            var lang = await _localizer.GetUserLanguageAsync();
+
             var tickers = await _tickerRepo.GetAllAsync(disableTracking: true);
             var configuredNames = tickers
                 .Select(ticker => ticker.Function)
@@ -50,8 +56,8 @@ namespace MoneyManager.Application.Services.Scheduler
                 .Select(descriptor => new ScheduledTaskDefinitionDto
                 {
                     TaskName = descriptor.TaskName,
-                    DisplayName = descriptor.DisplayName,
-                    Description = descriptor.Description,
+                    DisplayName = !string.IsNullOrWhiteSpace(descriptor.DisplayNameKey) ? _localizer.Get(descriptor.DisplayNameKey, lang) : descriptor.TaskName,
+                    Description = !string.IsNullOrWhiteSpace(descriptor.DescriptionKey) ? _localizer.Get(descriptor.DescriptionKey, lang) : string.Empty,
                     Category = descriptor.Category,
                     DefaultCronExpression = descriptor.DefaultCronExpression
                 }).ToList();
@@ -59,6 +65,8 @@ namespace MoneyManager.Application.Services.Scheduler
 
         public async Task<IEnumerable<ScheduledTaskDto>> GetAllTasksAsync()
         {
+            var lang = await _localizer.GetUserLanguageAsync();
+
             var tickers = await _tickerRepo.GetAllAsync(
                 include: GetFullHierarchyColumns,
                 disableTracking: true);
@@ -70,7 +78,7 @@ namespace MoneyManager.Application.Services.Scheduler
                 {
                     var descriptor = _jobRegistry.TryGetDescriptor(ticker.Function, out var jobDescriptor) ? jobDescriptor : null;
                     var latestOccurrence = ticker.Occurrences.FirstOrDefault();
-                    return MapToDto(ticker, descriptor, latestOccurrence, currentUtcTime);
+                    return MapToDto(ticker, descriptor, latestOccurrence, currentUtcTime, lang);
                 })
                 .ToList();
         }
@@ -81,6 +89,8 @@ namespace MoneyManager.Application.Services.Scheduler
             {
                 return null;
             }
+
+            var lang = await _localizer.GetUserLanguageAsync();
 
             var tickers = await _tickerRepo.GetAllAsync(
                 filter: ticker => ticker.Function == taskName,
@@ -95,7 +105,7 @@ namespace MoneyManager.Application.Services.Scheduler
 
             var descriptor = _jobRegistry.TryGetDescriptor(taskName, out var jobDescriptor) ? jobDescriptor : null;
             var latestOccurrence = ticker.Occurrences.FirstOrDefault();
-            return MapToDto(ticker, descriptor, latestOccurrence, DateTime.UtcNow);
+            return MapToDto(ticker, descriptor, latestOccurrence, DateTime.UtcNow, lang);
         }
 
         public async Task<ScheduledTaskDto> CreateTaskAsync(CreateScheduledTaskDto dto)
@@ -128,10 +138,12 @@ namespace MoneyManager.Application.Services.Scheduler
                 throw new InvalidOperationException($"Task '{dto.TaskName}' is already created. Only one schedule per task is allowed.");
             }
 
+            var lang = await _localizer.GetUserLanguageAsync();
+
             var newTicker = new ScheduledCronTicker
             {
                 Id = Guid.NewGuid(),
-                Description = descriptor.DisplayName,
+                Description = !string.IsNullOrWhiteSpace(descriptor.DisplayNameKey) ? _localizer.Get(descriptor.DisplayNameKey, lang) : descriptor.TaskName,
                 Function = descriptor.TaskName,
                 Expression = tickerCronExpression,
                 IsEnabled = dto.IsEnabled
@@ -140,7 +152,7 @@ namespace MoneyManager.Application.Services.Scheduler
             await _tickerRepo.AddAsync(newTicker);
             await _db.CommitAsync();
 
-            return MapToDto(newTicker, descriptor, null, DateTime.UtcNow);
+            return MapToDto(newTicker, descriptor, null, DateTime.UtcNow, lang);
         }
 
         public async Task<ScheduledTaskDto> UpdateScheduleAsync(string taskName, UpdateScheduleDto dto)
@@ -191,8 +203,10 @@ namespace MoneyManager.Application.Services.Scheduler
             _tickerRepo.Update(ticker);
             await _db.CommitAsync();
 
+            var lang = await _localizer.GetUserLanguageAsync();
+
             var descriptor = _jobRegistry.TryGetDescriptor(taskName, out var jobDescriptor) ? jobDescriptor : null;
-            return MapToDto(ticker, descriptor, null, DateTime.UtcNow);
+            return MapToDto(ticker, descriptor, null, DateTime.UtcNow, lang);
         }
 
         public async Task<ScheduledTaskDto> ToggleTaskStatusAsync(string taskName, bool isEnabled)
@@ -218,8 +232,10 @@ namespace MoneyManager.Application.Services.Scheduler
             _tickerRepo.Update(ticker);
             await _db.CommitAsync();
 
+            var lang = await _localizer.GetUserLanguageAsync();
+
             var descriptor = _jobRegistry.TryGetDescriptor(taskName, out var jobDescriptor) ? jobDescriptor : null;
-            return MapToDto(ticker, descriptor, null, DateTime.UtcNow);
+            return MapToDto(ticker, descriptor, null, DateTime.UtcNow, lang);
         }
 
         public async Task<bool> DeleteTaskAsync(string taskName)
@@ -254,15 +270,20 @@ namespace MoneyManager.Application.Services.Scheduler
             }
         }
 
-        private static ScheduledTaskDto MapToDto(
+        private ScheduledTaskDto MapToDto(
             ScheduledCronTicker ticker,
             ScheduledJobDescriptor descriptor,
             CronTickerOccurrenceEntity<ScheduledCronTicker> latestOccurrence,
-            DateTime currentUtcTime)
+            DateTime currentUtcTime,
+            string lang)
         {
             var taskName = descriptor?.TaskName ?? ticker.Function;
-            var displayName = descriptor?.DisplayName ?? taskName;
-            var description = descriptor?.Description ?? ticker.Description ?? string.Empty;
+            var displayName = !string.IsNullOrWhiteSpace(descriptor?.DisplayNameKey)
+                ? _localizer.Get(descriptor.DisplayNameKey, lang)
+                : taskName;
+            var description = !string.IsNullOrWhiteSpace(descriptor?.DescriptionKey)
+                ? _localizer.Get(descriptor.DescriptionKey, lang)
+                : ticker.Description ?? string.Empty;
             var category = descriptor?.Category ?? "General";
             var clientCronExpression = CronExpressionHelper.ToStandardCron(ticker.Expression);
 

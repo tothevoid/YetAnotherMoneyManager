@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using MoneyManager.Application.DTO.Common;
 using MoneyManager.Application.DTO.Scheduler;
 using MoneyManager.Application.Enums.Scheduler;
+using MoneyManager.Application.Interfaces.Localization;
 using MoneyManager.Application.Interfaces.Scheduler;
 using MoneyManager.Application.Utilities.Scheduler;
 using MoneyManager.Infrastructure.Entities.Scheduler;
@@ -16,28 +17,26 @@ using MoneyManager.Infrastructure.Queries;
 using TickerQ.Utilities.Entities;
 using TickerQ.Utilities.Enums;
 
-using System.Text.Json;
-using MoneyManager.Infrastructure.Interfaces.Messages;
-
 namespace MoneyManager.Application.Services.Scheduler
 {
     public class SchedulerJournalService : ISchedulerJournalService
     {
-        private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-
         private readonly IRepository<CronTickerOccurrenceEntity<ScheduledCronTicker>> _occurrenceRepo;
         private readonly IRepository<ScheduledTaskAttachment> _attachmentRepo;
         private readonly IScheduledJobRegistry _jobRegistry;
+        private readonly ILocalizationService _localizer;
         private readonly ILogger<SchedulerJournalService> _logger;
 
         public SchedulerJournalService(
             IUnitOfWork unitOfWork,
             IScheduledJobRegistry jobRegistry,
+            ILocalizationService localizer,
             ILogger<SchedulerJournalService> logger)
         {
             _occurrenceRepo = unitOfWork.CreateRepository<CronTickerOccurrenceEntity<ScheduledCronTicker>>();
             _attachmentRepo = unitOfWork.CreateRepository<ScheduledTaskAttachment>();
             _jobRegistry = jobRegistry;
+            _localizer = localizer;
             _logger = logger;
         }
 
@@ -48,6 +47,8 @@ namespace MoneyManager.Application.Services.Scheduler
             ScheduledTaskExecutionStatus? status = null,
             ScheduledTaskTriggerSource? triggerSource = null)
         {
+            var lang = await _localizer.GetUserLanguageAsync();
+
             var builder = new ComplexQueryBuilder<CronTickerOccurrenceEntity<ScheduledCronTicker>>()
                 .AddJoins(query => query.Include(occurrence => occurrence.CronTicker))
                 .AddFilter(GetFilter(taskName, status))
@@ -69,8 +70,8 @@ namespace MoneyManager.Application.Services.Scheduler
             return occurrenceList.Select(occurrence =>
             {
                 var functionName = occurrence.CronTicker?.Function ?? "ScheduledTask";
-                var displayName = _jobRegistry.TryGetDescriptor(functionName, out var jobDescriptor)
-                    ? jobDescriptor.DisplayName
+                var displayName = _jobRegistry.TryGetDescriptor(functionName, out var jobDescriptor) && !string.IsNullOrWhiteSpace(jobDescriptor.DisplayNameKey)
+                    ? _localizer.Get(jobDescriptor.DisplayNameKey, lang)
                     : functionName;
 
                 return new ScheduledTaskJournalDto

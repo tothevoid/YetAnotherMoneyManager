@@ -1,4 +1,5 @@
 using ClosedXML.Excel;
+using MoneyManager.Application.Constants;
 using MoneyManager.Application.DTO.Accounts;
 using MoneyManager.Application.DTO.Banks;
 using MoneyManager.Application.DTO.Dashboard;
@@ -10,8 +11,10 @@ using MoneyManager.Application.Interfaces.Currencies;
 using MoneyManager.Application.Interfaces.Dashboard;
 using MoneyManager.Application.Interfaces.Debts;
 using MoneyManager.Application.Interfaces.Deposits;
+using MoneyManager.Application.Interfaces.Localization;
 using MoneyManager.Application.Interfaces.Reports;
 using MoneyManager.Application.Interfaces.Transactions;
+using MoneyManager.Application.Interfaces.User;
 using MoneyManager.Infrastructure.Constants;
 using System;
 using System.Collections.Generic;
@@ -20,10 +23,7 @@ using System.Threading.Tasks;
 
 namespace MoneyManager.Application.Services.Reports
 {
-    // TODO: add localization
-    // TODO: dynamic headers
-
-    public class AllAssetsReportService: IAllAssetsReportService
+    public class AllAssetsReportService : IAllAssetsReportService
     {
         private readonly IDepositService _depositService;
         private readonly IAccountService _accountService;
@@ -33,14 +33,18 @@ namespace MoneyManager.Application.Services.Reports
         private readonly IDebtService _debtService;
         private readonly IDashboardService _dashboardService;
         private readonly ICurrencyTransactionService _currencyTransactionService;
+        private readonly ILocalizationService _localizer;
 
-        public AllAssetsReportService(IDepositService depositService, 
-            IAccountService accountService, IBankService bankService, 
+        public AllAssetsReportService(
+            IDepositService depositService, 
+            IAccountService accountService, 
+            IBankService bankService, 
             IBrokerAccountService brokerAccountService, 
             IBrokerAccountSecurityService brokerAccountSecurityService,
             IDebtService debtService,
             IDashboardService dashboardService,
-            ICurrencyTransactionService currencyTransactionService)
+            ICurrencyTransactionService currencyTransactionService,
+            ILocalizationService localizer)
         {
             _depositService = depositService;
             _accountService = accountService;
@@ -50,36 +54,40 @@ namespace MoneyManager.Application.Services.Reports
             _debtService = debtService;
             _dashboardService = dashboardService;
             _currencyTransactionService = currencyTransactionService;
+            _localizer = localizer;
         }
 
         public async Task<GeneratedReportDto> CreateReportAsync()
         {
+            var lang = await _localizer.GetUserLanguageAsync();
+
             using var workbook = new XLWorkbook();
 
-            var totalsSheet = workbook.Worksheets.Add("Итоги");
-            await CreateTotalsWorksheet(totalsSheet);
+            var totalsSheet = workbook.Worksheets.Add(_localizer.Get(LocalizationKeys.Reports.SheetTotals, lang));
+            await CreateTotalsWorksheet(totalsSheet, lang);
             totalsSheet.Columns().AdjustToContents();
 
             var bankAccounts = await _bankService.GetAllAsync();
             foreach (var bank in bankAccounts)
             {
-                await CreateBankAccountWorksheet(workbook, bank);
+                await CreateBankAccountWorksheet(workbook, bank, lang);
             }
 
             var cashAccountsSheet = await GetCashAccounts();
             foreach (var cashAccount in cashAccountsSheet)
             {
-                var accountWorksheet = workbook.Worksheets.Add($"Наличные \"{cashAccount.Name}\"");
-                await CreateCashAccountsWorksheet(accountWorksheet, cashAccount);
+                var sheetName = _localizer.Get(LocalizationKeys.Reports.SheetCash, lang, cashAccount.Name);
+                var accountWorksheet = workbook.Worksheets.Add(sheetName);
+                await CreateCashAccountsWorksheet(accountWorksheet, cashAccount, lang);
                 accountWorksheet.Columns().AdjustToContents();
             }
 
-            var brokerSheet = workbook.Worksheets.Add("Инвестиции");
-            await CreateBrokerAccountWorksheet(brokerSheet);
+            var brokerSheet = workbook.Worksheets.Add(_localizer.Get(LocalizationKeys.Reports.SheetInvestments, lang));
+            await CreateBrokerAccountWorksheet(brokerSheet, lang);
             brokerSheet.Columns().AdjustToContents();
 
-            var debtorsSheet = workbook.Worksheets.Add("Должники");
-            await CreateDebtorsWorksheet(debtorsSheet);
+            var debtorsSheet = workbook.Worksheets.Add(_localizer.Get(LocalizationKeys.Reports.SheetDebtors, lang));
+            await CreateDebtorsWorksheet(debtorsSheet, lang);
             debtorsSheet.Columns().AdjustToContents();
 
             using var ms = new System.IO.MemoryStream();
@@ -96,7 +104,7 @@ namespace MoneyManager.Application.Services.Reports
             };
         }
 
-        private async Task CreateBankAccountWorksheet(IXLWorkbook workbook, BankDto bank)
+        private async Task CreateBankAccountWorksheet(IXLWorkbook workbook, BankDto bank, string lang)
         {
             var accounts = (await _accountService.GetAllAsync(true))
                 .Where(account => account.BankId == bank.Id).ToList();
@@ -111,13 +119,13 @@ namespace MoneyManager.Application.Services.Reports
 
             var worksheet = workbook.Worksheets.Add(bank.Name);
 
-            worksheet.Cell("A1").Value = $"На счете '{bank.Name}'";
-            worksheet.Cell("B1").Value = "Количество";
-            worksheet.Cell("C1").Value = "Отношение к осн. валюте";
-            worksheet.Cell("D1").Value = "Процент";
-            worksheet.Cell("E1").Value = "Дата начала";
-            worksheet.Cell("F1").Value = "Кол-во дней";
-            worksheet.Cell("G1").Value = "Доход";
+            worksheet.Cell("A1").Value = _localizer.Get(LocalizationKeys.Reports.BankAccountHeader, lang, bank.Name);
+            worksheet.Cell("B1").Value = _localizer.Get(LocalizationKeys.Reports.ColQuantity, lang);
+            worksheet.Cell("C1").Value = _localizer.Get(LocalizationKeys.Reports.ColRateToMainCurrency, lang);
+            worksheet.Cell("D1").Value = _localizer.Get(LocalizationKeys.Reports.ColPercentage, lang);
+            worksheet.Cell("E1").Value = _localizer.Get(LocalizationKeys.Reports.ColStartDate, lang);
+            worksheet.Cell("F1").Value = _localizer.Get(LocalizationKeys.Reports.ColDaysQuantity, lang);
+            worksheet.Cell("G1").Value = _localizer.Get(LocalizationKeys.Reports.ColIncome, lang);
 
             int reservedRowsBeforeSummaries = 20;
 
@@ -167,32 +175,32 @@ namespace MoneyManager.Application.Services.Reports
                 currentRow++;
             }
 
-            worksheet.Cell($"A{reservedRowsBeforeSummaries}").Value = "Итого";
+            worksheet.Cell($"A{reservedRowsBeforeSummaries}").Value = _localizer.Get(LocalizationKeys.Reports.RowTotal, lang);
             SetFinanceValue(worksheet.Cell($"B{reservedRowsBeforeSummaries++}"), total);
 
-            worksheet.Cell($"A{reservedRowsBeforeSummaries}").Value = "Итого динамических";
+            worksheet.Cell($"A{reservedRowsBeforeSummaries}").Value = _localizer.Get(LocalizationKeys.Reports.RowTotalDynamic, lang);
             SetFinanceValue(worksheet.Cell($"B{reservedRowsBeforeSummaries++}"), totalDynamic);
 
-            worksheet.Cell($"A{reservedRowsBeforeSummaries}").Value = "В месяц";
+            worksheet.Cell($"A{reservedRowsBeforeSummaries}").Value = _localizer.Get(LocalizationKeys.Reports.RowPerMonth, lang);
             SetFinanceValue(worksheet.Cell($"B{reservedRowsBeforeSummaries++}"), incomeInMonth);
 
-            worksheet.Cell($"A{reservedRowsBeforeSummaries}").Value = "Только после завершения";
+            worksheet.Cell($"A{reservedRowsBeforeSummaries}").Value = _localizer.Get(LocalizationKeys.Reports.RowOnlyAfterCompletion, lang);
             SetFinanceValue(worksheet.Cell($"B{reservedRowsBeforeSummaries++}"), notConfirmedIncomes);
 
-            worksheet.Cell($"A{reservedRowsBeforeSummaries}").Value = "Итого статических";
+            worksheet.Cell($"A{reservedRowsBeforeSummaries}").Value = _localizer.Get(LocalizationKeys.Reports.RowTotalStatic, lang);
             SetFinanceValue(worksheet.Cell($"B{reservedRowsBeforeSummaries}"), totalStatic);
 
             worksheet.Columns().AdjustToContents();
         }
 
-        private async Task CreateBrokerAccountWorksheet(IXLWorksheet worksheet)
+        private async Task CreateBrokerAccountWorksheet(IXLWorksheet worksheet, string lang)
         {
             var accounts = await _brokerAccountService.GetAllAsync();
 
-            worksheet.Cell("A1").Value = "Тикер";
-            worksheet.Cell("B1").Value = "Количество";
-            worksheet.Cell("C1").Value = "Цена";
-            worksheet.Cell("D1").Value = "Итого";
+            worksheet.Cell("A1").Value = _localizer.Get(LocalizationKeys.Reports.ColTicker, lang);
+            worksheet.Cell("B1").Value = _localizer.Get(LocalizationKeys.Reports.ColQuantity, lang);
+            worksheet.Cell("C1").Value = _localizer.Get(LocalizationKeys.Reports.ColPrice, lang);
+            worksheet.Cell("D1").Value = _localizer.Get(LocalizationKeys.Reports.ColTotal, lang);
 
             var currentRow = 2;
 
@@ -225,11 +233,11 @@ namespace MoneyManager.Application.Services.Reports
             }
         }
 
-        private async Task CreateDebtorsWorksheet(IXLWorksheet worksheet)
+        private async Task CreateDebtorsWorksheet(IXLWorksheet worksheet, string lang)
         {
-            worksheet.Cell("A1").Value = "Название";
-            worksheet.Cell("B1").Value = "Количество";
-            worksheet.Cell("C1").Value = "Отношение к осн. валюте";
+            worksheet.Cell("A1").Value = _localizer.Get(LocalizationKeys.Reports.ColName, lang);
+            worksheet.Cell("B1").Value = _localizer.Get(LocalizationKeys.Reports.ColQuantity, lang);
+            worksheet.Cell("C1").Value = _localizer.Get(LocalizationKeys.Reports.ColRateToMainCurrency, lang);
 
             var activeDebtors = await _debtService.GetAllAsync(true);
 
@@ -248,11 +256,11 @@ namespace MoneyManager.Application.Services.Reports
             }
 
             int totalsRow = 20;
-            worksheet.Cell($"A{totalsRow}").Value = "Итого:";
+            worksheet.Cell($"A{totalsRow}").Value = _localizer.Get(LocalizationKeys.Reports.RowTotalColon, lang);
             SetFinanceValue(worksheet.Cell($"B{totalsRow}"), total);
         }
 
-        private async Task CreateTotalsWorksheet(IXLWorksheet worksheet)
+        private async Task CreateTotalsWorksheet(IXLWorksheet worksheet, string lang)
         {
             var dashboard = await _dashboardService.GetDashboardAsync();
 
@@ -260,48 +268,48 @@ namespace MoneyManager.Application.Services.Reports
 
             foreach (var cash in dashboard.AccountsGlobalDashboard.CashDistribution)
             {
-                worksheet.Cell($"A{currentRow}").Value = $"В физических '{cash.Name}'";
+                worksheet.Cell($"A{currentRow}").Value = _localizer.Get(LocalizationKeys.Reports.TotalsPhysicalCash, lang, cash.Name);
                 SetFinanceValue(worksheet.Cell($"B{currentRow}"), cash.ConvertedAmount);
                 SetPercentValue(worksheet.Cell($"C{currentRow}"), dashboard.Total == 0 ? 0 : cash.ConvertedAmount / dashboard.Total);
                 currentRow++;
             }
 
-            worksheet.Cell($"A{currentRow}").Value = "На баковских счетах";
+            worksheet.Cell($"A{currentRow}").Value = _localizer.Get(LocalizationKeys.Reports.TotalsBankAccounts, lang);
             SetFinanceValue(worksheet.Cell($"B{currentRow}"), dashboard.AccountsGlobalDashboard.TotalBankAccount);
             SetPercentValue(worksheet.Cell($"C{currentRow}"), dashboard.Total == 0 ? 0 : dashboard.AccountsGlobalDashboard.TotalBankAccount / dashboard.Total);
             currentRow++;
 
-            worksheet.Cell($"A{currentRow}").Value = "В криптовалюте";
+            worksheet.Cell($"A{currentRow}").Value = _localizer.Get(LocalizationKeys.Reports.TotalsCrypto, lang);
             SetFinanceValue(worksheet.Cell($"B{currentRow}"), dashboard.CryptoAccountsGlobalDashboard.Total);
             SetPercentValue(worksheet.Cell($"C{currentRow}"), dashboard.Total == 0 ? 0 : dashboard.CryptoAccountsGlobalDashboard.Total / dashboard.Total);
             currentRow++;
 
-            worksheet.Cell($"A{currentRow}").Value = "Одолжено";
+            worksheet.Cell($"A{currentRow}").Value = _localizer.Get(LocalizationKeys.Reports.TotalsDebts, lang);
             SetFinanceValue(worksheet.Cell($"B{currentRow}"), dashboard.DebtsGlobalDashboard.Total);
             SetPercentValue(worksheet.Cell($"C{currentRow}"), dashboard.Total == 0 ? 0 : dashboard.DebtsGlobalDashboard.Total / dashboard.Total);
             currentRow++;
 
-            worksheet.Cell($"A{currentRow}").Value = "Инвестировано";
+            worksheet.Cell($"A{currentRow}").Value = _localizer.Get(LocalizationKeys.Reports.TotalsInvestments, lang);
             SetFinanceValue(worksheet.Cell($"B{currentRow}"), dashboard.BrokerAccountsGlobalDashboard.Total);
             SetPercentValue(worksheet.Cell($"C{currentRow}"), dashboard.Total == 0 ? 0 : dashboard.BrokerAccountsGlobalDashboard.Total / dashboard.Total);
             currentRow++;
 
-            worksheet.Cell($"A{currentRow}").Value = "На депозитах";
+            worksheet.Cell($"A{currentRow}").Value = _localizer.Get(LocalizationKeys.Reports.TotalsDeposits, lang);
             SetFinanceValue(worksheet.Cell($"B{currentRow}"), dashboard.DepositsGlobalDashboard.TotalStartedAmount);
             SetPercentValue(worksheet.Cell($"C{currentRow}"), dashboard.Total == 0 ? 0 : dashboard.DepositsGlobalDashboard.TotalStartedAmount / dashboard.Total);
             currentRow++;
 
-            worksheet.Cell($"A{currentRow}").Value = "При завершении депозита";
+            worksheet.Cell($"A{currentRow}").Value = _localizer.Get(LocalizationKeys.Reports.TotalsDepositsEarned, lang);
             SetFinanceValue(worksheet.Cell($"B{currentRow}"), dashboard.DepositsGlobalDashboard.TotalEarned);
             SetPercentValue(worksheet.Cell($"C{currentRow}"), dashboard.Total == 0 ? 0 : dashboard.DepositsGlobalDashboard.TotalEarned / dashboard.Total);
             currentRow++;
 
-            worksheet.Cell($"A{currentRow}").Value = "Итого";
+            worksheet.Cell($"A{currentRow}").Value = _localizer.Get(LocalizationKeys.Reports.TotalsTotal, lang);
             SetFinanceValue(worksheet.Cell($"B{currentRow}"), dashboard.Total);
 
             currentRow += 2;
 
-            worksheet.Cell($"A{currentRow++}").Value = "В валюте:";
+            worksheet.Cell($"A{currentRow++}").Value = _localizer.Get(LocalizationKeys.Reports.TotalsInCurrency, lang);
 
             var currencyDistributions = GetCurrencyDistributions(dashboard);
 
@@ -313,15 +321,15 @@ namespace MoneyManager.Application.Services.Reports
             }
         }
 
-        public async Task CreateCashAccountsWorksheet(IXLWorksheet worksheet, AccountDto cashAccount)
+        public async Task CreateCashAccountsWorksheet(IXLWorksheet worksheet, AccountDto cashAccount, string lang)
         {
-            worksheet.Cell("A1").Value = "Название";
-            worksheet.Cell("B1").Value = "Количество";
-            worksheet.Cell("C1").Value = "Отношение к осн. валюте";
-            worksheet.Cell("D1").Value = "Дата покупки";
-            worksheet.Cell("E1").Value = "Курс покупки";
-            worksheet.Cell("F1").Value = "P&L";
-            worksheet.Cell("G1").Value = "Сумма";
+            worksheet.Cell("A1").Value = _localizer.Get(LocalizationKeys.Reports.ColName, lang);
+            worksheet.Cell("B1").Value = _localizer.Get(LocalizationKeys.Reports.ColQuantity, lang);
+            worksheet.Cell("C1").Value = _localizer.Get(LocalizationKeys.Reports.ColRateToMainCurrency, lang);
+            worksheet.Cell("D1").Value = _localizer.Get(LocalizationKeys.Reports.ColPurchaseDate, lang);
+            worksheet.Cell("E1").Value = _localizer.Get(LocalizationKeys.Reports.ColPurchaseRate, lang);
+            worksheet.Cell("F1").Value = _localizer.Get(LocalizationKeys.Reports.ColPnl, lang);
+            worksheet.Cell("G1").Value = _localizer.Get(LocalizationKeys.Reports.ColAmount, lang);
 
             int currentRow = 2;
             decimal totalInMainCurrency = 0;
@@ -352,13 +360,13 @@ namespace MoneyManager.Application.Services.Reports
 
             currentRow += 2;
 
-            worksheet.Cell($"A{currentRow}").Value = "Итого в основной валюте:";
+            worksheet.Cell($"A{currentRow}").Value = _localizer.Get(LocalizationKeys.Reports.RowTotalMainCurrency, lang);
             SetFinanceValue(worksheet.Cell($"B{currentRow++}"), totalInMainCurrency);
 
-            worksheet.Cell($"A{currentRow}").Value = $"Итого в {cashAccount.Currency.Name}:";
+            worksheet.Cell($"A{currentRow}").Value = _localizer.Get(LocalizationKeys.Reports.RowTotalInCurrency, lang, cashAccount.Currency.Name);
             SetFinanceValue(worksheet.Cell($"B{currentRow++}"), total);
 
-            worksheet.Cell($"A{currentRow}").Value = "P&L:";
+            worksheet.Cell($"A{currentRow}").Value = _localizer.Get(LocalizationKeys.Reports.RowPnlColon, lang);
             SetFinanceValue(worksheet.Cell($"B{currentRow}"), totalPnL);
         }
 

@@ -2,6 +2,7 @@ import { i18n, TFunction } from 'i18next';
 import { CronExpressionParser } from 'cron-parser';
 import cronstrue from 'cronstrue/i18n';
 import { ScheduledTaskExecutionStatus } from '../../models/scheduler/ScheduledTaskEntity';
+import { getNormalizedLanguage } from '../../shared/utilities/localeUtils';
 
 export interface StatusBadgeInfo {
     colorPalette: string;
@@ -285,8 +286,9 @@ export const formatCronExpression = (
         return t ? t('scheduler_cron_manual') : '';
     }
     try {
+        const locale = getNormalizedLanguage(i18n);
         return cronstrue.toString(cron.trim(), {
-            locale: i18n.language,
+            locale,
             use24HourTimeFormat: true
         });
     } catch {

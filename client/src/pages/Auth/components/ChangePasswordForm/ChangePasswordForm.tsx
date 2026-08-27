@@ -73,11 +73,10 @@ const ChangePasswordForm: React.FC<Props> = ({ defaultPasswordResetValues, onTok
         <Box as="form" onSubmit={handleSubmit(onSubmit)} w="100%">
             <VStack gap={4} align="stretch" w="100%">
                 <Text
-                    fontSize="2xl"
-                    fontWeight="bold"
-                    color="text_primary"
+                    fontSize="md"
+                    color="text_secondary"
                     textAlign="center"
-                    mb={2}
+                    mb={1}
                 >
                     {t("change_password_form_title")}
                 </Text>

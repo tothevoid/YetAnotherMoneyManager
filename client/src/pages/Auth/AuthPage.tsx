@@ -1,10 +1,11 @@
 
 import React, { useState } from "react";
-import { Box, Flex, VStack } from "@chakra-ui/react";
+import { Box, Flex, Image, Text, VStack } from "@chakra-ui/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import AuthForm from "./components/AuthForm/AuthForm";
 import ChangePasswordForm from "./components/ChangePasswordForm/ChangePasswordForm";
 import { Nullable } from "../../shared/utilities/nullable";
+import appIcon from "../../../features/Navigation/Header/AppIcon.svg";
 
 enum FormType {
     Auth,
@@ -56,6 +57,12 @@ const AuthPage: React.FC = () => {
                 boxShadow="0 8px 32px rgba(0, 0, 0, 0.45)"
             >
                 <VStack gap={4} align="stretch">
+                    <Flex direction="column" align="center" justify="center" gap={2} mb={1}>
+                        <Image src={appIcon} alt="Audex" width="48px" height="48px" />
+                        <Text fontSize="2xl" fontWeight="bold" color="text_primary" letterSpacing="0.05em">
+                            Audex
+                        </Text>
+                    </Flex>
                     {formType === FormType.Auth && (
                         <AuthForm
                             onPasswordChangeRequired={onPasswordChangeRequired}

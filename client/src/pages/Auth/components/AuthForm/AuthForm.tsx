@@ -68,15 +68,6 @@ const AuthForm: React.FC<Props> = ({ onPasswordChangeRequired, onTokenReceived }
     return (
         <Box as="form" onSubmit={handleSubmit(onSubmit)} w="100%">
             <VStack gap={4} align="stretch" w="100%">
-                <Text
-                    fontSize="2xl"
-                    fontWeight="bold"
-                    color="text_primary"
-                    textAlign="center"
-                    mb={2}
-                >
-                    {t("auth_form_title")}
-                </Text>
 
                 <Field.Root invalid={!!errors.userName} w="100%">
                     <Field.Label color="text_secondary" fontSize="sm" fontWeight="medium">

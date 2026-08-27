@@ -1,35 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 69.31 52.51">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: #2d2f33;
-      }
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="48 0 210 210" width="100%" height="100%">
+  <title>Audex Logo</title>
+  <path fill="#F8FAFC" fill-rule="evenodd" d="
+    M152 21
+    L118 75 L119 79 L146 121
+    L110 176 L80 176 L79 173 L121 104
+    L116 95 L114 94 L60 183 L59 187
+    L117 186 L152 132 L156 136 L184 180
+    L190 187 L246 187 L247 186 L191 94
+    L184 104 L226 172 L226 176 L196 176
+    L188 166 L159 120 L188 76 L158 28 Z
 
-      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5 {
-        fill-rule: evenodd;
-      }
-
-      .cls-2 {
-        fill: #ffde45;
-      }
-
-      .cls-3 {
-        fill: #7500af;
-      }
-
-      .cls-4 {
-        fill: #333;
-      }
-
-      .cls-5 {
-        fill: #b60063;
-      }
-    </style>
-  </defs>
-  <path id="Shape_1" data-name="Shape 1" class="cls-3" d="M4.95,0h59.41c2.73,0,4.95,2.61,4.95,5.82v35.14c0,3.22-2.22,5.82-4.95,5.82H4.95c-2.73,0-4.95-2.61-4.95-5.82V5.82C0,2.61,2.22,0,4.95,0Z"/>
-  <path id="Shape_1-2" data-name="Shape 1" class="cls-5" d="M4.95,2.5h59.41c2.73,0,4.95,2.61,4.95,5.82v35.14c0,3.22-2.22,5.82-4.95,5.82H4.95c-2.73,0-4.95-2.61-4.95-5.82V8.33C0,5.11,2.22,2.5,4.95,2.5Z"/>
-  <path id="Shape_1-3" data-name="Shape 1" class="cls-4" d="M4.95,5.72h59.41c2.73,0,4.95,2.61,4.95,5.82v35.14c0,3.22-2.22,5.82-4.95,5.82H4.95c-2.73,0-4.95-2.61-4.95-5.82V11.54c0-3.22,2.22-5.82,4.95-5.82Z"/>
-  <path id="Shape_2" data-name="Shape 2" class="cls-2" d="M54.95,19.51h14.36v12.77h-14.36c-2.14,0-3.88-1.74-3.88-3.88v-5.01c0-2.14,1.74-3.88,3.88-3.88Z"/>
-  <path id="Shape_1_copy_3" data-name="Shape 1 copy 3" class="cls-1" d="M55.83,23.54h2.4c1.35,0,2.44,1.09,2.44,2.44h0c0,1.35-1.09,2.44-2.44,2.44h-2.4c-1.34,0-2.44-1.09-2.44-2.44h0c0-1.34,1.09-2.44,2.44-2.44Z"/>
+    M152 43 L156 46 L174 75 L173 79
+    L153 108 L149 105 L131 77 L131 75 Z
+  " />
 </svg>

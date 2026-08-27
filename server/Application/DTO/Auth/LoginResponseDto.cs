@@ -1,4 +1,6 @@
 #nullable enable
+using MoneyManager.Application.DTO.User;
+
 namespace MoneyManager.Application.DTO.Auth
 {
     public class LoginResponseDto

@@ -1,3 +1,4 @@
+using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Brokers;
 using MoneyManager.Application.Interfaces.Integrations.Stock;
@@ -37,7 +38,6 @@ namespace MoneyManager.Application.Services.Brokers
 
         private async Task<BrokerAccountPortfolioHistoryDto> GetHistory(DateOnly date, Guid? brokerAccountId)
         {
-            //TODO: Task.WhenAll
             var taxDeductionsSum = await GetTotalTaxDeduction(date, brokerAccountId);
             var dividendPaymentsSum = await GetTotalDividendPayments(date, brokerAccountId);
             var (totalDeposited, totalWithdrawn) = await GetTotalTransfers(date, brokerAccountId);
@@ -60,14 +60,13 @@ namespace MoneyManager.Application.Services.Brokers
                 TotalTaxDeduction = taxDeductionsSum,
                 TotalDeposited = totalDeposited,
                 TotalWithdraw = totalWithdrawn,
-
                 MainCurrencyAmount = mainCurrencyValue,
                 PortfolioValue = portfolioValue,
                 ProfitAndLoss = portfolioValue + taxDeductionsSum - (totalDeposited - totalWithdrawn),
             };
         }
 
-        private async Task<decimal> CalculateSecuritiesValue(Dictionary<string, SecurityTransactionsSummary> securitiesStats, DateOnly date)
+        private async Task<decimal> CalculateSecuritiesValue(Dictionary<string, SecurityTransactionsSummaryDto> securitiesStats, DateOnly date)
         {
             if (securitiesStats == null || securitiesStats.Count == 0)
             {
@@ -89,7 +88,6 @@ namespace MoneyManager.Application.Services.Brokers
                     }
 
                     decimal price = await GetSecurityPriceAtDate(security, date);
-                    await Task.Delay(100);
                     return (securitiesStat.Key, price);
                 }
                 finally
@@ -147,28 +145,9 @@ namespace MoneyManager.Application.Services.Brokers
             return await _brokerAccountFundsTransferService.GetSumTillSpecificDateAsync(date, brokerAccountId);
         }
 
-        private async Task<Dictionary<string, SecurityTransactionsSummary>> GetSecuritiesStats(DateOnly date, Guid? brokerAccountId)
+        private async Task<Dictionary<string, SecurityTransactionsSummaryDto>> GetSecuritiesStats(DateOnly date, Guid? brokerAccountId)
         {
             return await _securityTransactionService.GetSummaryTillSpecificDateAsync(date, brokerAccountId);
         }
-    }
-
-    public class BrokerAccountPortfolioHistoryDto
-    {
-        public DateOnly Date { get; set; }
-
-        public decimal MainCurrencyAmount { get; set; }
-
-        public decimal PortfolioValue { get; set; }
-
-        public decimal TotalDividends { get; set; }
-
-        public decimal TotalTaxDeduction { get; set; }
-
-        public decimal TotalDeposited { get; set; }
-
-        public decimal TotalWithdraw { get; set; }
-
-        public decimal ProfitAndLoss { get; set; }
     }
 }

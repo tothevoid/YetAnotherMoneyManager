@@ -13,6 +13,7 @@ using MoneyManager.Application.DTO.Deposits;
 using MoneyManager.Application.DTO.Notifications;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.DTO.Transactions;
+using MoneyManager.Application.DTO.User;
 using MoneyManager.WebApi.Models.Accounts;
 using MoneyManager.WebApi.Models.Auth;
 using MoneyManager.WebApi.Models.Banks;

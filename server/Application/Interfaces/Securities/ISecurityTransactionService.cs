@@ -10,7 +10,7 @@ namespace MoneyManager.Application.Interfaces.Securities
     {
         Task<IEnumerable<SecurityTransactionDto>> GetAllAsync(Guid? brokerAccountId, int recordsQuantity, int pageIndex);
 
-        Task<Dictionary<string, SecurityTransactionsSummary>> GetSummaryTillSpecificDateAsync(DateOnly date, Guid? brokerAccountId);
+        Task<Dictionary<string, SecurityTransactionsSummaryDto>> GetSummaryTillSpecificDateAsync(DateOnly date, Guid? brokerAccountId);
 
         Task<IEnumerable<SecurityTransactionsHistoryDto>> GetTransactionsHistoryAsync(Guid securityId);
         Task<PaginationConfigDto> GetPaginationAsync(Guid brokerAccountId);
@@ -19,14 +19,5 @@ namespace MoneyManager.Application.Interfaces.Securities
         Task UpdateAsync(SecurityTransactionDto securityTransaction);
         Task DeleteAsync(Guid id);
     }
-
-    //TODO: remove from interface file
-    public class SecurityTransactionsSummary
-    {
-        public int ActualQuantity { get; set; }
-
-        public decimal PurchasePriceSum { get; set; }
-
-        public decimal SellPriceSum { get; set; }
-    }
 }
+

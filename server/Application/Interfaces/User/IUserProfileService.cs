@@ -1,5 +1,5 @@
 #nullable enable
-using MoneyManager.Application.DTO;
+using MoneyManager.Application.DTO.User;
 using System.Threading.Tasks;
 
 namespace MoneyManager.Application.Interfaces.User

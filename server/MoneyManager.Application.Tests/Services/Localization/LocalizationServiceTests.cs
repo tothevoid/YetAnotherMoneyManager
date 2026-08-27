@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using MoneyManager.Application.DTO;
+using MoneyManager.Application.DTO.User;
 using MoneyManager.Application.Interfaces.Localization;
 using MoneyManager.Application.Interfaces.User;
 using MoneyManager.Application.Services.Localization;

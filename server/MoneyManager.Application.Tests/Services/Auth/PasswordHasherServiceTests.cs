@@ -1,3 +1,4 @@
+using MoneyManager.Application.Enums.Auth;
 using MoneyManager.Application.Interfaces.Auth;
 using MoneyManager.Application.Services.Auth;
 using Xunit;

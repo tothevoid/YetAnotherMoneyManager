@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using MoneyManager.Application.Services.Brokers;
+using MoneyManager.Application.DTO.Brokers;
 
 namespace MoneyManager.Application.Interfaces.Brokers
 {

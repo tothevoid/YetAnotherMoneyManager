@@ -1,14 +1,8 @@
 #nullable enable
+using MoneyManager.Application.Enums.Auth;
 
 namespace MoneyManager.Application.Interfaces.Auth
 {
-    public enum PasswordVerificationResult
-    {
-        Failed = 0,
-        Success = 1,
-        SuccessRehashNeeded = 2
-    }
-
     public interface IPasswordHasherService
     {
         string HashPassword(string password);

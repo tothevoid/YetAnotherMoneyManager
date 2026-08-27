@@ -62,7 +62,7 @@ namespace MoneyManager.Application.Services.Securities
             return _mapper.Map(brokerAccountSecurities);
         }
 
-        public async Task<Dictionary<string, SecurityTransactionsSummary>> GetSummaryTillSpecificDateAsync(DateOnly date, Guid? brokerAccountId)
+        public async Task<Dictionary<string, SecurityTransactionsSummaryDto>> GetSummaryTillSpecificDateAsync(DateOnly date, Guid? brokerAccountId)
         {
             Expression<Func<SecurityTransaction, bool>> filter = brokerAccountId != null ?
                 (transaction) => DateOnly.FromDateTime(transaction.Date) <= date && transaction.BrokerAccountId == brokerAccountId :
@@ -86,7 +86,7 @@ namespace MoneyManager.Application.Services.Securities
 
             return result.ToDictionary(
                 (key) => key.Ticker,
-                (value) => new SecurityTransactionsSummary
+                (value) => new SecurityTransactionsSummaryDto
                 {
                     ActualQuantity = value.Stats.ActualQuantity,
                     PurchasePriceSum = value.Stats.PurchasePriceSum,

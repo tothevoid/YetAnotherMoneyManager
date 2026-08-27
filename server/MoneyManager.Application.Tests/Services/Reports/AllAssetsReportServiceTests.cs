@@ -2,6 +2,7 @@ using System.IO;
 using ClosedXML.Excel;
 using Microsoft.Extensions.DependencyInjection;
 using MoneyManager.Application.DTO;
+using MoneyManager.Application.DTO.User;
 using MoneyManager.Application.Interfaces.Reports;
 using MoneyManager.Application.Interfaces.User;
 using MoneyManager.Application.Tests.Fixtures;

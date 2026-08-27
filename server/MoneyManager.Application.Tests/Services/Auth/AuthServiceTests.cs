@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using MoneyManager.Application.DTO;
 using MoneyManager.Application.DTO.Auth;
+using MoneyManager.Application.DTO.User;
 using MoneyManager.Application.Interfaces.Auth;
 using MoneyManager.Application.Interfaces.User;
 using MoneyManager.Application.Mappings;

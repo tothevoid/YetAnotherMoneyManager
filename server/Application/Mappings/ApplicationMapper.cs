@@ -11,6 +11,7 @@ using MoneyManager.Application.DTO.Deposits;
 using MoneyManager.Application.DTO.Notifications;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.DTO.Transactions;
+using MoneyManager.Application.DTO.User;
 using MoneyManager.Infrastructure.Entities.Accounts;
 using MoneyManager.Infrastructure.Entities.Banks;
 using MoneyManager.Infrastructure.Entities.Brokers;

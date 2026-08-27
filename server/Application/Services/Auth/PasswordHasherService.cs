@@ -3,6 +3,7 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 using Konscious.Security.Cryptography;
+using MoneyManager.Application.Enums.Auth;
 using MoneyManager.Application.Interfaces.Auth;
 
 namespace MoneyManager.Application.Services.Auth

@@ -1,14 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MoneyManager.Application.DTO.Currencies;
 using MoneyManager.Shared.Entities;
 
-namespace MoneyManager.Application.DTO
+namespace MoneyManager.Application.DTO.User
 {
-    public class UserProfileDto: BaseEntity
+    public class UserProfileDto : BaseEntity
     {
         public string UserName { get; set; }
 
@@ -19,6 +15,5 @@ namespace MoneyManager.Application.DTO
         public CurrencyDto Currency { get; set; }
 
         public string LanguageCode { get; set; }
-
     }
 }

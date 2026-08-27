@@ -27,7 +27,7 @@ const CryptoAccountPage: React.FC = () => {
         }
 
         setState((currentState) => {
-            return {...currentState, cryptoAccount, isReloading: false}
+            return { ...currentState, cryptoAccount, isReloading: false }
         })
     }
 
@@ -36,20 +36,18 @@ const CryptoAccountPage: React.FC = () => {
     }, []);
 
     if (!cryptoAccountId) {
-        return <Fragment/>
+        return <Fragment />
     }
 
     if (!state.cryptoAccount) {
-        return <Fragment/>
+        return <Fragment />
     }
-
-    //TODO: tabs style is duplicated
 
     return <Fragment>
         <Stack alignItems={"end"} gapX={2} direction={"row"} color="text_primary">
             <Text fontSize="3xl" fontWeight={900}> {state.cryptoAccount?.name}: </Text>
         </Stack>
-        <CryptoAccountCryptocurrenciesList cryptoAccount={state.cryptoAccount}/>
+        <CryptoAccountCryptocurrenciesList cryptoAccount={state.cryptoAccount} />
     </Fragment>
 }
 

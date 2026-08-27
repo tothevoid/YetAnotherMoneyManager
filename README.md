@@ -66,7 +66,7 @@ Deploy the full Audex stack on your server in minutes:
 
 2. **Launch All Services**:
    ```bash
-   docker compose -p moneymanager up --build -d
+   docker compose -p audex up --build -d
    ```
 
 3. **Apply Database Migrations (Optional)**:
@@ -90,7 +90,7 @@ Run the full local development environment with hot reloading:
 
 1. **Start Infrastructure Services (Database & Storage)**:
    ```bash
-   docker compose -p moneymanager_dev --env-file .env.dev up -d database files_database infrastructure_manager
+   docker compose -p audex_dev --env-file .env.dev up -d database files_database infrastructure_manager
    ```
 
 2. **Run Backend API**:

@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MoneyManager.Application.DTO.Brokers;
 using MoneyManager.Application.DTO.Securities;
 using MoneyManager.Application.Interfaces.Brokers;
-using MoneyManager.Application.Services.Brokers;
 using System;
 using System.Threading.Tasks;
 

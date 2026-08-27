@@ -54,8 +54,7 @@ const StackedDepositsChart = (props: Props) => {
 			<Legend formatter={getDepositTitle} />
 			{
 				[...deposits.keys()].map((deposit: string, index: number) => {
-					//TODO: fix color out of range
-					return <Bar  key={deposit} dataKey={deposit} stackId="a" fill={CHARTS_COLORS[index]}/>
+					return <Bar key={deposit} dataKey={deposit} stackId="a" fill={CHARTS_COLORS[index % CHARTS_COLORS.length]} />
 				})
 			}
 		</BarChart>

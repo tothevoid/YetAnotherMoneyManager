@@ -1,6 +1,6 @@
-# Development Guidelines & Conventions for YetAnotherMoneyManager
+# Development Guidelines & Conventions for Audex
 
-This document contains guidelines, coding standards, and architectural patterns for developing features in YetAnotherMoneyManager.
+This document contains guidelines, coding standards, and architectural patterns for developing features in Audex.
 
 > **Important**: This document (`AGENTS.md`) and `claude.md` must ALWAYS be updated synchronously whenever development rules, guidelines, or patterns are modified.
 

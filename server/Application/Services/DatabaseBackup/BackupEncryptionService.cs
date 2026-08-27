@@ -12,7 +12,7 @@ namespace MoneyManager.Application.Services.DatabaseBackup
     public class BackupEncryptionService : IBackupEncryptionService
     {
         // 1. File Header & Format Metadata
-        public const string BackupFileHeader = "MMBK";
+        public const string BackupFileHeader = "AUDX";
         public static readonly byte[] BackupFileHeaderBytes = Encoding.UTF8.GetBytes(BackupFileHeader);
         private const byte BackupFormatVersion = 1;
         private const byte EncryptionAlgorithmAesGcm = 1;
@@ -88,7 +88,7 @@ namespace MoneyManager.Application.Services.DatabaseBackup
 
             if (!IsEncryptedBackup(encryptedData))
             {
-                throw new InvalidDataException("The provided file does not have a valid .mmbackup header.");
+                throw new InvalidDataException("The provided file does not have a valid .audexbackup header.");
             }
 
             using var memoryStream = new MemoryStream(encryptedData);

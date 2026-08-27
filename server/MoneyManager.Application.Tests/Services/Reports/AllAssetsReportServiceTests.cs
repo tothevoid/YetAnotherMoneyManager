@@ -1,6 +1,11 @@
+using System.IO;
+using ClosedXML.Excel;
 using Microsoft.Extensions.DependencyInjection;
+using MoneyManager.Application.DTO;
 using MoneyManager.Application.Interfaces.Reports;
+using MoneyManager.Application.Interfaces.User;
 using MoneyManager.Application.Tests.Fixtures;
+using MoneyManager.Infrastructure.Constants;
 
 namespace MoneyManager.Application.Tests.Services.Reports
 {
@@ -24,6 +29,48 @@ namespace MoneyManager.Application.Tests.Services.Reports
             Assert.NotEmpty(report.Data);
             Assert.Equal("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", report.ContentType);
             Assert.EndsWith(".xlsx", report.FileName);
+        }
+
+        [Fact]
+        public async Task TestCreateReport_LocalizedSheets_RussianAndEnglish()
+        {
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<IAllAssetsReportService>();
+                var userService = sp.GetRequiredService<IUserProfileService>();
+
+                // 1. Russian
+                await userService.UpdateAsync(new UserProfileDto
+                {
+                    Id = UserProfileConstants.UserProfileId,
+                    LanguageCode = "ru-RU"
+                });
+
+                var ruReport = await service.CreateReportAsync();
+                using (var stream = new MemoryStream(ruReport.Data))
+                using (var workbook = new XLWorkbook(stream))
+                {
+                    Assert.True(workbook.Worksheets.Contains("Итоги"));
+                    Assert.True(workbook.Worksheets.Contains("Инвестиции"));
+                    Assert.True(workbook.Worksheets.Contains("Должники"));
+                }
+
+                // 2. English
+                await userService.UpdateAsync(new UserProfileDto
+                {
+                    Id = UserProfileConstants.UserProfileId,
+                    LanguageCode = "en-US"
+                });
+
+                var enReport = await service.CreateReportAsync();
+                using (var stream = new MemoryStream(enReport.Data))
+                using (var workbook = new XLWorkbook(stream))
+                {
+                    Assert.True(workbook.Worksheets.Contains("Totals"));
+                    Assert.True(workbook.Worksheets.Contains("Investments"));
+                    Assert.True(workbook.Worksheets.Contains("Debtors"));
+                }
+            });
         }
     }
 }

@@ -57,21 +57,25 @@ namespace MoneyManager.Application.Tests.Services.Localization
         private static HashSet<string> GetAllLocalizationConstants()
         {
             var constants = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var nestedTypes = typeof(LocalizationKeys).GetNestedTypes(BindingFlags.Public | BindingFlags.Static);
+            CollectConstants(typeof(LocalizationKeys), constants);
+            return constants;
+        }
 
-            foreach (var type in nestedTypes)
+        private static void CollectConstants(Type parentType, HashSet<string> constants)
+        {
+            var fields = parentType.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+                .Where(f => f.IsLiteral && !f.IsInitOnly && f.FieldType == typeof(string));
+
+            foreach (var field in fields)
             {
-                var fields = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
-                    .Where(f => f.IsLiteral && !f.IsInitOnly && f.FieldType == typeof(string));
-
-                foreach (var field in fields)
-                {
-                    var val = (string)field.GetValue(null)!;
-                    constants.Add(val);
-                }
+                var val = (string)field.GetValue(null)!;
+                constants.Add(val);
             }
 
-            return constants;
+            foreach (var nested in parentType.GetNestedTypes(BindingFlags.Public | BindingFlags.Static))
+            {
+                CollectConstants(nested, constants);
+            }
         }
 
         [Fact]

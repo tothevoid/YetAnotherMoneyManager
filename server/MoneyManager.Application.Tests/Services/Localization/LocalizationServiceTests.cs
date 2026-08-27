@@ -144,5 +144,35 @@ namespace MoneyManager.Application.Tests.Services.Localization
                 Assert.Equal("Session Tokens Clean Up", enTitle);
             });
         }
+
+        [Fact]
+        public async Task TestLocalization_GetUserLanguageAsync_ResolvesNormalizedLanguage()
+        {
+            await ExecuteScopeAsync(async sp =>
+            {
+                var localizer = sp.GetRequiredService<ILocalizationService>();
+                var userService = sp.GetRequiredService<IUserProfileService>();
+
+                // Set user language to Russian
+                await userService.UpdateAsync(new UserProfileDto
+                {
+                    Id = UserProfileConstants.UserProfileId,
+                    LanguageCode = "ru-RU"
+                });
+
+                var ruLang = await localizer.GetUserLanguageAsync();
+                Assert.Equal("ru", ruLang);
+
+                // Set user language to English
+                await userService.UpdateAsync(new UserProfileDto
+                {
+                    Id = UserProfileConstants.UserProfileId,
+                    LanguageCode = "en-US"
+                });
+
+                var enLang = await localizer.GetUserLanguageAsync();
+                Assert.Equal("en", enLang);
+            });
+        }
     }
 }

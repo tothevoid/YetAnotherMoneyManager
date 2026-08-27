@@ -2,14 +2,25 @@ import httpClient from '../httpClient';
 import { BackupValidationResult, RestoreBackupResult } from '../../models/system/backupModels';
 import { logPromiseError } from '../../shared/utilities/webApiUtilities';
 
-export const exportDatabaseBackup = async (password?: string): Promise<Blob | null> => {
+export interface ExportBackupResponse {
+    blob: Blob;
+    fileName: string;
+}
+
+export const exportDatabaseBackup = async (password?: string): Promise<ExportBackupResponse | null> => {
     try {
         const response = await httpClient.post(
             '/DatabaseBackup/export',
             { password: password || null },
             { responseType: 'blob' }
         );
-        return response.data;
+
+        const fileName = response.headers?.['x-file-name'];
+
+        return {
+            blob: response.data,
+            fileName
+        };
     } catch (e) {
         logPromiseError(e);
         return null;

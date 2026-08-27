@@ -42,8 +42,8 @@ namespace MoneyManager.Application.Services.DatabaseBackup
 
             var timestamp = DateTime.UtcNow.ToString("yyyyMMdd_HHmmss");
             var fileName = isEncrypted
-                ? $"moneymanager_backup_{timestamp}.sql.gz.enc"
-                : $"moneymanager_backup_{timestamp}.sql.gz";
+                ? $"audex_backup_{timestamp}.audexbackup"
+                : $"audex_backup_{timestamp}.sql.gz";
 
             return new GeneratedBackupDto
             {

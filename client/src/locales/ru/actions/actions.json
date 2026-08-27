@@ -24,8 +24,8 @@
     "action_backup_downloading": "Генерация...",
 
     "action_restore_title": "Восстановление из резервной копии",
-    "action_restore_desc": "Восстановление всей структуры и данных базы данных из файла .mmbackup или .sql.gz",
-    "action_restore_select_file": "Выберите файл бэкапа (.mmbackup, .sql.gz)",
+    "action_restore_desc": "Восстановление всей структуры и данных базы данных из файла .audexbackup или .sql.gz",
+    "action_restore_select_file": "Выберите файл бэкапа (.audexbackup, .sql.gz)",
     "action_restore_file_selected": "Выбран файл",
     "action_restore_encrypted_detected": "Файл зашифрован. Введите мастер-пароль для расшифровки:",
     "action_restore_password_placeholder": "Мастер-пароль дешифрования",

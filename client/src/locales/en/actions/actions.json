@@ -24,8 +24,8 @@
     "action_backup_downloading": "Generating...",
 
     "action_restore_title": "Restore from Backup",
-    "action_restore_desc": "Restore entire database structure and records from .mmbackup or .sql.gz file",
-    "action_restore_select_file": "Select backup file (.mmbackup, .sql.gz)",
+    "action_restore_desc": "Restore entire database structure and records from .audexbackup or .sql.gz file",
+    "action_restore_select_file": "Select backup file (.audexbackup, .sql.gz)",
     "action_restore_file_selected": "Selected file",
     "action_restore_encrypted_detected": "Encrypted backup detected. Enter master password to decrypt:",
     "action_restore_password_placeholder": "Decryption master password",

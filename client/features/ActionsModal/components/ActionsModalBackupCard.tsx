@@ -12,7 +12,6 @@ import {
 import { useTranslation } from 'react-i18next';
 import { MdBackup, MdDownload, MdLock, MdShield } from 'react-icons/md';
 import { exportDatabaseBackup } from '../../../src/api/system/databaseBackupApi';
-import { formatTimestampForBackup } from '../../../src/shared/utilities/dateUtils';
 import { PasswordInput } from '../../../src/shared/components/PasswordInput/PasswordInput';
 import SwitchInput from '../../../src/shared/components/SwitchInput/SwitchInput';
 
@@ -58,14 +57,14 @@ export const ActionsModalBackupCard: React.FC = () => {
 
         setIsLoading(true);
         try {
-            const blob = await exportDatabaseBackup(isProtected ? password : undefined);
-            if (blob) {
-                const url = window.URL.createObjectURL(blob);
+            const result = await exportDatabaseBackup(isProtected ? password : undefined);
+            if (result && result.blob) {
+                const url = window.URL.createObjectURL(result.blob);
                 const a = document.createElement('a');
                 a.href = url;
-                const timestamp = formatTimestampForBackup(new Date());
-                const ext = isProtected ? 'mmbackup' : 'sql.gz';
-                a.download = `moneymanager_backup_${timestamp}.${ext}`;
+                if (result.fileName) {
+                    a.download = result.fileName;
+                }
                 document.body.appendChild(a);
                 a.click();
                 a.remove();

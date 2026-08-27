@@ -34,19 +34,21 @@ export const ActionsModalRestoreCard: React.FC = () => {
 
         setSelectedFile(file);
         setStatusMessage(null);
+        setIsEncrypted(false);
 
-        const isLikelyEncrypted = file.name.endsWith('.mmbackup');
-        setIsEncrypted(isLikelyEncrypted);
-
-        // Pre-validate
+        // Pre-validate with backend (backend inspects binary structure & encryption format)
         setIsValidating(true);
         try {
             const validation = await validateDatabaseBackup(file);
-            if (validation.isEncrypted) {
-                setIsEncrypted(true);
+            setIsEncrypted(validation.isEncrypted);
+            if (!validation.isValid && validation.errorMessage) {
+                setStatusMessage({
+                    type: 'error',
+                    text: validation.errorMessage
+                });
             }
         } catch {
-            // fallback
+            // fallback handled by validateDatabaseBackup
         } finally {
             setIsValidating(false);
         }
@@ -161,7 +163,7 @@ export const ActionsModalRestoreCard: React.FC = () => {
                             <input
                                 ref={fileInputRef}
                                 type="file"
-                                accept=".mmbackup,.sql.gz,.gz,.sql"
+                                accept=".audexbackup,.sql.gz,.gz,.sql"
                                 style={{ display: 'none' }}
                                 onChange={handleFileChange}
                             />

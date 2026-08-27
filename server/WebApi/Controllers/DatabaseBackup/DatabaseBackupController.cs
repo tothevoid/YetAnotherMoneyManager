@@ -26,6 +26,8 @@ namespace MoneyManager.WebApi.Controllers.DatabaseBackup
         public async Task<IActionResult> ExportBackup([FromBody] ExportBackupRequestDto? request)
         {
             var backup = await _backupService.CreateBackupAsync(request?.Password);
+            Response.Headers.Append("X-File-Name", backup.FileName);
+            Response.Headers.Append("Access-Control-Expose-Headers", "X-File-Name, Content-Disposition");
             return File(backup.Data, backup.ContentType, backup.FileName);
         }
 

@@ -123,9 +123,9 @@ export const CreateTaskModal = forwardRef<CreateTaskModalRef, CreateTaskModalPro
                             <BaseSelect
                                 collection={definitions}
                                 selectedValue={selectedDefinition}
-                                labelSelector={(d: ScheduledTaskDefinitionEntity) => `${d.displayName} (${d.category})`}
-                                valueSelector={(d: ScheduledTaskDefinitionEntity) => d.taskName}
-                                onSelected={(item: ScheduledTaskDefinitionEntity) => {
+                                labelSelector={(d) => `${d.displayName} (${d.category})`}
+                                valueSelector={(d) => d.taskName}
+                                onSelected={(item) => {
                                     if (item) {
                                         handleSelectTask(item.taskName);
                                     }

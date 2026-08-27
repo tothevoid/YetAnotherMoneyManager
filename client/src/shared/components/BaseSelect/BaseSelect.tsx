@@ -1,48 +1,80 @@
-import { Select } from "chakra-react-select";
+import { ChakraStylesConfig, Select } from "chakra-react-select";
 
-interface Props<T> {
-    placeholder?: string
-    collection: T[],
-    selectedValue: T,
-    labelSelector: (item: T) => string,
-    valueSelector: (item: T) => string,
-    onSelected: (item: T) => void,
+export type ValueType<T, IsClearable extends boolean> = IsClearable extends true ? T | null : T;
+
+export interface BaseSelectProps<T, IsClearable extends boolean = false> {
+    placeholder?: string;
+    collection: readonly T[] | T[];
+    selectedValue?: T | null | undefined;
+    labelSelector: (item: T) => string;
+    valueSelector: (item: T) => string | number;
+    onSelected: (item: ValueType<T, IsClearable>) => void;
+    isDisabled?: boolean;
+    isClearable?: IsClearable;
 }
 
-//TODO: Fix generics for lambdas
-type CollectionSelectProps<T = any> = React.FC<Props<T>>
+export const selectChakraStyles: ChakraStylesConfig = {
+    control: (provided) => ({
+        ...provided,
+        backgroundColor: "background_primary",
+        borderColor: "border_primary",
+        color: "text_primary",
+        _hover: {
+            borderColor: "border_primary",
+        },
+    }),
+    option: (provided, state) => ({
+        ...provided,
+        color: state.isSelected ? "white" : "text_primary",
+        backgroundColor: state.isSelected
+            ? "action_primary"
+            : state.isFocused
+                ? "background_secondary"
+                : "background_primary",
+    }),
+    singleValue: (provided) => ({
+        ...provided,
+        color: "text_primary",
+    }),
+    menuList: (provided) => ({
+        ...provided,
+        backgroundColor: "background_primary",
+        borderColor: "border_primary",
+        boxShadow: "md",
+        borderRadius: "8px",
+    }),
+    placeholder: (provided) => ({
+        ...provided,
+        color: "gray.500",
+    }),
+};
 
-const BaseSelect: CollectionSelectProps = ({placeholder, selectedValue, onSelected, collection = [], labelSelector, valueSelector}) => {
-    return <Select
-        chakraStyles={{
-            option: (provided) => ({
-                ...provided,
-                color: "text_primary",
-                bg: "background_primary"
-            }),
-            singleValue: (provided) => ({
-                ...provided,
-                color: "text_primary",
-                marginLeft: "10px"
-            }),
-            menuList: (provided) => ({
-                ...provided,
-                bg: "background_primary",
-                border: "1px solid white",
-                borderColor: "border_primary",
-                boxShadow: "md",
-                borderRadius: "8px"
-            })
-        }}
-
-        getOptionLabel={labelSelector}
-        getOptionValue={valueSelector}
-        options={collection}
-        value={selectedValue}
-        isClearable
-        onChange={option => onSelected(option)}
-        placeholder={placeholder ?? ""}>
-    </Select>
-}
+const BaseSelect = <T, IsClearable extends boolean = false>({
+    placeholder,
+    selectedValue,
+    onSelected,
+    collection = [],
+    labelSelector,
+    valueSelector,
+    isDisabled,
+    isClearable = false as IsClearable,
+}: BaseSelectProps<T, IsClearable>) => {
+    return (
+        <Select<T, false>
+            isDisabled={isDisabled}
+            chakraStyles={selectChakraStyles as ChakraStylesConfig<T, false>}
+            getOptionLabel={labelSelector}
+            getOptionValue={(item) => String(valueSelector(item))}
+            options={collection as T[]}
+            value={selectedValue}
+            isClearable={isClearable}
+            onChange={(option) => onSelected(option as ValueType<T, IsClearable>)}
+            placeholder={placeholder ?? ""}
+        />
+    );
+};
 
 export default BaseSelect;
+
+
+

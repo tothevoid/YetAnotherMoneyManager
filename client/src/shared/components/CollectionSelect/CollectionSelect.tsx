@@ -1,81 +1,57 @@
-import { Select } from "chakra-react-select";
-import { Control, Controller, FieldValues, Path } from "react-hook-form"
+import { Control, Controller, FieldValues, Path } from "react-hook-form";
+import BaseSelect from "../BaseSelect/BaseSelect";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnySelect = typeof Select<any>
-
-interface Props<T, TFieldValues extends FieldValues> {
-    name: Path<TFieldValues>
-    placeholder?: string
-    control: Control<TFieldValues>
-    collection: T[],
-    labelSelector: (item: T) => string,
-    valueSelector: (item: T) => string,
-    isDisabled?: boolean
+interface Props<T, TFieldValues extends FieldValues = FieldValues, IsClearable extends boolean = true> {
+    name: Path<TFieldValues>;
+    placeholder?: string;
+    control: Control<TFieldValues>;
+    collection: readonly T[] | T[];
+    labelSelector: (item: T) => string;
+    valueSelector: (item: T) => string | number;
+    isDisabled?: boolean;
+    isClearable?: IsClearable;
 }
 
-//TODO: Fix generics for lambdas
-const CollectionSelect = <T, TFieldValues extends FieldValues>({ name, placeholder, control, collection = [], labelSelector, valueSelector, isDisabled }: Props<T, TFieldValues>) => {
-    const AnySelect = Select as AnySelect
-    return <Controller
-        name={name}
-        control={control}
-        render={({ field }) => {
-            const normalizedValue = (() => {
-                if (!field.value) return null;
-                const targetVal = typeof field.value === "object" ? valueSelector(field.value) : field.value;
-                return collection.find((item) => valueSelector(item) === targetVal) || field.value;
-            })();
+const CollectionSelect = <
+    T,
+    TFieldValues extends FieldValues = FieldValues,
+    IsClearable extends boolean = true
+>({
+    name,
+    placeholder,
+    control,
+    collection = [],
+    labelSelector,
+    valueSelector,
+    isDisabled,
+    isClearable = true as IsClearable,
+}: Props<T, TFieldValues, IsClearable>) => {
+    return (
+        <Controller
+            name={name}
+            control={control}
+            render={({ field }) => {
+                const normalizedValue = (() => {
+                    if (!field.value) return null;
+                    const targetVal = typeof field.value === "object" ? String(valueSelector(field.value)) : String(field.value);
+                    return collection.find((item) => String(valueSelector(item)) === targetVal) || field.value;
+                })();
 
-            return (
-                <AnySelect
-                    {...field}
-                    isDisabled={isDisabled}
-                    value={normalizedValue}
-                    chakraStyles={{
-                        control: (provided: any) => ({
-                            ...provided,
-                            backgroundColor: "background_primary",
-                            borderColor: "border_primary",
-                            color: "text_primary",
-                            _hover: {
-                                borderColor: "border_primary",
-                            },
-                        }),
-                        option: (provided: any, state: any) => ({
-                            ...provided,
-                            color: state.isSelected ? "white" : "text_primary",
-                            backgroundColor: state.isSelected
-                                ? "action_primary"
-                                : state.isFocused
-                                    ? "background_secondary"
-                                    : "background_primary",
-                        }),
-                        singleValue: (provided: any) => ({
-                            ...provided,
-                            color: "text_primary",
-                        }),
-                        menuList: (provided: any) => ({
-                            ...provided,
-                            backgroundColor: "background_primary",
-                            borderColor: "border_primary",
-                            boxShadow: "md",
-                            borderRadius: "8px",
-                        }),
-                        placeholder: (provided: any) => ({
-                            ...provided,
-                            color: "gray.500",
-                        }),
-                    }}
-                    getOptionLabel={labelSelector}
-                    getOptionValue={valueSelector}
-                    options={collection}
-                    isClearable
-                    placeholder={placeholder ?? ""}>
-                </AnySelect>
-            );
-        }}
-    />
-}
+                return (
+                    <BaseSelect<T, IsClearable>
+                        placeholder={placeholder}
+                        collection={collection}
+                        selectedValue={normalizedValue}
+                        labelSelector={labelSelector}
+                        valueSelector={valueSelector}
+                        onSelected={(value) => field.onChange(value)}
+                        isDisabled={isDisabled}
+                        isClearable={isClearable}
+                    />
+                );
+            }}
+        />
+    );
+};
 
 export default CollectionSelect;

@@ -75,7 +75,7 @@ export const SchedulerJournalTable: React.FC<SchedulerJournalTableProps> = ({
                             <BaseSelect
                                 collection={taskOptions}
                                 selectedValue={selectedTaskOption}
-                                onSelected={(opt) => onTaskFilterChange(opt?.value ?? 'All')}
+                                onSelected={(opt) => onTaskFilterChange(opt.value)}
                                 labelSelector={(opt) => opt.label}
                                 valueSelector={(opt) => opt.value}
                                 placeholder={t('scheduler_all_tasks')}
@@ -88,7 +88,7 @@ export const SchedulerJournalTable: React.FC<SchedulerJournalTableProps> = ({
                             <BaseSelect
                                 collection={statusOptions}
                                 selectedValue={selectedStatusOption}
-                                onSelected={(opt) => onStatusFilterChange(opt?.value ?? 'All')}
+                                onSelected={(opt) => onStatusFilterChange(opt.value)}
                                 labelSelector={(opt) => opt.label}
                                 valueSelector={(opt) => opt.value}
                                 placeholder={t('scheduler_all_statuses')}

@@ -13,6 +13,7 @@ using MoneyManager.Application.Interfaces.Deposits;
 using MoneyManager.Application.Interfaces.FileStorage;
 using MoneyManager.Application.Interfaces.Integrations.Currency;
 using MoneyManager.Application.Interfaces.Integrations.Stock;
+using MoneyManager.Application.Interfaces.Localization;
 using MoneyManager.Application.Interfaces.Notifications;
 using MoneyManager.Application.Interfaces.Reports;
 using MoneyManager.Application.Interfaces.Securities;
@@ -29,6 +30,7 @@ using MoneyManager.Application.Services.Dashboard;
 using MoneyManager.Application.Services.Debts;
 using MoneyManager.Application.Services.Deposits;
 using MoneyManager.Application.Services.FileStorage;
+using MoneyManager.Application.Services.Localization;
 using MoneyManager.Application.Services.Notifications;
 using MoneyManager.Application.Services.Reports;
 using MoneyManager.Application.Services.Securities;
@@ -80,6 +82,8 @@ namespace MoneyManager.Application.Extensions
             services.AddTransient<IBankService, BankService>();
             services.AddTransient<IAuthService, AuthService>();
             services.AddSingleton<IPasswordHasherService, PasswordHasherService>();
+            services.AddSingleton<ITranslationProvider, TranslationProvider>();
+            services.AddTransient<ILocalizationService, LocalizationService>();
 
             services.AddSingleton<IDatabaseStateService, DatabaseStateService>();
             services.AddSingleton<IBackupEncryptionService, BackupEncryptionService>();

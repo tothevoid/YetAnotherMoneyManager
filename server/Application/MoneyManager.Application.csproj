@@ -21,4 +21,8 @@
 	  <ProjectReference Include="..\Shared\MoneyManager.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\**\*.json" />
+  </ItemGroup>
+
 </Project>

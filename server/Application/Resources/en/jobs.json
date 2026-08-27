@@ -1,0 +1,12 @@
+{
+  "cleanup_expired_tokens_name": "Clean Up Session Tokens",
+  "cleanup_expired_tokens_desc": "Remove expired and revoked JWT refresh tokens older than 30 days",
+  "cleanup_old_notifications_name": "Clean Up Old Notifications",
+  "cleanup_old_notifications_desc": "Remove read system notifications older than 90 days",
+  "asset_report_name": "All Assets Report (Excel)",
+  "asset_report_desc": "Automatically generate Excel statement for all accounts, assets and debts",
+  "database_backup_name": "Database Backup",
+  "database_backup_desc": "Create automated database backup snapshot and upload to S3",
+  "pull_quotations_name": "Update MOEX Quotations",
+  "pull_quotations_desc": "Periodically fetch latest security quotes from MOEX exchange"
+}

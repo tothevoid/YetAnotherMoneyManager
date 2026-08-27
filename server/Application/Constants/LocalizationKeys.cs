@@ -67,6 +67,39 @@ namespace MoneyManager.Application.Constants
             public const string TotalsInCurrency = "report.totals_in_currency";
         }
 
+        public static class Jobs
+        {
+            public static class CleanUpExpiredTokens
+            {
+                public const string Name = "jobs.cleanup_expired_tokens_name";
+                public const string Description = "jobs.cleanup_expired_tokens_desc";
+            }
+
+            public static class CleanUpOldNotifications
+            {
+                public const string Name = "jobs.cleanup_old_notifications_name";
+                public const string Description = "jobs.cleanup_old_notifications_desc";
+            }
+
+            public static class AssetReport
+            {
+                public const string Name = "jobs.asset_report_name";
+                public const string Description = "jobs.asset_report_desc";
+            }
+
+            public static class DatabaseBackup
+            {
+                public const string Name = "jobs.database_backup_name";
+                public const string Description = "jobs.database_backup_desc";
+            }
+
+            public static class PullQuotations
+            {
+                public const string Name = "jobs.pull_quotations_name";
+                public const string Description = "jobs.pull_quotations_desc";
+            }
+        }
+
         public static class Auth
         {
             public const string InvalidCredentials = "auth.invalid_credentials";

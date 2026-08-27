@@ -1,0 +1,13 @@
+{
+  "session_cleanup_title": "Очистка сессионных токенов",
+  "session_cleanup_message": "Удалено устаревших или отозванных токенов: {0}.",
+  "report_generated_title": "Отчет по активам сформирован",
+  "report_generated_message": "Еженедельный отчет по активам успешно сохранен ({0}). Доступен для скачивания в журнале.",
+  "report_generation_failed_title": "Ошибка генерации отчета",
+  "report_generation_failed_message": "Не удалось сформировать отчет по активам: {0}",
+  "backup_ready_title": "Резервная копия БД готова",
+  "backup_ready_encrypted_title": "Зашифрованная резервная копия БД готова",
+  "backup_ready_message": "Резервная копия базы данных успешно создана: {0}",
+  "backup_failed_title": "Ошибка создания резервной копии БД",
+  "backup_failed_message": "Не удалось создать резервную копию базы данных: {0}"
+}

@@ -1,0 +1,13 @@
+{
+  "session_cleanup_title": "Session Tokens Clean Up",
+  "session_cleanup_message": "Removed {0} expired or revoked tokens.",
+  "report_generated_title": "Assets report generated",
+  "report_generated_message": "Weekly assets report successfully saved ({0}). Available for download in journal.",
+  "report_generation_failed_title": "Report generation failed",
+  "report_generation_failed_message": "Failed to generate assets report: {0}",
+  "backup_ready_title": "DB backup ready",
+  "backup_ready_encrypted_title": "Encrypted DB backup ready",
+  "backup_ready_message": "Database backup successfully created: {0}",
+  "backup_failed_title": "DB backup failed",
+  "backup_failed_message": "Failed to create database backup: {0}"
+}

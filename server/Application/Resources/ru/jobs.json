@@ -1,0 +1,12 @@
+{
+  "cleanup_expired_tokens_name": "Очистка сессионных токенов",
+  "cleanup_expired_tokens_desc": "Удаление истекших и отозванных JWT refresh-токенов старше 30 дней",
+  "cleanup_old_notifications_name": "Очистка старых уведомлений",
+  "cleanup_old_notifications_desc": "Удаление прочитанных системных уведомлений старше 90 дней",
+  "asset_report_name": "Отчет по всем активам (Excel)",
+  "asset_report_desc": "Автоматическая генерация Excel-выписки по всем счетам, активам и долгам",
+  "database_backup_name": "Резервное копирование БД",
+  "database_backup_desc": "Создание резервной копии базы данных и выгрузка в S3",
+  "pull_quotations_name": "Обновление котировок MOEX",
+  "pull_quotations_desc": "Периодическое получение актуальных котировок ценных бумаг с Московской биржи"
+}

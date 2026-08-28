@@ -11,12 +11,14 @@ This document contains guidelines, coding standards, and architectural patterns 
 ### Stack & Solution Structure
 - **Framework**: .NET 10 Web API
 - **Layering**:
-  - `server/WebApi`: ASP.NET Core Controllers and DTO models. Controllers must remain thin and delegate logic to application services.
-  - `server/Application`: Core business logic, services (`MoneyManager.Application.Services`), interfaces (`MoneyManager.Application.Interfaces`), and DTOs (`MoneyManager.Application.DTO`).
-  - `server/Infrastructure`: EF Core DbContext, entity configurations, and migrations.
-  - `server/Shared`: Common constants and helper models.
-  - `server/MoneyManager.Application.Tests`: Unit tests for application services.
-- **Orphan Directory Prohibition**: Do NOT create or restore legacy directories (`server/BLL`, `server/DAL`, `server/Common`, `server/MoneyManager`, `server/server`). Only project folders in `MoneyManager.slnx` are valid.
+  - `server/src/WebApi`: ASP.NET Core Controllers and DTO models. Controllers must remain thin and delegate logic to application services.
+  - `server/src/Application`: Core business logic, services (`Audex.Application.Services`), interfaces (`Audex.Application.Interfaces`), and DTOs (`Audex.Application.DTO`).
+  - `server/src/Infrastructure`: EF Core DbContext, entity configurations, and migrations.
+  - `server/src/Shared`: Common constants and helper models.
+  - `server/tests/Application.Tests`: Unit tests for application services (`Audex.Application.Tests`).
+  - `server/tests/Infrastructure.Tests`: Tests for infrastructure components (`Audex.Infrastructure.Tests`).
+  - `server/tests/Tests.Shared`: Shared fixtures and test helpers (`Audex.Tests.Shared`).
+- **Orphan Directory Prohibition**: Do NOT create or restore legacy directories (`server/BLL`, `server/DAL`, `server/Common`, `server/MoneyManager`, `server/server`). Only project folders in `Audex.slnx` are valid.
 
 ### DTO Naming Conventions
 - **PascalCase with `Dto` Suffix**: All Data Transfer Object classes and files MUST use PascalCase with the `Dto` suffix (e.g. `AccountDto.cs`, `SecurityTransactionDto.cs`, `BrokerAccountSummaryDto.cs`, `UserProfileDto.cs`). Do NOT use `*DTO` all-caps suffix.
@@ -29,7 +31,7 @@ This document contains guidelines, coding standards, and architectural patterns 
   - **WebApi Controllers**: Controller action methods must call these `*Async` methods with `await`.
 
 ### EF Core & Service Layer Performance Guidelines
-- **BaseEntity Inheritance**: ALL database entities in `server/Infrastructure/Entities` (including domain entities, join entities, and lookup tables) MUST inherit from `BaseEntity`.
+- **BaseEntity Inheritance**: ALL database entities in `server/src/Infrastructure/Entities` (including domain entities, join entities, and lookup tables) MUST inherit from `BaseEntity`.
 - **Entity Identification**: Every entity uses `Guid Id` inherited from `BaseEntity` as its primary key. Do NOT use composite keys or explicit `builder.HasKey(...)` in entity configurations, as EF Core automatically configures `Id` by convention.
 - **Assigning Entity Ids**: When creating entity instances (including join entities) in application services, explicitly assign `Id = Guid.NewGuid()`.
 - **Navigation Property Includes (`GetFullHierarchyColumns`)**: In application services, encapsulate Entity Framework `.Include()` / `.ThenInclude()` navigation loadings inside a private helper method `GetFullHierarchyColumns(IQueryable<TEntity> query)` passed as the `include` parameter to `GetAllAsync` and `GetByIdAsync`.
@@ -39,18 +41,18 @@ This document contains guidelines, coding standards, and architectural patterns 
 - **Direct Bulk Deletes**: Prefer EF Core `ExecuteDeleteAsync()` for primary-key deletions rather than fetching detached entity instances prior to deletion.
 
 ### Infrastructure Model Changes & Migrations Workflow
-- **Mandatory User Confirmation for Model Changes**: NEVER modify database entities, models, or configurations in `server/Infrastructure` (`server/Infrastructure/Entities/`, `server/Infrastructure/Configurations/`, `ApplicationDbContext.cs`) without first explicitly presenting the proposed schema changes and obtaining confirmation from the user.
+- **Mandatory User Confirmation for Model Changes**: NEVER modify database entities, models, or configurations in `server/src/Infrastructure` (`server/src/Infrastructure/Entities/`, `server/src/Infrastructure/Configurations/`, `ApplicationDbContext.cs`) without first explicitly presenting the proposed schema changes and obtaining confirmation from the user.
 - **Uncommitted Migration Re-generation Workflow**:
   - If entity/model changes are approved and made, and the current migration is NOT yet committed to git:
-    1. Roll back the database to the previous migration: `dotnet ef database update <PreviousMigrationName> --project Infrastructure --startup-project WebApi`
-    2. Remove the uncommitted migration: `dotnet ef migrations remove --project Infrastructure --startup-project WebApi`
+    1. Roll back the database to the previous migration: `dotnet ef database update <PreviousMigrationName> --project src/Infrastructure --startup-project src/WebApi`
+    2. Remove the uncommitted migration: `dotnet ef migrations remove --project src/Infrastructure --startup-project src/WebApi`
     3. Apply the approved entity modifications.
-    4. Generate a clean new migration: `dotnet ef migrations add <MigrationName> --project Infrastructure --startup-project WebApi`
-    5. Apply the migration: `dotnet ef database update --project Infrastructure --startup-project WebApi`
+    4. Generate a clean new migration: `dotnet ef migrations add <MigrationName> --project src/Infrastructure --startup-project src/WebApi`
+    5. Apply the migration: `dotnet ef database update --project src/Infrastructure --startup-project src/WebApi`
 
 ### Application Service Testing
-- **100% Service Coverage**: Every application service in `MoneyManager.Application` MUST have comprehensive unit test coverage in `MoneyManager.Application.Tests`.
-- **Directory Hierarchy**: Test file structure under `MoneyManager.Application.Tests` must mirror `MoneyManager.Application`.
+- **100% Service Coverage**: Every application service in `Audex.Application` MUST have comprehensive unit test coverage in `Audex.Application.Tests` (`server/tests/Application.Tests`).
+- **Directory Hierarchy**: Test file structure under `server/tests/Application.Tests` must mirror `server/src/Application`.
 - **Test Style**: xUnit, NSubstitute / Moq, AutoFixture using the AAA (Arrange-Act-Assert) pattern.
 - **S3 / File Storage Testing (`[Trait("Category", "S3")]`)**: All test classes or methods interacting with `IFileStorageService` / MinIO (e.g. `FileStorageServiceTests`, icon uploads/deletions in `BankServiceTests`, `SecurityServiceTests`, `TransactionTypeServiceTests`, `CryptocurrencyServiceTests`) MUST be tagged with `[Trait("Category", "S3")]`. Use `ServiceProviderFixture` for isolated container management.
 - **Auth Testing (`[Trait("Category", "Auth")]`)**: All test classes or methods testing authentication, JWT/Refresh tokens, login, and password changes (e.g. `AuthServiceTests`) MUST be tagged with `[Trait("Category", "Auth")]`.
@@ -65,9 +67,9 @@ This document contains guidelines, coding standards, and architectural patterns 
 
 ### Backend Localization & i18n Architecture (`ILocalizationService`)
 - **Prohibition of Hardcoded Strings**: User-facing texts, notifications, error messages, export reports, and scheduled task names/descriptions MUST NOT be hardcoded in backend code.
-- **Resource JSON Dictionaries**: All backend localization strings reside under `server/Application/Resources/{lang}/{category}.json` (e.g. `Resources/en/jobs.json`, `Resources/ru/jobs.json`, `notifications.json`, `scheduler.json`, `report.json`, `auth.json`, `errors.json`).
+- **Resource JSON Dictionaries**: All backend localization strings reside under `server/src/Application/Resources/{lang}/{category}.json` (e.g. `Resources/en/jobs.json`, `Resources/ru/jobs.json`, `notifications.json`, `scheduler.json`, `report.json`, `auth.json`, `errors.json`).
   - Resources are embedded in assembly (`<EmbeddedResource Include="Resources\**\*.json" />`).
-- **Strongly-Typed Keys (`LocalizationKeys`)**: All string keys MUST be declared as constants in `MoneyManager.Application.Constants.LocalizationKeys` (e.g. `LocalizationKeys.Jobs.CleanUpExpiredTokens.Name`, `LocalizationKeys.Jobs.Categories.Auth`, `LocalizationKeys.Notifications.SessionCleanUpTitle`).
+- **Strongly-Typed Keys (`LocalizationKeys`)**: All string keys MUST be declared as constants in `Audex.Application.Constants.LocalizationKeys` (e.g. `LocalizationKeys.Jobs.CleanUpExpiredTokens.Name`, `LocalizationKeys.Jobs.Categories.Auth`, `LocalizationKeys.Notifications.SessionCleanUpTitle`).
 - **Service Usage (`ILocalizationService`)**:
   - `localizer.Get(key, lang, args)`: Resolves text for specific language code with format arguments and English fallback.
   - `await localizer.GetForUserAsync(key, userId, args)`: Resolves text using target user's configured `UserProfile.LanguageCode`.

@@ -1,7 +1,7 @@
-using System;
-using MoneyManager.Shared.Entities;
+﻿using System;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.Application.DTO.Transactions
+namespace Audex.Application.DTO.Transactions
 {
     public class TransactionTypeDto: BaseEntity
     {

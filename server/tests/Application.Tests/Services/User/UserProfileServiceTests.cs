@@ -1,11 +1,11 @@
-using Microsoft.Extensions.DependencyInjection;
-using MoneyManager.Application.DTO.User;
-using MoneyManager.Application.Interfaces.User;
-using MoneyManager.Application.Tests.Fixtures;
-using MoneyManager.Infrastructure.Constants;
-using MoneyManager.Infrastructure.Entities.User;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Audex.Application.DTO.User;
+using Audex.Application.Interfaces.User;
+using Audex.Application.Tests.Fixtures;
+using Audex.Infrastructure.Constants;
+using Audex.Infrastructure.Entities.User;
 
-namespace MoneyManager.Application.Tests.Services.User
+namespace Audex.Application.Tests.Services.User
 {
     public class UserProfileServiceTests : TestBase
     {
@@ -32,9 +32,9 @@ namespace MoneyManager.Application.Tests.Services.User
             var rawPassword = "TestPassword123!";
             var seededUser = await ExecuteScopeAsync(async sp =>
             {
-                var uow = sp.GetRequiredService<MoneyManager.Infrastructure.Interfaces.Database.IUnitOfWork>();
+                var uow = sp.GetRequiredService<Audex.Infrastructure.Interfaces.Database.IUnitOfWork>();
                 var repo = uow.CreateRepository<UserProfile>();
-                var hasher = sp.GetRequiredService<MoneyManager.Application.Interfaces.Auth.IPasswordHasherService>();
+                var hasher = sp.GetRequiredService<Audex.Application.Interfaces.Auth.IPasswordHasherService>();
                 var user = (await repo.GetAllAsync(disableTracking: false)).First();
                 user.Password = hasher.HashPassword(rawPassword);
                 repo.Update(user);

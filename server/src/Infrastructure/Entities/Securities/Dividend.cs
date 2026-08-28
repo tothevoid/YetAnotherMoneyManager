@@ -1,12 +1,12 @@
-﻿using MoneyManager.Infrastructure.Entities.Brokers;
-using MoneyManager.Shared.Entities;
+﻿using Audex.Infrastructure.Entities.Brokers;
+using Audex.Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Infrastructure.Entities.Securities
+namespace Audex.Infrastructure.Entities.Securities
 {
     public class Dividend : BaseEntity
     {

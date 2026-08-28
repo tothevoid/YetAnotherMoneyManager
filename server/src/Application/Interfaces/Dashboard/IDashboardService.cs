@@ -1,7 +1,7 @@
-using MoneyManager.Application.DTO.Dashboard;
+﻿using Audex.Application.DTO.Dashboard;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.Interfaces.Dashboard
+namespace Audex.Application.Interfaces.Dashboard
 {
     public interface IDashboardService
     {

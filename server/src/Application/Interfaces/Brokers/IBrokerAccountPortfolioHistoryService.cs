@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
-using MoneyManager.Application.DTO.Brokers;
+using Audex.Application.DTO.Brokers;
 
-namespace MoneyManager.Application.Interfaces.Brokers
+namespace Audex.Application.Interfaces.Brokers
 {
     public interface IBrokerAccountPortfolioHistoryService
     {

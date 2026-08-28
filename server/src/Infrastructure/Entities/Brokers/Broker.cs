@@ -1,7 +1,7 @@
-﻿using MoneyManager.Shared.Entities;
+﻿using Audex.Shared.Entities;
 using System.Collections.Generic;
 
-namespace MoneyManager.Infrastructure.Entities.Brokers
+namespace Audex.Infrastructure.Entities.Brokers
 {
     public class Broker: BaseEntity
     {

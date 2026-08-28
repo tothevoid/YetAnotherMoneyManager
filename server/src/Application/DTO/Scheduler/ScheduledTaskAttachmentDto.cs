@@ -1,6 +1,6 @@
-using System;
+﻿using System;
 
-namespace MoneyManager.Application.DTO.Scheduler
+namespace Audex.Application.DTO.Scheduler
 {
     public class ScheduledTaskAttachmentDto
     {

@@ -1,8 +1,8 @@
-using MoneyManager.Shared.Entities;
+﻿using Audex.Shared.Entities;
 using System;
-using MoneyManager.Application.DTO.Accounts;
+using Audex.Application.DTO.Accounts;
 
-namespace MoneyManager.Application.DTO.Brokers
+namespace Audex.Application.DTO.Brokers
 {
     public class BrokerAccountFundsTransferDto : BaseEntity
     {

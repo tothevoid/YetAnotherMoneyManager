@@ -1,7 +1,7 @@
-﻿using MoneyManager.Shared.Entities;
+﻿using Audex.Shared.Entities;
 using System;
 
-namespace MoneyManager.WebApi.Models.Crypto
+namespace Audex.WebApi.Models.Crypto
 {
     public class CryptoAccountCryptocurrencyModel: BaseEntity
     {

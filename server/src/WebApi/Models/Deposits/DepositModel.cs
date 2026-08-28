@@ -1,9 +1,9 @@
-﻿using MoneyManager.Shared.Entities;
-using MoneyManager.WebApi.Models.Currencies;
+﻿using Audex.Shared.Entities;
+using Audex.WebApi.Models.Currencies;
 using System;
-using MoneyManager.WebApi.Models.Banks;
+using Audex.WebApi.Models.Banks;
 
-namespace MoneyManager.WebApi.Models.Deposits
+namespace Audex.WebApi.Models.Deposits
 {
     public class DepositModel: BaseEntity
     {

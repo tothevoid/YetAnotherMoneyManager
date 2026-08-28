@@ -1,6 +1,6 @@
-using System;
+﻿using System;
 
-namespace MoneyManager.Application.DTO.Debts
+namespace Audex.Application.DTO.Debts
 {
     public class DebtTagStatsDto
     {

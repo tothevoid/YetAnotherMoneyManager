@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MoneyManager.Infrastructure.Constants
+namespace Audex.Infrastructure.Constants
 {
     public static class SecurityTypeConstants
     {

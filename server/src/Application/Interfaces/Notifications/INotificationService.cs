@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MoneyManager.Application.DTO.Common;
-using MoneyManager.Application.DTO.Notifications;
-using MoneyManager.Infrastructure.Entities.Notifications;
+using Audex.Application.DTO.Common;
+using Audex.Application.DTO.Notifications;
+using Audex.Infrastructure.Entities.Notifications;
 
-namespace MoneyManager.Application.Interfaces.Notifications
+namespace Audex.Application.Interfaces.Notifications
 {
     public interface INotificationService
     {

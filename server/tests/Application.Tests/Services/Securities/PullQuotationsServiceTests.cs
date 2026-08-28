@@ -1,8 +1,8 @@
-using Microsoft.Extensions.DependencyInjection;
-using MoneyManager.Application.Interfaces.Securities;
-using MoneyManager.Application.Tests.Fixtures;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Audex.Application.Interfaces.Securities;
+using Audex.Application.Tests.Fixtures;
 
-namespace MoneyManager.Application.Tests.Services.Securities
+namespace Audex.Application.Tests.Services.Securities
 {
     public class PullQuotationsServiceTests : TestBase
     {

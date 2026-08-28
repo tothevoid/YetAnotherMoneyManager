@@ -1,12 +1,12 @@
-using MoneyManager.Infrastructure.Data;
-using MoneyManager.Infrastructure.Entities.Accounts;
-using MoneyManager.Infrastructure.Entities.Currencies;
-using MoneyManager.Infrastructure.Entities.Securities;
-using MoneyManager.Infrastructure.Entities.Transactions;
-using MoneyManager.Infrastructure.Entities.User;
+﻿using Audex.Infrastructure.Data;
+using Audex.Infrastructure.Entities.Accounts;
+using Audex.Infrastructure.Entities.Currencies;
+using Audex.Infrastructure.Entities.Securities;
+using Audex.Infrastructure.Entities.Transactions;
+using Audex.Infrastructure.Entities.User;
 using Xunit;
 
-namespace MoneyManager.Infrastructure.Tests.Data
+namespace Audex.Infrastructure.Tests.Data
 {
     public class DataGeneratorTests
     {

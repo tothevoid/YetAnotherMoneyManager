@@ -1,12 +1,12 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Security.Cryptography;
 using System.Text;
 using Konscious.Security.Cryptography;
-using MoneyManager.Application.Enums.Auth;
-using MoneyManager.Application.Interfaces.Auth;
+using Audex.Application.Enums.Auth;
+using Audex.Application.Interfaces.Auth;
 
-namespace MoneyManager.Application.Services.Auth
+namespace Audex.Application.Services.Auth
 {
     public class PasswordHasherService : IPasswordHasherService
     {

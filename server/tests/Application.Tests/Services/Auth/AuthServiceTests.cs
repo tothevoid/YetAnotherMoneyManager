@@ -1,21 +1,21 @@
-using Microsoft.Extensions.DependencyInjection;
-using MoneyManager.Application.DTO;
-using MoneyManager.Application.DTO.Auth;
-using MoneyManager.Application.DTO.User;
-using MoneyManager.Application.Interfaces.Auth;
-using MoneyManager.Application.Interfaces.User;
-using MoneyManager.Application.Mappings;
-using MoneyManager.Application.Tests.Fixtures;
-using MoneyManager.Infrastructure.Constants;
-using MoneyManager.Infrastructure.Entities.User;
-using MoneyManager.Infrastructure.Interfaces.Database;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Audex.Application.DTO;
+using Audex.Application.DTO.Auth;
+using Audex.Application.DTO.User;
+using Audex.Application.Interfaces.Auth;
+using Audex.Application.Interfaces.User;
+using Audex.Application.Mappings;
+using Audex.Application.Tests.Fixtures;
+using Audex.Infrastructure.Constants;
+using Audex.Infrastructure.Entities.User;
+using Audex.Infrastructure.Interfaces.Database;
 using System;
 using System.Linq;
 using System.Security;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace MoneyManager.Application.Tests.Services.Auth
+namespace Audex.Application.Tests.Services.Auth
 {
     [Trait("Category", "Auth")]
     public class AuthServiceTests : TestBase

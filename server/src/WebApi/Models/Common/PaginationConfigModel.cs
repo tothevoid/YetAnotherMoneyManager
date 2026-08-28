@@ -1,4 +1,4 @@
-﻿namespace MoneyManager.WebApi.Models.Common
+﻿namespace Audex.WebApi.Models.Common
 {
     public class PaginationConfigModel
     {

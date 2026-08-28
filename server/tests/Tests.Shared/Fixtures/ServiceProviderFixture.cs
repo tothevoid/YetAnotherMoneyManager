@@ -1,19 +1,19 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Minio;
-using MoneyManager.Application.Extensions;
-using MoneyManager.Application.Interfaces.FileStorage;
-using MoneyManager.Application.Services.FileStorage;
-using MoneyManager.Infrastructure.Database;
-using MoneyManager.Infrastructure.Interfaces.Database;
-using MoneyManager.Infrastructure.Extensions;
-using MoneyManager.Infrastructure.Interfaces.Messages;
+using Audex.Application.Extensions;
+using Audex.Application.Interfaces.FileStorage;
+using Audex.Application.Services.FileStorage;
+using Audex.Infrastructure.Database;
+using Audex.Infrastructure.Interfaces.Database;
+using Audex.Infrastructure.Extensions;
+using Audex.Infrastructure.Interfaces.Messages;
 using Testcontainers.Minio;
 using Testcontainers.PostgreSql;
 using Xunit;
 
-namespace MoneyManager.Tests.Shared.Fixtures
+namespace Audex.Tests.Shared.Fixtures
 {
     public class ServiceProviderFixture : IAsyncLifetime
     {
@@ -25,7 +25,7 @@ namespace MoneyManager.Tests.Shared.Fixtures
 
         public IServiceProvider ServiceProvider { get; private set; } = null!;
 
-        public string ConnectionString => $"{_postgresContainer.GetConnectionString()};Pooling=true;MinPoolSize=1;Application Name=MoneyManagerTests;Enlist=false;";
+        public string ConnectionString => $"{_postgresContainer.GetConnectionString()};Pooling=true;MinPoolSize=1;Application Name=AudexTests;Enlist=false;";
 
         public string MinioEndpoint => _minioContainer.GetConnectionString().Replace("http://", "").Replace("https://", "");
         public string MinioAccessKey => _minioContainer.GetAccessKey();
@@ -38,8 +38,8 @@ namespace MoneyManager.Tests.Shared.Fixtures
             var services = new ServiceCollection();
 
             var inMemorySettings = new Dictionary<string, string?> {
-                {"Auth:Issuer", "MoneyManagerApp"},
-                {"Auth:Audience", "MoneyManagerAppUsers"},
+                {"Auth:Issuer", "AudexApp"},
+                {"Auth:Audience", "AudexAppUsers"},
                 {"Auth:Secret", "SuperSecretKeyForJwtTokenGeneration12345!"},
                 {"FileStorage:Endpoint", MinioEndpoint},
                 {"FileStorage:UseSsl", "false"},
@@ -57,7 +57,7 @@ namespace MoneyManager.Tests.Shared.Fixtures
             services.AddApplicationServices();
             services.AddInfrastructureServices();
 
-            services.AddSingleton<MoneyManager.Infrastructure.Interfaces.DatabaseBackup.IDatabaseBackupProvider, TestDatabaseBackupProvider>();
+            services.AddSingleton<Audex.Infrastructure.Interfaces.DatabaseBackup.IDatabaseBackupProvider, TestDatabaseBackupProvider>();
 
             services.AddMinio(configureClient => configureClient
                 .WithEndpoint(MinioEndpoint)

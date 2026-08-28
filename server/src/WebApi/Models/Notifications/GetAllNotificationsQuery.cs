@@ -1,6 +1,6 @@
-using MoneyManager.WebApi.Models.Common;
+﻿using Audex.WebApi.Models.Common;
 
-namespace MoneyManager.WebApi.Models.Notifications
+namespace Audex.WebApi.Models.Notifications
 {
     public class GetAllNotificationsQuery : BasePageableQuery
     {

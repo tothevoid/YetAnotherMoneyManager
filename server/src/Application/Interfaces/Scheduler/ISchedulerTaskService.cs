@@ -1,8 +1,8 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using MoneyManager.Application.DTO.Scheduler;
+using Audex.Application.DTO.Scheduler;
 
-namespace MoneyManager.Application.Interfaces.Scheduler
+namespace Audex.Application.Interfaces.Scheduler
 {
     public interface ISchedulerTaskService
     {

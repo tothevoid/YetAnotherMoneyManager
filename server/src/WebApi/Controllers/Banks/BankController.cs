@@ -1,17 +1,17 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MoneyManager.Application.DTO.Banks;
-using MoneyManager.Application.Interfaces.Banks;
-using MoneyManager.WebApi.Mappings;
-using MoneyManager.WebApi.Models.Banks;
-using MoneyManager.WebApi.Models.Transactions;
+using Audex.Application.DTO.Banks;
+using Audex.Application.Interfaces.Banks;
+using Audex.WebApi.Mappings;
+using Audex.WebApi.Models.Banks;
+using Audex.WebApi.Models.Transactions;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace MoneyManager.WebApi.Controllers.Banks
+namespace Audex.WebApi.Controllers.Banks
 {
     [Produces("application/json")]
     [Route("[controller]")]

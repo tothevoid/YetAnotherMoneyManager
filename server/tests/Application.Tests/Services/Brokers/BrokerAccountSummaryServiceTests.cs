@@ -1,12 +1,12 @@
-using Microsoft.Extensions.DependencyInjection;
-using MoneyManager.Application.DTO.Accounts;
-using MoneyManager.Application.DTO.Brokers;
-using MoneyManager.Application.Interfaces.Accounts;
-using MoneyManager.Application.Interfaces.Brokers;
-using MoneyManager.Application.Tests.Fixtures;
-using MoneyManager.Infrastructure.Constants;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Audex.Application.DTO.Accounts;
+using Audex.Application.DTO.Brokers;
+using Audex.Application.Interfaces.Accounts;
+using Audex.Application.Interfaces.Brokers;
+using Audex.Application.Tests.Fixtures;
+using Audex.Infrastructure.Constants;
 
-namespace MoneyManager.Application.Tests.Services.Brokers
+namespace Audex.Application.Tests.Services.Brokers
 {
     public class BrokerAccountSummaryServiceTests : TestBase
     {

@@ -1,13 +1,13 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using MoneyManager.Application.Enums.Scheduler;
-using MoneyManager.Application.Interfaces.Auth;
-using MoneyManager.Application.Interfaces.Notifications;
-using MoneyManager.Application.Jobs;
-using MoneyManager.Application.Tests.Fixtures;
+using Audex.Application.Enums.Scheduler;
+using Audex.Application.Interfaces.Auth;
+using Audex.Application.Interfaces.Notifications;
+using Audex.Application.Jobs;
+using Audex.Application.Tests.Fixtures;
 using Xunit;
 
-namespace MoneyManager.Application.Tests.Jobs
+namespace Audex.Application.Tests.Jobs
 {
     [Trait("Category", "Auth")]
     public class CleanUpExpiredRefreshTokensJobTests : TestBase

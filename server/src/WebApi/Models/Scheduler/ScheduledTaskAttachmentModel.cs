@@ -1,6 +1,6 @@
-using System;
+﻿using System;
 
-namespace MoneyManager.WebApi.Models.Scheduler
+namespace Audex.WebApi.Models.Scheduler
 {
     public class ScheduledTaskAttachmentModel
     {

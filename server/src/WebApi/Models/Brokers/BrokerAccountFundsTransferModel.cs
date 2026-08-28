@@ -1,8 +1,8 @@
 ﻿using System;
-using MoneyManager.Shared.Entities;
-using MoneyManager.WebApi.Models.Accounts;
+using Audex.Shared.Entities;
+using Audex.WebApi.Models.Accounts;
 
-namespace MoneyManager.WebApi.Models.Brokers
+namespace Audex.WebApi.Models.Brokers
 {
     public class BrokerAccountFundsTransferModel: BaseEntity
     {

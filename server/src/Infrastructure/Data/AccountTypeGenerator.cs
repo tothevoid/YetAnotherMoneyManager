@@ -1,8 +1,8 @@
-﻿using MoneyManager.Infrastructure.Constants;
-using MoneyManager.Infrastructure.Entities.Accounts;
-using MoneyManager.Infrastructure.Interfaces.Utilitary;
+﻿using Audex.Infrastructure.Constants;
+using Audex.Infrastructure.Entities.Accounts;
+using Audex.Infrastructure.Interfaces.Utilitary;
 
-namespace MoneyManager.Infrastructure.Data
+namespace Audex.Infrastructure.Data
 {
     public class AccountTypeGenerator: IDataGenerator<AccountType>
     {

@@ -1,15 +1,15 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using MoneyManager.Application.Constants;
-using MoneyManager.Application.Services.Localization;
+using Audex.Application.Constants;
+using Audex.Application.Services.Localization;
 using Xunit;
 
-namespace MoneyManager.Application.Tests.Services.Localization
+namespace Audex.Application.Tests.Services.Localization
 {
     public class LocalizationIntegrityTests
     {

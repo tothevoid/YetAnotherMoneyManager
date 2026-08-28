@@ -1,7 +1,7 @@
-#nullable enable
+﻿#nullable enable
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.Interfaces.DatabaseBackup
+namespace Audex.Application.Interfaces.DatabaseBackup
 {
     public interface IBackupEncryptionService
     {

@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using MoneyManager.Application.Enums.Scheduler;
+using Audex.Application.Enums.Scheduler;
 
-namespace MoneyManager.Application.DTO.Scheduler
+namespace Audex.Application.DTO.Scheduler
 {
     public class ScheduledTaskJournalDto
     {

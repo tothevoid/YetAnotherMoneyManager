@@ -1,8 +1,8 @@
-﻿using MoneyManager.Infrastructure.Entities.Securities;
-using MoneyManager.Shared.Entities;
+﻿using Audex.Infrastructure.Entities.Securities;
+using Audex.Shared.Entities;
 using System;
 
-namespace MoneyManager.WebApi.Models.Securities
+namespace Audex.WebApi.Models.Securities
 {
     public class DividendModel : BaseEntity
     {

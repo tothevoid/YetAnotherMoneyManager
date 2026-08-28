@@ -1,9 +1,9 @@
-using MoneyManager.Application.Enums.Auth;
-using MoneyManager.Application.Interfaces.Auth;
-using MoneyManager.Application.Services.Auth;
+﻿using Audex.Application.Enums.Auth;
+using Audex.Application.Interfaces.Auth;
+using Audex.Application.Services.Auth;
 using Xunit;
 
-namespace MoneyManager.Application.Tests.Services.Auth
+namespace Audex.Application.Tests.Services.Auth
 {
     [Trait("Category", "Auth")]
     public class PasswordHasherServiceTests

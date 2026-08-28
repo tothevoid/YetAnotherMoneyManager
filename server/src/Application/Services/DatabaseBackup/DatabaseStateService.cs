@@ -1,12 +1,12 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using MoneyManager.Application.Interfaces.DatabaseBackup;
+using Audex.Application.Interfaces.DatabaseBackup;
 
-namespace MoneyManager.Application.Services.DatabaseBackup
+namespace Audex.Application.Services.DatabaseBackup
 {
     public class DatabaseStateService : IDatabaseStateService
     {

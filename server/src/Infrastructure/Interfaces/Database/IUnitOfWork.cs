@@ -1,8 +1,8 @@
-using System.Threading.Tasks;
-using MoneyManager.Infrastructure.Interfaces.Repositories;
-using MoneyManager.Shared.Entities;
+﻿using System.Threading.Tasks;
+using Audex.Infrastructure.Interfaces.Repositories;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.Infrastructure.Interfaces.Database
+namespace Audex.Infrastructure.Interfaces.Database
 {
     public interface IUnitOfWork
     {

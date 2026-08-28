@@ -1,8 +1,8 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using MoneyManager.Infrastructure.Entities.Notifications;
+using Audex.Infrastructure.Entities.Notifications;
 
-namespace MoneyManager.Infrastructure.Configurations.Notifications
+namespace Audex.Infrastructure.Configurations.Notifications
 {
     public class NotificationConfiguration : IEntityTypeConfiguration<Notification>
     {

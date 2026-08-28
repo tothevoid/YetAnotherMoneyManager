@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MoneyManager.WebApi.Models.Deposits.Charts
+namespace Audex.WebApi.Models.Deposits.Charts
 {
     public class DepositPayment
     {

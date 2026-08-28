@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MoneyManager.Application.Integrations.Stock.Moex.Model
+namespace Audex.Application.Integrations.Stock.Moex.Model
 {
     public class MoexResponse
     {

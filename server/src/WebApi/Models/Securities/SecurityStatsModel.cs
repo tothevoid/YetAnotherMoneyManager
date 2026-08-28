@@ -1,4 +1,4 @@
-﻿namespace MoneyManager.WebApi.Models.Securities
+﻿namespace Audex.WebApi.Models.Securities
 {
     public class SecurityStatsModel
     {

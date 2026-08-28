@@ -1,7 +1,7 @@
-using System;
-using MoneyManager.Shared.Entities;
+﻿using System;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.WebApi.Models.Debts
+namespace Audex.WebApi.Models.Debts
 {
     public class DebtTagModel : BaseEntity
     {

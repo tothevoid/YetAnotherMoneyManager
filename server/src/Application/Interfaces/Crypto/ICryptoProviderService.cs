@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MoneyManager.Application.DTO.Crypto;
+using Audex.Application.DTO.Crypto;
 
-namespace MoneyManager.Application.Interfaces.Crypto
+namespace Audex.Application.Interfaces.Crypto
 {
     public interface ICryptoProviderService
     {

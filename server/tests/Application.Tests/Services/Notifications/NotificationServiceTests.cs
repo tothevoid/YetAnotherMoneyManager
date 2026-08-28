@@ -1,13 +1,13 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using MoneyManager.Application.Interfaces.Notifications;
-using MoneyManager.Application.Tests.Fixtures;
-using MoneyManager.Infrastructure.Entities.Notifications;
+using Audex.Application.Interfaces.Notifications;
+using Audex.Application.Tests.Fixtures;
+using Audex.Infrastructure.Entities.Notifications;
 using Xunit;
 
-namespace MoneyManager.Application.Tests.Services.Notifications
+namespace Audex.Application.Tests.Services.Notifications
 {
     public class NotificationServiceTests : TestBase
     {

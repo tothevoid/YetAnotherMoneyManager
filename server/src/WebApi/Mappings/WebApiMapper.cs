@@ -1,37 +1,37 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Riok.Mapperly.Abstractions;
-using MoneyManager.Application.DTO;
-using MoneyManager.Application.DTO.Accounts;
-using MoneyManager.Application.DTO.Banks;
-using MoneyManager.Application.DTO.Brokers;
-using MoneyManager.Application.DTO.Common;
-using MoneyManager.Application.DTO.Crypto;
-using MoneyManager.Application.DTO.Currencies;
-using MoneyManager.Application.DTO.Dashboard;
-using MoneyManager.Application.DTO.Debts;
-using MoneyManager.Application.DTO.Deposits;
-using MoneyManager.Application.DTO.Notifications;
-using MoneyManager.Application.DTO.Securities;
-using MoneyManager.Application.DTO.Transactions;
-using MoneyManager.Application.DTO.User;
-using MoneyManager.WebApi.Models.Accounts;
-using MoneyManager.WebApi.Models.Auth;
-using MoneyManager.WebApi.Models.Banks;
-using MoneyManager.WebApi.Models.Brokers;
-using MoneyManager.WebApi.Models.Common;
-using MoneyManager.WebApi.Models.Crypto;
-using MoneyManager.WebApi.Models.Currencies;
-using MoneyManager.WebApi.Models.Dashboard;
-using MoneyManager.WebApi.Models.Debts;
-using MoneyManager.WebApi.Models.Deposits;
-using MoneyManager.WebApi.Models.Deposits.Charts;
-using MoneyManager.WebApi.Models.Notifications;
-using MoneyManager.WebApi.Models.Securities;
-using MoneyManager.WebApi.Models.Transactions;
-using MoneyManager.WebApi.Models.User;
-using MoneyManager.WebApi.Models.Scheduler;
+using Audex.Application.DTO;
+using Audex.Application.DTO.Accounts;
+using Audex.Application.DTO.Banks;
+using Audex.Application.DTO.Brokers;
+using Audex.Application.DTO.Common;
+using Audex.Application.DTO.Crypto;
+using Audex.Application.DTO.Currencies;
+using Audex.Application.DTO.Dashboard;
+using Audex.Application.DTO.Debts;
+using Audex.Application.DTO.Deposits;
+using Audex.Application.DTO.Notifications;
+using Audex.Application.DTO.Securities;
+using Audex.Application.DTO.Transactions;
+using Audex.Application.DTO.User;
+using Audex.WebApi.Models.Accounts;
+using Audex.WebApi.Models.Auth;
+using Audex.WebApi.Models.Banks;
+using Audex.WebApi.Models.Brokers;
+using Audex.WebApi.Models.Common;
+using Audex.WebApi.Models.Crypto;
+using Audex.WebApi.Models.Currencies;
+using Audex.WebApi.Models.Dashboard;
+using Audex.WebApi.Models.Debts;
+using Audex.WebApi.Models.Deposits;
+using Audex.WebApi.Models.Deposits.Charts;
+using Audex.WebApi.Models.Notifications;
+using Audex.WebApi.Models.Securities;
+using Audex.WebApi.Models.Transactions;
+using Audex.WebApi.Models.User;
+using Audex.WebApi.Models.Scheduler;
 
-namespace MoneyManager.WebApi.Mappings
+namespace Audex.WebApi.Mappings
 {
     // EF navigation properties will be ignored by the mapper so RequiredMappingStrategy = None is ok.
     [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.None)]
@@ -221,20 +221,20 @@ namespace MoneyManager.WebApi.Mappings
         public partial NotificationModel Map(NotificationDto dto);
         public partial IEnumerable<NotificationModel> Map(IEnumerable<NotificationDto> dtos);
 
-        public partial ScheduledTaskDefinitionModel Map(MoneyManager.Application.DTO.Scheduler.ScheduledTaskDefinitionDto dto);
-        public partial IEnumerable<ScheduledTaskDefinitionModel> Map(IEnumerable<MoneyManager.Application.DTO.Scheduler.ScheduledTaskDefinitionDto> dtos);
+        public partial ScheduledTaskDefinitionModel Map(Audex.Application.DTO.Scheduler.ScheduledTaskDefinitionDto dto);
+        public partial IEnumerable<ScheduledTaskDefinitionModel> Map(IEnumerable<Audex.Application.DTO.Scheduler.ScheduledTaskDefinitionDto> dtos);
 
-        public partial MoneyManager.Application.DTO.Scheduler.CreateScheduledTaskDto Map(MoneyManager.WebApi.Models.Scheduler.CreateScheduledTaskModel model);
+        public partial Audex.Application.DTO.Scheduler.CreateScheduledTaskDto Map(Audex.WebApi.Models.Scheduler.CreateScheduledTaskModel model);
 
-        public partial ScheduledTaskModel Map(MoneyManager.Application.DTO.Scheduler.ScheduledTaskDto dto);
-        public partial IEnumerable<ScheduledTaskModel> Map(IEnumerable<MoneyManager.Application.DTO.Scheduler.ScheduledTaskDto> dtos);
+        public partial ScheduledTaskModel Map(Audex.Application.DTO.Scheduler.ScheduledTaskDto dto);
+        public partial IEnumerable<ScheduledTaskModel> Map(IEnumerable<Audex.Application.DTO.Scheduler.ScheduledTaskDto> dtos);
 
-        public partial ScheduledTaskJournalModel Map(MoneyManager.Application.DTO.Scheduler.ScheduledTaskJournalDto dto);
-        public partial IEnumerable<ScheduledTaskJournalModel> Map(IEnumerable<MoneyManager.Application.DTO.Scheduler.ScheduledTaskJournalDto> dtos);
+        public partial ScheduledTaskJournalModel Map(Audex.Application.DTO.Scheduler.ScheduledTaskJournalDto dto);
+        public partial IEnumerable<ScheduledTaskJournalModel> Map(IEnumerable<Audex.Application.DTO.Scheduler.ScheduledTaskJournalDto> dtos);
 
-        public partial ScheduledTaskAttachmentModel Map(MoneyManager.Application.DTO.Scheduler.ScheduledTaskAttachmentDto dto);
-        public partial IEnumerable<ScheduledTaskAttachmentModel> Map(IEnumerable<MoneyManager.Application.DTO.Scheduler.ScheduledTaskAttachmentDto> dtos);
+        public partial ScheduledTaskAttachmentModel Map(Audex.Application.DTO.Scheduler.ScheduledTaskAttachmentDto dto);
+        public partial IEnumerable<ScheduledTaskAttachmentModel> Map(IEnumerable<Audex.Application.DTO.Scheduler.ScheduledTaskAttachmentDto> dtos);
 
-        public partial MoneyManager.Application.DTO.Scheduler.UpdateScheduleDto Map(MoneyManager.WebApi.Models.Scheduler.UpdateScheduleModel model);
+        public partial Audex.Application.DTO.Scheduler.UpdateScheduleDto Map(Audex.WebApi.Models.Scheduler.UpdateScheduleModel model);
     }
 }

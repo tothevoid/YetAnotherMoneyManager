@@ -1,9 +1,9 @@
-using System;
-using MoneyManager.Shared.Entities;
-using MoneyManager.WebApi.Models.Currencies;
+﻿using System;
+using Audex.Shared.Entities;
+using Audex.WebApi.Models.Currencies;
 using System.Collections.Generic;
 
-namespace MoneyManager.WebApi.Models.Debts
+namespace Audex.WebApi.Models.Debts
 {
     public class DebtModel: BaseEntity
     {

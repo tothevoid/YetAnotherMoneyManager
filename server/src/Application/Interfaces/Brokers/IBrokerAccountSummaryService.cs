@@ -1,12 +1,12 @@
-using MoneyManager.Application.DTO.Brokers;
-using MoneyManager.Application.Services.Brokers;
+﻿using Audex.Application.DTO.Brokers;
+using Audex.Application.Services.Brokers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.Interfaces.Brokers
+namespace Audex.Application.Interfaces.Brokers
 {
     public interface IBrokerAccountSummaryService
     {

@@ -1,8 +1,8 @@
 ﻿using System;
-using MoneyManager.Infrastructure.Entities.Securities;
-using MoneyManager.Shared.Entities;
+using Audex.Infrastructure.Entities.Securities;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.Infrastructure.Entities.Brokers
+namespace Audex.Infrastructure.Entities.Brokers
 {
     public class DividendPayment: BaseEntity
     {

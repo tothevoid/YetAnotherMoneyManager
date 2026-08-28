@@ -1,4 +1,4 @@
-﻿namespace MoneyManager.WebApi.Models.Auth
+﻿namespace Audex.WebApi.Models.Auth
 {
     public class ChangePasswordModel
     {

@@ -1,16 +1,16 @@
-using System;
+﻿using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using MoneyManager.Infrastructure.Database;
-using MoneyManager.Infrastructure.Messages;
+using Audex.Infrastructure.Database;
+using Audex.Infrastructure.Messages;
 using TickerQ.DependencyInjection;
 using Microsoft.AspNetCore.Http;
-using MoneyManager.Application.Extensions;
-using MoneyManager.Infrastructure.Extensions;
-using MoneyManager.WebApi.Extensions;
+using Audex.Application.Extensions;
+using Audex.Infrastructure.Extensions;
+using Audex.WebApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,7 +62,7 @@ app.UseRouting();
 
 app.UseCors("AllowReactApp");
 
-app.UseMiddleware<MoneyManager.WebApi.Middlewares.DatabaseMaintenanceMiddleware>();
+app.UseMiddleware<Audex.WebApi.Middlewares.DatabaseMaintenanceMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();

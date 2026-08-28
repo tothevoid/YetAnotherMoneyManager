@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
@@ -7,13 +7,13 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using DocumentFormat.OpenXml.Drawing.Charts;
-using MoneyManager.Application.DTO.Securities;
-using MoneyManager.Application.Integrations.Stock.Moex.Model;
-using MoneyManager.Application.Interfaces.Integrations.Stock;
-using MoneyManager.Application.Interfaces.Securities;
-using MoneyManager.Infrastructure.Constants;
+using Audex.Application.DTO.Securities;
+using Audex.Application.Integrations.Stock.Moex.Model;
+using Audex.Application.Interfaces.Integrations.Stock;
+using Audex.Application.Interfaces.Securities;
+using Audex.Infrastructure.Constants;
 
-namespace MoneyManager.Application.Integrations.Stock.Moex
+namespace Audex.Application.Integrations.Stock.Moex
 {
     public class MoexConnector(IHttpClientFactory httpClientFactory) : IStockConnector
     {

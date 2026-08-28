@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.Linq;
 using Cronos;
 using CronosExpression = Cronos.CronExpression;
 using CronExpression = TickerQ.Utilities.CronExpression;
 
-namespace MoneyManager.Application.Utilities.Scheduler
+namespace Audex.Application.Utilities.Scheduler
 {
     public static class CronExpressionHelper
     {

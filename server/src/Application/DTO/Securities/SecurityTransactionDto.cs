@@ -1,8 +1,8 @@
-using System;
-using MoneyManager.Application.DTO.Brokers;
-using MoneyManager.Shared.Entities;
+﻿using System;
+using Audex.Application.DTO.Brokers;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.Application.DTO.Securities
+namespace Audex.Application.DTO.Securities
 {
     public class SecurityTransactionDto: BaseEntity
     {

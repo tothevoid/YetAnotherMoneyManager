@@ -1,10 +1,10 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using MoneyManager.Application.Interfaces.Reports;
+using Audex.Application.Interfaces.Reports;
 using System;
 
-namespace MoneyManager.WebApi.Controllers.Reports
+namespace Audex.WebApi.Controllers.Reports
 {
     [ApiController]
     [Route("[controller]")]

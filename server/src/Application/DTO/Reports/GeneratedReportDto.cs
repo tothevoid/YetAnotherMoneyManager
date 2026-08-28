@@ -1,4 +1,4 @@
-namespace MoneyManager.Application.DTO.Reports
+﻿namespace Audex.Application.DTO.Reports
 {
     public class GeneratedReportDto
     {

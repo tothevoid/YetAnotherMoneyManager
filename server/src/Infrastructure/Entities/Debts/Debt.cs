@@ -1,10 +1,10 @@
-using System;
-using MoneyManager.Infrastructure.Entities.Brokers;
+﻿using System;
+using Audex.Infrastructure.Entities.Brokers;
 using System.Collections.Generic;
-using MoneyManager.Infrastructure.Entities.Currencies;
-using MoneyManager.Shared.Entities;
+using Audex.Infrastructure.Entities.Currencies;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.Infrastructure.Entities.Debts
+namespace Audex.Infrastructure.Entities.Debts
 {
     public class Debt: BaseEntity
     {

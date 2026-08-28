@@ -8,6 +8,8 @@
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <RootNamespace>Audex.Application.Tests</RootNamespace>
+    <AssemblyName>Audex.Application.Tests</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,15 +20,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application\MoneyManager.Application.csproj" />
-    <ProjectReference Include="..\Infrastructure\MoneyManager.Infrastructure.csproj" />
-    <ProjectReference Include="..\MoneyManager.Tests.Shared\MoneyManager.Tests.Shared.csproj" />
+    <ProjectReference Include="..\..\src\Application\Application.csproj" />
+    <ProjectReference Include="..\..\src\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\Tests.Shared\Tests.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />
-    <Using Include="MoneyManager.Tests.Shared" />
-    <Using Include="MoneyManager.Tests.Shared.Fixtures" />
+    <Using Include="Audex.Tests.Shared" />
+    <Using Include="Audex.Tests.Shared.Fixtures" />
   </ItemGroup>
 
 </Project>

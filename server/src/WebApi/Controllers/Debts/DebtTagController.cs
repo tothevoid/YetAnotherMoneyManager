@@ -1,14 +1,14 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MoneyManager.Application.DTO.Debts;
-using MoneyManager.Application.Interfaces.Debts;
-using MoneyManager.WebApi.Mappings;
-using MoneyManager.WebApi.Models.Debts;
+using Audex.Application.DTO.Debts;
+using Audex.Application.Interfaces.Debts;
+using Audex.WebApi.Mappings;
+using Audex.WebApi.Models.Debts;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace MoneyManager.WebApi.Controllers.Debts
+namespace Audex.WebApi.Controllers.Debts
 {
     [Produces("application/json")]
     [Route("[controller]")]

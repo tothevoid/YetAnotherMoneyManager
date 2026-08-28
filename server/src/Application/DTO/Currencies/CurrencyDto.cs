@@ -1,7 +1,7 @@
-using System;
-using MoneyManager.Shared.Entities;
+﻿using System;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.Application.DTO.Currencies
+namespace Audex.Application.DTO.Currencies
 {
     public class CurrencyDto : BaseEntity
     {

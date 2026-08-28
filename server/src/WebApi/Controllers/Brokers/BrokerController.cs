@@ -1,14 +1,14 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
-using MoneyManager.Application.DTO.Brokers;
-using MoneyManager.Application.Interfaces.Brokers;
-using MoneyManager.WebApi.Mappings;
-using MoneyManager.WebApi.Models.Brokers;
+using Audex.Application.DTO.Brokers;
+using Audex.Application.Interfaces.Brokers;
+using Audex.WebApi.Mappings;
+using Audex.WebApi.Models.Brokers;
 using Microsoft.AspNetCore.Authorization;
 
-namespace MoneyManager.WebApi.Controllers.Brokers
+namespace Audex.WebApi.Controllers.Brokers
 {
     [Produces("application/json")]
     [Route("[controller]")]

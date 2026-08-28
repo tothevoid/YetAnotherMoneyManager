@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.Integrations.Currency.Models
+namespace Audex.Application.Integrations.Currency.Models
 {
     public class CbrCurrencyResponse
     {

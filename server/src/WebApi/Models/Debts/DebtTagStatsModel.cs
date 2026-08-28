@@ -1,6 +1,6 @@
-using System;
+﻿using System;
 
-namespace MoneyManager.WebApi.Models.Debts
+namespace Audex.WebApi.Models.Debts
 {
     public class DebtTagStatsModel
     {

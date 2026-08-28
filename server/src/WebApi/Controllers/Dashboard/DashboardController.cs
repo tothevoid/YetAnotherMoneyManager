@@ -1,11 +1,11 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using MoneyManager.Application.Interfaces.Dashboard;
-using MoneyManager.WebApi.Mappings;
-using MoneyManager.WebApi.Models.Dashboard;
+using Audex.Application.Interfaces.Dashboard;
+using Audex.WebApi.Mappings;
+using Audex.WebApi.Models.Dashboard;
 using Microsoft.AspNetCore.Authorization;
 
-namespace MoneyManager.WebApi.Controllers.Dashboard
+namespace Audex.WebApi.Controllers.Dashboard
 {
     [Produces("application/json")]
     [Route("[controller]")]

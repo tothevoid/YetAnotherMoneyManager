@@ -1,10 +1,10 @@
-using MoneyManager.Application.DTO.Currencies;
-using MoneyManager.Infrastructure.Entities.Banks;
-using MoneyManager.Shared.Entities;
+﻿using Audex.Application.DTO.Currencies;
+using Audex.Infrastructure.Entities.Banks;
+using Audex.Shared.Entities;
 using System;
-using MoneyManager.Application.DTO.Banks;
+using Audex.Application.DTO.Banks;
 
-namespace MoneyManager.Application.DTO.Deposits
+namespace Audex.Application.DTO.Deposits
 {
     public class DepositDto : BaseEntity
     {

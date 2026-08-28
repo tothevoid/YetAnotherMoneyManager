@@ -1,13 +1,13 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using MoneyManager.Infrastructure.Database;
-using MoneyManager.Infrastructure.Extensions;
-using MoneyManager.Infrastructure.Interfaces.Database;
-using MoneyManager.Infrastructure.Interfaces.Messages;
+using Audex.Infrastructure.Database;
+using Audex.Infrastructure.Extensions;
+using Audex.Infrastructure.Interfaces.Database;
+using Audex.Infrastructure.Interfaces.Messages;
 using Xunit;
 
-namespace MoneyManager.Infrastructure.Tests.Extensions
+namespace Audex.Infrastructure.Tests.Extensions
 {
     public class DependenciesInjectionTests
     {

@@ -1,7 +1,7 @@
-using System;
-using MoneyManager.Application.Enums.Scheduler;
+﻿using System;
+using Audex.Application.Enums.Scheduler;
 
-namespace MoneyManager.Application.DTO.Scheduler
+namespace Audex.Application.DTO.Scheduler
 {
     public class ScheduledTaskDto
     {

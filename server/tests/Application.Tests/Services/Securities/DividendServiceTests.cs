@@ -1,10 +1,10 @@
-using Microsoft.Extensions.DependencyInjection;
-using MoneyManager.Application.DTO.Securities;
-using MoneyManager.Application.Interfaces.Securities;
-using MoneyManager.Application.Tests.Fixtures;
-using MoneyManager.Infrastructure.Constants;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Audex.Application.DTO.Securities;
+using Audex.Application.Interfaces.Securities;
+using Audex.Application.Tests.Fixtures;
+using Audex.Infrastructure.Constants;
 
-namespace MoneyManager.Application.Tests.Services.Securities
+namespace Audex.Application.Tests.Services.Securities
 {
     public class DividendServiceTests : TestBase
     {

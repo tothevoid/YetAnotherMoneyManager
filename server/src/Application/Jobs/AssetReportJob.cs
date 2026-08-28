@@ -1,24 +1,24 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using MoneyManager.Application.Attributes.Scheduler;
-using MoneyManager.Application.Constants;
-using MoneyManager.Application.DTO.Scheduler;
-using MoneyManager.Application.Enums.Scheduler;
-using MoneyManager.Application.Interfaces.DatabaseBackup;
-using MoneyManager.Application.Interfaces.FileStorage;
-using MoneyManager.Application.Interfaces.Localization;
-using MoneyManager.Application.Interfaces.Notifications;
-using MoneyManager.Application.Interfaces.Reports;
-using MoneyManager.Application.Interfaces.Scheduler;
-using MoneyManager.Infrastructure.Constants;
-using MoneyManager.Infrastructure.Entities.Notifications;
-using MoneyManager.Infrastructure.Entities.Scheduler;
-using MoneyManager.Infrastructure.Interfaces.Messages;
+using Audex.Application.Attributes.Scheduler;
+using Audex.Application.Constants;
+using Audex.Application.DTO.Scheduler;
+using Audex.Application.Enums.Scheduler;
+using Audex.Application.Interfaces.DatabaseBackup;
+using Audex.Application.Interfaces.FileStorage;
+using Audex.Application.Interfaces.Localization;
+using Audex.Application.Interfaces.Notifications;
+using Audex.Application.Interfaces.Reports;
+using Audex.Application.Interfaces.Scheduler;
+using Audex.Infrastructure.Constants;
+using Audex.Infrastructure.Entities.Notifications;
+using Audex.Infrastructure.Entities.Scheduler;
+using Audex.Infrastructure.Interfaces.Messages;
 using TickerQ.Utilities.Base;
 
-namespace MoneyManager.Application.Jobs
+namespace Audex.Application.Jobs
 {
     [ScheduledJob(
         taskName: "GenerateAllAssetsReport",

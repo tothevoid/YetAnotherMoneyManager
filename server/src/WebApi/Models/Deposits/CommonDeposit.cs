@@ -1,7 +1,7 @@
 ﻿using System;
-using MoneyManager.Shared.Entities;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.WebApi.Models.Deposits
+namespace Audex.WebApi.Models.Deposits
 {
     public class CommonDeposit: BaseEntity
     {

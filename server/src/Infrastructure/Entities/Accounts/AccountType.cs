@@ -1,7 +1,7 @@
-﻿using MoneyManager.Shared.Entities;
+﻿using Audex.Shared.Entities;
 using System.Collections.Generic;
 
-namespace MoneyManager.Infrastructure.Entities.Accounts
+namespace Audex.Infrastructure.Entities.Accounts
 {
     public class AccountType : BaseEntity
     {

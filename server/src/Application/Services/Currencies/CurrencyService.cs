@@ -1,18 +1,18 @@
-using MoneyManager.Application.DTO.Currencies;
-using MoneyManager.Application.Interfaces.Currencies;
-using MoneyManager.Application.Mappings;
-using MoneyManager.Infrastructure.Entities.Currencies;
-using MoneyManager.Infrastructure.Interfaces.Database;
+﻿using Audex.Application.DTO.Currencies;
+using Audex.Application.Interfaces.Currencies;
+using Audex.Application.Mappings;
+using Audex.Infrastructure.Entities.Currencies;
+using Audex.Infrastructure.Interfaces.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MoneyManager.Application.DTO;
-using MoneyManager.Application.Interfaces.Integrations.Currency;
-using MoneyManager.Application.Interfaces.User;
-using MoneyManager.Infrastructure.Entities.User;
+using Audex.Application.DTO;
+using Audex.Application.Interfaces.Integrations.Currency;
+using Audex.Application.Interfaces.User;
+using Audex.Infrastructure.Entities.User;
 
-namespace MoneyManager.Application.Services.Currencies
+namespace Audex.Application.Services.Currencies
 {
     public class CurrencyService: ICurrencyService
     {

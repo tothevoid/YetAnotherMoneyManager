@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.Interfaces.Securities
+namespace Audex.Application.Interfaces.Securities
 {
     public interface IPullQuotationsService
     {

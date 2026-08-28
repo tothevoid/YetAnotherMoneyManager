@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using MoneyManager.Infrastructure.Database;
+using Audex.Infrastructure.Database;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace MoneyManager.Infrastructure.Migrations
+namespace Audex.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20251012094907_AddedTransferDate")]
@@ -25,7 +25,7 @@ namespace MoneyManager.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Accounts.Account", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Accounts.Account", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -58,7 +58,7 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.ToTable("Account");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Accounts.AccountType", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Accounts.AccountType", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -95,7 +95,7 @@ namespace MoneyManager.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Brokers.Broker", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Brokers.Broker", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -109,7 +109,7 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.ToTable("Broker");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Brokers.BrokerAccount", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Brokers.BrokerAccount", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -141,7 +141,7 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.ToTable("BrokerAccount");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Brokers.BrokerAccountFundsTransfer", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Brokers.BrokerAccountFundsTransfer", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -171,7 +171,7 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.ToTable("BrokerAccountFundsTransfer");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Brokers.BrokerAccountSecurity", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Brokers.BrokerAccountSecurity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -198,7 +198,7 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.ToTable("BrokerAccountSecurity");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Brokers.BrokerAccountType", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Brokers.BrokerAccountType", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -212,7 +212,7 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.ToTable("BrokerAccountType");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Brokers.DividendPayment", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Brokers.DividendPayment", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -242,7 +242,7 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.ToTable("DividendPayment");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Crypto.CryptoAccount", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Crypto.CryptoAccount", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -261,7 +261,7 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.ToTable("CryptoAccount");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Crypto.CryptoAccountCryptocurrency", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Crypto.CryptoAccountCryptocurrency", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -285,7 +285,7 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.ToTable("CryptoAccountCryptocurrency");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Crypto.CryptoProvider", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Crypto.CryptoProvider", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -299,7 +299,7 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.ToTable("CryptoProvider");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Crypto.Cryptocurrency", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Crypto.Cryptocurrency", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -322,7 +322,7 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.ToTable("Cryptocurrency");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Currencies.Currency", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Currencies.Currency", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -365,7 +365,7 @@ namespace MoneyManager.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Debts.Debt", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Debts.Debt", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -390,7 +390,7 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.ToTable("Debt");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Debts.DebtPayment", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Debts.DebtPayment", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -417,7 +417,7 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.ToTable("DebtPayment");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Deposits.Deposit", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Deposits.Deposit", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -451,7 +451,7 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.ToTable("Deposit");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Securities.Dividend", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Securities.Dividend", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -476,7 +476,7 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.ToTable("Dividend");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Securities.Security", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Securities.Security", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -512,7 +512,7 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.ToTable("Security");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Securities.SecurityTransaction", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Securities.SecurityTransaction", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -551,7 +551,7 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.ToTable("SecurityTransaction");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Securities.SecurityType", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Securities.SecurityType", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -587,7 +587,7 @@ namespace MoneyManager.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Transactions.CurrencyTransaction", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Transactions.CurrencyTransaction", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -617,7 +617,7 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.ToTable("CurrencyTransaction");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Transactions.Transaction", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Transactions.Transaction", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -653,7 +653,7 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.ToTable("Transaction");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Transactions.TransactionType", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Transactions.TransactionType", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -681,7 +681,7 @@ namespace MoneyManager.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.User.UserProfile", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.User.UserProfile", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -708,15 +708,15 @@ namespace MoneyManager.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Accounts.Account", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Accounts.Account", b =>
                 {
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Accounts.AccountType", "AccountType")
+                    b.HasOne("Audex.Infrastructure.Entities.Accounts.AccountType", "AccountType")
                         .WithMany("Accounts")
                         .HasForeignKey("AccountTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Currencies.Currency", "Currency")
+                    b.HasOne("Audex.Infrastructure.Entities.Currencies.Currency", "Currency")
                         .WithMany("Accounts")
                         .HasForeignKey("CurrencyId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -727,21 +727,21 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.Navigation("Currency");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Brokers.BrokerAccount", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Brokers.BrokerAccount", b =>
                 {
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Brokers.Broker", "Broker")
+                    b.HasOne("Audex.Infrastructure.Entities.Brokers.Broker", "Broker")
                         .WithMany("BrokerAccounts")
                         .HasForeignKey("BrokerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Currencies.Currency", "Currency")
+                    b.HasOne("Audex.Infrastructure.Entities.Currencies.Currency", "Currency")
                         .WithMany("BrokerAccounts")
                         .HasForeignKey("CurrencyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Brokers.BrokerAccountType", "Type")
+                    b.HasOne("Audex.Infrastructure.Entities.Brokers.BrokerAccountType", "Type")
                         .WithMany("BrokerAccounts")
                         .HasForeignKey("TypeId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -754,15 +754,15 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.Navigation("Type");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Brokers.BrokerAccountFundsTransfer", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Brokers.BrokerAccountFundsTransfer", b =>
                 {
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Accounts.Account", "Account")
+                    b.HasOne("Audex.Infrastructure.Entities.Accounts.Account", "Account")
                         .WithMany("BrokerAccountFundsTransfers")
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Brokers.BrokerAccount", "BrokerAccount")
+                    b.HasOne("Audex.Infrastructure.Entities.Brokers.BrokerAccount", "BrokerAccount")
                         .WithMany("BrokerAccountFundsTransfers")
                         .HasForeignKey("BrokerAccountId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -773,15 +773,15 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.Navigation("BrokerAccount");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Brokers.BrokerAccountSecurity", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Brokers.BrokerAccountSecurity", b =>
                 {
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Brokers.BrokerAccount", "BrokerAccount")
+                    b.HasOne("Audex.Infrastructure.Entities.Brokers.BrokerAccount", "BrokerAccount")
                         .WithMany("BrokerAccountSecurities")
                         .HasForeignKey("BrokerAccountId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Securities.Security", "Security")
+                    b.HasOne("Audex.Infrastructure.Entities.Securities.Security", "Security")
                         .WithMany("BrokerAccountSecurities")
                         .HasForeignKey("SecurityId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -792,15 +792,15 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.Navigation("Security");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Brokers.DividendPayment", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Brokers.DividendPayment", b =>
                 {
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Brokers.BrokerAccount", "BrokerAccount")
+                    b.HasOne("Audex.Infrastructure.Entities.Brokers.BrokerAccount", "BrokerAccount")
                         .WithMany("DividendPayments")
                         .HasForeignKey("BrokerAccountId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Securities.Dividend", "Dividend")
+                    b.HasOne("Audex.Infrastructure.Entities.Securities.Dividend", "Dividend")
                         .WithMany("DividendPayments")
                         .HasForeignKey("DividendId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -811,9 +811,9 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.Navigation("Dividend");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Crypto.CryptoAccount", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Crypto.CryptoAccount", b =>
                 {
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Crypto.CryptoProvider", "CryptoProvider")
+                    b.HasOne("Audex.Infrastructure.Entities.Crypto.CryptoProvider", "CryptoProvider")
                         .WithMany("CryptoAccounts")
                         .HasForeignKey("CryptoProviderId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -822,15 +822,15 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.Navigation("CryptoProvider");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Crypto.CryptoAccountCryptocurrency", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Crypto.CryptoAccountCryptocurrency", b =>
                 {
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Crypto.Cryptocurrency", "Cryptocurrency")
+                    b.HasOne("Audex.Infrastructure.Entities.Crypto.Cryptocurrency", "Cryptocurrency")
                         .WithMany("CryptoAccountCryptocurrencies")
                         .HasForeignKey("CrpytocurrencyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Crypto.CryptoAccount", "CryptoAccount")
+                    b.HasOne("Audex.Infrastructure.Entities.Crypto.CryptoAccount", "CryptoAccount")
                         .WithMany("CryptoAccountCryptocurrencies")
                         .HasForeignKey("CryptoAccountId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -841,9 +841,9 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.Navigation("Cryptocurrency");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Debts.Debt", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Debts.Debt", b =>
                 {
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Currencies.Currency", "Currency")
+                    b.HasOne("Audex.Infrastructure.Entities.Currencies.Currency", "Currency")
                         .WithMany("Debts")
                         .HasForeignKey("CurrencyId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -852,15 +852,15 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.Navigation("Currency");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Debts.DebtPayment", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Debts.DebtPayment", b =>
                 {
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Debts.Debt", "Debt")
+                    b.HasOne("Audex.Infrastructure.Entities.Debts.Debt", "Debt")
                         .WithMany("DebtPayments")
                         .HasForeignKey("DebtId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Accounts.Account", "TargetAccount")
+                    b.HasOne("Audex.Infrastructure.Entities.Accounts.Account", "TargetAccount")
                         .WithMany("DebtPayments")
                         .HasForeignKey("TargetAccountId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -871,9 +871,9 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.Navigation("TargetAccount");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Deposits.Deposit", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Deposits.Deposit", b =>
                 {
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Currencies.Currency", "Currency")
+                    b.HasOne("Audex.Infrastructure.Entities.Currencies.Currency", "Currency")
                         .WithMany("Deposits")
                         .HasForeignKey("CurrencyId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -882,9 +882,9 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.Navigation("Currency");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Securities.Dividend", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Securities.Dividend", b =>
                 {
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Securities.Security", "Security")
+                    b.HasOne("Audex.Infrastructure.Entities.Securities.Security", "Security")
                         .WithMany("Dividends")
                         .HasForeignKey("SecurityId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -893,15 +893,15 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.Navigation("Security");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Securities.Security", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Securities.Security", b =>
                 {
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Currencies.Currency", "Currency")
+                    b.HasOne("Audex.Infrastructure.Entities.Currencies.Currency", "Currency")
                         .WithMany("Securities")
                         .HasForeignKey("CurrencyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Securities.SecurityType", "Type")
+                    b.HasOne("Audex.Infrastructure.Entities.Securities.SecurityType", "Type")
                         .WithMany("Securities")
                         .HasForeignKey("TypeId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -912,15 +912,15 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.Navigation("Type");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Securities.SecurityTransaction", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Securities.SecurityTransaction", b =>
                 {
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Brokers.BrokerAccount", "BrokerAccount")
+                    b.HasOne("Audex.Infrastructure.Entities.Brokers.BrokerAccount", "BrokerAccount")
                         .WithMany("SecurityTransactions")
                         .HasForeignKey("BrokerAccountId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Securities.Security", "Security")
+                    b.HasOne("Audex.Infrastructure.Entities.Securities.Security", "Security")
                         .WithMany("SecurityTransactions")
                         .HasForeignKey("SecurityId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -931,15 +931,15 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.Navigation("Security");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Transactions.CurrencyTransaction", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Transactions.CurrencyTransaction", b =>
                 {
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Accounts.Account", "DestinationAccount")
+                    b.HasOne("Audex.Infrastructure.Entities.Accounts.Account", "DestinationAccount")
                         .WithMany("DestinationCurrencyTransactions")
                         .HasForeignKey("DestinationAccountId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Accounts.Account", "SourceAccount")
+                    b.HasOne("Audex.Infrastructure.Entities.Accounts.Account", "SourceAccount")
                         .WithMany("SourceCurrencyTransactions")
                         .HasForeignKey("SourceAccountId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -950,15 +950,15 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.Navigation("SourceAccount");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Transactions.Transaction", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Transactions.Transaction", b =>
                 {
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Accounts.Account", "Account")
+                    b.HasOne("Audex.Infrastructure.Entities.Accounts.Account", "Account")
                         .WithMany("Transactions")
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Transactions.TransactionType", "TransactionType")
+                    b.HasOne("Audex.Infrastructure.Entities.Transactions.TransactionType", "TransactionType")
                         .WithMany("Transactions")
                         .HasForeignKey("TransactionTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -969,9 +969,9 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.Navigation("TransactionType");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.User.UserProfile", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.User.UserProfile", b =>
                 {
-                    b.HasOne("MoneyManager.Infrastructure.Entities.Currencies.Currency", "Currency")
+                    b.HasOne("Audex.Infrastructure.Entities.Currencies.Currency", "Currency")
                         .WithMany("UserProfiles")
                         .HasForeignKey("CurrencyId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -980,7 +980,7 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.Navigation("Currency");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Accounts.Account", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Accounts.Account", b =>
                 {
                     b.Navigation("BrokerAccountFundsTransfers");
 
@@ -993,17 +993,17 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.Navigation("Transactions");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Accounts.AccountType", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Accounts.AccountType", b =>
                 {
                     b.Navigation("Accounts");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Brokers.Broker", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Brokers.Broker", b =>
                 {
                     b.Navigation("BrokerAccounts");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Brokers.BrokerAccount", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Brokers.BrokerAccount", b =>
                 {
                     b.Navigation("BrokerAccountFundsTransfers");
 
@@ -1014,27 +1014,27 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.Navigation("SecurityTransactions");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Brokers.BrokerAccountType", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Brokers.BrokerAccountType", b =>
                 {
                     b.Navigation("BrokerAccounts");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Crypto.CryptoAccount", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Crypto.CryptoAccount", b =>
                 {
                     b.Navigation("CryptoAccountCryptocurrencies");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Crypto.CryptoProvider", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Crypto.CryptoProvider", b =>
                 {
                     b.Navigation("CryptoAccounts");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Crypto.Cryptocurrency", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Crypto.Cryptocurrency", b =>
                 {
                     b.Navigation("CryptoAccountCryptocurrencies");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Currencies.Currency", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Currencies.Currency", b =>
                 {
                     b.Navigation("Accounts");
 
@@ -1049,17 +1049,17 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.Navigation("UserProfiles");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Debts.Debt", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Debts.Debt", b =>
                 {
                     b.Navigation("DebtPayments");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Securities.Dividend", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Securities.Dividend", b =>
                 {
                     b.Navigation("DividendPayments");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Securities.Security", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Securities.Security", b =>
                 {
                     b.Navigation("BrokerAccountSecurities");
 
@@ -1068,12 +1068,12 @@ namespace MoneyManager.Infrastructure.Migrations
                     b.Navigation("SecurityTransactions");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Securities.SecurityType", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Securities.SecurityType", b =>
                 {
                     b.Navigation("Securities");
                 });
 
-            modelBuilder.Entity("MoneyManager.Infrastructure.Entities.Transactions.TransactionType", b =>
+            modelBuilder.Entity("Audex.Infrastructure.Entities.Transactions.TransactionType", b =>
                 {
                     b.Navigation("Transactions");
                 });

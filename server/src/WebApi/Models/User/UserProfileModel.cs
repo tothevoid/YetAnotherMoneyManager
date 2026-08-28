@@ -1,8 +1,8 @@
 ﻿using System;
-using MoneyManager.Shared.Entities;
-using MoneyManager.WebApi.Models.Currencies;
+using Audex.Shared.Entities;
+using Audex.WebApi.Models.Currencies;
 
-namespace MoneyManager.WebApi.Models.User
+namespace Audex.WebApi.Models.User
 {
     public class UserProfileModel: BaseEntity
     {

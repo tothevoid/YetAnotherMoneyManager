@@ -1,12 +1,12 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using MoneyManager.Shared.Entities;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.Infrastructure.Queries
+namespace Audex.Infrastructure.Queries
 {
     public class ComplexQuery<TEntity>
         where TEntity: class

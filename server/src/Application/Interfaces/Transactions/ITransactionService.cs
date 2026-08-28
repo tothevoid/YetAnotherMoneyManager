@@ -1,9 +1,9 @@
-using MoneyManager.Application.DTO.Transactions;
+﻿using Audex.Application.DTO.Transactions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.Interfaces.Transactions
+namespace Audex.Application.Interfaces.Transactions
 {
     public interface ITransactionsService
     {

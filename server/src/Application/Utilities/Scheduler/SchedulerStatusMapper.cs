@@ -1,7 +1,7 @@
-using MoneyManager.Application.Enums.Scheduler;
+﻿using Audex.Application.Enums.Scheduler;
 using TickerQ.Utilities.Enums;
 
-namespace MoneyManager.Application.Utilities.Scheduler
+namespace Audex.Application.Utilities.Scheduler
 {
     public static class SchedulerStatusMapper
     {

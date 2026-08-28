@@ -1,7 +1,7 @@
-﻿using MoneyManager.Application.DTO.Securities;
+﻿using Audex.Application.DTO.Securities;
 using System.Collections.Generic;
 
-namespace MoneyManager.WebApi.Models.Brokers
+namespace Audex.WebApi.Models.Brokers
 {
     public class BrokerAccountSummaryModel
     {

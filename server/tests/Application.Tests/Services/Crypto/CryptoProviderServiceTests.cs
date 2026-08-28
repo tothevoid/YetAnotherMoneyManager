@@ -1,10 +1,10 @@
-using Microsoft.Extensions.DependencyInjection;
-using MoneyManager.Application.Interfaces.Crypto;
-using MoneyManager.Application.Tests.Fixtures;
-using MoneyManager.Application.DTO.Crypto;
-using MoneyManager.Infrastructure.Entities.Crypto;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Audex.Application.Interfaces.Crypto;
+using Audex.Application.Tests.Fixtures;
+using Audex.Application.DTO.Crypto;
+using Audex.Infrastructure.Entities.Crypto;
 
-namespace MoneyManager.Application.Tests.Services.Crypto
+namespace Audex.Application.Tests.Services.Crypto
 {
     public class CryptoProviderServiceTests : TestBase
     {

@@ -1,14 +1,14 @@
-﻿using MoneyManager.Infrastructure.Entities.Brokers;
-using MoneyManager.Infrastructure.Entities.Currencies;
-using MoneyManager.Shared.Entities;
+﻿using Audex.Infrastructure.Entities.Brokers;
+using Audex.Infrastructure.Entities.Currencies;
+using Audex.Shared.Entities;
 using System;
 using System.Collections.Generic;
-using MoneyManager.Infrastructure.Entities.Banks;
-using MoneyManager.Infrastructure.Entities.Debts;
-using MoneyManager.Infrastructure.Entities.Deposits;
-using MoneyManager.Infrastructure.Entities.Transactions;
+using Audex.Infrastructure.Entities.Banks;
+using Audex.Infrastructure.Entities.Debts;
+using Audex.Infrastructure.Entities.Deposits;
+using Audex.Infrastructure.Entities.Transactions;
 
-namespace MoneyManager.Infrastructure.Entities.Accounts
+namespace Audex.Infrastructure.Entities.Accounts
 {
     public class Account : BaseEntity
     {

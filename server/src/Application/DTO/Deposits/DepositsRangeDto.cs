@@ -1,6 +1,6 @@
-using System;
+﻿using System;
 
-namespace MoneyManager.Application.DTO.Deposits
+namespace Audex.Application.DTO.Deposits
 {
     public class DepositsRangeDto
     {

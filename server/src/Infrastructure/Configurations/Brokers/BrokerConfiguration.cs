@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using MoneyManager.Infrastructure.Entities.Accounts;
-using MoneyManager.Infrastructure.Entities.Brokers;
+using Audex.Infrastructure.Entities.Accounts;
+using Audex.Infrastructure.Entities.Brokers;
 
-namespace MoneyManager.Infrastructure.Configurations.Brokers
+namespace Audex.Infrastructure.Configurations.Brokers
 {
     public class BrokerConfiguration: IEntityTypeConfiguration<Broker>
     {

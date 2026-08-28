@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MoneyManager.Infrastructure.Interfaces.Database;
-using MoneyManager.Shared.Entities;
+using Audex.Infrastructure.Interfaces.Database;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.Infrastructure.Database
+namespace Audex.Infrastructure.Database
 {
     public class UnitOfWork : IUnitOfWork
     {

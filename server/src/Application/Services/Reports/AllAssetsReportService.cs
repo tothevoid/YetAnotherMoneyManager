@@ -1,27 +1,27 @@
-using ClosedXML.Excel;
-using MoneyManager.Application.Constants;
-using MoneyManager.Application.DTO.Accounts;
-using MoneyManager.Application.DTO.Banks;
-using MoneyManager.Application.DTO.Dashboard;
-using MoneyManager.Application.DTO.Reports;
-using MoneyManager.Application.Interfaces.Accounts;
-using MoneyManager.Application.Interfaces.Banks;
-using MoneyManager.Application.Interfaces.Brokers;
-using MoneyManager.Application.Interfaces.Currencies;
-using MoneyManager.Application.Interfaces.Dashboard;
-using MoneyManager.Application.Interfaces.Debts;
-using MoneyManager.Application.Interfaces.Deposits;
-using MoneyManager.Application.Interfaces.Localization;
-using MoneyManager.Application.Interfaces.Reports;
-using MoneyManager.Application.Interfaces.Transactions;
-using MoneyManager.Application.Interfaces.User;
-using MoneyManager.Infrastructure.Constants;
+﻿using ClosedXML.Excel;
+using Audex.Application.Constants;
+using Audex.Application.DTO.Accounts;
+using Audex.Application.DTO.Banks;
+using Audex.Application.DTO.Dashboard;
+using Audex.Application.DTO.Reports;
+using Audex.Application.Interfaces.Accounts;
+using Audex.Application.Interfaces.Banks;
+using Audex.Application.Interfaces.Brokers;
+using Audex.Application.Interfaces.Currencies;
+using Audex.Application.Interfaces.Dashboard;
+using Audex.Application.Interfaces.Debts;
+using Audex.Application.Interfaces.Deposits;
+using Audex.Application.Interfaces.Localization;
+using Audex.Application.Interfaces.Reports;
+using Audex.Application.Interfaces.Transactions;
+using Audex.Application.Interfaces.User;
+using Audex.Infrastructure.Constants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.Services.Reports
+namespace Audex.Application.Services.Reports
 {
     public class AllAssetsReportService : IAllAssetsReportService
     {

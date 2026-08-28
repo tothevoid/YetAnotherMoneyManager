@@ -1,14 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using MoneyManager.Infrastructure.Entities.Brokers;
+using Audex.Infrastructure.Entities.Brokers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MoneyManager.Infrastructure.Entities.Banks;
+using Audex.Infrastructure.Entities.Banks;
 
-namespace MoneyManager.Infrastructure.Configurations.Banks
+namespace Audex.Infrastructure.Configurations.Banks
 {
     public class BankConfiguration : IEntityTypeConfiguration<Bank>
     {

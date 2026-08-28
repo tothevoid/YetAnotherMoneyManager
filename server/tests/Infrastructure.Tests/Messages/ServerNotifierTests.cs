@@ -1,9 +1,9 @@
-using Microsoft.AspNetCore.SignalR;
-using MoneyManager.Infrastructure.Messages;
+﻿using Microsoft.AspNetCore.SignalR;
+using Audex.Infrastructure.Messages;
 using NSubstitute;
 using Xunit;
 
-namespace MoneyManager.Infrastructure.Tests.Messages
+namespace Audex.Infrastructure.Tests.Messages
 {
     public class ServerNotifierTests
     {

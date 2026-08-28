@@ -1,6 +1,6 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace MoneyManager.Application.DTO.Deposits
+namespace Audex.Application.DTO.Deposits
 {
     public class PeriodPaymentDto
     {

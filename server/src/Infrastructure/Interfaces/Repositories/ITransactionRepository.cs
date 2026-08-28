@@ -1,9 +1,9 @@
-﻿using MoneyManager.Infrastructure.Entities.Transactions;
-using MoneyManager.Infrastructure.Interfaces.Database;
+﻿using Audex.Infrastructure.Entities.Transactions;
+using Audex.Infrastructure.Interfaces.Database;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Infrastructure.Interfaces.Repositories
+namespace Audex.Infrastructure.Interfaces.Repositories
 {
     public interface ITransactionRepository: IRepository<Transaction>
     {

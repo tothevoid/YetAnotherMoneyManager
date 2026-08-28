@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Infrastructure.Constants
+namespace Audex.Infrastructure.Constants
 {
     public class UserProfileConstants
     {

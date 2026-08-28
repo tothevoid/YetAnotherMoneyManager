@@ -1,14 +1,14 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using MoneyManager.Application.DTO.Debts;
-using MoneyManager.Application.Interfaces.Debts;
-using MoneyManager.Application.Tests.Fixtures;
-using MoneyManager.Infrastructure.Constants;
+using Audex.Application.DTO.Debts;
+using Audex.Application.Interfaces.Debts;
+using Audex.Application.Tests.Fixtures;
+using Audex.Infrastructure.Constants;
 using Xunit;
 
-namespace MoneyManager.Application.Tests.Services.Debts
+namespace Audex.Application.Tests.Services.Debts
 {
     public class DebtTagServiceTests : TestBase
     {

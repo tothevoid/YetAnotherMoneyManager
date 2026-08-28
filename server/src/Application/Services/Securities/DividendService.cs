@@ -1,22 +1,22 @@
-using Microsoft.EntityFrameworkCore;
-using MoneyManager.Application.DTO.Brokers;
-using MoneyManager.Application.DTO.Common;
-using MoneyManager.Application.DTO.Securities;
-using MoneyManager.Application.Interfaces.Securities;
-using MoneyManager.Application.Mappings;
-using MoneyManager.Infrastructure.Entities.Brokers;
-using MoneyManager.Infrastructure.Entities.Debts;
-using MoneyManager.Infrastructure.Entities.Deposits;
-using MoneyManager.Infrastructure.Entities.Securities;
-using MoneyManager.Infrastructure.Interfaces.Database;
-using MoneyManager.Infrastructure.Queries;
+﻿using Microsoft.EntityFrameworkCore;
+using Audex.Application.DTO.Brokers;
+using Audex.Application.DTO.Common;
+using Audex.Application.DTO.Securities;
+using Audex.Application.Interfaces.Securities;
+using Audex.Application.Mappings;
+using Audex.Infrastructure.Entities.Brokers;
+using Audex.Infrastructure.Entities.Debts;
+using Audex.Infrastructure.Entities.Deposits;
+using Audex.Infrastructure.Entities.Securities;
+using Audex.Infrastructure.Interfaces.Database;
+using Audex.Infrastructure.Queries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.Services.Securities
+namespace Audex.Application.Services.Securities
 {
     public class DividendService : IDividendService
     {

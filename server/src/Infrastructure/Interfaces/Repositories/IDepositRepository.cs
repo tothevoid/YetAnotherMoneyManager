@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using MoneyManager.Infrastructure.Entities.Deposits;
-using MoneyManager.Infrastructure.Interfaces.Database;
+using Audex.Infrastructure.Entities.Deposits;
+using Audex.Infrastructure.Interfaces.Database;
 
-namespace MoneyManager.Infrastructure.Interfaces.Repositories
+namespace Audex.Infrastructure.Interfaces.Repositories
 {
     public interface IDepositRepository: IRepository<Deposit>
     {

@@ -1,8 +1,8 @@
-using MoneyManager.Shared.Entities;
-using MoneyManager.WebApi.Models.Accounts;
+﻿using Audex.Shared.Entities;
+using Audex.WebApi.Models.Accounts;
 using System;
 
-namespace MoneyManager.WebApi.Models.Transactions
+namespace Audex.WebApi.Models.Transactions
 {
     public class TransactionModel: BaseEntity
     {

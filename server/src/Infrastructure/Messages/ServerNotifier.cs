@@ -1,8 +1,8 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
-using MoneyManager.Infrastructure.Interfaces.Messages;
+using Audex.Infrastructure.Interfaces.Messages;
 
-namespace MoneyManager.Infrastructure.Messages
+namespace Audex.Infrastructure.Messages
 {
     public class ServerNotifier: IServerNotifier
     {

@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using MoneyManager.Application.DTO.FileStorage;
-using MoneyManager.Application.DTO.Transactions;
+using Audex.Application.DTO.FileStorage;
+using Audex.Application.DTO.Transactions;
 
-namespace MoneyManager.Application.Interfaces.Transactions
+namespace Audex.Application.Interfaces.Transactions
 {
     public interface ITransactionTypeService
     {

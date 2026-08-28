@@ -1,7 +1,7 @@
-#nullable enable
+﻿#nullable enable
 using System.Collections.Generic;
 
-namespace MoneyManager.Application.Interfaces.Localization
+namespace Audex.Application.Interfaces.Localization
 {
     public interface ITranslationProvider
     {

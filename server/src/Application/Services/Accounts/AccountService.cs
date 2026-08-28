@@ -1,19 +1,19 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MoneyManager.Application.DTO.Accounts;
-using MoneyManager.Application.Interfaces.Accounts;
-using MoneyManager.Application.Mappings;
-using MoneyManager.Infrastructure.Interfaces.Database;
-using MoneyManager.Infrastructure.Entities.Transactions;
-using MoneyManager.Infrastructure.Entities.Accounts;
+using Audex.Application.DTO.Accounts;
+using Audex.Application.Interfaces.Accounts;
+using Audex.Application.Mappings;
+using Audex.Infrastructure.Interfaces.Database;
+using Audex.Infrastructure.Entities.Transactions;
+using Audex.Infrastructure.Entities.Accounts;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using MoneyManager.Infrastructure.Constants;
-using MoneyManager.Infrastructure.Queries;
+using Audex.Infrastructure.Constants;
+using Audex.Infrastructure.Queries;
 
-namespace MoneyManager.Application.Services.Accounts
+namespace Audex.Application.Services.Accounts
 {
     public class AccountService : IAccountService
     {

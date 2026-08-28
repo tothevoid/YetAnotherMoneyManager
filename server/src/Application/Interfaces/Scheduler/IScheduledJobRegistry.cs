@@ -1,10 +1,10 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using MoneyManager.Application.DTO.Scheduler;
-using MoneyManager.Application.Enums.Scheduler;
+using Audex.Application.DTO.Scheduler;
+using Audex.Application.Enums.Scheduler;
 
-namespace MoneyManager.Application.Interfaces.Scheduler
+namespace Audex.Application.Interfaces.Scheduler
 {
     public interface IScheduledJobRegistry
     {

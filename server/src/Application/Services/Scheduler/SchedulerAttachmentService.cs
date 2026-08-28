@@ -1,13 +1,13 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using MoneyManager.Application.DTO.FileStorage;
-using MoneyManager.Application.Interfaces.FileStorage;
-using MoneyManager.Application.Interfaces.Scheduler;
-using MoneyManager.Infrastructure.Entities.Scheduler;
-using MoneyManager.Infrastructure.Interfaces.Database;
+using Audex.Application.DTO.FileStorage;
+using Audex.Application.Interfaces.FileStorage;
+using Audex.Application.Interfaces.Scheduler;
+using Audex.Infrastructure.Entities.Scheduler;
+using Audex.Infrastructure.Interfaces.Database;
 
-namespace MoneyManager.Application.Services.Scheduler
+namespace Audex.Application.Services.Scheduler
 {
     public class SchedulerAttachmentService : ISchedulerAttachmentService
     {

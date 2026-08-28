@@ -1,7 +1,7 @@
-using System.Threading.Tasks;
-using MoneyManager.Application.DTO.Reports;
+﻿using System.Threading.Tasks;
+using Audex.Application.DTO.Reports;
 
-namespace MoneyManager.Application.Interfaces.Reports
+namespace Audex.Application.Interfaces.Reports
 {
     public interface IAllAssetsReportService
     {

@@ -1,13 +1,13 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
-using MoneyManager.Application.DTO.Securities;
-using MoneyManager.Application.Interfaces.Securities;
-using MoneyManager.Application.Mappings;
-using MoneyManager.Infrastructure.Interfaces.Database;
-using MoneyManager.Infrastructure.Entities.Securities;
+using Audex.Application.DTO.Securities;
+using Audex.Application.Interfaces.Securities;
+using Audex.Application.Mappings;
+using Audex.Infrastructure.Interfaces.Database;
+using Audex.Infrastructure.Entities.Securities;
 
-namespace MoneyManager.Application.Services.Securities
+namespace Audex.Application.Services.Securities
 {
     public class SecurityTypeService: ISecurityTypeService
     {

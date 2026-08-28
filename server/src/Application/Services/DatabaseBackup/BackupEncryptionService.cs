@@ -1,13 +1,13 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Konscious.Security.Cryptography;
-using MoneyManager.Application.Interfaces.DatabaseBackup;
+using Audex.Application.Interfaces.DatabaseBackup;
 
-namespace MoneyManager.Application.Services.DatabaseBackup
+namespace Audex.Application.Services.DatabaseBackup
 {
     public class BackupEncryptionService : IBackupEncryptionService
     {

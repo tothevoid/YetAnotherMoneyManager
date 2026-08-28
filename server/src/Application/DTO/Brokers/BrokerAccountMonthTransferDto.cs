@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.DTO.Brokers
+namespace Audex.Application.DTO.Brokers
 {
     public class BrokerAccountMonthTransferDto
     {

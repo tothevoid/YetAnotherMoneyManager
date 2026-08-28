@@ -1,9 +1,9 @@
-using MoneyManager.Application.DTO.Brokers;
+﻿using Audex.Application.DTO.Brokers;
 using System;
 using System.ComponentModel.DataAnnotations;
-using MoneyManager.Shared.Entities;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.WebApi.Models.Brokers
+namespace Audex.WebApi.Models.Brokers
 {
     public class BrokerAccountTaxDeductionModel: BaseEntity
     {

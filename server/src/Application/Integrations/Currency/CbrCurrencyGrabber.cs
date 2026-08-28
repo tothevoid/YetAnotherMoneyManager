@@ -1,12 +1,12 @@
-using MoneyManager.Application.Integrations.Currency.Models;
-using MoneyManager.Application.Interfaces.Integrations.Currency;
+﻿using Audex.Application.Integrations.Currency.Models;
+using Audex.Application.Interfaces.Integrations.Currency;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.Integrations.Currency
+namespace Audex.Application.Integrations.Currency
 {
     public class CbrCurrencyGrabber: ICurrencyGrabber
     {

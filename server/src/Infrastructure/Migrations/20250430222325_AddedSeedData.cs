@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace MoneyManager.Infrastructure.Migrations
+namespace Audex.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class AddedSeedData : Migration

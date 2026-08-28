@@ -1,12 +1,12 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MoneyManager.Application.DTO.Currencies;
-using MoneyManager.Shared.Entities;
+using Audex.Application.DTO.Currencies;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.Application.DTO.Debts
+namespace Audex.Application.DTO.Debts
 {
     public class DebtDto: BaseEntity
     {

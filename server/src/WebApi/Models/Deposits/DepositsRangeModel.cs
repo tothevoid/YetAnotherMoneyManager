@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MoneyManager.WebApi.Models.Deposits
+namespace Audex.WebApi.Models.Deposits
 {
     public class DepositsRangeModel
     {

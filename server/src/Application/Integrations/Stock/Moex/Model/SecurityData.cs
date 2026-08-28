@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MoneyManager.Application.Integrations.Stock.Moex.Model
+namespace Audex.Application.Integrations.Stock.Moex.Model
 {
     public class FullSecurityData
     {

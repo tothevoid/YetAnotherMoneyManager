@@ -1,10 +1,10 @@
 ﻿using System;
-using MoneyManager.Application.DTO.Accounts;
-using MoneyManager.Shared.Entities;
-using MoneyManager.WebApi.Models.Accounts;
-using MoneyManager.WebApi.Models.Transactions;
+using Audex.Application.DTO.Accounts;
+using Audex.Shared.Entities;
+using Audex.WebApi.Models.Accounts;
+using Audex.WebApi.Models.Transactions;
 
-namespace MoneyManager.WebApi.Models.Debts
+namespace Audex.WebApi.Models.Debts
 {
     public class DebtPaymentModel: BaseEntity
     {

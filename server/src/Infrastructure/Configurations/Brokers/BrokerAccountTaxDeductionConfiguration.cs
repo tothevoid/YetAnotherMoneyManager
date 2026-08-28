@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using MoneyManager.Infrastructure.Entities.Brokers;
+using Audex.Infrastructure.Entities.Brokers;
 
-namespace MoneyManager.Infrastructure.Configurations.Brokers
+namespace Audex.Infrastructure.Configurations.Brokers
 {
     public class BrokerAccountTaxDeductionConfiguration : IEntityTypeConfiguration<BrokerAccountTaxDeduction>
     {

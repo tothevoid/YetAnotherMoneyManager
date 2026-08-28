@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using MoneyManager.Infrastructure.Entities.Deposits;
+using Audex.Infrastructure.Entities.Deposits;
 
-namespace MoneyManager.Infrastructure.Configurations.Deposits
+namespace Audex.Infrastructure.Configurations.Deposits
 {
     public class DepositConfiguration : IEntityTypeConfiguration<Deposit>
     {

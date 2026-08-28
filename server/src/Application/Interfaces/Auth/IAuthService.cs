@@ -1,11 +1,11 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MoneyManager.Application.DTO.Auth;
-using MoneyManager.Application.DTO.Common;
+using Audex.Application.DTO.Auth;
+using Audex.Application.DTO.Common;
 
-namespace MoneyManager.Application.Interfaces.Auth
+namespace Audex.Application.Interfaces.Auth
 {
     public interface IAuthService
     {

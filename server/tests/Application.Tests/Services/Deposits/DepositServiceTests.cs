@@ -1,10 +1,10 @@
-using Microsoft.Extensions.DependencyInjection;
-using MoneyManager.Application.DTO.Deposits;
-using MoneyManager.Application.Interfaces.Deposits;
-using MoneyManager.Application.Tests.Fixtures;
-using MoneyManager.Infrastructure.Constants;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Audex.Application.DTO.Deposits;
+using Audex.Application.Interfaces.Deposits;
+using Audex.Application.Tests.Fixtures;
+using Audex.Infrastructure.Constants;
 
-namespace MoneyManager.Application.Tests.Services.Deposits
+namespace Audex.Application.Tests.Services.Deposits
 {
     public class DepositServiceTests : TestBase
     {

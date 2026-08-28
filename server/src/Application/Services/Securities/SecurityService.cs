@@ -1,20 +1,20 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using MoneyManager.Application.DTO.FileStorage;
-using MoneyManager.Application.DTO.Securities;
-using MoneyManager.Application.Interfaces.FileStorage;
-using MoneyManager.Application.Interfaces.Integrations.Stock;
-using MoneyManager.Application.Interfaces.Securities;
-using MoneyManager.Application.Mappings;
-using MoneyManager.Infrastructure.Entities.Brokers;
-using MoneyManager.Infrastructure.Entities.Securities;
-using MoneyManager.Infrastructure.Interfaces.Database;
+using Audex.Application.DTO.FileStorage;
+using Audex.Application.DTO.Securities;
+using Audex.Application.Interfaces.FileStorage;
+using Audex.Application.Interfaces.Integrations.Stock;
+using Audex.Application.Interfaces.Securities;
+using Audex.Application.Mappings;
+using Audex.Infrastructure.Entities.Brokers;
+using Audex.Infrastructure.Entities.Securities;
+using Audex.Infrastructure.Interfaces.Database;
 
-namespace MoneyManager.Application.Services.Securities
+namespace Audex.Application.Services.Securities
 {
     public class SecurityService(IUnitOfWork uow, ApplicationMapper mapper, IStockConnector stockConnector, 
         IFileStorageService fileStorageService) : ISecurityService

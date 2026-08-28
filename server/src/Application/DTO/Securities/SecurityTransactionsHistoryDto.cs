@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MoneyManager.Application.DTO.Securities
+namespace Audex.Application.DTO.Securities
 {
     public class SecurityTransactionsHistoryDto
     {

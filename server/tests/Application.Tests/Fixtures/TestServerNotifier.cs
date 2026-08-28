@@ -1,6 +1,6 @@
-using MoneyManager.Infrastructure.Interfaces.Messages;
+﻿using Audex.Infrastructure.Interfaces.Messages;
 
-namespace MoneyManager.Application.Tests.Fixtures
+namespace Audex.Application.Tests.Fixtures
 {
     public class TestServerNotifier : IServerNotifier
     {

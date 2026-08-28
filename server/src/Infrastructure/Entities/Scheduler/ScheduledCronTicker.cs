@@ -1,7 +1,7 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TickerQ.Utilities.Entities;
 
-namespace MoneyManager.Infrastructure.Entities.Scheduler
+namespace Audex.Infrastructure.Entities.Scheduler
 {
     public class ScheduledCronTicker : CronTickerEntity
     {

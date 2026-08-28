@@ -1,13 +1,13 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
-using MoneyManager.Application.DTO.Brokers;
-using MoneyManager.Application.Interfaces.Brokers;
-using MoneyManager.Application.Mappings;
-using MoneyManager.Infrastructure.Interfaces.Database;
-using MoneyManager.Infrastructure.Entities.Brokers;
+using Audex.Application.DTO.Brokers;
+using Audex.Application.Interfaces.Brokers;
+using Audex.Application.Mappings;
+using Audex.Infrastructure.Interfaces.Database;
+using Audex.Infrastructure.Entities.Brokers;
 
-namespace MoneyManager.Application.Services.Brokers
+namespace Audex.Application.Services.Brokers
 {
     public class BrokerAccountTypeService : IBrokerAccountTypeService
     {

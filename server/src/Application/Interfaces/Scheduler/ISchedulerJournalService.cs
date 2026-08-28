@@ -1,12 +1,12 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MoneyManager.Application.DTO.Common;
-using MoneyManager.Application.DTO.Scheduler;
-using MoneyManager.Application.Enums.Scheduler;
-using MoneyManager.Infrastructure.Entities.Scheduler;
+using Audex.Application.DTO.Common;
+using Audex.Application.DTO.Scheduler;
+using Audex.Application.Enums.Scheduler;
+using Audex.Infrastructure.Entities.Scheduler;
 
-namespace MoneyManager.Application.Interfaces.Scheduler
+namespace Audex.Application.Interfaces.Scheduler
 {
     public interface ISchedulerJournalService
     {

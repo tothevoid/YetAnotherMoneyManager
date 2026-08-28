@@ -1,7 +1,7 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.Interfaces.Integrations.Currency
+namespace Audex.Application.Interfaces.Integrations.Currency
 {
     public interface ICurrencyGrabber
     {

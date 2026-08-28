@@ -1,21 +1,21 @@
-using Microsoft.EntityFrameworkCore;
-using MoneyManager.Application.DTO.Accounts;
-using MoneyManager.Application.DTO.Brokers;
-using MoneyManager.Application.DTO.Common;
-using MoneyManager.Application.Interfaces.Accounts;
-using MoneyManager.Application.Interfaces.Brokers;
-using MoneyManager.Application.Mappings;
-using MoneyManager.Infrastructure.Entities.Accounts;
-using MoneyManager.Infrastructure.Entities.Brokers;
-using MoneyManager.Infrastructure.Interfaces.Database;
-using MoneyManager.Infrastructure.Queries;
+﻿using Microsoft.EntityFrameworkCore;
+using Audex.Application.DTO.Accounts;
+using Audex.Application.DTO.Brokers;
+using Audex.Application.DTO.Common;
+using Audex.Application.Interfaces.Accounts;
+using Audex.Application.Interfaces.Brokers;
+using Audex.Application.Mappings;
+using Audex.Infrastructure.Entities.Accounts;
+using Audex.Infrastructure.Entities.Brokers;
+using Audex.Infrastructure.Interfaces.Database;
+using Audex.Infrastructure.Queries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.Services.Brokers
+namespace Audex.Application.Services.Brokers
 {
     public class BrokerAccountFundsTransferService : IBrokerAccountFundsTransferService
     {

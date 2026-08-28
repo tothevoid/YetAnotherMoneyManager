@@ -1,9 +1,9 @@
-﻿using MoneyManager.Shared.Entities;
+﻿using Audex.Shared.Entities;
 using System;
-using MoneyManager.Infrastructure.Entities.Banks;
-using MoneyManager.Infrastructure.Entities.Currencies;
+using Audex.Infrastructure.Entities.Banks;
+using Audex.Infrastructure.Entities.Currencies;
 
-namespace MoneyManager.Infrastructure.Entities.Deposits
+namespace Audex.Infrastructure.Entities.Deposits
 {
     public class Deposit : BaseEntity
     {

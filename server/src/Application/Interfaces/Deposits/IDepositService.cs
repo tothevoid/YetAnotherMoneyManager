@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MoneyManager.Application.DTO.Deposits;
+using Audex.Application.DTO.Deposits;
 
-namespace MoneyManager.Application.Interfaces.Deposits
+namespace Audex.Application.Interfaces.Deposits
 {
     public interface IDepositService
     {

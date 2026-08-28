@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using MoneyManager.Application.DTO.Securities;
+using Audex.Application.DTO.Securities;
 
-namespace MoneyManager.Application.DTO.Brokers
+namespace Audex.Application.DTO.Brokers
 {
     public class BrokerAccountDailyStatsDto
     {

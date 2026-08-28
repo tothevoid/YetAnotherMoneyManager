@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MoneyManager.Application.DTO.Accounts;
+using Audex.Application.DTO.Accounts;
 
-namespace MoneyManager.Application.Interfaces.Accounts
+namespace Audex.Application.Interfaces.Accounts
 {
     public interface IAccountService
     {

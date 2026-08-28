@@ -1,6 +1,6 @@
-using MoneyManager.WebApi.Models.Common;
+﻿using Audex.WebApi.Models.Common;
 
-namespace MoneyManager.WebApi.Models.Debts
+namespace Audex.WebApi.Models.Debts
 {
     public class GetAllDebtPaymentsQuery: BasePageableQuery
     {

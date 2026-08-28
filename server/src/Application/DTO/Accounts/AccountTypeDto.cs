@@ -1,6 +1,6 @@
-using MoneyManager.Shared.Entities;
+﻿using Audex.Shared.Entities;
 
-namespace MoneyManager.Application.DTO.Accounts
+namespace Audex.Application.DTO.Accounts
 {
     public class AccountTypeDto : BaseEntity
     {

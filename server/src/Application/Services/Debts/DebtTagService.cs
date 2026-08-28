@@ -1,15 +1,15 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using MoneyManager.Application.DTO.Debts;
-using MoneyManager.Application.Interfaces.Debts;
-using MoneyManager.Application.Mappings;
-using MoneyManager.Infrastructure.Entities.Debts;
-using MoneyManager.Infrastructure.Interfaces.Database;
+using Audex.Application.DTO.Debts;
+using Audex.Application.Interfaces.Debts;
+using Audex.Application.Mappings;
+using Audex.Infrastructure.Entities.Debts;
+using Audex.Infrastructure.Interfaces.Database;
 
-namespace MoneyManager.Application.Services.Debts
+namespace Audex.Application.Services.Debts
 {
     public class DebtTagService : IDebtTagService
     {

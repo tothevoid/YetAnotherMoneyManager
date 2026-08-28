@@ -1,7 +1,7 @@
-using System.Collections.Generic;
-using MoneyManager.Shared.Entities;
+﻿using System.Collections.Generic;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.Infrastructure.Entities.Debts
+namespace Audex.Infrastructure.Entities.Debts
 {
     public class DebtTag : BaseEntity
     {

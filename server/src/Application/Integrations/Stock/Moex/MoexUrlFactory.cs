@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MoneyManager.Application.DTO.Securities;
-using MoneyManager.Application.Integrations.Stock.Moex.Builders;
-using MoneyManager.Infrastructure.Constants;
+using Audex.Application.DTO.Securities;
+using Audex.Application.Integrations.Stock.Moex.Builders;
+using Audex.Infrastructure.Constants;
 
-namespace MoneyManager.Application.Integrations.Stock.Moex
+namespace Audex.Application.Integrations.Stock.Moex
 {
     public static class MoexUrlFactory
     {

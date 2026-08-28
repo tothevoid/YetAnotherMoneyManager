@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MoneyManager.Infrastructure.Entities.Accounts;
-using MoneyManager.Shared.Entities;
-using MoneyManager.WebApi.Models.Accounts;
+using Audex.Infrastructure.Entities.Accounts;
+using Audex.Shared.Entities;
+using Audex.WebApi.Models.Accounts;
 
-namespace MoneyManager.WebApi.Models.Transactions
+namespace Audex.WebApi.Models.Transactions
 {
     public class CurrencyTransactionModel: BaseEntity
     {

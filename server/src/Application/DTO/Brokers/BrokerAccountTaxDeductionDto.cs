@@ -1,7 +1,7 @@
-using System;
-using MoneyManager.Shared.Entities;
+﻿using System;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.Application.DTO.Brokers
+namespace Audex.Application.DTO.Brokers
 {
     public class BrokerAccountTaxDeductionDto: BaseEntity
     {

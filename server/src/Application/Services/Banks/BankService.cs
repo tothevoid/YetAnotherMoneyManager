@@ -1,19 +1,19 @@
-using Microsoft.AspNetCore.Http;
-using MoneyManager.Application.DTO.Banks;
-using MoneyManager.Application.DTO.FileStorage;
-using MoneyManager.Application.DTO.Transactions;
-using MoneyManager.Application.Interfaces.Banks;
-using MoneyManager.Application.Interfaces.FileStorage;
-using MoneyManager.Application.Mappings;
-using MoneyManager.Application.Services.FileStorage;
-using MoneyManager.Infrastructure.Entities.Banks;
-using MoneyManager.Infrastructure.Entities.Transactions;
-using MoneyManager.Infrastructure.Interfaces.Database;
+﻿using Microsoft.AspNetCore.Http;
+using Audex.Application.DTO.Banks;
+using Audex.Application.DTO.FileStorage;
+using Audex.Application.DTO.Transactions;
+using Audex.Application.Interfaces.Banks;
+using Audex.Application.Interfaces.FileStorage;
+using Audex.Application.Mappings;
+using Audex.Application.Services.FileStorage;
+using Audex.Infrastructure.Entities.Banks;
+using Audex.Infrastructure.Entities.Transactions;
+using Audex.Infrastructure.Interfaces.Database;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.Services.Banks
+namespace Audex.Application.Services.Banks
 {
     public class BankService : IBankService
     {

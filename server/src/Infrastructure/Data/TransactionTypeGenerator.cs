@@ -1,9 +1,9 @@
-﻿using MoneyManager.Infrastructure.Constants;
-using MoneyManager.Infrastructure.Entities.Securities;
-using MoneyManager.Infrastructure.Entities.Transactions;
-using MoneyManager.Infrastructure.Interfaces.Utilitary;
+﻿using Audex.Infrastructure.Constants;
+using Audex.Infrastructure.Entities.Securities;
+using Audex.Infrastructure.Entities.Transactions;
+using Audex.Infrastructure.Interfaces.Utilitary;
 
-namespace MoneyManager.Infrastructure.Data
+namespace Audex.Infrastructure.Data
 {
     public class TransactionTypeGenerator : IDataGenerator<TransactionType>
     {

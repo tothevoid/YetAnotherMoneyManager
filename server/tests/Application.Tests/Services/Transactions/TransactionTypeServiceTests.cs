@@ -1,9 +1,9 @@
-using Microsoft.Extensions.DependencyInjection;
-using MoneyManager.Application.DTO.Transactions;
-using MoneyManager.Application.Interfaces.Transactions;
-using MoneyManager.Application.Tests.Fixtures;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Audex.Application.DTO.Transactions;
+using Audex.Application.Interfaces.Transactions;
+using Audex.Application.Tests.Fixtures;
 
-namespace MoneyManager.Application.Tests.Services.Transactions
+namespace Audex.Application.Tests.Services.Transactions
 {
     public class TransactionTypeServiceTests : TestBase
     {

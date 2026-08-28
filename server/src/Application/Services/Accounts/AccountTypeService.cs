@@ -1,13 +1,13 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MoneyManager.Application.DTO.Accounts;
-using MoneyManager.Application.Interfaces.Accounts;
-using MoneyManager.Application.Mappings;
-using MoneyManager.Infrastructure.Entities.Accounts;
-using MoneyManager.Infrastructure.Interfaces.Database;
+using Audex.Application.DTO.Accounts;
+using Audex.Application.Interfaces.Accounts;
+using Audex.Application.Mappings;
+using Audex.Infrastructure.Entities.Accounts;
+using Audex.Infrastructure.Interfaces.Database;
 
-namespace MoneyManager.Application.Services.Accounts
+namespace Audex.Application.Services.Accounts
 {
     public class AccountTypeService : IAccountTypeService
     {

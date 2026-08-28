@@ -1,16 +1,16 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
-using MoneyManager.Application.DTO.Currencies;
-using MoneyManager.Application.Interfaces.Currencies;
-using MoneyManager.WebApi.Mappings;
-using MoneyManager.WebApi.Models.Currencies;
-using MoneyManager.Application.Interfaces.User;
-using MoneyManager.Application.Services.User;
+using Audex.Application.DTO.Currencies;
+using Audex.Application.Interfaces.Currencies;
+using Audex.WebApi.Mappings;
+using Audex.WebApi.Models.Currencies;
+using Audex.Application.Interfaces.User;
+using Audex.Application.Services.User;
 using Microsoft.AspNetCore.Authorization;
 
-namespace MoneyManager.WebApi.Controllers.Currencies
+namespace Audex.WebApi.Controllers.Currencies
 {
     [Produces("application/json")]
     [Route("[controller]")]

@@ -1,17 +1,17 @@
-using System;
-using MoneyManager.Application.Interfaces.Transactions;
-using MoneyManager.Application.Mappings;
-using MoneyManager.Infrastructure.Interfaces.Database;
+﻿using System;
+using Audex.Application.Interfaces.Transactions;
+using Audex.Application.Mappings;
+using Audex.Infrastructure.Interfaces.Database;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MoneyManager.Infrastructure.Entities.Transactions;
-using MoneyManager.Application.DTO.FileStorage;
-using MoneyManager.Application.DTO.Transactions;
-using MoneyManager.Application.Interfaces.FileStorage;
+using Audex.Infrastructure.Entities.Transactions;
+using Audex.Application.DTO.FileStorage;
+using Audex.Application.DTO.Transactions;
+using Audex.Application.Interfaces.FileStorage;
 using Microsoft.AspNetCore.Http;
-using MoneyManager.Application.Services.FileStorage;
+using Audex.Application.Services.FileStorage;
 
-namespace MoneyManager.Application.Services.Transactions
+namespace Audex.Application.Services.Transactions
 {
     public class TransactionTypeService: ITransactionTypeService
     {

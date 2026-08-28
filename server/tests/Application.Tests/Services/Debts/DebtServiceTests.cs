@@ -1,15 +1,15 @@
-using Microsoft.Extensions.DependencyInjection;
-using MoneyManager.Application.DTO.Accounts;
-using MoneyManager.Application.DTO.Banks;
-using MoneyManager.Application.DTO.Debts;
-using MoneyManager.Application.Interfaces.Accounts;
-using MoneyManager.Application.Interfaces.Banks;
-using MoneyManager.Application.Interfaces.Debts;
-using MoneyManager.Application.Tests.Fixtures;
-using MoneyManager.Infrastructure.Constants;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Audex.Application.DTO.Accounts;
+using Audex.Application.DTO.Banks;
+using Audex.Application.DTO.Debts;
+using Audex.Application.Interfaces.Accounts;
+using Audex.Application.Interfaces.Banks;
+using Audex.Application.Interfaces.Debts;
+using Audex.Application.Tests.Fixtures;
+using Audex.Infrastructure.Constants;
 using System;
 
-namespace MoneyManager.Application.Tests.Services.Debts
+namespace Audex.Application.Tests.Services.Debts
 {
     public class DebtServiceTests : TestBase
     {

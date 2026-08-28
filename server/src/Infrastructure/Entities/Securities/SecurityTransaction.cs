@@ -1,8 +1,8 @@
 ﻿using System;
-using MoneyManager.Infrastructure.Entities.Brokers;
-using MoneyManager.Shared.Entities;
+using Audex.Infrastructure.Entities.Brokers;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.Infrastructure.Entities.Securities
+namespace Audex.Infrastructure.Entities.Securities
 {
     public class SecurityTransaction: BaseEntity
     {

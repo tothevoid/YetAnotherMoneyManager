@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -7,9 +7,9 @@ using System.Reflection;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
-using MoneyManager.Application.Interfaces.Localization;
+using Audex.Application.Interfaces.Localization;
 
-namespace MoneyManager.Application.Services.Localization
+namespace Audex.Application.Services.Localization
 {
     public class TranslationProvider : ITranslationProvider
     {

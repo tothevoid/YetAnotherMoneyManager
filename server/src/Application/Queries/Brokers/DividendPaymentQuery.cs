@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MoneyManager.Infrastructure.Entities.Brokers;
+using Audex.Infrastructure.Entities.Brokers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.Queries.Brokers
+namespace Audex.Application.Queries.Brokers
 {
     public static class DividendPaymentQuery
     {

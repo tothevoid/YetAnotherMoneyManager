@@ -1,9 +1,9 @@
-using MoneyManager.Application.DTO.Securities;
+﻿using Audex.Application.DTO.Securities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.Interfaces.Securities
+namespace Audex.Application.Interfaces.Securities
 {
     public interface ISecurityTypeService
     {

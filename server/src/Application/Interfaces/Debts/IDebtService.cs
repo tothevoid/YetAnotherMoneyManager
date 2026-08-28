@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MoneyManager.Application.DTO.Debts;
+using Audex.Application.DTO.Debts;
 
-namespace MoneyManager.Application.Interfaces.Debts
+namespace Audex.Application.Interfaces.Debts
 {
     public interface IDebtService
     {

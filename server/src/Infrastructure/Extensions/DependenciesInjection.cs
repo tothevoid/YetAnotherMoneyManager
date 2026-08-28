@@ -1,15 +1,15 @@
-using Microsoft.Extensions.DependencyInjection;
-using MoneyManager.Infrastructure.Database;
-using MoneyManager.Infrastructure.Entities.Scheduler;
-using MoneyManager.Infrastructure.Interfaces.Database;
-using MoneyManager.Infrastructure.Interfaces.Messages;
-using MoneyManager.Infrastructure.Messages;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Audex.Infrastructure.Database;
+using Audex.Infrastructure.Entities.Scheduler;
+using Audex.Infrastructure.Interfaces.Database;
+using Audex.Infrastructure.Interfaces.Messages;
+using Audex.Infrastructure.Messages;
 using TickerQ.DependencyInjection;
 using TickerQ.EntityFrameworkCore.Customizer;
 using TickerQ.EntityFrameworkCore.DependencyInjection;
 using TickerQ.Utilities.Entities;
 
-namespace MoneyManager.Infrastructure.Extensions
+namespace Audex.Infrastructure.Extensions
 {
     public static class DependenciesInjection
     {

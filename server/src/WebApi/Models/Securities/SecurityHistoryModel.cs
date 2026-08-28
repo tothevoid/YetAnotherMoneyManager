@@ -1,6 +1,6 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace MoneyManager.WebApi.Models.Securities
+namespace Audex.WebApi.Models.Securities
 {
     public class SecurityHistoryModel
     {

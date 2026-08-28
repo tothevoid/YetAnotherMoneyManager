@@ -1,6 +1,6 @@
-#nullable enable
+﻿#nullable enable
 
-namespace MoneyManager.Application.DTO.DatabaseBackup
+namespace Audex.Application.DTO.DatabaseBackup
 {
     public class BackupValidationResultDto
     {

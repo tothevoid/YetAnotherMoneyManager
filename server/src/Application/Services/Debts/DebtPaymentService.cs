@@ -1,21 +1,21 @@
-using Microsoft.EntityFrameworkCore;
-using MoneyManager.Application.DTO.Common;
-using MoneyManager.Application.DTO.Debts;
-using MoneyManager.Application.Interfaces.Debts;
-using MoneyManager.Application.Interfaces.Transactions;
-using MoneyManager.Application.Mappings;
-using MoneyManager.Infrastructure.Entities.Accounts;
-using MoneyManager.Infrastructure.Entities.Brokers;
-using MoneyManager.Infrastructure.Entities.Debts;
-using MoneyManager.Infrastructure.Interfaces.Database;
-using MoneyManager.Infrastructure.Queries;
+﻿using Microsoft.EntityFrameworkCore;
+using Audex.Application.DTO.Common;
+using Audex.Application.DTO.Debts;
+using Audex.Application.Interfaces.Debts;
+using Audex.Application.Interfaces.Transactions;
+using Audex.Application.Mappings;
+using Audex.Infrastructure.Entities.Accounts;
+using Audex.Infrastructure.Entities.Brokers;
+using Audex.Infrastructure.Entities.Debts;
+using Audex.Infrastructure.Interfaces.Database;
+using Audex.Infrastructure.Queries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.Services.Debts
+namespace Audex.Application.Services.Debts
 {
     public class DebtPaymentService: IDebtPaymentService
     {

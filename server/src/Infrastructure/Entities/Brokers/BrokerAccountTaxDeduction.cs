@@ -1,7 +1,7 @@
-using System;
-using MoneyManager.Shared.Entities;
+﻿using System;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.Infrastructure.Entities.Brokers
+namespace Audex.Infrastructure.Entities.Brokers
 {
     public class BrokerAccountTaxDeduction : BaseEntity
     {

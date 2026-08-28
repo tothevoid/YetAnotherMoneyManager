@@ -1,16 +1,16 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using MoneyManager.Application.DTO.Scheduler;
-using MoneyManager.Application.Enums.Scheduler;
-using MoneyManager.Application.Interfaces.Scheduler;
-using MoneyManager.Application.Tests.Fixtures;
-using MoneyManager.Infrastructure.Entities.Scheduler;
+using Audex.Application.DTO.Scheduler;
+using Audex.Application.Enums.Scheduler;
+using Audex.Application.Interfaces.Scheduler;
+using Audex.Application.Tests.Fixtures;
+using Audex.Infrastructure.Entities.Scheduler;
 using TickerQ.Utilities.Entities;
 using Xunit;
 
-namespace MoneyManager.Application.Tests.Services.Scheduler
+namespace Audex.Application.Tests.Services.Scheduler
 {
     public class SchedulerJournalServiceTests : TestBase
     {
@@ -25,7 +25,7 @@ namespace MoneyManager.Application.Tests.Services.Scheduler
             {
                 var taskService = sp.GetRequiredService<ISchedulerTaskService>();
                 var journalService = sp.GetRequiredService<ISchedulerJournalService>();
-                var db = sp.GetRequiredService<MoneyManager.Infrastructure.Interfaces.Database.IUnitOfWork>();
+                var db = sp.GetRequiredService<Audex.Infrastructure.Interfaces.Database.IUnitOfWork>();
                 var occurrenceRepo = db.CreateRepository<CronTickerOccurrenceEntity<ScheduledCronTicker>>();
                 var tickerRepo = db.CreateRepository<ScheduledCronTicker>();
                 var attachmentService = sp.GetRequiredService<ISchedulerAttachmentService>();

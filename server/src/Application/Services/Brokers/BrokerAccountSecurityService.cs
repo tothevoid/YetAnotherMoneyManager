@@ -1,16 +1,16 @@
-using Microsoft.EntityFrameworkCore;
-using MoneyManager.Application.DTO.Brokers;
-using MoneyManager.Application.DTO.Securities;
-using MoneyManager.Application.Interfaces.Brokers;
-using MoneyManager.Application.Interfaces.Integrations.Stock;
-using MoneyManager.Application.Interfaces.Securities;
-using MoneyManager.Application.Mappings;
-using MoneyManager.Application.Services.Securities;
-using MoneyManager.Infrastructure.Entities.Brokers;
-using MoneyManager.Infrastructure.Entities.Securities;
-using MoneyManager.Infrastructure.Interfaces.Database;
-using MoneyManager.Infrastructure.Interfaces.Messages;
-using MoneyManager.Infrastructure.Queries;
+﻿using Microsoft.EntityFrameworkCore;
+using Audex.Application.DTO.Brokers;
+using Audex.Application.DTO.Securities;
+using Audex.Application.Interfaces.Brokers;
+using Audex.Application.Interfaces.Integrations.Stock;
+using Audex.Application.Interfaces.Securities;
+using Audex.Application.Mappings;
+using Audex.Application.Services.Securities;
+using Audex.Infrastructure.Entities.Brokers;
+using Audex.Infrastructure.Entities.Securities;
+using Audex.Infrastructure.Interfaces.Database;
+using Audex.Infrastructure.Interfaces.Messages;
+using Audex.Infrastructure.Queries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ using System.Linq.Expressions;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.Services.Brokers
+namespace Audex.Application.Services.Brokers
 {
     public class BrokerAccountSecurityService : IBrokerAccountSecurityService
     {

@@ -1,10 +1,10 @@
-using Microsoft.Extensions.DependencyInjection;
-using MoneyManager.Application.DTO.Currencies;
-using MoneyManager.Application.Interfaces.Currencies;
-using MoneyManager.Application.Tests.Fixtures;
-using MoneyManager.Infrastructure.Constants;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Audex.Application.DTO.Currencies;
+using Audex.Application.Interfaces.Currencies;
+using Audex.Application.Tests.Fixtures;
+using Audex.Infrastructure.Constants;
 
-namespace MoneyManager.Application.Tests.Services.Currencies
+namespace Audex.Application.Tests.Services.Currencies
 {
     public class CurrencyServiceTests : TestBase
     {

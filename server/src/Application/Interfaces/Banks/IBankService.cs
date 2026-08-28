@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Http;
-using MoneyManager.Application.DTO.Banks;
-using MoneyManager.Application.DTO.FileStorage;
+﻿using Microsoft.AspNetCore.Http;
+using Audex.Application.DTO.Banks;
+using Audex.Application.DTO.FileStorage;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.Interfaces.Banks
+namespace Audex.Application.Interfaces.Banks
 {
     public interface IBankService
     {

@@ -1,19 +1,19 @@
-using System;
+﻿using System;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Minio;
-using MoneyManager.Application.Extensions;
-using MoneyManager.Infrastructure.Database;
-using MoneyManager.Infrastructure.Interfaces.DatabaseBackup;
-using MoneyManager.Infrastructure.Services.DatabaseBackup;
-using MoneyManager.WebApi.Mappings;
+using Audex.Application.Extensions;
+using Audex.Infrastructure.Database;
+using Audex.Infrastructure.Interfaces.DatabaseBackup;
+using Audex.Infrastructure.Services.DatabaseBackup;
+using Audex.WebApi.Mappings;
 using System.Net.Http;
 using System.Text;
 
-namespace MoneyManager.WebApi.Extensions
+namespace Audex.WebApi.Extensions
 {
     public static class DependenciesInjection
     {

@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using MoneyManager.Application.Interfaces.Scheduler;
-using MoneyManager.Application.Tests.Fixtures;
+using Audex.Application.Interfaces.Scheduler;
+using Audex.Application.Tests.Fixtures;
 using Xunit;
 
-namespace MoneyManager.Application.Tests.Services.Scheduler
+namespace Audex.Application.Tests.Services.Scheduler
 {
     [Trait("Category", "S3")]
     public class SchedulerAttachmentServiceTests : TestBase

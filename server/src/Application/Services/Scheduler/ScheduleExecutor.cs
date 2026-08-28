@@ -1,18 +1,18 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using MoneyManager.Application.Enums.Scheduler;
-using MoneyManager.Application.Interfaces.Scheduler;
-using MoneyManager.Infrastructure.Entities.Scheduler;
-using MoneyManager.Infrastructure.Interfaces.Database;
+using Audex.Application.Enums.Scheduler;
+using Audex.Application.Interfaces.Scheduler;
+using Audex.Infrastructure.Entities.Scheduler;
+using Audex.Infrastructure.Interfaces.Database;
 using TickerQ.Utilities.Entities;
 using TickerQ.Utilities.Enums;
 
-namespace MoneyManager.Application.Services.Scheduler
+namespace Audex.Application.Services.Scheduler
 {
     public class ScheduleExecutor : IScheduleExecutor
     {

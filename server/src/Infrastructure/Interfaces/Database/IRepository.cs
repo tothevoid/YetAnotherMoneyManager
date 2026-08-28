@@ -1,12 +1,12 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using MoneyManager.Infrastructure.Queries;
-using MoneyManager.Shared.Entities;
+using Audex.Infrastructure.Queries;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.Infrastructure.Interfaces.Database
+namespace Audex.Infrastructure.Interfaces.Database
 {
     public interface IRepository<TEntity>: IDisposable
         where TEntity: class

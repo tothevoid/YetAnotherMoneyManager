@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Data.Common;
 using System.Net.Sockets;
 using System.Threading;
@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using MoneyManager.Infrastructure.Database;
+using Audex.Infrastructure.Database;
 
-namespace MoneyManager.Infrastructure.Extensions
+namespace Audex.Infrastructure.Extensions
 {
     public static class DatabaseMigrationExtensions
     {

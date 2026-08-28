@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MoneyManager.Application.Integrations.Stock.Moex.Builders
+namespace Audex.Application.Integrations.Stock.Moex.Builders
 {
     public class MoexSecuritiesUrlBuilder: BaseMoexUrlBuilder
     {

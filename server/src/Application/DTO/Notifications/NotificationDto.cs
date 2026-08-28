@@ -1,8 +1,8 @@
-using System;
-using MoneyManager.Infrastructure.Entities.Notifications;
-using MoneyManager.Shared.Entities;
+﻿using System;
+using Audex.Infrastructure.Entities.Notifications;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.Application.DTO.Notifications
+namespace Audex.Application.DTO.Notifications
 {
     public class NotificationDto : BaseEntity
     {

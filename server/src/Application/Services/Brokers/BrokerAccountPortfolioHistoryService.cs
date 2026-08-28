@@ -1,15 +1,15 @@
-using MoneyManager.Application.DTO.Brokers;
-using MoneyManager.Application.DTO.Securities;
-using MoneyManager.Application.Interfaces.Brokers;
-using MoneyManager.Application.Interfaces.Integrations.Stock;
-using MoneyManager.Application.Interfaces.Securities;
+﻿using Audex.Application.DTO.Brokers;
+using Audex.Application.DTO.Securities;
+using Audex.Application.Interfaces.Brokers;
+using Audex.Application.Interfaces.Integrations.Stock;
+using Audex.Application.Interfaces.Securities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.Services.Brokers
+namespace Audex.Application.Services.Brokers
 {
     public class BrokerAccountPortfolioHistoryService(
         ISecurityTransactionService securityTransactionService,

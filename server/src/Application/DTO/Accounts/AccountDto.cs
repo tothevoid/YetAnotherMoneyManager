@@ -1,9 +1,9 @@
-using MoneyManager.Application.DTO.Currencies;
-using MoneyManager.Shared.Entities;
+﻿using Audex.Application.DTO.Currencies;
+using Audex.Shared.Entities;
 using System;
-using MoneyManager.Application.DTO.Banks;
+using Audex.Application.DTO.Banks;
 
-namespace MoneyManager.Application.DTO.Accounts
+namespace Audex.Application.DTO.Accounts
 {
     public class AccountDto : BaseEntity
     {

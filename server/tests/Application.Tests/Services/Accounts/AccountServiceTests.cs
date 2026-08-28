@@ -1,12 +1,12 @@
-using Microsoft.Extensions.DependencyInjection;
-using MoneyManager.Application.DTO.Accounts;
-using MoneyManager.Application.Interfaces.Accounts;
-using MoneyManager.Application.Tests.Fixtures;
-using MoneyManager.Infrastructure.Constants;
-using MoneyManager.Infrastructure.Entities.Transactions;
-using MoneyManager.Infrastructure.Interfaces.Database;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Audex.Application.DTO.Accounts;
+using Audex.Application.Interfaces.Accounts;
+using Audex.Application.Tests.Fixtures;
+using Audex.Infrastructure.Constants;
+using Audex.Infrastructure.Entities.Transactions;
+using Audex.Infrastructure.Interfaces.Database;
 
-namespace MoneyManager.Application.Tests.Services.Accounts
+namespace Audex.Application.Tests.Services.Accounts
 {
     public class AccountServiceTests : TestBase
     {

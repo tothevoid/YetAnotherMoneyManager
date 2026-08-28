@@ -1,10 +1,10 @@
-using MoneyManager.Infrastructure.Entities.Brokers;
-using MoneyManager.Infrastructure.Entities.Securities;
-using MoneyManager.Shared.Entities;
+﻿using Audex.Infrastructure.Entities.Brokers;
+using Audex.Infrastructure.Entities.Securities;
+using Audex.Shared.Entities;
 using System;
-using MoneyManager.Application.DTO.Securities;
+using Audex.Application.DTO.Securities;
 
-namespace MoneyManager.Application.DTO.Brokers
+namespace Audex.Application.DTO.Brokers
 {
     public class DividendPaymentDto : BaseEntity
     {

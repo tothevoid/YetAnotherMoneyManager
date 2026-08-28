@@ -1,8 +1,8 @@
 ﻿using System;
-using MoneyManager.Shared.Entities;
-using MoneyManager.WebApi.Models.Securities;
+using Audex.Shared.Entities;
+using Audex.WebApi.Models.Securities;
 
-namespace MoneyManager.WebApi.Models.Brokers
+namespace Audex.WebApi.Models.Brokers
 {
     public class BrokerAccountSecurityModel: BaseEntity
     {

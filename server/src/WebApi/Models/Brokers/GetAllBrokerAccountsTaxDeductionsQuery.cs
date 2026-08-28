@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MoneyManager.WebApi.Models.Brokers
+namespace Audex.WebApi.Models.Brokers
 {
     public class GetAllBrokerAccountsTaxDeductionsQuery
     {

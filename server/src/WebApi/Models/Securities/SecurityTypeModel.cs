@@ -1,6 +1,6 @@
-﻿using MoneyManager.Shared.Entities;
+﻿using Audex.Shared.Entities;
 
-namespace MoneyManager.WebApi.Models.Securities
+namespace Audex.WebApi.Models.Securities
 {
     public class SecurityTypeModel: BaseEntity
     {

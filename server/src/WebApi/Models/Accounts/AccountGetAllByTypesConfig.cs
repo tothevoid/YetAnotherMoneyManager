@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MoneyManager.WebApi.Models.Accounts
+namespace Audex.WebApi.Models.Accounts
 {
     public class AccountGetAllByTypesConfig
     {

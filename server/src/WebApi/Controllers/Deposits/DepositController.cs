@@ -1,15 +1,15 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
-using MoneyManager.Application.DTO.Deposits;
-using MoneyManager.Application.Interfaces.Deposits;
-using MoneyManager.WebApi.Mappings;
-using MoneyManager.WebApi.Models.Deposits;
-using MoneyManager.WebApi.Models.Deposits.Charts;
+using Audex.Application.DTO.Deposits;
+using Audex.Application.Interfaces.Deposits;
+using Audex.WebApi.Mappings;
+using Audex.WebApi.Models.Deposits;
+using Audex.WebApi.Models.Deposits.Charts;
 using Microsoft.AspNetCore.Authorization;
 
-namespace MoneyManager.WebApi.Controllers.Deposits
+namespace Audex.WebApi.Controllers.Deposits
 {
     [Produces("application/json")]
     [Route("[controller]")]

@@ -1,7 +1,7 @@
-﻿using MoneyManager.Application.DTO.Dashboard;
+﻿using Audex.Application.DTO.Dashboard;
 using System.Collections.Generic;
 
-namespace MoneyManager.WebApi.Models.Dashboard
+namespace Audex.WebApi.Models.Dashboard
 {
     public class GlobalDashboardModel
     {

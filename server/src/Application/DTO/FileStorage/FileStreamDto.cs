@@ -1,6 +1,6 @@
-using System.IO;
+﻿using System.IO;
 
-namespace MoneyManager.Application.DTO.FileStorage
+namespace Audex.Application.DTO.FileStorage
 {
     public class FileStreamDto
     {

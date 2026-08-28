@@ -1,7 +1,7 @@
-using System;
-using MoneyManager.Shared.Entities;
+﻿using System;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.Infrastructure.Entities.Debts
+namespace Audex.Infrastructure.Entities.Debts
 {
     public class DebtToDebtTag : BaseEntity
     {

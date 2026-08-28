@@ -1,13 +1,13 @@
-using MoneyManager.Application.DTO.Securities;
-using MoneyManager.Application.Integrations.Stock;
+﻿using Audex.Application.DTO.Securities;
+using Audex.Application.Integrations.Stock;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MoneyManager.Application.Integrations.Stock.Moex.Model;
+using Audex.Application.Integrations.Stock.Moex.Model;
 
-namespace MoneyManager.Application.Interfaces.Integrations.Stock
+namespace Audex.Application.Interfaces.Integrations.Stock
 {
     public interface IStockConnector
     {

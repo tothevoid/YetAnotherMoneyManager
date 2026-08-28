@@ -1,17 +1,17 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using MoneyManager.Application.DTO.Deposits;
-using MoneyManager.Application.Interfaces.Deposits;
-using MoneyManager.Application.Mappings;
-using MoneyManager.Infrastructure.Interfaces.Database;
-using MoneyManager.Infrastructure.Entities.Deposits;
-using MoneyManager.Infrastructure.Queries;
+using Audex.Application.DTO.Deposits;
+using Audex.Application.Interfaces.Deposits;
+using Audex.Application.Mappings;
+using Audex.Infrastructure.Interfaces.Database;
+using Audex.Infrastructure.Entities.Deposits;
+using Audex.Infrastructure.Queries;
 
-namespace MoneyManager.Application.Services.Deposits
+namespace Audex.Application.Services.Deposits
 {
     public class DepositService : IDepositService
     {

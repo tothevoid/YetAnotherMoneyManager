@@ -1,4 +1,4 @@
-﻿namespace MoneyManager.Application.DTO.Common
+﻿namespace Audex.Application.DTO.Common
 {
     public class PaginationConfigDto
     {

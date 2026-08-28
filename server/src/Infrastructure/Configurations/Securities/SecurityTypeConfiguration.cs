@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using MoneyManager.Infrastructure.Entities.Securities;
+using Audex.Infrastructure.Entities.Securities;
 
-namespace MoneyManager.Infrastructure.Configurations.Securities
+namespace Audex.Infrastructure.Configurations.Securities
 {
     public class SecurityTypeConfiguration : IEntityTypeConfiguration<SecurityType>
     {

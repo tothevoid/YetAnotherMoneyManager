@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using MoneyManager.Infrastructure.Entities.Banks;
-using MoneyManager.Infrastructure.Entities.Currencies;
-using MoneyManager.Infrastructure.Entities.Securities;
-using MoneyManager.Shared.Entities;
+using Audex.Infrastructure.Entities.Banks;
+using Audex.Infrastructure.Entities.Currencies;
+using Audex.Infrastructure.Entities.Securities;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.Infrastructure.Entities.Brokers
+namespace Audex.Infrastructure.Entities.Brokers
 {
     public class BrokerAccount: BaseEntity
     {

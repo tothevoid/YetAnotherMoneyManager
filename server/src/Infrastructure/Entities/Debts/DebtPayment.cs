@@ -1,8 +1,8 @@
 ﻿using System;
-using MoneyManager.Infrastructure.Entities.Accounts;
-using MoneyManager.Shared.Entities;
+using Audex.Infrastructure.Entities.Accounts;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.Infrastructure.Entities.Debts
+namespace Audex.Infrastructure.Entities.Debts
 {
     public class DebtPayment: BaseEntity
     {

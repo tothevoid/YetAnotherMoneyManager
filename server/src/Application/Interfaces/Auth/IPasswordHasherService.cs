@@ -1,7 +1,7 @@
-#nullable enable
-using MoneyManager.Application.Enums.Auth;
+﻿#nullable enable
+using Audex.Application.Enums.Auth;
 
-namespace MoneyManager.Application.Interfaces.Auth
+namespace Audex.Application.Interfaces.Auth
 {
     public interface IPasswordHasherService
     {

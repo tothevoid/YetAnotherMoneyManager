@@ -1,9 +1,9 @@
-﻿using MoneyManager.Infrastructure.Constants;
-using MoneyManager.Infrastructure.Entities.Securities;
-using MoneyManager.Infrastructure.Entities.User;
-using MoneyManager.Infrastructure.Interfaces.Utilitary;
+﻿using Audex.Infrastructure.Constants;
+using Audex.Infrastructure.Entities.Securities;
+using Audex.Infrastructure.Entities.User;
+using Audex.Infrastructure.Interfaces.Utilitary;
 
-namespace MoneyManager.Infrastructure.Data
+namespace Audex.Infrastructure.Data
 {
     public class UserProfileGenerator : IDataGenerator<UserProfile>
     {

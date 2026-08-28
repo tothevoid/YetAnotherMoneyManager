@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 #pragma warning disable CS8981
 #pragma warning disable IDE1006
 
-namespace MoneyManager.Infrastructure.Migrations
+namespace Audex.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class init : Migration

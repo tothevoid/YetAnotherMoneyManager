@@ -3,9 +3,9 @@ WORKDIR /app
 
 COPY . ./
 RUN dotnet restore
-RUN dotnet publish WebApi/MoneyManager.WebApi.csproj -c Release -o build
+RUN dotnet publish src/WebApi/WebApi.csproj -c Release -o build
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/build ./
-ENTRYPOINT ["dotnet", "MoneyManager.WebApi.dll"]
+ENTRYPOINT ["dotnet", "Audex.WebApi.dll"]

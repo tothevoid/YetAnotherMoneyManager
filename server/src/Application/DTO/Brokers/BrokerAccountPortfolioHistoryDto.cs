@@ -1,6 +1,6 @@
-using System;
+﻿using System;
 
-namespace MoneyManager.Application.DTO.Brokers
+namespace Audex.Application.DTO.Brokers
 {
     public class BrokerAccountPortfolioHistoryDto
     {

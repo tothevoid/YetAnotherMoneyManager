@@ -1,7 +1,7 @@
-using System;
-using MoneyManager.Application.Enums.Scheduler;
+﻿using System;
+using Audex.Application.Enums.Scheduler;
 
-namespace MoneyManager.WebApi.Models.Scheduler
+namespace Audex.WebApi.Models.Scheduler
 {
     public class ScheduledTaskModel
     {

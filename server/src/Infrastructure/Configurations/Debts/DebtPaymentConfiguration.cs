@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using MoneyManager.Infrastructure.Entities.Debts;
+using Audex.Infrastructure.Entities.Debts;
 
-namespace MoneyManager.Infrastructure.Configurations.Debts
+namespace Audex.Infrastructure.Configurations.Debts
 {
     public class DebtPaymentConfiguration : IEntityTypeConfiguration<DebtPayment>
     {

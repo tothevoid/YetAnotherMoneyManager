@@ -1,8 +1,8 @@
-using System;
-using MoneyManager.Application.DTO.Currencies;
-using MoneyManager.Shared.Entities;
+﻿using System;
+using Audex.Application.DTO.Currencies;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.Application.DTO.User
+namespace Audex.Application.DTO.User
 {
     public class UserProfileDto : BaseEntity
     {

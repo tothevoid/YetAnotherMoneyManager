@@ -1,13 +1,13 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using MoneyManager.Infrastructure.Interfaces.DatabaseBackup;
+using Audex.Infrastructure.Interfaces.DatabaseBackup;
 
-namespace MoneyManager.Infrastructure.Services.DatabaseBackup
+namespace Audex.Infrastructure.Services.DatabaseBackup
 {
     public class HttpDatabaseBackupProvider : IDatabaseBackupProvider
     {

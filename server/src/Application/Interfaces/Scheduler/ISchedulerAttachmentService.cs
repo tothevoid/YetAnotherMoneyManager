@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
-using MoneyManager.Application.DTO.FileStorage;
-using MoneyManager.Infrastructure.Entities.Scheduler;
+using Audex.Application.DTO.FileStorage;
+using Audex.Infrastructure.Entities.Scheduler;
 
-namespace MoneyManager.Application.Interfaces.Scheduler
+namespace Audex.Application.Interfaces.Scheduler
 {
     public interface ISchedulerAttachmentService
     {

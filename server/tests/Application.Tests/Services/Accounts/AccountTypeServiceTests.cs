@@ -1,9 +1,9 @@
-using Microsoft.Extensions.DependencyInjection;
-using MoneyManager.Application.DTO.Accounts;
-using MoneyManager.Application.Interfaces.Accounts;
-using MoneyManager.Application.Tests.Fixtures;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Audex.Application.DTO.Accounts;
+using Audex.Application.Interfaces.Accounts;
+using Audex.Application.Tests.Fixtures;
 
-namespace MoneyManager.Application.Tests.Services.Accounts
+namespace Audex.Application.Tests.Services.Accounts
 {
     public class AccountTypeServiceTests: TestBase
     {

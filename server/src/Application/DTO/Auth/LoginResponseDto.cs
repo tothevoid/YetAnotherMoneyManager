@@ -1,7 +1,7 @@
-#nullable enable
-using MoneyManager.Application.DTO.User;
+﻿#nullable enable
+using Audex.Application.DTO.User;
 
-namespace MoneyManager.Application.DTO.Auth
+namespace Audex.Application.DTO.Auth
 {
     public class LoginResponseDto
     {

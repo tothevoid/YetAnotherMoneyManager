@@ -1,9 +1,9 @@
-using Microsoft.Extensions.DependencyInjection;
-using MoneyManager.Infrastructure.Database;
-using MoneyManager.Tests.Shared.Fixtures;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Audex.Infrastructure.Database;
+using Audex.Tests.Shared.Fixtures;
 using Xunit;
 
-namespace MoneyManager.Tests.Shared
+namespace Audex.Tests.Shared
 {
     public abstract class TestBase : IClassFixture<ServiceProviderFixture>
     {

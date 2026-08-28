@@ -1,8 +1,8 @@
-#nullable enable
+﻿#nullable enable
 using System;
-using MoneyManager.Shared.Entities;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.Infrastructure.Entities.User
+namespace Audex.Infrastructure.Entities.User
 {
     public class UserRefreshToken : BaseEntity
     {

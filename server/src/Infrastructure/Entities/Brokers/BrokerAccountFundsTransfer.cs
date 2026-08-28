@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MoneyManager.Infrastructure.Entities.Accounts;
-using MoneyManager.Shared.Entities;
+using Audex.Infrastructure.Entities.Accounts;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.Infrastructure.Entities.Brokers
+namespace Audex.Infrastructure.Entities.Brokers
 {
     public class BrokerAccountFundsTransfer: BaseEntity
     {

@@ -1,6 +1,6 @@
-using MoneyManager.Infrastructure.Entities.Scheduler;
+﻿using Audex.Infrastructure.Entities.Scheduler;
 
-namespace MoneyManager.Application.DTO.Scheduler
+namespace Audex.Application.DTO.Scheduler
 {
     public class JobExecutionResult
     {

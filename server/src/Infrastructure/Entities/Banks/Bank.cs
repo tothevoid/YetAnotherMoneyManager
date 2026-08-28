@@ -1,14 +1,14 @@
-﻿using MoneyManager.Infrastructure.Entities.Brokers;
-using MoneyManager.Shared.Entities;
+﻿using Audex.Infrastructure.Entities.Brokers;
+using Audex.Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MoneyManager.Infrastructure.Entities.Accounts;
-using MoneyManager.Infrastructure.Entities.Deposits;
+using Audex.Infrastructure.Entities.Accounts;
+using Audex.Infrastructure.Entities.Deposits;
 
-namespace MoneyManager.Infrastructure.Entities.Banks
+namespace Audex.Infrastructure.Entities.Banks
 {
     public class Bank : BaseEntity
     {

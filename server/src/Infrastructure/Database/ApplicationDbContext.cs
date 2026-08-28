@@ -1,24 +1,24 @@
-using Microsoft.EntityFrameworkCore;
-using MoneyManager.Infrastructure.Configurations.Accounts;
-using MoneyManager.Infrastructure.Configurations.Banks;
-using MoneyManager.Infrastructure.Configurations.Brokers;
-using MoneyManager.Infrastructure.Configurations.Currencies;
-using MoneyManager.Infrastructure.Configurations.Debts;
-using MoneyManager.Infrastructure.Configurations.Deposits;
-using MoneyManager.Infrastructure.Configurations.Notifications;
-using MoneyManager.Infrastructure.Configurations.Securities;
-using MoneyManager.Infrastructure.Configurations.Transactions;
-using MoneyManager.Infrastructure.Configurations.Scheduler;
-using MoneyManager.Infrastructure.Configurations.User;
-using MoneyManager.Infrastructure.Data;
-using MoneyManager.Infrastructure.Entities.Accounts;
-using MoneyManager.Infrastructure.Entities.Currencies;
-using MoneyManager.Infrastructure.Entities.Securities;
-using MoneyManager.Infrastructure.Entities.Transactions;
-using MoneyManager.Infrastructure.Entities.User;
-using AccountConfiguration = MoneyManager.Infrastructure.Configurations.Accounts.AccountConfiguration;
+﻿using Microsoft.EntityFrameworkCore;
+using Audex.Infrastructure.Configurations.Accounts;
+using Audex.Infrastructure.Configurations.Banks;
+using Audex.Infrastructure.Configurations.Brokers;
+using Audex.Infrastructure.Configurations.Currencies;
+using Audex.Infrastructure.Configurations.Debts;
+using Audex.Infrastructure.Configurations.Deposits;
+using Audex.Infrastructure.Configurations.Notifications;
+using Audex.Infrastructure.Configurations.Securities;
+using Audex.Infrastructure.Configurations.Transactions;
+using Audex.Infrastructure.Configurations.Scheduler;
+using Audex.Infrastructure.Configurations.User;
+using Audex.Infrastructure.Data;
+using Audex.Infrastructure.Entities.Accounts;
+using Audex.Infrastructure.Entities.Currencies;
+using Audex.Infrastructure.Entities.Securities;
+using Audex.Infrastructure.Entities.Transactions;
+using Audex.Infrastructure.Entities.User;
+using AccountConfiguration = Audex.Infrastructure.Configurations.Accounts.AccountConfiguration;
 
-namespace MoneyManager.Infrastructure.Database
+namespace Audex.Infrastructure.Database
 {
     public class ApplicationDbContext : DbContext
     {

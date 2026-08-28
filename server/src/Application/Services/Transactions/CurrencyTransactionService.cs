@@ -1,17 +1,17 @@
-using Microsoft.EntityFrameworkCore;
-using MoneyManager.Application.DTO.Transactions;
-using MoneyManager.Application.Interfaces.Transactions;
-using MoneyManager.Application.Mappings;
-using MoneyManager.Infrastructure.Entities.Currencies;
-using MoneyManager.Infrastructure.Entities.Transactions;
-using MoneyManager.Infrastructure.Interfaces.Database;
-using MoneyManager.Infrastructure.Queries;
+﻿using Microsoft.EntityFrameworkCore;
+using Audex.Application.DTO.Transactions;
+using Audex.Application.Interfaces.Transactions;
+using Audex.Application.Mappings;
+using Audex.Infrastructure.Entities.Currencies;
+using Audex.Infrastructure.Entities.Transactions;
+using Audex.Infrastructure.Interfaces.Database;
+using Audex.Infrastructure.Queries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.Services.Transactions
+namespace Audex.Application.Services.Transactions
 {
     public class CurrencyTransactionService: ICurrencyTransactionService
     {

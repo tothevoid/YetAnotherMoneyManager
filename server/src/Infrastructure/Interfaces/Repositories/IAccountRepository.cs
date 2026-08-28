@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using MoneyManager.Infrastructure.Entities.Accounts;
-using MoneyManager.Infrastructure.Interfaces.Database;
+using Audex.Infrastructure.Entities.Accounts;
+using Audex.Infrastructure.Interfaces.Database;
 
-namespace MoneyManager.Infrastructure.Interfaces.Repositories
+namespace Audex.Infrastructure.Interfaces.Repositories
 {
     public interface IAccountRepository : IRepository<Account>
     {

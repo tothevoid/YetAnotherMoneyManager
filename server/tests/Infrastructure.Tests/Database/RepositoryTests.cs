@@ -1,11 +1,11 @@
-using MoneyManager.Infrastructure.Database;
-using MoneyManager.Infrastructure.Entities.Accounts;
-using MoneyManager.Infrastructure.Queries;
-using MoneyManager.Tests.Shared;
-using MoneyManager.Tests.Shared.Fixtures;
+﻿using Audex.Infrastructure.Database;
+using Audex.Infrastructure.Entities.Accounts;
+using Audex.Infrastructure.Queries;
+using Audex.Tests.Shared;
+using Audex.Tests.Shared.Fixtures;
 using Xunit;
 
-namespace MoneyManager.Infrastructure.Tests.Database
+namespace Audex.Infrastructure.Tests.Database
 {
     public class RepositoryTests : TestBase
     {

@@ -1,6 +1,6 @@
-using MoneyManager.Shared.Entities;
+﻿using Audex.Shared.Entities;
 
-namespace MoneyManager.Application.DTO.Securities
+namespace Audex.Application.DTO.Securities
 {
     public class SecurityTypeDto: BaseEntity
     {

@@ -1,8 +1,8 @@
-using System.Threading.Tasks;
-using MoneyManager.Application.Services.DatabaseBackup;
+﻿using System.Threading.Tasks;
+using Audex.Application.Services.DatabaseBackup;
 using Xunit;
 
-namespace MoneyManager.Application.Tests.Services.DatabaseBackup
+namespace Audex.Application.Tests.Services.DatabaseBackup
 {
     public class DatabaseStateServiceTests
     {

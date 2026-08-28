@@ -1,4 +1,4 @@
-namespace MoneyManager.Application.Enums.Auth
+﻿namespace Audex.Application.Enums.Auth
 {
     public enum PasswordVerificationResult
     {

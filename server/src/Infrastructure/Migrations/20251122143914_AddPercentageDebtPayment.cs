@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace MoneyManager.Infrastructure.Migrations
+namespace Audex.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class AddPercentageDebtPayment : Migration

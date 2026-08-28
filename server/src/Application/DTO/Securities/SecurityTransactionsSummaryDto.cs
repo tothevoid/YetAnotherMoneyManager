@@ -1,4 +1,4 @@
-namespace MoneyManager.Application.DTO.Securities
+﻿namespace Audex.Application.DTO.Securities
 {
     public class SecurityTransactionsSummaryDto
     {

@@ -1,6 +1,6 @@
-﻿using MoneyManager.Shared.Entities;
+﻿using Audex.Shared.Entities;
 
-namespace MoneyManager.Infrastructure.Interfaces.Utilitary
+namespace Audex.Infrastructure.Interfaces.Utilitary
 {
     public interface IDataGenerator<out TEntity>
         where TEntity: BaseEntity

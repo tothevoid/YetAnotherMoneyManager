@@ -1,12 +1,12 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MoneyManager.Application.DTO.Brokers;
-using MoneyManager.Application.DTO.Securities;
-using MoneyManager.Application.Interfaces.Brokers;
+using Audex.Application.DTO.Brokers;
+using Audex.Application.DTO.Securities;
+using Audex.Application.Interfaces.Brokers;
 using System;
 using System.Threading.Tasks;
 
-namespace MoneyManager.WebApi.Controllers.Brokers
+namespace Audex.WebApi.Controllers.Brokers
 {
     [ApiController]
     [Route("[controller]")]

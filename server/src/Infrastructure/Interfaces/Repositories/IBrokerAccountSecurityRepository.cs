@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using MoneyManager.Infrastructure.Entities.Brokers;
-using MoneyManager.Infrastructure.Interfaces.Database;
+using Audex.Infrastructure.Entities.Brokers;
+using Audex.Infrastructure.Interfaces.Database;
 
-namespace MoneyManager.Infrastructure.Interfaces.Repositories
+namespace Audex.Infrastructure.Interfaces.Repositories
 {
     public interface IBrokerAccountSecurityRepository: IRepository<BrokerAccountSecurity>
     {

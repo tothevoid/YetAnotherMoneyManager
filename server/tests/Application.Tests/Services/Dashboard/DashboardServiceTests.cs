@@ -1,8 +1,8 @@
-using Microsoft.Extensions.DependencyInjection;
-using MoneyManager.Application.Interfaces.Dashboard;
-using MoneyManager.Application.Tests.Fixtures;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Audex.Application.Interfaces.Dashboard;
+using Audex.Application.Tests.Fixtures;
 
-namespace MoneyManager.Application.Tests.Services.Dashboard
+namespace Audex.Application.Tests.Services.Dashboard
 {
     public class DashboardServiceTests : TestBase
     {

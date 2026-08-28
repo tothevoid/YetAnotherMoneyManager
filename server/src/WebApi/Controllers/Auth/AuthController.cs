@@ -1,15 +1,15 @@
-#nullable enable
+﻿#nullable enable
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MoneyManager.Application.DTO.Auth;
-using MoneyManager.Application.Interfaces.Auth;
-using MoneyManager.WebApi.Models.Auth;
+using Audex.Application.DTO.Auth;
+using Audex.Application.Interfaces.Auth;
+using Audex.WebApi.Models.Auth;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace MoneyManager.WebApi.Controllers.Auth
+namespace Audex.WebApi.Controllers.Auth
 {
     [ApiController]
     [Route("[controller]")]

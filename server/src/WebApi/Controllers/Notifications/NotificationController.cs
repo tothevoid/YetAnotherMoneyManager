@@ -1,14 +1,14 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MoneyManager.Application.Interfaces.Notifications;
-using MoneyManager.WebApi.Mappings;
-using MoneyManager.WebApi.Models.Common;
-using MoneyManager.WebApi.Models.Notifications;
+using Audex.Application.Interfaces.Notifications;
+using Audex.WebApi.Mappings;
+using Audex.WebApi.Models.Common;
+using Audex.WebApi.Models.Notifications;
 
-namespace MoneyManager.WebApi.Controllers.Notifications
+namespace Audex.WebApi.Controllers.Notifications
 {
     [Produces("application/json")]
     [Route("[controller]")]

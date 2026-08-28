@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Text.Json.Serialization;
-using MoneyManager.Infrastructure.Entities.Currencies;
-using MoneyManager.Shared.Entities;
-using MoneyManager.WebApi.Models.Currencies;
+using Audex.Infrastructure.Entities.Currencies;
+using Audex.Shared.Entities;
+using Audex.WebApi.Models.Currencies;
 
-namespace MoneyManager.WebApi.Models.Securities
+namespace Audex.WebApi.Models.Securities
 {
     public class SecurityModel
     {

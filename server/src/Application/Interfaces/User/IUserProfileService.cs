@@ -1,8 +1,8 @@
-#nullable enable
-using MoneyManager.Application.DTO.User;
+﻿#nullable enable
+using Audex.Application.DTO.User;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.Interfaces.User
+namespace Audex.Application.Interfaces.User
 {
     public interface IUserProfileService
     {

@@ -1,30 +1,30 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Riok.Mapperly.Abstractions;
-using MoneyManager.Application.DTO;
-using MoneyManager.Application.DTO.Accounts;
-using MoneyManager.Application.DTO.Banks;
-using MoneyManager.Application.DTO.Brokers;
-using MoneyManager.Application.DTO.Currencies;
-using MoneyManager.Application.DTO.Crypto;
-using MoneyManager.Application.DTO.Debts;
-using MoneyManager.Application.DTO.Deposits;
-using MoneyManager.Application.DTO.Notifications;
-using MoneyManager.Application.DTO.Securities;
-using MoneyManager.Application.DTO.Transactions;
-using MoneyManager.Application.DTO.User;
-using MoneyManager.Infrastructure.Entities.Accounts;
-using MoneyManager.Infrastructure.Entities.Banks;
-using MoneyManager.Infrastructure.Entities.Brokers;
-using MoneyManager.Infrastructure.Entities.Crypto;
-using MoneyManager.Infrastructure.Entities.Currencies;
-using MoneyManager.Infrastructure.Entities.Debts;
-using MoneyManager.Infrastructure.Entities.Deposits;
-using MoneyManager.Infrastructure.Entities.Notifications;
-using MoneyManager.Infrastructure.Entities.Securities;
-using MoneyManager.Infrastructure.Entities.Transactions;
-using MoneyManager.Infrastructure.Entities.User;
+using Audex.Application.DTO;
+using Audex.Application.DTO.Accounts;
+using Audex.Application.DTO.Banks;
+using Audex.Application.DTO.Brokers;
+using Audex.Application.DTO.Currencies;
+using Audex.Application.DTO.Crypto;
+using Audex.Application.DTO.Debts;
+using Audex.Application.DTO.Deposits;
+using Audex.Application.DTO.Notifications;
+using Audex.Application.DTO.Securities;
+using Audex.Application.DTO.Transactions;
+using Audex.Application.DTO.User;
+using Audex.Infrastructure.Entities.Accounts;
+using Audex.Infrastructure.Entities.Banks;
+using Audex.Infrastructure.Entities.Brokers;
+using Audex.Infrastructure.Entities.Crypto;
+using Audex.Infrastructure.Entities.Currencies;
+using Audex.Infrastructure.Entities.Debts;
+using Audex.Infrastructure.Entities.Deposits;
+using Audex.Infrastructure.Entities.Notifications;
+using Audex.Infrastructure.Entities.Securities;
+using Audex.Infrastructure.Entities.Transactions;
+using Audex.Infrastructure.Entities.User;
 
-namespace MoneyManager.Application.Mappings
+namespace Audex.Application.Mappings
 {
     [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.None)]
     public partial class ApplicationMapper

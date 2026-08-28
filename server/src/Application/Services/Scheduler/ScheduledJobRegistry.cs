@@ -1,16 +1,16 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using MoneyManager.Application.Attributes.Scheduler;
-using MoneyManager.Application.DTO.Scheduler;
-using MoneyManager.Application.Enums.Scheduler;
-using MoneyManager.Application.Interfaces.Scheduler;
+using Audex.Application.Attributes.Scheduler;
+using Audex.Application.DTO.Scheduler;
+using Audex.Application.Enums.Scheduler;
+using Audex.Application.Interfaces.Scheduler;
 
-namespace MoneyManager.Application.Services.Scheduler
+namespace Audex.Application.Services.Scheduler
 {
     public class ScheduledJobRegistry : IScheduledJobRegistry
     {

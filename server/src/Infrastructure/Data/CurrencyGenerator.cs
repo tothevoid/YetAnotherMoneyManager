@@ -1,9 +1,9 @@
 ﻿using System;
-using MoneyManager.Infrastructure.Constants;
-using MoneyManager.Infrastructure.Entities.Currencies;
-using MoneyManager.Infrastructure.Interfaces.Utilitary;
+using Audex.Infrastructure.Constants;
+using Audex.Infrastructure.Entities.Currencies;
+using Audex.Infrastructure.Interfaces.Utilitary;
 
-namespace MoneyManager.Infrastructure.Data
+namespace Audex.Infrastructure.Data
 {
     public class CurrencyGenerator : IDataGenerator<Currency>
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MoneyManager.Shared.Entities
+namespace Audex.Shared.Entities
 {
     public class BaseEntity
     {

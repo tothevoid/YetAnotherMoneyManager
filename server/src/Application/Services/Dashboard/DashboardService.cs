@@ -1,29 +1,29 @@
-using MoneyManager.Application.DTO.Accounts;
-using MoneyManager.Application.DTO.Banks;
-using MoneyManager.Application.DTO.Brokers;
-using MoneyManager.Application.DTO.Dashboard;
-using MoneyManager.Application.DTO.Deposits;
-using MoneyManager.Application.DTO.Transactions;
-using MoneyManager.Application.Interfaces.Accounts;
-using MoneyManager.Application.Interfaces.Banks;
-using MoneyManager.Application.Interfaces.Brokers;
-using MoneyManager.Application.Interfaces.Crypto;
-using MoneyManager.Application.Interfaces.Currencies;
-using MoneyManager.Application.Interfaces.Dashboard;
-using MoneyManager.Application.Interfaces.Debts;
-using MoneyManager.Application.Interfaces.Deposits;
-using MoneyManager.Application.Interfaces.Transactions;
-using MoneyManager.Application.Interfaces.User;
-using MoneyManager.Application.Services.Brokers;
-using MoneyManager.Infrastructure.Constants;
-using MoneyManager.Infrastructure.Entities.Accounts;
-using MoneyManager.Infrastructure.Interfaces.Database;
+﻿using Audex.Application.DTO.Accounts;
+using Audex.Application.DTO.Banks;
+using Audex.Application.DTO.Brokers;
+using Audex.Application.DTO.Dashboard;
+using Audex.Application.DTO.Deposits;
+using Audex.Application.DTO.Transactions;
+using Audex.Application.Interfaces.Accounts;
+using Audex.Application.Interfaces.Banks;
+using Audex.Application.Interfaces.Brokers;
+using Audex.Application.Interfaces.Crypto;
+using Audex.Application.Interfaces.Currencies;
+using Audex.Application.Interfaces.Dashboard;
+using Audex.Application.Interfaces.Debts;
+using Audex.Application.Interfaces.Deposits;
+using Audex.Application.Interfaces.Transactions;
+using Audex.Application.Interfaces.User;
+using Audex.Application.Services.Brokers;
+using Audex.Infrastructure.Constants;
+using Audex.Infrastructure.Entities.Accounts;
+using Audex.Infrastructure.Interfaces.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.Services.Dashboard
+namespace Audex.Application.Services.Dashboard
 {
     public class DashboardService : IDashboardService
     {

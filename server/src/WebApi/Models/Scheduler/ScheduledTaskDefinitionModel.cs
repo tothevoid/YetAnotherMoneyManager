@@ -1,4 +1,4 @@
-namespace MoneyManager.WebApi.Models.Scheduler
+﻿namespace Audex.WebApi.Models.Scheduler
 {
     public class ScheduledTaskDefinitionModel
     {

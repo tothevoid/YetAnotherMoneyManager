@@ -1,13 +1,13 @@
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using MoneyManager.Application.DTO.FileStorage;
-using MoneyManager.Application.Interfaces.FileStorage;
+using Audex.Application.DTO.FileStorage;
+using Audex.Application.Interfaces.FileStorage;
 using System;
 using System.Threading.Tasks;
 using Minio;
 using Minio.DataModel.Args;
 
-namespace MoneyManager.Application.Services.FileStorage
+namespace Audex.Application.Services.FileStorage
 {
     public class FileStorageService : IFileStorageService
     {

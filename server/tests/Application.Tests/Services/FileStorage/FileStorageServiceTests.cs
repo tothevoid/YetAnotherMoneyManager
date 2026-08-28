@@ -1,10 +1,10 @@
-using Microsoft.AspNetCore.Http;
-using MoneyManager.Application.Interfaces.FileStorage;
-using MoneyManager.Tests.Shared.Fixtures;
+﻿using Microsoft.AspNetCore.Http;
+using Audex.Application.Interfaces.FileStorage;
+using Audex.Tests.Shared.Fixtures;
 using System.Text;
 using Xunit;
 
-namespace MoneyManager.Application.Tests.Services.FileStorage
+namespace Audex.Application.Tests.Services.FileStorage
 {
     [Trait("Category", "S3")]
     public class FileStorageServiceTests : TestBase

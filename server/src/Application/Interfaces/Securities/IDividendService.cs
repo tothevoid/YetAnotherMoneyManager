@@ -1,10 +1,10 @@
-using MoneyManager.Application.DTO.Common;
-using MoneyManager.Application.DTO.Securities;
+﻿using Audex.Application.DTO.Common;
+using Audex.Application.DTO.Securities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.Interfaces.Securities
+namespace Audex.Application.Interfaces.Securities
 {
     public interface IDividendService
     {

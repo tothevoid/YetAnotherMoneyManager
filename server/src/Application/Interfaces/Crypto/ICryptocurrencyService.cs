@@ -1,11 +1,11 @@
-using MoneyManager.Application.DTO.Crypto;
-using MoneyManager.Application.DTO.FileStorage;
+﻿using Audex.Application.DTO.Crypto;
+using Audex.Application.DTO.FileStorage;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace MoneyManager.Application.Interfaces.Crypto
+namespace Audex.Application.Interfaces.Crypto
 {
     public interface ICryptocurrencyService
     {

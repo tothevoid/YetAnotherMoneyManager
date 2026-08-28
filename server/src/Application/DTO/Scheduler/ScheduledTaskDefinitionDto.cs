@@ -1,4 +1,4 @@
-namespace MoneyManager.Application.DTO.Scheduler
+﻿namespace Audex.Application.DTO.Scheduler
 {
     public class ScheduledTaskDefinitionDto
     {

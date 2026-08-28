@@ -1,8 +1,8 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using MoneyManager.Infrastructure.Entities.Scheduler;
+using Audex.Infrastructure.Entities.Scheduler;
 
-namespace MoneyManager.Infrastructure.Configurations.Scheduler
+namespace Audex.Infrastructure.Configurations.Scheduler
 {
     public class ScheduledCronTickerConfiguration : IEntityTypeConfiguration<ScheduledCronTicker>
     {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Text.Json.Serialization;
-using MoneyManager.Shared.Entities;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.WebApi.Models.Transactions
+namespace Audex.WebApi.Models.Transactions
 {
     public class TransactionTypeModel
     {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using MoneyManager.WebApi.Models.Securities;
+using Audex.WebApi.Models.Securities;
 
-namespace MoneyManager.WebApi.Models.Brokers
+namespace Audex.WebApi.Models.Brokers
 {
     public class BrokerAccountDailyStatsModel
     {

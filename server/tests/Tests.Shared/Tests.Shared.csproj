@@ -5,6 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsTestProject>false</IsTestProject>
+    <RootNamespace>Audex.Tests.Shared</RootNamespace>
+    <AssemblyName>Audex.Tests.Shared</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,9 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application\MoneyManager.Application.csproj" />
-    <ProjectReference Include="..\Infrastructure\MoneyManager.Infrastructure.csproj" />
-    <ProjectReference Include="..\Shared\MoneyManager.Shared.csproj" />
+    <ProjectReference Include="..\..\src\Application\Application.csproj" />
+    <ProjectReference Include="..\..\src\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Shared\Shared.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-namespace MoneyManager.Infrastructure.Entities.Notifications
+﻿namespace Audex.Infrastructure.Entities.Notifications
 {
     public enum NotificationSeverity
     {

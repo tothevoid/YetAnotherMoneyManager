@@ -1,20 +1,20 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Threading.Tasks;
-using MoneyManager.Application.DTO.Common;
-using MoneyManager.Application.DTO.Notifications;
-using MoneyManager.Application.Interfaces.Notifications;
-using MoneyManager.Application.Mappings;
-using MoneyManager.Infrastructure.Constants;
-using MoneyManager.Infrastructure.Entities.Notifications;
-using MoneyManager.Infrastructure.Interfaces.Database;
-using MoneyManager.Infrastructure.Interfaces.Messages;
-using MoneyManager.Infrastructure.Queries;
+using Audex.Application.DTO.Common;
+using Audex.Application.DTO.Notifications;
+using Audex.Application.Interfaces.Notifications;
+using Audex.Application.Mappings;
+using Audex.Infrastructure.Constants;
+using Audex.Infrastructure.Entities.Notifications;
+using Audex.Infrastructure.Interfaces.Database;
+using Audex.Infrastructure.Interfaces.Messages;
+using Audex.Infrastructure.Queries;
 
-namespace MoneyManager.Application.Services.Notifications
+namespace Audex.Application.Services.Notifications
 {
     public class NotificationService(
         IUnitOfWork uow,

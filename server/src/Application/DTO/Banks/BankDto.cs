@@ -1,7 +1,7 @@
-using System;
-using MoneyManager.Shared.Entities;
+﻿using System;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.Application.DTO.Banks
+namespace Audex.Application.DTO.Banks
 {
     public class BankDto: BaseEntity
     {

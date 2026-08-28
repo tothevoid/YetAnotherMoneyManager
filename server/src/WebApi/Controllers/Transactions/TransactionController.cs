@@ -1,14 +1,14 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
-using MoneyManager.Application.DTO.Transactions;
-using MoneyManager.Application.Interfaces.Transactions;
-using MoneyManager.WebApi.Mappings;
-using MoneyManager.WebApi.Models.Transactions;
+using Audex.Application.DTO.Transactions;
+using Audex.Application.Interfaces.Transactions;
+using Audex.WebApi.Mappings;
+using Audex.WebApi.Models.Transactions;
 using Microsoft.AspNetCore.Authorization;
 
-namespace MoneyManager.WebApi.Controllers.Transactions
+namespace Audex.WebApi.Controllers.Transactions
 {
     [Produces("application/json")]
     [Route("[controller]")]

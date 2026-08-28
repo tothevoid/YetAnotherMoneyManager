@@ -1,6 +1,6 @@
-using System;
+﻿using System;
 
-namespace MoneyManager.Application.DTO.Accounts
+namespace Audex.Application.DTO.Accounts
 {
     public class AccountTransferDto
     {

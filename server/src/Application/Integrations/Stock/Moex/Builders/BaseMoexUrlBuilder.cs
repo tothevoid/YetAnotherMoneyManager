@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MoneyManager.Application.Integrations.Stock.Moex.Builders
+namespace Audex.Application.Integrations.Stock.Moex.Builders
 {
     public class BaseMoexUrlBuilder
     {

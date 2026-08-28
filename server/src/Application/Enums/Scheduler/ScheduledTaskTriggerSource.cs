@@ -1,4 +1,4 @@
-namespace MoneyManager.Application.Enums.Scheduler
+﻿namespace Audex.Application.Enums.Scheduler
 {
     public enum ScheduledTaskTriggerSource
     {

@@ -1,8 +1,8 @@
-using MoneyManager.Shared.Entities;
+﻿using Audex.Shared.Entities;
 using System;
 using System.Text.Json.Serialization;
 
-namespace MoneyManager.WebApi.Models.Banks
+namespace Audex.WebApi.Models.Banks
 {
     public class BankModel
     {

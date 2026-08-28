@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using MoneyManager.Infrastructure.Configurations.Accounts;
-using MoneyManager.Infrastructure.Entities.Debts;
+using Audex.Infrastructure.Configurations.Accounts;
+using Audex.Infrastructure.Entities.Debts;
 
-namespace MoneyManager.Infrastructure.Configurations.Debts
+namespace Audex.Infrastructure.Configurations.Debts
 {
     public class DebtConfiguration : IEntityTypeConfiguration<Debt>
     {

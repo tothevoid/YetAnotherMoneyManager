@@ -1,9 +1,9 @@
-using MoneyManager.Application.DTO.Currencies;
+﻿using Audex.Application.DTO.Currencies;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.Interfaces.Currencies
+namespace Audex.Application.Interfaces.Currencies
 {
     public interface ICurrencyService
     {

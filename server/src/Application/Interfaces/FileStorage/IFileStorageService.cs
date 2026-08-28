@@ -1,8 +1,8 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using MoneyManager.Application.DTO.FileStorage;
+using Audex.Application.DTO.FileStorage;
 
-namespace MoneyManager.Application.Interfaces.FileStorage
+namespace Audex.Application.Interfaces.FileStorage
 {
     public interface IFileStorageService
     {

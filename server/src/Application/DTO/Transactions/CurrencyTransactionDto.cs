@@ -1,13 +1,13 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MoneyManager.Application.DTO.Accounts;
-using MoneyManager.Infrastructure.Entities.Accounts;
-using MoneyManager.Shared.Entities;
+using Audex.Application.DTO.Accounts;
+using Audex.Infrastructure.Entities.Accounts;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.Application.DTO.Transactions
+namespace Audex.Application.DTO.Transactions
 {
     public class CurrencyTransactionDto: BaseEntity
     {

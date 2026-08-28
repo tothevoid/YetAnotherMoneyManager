@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MoneyManager.Infrastructure.Entities.Currencies;
-using MoneyManager.Shared.Entities;
+using Audex.Infrastructure.Entities.Currencies;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.Infrastructure.Entities.User
+namespace Audex.Infrastructure.Entities.User
 {
     public class UserProfile: BaseEntity
     {

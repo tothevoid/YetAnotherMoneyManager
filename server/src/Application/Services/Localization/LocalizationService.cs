@@ -1,12 +1,12 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Globalization;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using MoneyManager.Application.Interfaces.Localization;
-using MoneyManager.Application.Interfaces.User;
+using Audex.Application.Interfaces.Localization;
+using Audex.Application.Interfaces.User;
 
-namespace MoneyManager.Application.Services.Localization
+namespace Audex.Application.Services.Localization
 {
     public class LocalizationService : ILocalizationService
     {

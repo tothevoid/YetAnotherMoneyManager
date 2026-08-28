@@ -1,16 +1,16 @@
-#nullable enable
+﻿#nullable enable
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using MoneyManager.Application.DTO;
-using MoneyManager.Application.DTO.Auth;
-using MoneyManager.Application.DTO.Common;
-using MoneyManager.Application.DTO.User;
-using MoneyManager.Application.Interfaces.Auth;
-using MoneyManager.Application.Interfaces.User;
-using MoneyManager.Application.Mappings;
-using MoneyManager.Infrastructure.Entities.User;
-using MoneyManager.Infrastructure.Interfaces.Database;
-using MoneyManager.Infrastructure.Queries;
+using Audex.Application.DTO;
+using Audex.Application.DTO.Auth;
+using Audex.Application.DTO.Common;
+using Audex.Application.DTO.User;
+using Audex.Application.Interfaces.Auth;
+using Audex.Application.Interfaces.User;
+using Audex.Application.Mappings;
+using Audex.Infrastructure.Entities.User;
+using Audex.Infrastructure.Interfaces.Database;
+using Audex.Infrastructure.Queries;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -22,7 +22,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.Services.Auth
+namespace Audex.Application.Services.Auth
 {
     public class AuthService : IAuthService
     {

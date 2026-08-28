@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using MoneyManager.Infrastructure.Entities.Transactions;
+using Audex.Infrastructure.Entities.Transactions;
 
-namespace MoneyManager.Infrastructure.Configurations.Transactions
+namespace Audex.Infrastructure.Configurations.Transactions
 {
     public class CurrencyTransactionConfiguration : IEntityTypeConfiguration<CurrencyTransaction>
     {

@@ -1,6 +1,6 @@
-﻿using MoneyManager.Shared.Entities;
+﻿using Audex.Shared.Entities;
 
-namespace MoneyManager.WebApi.Models.Brokers
+namespace Audex.WebApi.Models.Brokers
 {
     public class BrokerModel: BaseEntity
     {

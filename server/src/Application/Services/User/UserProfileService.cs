@@ -1,19 +1,19 @@
-#nullable enable
-using MoneyManager.Infrastructure.Interfaces.Database;
+﻿#nullable enable
+using Audex.Infrastructure.Interfaces.Database;
 using System.Linq;
 using System;
 using System.Threading.Tasks;
-using MoneyManager.Application.DTO.User;
-using MoneyManager.Application.Enums.Auth;
-using MoneyManager.Application.Interfaces.Auth;
-using MoneyManager.Application.Interfaces.User;
-using MoneyManager.Application.Mappings;
-using MoneyManager.Infrastructure.Entities.User;
+using Audex.Application.DTO.User;
+using Audex.Application.Enums.Auth;
+using Audex.Application.Interfaces.Auth;
+using Audex.Application.Interfaces.User;
+using Audex.Application.Mappings;
+using Audex.Infrastructure.Entities.User;
 using Microsoft.EntityFrameworkCore;
-using MoneyManager.Application.Interfaces.Currencies;
-using MoneyManager.Application.Services.Currencies;
+using Audex.Application.Interfaces.Currencies;
+using Audex.Application.Services.Currencies;
 
-namespace MoneyManager.Application.Services.User
+namespace Audex.Application.Services.User
 {
     public class UserProfileService : IUserProfileService
     {

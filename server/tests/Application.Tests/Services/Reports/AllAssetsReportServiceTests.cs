@@ -1,14 +1,14 @@
-using System.IO;
+﻿using System.IO;
 using ClosedXML.Excel;
 using Microsoft.Extensions.DependencyInjection;
-using MoneyManager.Application.DTO;
-using MoneyManager.Application.DTO.User;
-using MoneyManager.Application.Interfaces.Reports;
-using MoneyManager.Application.Interfaces.User;
-using MoneyManager.Application.Tests.Fixtures;
-using MoneyManager.Infrastructure.Constants;
+using Audex.Application.DTO;
+using Audex.Application.DTO.User;
+using Audex.Application.Interfaces.Reports;
+using Audex.Application.Interfaces.User;
+using Audex.Application.Tests.Fixtures;
+using Audex.Infrastructure.Constants;
 
-namespace MoneyManager.Application.Tests.Services.Reports
+namespace Audex.Application.Tests.Services.Reports
 {
     public class AllAssetsReportServiceTests : TestBase
     {

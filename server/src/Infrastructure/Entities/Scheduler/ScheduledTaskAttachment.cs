@@ -1,7 +1,7 @@
-using System;
-using MoneyManager.Shared.Entities;
+﻿using System;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.Infrastructure.Entities.Scheduler
+namespace Audex.Infrastructure.Entities.Scheduler
 {
     public class ScheduledTaskAttachment : BaseEntity
     {

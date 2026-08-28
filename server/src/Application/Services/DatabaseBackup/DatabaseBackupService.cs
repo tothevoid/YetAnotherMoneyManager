@@ -1,15 +1,15 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using MoneyManager.Application.DTO.DatabaseBackup;
-using MoneyManager.Application.Interfaces.DatabaseBackup;
-using MoneyManager.Infrastructure.Interfaces.DatabaseBackup;
+using Audex.Application.DTO.DatabaseBackup;
+using Audex.Application.Interfaces.DatabaseBackup;
+using Audex.Infrastructure.Interfaces.DatabaseBackup;
 
-namespace MoneyManager.Application.Services.DatabaseBackup
+namespace Audex.Application.Services.DatabaseBackup
 {
     public class DatabaseBackupService : IDatabaseBackupService
     {

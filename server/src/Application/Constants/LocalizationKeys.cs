@@ -1,4 +1,4 @@
-namespace MoneyManager.Application.Constants
+﻿namespace Audex.Application.Constants
 {
     public static class LocalizationKeys
     {

@@ -1,6 +1,6 @@
-using System;
+﻿using System;
 
-namespace MoneyManager.Application.Attributes.Scheduler
+namespace Audex.Application.Attributes.Scheduler
 {
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
     public sealed class ScheduledJobAttribute : Attribute

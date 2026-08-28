@@ -1,9 +1,9 @@
-using System.Text;
+﻿using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using MoneyManager.Infrastructure.Interfaces.DatabaseBackup;
+using Audex.Infrastructure.Interfaces.DatabaseBackup;
 
-namespace MoneyManager.Tests.Shared
+namespace Audex.Tests.Shared
 {
     public class TestDatabaseBackupProvider : IDatabaseBackupProvider
     {

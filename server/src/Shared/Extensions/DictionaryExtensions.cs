@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Shared.Extensions
+namespace Audex.Shared.Extensions
 {
     public static class DictionaryExtensions
     {

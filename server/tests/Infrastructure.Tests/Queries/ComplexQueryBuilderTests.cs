@@ -1,9 +1,9 @@
-using System.Linq.Expressions;
-using MoneyManager.Infrastructure.Entities.Accounts;
-using MoneyManager.Infrastructure.Queries;
+﻿using System.Linq.Expressions;
+using Audex.Infrastructure.Entities.Accounts;
+using Audex.Infrastructure.Queries;
 using Xunit;
 
-namespace MoneyManager.Infrastructure.Tests.Queries
+namespace Audex.Infrastructure.Tests.Queries
 {
     public class ComplexQueryBuilderTests
     {

@@ -1,11 +1,11 @@
-﻿using MoneyManager.Shared.Entities;
+﻿using Audex.Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Infrastructure.Entities.Crypto
+namespace Audex.Infrastructure.Entities.Crypto
 {
     public class CryptoAccountCryptocurrency: BaseEntity
     {

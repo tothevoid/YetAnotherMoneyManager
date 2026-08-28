@@ -1,4 +1,4 @@
-namespace MoneyManager.Application.DTO.DatabaseBackup
+﻿namespace Audex.Application.DTO.DatabaseBackup
 {
     public class GeneratedBackupDto
     {

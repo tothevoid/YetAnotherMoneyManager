@@ -1,12 +1,12 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using MoneyManager.Application.Services.DatabaseBackup;
+using Audex.Application.Services.DatabaseBackup;
 using Xunit;
 
-namespace MoneyManager.Application.Tests.Services.DatabaseBackup
+namespace Audex.Application.Tests.Services.DatabaseBackup
 {
     public class BackupEncryptionServiceTests
     {
@@ -21,7 +21,7 @@ namespace MoneyManager.Application.Tests.Services.DatabaseBackup
         public async Task EncryptAsync_And_DecryptAsync_WithCorrectPassword_ShouldReturnOriginalData()
         {
             // Arrange
-            var originalText = "Hello, this is sensitive financial data for MoneyManager backup!";
+            var originalText = "Hello, this is sensitive financial data for Audex backup!";
             var originalBytes = Encoding.UTF8.GetBytes(originalText);
             var password = "SuperSecretMasterPassword123!@#";
 

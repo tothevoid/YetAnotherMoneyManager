@@ -1,8 +1,8 @@
-#nullable enable
+﻿#nullable enable
 using System.Threading.Tasks;
-using MoneyManager.Application.DTO.DatabaseBackup;
+using Audex.Application.DTO.DatabaseBackup;
 
-namespace MoneyManager.Application.Interfaces.DatabaseBackup
+namespace Audex.Application.Interfaces.DatabaseBackup
 {
     public interface IDatabaseBackupService
     {

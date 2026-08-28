@@ -1,16 +1,16 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MoneyManager.Application.DTO.Crypto;
-using MoneyManager.Application.Interfaces.Crypto;
-using MoneyManager.WebApi.Mappings;
-using MoneyManager.WebApi.Models.Crypto;
+using Audex.Application.DTO.Crypto;
+using Audex.Application.Interfaces.Crypto;
+using Audex.WebApi.Mappings;
+using Audex.WebApi.Models.Crypto;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace MoneyManager.WebApi.Controllers.Crypto
+namespace Audex.WebApi.Controllers.Crypto
 {
     [Produces("application/json")]
     [Route("[controller]")]

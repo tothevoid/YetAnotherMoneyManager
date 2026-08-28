@@ -1,7 +1,7 @@
-#nullable enable
+﻿#nullable enable
 using System;
 
-namespace MoneyManager.Application.DTO.Auth
+namespace Audex.Application.DTO.Auth
 {
     public class UserRefreshTokenDto
     {

@@ -1,14 +1,14 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using MoneyManager.Application.DTO.Scheduler;
-using MoneyManager.Application.Interfaces.Scheduler;
-using MoneyManager.Application.Tests.Fixtures;
-using MoneyManager.Infrastructure.Entities.Scheduler;
+using Audex.Application.DTO.Scheduler;
+using Audex.Application.Interfaces.Scheduler;
+using Audex.Application.Tests.Fixtures;
+using Audex.Infrastructure.Entities.Scheduler;
 using Xunit;
 
-namespace MoneyManager.Application.Tests.Services.Scheduler
+namespace Audex.Application.Tests.Services.Scheduler
 {
     public class SchedulerTaskServiceTests : TestBase
     {
@@ -215,14 +215,14 @@ namespace MoneyManager.Application.Tests.Services.Scheduler
             await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ISchedulerTaskService>();
-                var userService = sp.GetRequiredService<MoneyManager.Application.Interfaces.User.IUserProfileService>();
+                var userService = sp.GetRequiredService<Audex.Application.Interfaces.User.IUserProfileService>();
 
                 await service.DeleteTaskAsync("GenerateAllAssetsReport");
 
                 // 1. Russian
-                await userService.UpdateAsync(new MoneyManager.Application.DTO.User.UserProfileDto
+                await userService.UpdateAsync(new Audex.Application.DTO.User.UserProfileDto
                 {
-                    Id = MoneyManager.Infrastructure.Constants.UserProfileConstants.UserProfileId,
+                    Id = Audex.Infrastructure.Constants.UserProfileConstants.UserProfileId,
                     LanguageCode = "ru-RU"
                 });
 
@@ -234,9 +234,9 @@ namespace MoneyManager.Application.Tests.Services.Scheduler
                 Assert.Equal("Отчеты", ruReport.Category);
 
                 // 2. English
-                await userService.UpdateAsync(new MoneyManager.Application.DTO.User.UserProfileDto
+                await userService.UpdateAsync(new Audex.Application.DTO.User.UserProfileDto
                 {
-                    Id = MoneyManager.Infrastructure.Constants.UserProfileConstants.UserProfileId,
+                    Id = Audex.Infrastructure.Constants.UserProfileConstants.UserProfileId,
                     LanguageCode = "en-US"
                 });
 

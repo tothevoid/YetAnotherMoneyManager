@@ -1,17 +1,17 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MoneyManager.Application.DTO.Scheduler;
-using MoneyManager.Application.Enums.Scheduler;
-using MoneyManager.Application.Interfaces.Scheduler;
-using MoneyManager.WebApi.Mappings;
-using MoneyManager.WebApi.Models.Common;
-using MoneyManager.WebApi.Models.Scheduler;
+using Audex.Application.DTO.Scheduler;
+using Audex.Application.Enums.Scheduler;
+using Audex.Application.Interfaces.Scheduler;
+using Audex.WebApi.Mappings;
+using Audex.WebApi.Models.Common;
+using Audex.WebApi.Models.Scheduler;
 
-namespace MoneyManager.WebApi.Controllers.Scheduler
+namespace Audex.WebApi.Controllers.Scheduler
 {
     [Produces("application/json")]
     [Route("api/[controller]")]

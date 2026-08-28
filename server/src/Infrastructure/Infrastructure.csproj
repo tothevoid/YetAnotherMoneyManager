@@ -1,7 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Audex.Infrastructure</RootNamespace>
+    <AssemblyName>Audex.Infrastructure</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Shared\MoneyManager.Shared.csproj" />
+    <ProjectReference Include="..\Shared\Shared.csproj" />
   </ItemGroup>
 
 </Project>

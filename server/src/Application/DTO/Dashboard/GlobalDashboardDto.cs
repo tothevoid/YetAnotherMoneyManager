@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MoneyManager.Application.DTO.Dashboard
+namespace Audex.Application.DTO.Dashboard
 {
     public class GlobalDashboardDto
     {

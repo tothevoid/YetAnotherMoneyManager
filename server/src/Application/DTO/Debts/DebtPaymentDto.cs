@@ -1,9 +1,9 @@
-using System;
-using MoneyManager.Application.DTO.Accounts;
-using MoneyManager.Application.DTO.Transactions;
-using MoneyManager.Shared.Entities;
+﻿using System;
+using Audex.Application.DTO.Accounts;
+using Audex.Application.DTO.Transactions;
+using Audex.Shared.Entities;
 
-namespace MoneyManager.Application.DTO.Debts
+namespace Audex.Application.DTO.Debts
 {
     public class DebtPaymentDto: BaseEntity
     {

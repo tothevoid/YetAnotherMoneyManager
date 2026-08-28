@@ -1,6 +1,6 @@
-﻿using MoneyManager.Shared.Entities;
+﻿using Audex.Shared.Entities;
 
-namespace MoneyManager.WebApi.Models.Accounts
+namespace Audex.WebApi.Models.Accounts
 {
     public class AccountTypeModel : BaseEntity
     {

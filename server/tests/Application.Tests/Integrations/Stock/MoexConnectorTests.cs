@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -6,12 +6,12 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using MoneyManager.Application.DTO.Securities;
-using MoneyManager.Application.Integrations.Stock.Moex;
-using MoneyManager.Infrastructure.Constants;
+using Audex.Application.DTO.Securities;
+using Audex.Application.Integrations.Stock.Moex;
+using Audex.Infrastructure.Constants;
 using Xunit;
 
-namespace MoneyManager.Application.Tests.Integrations.Stock
+namespace Audex.Application.Tests.Integrations.Stock
 {
     public class MoexConnectorTests
     {

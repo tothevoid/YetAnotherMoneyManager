@@ -1,6 +1,6 @@
-﻿using MoneyManager.Shared.Entities;
+﻿using Audex.Shared.Entities;
 
-namespace MoneyManager.WebApi.Models.Currencies
+namespace Audex.WebApi.Models.Currencies
 {
     public class CurrencyModel: BaseEntity
     {

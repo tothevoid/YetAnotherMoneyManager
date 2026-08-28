@@ -1,17 +1,17 @@
-using MoneyManager.Application.DTO.Transactions;
-using MoneyManager.Application.Interfaces.Transactions;
-using MoneyManager.Application.Mappings;
-using MoneyManager.Infrastructure.Entities.Transactions;
-using MoneyManager.Infrastructure.Interfaces.Database;
+﻿using Audex.Application.DTO.Transactions;
+using Audex.Application.Interfaces.Transactions;
+using Audex.Application.Mappings;
+using Audex.Infrastructure.Entities.Transactions;
+using Audex.Infrastructure.Interfaces.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using MoneyManager.Infrastructure.Entities.Accounts;
-using MoneyManager.Infrastructure.Entities.Securities;
+using Audex.Infrastructure.Entities.Accounts;
+using Audex.Infrastructure.Entities.Securities;
 
-namespace MoneyManager.Application.Services.Transactions
+namespace Audex.Application.Services.Transactions
 {
     public class TransactionsService: ITransactionsService
     {

@@ -1,9 +1,13 @@
 <Solution>
-  <Project Path="Application/MoneyManager.Application.csproj" />
-  <Project Path="Infrastructure/MoneyManager.Infrastructure.csproj" />
-  <Project Path="MoneyManager.Application.Tests/MoneyManager.Application.Tests.csproj" />
-  <Project Path="MoneyManager.Infrastructure.Tests/MoneyManager.Infrastructure.Tests.csproj" />
-  <Project Path="MoneyManager.Tests.Shared/MoneyManager.Tests.Shared.csproj" />
-  <Project Path="Shared/MoneyManager.Shared.csproj" />
-  <Project Path="WebApi/MoneyManager.WebApi.csproj" />
+  <Folder Name="/src/">
+    <Project Path="src/Application/Application.csproj" />
+    <Project Path="src/Infrastructure/Infrastructure.csproj" />
+    <Project Path="src/Shared/Shared.csproj" />
+    <Project Path="src/WebApi/WebApi.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Application.Tests/Application.Tests.csproj" />
+    <Project Path="tests/Infrastructure.Tests/Infrastructure.Tests.csproj" />
+    <Project Path="tests/Tests.Shared/Tests.Shared.csproj" />
+  </Folder>
 </Solution>

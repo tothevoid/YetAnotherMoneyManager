@@ -1,12 +1,12 @@
-using MoneyManager.Infrastructure.Entities.Securities;
-using MoneyManager.Shared.Entities;
+﻿using Audex.Infrastructure.Entities.Securities;
+using Audex.Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MoneyManager.Application.DTO.Crypto
+namespace Audex.Application.DTO.Crypto
 {
     public class CryptoProviderDto: BaseEntity
     {

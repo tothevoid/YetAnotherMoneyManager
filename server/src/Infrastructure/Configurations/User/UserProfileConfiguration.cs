@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using MoneyManager.Infrastructure.Entities.User;
+using Audex.Infrastructure.Entities.User;
 
-namespace MoneyManager.Infrastructure.Configurations.User
+namespace Audex.Infrastructure.Configurations.User
 {
     public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
     {

@@ -1,16 +1,16 @@
-using MoneyManager.Infrastructure.Interfaces.Database;
+﻿using Audex.Infrastructure.Interfaces.Database;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MoneyManager.Application.DTO.Crypto;
-using MoneyManager.Application.DTO.FileStorage;
-using MoneyManager.Application.Interfaces.Crypto;
-using MoneyManager.Application.Mappings;
-using MoneyManager.Infrastructure.Entities.Crypto;
-using MoneyManager.Application.Interfaces.FileStorage;
+using Audex.Application.DTO.Crypto;
+using Audex.Application.DTO.FileStorage;
+using Audex.Application.Interfaces.Crypto;
+using Audex.Application.Mappings;
+using Audex.Infrastructure.Entities.Crypto;
+using Audex.Application.Interfaces.FileStorage;
 using Microsoft.AspNetCore.Http;
 
-namespace MoneyManager.Application.Services.Crypto
+namespace Audex.Application.Services.Crypto
 {
     public class CryptocurrencyService : ICryptocurrencyService
     {

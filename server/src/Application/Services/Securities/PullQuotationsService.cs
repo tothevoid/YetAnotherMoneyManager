@@ -1,7 +1,7 @@
 ﻿using System;
-using MoneyManager.Application.Interfaces.Securities;
+using Audex.Application.Interfaces.Securities;
 
-namespace MoneyManager.Application.Services.Securities
+namespace Audex.Application.Services.Securities
 {
     public class PullQuotationsService: IPullQuotationsService
     {

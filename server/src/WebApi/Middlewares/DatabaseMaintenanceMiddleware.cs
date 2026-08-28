@@ -1,9 +1,9 @@
-#nullable enable
+﻿#nullable enable
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using MoneyManager.Application.Interfaces.DatabaseBackup;
+using Audex.Application.Interfaces.DatabaseBackup;
 
-namespace MoneyManager.WebApi.Middlewares
+namespace Audex.WebApi.Middlewares
 {
     public class DatabaseMaintenanceMiddleware
     {

@@ -1,14 +1,14 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using MoneyManager.Application.DTO.Accounts;
-using MoneyManager.Application.Interfaces.Accounts;
-using MoneyManager.Application.Interfaces.DatabaseBackup;
-using MoneyManager.Tests.Shared.Fixtures;
+using Audex.Application.DTO.Accounts;
+using Audex.Application.Interfaces.Accounts;
+using Audex.Application.Interfaces.DatabaseBackup;
+using Audex.Tests.Shared.Fixtures;
 using Xunit;
 
-namespace MoneyManager.Application.Tests.Services.DatabaseBackup
+namespace Audex.Application.Tests.Services.DatabaseBackup
 {
     public class DatabaseBackupServiceTests : TestBase
     {

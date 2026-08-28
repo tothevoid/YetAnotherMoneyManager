@@ -3,7 +3,7 @@ param(
     [string]$MigrationName
 )
 
-dotnet ef migrations add $MigrationName --project ./server/Infrastructure --startup-project ./server/WebApi
+dotnet ef migrations add $MigrationName --project ./server/src/Infrastructure --startup-project ./server/src/WebApi
 
 if ($LASTEXITCODE -ne 0) {
     Write-Error "An error occurred while creating the migration."

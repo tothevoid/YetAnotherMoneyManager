@@ -1,4 +1,4 @@
-dotnet ef database update --project ./server/Infrastructure --startup-project ./server/WebApi
+dotnet ef database update --project ./server/src/Infrastructure --startup-project ./server/src/WebApi
 
 if ($LASTEXITCODE -ne 0) {
     Write-Error "An error occurred while applying the migration."

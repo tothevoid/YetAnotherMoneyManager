@@ -18,7 +18,7 @@ This document contains guidelines, coding standards, and architectural patterns 
   - `server/tests/Application.Tests`: Unit tests for application services (`Audex.Application.Tests`).
   - `server/tests/Infrastructure.Tests`: Tests for infrastructure components (`Audex.Infrastructure.Tests`).
   - `server/tests/Tests.Shared`: Shared fixtures and test helpers (`Audex.Tests.Shared`).
-- **Orphan Directory Prohibition**: Do NOT create or restore legacy directories (`server/BLL`, `server/DAL`, `server/Common`, `server/MoneyManager`, `server/server`). Only project folders in `Audex.slnx` are valid.
+- **Orphan Directory Prohibition**: Do NOT create or restore legacy directories (`server/BLL`, `server/DAL`, `server/Common`, `server/MoneyManager`, `server/server`, or root layer folders outside `server/src/` and `server/tests/`). Only project folders declared in `Audex.slnx` under `server/src/` and `server/tests/` are valid.
 
 ### DTO Naming Conventions
 - **PascalCase with `Dto` Suffix**: All Data Transfer Object classes and files MUST use PascalCase with the `Dto` suffix (e.g. `AccountDto.cs`, `SecurityTransactionDto.cs`, `BrokerAccountSummaryDto.cs`, `UserProfileDto.cs`). Do NOT use `*DTO` all-caps suffix.
@@ -79,6 +79,7 @@ This document contains guidelines, coding standards, and architectural patterns 
 
 ### Server Commands
 - **Build**: `cd server && dotnet build`
+- **Run WebApi**: `dotnet run --project server/src/WebApi` (или `dotnet watch --project server/src/WebApi`)
 - **Run All Tests**: `cd server && dotnet test`
 - **Run S3 Tests**: `cd server && dotnet test --filter "Category=S3"`
 - **Run Auth Tests**: `cd server && dotnet test --filter "Category=Auth"`
@@ -88,7 +89,7 @@ This document contains guidelines, coding standards, and architectural patterns 
 ## 🎨 Client (Frontend) Rules & Architecture
 
 ### Stack & Structure
-- **Framework**: React 18 + TypeScript + Vite (`client/src`).
+- **Framework**: React 19 + TypeScript + Vite (`client/src`).
 - **UI & Styling**: Chakra UI v3, `react-icons`.
 - **Theme**: Pure **Dark Theme** (`darkTheme` token system with `#121212` background, `color-scheme: dark`, custom dark scrollbars, and `scrollbar-gutter: stable` to eliminate layout shift across pages).
 - **i18n**: `react-i18next`.

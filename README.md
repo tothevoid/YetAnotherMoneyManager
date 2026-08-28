@@ -95,8 +95,7 @@ Run the full local development environment with hot reloading:
 
 2. **Run Backend API**:
    ```bash
-   cd server/WebApi
-   dotnet run
+   dotnet run --project server/src/WebApi
    ```
 
 3. **Run Frontend Client**:

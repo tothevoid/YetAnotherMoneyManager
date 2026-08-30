@@ -47,6 +47,17 @@ namespace Audex.Application.Tests.Services.Transactions
             Assert.Equal("USD to EUR Exchange", fetched.Name);
             Assert.Equal(1000m, fetched.Amount);
             Assert.Equal(0.85m, fetched.Rate);
+
+            var (sourceAcc, destAcc) = await ExecuteScopeAsync(async sp =>
+            {
+                var accService = sp.GetRequiredService<IAccountService>();
+                return (await accService.GetByIdAsync(sourceId), await accService.GetByIdAsync(destId));
+            });
+
+            // Initial 5000 USD - (1000 * 0.85 USD) = 4150 USD
+            Assert.Equal(4150m, sourceAcc.Balance);
+            // Initial 2000 EUR + 1000 EUR = 3000 EUR
+            Assert.Equal(3000m, destAcc.Balance);
         }
 
         [Fact]
@@ -103,10 +114,19 @@ namespace Audex.Application.Tests.Services.Transactions
                     SourceAccountId = sourceId,
                     DestinationAccountId = destId,
                     Amount = 200m,
-                    Rate = 1.0m,
+                    Rate = 1.5m,
                     Date = DateOnly.FromDateTime(DateTime.Now)
                 });
             });
+
+            // Initial: Source = 5000 - (200 * 1.5) = 4700; Dest = 2000 + 200 = 2200
+            var (sourceAfterAdd, destAfterAdd) = await ExecuteScopeAsync(async sp =>
+            {
+                var accService = sp.GetRequiredService<IAccountService>();
+                return (await accService.GetByIdAsync(sourceId), await accService.GetByIdAsync(destId));
+            });
+            Assert.Equal(4700m, sourceAfterAdd.Balance);
+            Assert.Equal(2200m, destAfterAdd.Balance);
 
             await ExecuteScopeAsync(async sp =>
             {
@@ -114,6 +134,7 @@ namespace Audex.Application.Tests.Services.Transactions
                 var item = await service.GetByIdAsync(id);
                 item.Name = "Updated Fx";
                 item.Amount = 300m;
+                item.Rate = 2.0m;
                 item.SourceAccount = null;
                 item.DestinationAccount = null;
                 await service.UpdateAsync(item);
@@ -128,6 +149,16 @@ namespace Audex.Application.Tests.Services.Transactions
             Assert.NotNull(updated);
             Assert.Equal("Updated Fx", updated.Name);
             Assert.Equal(300m, updated.Amount);
+            Assert.Equal(2.0m, updated.Rate);
+
+            // Updated: Source = 5000 - (300 * 2.0) = 4400; Dest = 2000 + 300 = 2300
+            var (sourceAfterUpdate, destAfterUpdate) = await ExecuteScopeAsync(async sp =>
+            {
+                var accService = sp.GetRequiredService<IAccountService>();
+                return (await accService.GetByIdAsync(sourceId), await accService.GetByIdAsync(destId));
+            });
+            Assert.Equal(4400m, sourceAfterUpdate.Balance);
+            Assert.Equal(2300m, destAfterUpdate.Balance);
         }
 
         [Fact]
@@ -144,10 +175,19 @@ namespace Audex.Application.Tests.Services.Transactions
                     SourceAccountId = sourceId,
                     DestinationAccountId = destId,
                     Amount = 100m,
-                    Rate = 1.0m,
+                    Rate = 1.2m,
                     Date = DateOnly.FromDateTime(DateTime.Now)
                 });
             });
+
+            // After Add: Source = 5000 - (100 * 1.2) = 4880; Dest = 2000 + 100 = 2100
+            var (sourceAfterAdd, destAfterAdd) = await ExecuteScopeAsync(async sp =>
+            {
+                var accService = sp.GetRequiredService<IAccountService>();
+                return (await accService.GetByIdAsync(sourceId), await accService.GetByIdAsync(destId));
+            });
+            Assert.Equal(4880m, sourceAfterAdd.Balance);
+            Assert.Equal(2100m, destAfterAdd.Balance);
 
             await ExecuteScopeAsync(async sp =>
             {
@@ -162,6 +202,15 @@ namespace Audex.Application.Tests.Services.Transactions
             });
 
             Assert.Null(deleted);
+
+            // After Delete: restored to 5000 and 2000
+            var (sourceAfterDelete, destAfterDelete) = await ExecuteScopeAsync(async sp =>
+            {
+                var accService = sp.GetRequiredService<IAccountService>();
+                return (await accService.GetByIdAsync(sourceId), await accService.GetByIdAsync(destId));
+            });
+            Assert.Equal(5000m, sourceAfterDelete.Balance);
+            Assert.Equal(2000m, destAfterDelete.Balance);
         }
 
         [Fact]

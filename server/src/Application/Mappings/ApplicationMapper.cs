@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Riok.Mapperly.Abstractions;
 using Audex.Application.DTO;
 using Audex.Application.DTO.Accounts;
@@ -53,6 +53,8 @@ namespace Audex.Application.Mappings
         public partial AccountTypeDto Map(AccountType entity);
         public partial IEnumerable<AccountTypeDto> Map(IEnumerable<AccountType> entities);
 
+        [MapperIgnoreTarget(nameof(CurrencyTransaction.SourceAccount))]
+        [MapperIgnoreTarget(nameof(CurrencyTransaction.DestinationAccount))]
         public partial CurrencyTransaction Map(CurrencyTransactionDto dto);
         public partial CurrencyTransactionDto Map(CurrencyTransaction entity);
         public partial IEnumerable<CurrencyTransactionDto> Map(IEnumerable<CurrencyTransaction> entities);

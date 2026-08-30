@@ -3,6 +3,7 @@ using Audex.Application.DTO.Common;
 using Audex.Application.DTO.Transactions;
 using Audex.Application.Interfaces.Transactions;
 using Audex.Application.Mappings;
+using Audex.Infrastructure.Entities.Accounts;
 using Audex.Infrastructure.Entities.Currencies;
 using Audex.Infrastructure.Entities.Transactions;
 using Audex.Infrastructure.Interfaces.Database;
@@ -18,6 +19,7 @@ namespace Audex.Application.Services.Transactions
     {
         private readonly IUnitOfWork _db;
         private readonly IRepository<CurrencyTransaction> _currencyTransactionRepo;
+        private readonly IRepository<Account> _accountRepo;
         private readonly ApplicationMapper _mapper;
 
         public CurrencyTransactionService(IUnitOfWork uow, ApplicationMapper mapper)
@@ -25,6 +27,7 @@ namespace Audex.Application.Services.Transactions
             _db = uow;
             _mapper = mapper;
             _currencyTransactionRepo = uow.CreateRepository<CurrencyTransaction>();
+            _accountRepo = uow.CreateRepository<Account>();
         }
 
         public async Task<IEnumerable<CurrencyTransactionDto>> GetAllAsync()
@@ -40,8 +43,16 @@ namespace Audex.Application.Services.Transactions
 
         public async Task UpdateAsync(CurrencyTransactionDto currencyTransactionDto)
         {
-            var currencyTransaction = _mapper.Map(currencyTransactionDto);
-            _currencyTransactionRepo.Update(currencyTransaction);
+            var currentTransaction = await _currencyTransactionRepo.GetByIdAsync(currencyTransactionDto.Id);
+            if (currentTransaction == null)
+            {
+                throw new ArgumentException(nameof(currencyTransactionDto.Id));
+            }
+
+            var updatedTransaction = _mapper.Map(currencyTransactionDto);
+            _currencyTransactionRepo.Update(updatedTransaction);
+
+            await ActualizeAccountsAsync(currentTransaction, updatedTransaction);
             await _db.CommitAsync();
         }
 
@@ -49,15 +60,85 @@ namespace Audex.Application.Services.Transactions
         {
             var currencyTransaction = _mapper.Map(currencyTransactionDto);
             currencyTransaction.Id = Guid.NewGuid();
+
             await _currencyTransactionRepo.AddAsync(currencyTransaction);
+
+            await UpdateLinkedAccountsAsync(
+                currencyTransaction.SourceAccountId,
+                currencyTransaction.DestinationAccountId,
+                currencyTransaction.Amount,
+                currencyTransaction.Rate);
+
             await _db.CommitAsync();
             return currencyTransaction.Id;
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            await _currencyTransactionRepo.DeleteAsync(id);
+            var transaction = await _currencyTransactionRepo.GetByIdAsync(id);
+            if (transaction == null)
+            {
+                throw new ArgumentException(nameof(id));
+            }
+
+            await _currencyTransactionRepo.DeleteAsync(transaction.Id);
+
+            await UpdateLinkedAccountsAsync(
+                transaction.SourceAccountId,
+                transaction.DestinationAccountId,
+                -transaction.Amount,
+                transaction.Rate);
+
             await _db.CommitAsync();
+        }
+
+        private async Task ActualizeAccountsAsync(CurrencyTransaction currentTransaction, CurrencyTransaction updatedTransaction)
+        {
+            var oldSpent = currentTransaction.Amount * currentTransaction.Rate;
+            var oldReceived = currentTransaction.Amount;
+            var newSpent = updatedTransaction.Amount * updatedTransaction.Rate;
+            var newReceived = updatedTransaction.Amount;
+
+            if (currentTransaction.SourceAccountId != updatedTransaction.SourceAccountId)
+            {
+                await UpdateLinkedAccountAsync(currentTransaction.SourceAccountId, oldSpent);
+                await UpdateLinkedAccountAsync(updatedTransaction.SourceAccountId, -newSpent);
+            }
+            else if (oldSpent != newSpent)
+            {
+                await UpdateLinkedAccountAsync(updatedTransaction.SourceAccountId, oldSpent - newSpent);
+            }
+
+            if (currentTransaction.DestinationAccountId != updatedTransaction.DestinationAccountId)
+            {
+                await UpdateLinkedAccountAsync(currentTransaction.DestinationAccountId, -oldReceived);
+                await UpdateLinkedAccountAsync(updatedTransaction.DestinationAccountId, newReceived);
+            }
+            else if (oldReceived != newReceived)
+            {
+                await UpdateLinkedAccountAsync(updatedTransaction.DestinationAccountId, newReceived - oldReceived);
+            }
+        }
+
+        private async Task UpdateLinkedAccountsAsync(Guid sourceAccountId, Guid destAccountId, decimal amount, decimal rate)
+        {
+            await UpdateLinkedAccountAsync(sourceAccountId, -amount * rate);
+            await UpdateLinkedAccountAsync(destAccountId, amount);
+        }
+
+        private async Task UpdateLinkedAccountAsync(Guid accountId, decimal diff)
+        {
+            if (accountId == Guid.Empty || diff == 0)
+            {
+                return;
+            }
+
+            var account = await _accountRepo.GetByIdAsync(accountId, disableTracking: false);
+            if (account != null)
+            {
+                account.Balance += diff;
+                _accountRepo.Update(account);
+            }
         }
 
         public async Task<CurrencyTransactionDto> GetByIdAsync(Guid id)

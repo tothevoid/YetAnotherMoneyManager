@@ -11,6 +11,13 @@ export const getCurrencies = async (): Promise<CurrencyEntity[]> =>  {
 	return await getAllEntities<CurrencyEntity>(basicUrl)
 }
 
+export const getCurrenciesMap = async (): Promise<Record<string, number>> => {
+	const currencies = await getCurrencies();
+	const map: Record<string, number> = {};
+	currencies.forEach(c => { map[c.id] = c.rate; });
+	return map;
+}
+
 export const createCurrency = async (newCurrency: CurrencyEntity): Promise<string | void> => {
 	const result = await createEntity<CurrencyEntity, CurrencyEntity>(basicUrl, newCurrency);
 	return result?.id;

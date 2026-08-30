@@ -55,16 +55,16 @@ const SecurityPage: React.FC = () => {
 		<SecurityHeader security={state.security} securityStats={state.securityStats} />
 
   		<Tabs.Root variant="enclosed" defaultValue="history">
-			<Tabs.List background={"background_primary"}>
-				<Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="history">
+			<Tabs.List>
+				<Tabs.Trigger value="history">
 					<MdHistory/>
 					{t("security_page_tabs_history")}
 				</Tabs.Trigger>
-				<Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="transactions">
+				<Tabs.Trigger value="transactions">
 					<GrTransaction />
 					 {t("security_page_tabs_transactions")}
 				</Tabs.Trigger>
-				<Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="dividends">
+				<Tabs.Trigger value="dividends">
 					<PiCoinsLight />
 					 {t("security_page_tabs_dividends")}
 				</Tabs.Trigger>

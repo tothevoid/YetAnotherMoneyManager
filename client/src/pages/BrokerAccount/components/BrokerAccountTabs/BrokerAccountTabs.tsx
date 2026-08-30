@@ -50,39 +50,39 @@ const BrokerAccountTabs: React.FC<Props> = ({ brokerAccountId, currencyName, onA
 
     return <Tabs.Root lazyMount={true} unmountOnExit={true} variant="enclosed" 
         defaultValue={"daily_stats"}>
-        <Tabs.List background={"background_primary"}>
-            <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="daily_stats">
+        <Tabs.List>
+            <Tabs.Trigger value="daily_stats">
                 <IoMdStats/>
                     {t("broker_account_page_daily_stats_tab")}
             </Tabs.Trigger>
             {
                 !brokerAccountId &&
-                <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="broker_accounts">
+                <Tabs.Trigger value="broker_accounts">
                     <IoMdStats/>
                         {t("broker_account_page_broker_accounts_tab")}
                 </Tabs.Trigger>
             }
-            <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="stats">
+            <Tabs.Trigger value="stats">
                 <MdQueryStats />
                     {t("broker_account_page_account_stats_tab")}
             </Tabs.Trigger>
-            <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="history">
+            <Tabs.Trigger value="history">
                 <MdHistory />
                     {t("broker_account_page_history_tab")}
             </Tabs.Trigger>
-            <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="transactions">
+            <Tabs.Trigger value="transactions">
                 <GrTransaction />
                 {t("broker_account_page_transactions_tab")}
             </Tabs.Trigger>
-            <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="dividends">
+            <Tabs.Trigger value="dividends">
                 <PiCoinsLight />
                     {t("broker_account_page_dividends_tab")}
             </Tabs.Trigger>
-            <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="transfers">
+            <Tabs.Trigger value="transfers">
                 <MdAttachMoney />
                     {t("broker_account_page_transfers_tab")}
             </Tabs.Trigger>
-            <Tabs.Trigger _selected={{bg: "action_primary"}} color="text_primary" value="tax_deductions">
+            <Tabs.Trigger value="tax_deductions">
                 <TbTax />
                     {t("broker_account_page_deduction_taxes_tab")}
             </Tabs.Trigger>

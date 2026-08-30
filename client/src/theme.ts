@@ -20,22 +20,23 @@ const inputRecipe = defineRecipe({
 })
 
 const tabsSlotRecipe = defineSlotRecipe({
-    className: "chakra-tabs",
-    slots: ["root", "list", "trigger", "content", "indicator"],
+    slots: ["root", "list", "trigger", "content", "indicator", "contentGroup"],
     base: {
         list: {
-            backgroundColor: "background_primary",
+            bg: "background_primary",
             borderColor: "border_primary",
         },
         trigger: {
-            color: "text_primary",
+            color: "text_secondary",
+            bg: "transparent",
             _hover: {
-                backgroundColor: "rgba(255, 255, 255, 0.05)",
+                bg: "rgba(255, 255, 255, 0.05)",
+                color: "text_primary",
             },
             _selected: {
-                backgroundColor: "action_primary",
+                bg: "action_primary",
                 color: "text_primary",
-                borderColor: "action_primary",
+                shadow: "0 1px 3px rgba(0, 0, 0, 0.4)",
             },
         },
     },
@@ -43,17 +44,36 @@ const tabsSlotRecipe = defineSlotRecipe({
         variant: {
             enclosed: {
                 list: {
-                    backgroundColor: "background_primary",
+                    bg: "background_primary",
+                    borderColor: "border_primary",
+                    padding: "4px",
+                    borderRadius: "lg",
+                    gap: "3px",
+                },
+                trigger: {
+                    borderRadius: "md",
+                    bg: "transparent",
+                    color: "text_secondary",
+                    fontWeight: "500",
+                    _hover: {
+                        bg: "rgba(255, 255, 255, 0.05)",
+                        color: "text_primary",
+                    },
+                    _selected: {
+                        bg: "action_primary",
+                        color: "text_primary",
+                        shadow: "0 1px 3px rgba(0, 0, 0, 0.4)",
+                    },
+                },
+            },
+            line: {
+                list: {
                     borderColor: "border_primary",
                 },
                 trigger: {
-                    color: "text_primary",
-                    _hover: {
-                        backgroundColor: "rgba(255, 255, 255, 0.05)",
-                    },
+                    color: "text_secondary",
                     _selected: {
-                        backgroundColor: "action_primary",
-                        color: "text_primary",
+                        color: "action_primary",
                         borderColor: "action_primary",
                     },
                 },
@@ -107,7 +127,20 @@ export const darkTheme = createSystem(defaultConfig, {
         semanticTokens: {
             colors: {
                 border: {
-                    value: "{colors.border_primary}",
+                    DEFAULT: { value: "{colors.border_primary}" },
+                    muted: { value: "{colors.border_primary}" },
+                    subtle: { value: "{colors.border_primary}" },
+                },
+                bg: {
+                    DEFAULT: { value: "{colors.background_main}" },
+                    subtle: { value: "{colors.background_secondary}" },
+                    muted: { value: "{colors.background_primary}" },
+                    panel: { value: "{colors.background_primary}" },
+                },
+                fg: {
+                    DEFAULT: { value: "{colors.text_primary}" },
+                    muted: { value: "{colors.text_secondary}" },
+                    subtle: { value: "{colors.text_secondary}" },
                 },
             },
         },

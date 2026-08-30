@@ -72,11 +72,12 @@ const Header = () => {
                     <Button
                         borderColor="background_secondary"
                         background="button_background_secondary"
+                        color="text_primary"
                         size={'md'}
                         onClick={onOpenActionsClick}
                         title={t("header_actions_title")}
                     >
-                        <Icon>
+                        <Icon color="card_action_icon_primary">
                             <AiFillTool />
                         </Icon>
                     </Button>

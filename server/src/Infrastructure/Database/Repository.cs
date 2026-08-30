@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -96,7 +96,7 @@ namespace Audex.Infrastructure.Database
         public async Task<IEnumerable<TEntity>> GetAllAsync(ComplexQuery<TEntity> complexQuery)
         {
             IQueryable<TEntity> query =
-                complexQuery.TrackingDisabled ? _entities.AsQueryable().AsNoTracking() : _entities.AsQueryable();
+                complexQuery.TrackingEnabled ? _entities.AsQueryable() : _entities.AsQueryable().AsNoTracking();
 
             if (complexQuery.Filter != null)
             {

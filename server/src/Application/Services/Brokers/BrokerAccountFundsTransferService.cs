@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Audex.Application.DTO.Accounts;
 using Audex.Application.DTO.Brokers;
 using Audex.Application.DTO.Common;
@@ -93,8 +93,7 @@ namespace Audex.Application.Services.Brokers
         private ComplexQueryBuilder<BrokerAccountFundsTransfer> GetBaseBuilder()
         {
             return new ComplexQueryBuilder<BrokerAccountFundsTransfer>()
-                .AddJoins(GetFullHierarchyColumns)
-                .DisableTracking();
+                .AddJoins(GetFullHierarchyColumns);
         }
 
         private ComplexQueryBuilder<BrokerAccountFundsTransfer> GetBaseBuilderWithFilter(Guid brokerAccountId)

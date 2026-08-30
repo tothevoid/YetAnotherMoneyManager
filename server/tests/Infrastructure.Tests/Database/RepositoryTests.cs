@@ -1,4 +1,4 @@
-﻿using Audex.Infrastructure.Database;
+using Audex.Infrastructure.Database;
 using Audex.Infrastructure.Entities.Accounts;
 using Audex.Infrastructure.Queries;
 using Audex.Tests.Shared;
@@ -95,7 +95,6 @@ namespace Audex.Infrastructure.Tests.Database
                 .AddFilter(x => x.Name.StartsWith(prefix))
                 .AddOrder(x => x.Name, isDescending: false)
                 .AddPagination(pageIndex: 1, recordsQuantity: 2)
-                .DisableTracking()
                 .GetQuery();
 
             var results = (await repository.GetAllAsync(complexQuery)).ToList();

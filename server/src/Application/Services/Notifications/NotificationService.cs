@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -37,8 +37,7 @@ namespace Audex.Application.Services.Notifications
         public async Task<IEnumerable<NotificationDto>> GetAllAsync(int pageIndex = 1, int recordsQuantity = 15, bool onlyUnread = false, string category = null)
         {
             var builder = new ComplexQueryBuilder<Notification>()
-                .AddFilter(GetNotificationFilter(onlyUnread, category))
-                .DisableTracking();
+                .AddFilter(GetNotificationFilter(onlyUnread, category));
 
             if (pageIndex > 0 && recordsQuantity > 0)
             {

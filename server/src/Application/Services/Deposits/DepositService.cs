@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -169,8 +169,7 @@ namespace Audex.Application.Services.Deposits
             var complexQuery = new ComplexQueryBuilder<Deposit>()
                 .AddFilter(filter)
                 .AddJoins(GetFullHierarchyColumns)
-                .AddOrder(orderBy, isDescending)
-                .DisableTracking();
+                .AddOrder(orderBy, isDescending);
 
             return await _depositRepo.GetAllAsync(complexQuery.GetQuery());
         }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -49,8 +49,7 @@ namespace Audex.Application.Services.Securities
                 .AddJoins(GetFullHierarchyColumns)
                 .AddPagination(pageIndex, recordsQuantity,
                     securityTransaction => securityTransaction.Date,
-                    true)
-                .DisableTracking();
+                    true);
 
             if (brokerAccountId != null)
             {
@@ -100,7 +99,6 @@ namespace Audex.Application.Services.Securities
                 .AddFilter(securityTransaction => securityTransaction.SecurityId == securityId)
                 .AddJoins(GetFullHierarchyColumns)
                 .AddOrder(securityTransaction => securityTransaction.Date)
-                .DisableTracking()
                 .GetQuery();
 
             var transactions = await _securityTransactionRepo
@@ -283,8 +281,8 @@ namespace Audex.Application.Services.Securities
             var committedSecurityTransaction = await _securityTransactionRepo.GetByIdAsync(modifiedSecurityTransaction.Id);
             var committedSecurityTransactionDto = _mapper.Map(committedSecurityTransaction);
 
-            if (committedSecurityTransactionDto.BrokerAccountId == modifiedSecurityTransaction.BrokerAccountId ||
-                committedSecurityTransactionDto.IsSell == modifiedSecurityTransaction.IsSell)
+            if (committedSecurityTransactionDto.BrokerAccountId != modifiedSecurityTransaction.BrokerAccountId ||
+                committedSecurityTransactionDto.IsSell != modifiedSecurityTransaction.IsSell)
             {
                 await HandleChangedBrokerAccount(committedSecurityTransactionDto, modifiedSecurityTransaction);
                 return;

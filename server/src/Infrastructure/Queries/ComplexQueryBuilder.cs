@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -52,9 +52,9 @@ namespace Audex.Infrastructure.Queries
             return this;
         }
 
-        public ComplexQueryBuilder<TEntity> DisableTracking()
+        public ComplexQueryBuilder<TEntity> EnableTracking()
         {
-            _complexQuery.TrackingDisabled = true;
+            _complexQuery.TrackingEnabled = true;
             return this;
         }
 

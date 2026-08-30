@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -52,8 +52,7 @@ namespace Audex.Application.Services.Scheduler
             var builder = new ComplexQueryBuilder<CronTickerOccurrenceEntity<ScheduledCronTicker>>()
                 .AddJoins(query => query.Include(occurrence => occurrence.CronTicker))
                 .AddFilter(GetFilter(taskName, status))
-                .AddPagination(pageIndex, recordsQuantity, occurrence => occurrence.ExecutionTime, isDescending: true)
-                .DisableTracking();
+                .AddPagination(pageIndex, recordsQuantity, occurrence => occurrence.ExecutionTime, isDescending: true);
 
             var occurrences = await _occurrenceRepo.GetAllAsync(builder.GetQuery());
             var occurrenceList = occurrences.ToList();

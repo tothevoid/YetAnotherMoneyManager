@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,7 +35,6 @@ namespace Audex.Application.Services.Accounts
                 .AddFilter(onlyActive ? account => account.Active : null)
                 .AddOrder(account => account.Name)
                 .AddJoins(GetFullHierarchyColumns)
-                .DisableTracking()
                 .GetQuery();
 
             var transactions = await _accountRepo.GetAllAsync(query);

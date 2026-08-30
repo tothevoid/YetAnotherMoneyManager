@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using Audex.Infrastructure.Entities.Accounts;
 using Audex.Infrastructure.Queries;
 using Xunit;
@@ -20,7 +20,7 @@ namespace Audex.Infrastructure.Tests.Queries
             Assert.Empty(query.OrderByExpressions);
             Assert.Equal(-1, query.RecordsLimit);
             Assert.Equal(-1, query.RecordsOffset);
-            Assert.False(query.TrackingDisabled);
+            Assert.False(query.TrackingEnabled);
         }
 
         [Fact]
@@ -70,15 +70,15 @@ namespace Audex.Infrastructure.Tests.Queries
         }
 
         [Fact]
-        public void DisableTracking_SetsTrackingDisabledToTrue()
+        public void EnableTracking_SetsTrackingEnabledToTrue()
         {
             var builder = new ComplexQueryBuilder<AccountType>();
 
-            builder.DisableTracking();
+            builder.EnableTracking();
 
             var query = builder.GetQuery();
 
-            Assert.True(query.TrackingDisabled);
+            Assert.True(query.TrackingEnabled);
         }
     }
 }

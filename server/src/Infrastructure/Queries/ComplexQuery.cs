@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -21,7 +21,7 @@ namespace Audex.Infrastructure.Queries
 
         public int RecordsOffset { get; set; } = -1;
 
-        public bool TrackingDisabled { get; set; }
+        public bool TrackingEnabled { get; set; } = false;
     }
 
     public class OrderByConfig<TEntity>

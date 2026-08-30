@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Audex.Application.DTO;
@@ -177,8 +177,7 @@ namespace Audex.Application.Services.Auth
             var filter = GetTokenFilter(userProfileId, isActive);
 
             var builder = new ComplexQueryBuilder<UserRefreshToken>()
-                .AddFilter(filter)
-                .DisableTracking();
+                .AddFilter(filter);
 
             if (pageIndex > 0 && recordsQuantity > 0)
             {

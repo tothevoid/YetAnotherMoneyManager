@@ -9,6 +9,8 @@ interface BaseFormModalProps {
     children: React.ReactNode,
     visibilityChanged?: (open: boolean) => void
     saveButtonTitle?: string
+    size?: "xs" | "sm" | "md" | "lg" | "xl" | "cover" | "full"
+    maxW?: string
 };
 
 const BaseFormModal = forwardRef<BaseModalRef, BaseFormModalProps>((props: BaseFormModalProps, ref) => {
@@ -29,7 +31,7 @@ const BaseFormModal = forwardRef<BaseModalRef, BaseFormModalProps>((props: BaseF
     const { t } = useTranslation();
 
     return (
-        <Dialog.Root placement="center" open={open} onEscapeKeyDown={onClose} onOpenChange={(e) => { if (!e.open) onClose(); }}>
+        <Dialog.Root size={props.size} placement="center" open={open} onEscapeKeyDown={onClose} onOpenChange={(e) => { if (!e.open) onClose(); }}>
           <Portal>
             <Dialog.Backdrop/>
             <Dialog.Positioner>
@@ -39,6 +41,7 @@ const BaseFormModal = forwardRef<BaseModalRef, BaseFormModalProps>((props: BaseF
                     backgroundColor="background_primary"
                     borderColor="border_primary"
                     color="text_primary"
+                    maxW={props.maxW}
                 >
                     <Dialog.Header>
                         <Dialog.Title color="text_primary">{props.title}</Dialog.Title>

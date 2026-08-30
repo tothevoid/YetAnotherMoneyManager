@@ -20,16 +20,22 @@ export const BaseMetricItem: React.FC<BaseMetricItemProps> = ({
     valueColor = "text_primary",
     size = "md",
 }) => {
+    const dimension = size === "sm" ? "28px" : "32px";
+
     return (
         <HStack gap={size === "sm" ? 2 : 2.5} alignItems="center">
             <Box
-                p={size === "sm" ? 1.5 : 2}
+                w={dimension}
+                h={dimension}
+                minW={dimension}
+                minH={dimension}
                 borderRadius="md"
                 backgroundColor={iconBg}
                 color={iconColor}
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
+                flexShrink={0}
             >
                 {icon}
             </Box>

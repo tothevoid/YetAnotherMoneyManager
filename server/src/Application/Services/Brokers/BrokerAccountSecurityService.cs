@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Audex.Application.DTO.Brokers;
 using Audex.Application.DTO.Securities;
 using Audex.Application.Interfaces.Brokers;
@@ -62,14 +62,16 @@ namespace Audex.Application.Services.Brokers
             var brokerAccountSecurities = await _brokerAccountSecurityRepo
                 .GetAllAsync(complexQuery);
 
+            var mappedDtos = _mapper.Map(brokerAccountSecurities).ToList();
+
             if (!unionSecurities)
             {
-                return _mapper.Map(brokerAccountSecurities);
+                return mappedDtos;
             }
 
-            var handledBrokerAccountSecurities = new Dictionary<Guid, BrokerAccountSecurity>();
+            var handledBrokerAccountSecurities = new Dictionary<Guid, BrokerAccountSecurityDto>();
 
-            foreach (var brokerAccountSecurity in brokerAccountSecurities)
+            foreach (var brokerAccountSecurity in mappedDtos)
             {
                 var securityId = brokerAccountSecurity.SecurityId;
 
@@ -87,7 +89,7 @@ namespace Audex.Application.Services.Brokers
                 }
             }
 
-            return _mapper.Map(handledBrokerAccountSecurities.Values);
+            return handledBrokerAccountSecurities.Values;
         }
 
         public async Task<IEnumerable<BrokerAccountSecurityDto>> GetByBrokerAccountAsync(Guid brokerAccountId)

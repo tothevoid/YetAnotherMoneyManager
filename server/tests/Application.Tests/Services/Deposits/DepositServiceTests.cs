@@ -112,7 +112,7 @@ namespace Audex.Application.Tests.Services.Deposits
             Assert.NotEmpty(summary.Payments);
             Assert.True(summary.TotalEarnings > 0);
             Assert.True(summary.AverageMonthly > 0);
-            Assert.False(string.IsNullOrEmpty(summary.PeakMonthPeriod));
+            Assert.NotNull(summary.PeakMonthPeriod);
             Assert.True(summary.PeakMonthValue > 0);
             Assert.Equal(12, summary.MonthsCount);
             Assert.NotNull(summary.DepositTotals);

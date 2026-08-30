@@ -71,82 +71,106 @@ namespace Audex.Application.Services.Deposits
         public async Task<DepositMonthSummaryDto> GetSummaryAsync(int monthsFrom, int monthsTo, bool onlyActive)
         {
             var deposits = (await GetDeposits(monthsFrom, monthsTo, onlyActive, deposit => deposit.From)).ToList();
-            var dates = new Dictionary<DateOnly, List<Payment>>();
-
             if (!deposits.Any())
             {
-                return new DepositMonthSummaryDto()
-                {
-                    TotalEarnings = 0m,
-                    AverageMonthly = 0m,
-                    PeakMonthPeriod = string.Empty,
-                    PeakMonthValue = 0m,
-                    MonthsCount = 0,
-                    DepositTotals = Enumerable.Empty<DepositSummaryItemDto>(),
-                    Payments = Enumerable.Empty<PeriodPaymentDto>(),
-                };
+                return CreateEmptySummary();
             }
+
+            var periodPayments = CalculateMonthlyPayments(deposits);
+            var totalEarnings = Math.Round(periodPayments.Sum(p => p.TotalValue), 2);
+            var monthsCount = periodPayments.Count;
+            var avgMonthly = monthsCount > 0 ? Math.Round(totalEarnings / monthsCount, 2) : 0m;
+            var peak = periodPayments.OrderByDescending(p => p.TotalValue).FirstOrDefault();
+
+            return new DepositMonthSummaryDto
+            {
+                TotalEarnings = totalEarnings,
+                AverageMonthly = avgMonthly,
+                PeakMonthPeriod = peak?.Period,
+                PeakMonthValue = peak?.TotalValue ?? 0m,
+                MonthsCount = monthsCount,
+                DepositTotals = CalculateDepositTotals(periodPayments),
+                Payments = periodPayments
+            };
+        }
+
+        private static DepositMonthSummaryDto CreateEmptySummary() => new()
+        {
+            TotalEarnings = 0m,
+            AverageMonthly = 0m,
+            PeakMonthPeriod = null,
+            PeakMonthValue = 0m,
+            MonthsCount = 0,
+            DepositTotals = Enumerable.Empty<DepositSummaryItemDto>(),
+            Payments = Enumerable.Empty<PeriodPaymentDto>(),
+        };
+
+        private List<PeriodPaymentDto> CalculateMonthlyPayments(IEnumerable<Deposit> deposits)
+        {
+            var monthlyPayments = GroupMonthlyPayments(deposits);
+            return MapToPeriodPayments(monthlyPayments);
+        }
+
+        private Dictionary<DateOnly, List<Payment>> GroupMonthlyPayments(IEnumerable<Deposit> deposits)
+        {
+            var dates = new Dictionary<DateOnly, List<Payment>>();
 
             foreach (var deposit in deposits)
             {
-                var depositDays = deposit.To.DayNumber - deposit.From.DayNumber;
-                var periodStartDate = deposit.From;
-
-                while (periodStartDate < deposit.To)
-                {
-                    var lastMonthDay = new DateOnly(periodStartDate.Year, periodStartDate.Month, 1).AddMonths(1).AddDays(-1);
-                    var periodEndDate = deposit.To < lastMonthDay ? deposit.To : lastMonthDay;
-
-                    decimal profit = CalculateProfitInRange(periodStartDate, periodEndDate, depositDays, deposit.EstimatedEarn);
-
-                    var date = new DateOnly(periodStartDate.Year, periodStartDate.Month, 1);
-                    var paymentName = !string.IsNullOrWhiteSpace(deposit.Bank?.Name) ? deposit.Bank.Name : deposit.Name;
-
-                    if (dates.ContainsKey(date))
-                    {
-                        dates[date].Add(new Payment() { DepositId = deposit.Id, Name = paymentName, Value = profit });
-                    }
-                    else
-                    {
-                        dates[date] = new List<Payment>()
-                        {
-                            new() { DepositId = deposit.Id, Name = paymentName, Value = profit }
-                        };
-                    }
-
-                    periodStartDate = new DateOnly(periodStartDate.Year, periodStartDate.Month, 1).AddMonths(1);
-                }
+                DistributeDepositPayments(deposit, dates);
             }
 
-            var periodPayments = dates.OrderBy(d => d.Key).Select(date =>
-            {
-                var paymentsList = date.Value.Select(payment =>
-                    new DepositPaymentDto
-                    {
-                        DepositId = payment.DepositId,
-                        Name = payment.Name,
-                        Value = Math.Round(payment.Value, 2)
-                    }).ToList();
+            return dates;
+        }
 
-                var monthTotal = paymentsList.Sum(p => p.Value);
+        private void DistributeDepositPayments(Deposit deposit, Dictionary<DateOnly, List<Payment>> dates)
+        {
+            var depositDays = deposit.To.DayNumber - deposit.From.DayNumber;
+            var periodStartDate = deposit.From;
+            var paymentName = !string.IsNullOrWhiteSpace(deposit.Bank?.Name) ? deposit.Bank.Name : deposit.Name;
+
+            while (periodStartDate < deposit.To)
+            {
+                var lastMonthDay = new DateOnly(periodStartDate.Year, periodStartDate.Month, 1).AddMonths(1).AddDays(-1);
+                var periodEndDate = deposit.To < lastMonthDay ? deposit.To : lastMonthDay;
+
+                decimal profit = CalculateProfitInRange(periodStartDate, periodEndDate, depositDays, deposit.EstimatedEarn);
+                var date = new DateOnly(periodStartDate.Year, periodStartDate.Month, 1);
+
+                if (!dates.TryGetValue(date, out var list))
+                {
+                    list = new List<Payment>();
+                    dates[date] = list;
+                }
+
+                list.Add(new Payment { DepositId = deposit.Id, Name = paymentName, Value = profit });
+                periodStartDate = new DateOnly(periodStartDate.Year, periodStartDate.Month, 1).AddMonths(1);
+            }
+        }
+
+        private static List<PeriodPaymentDto> MapToPeriodPayments(Dictionary<DateOnly, List<Payment>> dates)
+        {
+            return dates.OrderBy(d => d.Key).Select(date =>
+            {
+                var paymentsList = date.Value.Select(payment => new DepositPaymentDto
+                {
+                    DepositId = payment.DepositId,
+                    Name = payment.Name,
+                    Value = Math.Round(payment.Value, 2)
+                }).ToList();
 
                 return new PeriodPaymentDto
                 {
-                    Period = date.Key.ToString("MM.yy"),
-                    TotalValue = Math.Round(monthTotal, 2),
+                    Period = date.Key,
+                    TotalValue = Math.Round(paymentsList.Sum(p => p.Value), 2),
                     Payments = paymentsList
                 };
             }).ToList();
+        }
 
-            var totalEarnings = periodPayments.Sum(p => p.TotalValue);
-            var monthsCount = periodPayments.Count;
-            var avgMonthly = monthsCount > 0 ? Math.Round(totalEarnings / monthsCount, 2) : 0m;
-
-            var peak = periodPayments.OrderByDescending(p => p.TotalValue).FirstOrDefault();
-            var peakPeriod = peak?.Period ?? string.Empty;
-            var peakValue = peak?.TotalValue ?? 0m;
-
-            var depositTotals = periodPayments
+        private static List<DepositSummaryItemDto> CalculateDepositTotals(IEnumerable<PeriodPaymentDto> periodPayments)
+        {
+            return periodPayments
                 .SelectMany(p => p.Payments)
                 .GroupBy(p => p.DepositId)
                 .Select(g => new DepositSummaryItemDto
@@ -157,17 +181,6 @@ namespace Audex.Application.Services.Deposits
                 })
                 .OrderByDescending(d => d.TotalValue)
                 .ToList();
-
-            return new DepositMonthSummaryDto()
-            {
-                TotalEarnings = Math.Round(totalEarnings, 2),
-                AverageMonthly = avgMonthly,
-                PeakMonthPeriod = peakPeriod,
-                PeakMonthValue = peakValue,
-                MonthsCount = monthsCount,
-                DepositTotals = depositTotals,
-                Payments = periodPayments
-            };
         }
 
         public async Task<DepositsRangeDto> GetDepositsRangeAsync()

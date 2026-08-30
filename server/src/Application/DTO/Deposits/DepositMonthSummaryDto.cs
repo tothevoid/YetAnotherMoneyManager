@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Audex.Application.DTO.Deposits
@@ -8,7 +9,7 @@ namespace Audex.Application.DTO.Deposits
 
         public decimal AverageMonthly { get; set; }
 
-        public string PeakMonthPeriod { get; set; }
+        public DateOnly? PeakMonthPeriod { get; set; }
 
         public decimal PeakMonthValue { get; set; }
 

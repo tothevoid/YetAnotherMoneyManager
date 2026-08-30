@@ -1,4 +1,4 @@
-import { createSystem, defaultConfig, defineRecipe } from "@chakra-ui/react"
+import { createSystem, defaultConfig, defineRecipe, defineSlotRecipe } from "@chakra-ui/react"
 
 const inputRecipe = defineRecipe({
     variants: {
@@ -19,6 +19,49 @@ const inputRecipe = defineRecipe({
     },
 })
 
+const tabsSlotRecipe = defineSlotRecipe({
+    className: "chakra-tabs",
+    slots: ["root", "list", "trigger", "content", "indicator"],
+    base: {
+        list: {
+            backgroundColor: "background_primary",
+            borderColor: "border_primary",
+        },
+        trigger: {
+            color: "text_primary",
+            _hover: {
+                backgroundColor: "rgba(255, 255, 255, 0.05)",
+            },
+            _selected: {
+                backgroundColor: "action_primary",
+                color: "text_primary",
+                borderColor: "action_primary",
+            },
+        },
+    },
+    variants: {
+        variant: {
+            enclosed: {
+                list: {
+                    backgroundColor: "background_primary",
+                    borderColor: "border_primary",
+                },
+                trigger: {
+                    color: "text_primary",
+                    _hover: {
+                        backgroundColor: "rgba(255, 255, 255, 0.05)",
+                    },
+                    _selected: {
+                        backgroundColor: "action_primary",
+                        color: "text_primary",
+                        borderColor: "action_primary",
+                    },
+                },
+            },
+        },
+    },
+})
+
 export const darkTheme = createSystem(defaultConfig, {
     theme: {
         tokens: {
@@ -29,6 +72,7 @@ export const darkTheme = createSystem(defaultConfig, {
                 background_primary: {value: "#242424"},
                 border_primary: {value: "rgba(255, 255, 255, 0.1)"},
                 background_secondary: {value: "#1E1E1E"},
+                button_background_secondary: {value: "#1E1E1E"},
                 card_action_icon_primary: {"value": "#f3e8ff"},
                 card_action_icon_danger: {"value": "#dc2626"},
                 header_bg: {"value": "#181818"},
@@ -69,6 +113,9 @@ export const darkTheme = createSystem(defaultConfig, {
         },
         recipes: {
             input: inputRecipe,
+        },
+        slotRecipes: {
+            tabs: tabsSlotRecipe,
         },
     },
 })

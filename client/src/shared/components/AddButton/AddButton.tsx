@@ -8,7 +8,7 @@ interface Props {
 }
 
 const AddButton: React.FC<Props> = (props: Props) => {
-    return <Button background="action_primary" onClick={() => props.onClick()}>
+    return <Button background="action_primary" color="text_primary" onClick={() => props.onClick()}>
         <MdAdd/>{props.buttonTitle}
     </Button>
 }

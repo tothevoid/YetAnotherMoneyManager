@@ -1,22 +1,22 @@
-import { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Stack, Text, Table, Card, Button, Icon, Flex } from "@chakra-ui/react";
+import { Stack } from "@chakra-ui/react";
 import { getAccountById } from "../../api/accounts/accountApi";
-import { createCurrencyTransaction, deleteCurrencyTransaction, getCurrencyTransactionsByAccountId, updateCurrencyTransaction } from "../../api/transactions/currencyTransactionApi";
+import { createCurrencyTransaction, deleteCurrencyTransaction, getCurrencyAccountSummary, getCurrencyTransactionsByAccountId, getCurrencyTransactionsPagination, updateCurrencyTransaction } from "../../api/transactions/currencyTransactionApi";
 import { CurrencyTransactionEntity } from "../../models/transactions/CurrencyTransactionEntity";
 import { useTranslation } from "react-i18next";
-import { formatMoneyByCurrencyCulture } from "../../shared/utilities/formatters/moneyFormatter";
-import { formatNumericDate } from "../../shared/utilities/formatters/dateFormatter";
-import { getCurrencies } from "../../api/currencies/currencyApi";
-import { calculateDiff, getDiffColor } from "../../shared/utilities/numericDiffsUtilities";
+import { getCurrenciesMap } from "../../api/currencies/currencyApi";
 import { AccountEntity } from "../../models/accounts/AccountEntity";
 import { useUserProfile } from "../../../features/UserProfileSettingsModal/hooks/UserProfileContext";
-import { MdEdit, MdDelete } from "react-icons/md";
 import CurrencyTransactionModal from "../Transactions/modals/CurrencyTransactionModal/CurrencyTransactionModal";
 import { ConfirmModal } from "../../shared/modals/ConfirmModal/ConfirmModal";
 import { useEntityModal } from "../../shared/hooks/useEntityModal";
 import { ActiveEntityMode } from "../../shared/enums/activeEntityMode";
-import AddButton from "../../shared/components/AddButton/AddButton";
+import Placeholder from "../../shared/components/Placeholder/Placeholder";
+import CashAccountHeader from "./components/CashAccountHeader";
+import { CurrencyTransactionsTable } from "./components/CurrencyTransactionsTable/CurrencyTransactionsTable";
+import CollectionPagination from "../../shared/components/CollectionPagination/CollectionPagination";
+import { PaginationConfig } from "../../shared/models/PaginationConfig";
 
 interface State {
     currencyTransactions: CurrencyTransactionEntity[],
@@ -24,12 +24,20 @@ interface State {
 
 const CashAccountPage: React.FC = () => {
     const { cashAccountId } = useParams();
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
 
-    const { user } = useUserProfile()
+    const { user } = useUserProfile();
 
-    const [state, setState] = useState<State>({ currencyTransactions: [] })
+    const [state, setState] = useState<State>({ currencyTransactions: [] });
     const [currenciesMap, setCurrenciesMap] = useState<Record<string, number>>({});
+    const [account, setAccount] = useState<AccountEntity | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [totalPnl, setTotalPnl] = useState<number>(0);
+    const [transactionsCount, setTransactionsCount] = useState<number>(0);
+
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [pageSize, setPageSize] = useState<number>(10);
+    const [paginationVersion, setPaginationVersion] = useState<number>(0);
 
     const { 
         activeEntity,
@@ -42,208 +50,112 @@ const CashAccountPage: React.FC = () => {
         onActionEnded
     } = useEntityModal<CurrencyTransactionEntity>();
 
-    const initAccount = async (cashAccountId: string) => {
-        const account = await getAccountById(cashAccountId);
-        setAccount(account);
-    }
+    const getPaginationConfig = useCallback(async (): Promise<PaginationConfig | void> => {
+        if (!cashAccountId) return;
+        return await getCurrencyTransactionsPagination(cashAccountId);
+    }, [cashAccountId, paginationVersion]);
 
-    const initTransactions = async (cashAccountId: string) => {
-        const currencyTransactions = await getCurrencyTransactionsByAccountId(cashAccountId);
-        const currencies = await getCurrencies();
-        const map: Record<string, number> = {};
-        currencies.forEach(c => { map[c.id] = c.rate });
-        setCurrenciesMap(map);
+    const loadTransactions = async (page: number, size: number) => {
+        if (!cashAccountId) return;
+        const currencyTransactions = await getCurrencyTransactionsByAccountId(cashAccountId, page, size);
         setState({ currencyTransactions });
-    }
-     
+    };
+
+    const handlePageChanged = (recordsQuantity: number, page: number) => {
+        const actualPage = page === 0 ? 1 : page;
+        setPageSize(recordsQuantity);
+        setCurrentPage(actualPage);
+        loadTransactions(actualPage, recordsQuantity);
+    };
+
     const initData = async () => {
         if (!cashAccountId) return;
-
-        await initAccount(cashAccountId);
-        await initTransactions(cashAccountId);
-    }
+        setIsLoading(true);
+        try {
+            const [accountData, currencyTransactions, map, summary] = await Promise.all([
+                getAccountById(cashAccountId),
+                getCurrencyTransactionsByAccountId(cashAccountId, currentPage, pageSize),
+                getCurrenciesMap(),
+                getCurrencyAccountSummary(cashAccountId)
+            ]);
+            setAccount(accountData);
+            setCurrenciesMap(map);
+            setState({ currencyTransactions });
+            setTotalPnl(summary?.totalPnl ?? 0);
+            setTransactionsCount(summary?.transactionsCount ?? 0);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     useEffect(() => {
         if (mode !== ActiveEntityMode.None) {
-            return
-        }
-
-        if (!cashAccountId) return;
-        initTransactions(cashAccountId);
-    }, [mode])
-
-    useEffect(() => {
-        initData();
-    }, [cashAccountId]);
-
-    const [totalPnl, setTotalPnl] = useState<number>(0);
-
-    useEffect(() => {
-        if (!state.currencyTransactions || state.currencyTransactions.length === 0) {
             return;
         }
-
-        const totalPnl = state.currencyTransactions.reduce((acc, transaction) => {
-            const currentRate = currenciesMap[transaction.destinationAccount.currency.id];
-            const transactionRate = transaction.rate;
-            const diffResult = calculateDiff(
-                currentRate * transaction.amount,
-                transactionRate * transaction.amount,
-                // TODO: Fix currency
-                transaction.sourceAccount.currency.name
-            );
-            return acc + diffResult.rawProfitAndLoss;
-        }, 0);
-        setTotalPnl(totalPnl);
-    }, [state.currencyTransactions, currenciesMap])
+        if (!cashAccountId) return;
+        setPaginationVersion(v => v + 1);
+        initData();
+    }, [mode, cashAccountId]);
 
     const onCurrencyTransactionSaved = async (transaction: CurrencyTransactionEntity) => {
         if (mode === ActiveEntityMode.Add) {
             await createCurrencyTransaction(transaction);
         } else {
-            await updateCurrencyTransaction(transaction)
+            await updateCurrencyTransaction(transaction);
         }
-
         onActionEnded();
-    }
+    };
 
     const onDeleteConfirmed = async () => {
-        await deleteCurrencyTransaction(activeEntity!.id);
-        onActionEnded()
-    }
-
-    const [account, setAccount] = useState<AccountEntity | null>(null);
+        if (!activeEntity) return;
+        await deleteCurrencyTransaction(activeEntity.id);
+        onActionEnded();
+    };
 
     return (
         <Stack p={6} gap={4}>
-            <Flex justifyContent={"space-between"}>
-                <Stack alignItems={"end"} gapX={2} direction={"row"} color="text_primary">
-                    <Text fontSize="3xl" fontWeight={900}>
-                        {account ? account.name : t("currency_transactions_title")}
-                    </Text>
-                    <Text color={getDiffColor(totalPnl)} backgroundColor="background_primary" borderColor="border_primary" textAlign={'center'} minW={150} rounded={10} padding={2} background={'black.600'}> {totalPnl > 0 ? "+" : ""}{formatMoneyByCurrencyCulture(totalPnl, user?.currency.name)}</Text>
-                </Stack>
-                <AddButton buttonTitle={t("currency_transactions_account_add_button")} onClick={onAddClicked}/>
-            </Flex>
-            <Card.Root>
-                <Table.Root variant="outline" size="lg">
-                    <Table.Header>
-                        <Table.Row backgroundColor="background_secondary">
-                            <Table.ColumnHeader color="text_primary">
-                                {t("entity_currency_transaction_date")}
-                            </Table.ColumnHeader>
-                            <Table.ColumnHeader color="text_primary">
-                                {t("entity_currency_transaction_name")}
-                            </Table.ColumnHeader>
-                            <Table.ColumnHeader color="text_primary">
-                                {t("entity_currency_transaction_source_account")}
-                            </Table.ColumnHeader>
-                            <Table.ColumnHeader color="text_primary">
-                                {t("entity_currency_transaction_destination_account")}
-                            </Table.ColumnHeader>
-                            <Table.ColumnHeader color="text_primary">
-                                {t("entity_currency_transaction_amount")}
-                            </Table.ColumnHeader>
-                            <Table.ColumnHeader color="text_primary">
-                                {t("entity_currency_transaction_rate")}
-                            </Table.ColumnHeader>
-                            <Table.ColumnHeader color="text_primary">
-                                {t("currency_transaction_total")}
-                            </Table.ColumnHeader>
-                            <Table.ColumnHeader color="text_primary">
-                                {t("currency_transactions_current_rate")}
-                            </Table.ColumnHeader>
-                            <Table.ColumnHeader color="text_primary">
-                                {t("currency_transactions_diff")}
-                            </Table.ColumnHeader>
-                            <Table.ColumnHeader/>
-                        </Table.Row>
-                    </Table.Header>
-                    <Table.Body>
-                        {state.currencyTransactions.length === 0 ? (
-                            <Table.Row>
-                                <Table.Cell colSpan={8} textAlign="center" color="text_secondary" py={8}>
-                                    {t("manager_transactions_empty")}
-                                </Table.Cell>
-                            </Table.Row>
-                        ) : (
-                            state.currencyTransactions.map((transaction) => {
-                                const currentRate = currenciesMap[transaction.destinationAccount.currency.id];
-                                const transactionRate = transaction.rate;
-                                const diffResult = calculateDiff(currentRate * transaction.amount, transactionRate * transaction.amount,
-                                    transaction.sourceAccount.currency.name);
-                                return (
-                                    <Table.Row key={transaction.id} color="text_primary" backgroundColor="background_primary">
-                                        <Table.Cell>
-                                            {formatNumericDate(transaction.date, i18n)}
-                                        </Table.Cell>
-                                        <Table.Cell>
-                                            {transaction.name}
-                                        </Table.Cell>
-                                        <Table.Cell>
-                                            {transaction.sourceAccount.name}
-                                        </Table.Cell>
-                                        <Table.Cell>
-                                            {transaction.destinationAccount.name}
-                                        </Table.Cell>
-                                        <Table.Cell>
-                                            {formatMoneyByCurrencyCulture(
-                                                transaction.amount, 
-                                                transaction.destinationAccount.currency.name
-                                            )}
-                                        </Table.Cell>
-                                        <Table.Cell>
-                                           {formatMoneyByCurrencyCulture(
-                                                transaction.rate, 
-                                                transaction.sourceAccount.currency.name
-                                            )}
-                                        </Table.Cell>
-                                        <Table.Cell>
-                                            {formatMoneyByCurrencyCulture(
-                                                transaction.amount * transaction.rate, 
-                                                transaction.sourceAccount.currency.name
-                                            )}
-                                        </Table.Cell>
-                                        <Table.Cell>
-                                            {formatMoneyByCurrencyCulture(
-                                                currentRate, 
-                                                user?.currency.name
-                                            )}
-                                        </Table.Cell>
-                                        <Table.Cell>
-                                            <Text color={diffResult.color} fontWeight={700}>
-                                                {diffResult.rawProfitAndLoss > 0 ? "+" : ""}{diffResult.profitAndLoss}
-                                            </Text>
-                                        </Table.Cell>
-                                        <Table.Cell>
-                                            <Stack direction={"row"} gapX={2}>
-                                                <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={() => onEditClicked(transaction)}>
-                                                    <Icon color="card_action_icon_primary">
-                                                        <MdEdit/>
-                                                    </Icon>
-                                                </Button>
-                                                <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={() => onDeleteClicked(transaction)}>
-                                                    <Icon color="card_action_icon_danger">
-                                                        <MdDelete/>
-                                                    </Icon>
-                                                </Button>
-                                            </Stack>
-                                        </Table.Cell>
-                                    </Table.Row>
-                                );
-                            })
-                        )}
-                    </Table.Body>
-                </Table.Root>
-            </Card.Root>
-            <CurrencyTransactionModal modalRef={modalRef} onSaved={onCurrencyTransactionSaved} currencyTransaction={activeEntity}/>
-            <ConfirmModal onConfirmed={onDeleteConfirmed}
+            <CashAccountHeader
+                account={account}
+                totalPnl={totalPnl}
+                userCurrencyName={user?.currency.name}
+                transactionsCount={transactionsCount}
+                onAddClicked={onAddClicked}
+            />
+
+            {!isLoading && state.currencyTransactions.length === 0 ? (
+                <Placeholder text={t("currency_transactions_no_transactions")} />
+            ) : (
+                <>
+                    <CurrencyTransactionsTable
+                        transactions={state.currencyTransactions}
+                        currenciesMap={currenciesMap}
+                        user={user}
+                        onEdit={onEditClicked}
+                        onDelete={onDeleteClicked}
+                    />
+                    <CollectionPagination
+                        key={`${cashAccountId}-${paginationVersion}`}
+                        getPaginationConfig={getPaginationConfig}
+                        onPageChanged={handlePageChanged}
+                    />
+                </>
+            )}
+
+            <CurrencyTransactionModal 
+                modalRef={modalRef} 
+                onSaved={onCurrencyTransactionSaved} 
+                currencyTransaction={activeEntity} 
+                currentAccount={account}
+            />
+            <ConfirmModal 
+                onConfirmed={onDeleteConfirmed}
                 title={t("currency_transactions_account_delete_title")}
                 message={t("modals_delete_message")}
                 confirmActionName={t("modals_delete_button")}
-                ref={confirmModalRef}/>
+                ref={confirmModalRef}
+            />
         </Stack>
     );
-}
+};
 
 export default CashAccountPage;

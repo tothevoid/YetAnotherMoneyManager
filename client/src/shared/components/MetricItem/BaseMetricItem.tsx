@@ -1,17 +1,17 @@
 import React, { ReactNode } from "react";
 import { Box, HStack, Stack, Text } from "@chakra-ui/react";
 
-export interface MetricItemProps {
+export interface BaseMetricItemProps {
     icon: ReactNode;
     iconBg: string;
     iconColor: string;
     label: string;
-    value: string;
+    value: ReactNode;
     valueColor?: string;
     size?: "sm" | "md";
 }
 
-export const MetricItem: React.FC<MetricItemProps> = ({
+export const BaseMetricItem: React.FC<BaseMetricItemProps> = ({
     icon,
     iconBg,
     iconColor,
@@ -44,11 +44,11 @@ export const MetricItem: React.FC<MetricItemProps> = ({
                     {label}
                 </Text>
                 <Text fontSize={size === "sm" ? "sm" : "md"} fontWeight={800} color={valueColor}>
-                    {value}
+                    {value ?? "—"}
                 </Text>
             </Stack>
         </HStack>
     );
 };
 
-export default MetricItem;
+export default BaseMetricItem;

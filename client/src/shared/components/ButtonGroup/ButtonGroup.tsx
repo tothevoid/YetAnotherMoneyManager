@@ -48,13 +48,6 @@ export function ButtonGroup<T extends string | number | boolean>({
                         key={String(opt.value)}
                         size={size}
                         variant={isSelected ? 'solid' : 'outline'}
-                        background={isSelected ? 'action_primary' : 'transparent'}
-                        color="text_primary"
-                        borderColor="border_primary"
-                        _hover={{
-                            background: isSelected ? 'action_primary' : 'background_secondary',
-                            borderColor: 'border_secondary'
-                        }}
                         onClick={handleClick}
                     >
                         {opt.label}

@@ -51,7 +51,7 @@ export const ConfirmModal = forwardRef<BaseModalRef, Props>((props: Props, ref) 
                             {props.confirmActionName}
                         </Button>
                         <Dialog.ActionTrigger asChild>
-                            <Button ref={cancelRef} onClick={onClose} variant="outline" color="text_primary" borderColor="border_primary" _hover={{ backgroundColor: "background_secondary" }}>{t("modals_cancel_button")}</Button>
+                            <Button ref={cancelRef} onClick={onClose} variant="outline">{t("modals_cancel_button")}</Button>
                         </Dialog.ActionTrigger>
                     </Dialog.Footer>
                     <Dialog.CloseTrigger asChild>

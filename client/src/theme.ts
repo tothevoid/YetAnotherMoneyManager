@@ -1,5 +1,63 @@
 import { createSystem, defaultConfig, defineRecipe, defineSlotRecipe } from "@chakra-ui/react"
 
+const buttonRecipe = defineRecipe({
+    base: {
+        color: "text_primary",
+        fontWeight: "500",
+        borderRadius: "md",
+        _disabled: {
+            opacity: 0.6,
+            cursor: "not-allowed",
+            color: "text_primary",
+        },
+    },
+    variants: {
+        variant: {
+            solid: {
+                bg: "action_primary",
+                color: "text_primary",
+                _hover: {
+                    bg: "action_primary",
+                    opacity: 0.9,
+                },
+                _disabled: {
+                    bg: "action_primary",
+                    color: "text_primary",
+                    opacity: 0.7,
+                },
+            },
+            outline: {
+                bg: "transparent",
+                color: "text_primary",
+                borderColor: "border_primary",
+                _hover: {
+                    bg: "background_secondary",
+                    borderColor: "border_primary",
+                },
+                _disabled: {
+                    color: "text_secondary",
+                    borderColor: "border_primary",
+                    opacity: 0.5,
+                },
+            },
+            subtle: {
+                bg: "background_secondary",
+                color: "text_primary",
+                _hover: {
+                    bg: "background_primary",
+                },
+            },
+            ghost: {
+                bg: "transparent",
+                color: "text_primary",
+                _hover: {
+                    bg: "background_secondary",
+                },
+            },
+        },
+    },
+})
+
 const inputRecipe = defineRecipe({
     variants: {
         variant: {
@@ -145,6 +203,7 @@ export const darkTheme = createSystem(defaultConfig, {
             },
         },
         recipes: {
+            button: buttonRecipe,
             input: inputRecipe,
         },
         slotRecipes: {

@@ -3,16 +3,7 @@ import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, TooltipValue
 import { DistributionModel } from '../../../models/dashboard/DashboardEntity';
 import { getChartLabelConfig } from '../../../shared/utilities/chartUtilities';
 import { formatMoneyByCurrencyCulture } from '../../../shared/utilities/formatters/moneyFormatter';
-
-const getPossibleColors = () => {
-    return [
-        "#FF6347", "#2E8B57", "#D2691E",
-        "#DCDCDC", "#A52A2A", "#5F9EA0", "#FF4500",
-        "#6A5ACD", "#C71585", "#4682B4", "#8B4513",
-        "#B8860B", "#20B2AA", "#FF8C00", "#6B8E23", "#483D8B"
-    ]
-}
-
+import { CHARTS_COLORS } from '../../../shared/constants/chartColors';
 
 type Props = {
     data: DistributionModel[]
@@ -20,7 +11,7 @@ type Props = {
 }
 
 const DistributionChart = (props: Props) => {
-    const colors = getPossibleColors();
+    const colors = CHARTS_COLORS;
 
     const formatLabel = (
         _value: TooltipValueType | undefined,

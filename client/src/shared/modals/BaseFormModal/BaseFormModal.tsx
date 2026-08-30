@@ -50,7 +50,7 @@ const BaseFormModal = forwardRef<BaseModalRef, BaseFormModalProps>((props: BaseF
                         {props.children}
                     </Dialog.Body>
                     <Dialog.Footer gap={3}>
-                        <Button type="submit" background='action_primary'>{props.saveButtonTitle ?? t("modals_save_button")}</Button>
+                        <Button type="submit" background='action_primary' color='text_primary'>{props.saveButtonTitle ?? t("modals_save_button")}</Button>
                         <Button onClick={onClose} variant="outline" color="text_primary" borderColor="border_primary" _hover={{ backgroundColor: "background_secondary" }}>{t("modals_cancel_button")}</Button>
                     </Dialog.Footer>
                     <Dialog.CloseTrigger asChild>

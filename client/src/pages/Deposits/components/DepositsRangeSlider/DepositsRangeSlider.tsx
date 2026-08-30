@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import { getDepositsRange } from "../../../../api/deposits/depositApi";
-import { Slider } from "@chakra-ui/react";
+import { Box, Slider } from "@chakra-ui/react";
 import { DepositsRange } from "../../../../models/deposits/depositsRange";
 import { formatMonthYear } from "../../../../shared/utilities/formatters/dateFormatter";
 
@@ -18,7 +18,8 @@ interface SliderMark {
 }
 
 interface Props {
-    onDepositsRangeChanged: (fromMonths: number, toMonths: number) => void
+    onDepositsRangeChanged: (fromMonths: number, toMonths: number) => void;
+    refreshTrigger?: any;
 }
 
 const convertRange = (range: DepositsRange) => {
@@ -48,7 +49,6 @@ const DepositsRangeSlider = (props: Props) => {
 
     useEffect(() => {
         const getData = async () => {
-            //TODO: add deposits change rerender
             const range = await getDepositsRange();
             if (!range) {
                 return;
@@ -60,7 +60,7 @@ const DepositsRangeSlider = (props: Props) => {
             props.onDepositsRangeChanged(ranges.selectedMinMonths, ranges.selectedMaxMonths);
         }
         getData();
-    }, []);
+    }, [props.refreshTrigger]);
 
     const onSliderValueChanged = (selectedValues: number[]) => {
         const newSliderValues = {selectedMinMonths: selectedValues[0], selectedMaxMonths: selectedValues[1]}
@@ -74,17 +74,20 @@ const DepositsRangeSlider = (props: Props) => {
         return <Fragment/>
     }
 
-    return <Slider.Root width={"100%"} min={state.minMonths!} max={state.maxMonths!} onValueChange={(details) => onSliderValueChanged(details.value)} 
-        value={[state.selectedMinMonths!, state.selectedMaxMonths!]} step={1}>
-        <Slider.Control>
-        <Slider.Track>
-            <Slider.Range background={"action_primary"} />
-        </Slider.Track>
-        <Slider.Thumbs />
-        <Slider.Marks whiteSpace="nowrap" marks={state.marks}/>
-        </Slider.Control>
-    </Slider.Root>
-    
+    return (
+        <Box width={"100%"} pb={6} pt={2} px={1}>
+            <Slider.Root width={"100%"} min={state.minMonths!} max={state.maxMonths!} onValueChange={(details) => onSliderValueChanged(details.value)} 
+                value={[state.selectedMinMonths!, state.selectedMaxMonths!]} step={1}>
+                <Slider.Control>
+                    <Slider.Track>
+                        <Slider.Range background={"action_primary"} />
+                    </Slider.Track>
+                    <Slider.Thumbs />
+                    <Slider.Marks whiteSpace="nowrap" marks={state.marks}/>
+                </Slider.Control>
+            </Slider.Root>
+        </Box>
+    );
 }
 
 export default DepositsRangeSlider;

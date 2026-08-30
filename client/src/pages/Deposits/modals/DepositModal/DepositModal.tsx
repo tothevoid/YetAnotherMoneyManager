@@ -82,8 +82,8 @@ const DepositModal: React.FC<ModalProps> = (props: ModalProps) => {
 	const selectedCurrencyForm = watch("currency");
 	const depositCurrency = state.currencies.find(c => c.id === selectedCurrencyForm?.id)?.name ?? '';
 
-	const onSubmit = (deposit: DepositFormInput) => {
-		props.onSaved(deposit as DepositEntity);
+	const onSubmit = async (deposit: DepositFormInput) => {
+		await props.onSaved(deposit as DepositEntity);
 		props.modalRef?.current?.closeModal();
 	}
 

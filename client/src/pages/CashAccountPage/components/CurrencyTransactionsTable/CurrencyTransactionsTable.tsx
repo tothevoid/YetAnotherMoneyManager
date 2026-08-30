@@ -91,7 +91,7 @@ export const CurrencyTransactionsTable: React.FC<CurrencyTransactionsTableProps>
                                         <Icon color="text_secondary" fontSize="10px">
                                             <MdArrowForward />
                                         </Icon>
-                                        <Text color="green.400" fontWeight="700" fontSize="sm">
+                                        <Text color="pnl_positive" fontWeight="700" fontSize="sm">
                                             {formatMoneyByCurrencyCulture(tr.amount, tr.destinationAccount.currency.name)}
                                         </Text>
                                     </HStack>

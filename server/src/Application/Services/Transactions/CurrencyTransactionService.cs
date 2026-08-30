@@ -111,8 +111,8 @@ namespace Audex.Application.Services.Transactions
             decimal totalPnl = 0;
             foreach (var transaction in transactions)
             {
-                var currentRate = tr.DestinationAccount?.Currency?.Rate ?? 0;
-                var pnl = (currentRate - transaction.Rate) * tr.Amount;
+                var currentRate = transaction.DestinationAccount?.Currency?.Rate ?? 0;
+                var pnl = (currentRate - transaction.Rate) * transaction.Amount;
                 totalPnl += pnl;
             }
 

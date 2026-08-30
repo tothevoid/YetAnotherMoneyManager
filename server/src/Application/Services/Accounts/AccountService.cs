@@ -146,6 +146,7 @@ namespace Audex.Application.Services.Accounts
         {
             return new Transaction()
             {
+                Id = Guid.NewGuid(),
                 Account = account,
                 AccountId = account.Id,
                 Date = DateOnly.FromDateTime(DateTime.UtcNow),

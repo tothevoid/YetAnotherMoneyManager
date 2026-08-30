@@ -104,14 +104,14 @@ const AccountModal: React.FC<ModalProps> = (props: ModalProps) => {
 		reset(getFormDefaultValues());
 	}, [reset, getFormDefaultValues, props.account])
 
-	const onSubmit = (account: AccountFormInput) => {
+	const onSubmit = async (account: AccountFormInput) => {
 		const accountEntity = account as AccountEntity;
 
 		if (account.bank?.id) {
-			accountEntity.bank = state.banks.find(bank => bank.id === account.bank?.id) 
+			accountEntity.bank = state.banks.find(bank => bank.id === account.bank?.id);
 		}
 
-		props.onSaved(accountEntity);
+		await props.onSaved(accountEntity);
 		props.modalRef?.current?.closeModal();
 	}
 

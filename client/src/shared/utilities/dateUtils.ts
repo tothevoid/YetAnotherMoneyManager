@@ -15,8 +15,17 @@ export const getDateParts = (date: Date = new Date()) => ({
 export const getMonthByIndex = (index: number, i18n: i18n) => 
     getMonthsNames(i18n)[index - 1];
 
-export const convertToDateOnly = (date: Date): string => {
-    const { year, month, day } = getDateParts(date);
+export const convertToDateOnly = (date: Date | string): string => {
+    if (!date) {
+        return "";
+    }
+
+    const parsedDate = date instanceof Date ? date : new Date(date);
+    if (isNaN(parsedDate.getTime())) {
+        return String(date);
+    }
+
+    const { year, month, day } = getDateParts(parsedDate);
     return `${year}-${month}-${day}`;
 };
 

@@ -1,6 +1,6 @@
 import { Button, Card, Flex, Icon, Stack, Text, Link } from '@chakra-ui/react';
 import { MdDelete, MdEdit, MdCompareArrows } from "react-icons/md";
-import { Fragment, useCallback } from 'react';
+import { Fragment } from 'react';
 import { AccountEntity } from '../../../../models/accounts/AccountEntity';
 import { formatMoneyByCurrencyCulture } from '../../../../shared/utilities/formatters/moneyFormatter';
 import { getBankIconUrl } from '../../../../api/banks/bankApi';
@@ -18,8 +18,8 @@ interface Props {
 const Account = (props: Props) => {
     const {name, balance, currency, bank, accountType} = props.account;
 
-    const renderIcon = useCallback(() => {
-        if (accountType.id === ACCOUNT_TYPE.CASH) {
+    const renderIcon = () => {
+        if (accountType?.id === ACCOUNT_TYPE.CASH) {
             return (
                 <StoredIcon
                     fallbackIcon={<BsCurrencyExchange size={14} color="#aaa" />}
@@ -36,14 +36,18 @@ const Account = (props: Props) => {
                 size="xs"
             />
         );
-    }, [accountType, bank]);
+    };
 
-    const getTitle = useCallback(() => {
-        if (accountType.id === ACCOUNT_TYPE.CASH ) {
-            return <Link color="text_primary" href={`../cash_account/${props.account.id}`} fontWeight={600}>{name}</Link>
+    const renderTitle = () => {
+        if (accountType?.id === ACCOUNT_TYPE.CASH) {
+            return (
+                <Link color="text_primary" href={`../cash_account/${props.account.id}`} fontWeight={600}>
+                    {name}
+                </Link>
+            );
         }
         return <Text fontWeight={600}>{name}</Text>;
-    }, []);
+    };
 
     return <Fragment>
         <Card.Root backgroundColor="background_primary" borderColor="border_primary" >
@@ -52,7 +56,7 @@ const Account = (props: Props) => {
                     <Stack>
                         <Flex gapX={2} alignItems={"center"}>
                             {renderIcon()}
-                            {getTitle()}
+                            {renderTitle()}
                         </Flex>
                         <Text fontWeight={700}>{formatMoneyByCurrencyCulture(balance, currency.name)}</Text>
                     </Stack>

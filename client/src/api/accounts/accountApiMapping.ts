@@ -2,15 +2,19 @@ import { AccountEntity, AccountEntityRequest, AccountEntityResponse } from "../.
 import { convertToDateOnly } from "../../shared/utilities/dateUtils";
 
 export const prepareAccountRequest = (account: AccountEntity): AccountEntityRequest => {
+	const accountTypeId = typeof account.accountType === 'string' ? account.accountType : (account.accountType?.id ?? '');
+	const currencyId = typeof account.currency === 'string' ? account.currency : (account.currency?.id ?? '');
+	const bankId = typeof account.bank === 'string' ? account.bank : account.bank?.id;
+
 	return {
 		id: account.id,
 		active: account.active,
 		balance: account.balance,
 		name: account.name,
 		createdOn: convertToDateOnly(account.createdOn),
-		accountTypeId: account.accountType.id,
-		currencyId: account.currency.id,
-		bankId: account.bank?.id
+		accountTypeId,
+		currencyId,
+		bankId
 	};
 }
 

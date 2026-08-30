@@ -35,8 +35,7 @@ export const useAccounts = (queryParameters: AccountsQuery) => {
 			return;
 		}
 
-		account.id = createdAccountId;
-		setAccounts([...accounts, account]);
+		await fetchData();
 	}
 
 	const updateAccountEntity = async (updatedAccount: AccountEntity) => {
@@ -49,14 +48,7 @@ export const useAccounts = (queryParameters: AccountsQuery) => {
 			return;
 		}
 
-		const updatedAccounts = accounts.map((account: AccountEntity) => {
-			if (account.id === updatedAccount.id) {
-				return {...updatedAccount}
-			} 
-			return account
-		});
-
-		setAccounts(updatedAccounts)
+		await fetchData();
 	}
 
 	const deleteAccountEntity = async (deletedAccount: AccountEntity) => {
@@ -68,7 +60,8 @@ export const useAccounts = (queryParameters: AccountsQuery) => {
 		if (!deleted) {
 			return;
 		}
-		setAccounts(accounts.filter((account: AccountEntity) => account.id !== deletedAccount.id));
+
+		await fetchData();
 	}
 
 	return {

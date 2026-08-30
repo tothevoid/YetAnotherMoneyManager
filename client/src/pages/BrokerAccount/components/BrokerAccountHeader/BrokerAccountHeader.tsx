@@ -7,7 +7,7 @@ import { BrokerAccountPortfolioEntity } from "../../../../models/brokers/BrokerA
 import { BsWallet2, BsPiggyBank, BsArrowUpRight, BsArrowDownRight, BsClockHistory, BsBank } from "react-icons/bs";
 import { MdRefresh } from "react-icons/md";
 import { TbReceiptTax } from "react-icons/tb";
-import { HeaderMetricItem } from "./HeaderMetricItem";
+import { MetricItem } from "../../../../shared/components/MetricItem/MetricItem";
 import "../../../../shared/components/RefreshButton/RefreshButton.scss";
 
 interface Props {
@@ -111,45 +111,50 @@ const BrokerAccountHeader: React.FC<Props> = ({
                     flexWrap="wrap"
                     gap={{ base: 4, md: 8 }}
                 >
-                    <HeaderMetricItem
+                    <MetricItem
                         icon={<BsBank size={15} />}
                         iconBg="rgba(234, 179, 8, 0.15)"
                         iconColor="yellow.400"
                         label={t("broker_account_portfolio_history_portfolio_value")}
                         value={currentValueLabel}
+                        size="sm"
                     />
 
-                    <HeaderMetricItem
+                    <MetricItem
                         icon={isProfit ? <BsArrowUpRight size={15} /> : <BsArrowDownRight size={15} />}
                         iconBg={isProfit ? "pnl_positive_bg" : "pnl_negative_bg"}
                         iconColor={isProfit ? "pnl_positive" : "pnl_negative"}
                         label={t("broker_account_page_total_profit_and_loss")}
                         value={isProfit ? `+${pnlLabel}` : pnlLabel}
                         valueColor={isProfit ? "pnl_positive" : "pnl_negative"}
+                        size="sm"
                     />
 
-                    <HeaderMetricItem
+                    <MetricItem
                         icon={<BsWallet2 size={15} />}
                         iconBg="rgba(59, 130, 246, 0.15)"
                         iconColor="blue.400"
                         label={t("broker_account_portfolio_history_main_currency_amount")}
                         value={mainCurrencyLabel}
+                        size="sm"
                     />
 
-                    <HeaderMetricItem
+                    <MetricItem
                         icon={<BsPiggyBank size={15} />}
                         iconBg="rgba(34, 197, 94, 0.15)"
                         iconColor="green.400"
                         label={t("broker_account_page_dividends_earnings")}
                         value={dividendsLabel ?? formatMoneyByCurrencyCulture(0, currencyName)}
+                        size="sm"
                     />
 
-                    <HeaderMetricItem
+                    <MetricItem
                         icon={<TbReceiptTax size={15} />}
                         iconBg="rgba(168, 85, 247, 0.15)"
                         iconColor="purple.400"
                         label={t("broker_account_page_deduction_taxes")}
                         value={taxDeductionsLabel ?? formatMoneyByCurrencyCulture(0, currencyName)}
+                        size="sm"
                     />
                 </Flex>
             </Card.Body>

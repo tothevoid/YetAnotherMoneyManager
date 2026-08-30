@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
@@ -7,6 +7,8 @@ using Audex.Application.Interfaces.Transactions;
 using Audex.WebApi.Mappings;
 using Audex.WebApi.Models.Transactions;
 using Microsoft.AspNetCore.Authorization;
+
+using Audex.WebApi.Models.Common;
 
 namespace Audex.WebApi.Controllers.Transactions
 {
@@ -40,10 +42,27 @@ namespace Audex.WebApi.Controllers.Transactions
         }
 
         [HttpGet(nameof(GetAllByAccountId))]
-        public async Task<IEnumerable<CurrencyTransactionModel>> GetAllByAccountId([FromQuery] Guid accountId)
+        public async Task<IEnumerable<CurrencyTransactionModel>> GetAllByAccountId(
+            [FromQuery] Guid accountId,
+            [FromQuery] int? pageIndex = null,
+            [FromQuery] int? recordsQuantity = null)
         {
-            var dtos = await _currencyTransactionService.GetAllByAccountIdAsync(accountId);
+            var dtos = await _currencyTransactionService.GetAllByAccountIdAsync(accountId, pageIndex, recordsQuantity);
             return _mapper.Map(dtos);
+        }
+
+        [HttpGet(nameof(GetPaginationByAccountId))]
+        public async Task<PaginationConfigModel> GetPaginationByAccountId([FromQuery] Guid accountId)
+        {
+            var pagination = await _currencyTransactionService.GetPaginationAsync(accountId);
+            return _mapper.Map(pagination);
+        }
+
+        [HttpGet(nameof(GetSummaryByAccountId))]
+        public async Task<CurrencyAccountSummaryModel> GetSummaryByAccountId([FromQuery] Guid accountId)
+        {
+            var dto = await _currencyTransactionService.GetSummaryByAccountIdAsync(accountId);
+            return _mapper.Map(dto);
         }
 
         [HttpPut]

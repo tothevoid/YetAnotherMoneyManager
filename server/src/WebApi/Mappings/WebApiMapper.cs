@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Riok.Mapperly.Abstractions;
 using Audex.Application.DTO;
 using Audex.Application.DTO.Accounts;
@@ -64,6 +64,7 @@ namespace Audex.WebApi.Mappings
         public partial CurrencyTransactionDto Map(CurrencyTransactionModel model);
         public partial CurrencyTransactionModel Map(CurrencyTransactionDto dto);
         public partial IEnumerable<CurrencyTransactionModel> Map(IEnumerable<CurrencyTransactionDto> dtos);
+        public partial CurrencyAccountSummaryModel Map(CurrencyAccountSummaryDto dto);
 
         public partial DepositsRangeModel Map(DepositsRangeDto dto);
         public partial DepositMonthSummary Map(DepositMonthSummaryDto dto);

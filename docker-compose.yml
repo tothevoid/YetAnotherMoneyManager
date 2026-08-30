@@ -36,6 +36,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - server-network
   infrastructure_manager:
     build: ./infra-manager
     container_name: ${PROJECT_NAME}_infrastructure_manager
@@ -60,6 +62,8 @@ services:
     build: ./server
     container_name: ${PROJECT_NAME}_server
     restart: always
+    extra_hosts:
+      - "${PUBLIC_MINIO_ENDPOINT}:host-gateway"
     ports:
       - ${SERVER_PORT}:5000
     environment:
@@ -68,6 +72,7 @@ services:
       - DB__ConnectionString=Host=database;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Pooling=true;MinPoolSize=2;MaxPoolSize=100;Keepalive=30;ConnectionIdleLifetime=300;TcpKeepAlive=true;Application Name=AudexApi;Enlist=false;Timeout=15;Command Timeout=30;
       - FileStorage__Endpoint=${PUBLIC_MINIO_ENDPOINT}
       - FileStorage__UseSsl=${MINIO_USE_SSL}
+      - FileStorage__User=${MINIO_ROOT_USER}
       - FileStorage__Password=${MINIO_ROOT_PASSWORD}
       - FileStorage__Port=${MINIO_API_PORT}
       - InfrastructureManager__Url=http://infrastructure_manager:${INFRA_MANAGER_PORT:-5050}

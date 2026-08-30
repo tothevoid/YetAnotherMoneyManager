@@ -6,6 +6,7 @@ export const getCurrencyTransactionValidationSchema = (t: TFunction) => z.object
   name: z.string().min(1, t("validation_field_required")),
   date: z.date({ message: t("validation_date_required") }),
   amount: z.number().gt(0, t("validation_positive_number")),
+  sourceAmount: z.number().optional(),
   rate: z.number().gt(0, t("validation_positive_number")),
   sourceAccount: z.object({
     id: z.string().min(1, t("validation_source_account_required")),

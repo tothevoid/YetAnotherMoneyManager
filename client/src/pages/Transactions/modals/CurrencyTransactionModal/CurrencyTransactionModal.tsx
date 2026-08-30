@@ -4,12 +4,14 @@ import BaseFormModal from '../../../../shared/modals/BaseFormModal/BaseFormModal
 import { BaseModalRef } from '../../../../shared/utilities/modalUtilities';
 import CurrencyTransactionForm from '../../components/CurrencyTransactionForm/CurrencyTransactionForm';
 import { CurrencyTransactionEntity } from '../../../../models/transactions/CurrencyTransactionEntity';
+import { AccountEntity } from '../../../../models/accounts/AccountEntity';
 import { FieldValues, UseFormHandleSubmit } from 'react-hook-form';
 import { SetSubmitHandler } from '../NewTransactionModal/NewTransactionModal';
 
 interface ModalProps {
     modalRef: RefObject<BaseModalRef | null>,
     currencyTransaction?: CurrencyTransactionEntity | null,
+    currentAccount?: AccountEntity | null,
     onSaved: (transaction: CurrencyTransactionEntity) => Promise<void>
 }
 
@@ -40,11 +42,10 @@ const CurrencyTransactionModal: React.FC<ModalProps> = (props: ModalProps) => {
         }
 
         state.formHandler(event);
-        props.modalRef?.current?.closeModal();
     }
 
-    return <BaseFormModal ref={props.modalRef} title={t("entity_transaction_name_form_title")} submitHandler={onSubmit}>
-        <CurrencyTransactionForm currencyTransaction={props.currencyTransaction} setSubmitHandler={setSubmitHandler} onCurrencyTransactionSaved={props.onSaved} />
+    return <BaseFormModal ref={props.modalRef} size="xl" title={t("currency_transaction_modal_title")} submitHandler={onSubmit}>
+        <CurrencyTransactionForm currencyTransaction={props.currencyTransaction} currentAccount={props.currentAccount} setSubmitHandler={setSubmitHandler} onCurrencyTransactionSaved={props.onSaved} />
     </BaseFormModal>
 }
 

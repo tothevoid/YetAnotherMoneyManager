@@ -17,6 +17,14 @@
     "deposits_chart_type_stacked": "Deposits earnings by months",
     "earnings_chart_data_title": "Deposits earnings",
 
+    "deposits_stats_title": "Payout Analytics",
+    "deposits_stats_total_earnings": "Total payouts in period",
+    "deposits_stats_avg_monthly": "Monthly average",
+    "deposits_stats_max_month": "Peak month",
+    "deposits_stats_total_month": "Month total",
+    "deposits_stats_no_data": "No payout data for the selected period",
+
     "deposits_list_only_active": "Only active",
     "deposits_list_add_button": "Add deposit"
 }
+

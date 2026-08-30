@@ -17,6 +17,14 @@
     "deposits_chart_type_stacked": "Доходность вкладов по месяцам",
     "earnings_chart_data_title": "Доходность вкладов",
 
+    "deposits_stats_title": "Аналитика выплат",
+    "deposits_stats_total_earnings": "Всего выплат за период",
+    "deposits_stats_avg_monthly": "В среднем в месяц",
+    "deposits_stats_max_month": "Пиковый месяц",
+    "deposits_stats_total_month": "Итого за месяц",
+    "deposits_stats_no_data": "Нет данных о выплатах за выбранный период",
+
     "deposits_list_only_active": "Только активные",
     "deposits_list_add_button": "Добавить вклад"
 }
+

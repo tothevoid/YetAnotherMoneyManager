@@ -1,6 +1,6 @@
 import { AccountEntity } from '../../../../models/accounts/AccountEntity'
-import { Box, Button, Flex, Stack } from '@chakra-ui/react'
-import { Text } from '@chakra-ui/react';
+import { Box, Stack, Text } from '@chakra-ui/react'
+import ButtonGroup from '../../../../shared/components/ButtonGroup/ButtonGroup';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, TooltipValueType } from 'recharts';
@@ -107,16 +107,16 @@ const TransactionStats = (props: Props) => {
     return <Stack>
         <Text fontSize="2xl" fontWeight={600}>{t("manager_stats_title")}</Text>
         <Box padding="25px" borderRadius="10px" background="background_primary" width="100%">
-            <Flex gap={4} alignItems={'center'}>
-                {
-                    [...groupingConfig.values()].map(groupingConfig => {
-                        return <Button key={groupingConfig.group} background='action_primary' disabled={groupingConfig.group == selectedGrouping} 
-                            onClick={() => {setSelectedGrouping(groupingConfig.group)}}>
-                            {groupingConfig.caption}
-                        </Button>
-                    })
-                }
-            </Flex>
+            <Box mb={4}>
+                <ButtonGroup<DataGrouping>
+                    options={[...groupingConfig.values()].map(config => ({
+                        value: config.group,
+                        label: config.caption
+                    }))}
+                    value={selectedGrouping}
+                    onChange={(val) => setSelectedGrouping(val)}
+                />
+            </Box>
             <Box style={{ width: '100%', height: 400 }}>
                 <ResponsiveContainer width="100%" height="100%">
                     <PieChart>

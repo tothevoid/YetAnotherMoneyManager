@@ -1,4 +1,4 @@
-import { ProgressCircle, Flex, Box, Stack, Button } from '@chakra-ui/react'
+import { ProgressCircle, Flex, Box } from '@chakra-ui/react'
 import { Fragment, useEffect, useState } from 'react';
 import { DepositMonthSummary } from './depositMonthSummary';
 import { getDepositsSummary } from '../../../../api/deposits/depositApi';
@@ -6,10 +6,11 @@ import StackedDepositsChart from '../StackedDepositsChart/StackedDepositsChart';
 import DepositsEarningsChart from '../DepositsEarningsChart/DepositsEarningsChart';
 import { useTranslation } from 'react-i18next';
 import { useUserProfile } from '../../../../../features/UserProfileSettingsModal/hooks/UserProfileContext';
+import ButtonGroup, { ButtonGroupOption } from '../../../../shared/components/ButtonGroup/ButtonGroup';
 
 enum ChartType {
-	Earnings,
-	Stacked
+	Earnings = 0,
+	Stacked = 1
 }
 
 interface Props {
@@ -69,23 +70,27 @@ const DepositStats = (props: Props) => {
 		return <Fragment/>
 	}
 
-	return <Box>
-		<Stack direction="row">
-			<Button background='action_primary' disabled={state.selectedChartType === ChartType.Earnings} 
-				onClick={() => {switchActiveChart(ChartType.Earnings)}}>
-				{t("deposits_chart_type_earnings")}
-			</Button>
-			<Button background='action_primary' disabled={state.selectedChartType === ChartType.Stacked} 
-				onClick={() => {switchActiveChart(ChartType.Stacked)}}>
-				{t("deposits_chart_type_stacked")}
-			</Button>
-		</Stack>
-		{
-			state.selectedChartType === ChartType.Stacked ?
-				<StackedDepositsChart currencyName={user?.currency.name} data={state.summary} /> :
+	const chartTypeOptions: ButtonGroupOption<ChartType>[] = [
+		{ value: ChartType.Earnings, label: t("deposits_chart_type_earnings") },
+		{ value: ChartType.Stacked, label: t("deposits_chart_type_stacked") },
+	];
+
+	return (
+		<Box>
+			<Box mb={4}>
+				<ButtonGroup<ChartType>
+					options={chartTypeOptions}
+					value={state.selectedChartType}
+					onChange={switchActiveChart}
+				/>
+			</Box>
+			{state.selectedChartType === ChartType.Stacked ? (
+				<StackedDepositsChart currencyName={user?.currency.name} data={state.summary} />
+			) : (
 				<DepositsEarningsChart currencyName={user?.currency.name} data={state.summary} />
-		}
-	</Box>
+			)}
+		</Box>
+	);
 }
 
 export default DepositStats;

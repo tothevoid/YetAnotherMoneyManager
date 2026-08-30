@@ -70,6 +70,7 @@ namespace Audex.WebApi.Mappings
         public partial DepositMonthSummary Map(DepositMonthSummaryDto dto);
         public partial DepositPayment Map(DepositPaymentDto dto);
         public partial PeriodPayment Map(PeriodPaymentDto dto);
+        public partial DepositSummaryItem Map(DepositSummaryItemDto dto);
         public partial AccountTransferDto Map(AccountTransferModel model);
         public partial SecurityHistoryValueModel Map(SecurityHistoryValueDto dto);
         public partial SecurityHistoryValueDto Map(SecurityHistoryValueModel model);

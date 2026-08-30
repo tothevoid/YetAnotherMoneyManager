@@ -77,6 +77,12 @@ namespace Audex.Application.Services.Deposits
             {
                 return new DepositMonthSummaryDto()
                 {
+                    TotalEarnings = 0m,
+                    AverageMonthly = 0m,
+                    PeakMonthPeriod = string.Empty,
+                    PeakMonthValue = 0m,
+                    MonthsCount = 0,
+                    DepositTotals = Enumerable.Empty<DepositSummaryItemDto>(),
                     Payments = Enumerable.Empty<PeriodPaymentDto>(),
                 };
             }
@@ -94,17 +100,17 @@ namespace Audex.Application.Services.Deposits
                     decimal profit = CalculateProfitInRange(periodStartDate, periodEndDate, depositDays, deposit.EstimatedEarn);
 
                     var date = new DateOnly(periodStartDate.Year, periodStartDate.Month, 1);
-                    var paymentName = deposit.Bank?.Name ?? "";
+                    var paymentName = !string.IsNullOrWhiteSpace(deposit.Bank?.Name) ? deposit.Bank.Name : deposit.Name;
 
                     if (dates.ContainsKey(date))
                     {
-                        dates[date].Add(new Payment() { DepositId = deposit.Id, Name = paymentName, Value = profit});
+                        dates[date].Add(new Payment() { DepositId = deposit.Id, Name = paymentName, Value = profit });
                     }
                     else
                     {
                         dates[date] = new List<Payment>()
                         {
-                            new(){DepositId = deposit.Id, Name = paymentName, Value = profit}
+                            new() { DepositId = deposit.Id, Name = paymentName, Value = profit }
                         };
                     }
 
@@ -112,21 +118,55 @@ namespace Audex.Application.Services.Deposits
                 }
             }
 
+            var periodPayments = dates.OrderBy(d => d.Key).Select(date =>
+            {
+                var paymentsList = date.Value.Select(payment =>
+                    new DepositPaymentDto
+                    {
+                        DepositId = payment.DepositId,
+                        Name = payment.Name,
+                        Value = Math.Round(payment.Value, 2)
+                    }).ToList();
+
+                var monthTotal = paymentsList.Sum(p => p.Value);
+
+                return new PeriodPaymentDto
+                {
+                    Period = date.Key.ToString("MM.yy"),
+                    TotalValue = Math.Round(monthTotal, 2),
+                    Payments = paymentsList
+                };
+            }).ToList();
+
+            var totalEarnings = periodPayments.Sum(p => p.TotalValue);
+            var monthsCount = periodPayments.Count;
+            var avgMonthly = monthsCount > 0 ? Math.Round(totalEarnings / monthsCount, 2) : 0m;
+
+            var peak = periodPayments.OrderByDescending(p => p.TotalValue).FirstOrDefault();
+            var peakPeriod = peak?.Period ?? string.Empty;
+            var peakValue = peak?.TotalValue ?? 0m;
+
+            var depositTotals = periodPayments
+                .SelectMany(p => p.Payments)
+                .GroupBy(p => p.DepositId)
+                .Select(g => new DepositSummaryItemDto
+                {
+                    DepositId = g.Key,
+                    Name = g.First().Name,
+                    TotalValue = Math.Round(g.Sum(p => p.Value), 2)
+                })
+                .OrderByDescending(d => d.TotalValue)
+                .ToList();
 
             return new DepositMonthSummaryDto()
             {
-                Payments = dates.Select(date =>
-                    new PeriodPaymentDto
-                    {
-                        Period = date.Key.ToString("MM.yy"),
-                        Payments = date.Value.Select(payment =>
-                            new DepositPaymentDto
-                            {
-                                DepositId = payment.DepositId,
-                                Name = payment.Name, 
-                                Value =  Math.Round(payment.Value, 2)
-                            })
-                    })
+                TotalEarnings = Math.Round(totalEarnings, 2),
+                AverageMonthly = avgMonthly,
+                PeakMonthPeriod = peakPeriod,
+                PeakMonthValue = peakValue,
+                MonthsCount = monthsCount,
+                DepositTotals = depositTotals,
+                Payments = periodPayments
             };
         }
 

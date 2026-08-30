@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Audex.Application.DTO.Deposits;
 using Audex.Application.Interfaces.Deposits;
 using Audex.Application.Tests.Fixtures;
@@ -110,6 +110,14 @@ namespace Audex.Application.Tests.Services.Deposits
             Assert.NotNull(summary);
             Assert.NotNull(summary.Payments);
             Assert.NotEmpty(summary.Payments);
+            Assert.True(summary.TotalEarnings > 0);
+            Assert.True(summary.AverageMonthly > 0);
+            Assert.False(string.IsNullOrEmpty(summary.PeakMonthPeriod));
+            Assert.True(summary.PeakMonthValue > 0);
+            Assert.Equal(12, summary.MonthsCount);
+            Assert.NotNull(summary.DepositTotals);
+            Assert.NotEmpty(summary.DepositTotals);
+            Assert.All(summary.Payments, p => Assert.True(p.TotalValue > 0));
         }
 
         [Fact]

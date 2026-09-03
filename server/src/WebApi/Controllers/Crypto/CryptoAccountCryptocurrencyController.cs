@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
@@ -37,6 +37,18 @@ namespace Audex.WebApi.Controllers.Crypto
         {
             var cryptoAccountCryptocurrencies = await _cryptoAccountCryptocurrencyService.GetAllAsync();
             return _mapper.Map(cryptoAccountCryptocurrencies);
+        }
+
+        [HttpGet(nameof(GetTotalBalanceByCryptoAccount))]
+        public async Task<decimal> GetTotalBalanceByCryptoAccount([FromQuery] Guid cryptoAccountId)
+        {
+            return await _cryptoAccountCryptocurrencyService.GetTotalBalanceByCryptoAccountAsync(cryptoAccountId);
+        }
+
+        [HttpGet(nameof(GetTotalBalance))]
+        public async Task<decimal> GetTotalBalance()
+        {
+            return await _cryptoAccountCryptocurrencyService.GetTotalBalanceAsync();
         }
 
         [HttpPut]

@@ -1,4 +1,4 @@
-﻿using Audex.Infrastructure.Interfaces.Database;
+using Audex.Infrastructure.Interfaces.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +41,16 @@ namespace Audex.Application.Services.Crypto
 
         public async Task UpdateAsync(CryptoAccountCryptocurrencyDto cryptoAccountCryptocurrencyDto)
         {
+            var existing = await _cryptoAccountCryptocurrencyRepo.FindAsync(c =>
+                c.Id != cryptoAccountCryptocurrencyDto.Id &&
+                c.CryptoAccountId == cryptoAccountCryptocurrencyDto.CryptoAccountId &&
+                c.CryptocurrencyId == cryptoAccountCryptocurrencyDto.CryptocurrencyId);
+
+            if (existing != null)
+            {
+                throw new InvalidOperationException("This cryptocurrency is already added to the crypto account.");
+            }
+
             var cryptoAccountCryptocurrency = _mapper.Map(cryptoAccountCryptocurrencyDto);
             _cryptoAccountCryptocurrencyRepo.Update(cryptoAccountCryptocurrency);
             await _db.CommitAsync();
@@ -48,6 +58,15 @@ namespace Audex.Application.Services.Crypto
 
         public async Task<Guid> AddAsync(CryptoAccountCryptocurrencyDto cryptoAccountCryptocurrencyDto)
         {
+            var existing = await _cryptoAccountCryptocurrencyRepo.FindAsync(c =>
+                c.CryptoAccountId == cryptoAccountCryptocurrencyDto.CryptoAccountId &&
+                c.CryptocurrencyId == cryptoAccountCryptocurrencyDto.CryptocurrencyId);
+
+            if (existing != null)
+            {
+                throw new InvalidOperationException("This cryptocurrency is already added to the crypto account.");
+            }
+
             var cryptoAccountCryptocurrency = _mapper.Map(cryptoAccountCryptocurrencyDto);
             cryptoAccountCryptocurrency.Id = Guid.NewGuid();
             await _cryptoAccountCryptocurrencyRepo.AddAsync(cryptoAccountCryptocurrency);
@@ -59,6 +78,23 @@ namespace Audex.Application.Services.Crypto
         {
             await _cryptoAccountCryptocurrencyRepo.DeleteAsync(id);
             await _db.CommitAsync();
+        }
+
+        public async Task<decimal> GetTotalBalanceAsync()
+        {
+            var items = await _cryptoAccountCryptocurrencyRepo.GetAllAsync(
+                include: GetFullHierarchyColumns);
+
+            return items.Sum(c => c.Quantity * (c.Cryptocurrency != null ? c.Cryptocurrency.Price : 0));
+        }
+
+        public async Task<decimal> GetTotalBalanceByCryptoAccountAsync(Guid cryptoAccountId)
+        {
+            var items = await _cryptoAccountCryptocurrencyRepo.GetAllAsync(
+                c => c.CryptoAccountId == cryptoAccountId,
+                include: GetFullHierarchyColumns);
+
+            return items.Sum(c => c.Quantity * (c.Cryptocurrency != null ? c.Cryptocurrency.Price : 0));
         }
 
         private IQueryable<CryptoAccountCryptocurrency> GetFullHierarchyColumns(

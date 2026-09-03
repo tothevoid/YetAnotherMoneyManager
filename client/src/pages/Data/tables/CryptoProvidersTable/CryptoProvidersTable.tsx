@@ -1,19 +1,31 @@
 import { Box, Button, Icon, Text } from "@chakra-ui/react";
-import { useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 import { MdAdd, MdDelete, MdEdit } from "react-icons/md";
+import { SiBinance } from "react-icons/si";
 import { useTranslation } from "react-i18next";
 import { ConfirmModal } from "../../../../shared/modals/ConfirmModal/ConfirmModal";
-import { BaseModalRef } from "../../../../shared/utilities/modalUtilities";
+import { Nullable } from "../../../../shared/utilities/nullable";
 import { CryptoProviderEntity } from "../../../../models/crypto/CryptoProviderEntity";
 import CryptoProviderModal from "../../modals/CryptoProviderModal/CryptoProviderModal";
 import { useCryptoProviders } from "../../hooks/useCryptoProviders";
+import { getCryptoProviderIconUrl } from "../../../../api/crypto/cryptoProviderApi";
 import DataTable, { ColumnDef } from "../../../../shared/components/DataTable/DataTable";
+import StoredIcon from "../../../../shared/components/StoredIcon";
+import { useEntityModal } from "../../../../shared/hooks/useEntityModal";
 
 const CryptoProvidersTable: React.FC = () => {
 	const { t } = useTranslation();
-	const modalRef = useRef<BaseModalRef>(null);
-	const confirmModalRef = useRef<BaseModalRef>(null);
-	const [selectedCryptoProvider, setSelectedCryptoProvider] = useState<CryptoProviderEntity | null>();
+	const {
+		activeEntity,
+		modalRef,
+		confirmModalRef,
+		onAddClicked,
+		onEditClicked,
+		onDeleteClicked,
+		onActionEnded,
+		handleDelete,
+		executeWithCleanup
+	} = useEntityModal<CryptoProviderEntity>();
 
 	const {
 		cryptoProviders,
@@ -22,41 +34,32 @@ const CryptoProvidersTable: React.FC = () => {
 		updateCryptoProviderEntity,
 		deleteCryptoProviderEntity
 	} = useCryptoProviders();
- 
-	const onAdd = () => {
-		modalRef.current?.openModal()
-	};
 
-	const onCryptoProviderSaved = (cryptoProvider: CryptoProviderEntity) => {
-		if (selectedCryptoProvider?.id === cryptoProvider.id) {
-			updateCryptoProviderEntity(cryptoProvider);
+	const onCryptoProviderSaved = executeWithCleanup(async (cryptoProvider: CryptoProviderEntity, icon: Nullable<File>) => {
+		const isModified = cryptoProviders.some(p => p.id === cryptoProvider.id);
+
+		if (isModified) {
+			await updateCryptoProviderEntity(cryptoProvider, icon);
 		} else {
-			createCryptoProviderEntity(cryptoProvider);
+			await createCryptoProviderEntity(cryptoProvider, icon);
 		}
-		setSelectedCryptoProvider(null);
-	}
+	});
 
-	const onEditClicked = (cryptoProvider: CryptoProviderEntity) => {
-		setSelectedCryptoProvider(cryptoProvider);
-
-		modalRef.current?.openModal()
-	}
-
-	const onDeleteClicked = (cryptoProvider: CryptoProviderEntity) => {
-		setSelectedCryptoProvider(cryptoProvider);
-		confirmModalRef.current?.openModal()
-	}
-
-	const onCryptoProviderDeleteConfirmed = async () => {
-		if (!selectedCryptoProvider) {
-			return;
-		}
-
-		await deleteCryptoProviderEntity(selectedCryptoProvider);
-		setSelectedCryptoProvider(null);
-	}
+	const onCryptoProviderDeleteConfirmed = handleDelete(async (cryptoProvider) => {
+		await deleteCryptoProviderEntity(cryptoProvider);
+	});
 
 	const columns: ColumnDef<CryptoProviderEntity>[] = useMemo(() => [
+		{
+			width: "50px",
+			render: (cryptoProvider) => (
+				<StoredIcon
+					src={cryptoProvider.iconKey ? getCryptoProviderIconUrl(cryptoProvider.iconKey) : undefined}
+					fallbackIcon={<SiBinance size={20} color="#aaa" />}
+					size="md"
+				/>
+			)
+		},
 		{
 			header: t("entity_crypto_provider_name"),
 			render: (cryptoProvider) => <Text>{cryptoProvider.name}</Text>
@@ -91,11 +94,11 @@ const CryptoProvidersTable: React.FC = () => {
 				</Button>
 			)
 		}
-	], [t, cryptoProviders]);
+	], [t, onEditClicked, onDeleteClicked]);
 
 	return <Box color="text_primary">
 		<Box mb={4}>
-			<Button background="action_primary" onClick={onAdd}>
+			<Button background="action_primary" onClick={onAddClicked}>
 				<Icon size='md'>
 					<MdAdd/>
 				</Icon>
@@ -109,7 +112,12 @@ const CryptoProvidersTable: React.FC = () => {
 			isLoading={isCryptoProvidersLoading}
 			skeletonRows={5}
 		/>
-		<CryptoProviderModal cryptoProvider={selectedCryptoProvider} modalRef={modalRef} onSaved={onCryptoProviderSaved}/>
+		<CryptoProviderModal
+			onModalClosed={onActionEnded}
+			cryptoProvider={activeEntity}
+			modalRef={modalRef}
+			onSaved={onCryptoProviderSaved}
+		/>
 		<ConfirmModal onConfirmed={onCryptoProviderDeleteConfirmed}
 			title={t("crypto_providers_delete_title")}
 			message={t("modals_delete_message")}

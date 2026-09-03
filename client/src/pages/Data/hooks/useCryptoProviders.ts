@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { CryptoProviderEntity } from "../../../models/crypto/CryptoProviderEntity";
 import { createCryptoProvider, deleteCryptoProvider, getCryptoProviders, updateCryptoProvider } from "../../../api/crypto/cryptoProviderApi";
+import { Nullable } from "../../../shared/utilities/nullable";
 
 export const useCryptoProviders = () => {
     const [cryptoProviders, setCryptoProviders] = useState<CryptoProviderEntity[]>([]);
@@ -9,44 +10,44 @@ export const useCryptoProviders = () => {
     const [error, setError] = useState<string | null>(null);
 
     const fetchData = useCallback(async () => {
-        setLoading(true)
+        setLoading(true);
         try {
             const providers = await getCryptoProviders();
             setCryptoProviders(providers);
         } catch (err: any) {
-            setError(err.message || 'Ошибка загрузки данных')
+            setError(err.message || 'Ошибка загрузки данных');
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
-    }, [])
+    }, []);
 
     useEffect(() => {
         fetchData();
-    }, [fetchData])
+    }, [fetchData]);
 
-    const createCryptoProviderEntity = async (createdCryptoProvider: CryptoProviderEntity) => {
-        const addedCryptoProvider = await createCryptoProvider(createdCryptoProvider);
+    const createCryptoProviderEntity = async (createdCryptoProvider: CryptoProviderEntity, icon: Nullable<File>) => {
+        const addedCryptoProvider = await createCryptoProvider(createdCryptoProvider, icon);
         if (!addedCryptoProvider) {
-            return
+            return;
         }
 
         setCryptoProviders([addedCryptoProvider, ...cryptoProviders]);
-    }
+    };
 
-    const updateCryptoProviderEntity = async (updatedCryptoProvider: CryptoProviderEntity) => {
-        const cryptoProviderUpdated = await updateCryptoProvider(updatedCryptoProvider);
+    const updateCryptoProviderEntity = async (updatedCryptoProvider: CryptoProviderEntity, icon: Nullable<File>) => {
+        const cryptoProviderUpdated = await updateCryptoProvider(updatedCryptoProvider, icon);
         if (!cryptoProviderUpdated) {
             return;
         }
 
-        const updatedCryptoProviders = cryptoProviders.map((brokerAccount: CryptoProviderEntity) => 
-            brokerAccount.id === updatedCryptoProvider.id ?
-                {...updatedCryptoProvider}:
-                brokerAccount
+        const updatedCryptoProviders = cryptoProviders.map((provider: CryptoProviderEntity) => 
+            provider.id === updatedCryptoProvider.id ?
+                cryptoProviderUpdated :
+                provider
         );
 
         setCryptoProviders(updatedCryptoProviders);
-    }
+    };
 
     const deleteCryptoProviderEntity = async (deletedCryptoProvider: CryptoProviderEntity) => {
         const cryptoProviderDeleted = await deleteCryptoProvider(deletedCryptoProvider.id);

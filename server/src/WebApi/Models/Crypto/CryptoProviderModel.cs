@@ -1,15 +1,17 @@
-﻿using Audex.Infrastructure.Entities.Securities;
-using Audex.Shared.Entities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace Audex.WebApi.Models.Crypto
 {
-    public class CryptoProviderModel: BaseEntity
+    public class CryptoProviderModel
     {
+        [JsonPropertyName("id")]
+        public Guid Id { get; set; }
+
+        [JsonPropertyName("name")]
         public string Name { get; set; }
+
+        [JsonPropertyName("iconKey")]
+        public string IconKey { get; set; }
     }
 }

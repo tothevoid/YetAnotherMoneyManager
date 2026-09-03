@@ -1,4 +1,4 @@
-﻿using Audex.Application.DTO.Accounts;
+using Audex.Application.DTO.Accounts;
 using Audex.Application.DTO.Banks;
 using Audex.Application.DTO.Brokers;
 using Audex.Application.DTO.Dashboard;
@@ -353,11 +353,8 @@ namespace Audex.Application.Services.Dashboard
 
             foreach (var cryptoAccount in cryptoAccounts)
             {
-                var cryptocurrencies = await _cryptoAccountCryptocurrencyService
-                    .GetByCryptoAccountAsync(cryptoAccount.Id);
-
-                var amount = cryptocurrencies.Sum(cryptocurrency =>
-                    cryptocurrency.Quantity * cryptocurrency.Cryptocurrency.Price);
+                var amount = await _cryptoAccountCryptocurrencyService
+                    .GetTotalBalanceByCryptoAccountAsync(cryptoAccount.Id);
 
                 if (amount <= 0)
                 {

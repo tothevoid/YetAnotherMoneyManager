@@ -1,4 +1,4 @@
-﻿using Audex.Infrastructure.Interfaces.Database;
+using Audex.Infrastructure.Interfaces.Database;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -26,7 +26,7 @@ namespace Audex.Application.Services.Crypto
 
         public async Task<CryptoAccountDto> GetByIdAsync(Guid id)
         {
-            var cryptoAccount = await _cryptoAccountRepo.GetByIdAsync(id);
+            var cryptoAccount = await _cryptoAccountRepo.GetByIdAsync(id, include: GetFullHierarchyColumns);
             return _mapper.Map(cryptoAccount);  
         }
 

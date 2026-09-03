@@ -32,7 +32,7 @@ const Cryptocurrency = (props: Props) => {
                             <Text fontSize="2xl" fontWeight={600} color="text_primary">{symbol}</Text>
                         </Stack>
                         <Text fontWeight={600}>{name}</Text>
-                        <Text fontWeight={600}>{formatMoneyByCurrencyCulture(price, "USD")}</Text>
+                        <Text fontWeight={600}>1 {symbol} = {formatMoneyByCurrencyCulture(price, "USD")}</Text>
                     </Stack>
                     <Flex gap={1}>
                         <Button borderColor="background_secondary" background="button_background_secondary" size={'sm'} onClick={() => props.onEditClicked(props.cryptocurrency)}>

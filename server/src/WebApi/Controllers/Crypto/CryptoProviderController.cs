@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
+using System.Text.Json;
+using Microsoft.AspNetCore.Http;
 using Audex.Application.DTO.Crypto;
 using Audex.Application.Interfaces.Crypto;
 using Audex.WebApi.Mappings;
@@ -32,21 +34,41 @@ namespace Audex.WebApi.Controllers.Crypto
         }
 
         [HttpPut]
-        public async Task<Guid> Add(CryptoProviderModel cryptoProvider)
+        public async Task<CryptoProviderModel> Add([FromForm] string cryptoProviderJson, [FromForm] IFormFile cryptoProviderIcon = null)
         {
+            var cryptoProvider = JsonSerializer.Deserialize<CryptoProviderModel>(cryptoProviderJson);
+
             var cryptoProviderDto = _mapper.Map(cryptoProvider);
-            return await _cryptoProviderService.AddAsync(cryptoProviderDto);
+            var createdCryptoProvider = await _cryptoProviderService.AddAsync(cryptoProviderDto, cryptoProviderIcon);
+            return _mapper.Map(createdCryptoProvider);
         }
 
         [HttpPatch]
-        public async Task Update(CryptoProviderModel cryptoProvider)
+        public async Task<CryptoProviderModel> Update([FromForm] string cryptoProviderJson, [FromForm] IFormFile cryptoProviderIcon = null)
         {
+            var cryptoProvider = JsonSerializer.Deserialize<CryptoProviderModel>(cryptoProviderJson);
+
             var cryptoProviderDto = _mapper.Map(cryptoProvider);
-            await _cryptoProviderService.UpdateAsync(cryptoProviderDto);
+            var updatedCryptoProvider = await _cryptoProviderService.UpdateAsync(cryptoProviderDto, cryptoProviderIcon);
+            return _mapper.Map(updatedCryptoProvider);
         }
 
         [HttpDelete]
         public async Task Delete(Guid id) =>
             await _cryptoProviderService.DeleteAsync(id);
+
+        [HttpGet("icon")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetCryptoProviderIcon(string iconKey)
+        {
+            var file = await _cryptoProviderService.GetIconStreamAsync(iconKey);
+            if (file == null)
+            {
+                return NotFound();
+            }
+
+            Response.Headers.CacheControl = "public, max-age=31536000, immutable";
+            return File(file.Stream, file.ContentType);
+        }
     }
 }

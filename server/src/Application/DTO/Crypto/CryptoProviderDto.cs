@@ -1,4 +1,4 @@
-﻿using Audex.Infrastructure.Entities.Securities;
+using Audex.Infrastructure.Entities.Securities;
 using Audex.Shared.Entities;
 using System;
 using System.Collections.Generic;
@@ -11,5 +11,7 @@ namespace Audex.Application.DTO.Crypto
     public class CryptoProviderDto: BaseEntity
     {
         public string Name { get; set; }
+
+        public string IconKey { get; set; }
     }
 }

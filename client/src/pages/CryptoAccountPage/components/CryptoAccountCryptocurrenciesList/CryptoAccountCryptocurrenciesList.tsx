@@ -1,5 +1,5 @@
 import React, { Fragment, useMemo } from 'react';
-import { Flex, SimpleGrid } from '@chakra-ui/react';
+import { SimpleGrid } from '@chakra-ui/react';
 import { useCryptoAccountCryptocurrencies } from '../../hooks/useCryptoAccountCryptocurrencies';
 import { CryptoAccountEntity } from '../../../../models/crypto/CryptoAccountEntity';
 import { CryptoAccountCryptocurrencyEntity } from '../../../../models/crypto/CryptoAccountCryptocurrencyEntity';
@@ -11,6 +11,8 @@ import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModa
 import { ActiveEntityMode } from '../../../../shared/enums/activeEntityMode';
 import AddButton from '../../../../shared/components/AddButton/AddButton';
 import { useTranslation } from 'react-i18next';
+
+import Placeholder from '../../../../shared/components/Placeholder/Placeholder';
 
 interface Props {
 	cryptoAccount: CryptoAccountEntity;
@@ -65,22 +67,26 @@ const CryptoAccountCryptocurrenciesList: React.FC<Props> = (props: Props) => {
 			<CryptoAccountHeader
 				cryptoAccount={props.cryptoAccount}
 				totalBalanceUsd={totalBalanceUsd}
+				onAddClicked={onAddClicked}
 			/>
-			<Flex justifyContent="flex-end" mb={4}>
-				<AddButton onClick={onAddClicked} buttonTitle={t('add_crypto_account_cryptocurrency_title')}/>
-			</Flex>
-			<SimpleGrid pt={2} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(350px, 3fr))'>
-				{
-					cryptoAccountCryptocurrencies.map((cryptoAccountCryptocurrency: CryptoAccountCryptocurrencyEntity) => 
+
+			{cryptoAccountCryptocurrencies.length > 0 ? (
+				<SimpleGrid pt={2} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(350px, 3fr))'>
+					{cryptoAccountCryptocurrencies.map((cryptoAccountCryptocurrency: CryptoAccountCryptocurrencyEntity) => (
 						<CryptoAccountCryptocurrency
 							onReloadCryptoAccountCryptocurrencies={reloadCryptoAccountCryptocurrencies}
 							cryptoAccountCryptocurrency={cryptoAccountCryptocurrency}
 							key={cryptoAccountCryptocurrency.id}
 							onEditClicked={onEditClicked}
 							onDeleteClicked={onDeleteClicked}
-						/>)
-				}
-			</SimpleGrid>
+						/>
+					))}
+				</SimpleGrid>
+			) : (
+				<Placeholder text={t("crypto_account_page_no_cryptocurrencies")}>
+					<AddButton onClick={onAddClicked} buttonTitle={t('add_crypto_account_cryptocurrency_title')}/>
+				</Placeholder>
+			)}
 
 			<CryptoAccountCryptocurrencyModal
 				modalRef={modalRef}

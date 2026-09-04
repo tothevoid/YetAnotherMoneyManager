@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { CryptoAccountCryptocurrencyEntity } from "../../../models/crypto/CryptoAccountCryptocurrencyEntity";
-import { createCryptoAccountCryptocurrency, deleteCryptoAccountCryptocurrency, updateCryptoAccountCryptocurrency, getCryptocurrenciesByCryptoAccount } from "../../../api/crypto/cryptoAccountCryptocurrencyApi";
+import { createCryptoAccountCryptocurrency, deleteCryptoAccountCryptocurrency, updateCryptoAccountCryptocurrency, getCryptocurrenciesByCryptoAccount, getTotalBalance } from "../../../api/crypto/cryptoAccountCryptocurrencyApi";
 
 export interface CryptoAccountCryptocurrenciesQuery {
     cryptoAccountId: string
@@ -8,6 +8,7 @@ export interface CryptoAccountCryptocurrenciesQuery {
 
 export const useCryptoAccountCryptocurrencies = (queryParameters: CryptoAccountCryptocurrenciesQuery) => {
     const [cryptoAccountCryptocurrencies, setCryptoAccountCryptocurrencies] = useState<CryptoAccountCryptocurrencyEntity[]>([]);
+    const [totalBalanceUsd, setTotalBalanceUsd] = useState<number>(0);
     const [isBrokerAccountSecuritiesLoading, setLoading] = useState(false);
 
     const [error, setError] = useState<string | null>(null);
@@ -17,7 +18,12 @@ export const useCryptoAccountCryptocurrencies = (queryParameters: CryptoAccountC
     const fetchData = useCallback(async () => {
         setLoading(true)
         try {
-            setCryptoAccountCryptocurrencies(await getCryptocurrenciesByCryptoAccount(cryptoAccountCryptocurrenciesQueryParameters.cryptoAccountId));
+            const [cryptocurrencies, balance] = await Promise.all([
+                getCryptocurrenciesByCryptoAccount(cryptoAccountCryptocurrenciesQueryParameters.cryptoAccountId),
+                getTotalBalance(cryptoAccountCryptocurrenciesQueryParameters.cryptoAccountId)
+            ]);
+            setCryptoAccountCryptocurrencies(cryptocurrencies);
+            setTotalBalanceUsd(balance);
         } catch (err: any) {
             setError(err.message || 'Ошибка загрузки данных')
         } finally {
@@ -46,6 +52,7 @@ export const useCryptoAccountCryptocurrencies = (queryParameters: CryptoAccountC
 
     return {
         cryptoAccountCryptocurrencies,
+        totalBalanceUsd,
         addCryptoAccountCryptocurrencyEntity,
         updateCryptoAccountCryptocurrencyEntity,
         deleteCryptoAccountCryptocurrencyEntity,

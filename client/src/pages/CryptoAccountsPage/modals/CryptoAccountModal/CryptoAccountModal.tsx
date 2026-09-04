@@ -64,7 +64,7 @@ const CryptoAccountModal: React.FC<ModalProps> = (props: ModalProps) => {
     const onSubmit = (cryptoAccount: CryptoAccountFormInput) => {
         props.onSaved(cryptoAccount as CryptoAccountEntity);
         props.modalRef?.current?.closeModal();
-    }
+    };
 
     return <BaseFormModal ref={props.modalRef} title={t("entity_crypto_account_form_title")} submitHandler={handleSubmit(onSubmit)}>
         <Field.Root invalid={!!errors.name}>

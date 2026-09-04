@@ -6,7 +6,8 @@ export const getCryptoAccountValidationSchema = (t: TFunction) => z.object({
     name: z.string().min(1, t("validation_field_required")),
     cryptoProvider: z.object({
         id: z.string().min(1, t("validation_crypto_provider_required")),
-        name: z.string()
+        name: z.string(),
+        iconKey: z.string().nullable().optional()
     }, { message: t("validation_crypto_provider_required") }),
 });
 

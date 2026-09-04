@@ -8,6 +8,9 @@
 
     "crypto_accounts_page_add": "Добавить счёт",
     "crypto_accounts_page_no_crypto_accounts": "Нет криптосчетов",
+    "crypto_account_delete_title": "Удалить криптосчёт",
+    "all_crypto_accounts_header": "Все криптосчета",
+    "crypto_accounts_tab": "Счета",
 
     "cryptocurrency_form_title": "Криптовалюта",
     "cryptocurrency_form_symbol": "Символ",
@@ -21,5 +24,17 @@
     "crypto_account_cryptocurrency_modal_title": "Добавить криптовалюту",
     "add_crypto_account_cryptocurrency_title": "Добавить",
     "crypto_account_cryptocurrency_delete_title": "Удалить криптовалюту",
-    "crypto_account_cryptocurrency_cryptocurrency": "Криптовалюта"
+    "crypto_account_cryptocurrency_cryptocurrency": "Криптовалюта",
+    "crypto_account_card_add_cryptocurrency": "Добавить криптовалюту",
+    "crypto_account_card_no_cryptocurrencies": "Нет добавленных валют",
+    "crypto_account_card_balance": "Баланс",
+    "crypto_account_card_currencies": "Криптовалюты на счёте",
+    "crypto_account_header_balance": "Общий баланс",
+    "crypto_account_header_currencies_count": "Количество валют",
+    "crypto_account_no_available_cryptocurrencies": "Все доступные криптовалюты уже добавлены",
+    "crypto_account_page_account_stats_tab": "Статистика",
+    "crypto_stats_total_value": "Общая стоимость",
+    "crypto_stats_cryptocurrencies_distribution": "Распределение по криптовалютам",
+    "crypto_stats_accounts_distribution": "Распределение по счетам",
+    "crypto_stats_no_data": "Нет данных для отображения статистики"
 }

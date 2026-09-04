@@ -1,10 +1,9 @@
 import { Fragment, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Stack, Text } from "@chakra-ui/react";
 import { CryptoAccountEntity } from "../../models/crypto/CryptoAccountEntity";
 import { getCryptoAccountById } from "../../api/crypto/cryptoAccountApi";
 import CryptoAccountCryptocurrenciesList from "./components/CryptoAccountCryptocurrenciesList/CryptoAccountCryptocurrenciesList";
-
+import CryptoAccountTabs from "./components/CryptoAccountTabs/CryptoAccountTabs";
 
 interface State {
     cryptoAccount: CryptoAccountEntity | null,
@@ -12,9 +11,9 @@ interface State {
 }
 
 const CryptoAccountPage: React.FC = () => {
-    const { cryptoAccountId } = useParams(); // Получаем текущий таб из URL
+    const { cryptoAccountId } = useParams();
 
-    const [state, setState] = useState<State>({ cryptoAccount: null, isReloading: false })
+    const [state, setState] = useState<State>({ cryptoAccount: null, isReloading: false });
 
     const fetchCryptoAccount = async () => {
         if (!cryptoAccountId) {
@@ -27,28 +26,24 @@ const CryptoAccountPage: React.FC = () => {
         }
 
         setState((currentState) => {
-            return { ...currentState, cryptoAccount, isReloading: false }
-        })
-    }
+            return { ...currentState, cryptoAccount, isReloading: false };
+        });
+    };
 
     useEffect(() => {
         fetchCryptoAccount();
     }, []);
 
-    if (!cryptoAccountId) {
-        return <Fragment />
+    if (!cryptoAccountId || !state.cryptoAccount) {
+        return <Fragment />;
     }
 
-    if (!state.cryptoAccount) {
-        return <Fragment />
-    }
-
-    return <Fragment>
-        <Stack alignItems={"end"} gapX={2} direction={"row"} color="text_primary">
-            <Text fontSize="3xl" fontWeight={900}> {state.cryptoAccount?.name}: </Text>
-        </Stack>
-        <CryptoAccountCryptocurrenciesList cryptoAccount={state.cryptoAccount} />
-    </Fragment>
-}
+    return (
+        <Fragment>
+            <CryptoAccountCryptocurrenciesList cryptoAccount={state.cryptoAccount} />
+            <CryptoAccountTabs cryptoAccountId={cryptoAccountId} onDataChanged={fetchCryptoAccount} />
+        </Fragment>
+    );
+};
 
 export default CryptoAccountPage;

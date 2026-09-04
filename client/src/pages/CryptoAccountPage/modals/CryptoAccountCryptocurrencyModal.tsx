@@ -11,10 +11,14 @@ import { CryptoAccountCryptocurrencyEntity } from "../../../models/crypto/Crypto
 import { CryptoAccountCryptocurrencyFormInput, getCryptoAccountCryptocurrencyValidationSchema } from "./CryptoAccountCryptocurrencyValidationSchema";
 import { getCryptocurrencies } from "../../../api/crypto/cryptocurrencyApi";
 import { CryptocurrencyEntity } from "../../../models/crypto/CryptocurrencyEntity";
+import { CryptoAccountEntity } from "../../../models/crypto/CryptoAccountEntity";
+import { generateGuid } from "../../../shared/utilities/idUtilities";
 
 interface ModalProps {
     modalRef: RefObject<BaseModalRef | null>;
     cryptoAccountCryptocurrency?: CryptoAccountCryptocurrencyEntity | null;
+    cryptoAccount: CryptoAccountEntity;
+    existingCryptocurrencyIds?: string[];
     onSaved: (cryptoAccountCryptocurrency: CryptoAccountCryptocurrencyEntity) => void;
 }
 
@@ -27,11 +31,12 @@ const CryptoAccountCryptocurrencyModal: React.FC<ModalProps> = (props: ModalProp
    
     const getDefaultValues = useCallback(() => {
         return {
+            id: props.cryptoAccountCryptocurrency?.id ?? generateGuid(),
             cryptocurrency: props.cryptoAccountCryptocurrency?.cryptocurrency,
-            cryptoAccount: props.cryptoAccountCryptocurrency?.cryptoAccount,
+            cryptoAccount: props.cryptoAccountCryptocurrency?.cryptoAccount ?? props.cryptoAccount,
             quantity: props.cryptoAccountCryptocurrency?.quantity ?? 0
         };
-    }, [props.cryptoAccountCryptocurrency]);
+    }, [props.cryptoAccountCryptocurrency, props.cryptoAccount]);
 
     const [state, setState] = useState<State>({ cryptocurrencies: []});
    
@@ -58,6 +63,12 @@ const CryptoAccountCryptocurrencyModal: React.FC<ModalProps> = (props: ModalProp
         reset(getDefaultValues());
     }, [props.cryptoAccountCryptocurrency, reset, getDefaultValues]);
 
+    const availableCryptocurrencies = useMemo(() => {
+        const currentId = props.cryptoAccountCryptocurrency?.cryptocurrency?.id;
+        const existingIds = props.existingCryptocurrencyIds ?? [];
+        return state.cryptocurrencies.filter(c => c.id === currentId || !existingIds.includes(c.id));
+    }, [state.cryptocurrencies, props.cryptoAccountCryptocurrency, props.existingCryptocurrencyIds]);
+
     const selectedCrypto = watch("cryptocurrency");
     const cryptoSymbol = state.cryptocurrencies.find(c => c.id === selectedCrypto?.id)?.symbol ?? '';
 
@@ -71,8 +82,8 @@ const CryptoAccountCryptocurrencyModal: React.FC<ModalProps> = (props: ModalProp
                 <Field.Root mt={4} invalid={!!errors.cryptocurrency}>
                     <Field.Label>{t("crypto_account_cryptocurrency_cryptocurrency")}</Field.Label>
                     <CollectionSelect name="cryptocurrency" control={control} placeholder="Select cryptocurrency"
-                        collection={state.cryptocurrencies} 
-                        labelSelector={(cryptocurrency: CryptocurrencyEntity) => cryptocurrency.name} 
+                        collection={availableCryptocurrencies} 
+                        labelSelector={(cryptocurrency: CryptocurrencyEntity) => `${cryptocurrency.name} (${cryptocurrency.symbol})`} 
                         valueSelector={(cryptocurrency: CryptocurrencyEntity) => cryptocurrency.id}/>
                     <Field.ErrorText>{errors.cryptocurrency?.message}</Field.ErrorText>
                 </Field.Root>

@@ -8,6 +8,9 @@
 
     "crypto_accounts_page_add": "Add account",
     "crypto_accounts_page_no_crypto_accounts": "No crypto accounts",
+    "crypto_account_delete_title": "Delete crypto account",
+    "all_crypto_accounts_header": "All crypto accounts",
+    "crypto_accounts_tab": "Accounts",
 
     "cryptocurrency_form_title": "Cryptocurrency",
     "cryptocurrency_form_symbol": "Symbol",
@@ -21,5 +24,17 @@
     "crypto_account_cryptocurrency_modal_title": "Add cryptocurrency",
     "add_crypto_account_cryptocurrency_title": "Add",
     "crypto_account_cryptocurrency_delete_title": "Delete cryptocurrency",
-    "crypto_account_cryptocurrency_cryptocurrency": "Cryptocurrency"
+    "crypto_account_cryptocurrency_cryptocurrency": "Cryptocurrency",
+    "crypto_account_card_add_cryptocurrency": "Add cryptocurrency",
+    "crypto_account_card_no_cryptocurrencies": "No cryptocurrencies added",
+    "crypto_account_card_balance": "Balance",
+    "crypto_account_card_currencies": "Cryptocurrencies in account",
+    "crypto_account_header_balance": "Total balance",
+    "crypto_account_header_currencies_count": "Cryptocurrencies count",
+    "crypto_account_no_available_cryptocurrencies": "All available cryptocurrencies have already been added",
+    "crypto_account_page_account_stats_tab": "Statistics",
+    "crypto_stats_total_value": "Total Value",
+    "crypto_stats_cryptocurrencies_distribution": "Cryptocurrency Distribution",
+    "crypto_stats_accounts_distribution": "Crypto Accounts Distribution",
+    "crypto_stats_no_data": "No data available for statistics"
 }

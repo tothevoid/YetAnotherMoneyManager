@@ -33,19 +33,21 @@ const CryptoAccountCryptocurrency = (props: Props) => {
                                 fallbackIcon={<FaBitcoin size={20} color="#aaa" />}
                                 size="md"
                             />
-                            <Text color="text_primary" fontSize="xl" fontWeight={900}>{cryptocurrency.name}</Text>
+                            <Text color="text_primary" fontSize="xl" fontWeight={900}>{cryptocurrency.name} ({cryptocurrency.symbol})</Text>
                         </Stack>
-                        <Text fontWeight={600}>{t("broker_account_security_card_security_quantity")}: {formatMoneyByCurrencyCulture(quantity, "USD")}</Text>
+                        <Text fontWeight={600}>{t("crypto_account_cryptocurrency_quantity")}: {quantity} {cryptocurrency.symbol}</Text>
+                        <Text color="text_secondary" fontSize="sm">1 {cryptocurrency.symbol} = {formatMoneyByCurrencyCulture(cryptocurrency.price, "USD")}</Text>
+                        <Text fontWeight={700}>{formatMoneyByCurrencyCulture(quantity * cryptocurrency.price, "USD")}</Text>
                     </Stack>
                     <Flex gap={2} justifyContent="space-between" alignItems="center">
                         <Button background={'background_secondary'} size={'sm'} onClick={() => props.onEditClicked(props.cryptoAccountCryptocurrency)}>
                             <Icon color="card_action_icon_primary">
-                                <MdEdit/>
+                                <MdEdit />
                             </Icon>
                         </Button>
                         <Button background={'background_secondary'} size={'sm'} onClick={() => props.onDeleteClicked(props.cryptoAccountCryptocurrency)}>
                             <Icon color="card_action_icon_danger">
-                                <MdDelete/>
+                                <MdDelete />
                             </Icon>
                         </Button>
                     </Flex>

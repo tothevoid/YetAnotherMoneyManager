@@ -26,11 +26,11 @@ export const useCryptoAccounts = () => {
     const createCryptoAccountEntity = async (createdCryptoAccount: CryptoAccountEntity) => {
         const addedCryptoAccount = await createCryptoAccount(createdCryptoAccount);
         if (!addedCryptoAccount) {
-            return
+            return;
         }
 
-        setCryptoAccounts([createdCryptoAccount, ...cryptoAccounts]);
-    }
+        await fetchData();
+    };
 
     const updateCryptoAccountEntity = async (updatedCryptoAccount: CryptoAccountEntity) => {
         const cryptoAccountUpdated = await updateCryptoAccount(updatedCryptoAccount);
@@ -38,26 +38,17 @@ export const useCryptoAccounts = () => {
             return;
         }
 
-        const updatedBrokerAccounts = cryptoAccounts.map((cryptoAccount: CryptoAccountEntity) => 
-            cryptoAccount.id === updatedCryptoAccount.id ?
-                {...updatedCryptoAccount}:
-                cryptoAccount
-        );
-
-        setCryptoAccounts(updatedBrokerAccounts);
-    }
+        await fetchData();
+    };
 
     const deleteCryptoAccountEntity = async (deletedCryptoAccount: CryptoAccountEntity) => {
         const cryptoAccountDeleted = await deleteCryptoAccount(deletedCryptoAccount.id);
-    
         if (!cryptoAccountDeleted) {
             return;
         }
 
-        const updatedCryptoAccounts = cryptoAccounts
-            .filter((cryptoAccount: CryptoAccountEntity) => cryptoAccount.id !== deletedCryptoAccount.id);
-        setCryptoAccounts(updatedCryptoAccounts)
-    }
+        await fetchData();
+    };
 
     return {
         cryptoAccounts,

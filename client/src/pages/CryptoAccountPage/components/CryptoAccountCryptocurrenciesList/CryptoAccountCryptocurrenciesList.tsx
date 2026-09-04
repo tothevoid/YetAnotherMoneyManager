@@ -1,10 +1,11 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useMemo } from 'react';
 import { Flex, SimpleGrid } from '@chakra-ui/react';
 import { useCryptoAccountCryptocurrencies } from '../../hooks/useCryptoAccountCryptocurrencies';
 import { CryptoAccountEntity } from '../../../../models/crypto/CryptoAccountEntity';
 import { CryptoAccountCryptocurrencyEntity } from '../../../../models/crypto/CryptoAccountCryptocurrencyEntity';
 import CryptoAccountCryptocurrency from '../CryptoAccountCryptocurrency/CryptoAccountCryptocurrency';
 import CryptoAccountCryptocurrencyModal from '../../modals/CryptoAccountCryptocurrencyModal';
+import CryptoAccountHeader from '../CryptoAccountHeader/CryptoAccountHeader';
 import { useEntityModal } from '../../../../shared/hooks/useEntityModal';
 import { ConfirmModal } from '../../../../shared/modals/ConfirmModal/ConfirmModal';
 import { ActiveEntityMode } from '../../../../shared/enums/activeEntityMode';
@@ -15,8 +16,7 @@ interface Props {
 	cryptoAccount: CryptoAccountEntity
 }
 
-const CryptoAccountCryptocurrenciesList: React.FC<Props> = (props: Props)=> {
-	
+const CryptoAccountCryptocurrenciesList: React.FC<Props> = (props: Props) => {
 	const { 
 		activeEntity,
 		modalRef,
@@ -25,57 +25,48 @@ const CryptoAccountCryptocurrenciesList: React.FC<Props> = (props: Props)=> {
 		onEditClicked,
 		onDeleteClicked,
 		mode,
-		onActionEnded
+		handleDelete,
+		executeWithCleanup
 	} = useEntityModal<CryptoAccountCryptocurrencyEntity>();
 	
 	const { 
 		cryptoAccountCryptocurrencies,
+		totalBalanceUsd,
 		addCryptoAccountCryptocurrencyEntity,
 		updateCryptoAccountCryptocurrencyEntity,
 		deleteCryptoAccountCryptocurrencyEntity,
 		reloadCryptoAccountCryptocurrencies
 	} = useCryptoAccountCryptocurrencies({cryptoAccountId: props.cryptoAccount.id});
 
-	const [context, setContext] = useState<CryptoAccountCryptocurrencyEntity>();
+	const existingCryptocurrencyIds = useMemo(
+		() => cryptoAccountCryptocurrencies.map(c => c.cryptocurrency?.id).filter(Boolean),
+		[cryptoAccountCryptocurrencies]
+	);
 
-	useEffect(() => {
-		if (activeEntity) {
-			setContext(activeEntity);
-		} else {
-			// setContext({
-			// 	cryptoAccount: props.cryptoAccount,
-			// 	cryptocurrency: {},
-			// 	quantity: 0
-			// })
-		}
-	}, [activeEntity, props.cryptoAccount]);
-
-	const onCryptocurrencyCryptoaccountSaved = async (cryptoAccountCryptocurrency: CryptoAccountCryptocurrencyEntity) => {
+	const onCryptocurrencyCryptoaccountSaved = executeWithCleanup(async (cryptoAccountCryptocurrency: CryptoAccountCryptocurrencyEntity) => {
 		if (mode === ActiveEntityMode.Add) {
-			await addCryptoAccountCryptocurrencyEntity(cryptoAccountCryptocurrency)
+			await addCryptoAccountCryptocurrencyEntity(cryptoAccountCryptocurrency);
 		} else if (mode === ActiveEntityMode.Edit) {
-			await updateCryptoAccountCryptocurrencyEntity(cryptoAccountCryptocurrency)
+			await updateCryptoAccountCryptocurrencyEntity(cryptoAccountCryptocurrency);
 		}
-		onActionEnded();
-	}
+	});
 
 	const { t } = useTranslation();
 
-	const onDeleteConfirmed = async () => {
-		if (!activeEntity) {
-			throw new Error("Deleted entity is not set")
-		}
-
-		await deleteCryptoAccountCryptocurrencyEntity(activeEntity.id);
-		onActionEnded();
-	}
+	const onDeleteConfirmed = handleDelete(async (cryptoAccountCryptocurrency) => {
+		await deleteCryptoAccountCryptocurrencyEntity(cryptoAccountCryptocurrency.id);
+	});
 
 	return (
 		<Fragment>
-			<Flex justifyContent="end" mb={4}>
+			<CryptoAccountHeader
+				cryptoAccount={props.cryptoAccount}
+				totalBalanceUsd={totalBalanceUsd}
+			/>
+			<Flex justifyContent="flex-end" mb={4}>
 				<AddButton onClick={onAddClicked} buttonTitle={t('add_crypto_account_cryptocurrency_title')}/>
 			</Flex>
-			<SimpleGrid pt={5} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(350px, 3fr))'>
+			<SimpleGrid pt={2} pb={5} gap={4} templateColumns='repeat(auto-fill, minmax(350px, 3fr))'>
 				{
 					cryptoAccountCryptocurrencies.map((cryptoAccountCryptocurrency: CryptoAccountCryptocurrencyEntity) => 
 						<CryptoAccountCryptocurrency
@@ -90,7 +81,9 @@ const CryptoAccountCryptocurrenciesList: React.FC<Props> = (props: Props)=> {
 
 			<CryptoAccountCryptocurrencyModal
 				modalRef={modalRef}
-				cryptoAccountCryptocurrency={context}
+				cryptoAccountCryptocurrency={activeEntity}
+				cryptoAccount={props.cryptoAccount}
+				existingCryptocurrencyIds={existingCryptocurrencyIds}
 				onSaved={onCryptocurrencyCryptoaccountSaved}
 			/>
 			<ConfirmModal onConfirmed={onDeleteConfirmed}

@@ -1,8 +1,16 @@
 import { CryptoAccountCryptocurrencyEntity, CryptoAccountCryptocurrencyEntityRequest, CryptoAccountCryptocurrencyEntityResponse } from '../../models/crypto/CryptoAccountCryptocurrencyEntity';
-import { createEntity, deleteEntity, getAllEntities, updateEntity } from '../basicApi';
+import { createEntity, deleteEntity, getAllEntities, getEntity, updateEntity } from '../basicApi';
 import { prepareCryptoAccountCryptocurrency, prepareCryptoAccountCryptocurrencyRequest } from './cryptoAccountCryptocurrencyApiMapping';
+import { Nullable } from '../../shared/utilities/nullable';
 
 const basicUrl = `CryptoAccountCryptocurrency`;
+
+export const getTotalBalance = async (cryptoAccountId: Nullable<string> = null): Promise<number> => {
+    const url = cryptoAccountId
+        ? `${basicUrl}/GetTotalBalanceByCryptoAccount?cryptoAccountId=${cryptoAccountId}`
+        : `${basicUrl}/GetTotalBalance`;
+    return await getEntity<number>(url) ?? 0;
+};
 
 export const getCryptoAccountCryptocurrencies = async (): Promise<CryptoAccountCryptocurrencyEntity[]> => {
    return await getAllEntities<CryptoAccountCryptocurrencyEntityResponse>(basicUrl)

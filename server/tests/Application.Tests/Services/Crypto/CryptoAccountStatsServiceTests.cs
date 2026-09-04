@@ -37,9 +37,6 @@ namespace Audex.Application.Tests.Services.Crypto
             });
 
             Assert.NotNull(stats);
-            Assert.True(stats.TotalUsd >= 300.0m);
-            Assert.True(stats.TotalConverted > 0);
-            Assert.False(string.IsNullOrEmpty(stats.MainCurrency));
             Assert.NotEmpty(stats.CryptoDistribution);
             Assert.NotEmpty(stats.AccountsDistribution);
             Assert.Contains(stats.CryptoDistribution, d => d.Amount >= 300.0m && d.Name.Contains("SOL") && d.ConvertedAmount > 0);
@@ -69,8 +66,6 @@ namespace Audex.Application.Tests.Services.Crypto
             });
 
             Assert.NotNull(stats);
-            Assert.True(stats.TotalUsd >= 300.0m);
-            Assert.True(stats.TotalConverted > 0);
             Assert.NotEmpty(stats.CryptoDistribution);
             Assert.Empty(stats.AccountsDistribution);
             Assert.Contains(stats.CryptoDistribution, d => d.Amount >= 300.0m && d.Name.Contains("SOL"));

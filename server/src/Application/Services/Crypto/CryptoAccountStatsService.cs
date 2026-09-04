@@ -1,7 +1,6 @@
 using Audex.Application.DTO.Crypto;
 using Audex.Application.DTO.Dashboard;
 using Audex.Application.Interfaces.Crypto;
-using Audex.Application.Interfaces.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,16 +12,13 @@ namespace Audex.Application.Services.Crypto
     {
         private readonly ICryptoAccountCryptocurrencyService _cryptoAccountCryptocurrencyService;
         private readonly ICryptocurrencyService _cryptocurrencyService;
-        private readonly IUserProfileService _userProfileService;
 
         public CryptoAccountStatsService(
             ICryptoAccountCryptocurrencyService cryptoAccountCryptocurrencyService,
-            ICryptocurrencyService cryptocurrencyService,
-            IUserProfileService userProfileService)
+            ICryptocurrencyService cryptocurrencyService)
         {
             _cryptoAccountCryptocurrencyService = cryptoAccountCryptocurrencyService;
             _cryptocurrencyService = cryptocurrencyService;
-            _userProfileService = userProfileService;
         }
 
         public Task<CryptoAccountStatsDto> GetStatsAsync() =>
@@ -37,14 +33,10 @@ namespace Audex.Application.Services.Crypto
                 ? await _cryptoAccountCryptocurrencyService.GetByCryptoAccountAsync(cryptoAccountId.Value)
                 : await _cryptoAccountCryptocurrencyService.GetAllAsync()).ToList();
 
-            var userProfile = await _userProfileService.GetAsync();
-            var mainCurrency = userProfile?.Currency?.Name ?? "USD";
-
             if (items.Count == 0)
             {
                 return new CryptoAccountStatsDto
                 {
-                    MainCurrency = mainCurrency,
                     CryptoDistribution = new List<DistributionDto>(),
                     AccountsDistribution = new List<DistributionDto>()
                 };
@@ -53,9 +45,6 @@ namespace Audex.Application.Services.Crypto
             var baseCurrency = await _cryptocurrencyService.GetBaseCurrencyAsync();
             var baseCurrencyCode = baseCurrency.Name;
             var baseRate = baseCurrency.Rate;
-
-            var totalUsd = items.Sum(c => c.Quantity * c.Cryptocurrency.Price);
-            var totalConverted = totalUsd * baseRate;
 
             var cryptoDistribution = CalculateDistribution(
                 items,
@@ -78,9 +67,6 @@ namespace Audex.Application.Services.Crypto
 
             return new CryptoAccountStatsDto
             {
-                TotalUsd = totalUsd,
-                TotalConverted = totalConverted,
-                MainCurrency = mainCurrency,
                 CryptoDistribution = cryptoDistribution,
                 AccountsDistribution = accountsDistribution
             };

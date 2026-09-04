@@ -13,7 +13,8 @@ import AddButton from '../../../../shared/components/AddButton/AddButton';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
-	cryptoAccount: CryptoAccountEntity
+	cryptoAccount: CryptoAccountEntity;
+	onDataChanged: () => void;
 }
 
 const CryptoAccountCryptocurrenciesList: React.FC<Props> = (props: Props) => {
@@ -49,12 +50,14 @@ const CryptoAccountCryptocurrenciesList: React.FC<Props> = (props: Props) => {
 		} else if (mode === ActiveEntityMode.Edit) {
 			await updateCryptoAccountCryptocurrencyEntity(cryptoAccountCryptocurrency);
 		}
+		props.onDataChanged();
 	});
 
 	const { t } = useTranslation();
 
 	const onDeleteConfirmed = handleDelete(async (cryptoAccountCryptocurrency) => {
 		await deleteCryptoAccountCryptocurrencyEntity(cryptoAccountCryptocurrency.id);
+		props.onDataChanged();
 	});
 
 	return (

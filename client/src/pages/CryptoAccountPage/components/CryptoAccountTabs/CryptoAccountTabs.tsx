@@ -9,9 +9,10 @@ import CryptoAccountStats from "../CryptoAccountStats/CryptoAccountStats";
 interface Props {
     cryptoAccountId?: string;
     onDataChanged: () => void;
+    dataVersion?: number;
 }
 
-const CryptoAccountTabs: React.FC<Props> = ({ cryptoAccountId, onDataChanged }) => {
+const CryptoAccountTabs: React.FC<Props> = ({ cryptoAccountId, onDataChanged, dataVersion }) => {
     const { t } = useTranslation();
 
     const defaultTab = !cryptoAccountId ? "crypto_accounts" : "stats";
@@ -42,7 +43,7 @@ const CryptoAccountTabs: React.FC<Props> = ({ cryptoAccountId, onDataChanged }) 
                 </Tabs.Content>
             )}
             <Tabs.Content value="stats">
-                <CryptoAccountStats cryptoAccountId={cryptoAccountId} />
+                <CryptoAccountStats cryptoAccountId={cryptoAccountId} dataVersion={dataVersion} />
             </Tabs.Content>
         </Tabs.Root>
     );

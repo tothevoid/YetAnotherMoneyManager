@@ -10,9 +10,10 @@ import Placeholder from "../../../../shared/components/Placeholder/Placeholder";
 
 interface Props {
     cryptoAccountId?: Nullable<string>;
+    dataVersion?: number;
 }
 
-const CryptoAccountStats: React.FC<Props> = ({ cryptoAccountId }) => {
+const CryptoAccountStats: React.FC<Props> = ({ cryptoAccountId, dataVersion }) => {
     const { t } = useTranslation();
     const [stats, setStats] = useState<CryptoAccountStatsEntity | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -31,7 +32,7 @@ const CryptoAccountStats: React.FC<Props> = ({ cryptoAccountId }) => {
 
     useEffect(() => {
         fetchData();
-    }, [fetchData]);
+    }, [fetchData, dataVersion]);
 
     if (isLoading) {
         return <Fragment />;

@@ -7,10 +7,12 @@ import { getTotalBalance } from "../../api/crypto/cryptoAccountCryptocurrencyApi
 const CryptoAccountsPage: React.FC = () => {
     const { t } = useTranslation();
     const [totalBalanceUsd, setTotalBalanceUsd] = useState<number>(0);
+    const [dataVersion, setDataVersion] = useState<number>(0);
 
     const fetchData = useCallback(async () => {
         const balance = await getTotalBalance();
         setTotalBalanceUsd(balance);
+        setDataVersion((v) => v + 1);
     }, []);
 
     useEffect(() => {
@@ -23,7 +25,7 @@ const CryptoAccountsPage: React.FC = () => {
                 title={t("all_crypto_accounts_header")}
                 totalBalanceUsd={totalBalanceUsd}
             />
-            <CryptoAccountTabs onDataChanged={fetchData} />
+            <CryptoAccountTabs onDataChanged={fetchData} dataVersion={dataVersion} />
         </Fragment>
     );
 };

@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { CryptoAccountEntity } from "../../models/crypto/CryptoAccountEntity";
 import { getCryptoAccountById } from "../../api/crypto/cryptoAccountApi";
@@ -14,8 +14,9 @@ const CryptoAccountPage: React.FC = () => {
     const { cryptoAccountId } = useParams();
 
     const [state, setState] = useState<State>({ cryptoAccount: null, isReloading: false });
+    const [dataVersion, setDataVersion] = useState(0);
 
-    const fetchCryptoAccount = async () => {
+    const fetchCryptoAccount = useCallback(async () => {
         if (!cryptoAccountId) {
             return;
         }
@@ -28,11 +29,16 @@ const CryptoAccountPage: React.FC = () => {
         setState((currentState) => {
             return { ...currentState, cryptoAccount, isReloading: false };
         });
-    };
+    }, [cryptoAccountId]);
+
+    const handleDataChanged = useCallback(async () => {
+        await fetchCryptoAccount();
+        setDataVersion((v) => v + 1);
+    }, [fetchCryptoAccount]);
 
     useEffect(() => {
         fetchCryptoAccount();
-    }, []);
+    }, [fetchCryptoAccount]);
 
     if (!cryptoAccountId || !state.cryptoAccount) {
         return <Fragment />;
@@ -40,8 +46,15 @@ const CryptoAccountPage: React.FC = () => {
 
     return (
         <Fragment>
-            <CryptoAccountCryptocurrenciesList cryptoAccount={state.cryptoAccount} />
-            <CryptoAccountTabs cryptoAccountId={cryptoAccountId} onDataChanged={fetchCryptoAccount} />
+            <CryptoAccountCryptocurrenciesList
+                cryptoAccount={state.cryptoAccount}
+                onDataChanged={handleDataChanged}
+            />
+            <CryptoAccountTabs
+                cryptoAccountId={cryptoAccountId}
+                onDataChanged={handleDataChanged}
+                dataVersion={dataVersion}
+            />
         </Fragment>
     );
 };

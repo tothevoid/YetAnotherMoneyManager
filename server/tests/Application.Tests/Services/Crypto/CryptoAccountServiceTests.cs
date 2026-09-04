@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Audex.Application.Interfaces.Crypto;
 using Audex.Application.Tests.Fixtures;
 using Audex.Application.DTO.Crypto;
@@ -38,6 +38,8 @@ namespace Audex.Application.Tests.Services.Crypto
             Assert.NotNull(fetched);
             Assert.Equal(accountId, fetched.Id);
             Assert.Equal("Main Crypto Wallet", fetched.Name);
+            Assert.NotNull(fetched.CryptoProvider);
+            Assert.Equal("Coinbase", fetched.CryptoProvider.Name);
         }
 
         [Fact]
@@ -111,7 +113,8 @@ namespace Audex.Application.Tests.Services.Crypto
             return await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptoProviderService>();
-                return await service.AddAsync(new CryptoProviderDto { Name = name });
+                var provider = await service.AddAsync(new CryptoProviderDto { Name = name });
+                return provider.Id;
             });
         }
     }

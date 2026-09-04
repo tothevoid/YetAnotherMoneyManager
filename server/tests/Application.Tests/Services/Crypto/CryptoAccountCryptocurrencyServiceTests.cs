@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Audex.Application.Interfaces.Crypto;
 using Audex.Application.Tests.Fixtures;
 using Audex.Application.DTO.Crypto;
@@ -110,12 +110,94 @@ namespace Audex.Application.Tests.Services.Crypto
             Assert.DoesNotContain(itemsAfterDelete, i => i.Id == addedId);
         }
 
+        [Fact]
+        public async Task TestAddDuplicateThrowsException()
+        {
+            var (accountId, cryptoId) = await SetupDependencies();
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ICryptoAccountCryptocurrencyService>();
+                await service.AddAsync(new CryptoAccountCryptocurrencyDto
+                {
+                    CryptoAccountId = accountId,
+                    CryptocurrencyId = cryptoId,
+                    Quantity = 1.0m
+                });
+            });
+
+            await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            {
+                await ExecuteScopeAsync(async sp =>
+                {
+                    var service = sp.GetRequiredService<ICryptoAccountCryptocurrencyService>();
+                    await service.AddAsync(new CryptoAccountCryptocurrencyDto
+                    {
+                        CryptoAccountId = accountId,
+                        CryptocurrencyId = cryptoId,
+                        Quantity = 2.0m
+                    });
+                });
+            });
+        }
+
+        [Fact]
+        public async Task TestGetTotalBalanceByCryptoAccount()
+        {
+            var (accountId, cryptoId) = await SetupDependencies();
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ICryptoAccountCryptocurrencyService>();
+                await service.AddAsync(new CryptoAccountCryptocurrencyDto
+                {
+                    CryptoAccountId = accountId,
+                    CryptocurrencyId = cryptoId,
+                    Quantity = 2.0m
+                });
+            });
+
+            var balance = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ICryptoAccountCryptocurrencyService>();
+                return await service.GetTotalBalanceByCryptoAccountAsync(accountId);
+            });
+
+            Assert.Equal(300.0m, balance);
+        }
+
+        [Fact]
+        public async Task TestGetTotalBalance()
+        {
+            var (accountId, cryptoId) = await SetupDependencies();
+
+            await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ICryptoAccountCryptocurrencyService>();
+                await service.AddAsync(new CryptoAccountCryptocurrencyDto
+                {
+                    CryptoAccountId = accountId,
+                    CryptocurrencyId = cryptoId,
+                    Quantity = 3.0m
+                });
+            });
+
+            var totalBalance = await ExecuteScopeAsync(async sp =>
+            {
+                var service = sp.GetRequiredService<ICryptoAccountCryptocurrencyService>();
+                return await service.GetTotalBalanceAsync();
+            });
+
+            Assert.True(totalBalance >= 450.0m);
+        }
+
         private async Task<(Guid accountId, Guid cryptoId)> SetupDependencies()
         {
             var providerId = await ExecuteScopeAsync(async sp =>
             {
                 var service = sp.GetRequiredService<ICryptoProviderService>();
-                return await service.AddAsync(new CryptoProviderDto { Name = "Kraken" });
+                var provider = await service.AddAsync(new CryptoProviderDto { Name = "Kraken" });
+                return provider.Id;
             });
 
             var accountId = await ExecuteScopeAsync(async sp =>

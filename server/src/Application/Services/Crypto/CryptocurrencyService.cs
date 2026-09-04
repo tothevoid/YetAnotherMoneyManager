@@ -1,11 +1,14 @@
-﻿using Audex.Infrastructure.Interfaces.Database;
+using Audex.Infrastructure.Interfaces.Database;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Audex.Application.DTO.Crypto;
+using Audex.Application.DTO.Currencies;
 using Audex.Application.DTO.FileStorage;
 using Audex.Application.Interfaces.Crypto;
+using Audex.Application.Interfaces.Currencies;
 using Audex.Application.Mappings;
+using Audex.Infrastructure.Constants;
 using Audex.Infrastructure.Entities.Crypto;
 using Audex.Application.Interfaces.FileStorage;
 using Microsoft.AspNetCore.Http;
@@ -17,16 +20,37 @@ namespace Audex.Application.Services.Crypto
         private readonly IUnitOfWork _db;
         private readonly IRepository<Cryptocurrency> _cryptocurrencyRepo;
         private readonly ApplicationMapper _mapper;
-
         private readonly IFileStorageService _fileStorageService;
+        private readonly ICurrencyService _currencyService;
         private const string _iconsBucket = "cryptocurrency";
 
-        public CryptocurrencyService(IUnitOfWork uow, ApplicationMapper mapper, IFileStorageService fileStorageService)
+        public CryptocurrencyService(
+            IUnitOfWork uow,
+            ApplicationMapper mapper,
+            IFileStorageService fileStorageService,
+            ICurrencyService currencyService)
         {
             _db = uow;
             _mapper = mapper;
             _cryptocurrencyRepo = uow.CreateRepository<Cryptocurrency>();
             _fileStorageService = fileStorageService;
+            _currencyService = currencyService;
+        }
+
+        public async Task<CurrencyDto> GetBaseCurrencyAsync()
+        {
+            var currency = await _currencyService.GetByIdAsync(CurrencyConstants.USD);
+            if (currency == null)
+            {
+                throw new InvalidOperationException("Base cryptocurrency currency (USD) was not found.");
+            }
+
+            if (currency.Rate <= 0)
+            {
+                currency.Rate = 1.0m;
+            }
+
+            return currency;
         }
 
         public async Task<IEnumerable<CryptocurrencyDto>> GetAllAsync()

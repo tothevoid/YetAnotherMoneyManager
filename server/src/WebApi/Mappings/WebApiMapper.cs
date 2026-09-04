@@ -238,5 +238,6 @@ namespace Audex.WebApi.Mappings
         public partial IEnumerable<ScheduledTaskAttachmentModel> Map(IEnumerable<Audex.Application.DTO.Scheduler.ScheduledTaskAttachmentDto> dtos);
 
         public partial Audex.Application.DTO.Scheduler.UpdateScheduleDto Map(Audex.WebApi.Models.Scheduler.UpdateScheduleModel model);
+        public partial CryptoAccountStatsModel Map(CryptoAccountStatsDto dto);
     }
 }

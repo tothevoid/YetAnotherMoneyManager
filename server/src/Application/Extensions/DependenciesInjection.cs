@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Audex.Application.Integrations.Currency;
 using Audex.Application.Integrations.Stock.Moex;
 using Audex.Application.Interfaces.Accounts;
@@ -79,6 +79,7 @@ namespace Audex.Application.Extensions
             services.AddTransient<ICryptoAccountCryptocurrencyService, CryptoAccountCryptocurrencyService>();
             services.AddTransient<ICryptocurrencyService, CryptocurrencyService>();
             services.AddTransient<ICryptoProviderService, CryptoProviderService>();
+            services.AddTransient<ICryptoAccountStatsService, CryptoAccountStatsService>();
             services.AddTransient<IBankService, BankService>();
             services.AddTransient<IAuthService, AuthService>();
             services.AddSingleton<IPasswordHasherService, PasswordHasherService>();

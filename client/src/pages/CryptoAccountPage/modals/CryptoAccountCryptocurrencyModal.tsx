@@ -74,6 +74,7 @@ const CryptoAccountCryptocurrencyModal: React.FC<ModalProps> = (props: ModalProp
 
     const onSubmit = (data: CryptoAccountCryptocurrencyFormInput) => {
         props.onSaved(data as CryptoAccountCryptocurrencyEntity);
+        props.modalRef?.current?.closeModal();
     };
 
     return (
